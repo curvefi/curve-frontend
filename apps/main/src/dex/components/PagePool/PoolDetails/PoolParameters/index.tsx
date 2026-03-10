@@ -1,6 +1,7 @@
 import type { ComponentPropsWithRef } from 'react'
 import { useMemo } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
+import { formatCryptoA, FXSWAP } from '@/dex/components/PageCreatePool/constants'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
@@ -32,7 +33,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
   const blockchainId = requireBlockchainId(rChainId)
   const { data: basePools } = useBasePools({ chainId: rChainId })
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const { data: pricesData } = usePoolMetadata({
+  const { data: poolMetadata } = usePoolMetadata({
     chain: blockchainId,
     poolAddress: poolAddress as `0x${string}`,
   })
@@ -45,9 +46,14 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
   const { data: poolParameters } = usePoolParameters({ chainId: rChainId, poolId: poolData.pool.id })
   const { gamma, A, future_A, future_A_time, initial_A, initial_A_time, priceOracle, priceScale } = poolParameters ?? {}
 
+  const isFxSwap = poolMetadata?.hasDonations ?? false
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
   const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { decimals: 5 })
+  const convertA = (a: number | string | undefined) => {
+    if (!isFxSwap || a == null) return a
+    return formatCryptoA(a, FXSWAP)
+  }
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -77,6 +83,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
     const isNg = poolData.pool.isNg
 
     if (poolData.pool.isLlamma) return 'Llamma'
+    if (isFxSwap) return t`FXSwap`
     if (!isCrypto && !isNg) return t`Stableswap`
     if (!isCrypto && isNg) return t`Stableswap-NG`
     if (isCrypto && !isNg && coins === 2) return t`Two Coin Cryptoswap`
@@ -92,7 +99,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
     return t`ERC4626`
   }
 
-  if (!pricesData || !snapshotData) return null
+  if (!poolMetadata || !snapshotData) return null
 
   return (
     <GridContainer variant="secondary">
@@ -102,32 +109,32 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           <PoolParameter>
             <PoolParameterTitle>{t`Pool Type:`}</PoolParameterTitle>
             <PoolParameterValue>
-              {returnPoolType(pricesData.poolType, pricesData.coins.length)}
-              {pricesData.metapool && `, ${t`Metapool`}`}
+              {returnPoolType(poolMetadata.poolType, poolMetadata.coins.length)}
+              {poolMetadata.metapool && `, ${t`Metapool`}`}
               {basePools?.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
             </PoolParameterValue>
           </PoolParameter>
-          {pricesData.basePool && (
+          {poolMetadata.basePool && (
             <PoolParameter>
               <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
-              <DataAddressLink href={scanTokenPath(network, pricesData.basePool)}>
-                {shortenAddress(pricesData.basePool)}
+              <DataAddressLink href={scanTokenPath(network, poolMetadata.basePool)}>
+                {shortenAddress(poolMetadata.basePool)}
               </DataAddressLink>
             </PoolParameter>
           )}
           <PoolParameter>
             <PoolParameterTitle>{t`Vyper Version:`}</PoolParameterTitle>
-            <PoolParameterValue>{pricesData.vyperVersion}</PoolParameterValue>
+            <PoolParameterValue>{poolMetadata.vyperVersion}</PoolParameterValue>
           </PoolParameter>
           <PoolParameter>
             <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
-            <PoolParameterLink href={scanTokenPath(network, pricesData.registry)}>
-              {shortenAddress(pricesData.registry)}
+            <PoolParameterLink href={scanTokenPath(network, poolMetadata.registry)}>
+              {shortenAddress(poolMetadata.registry)}
             </PoolParameterLink>
           </PoolParameter>
         </SectionWrapper>
         {/* Coins with Asset types */}
-        {poolData.pool.isNg && pricesData.assetTypes && (
+        {poolData.pool.isNg && poolMetadata.assetTypes && (
           <SectionWrapper>
             <SectionTitle>{t`Coins:`}</SectionTitle>
             {poolData.tokens.map((token, idx) => (
@@ -149,31 +156,31 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </>
-                  {poolData.pool.isNg && pricesData.assetTypes && (
-                    <AssetType>{returnAssetType(pricesData.assetTypes[idx])}</AssetType>
+                  {poolData.pool.isNg && poolMetadata.assetTypes && (
+                    <AssetType>{returnAssetType(poolMetadata.assetTypes[idx])}</AssetType>
                   )}
                 </Box>
                 {/* Oracle */}
-                {pricesData.assetTypes?.[idx] === 1 && pricesData.oracles?.[idx] && (
+                {poolMetadata.assetTypes?.[idx] === 1 && poolMetadata.oracles?.[idx] && (
                   <IndentWrapper>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
                       <IndentDataAddressLink
-                        href={scanTokenPath(network, pricesData.oracles[idx]!.oracleAddress ?? '')}
+                        href={scanTokenPath(network, poolMetadata.oracles[idx]!.oracleAddress ?? '')}
                       >
-                        {shortenAddress(pricesData.oracles[idx]!.oracleAddress ?? '')}
+                        {shortenAddress(poolMetadata.oracles[idx]!.oracleAddress ?? '')}
                       </IndentDataAddressLink>
                     </Box>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Function:`}</IndentDataTitle>
-                      <IndentData>{pricesData.oracles[idx]!.method}</IndentData>
+                      <IndentData>{poolMetadata.oracles[idx]!.method}</IndentData>
                     </Box>
                     <Box flex>
                       <Numeral>└─</Numeral>
                       <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
-                      <IndentData>{pricesData.oracles[idx]!.methodId}</IndentData>
+                      <IndentData>{poolMetadata.oracles[idx]!.methodId}</IndentData>
                     </Box>
                   </IndentWrapper>
                 )}
@@ -221,7 +228,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                   }
                   tooltipProps={{ minWidth: '200px' }}
                 >
-                  {formatNumber(pricesApi ? snapshotData.a : A, { useGrouping: false })}
+                  {formatNumber(convertA(pricesApi ? snapshotData.a : A), { useGrouping: false })}
                   <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
                 </Chip>
               </PoolParameterValue>
@@ -242,8 +249,8 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                       } A so that it doesn't negatively change virtual price growth of shares`}
                       tooltipProps={{ placement: 'bottom-end' }}
                     >
-                      {formatNumber(initial_A, { useGrouping: false })} →{' '}
-                      {formatNumber(future_A, { useGrouping: false })}{' '}
+                      {formatNumber(convertA(initial_A), { useGrouping: false })} →{' '}
+                      {formatNumber(convertA(future_A), { useGrouping: false })}{' '}
                       <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
                     </StyledChip>
                   </PoolParameterValue>
