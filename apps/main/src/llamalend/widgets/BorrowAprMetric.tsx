@@ -3,8 +3,8 @@ import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import type { LlamaMarketType } from '@ui-kit/types/market'
-import { TooltipOptions as defaultTooltipOptions } from '../features/market-details/tooltips'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
+import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
 type BorrowRateMetric = {
   rate: number | null | undefined
