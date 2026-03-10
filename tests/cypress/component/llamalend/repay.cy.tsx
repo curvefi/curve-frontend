@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { type Address } from 'viem'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
@@ -43,11 +42,7 @@ describe('RepayForm (mocked)', () => {
       void collateral
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks })
-      seedCrvUsdBalance({
-        chainId,
-        addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
-        rawBalance: BigInt(oneInt(15, 80)) * 10n ** 18n,
-      })
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], rawBalance: BigInt(oneInt(15, 80)) * 10n ** 18n })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>

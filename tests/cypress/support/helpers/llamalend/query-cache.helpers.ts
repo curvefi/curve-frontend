@@ -2,21 +2,7 @@ import { type Address, erc20Abi } from 'viem'
 import { queryClient } from '@ui-kit/lib/api'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { readContractsQueryOptions } from '@wagmi/core/query'
-import { testWagmiConfig } from './test-wagmi.helpers'
-
-const getErc20Contracts = ({
-  chainId,
-  tokenAddress,
-  userAddress,
-}: {
-  chainId: number
-  tokenAddress: Address
-  userAddress: Address
-}) =>
-  [
-    { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [userAddress] },
-    { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
-  ] as const
+import { mockedWagmiConfig } from './test-wagmi.helpers'
 
 export const seedErc20BalanceQuery = ({
   chainId,
@@ -31,18 +17,16 @@ export const seedErc20BalanceQuery = ({
   rawBalance: bigint
   decimals?: number
 }) => {
-  const contracts = getErc20Contracts({ chainId, tokenAddress, userAddress })
-
-  ;[
-    readContractsQueryOptions(testWagmiConfig, { contracts }),
-    readContractsQueryOptions(testWagmiConfig, { contracts, allowFailure: true }),
-    readContractsQueryOptions(testWagmiConfig, { contracts, allowFailure: false }),
-  ].forEach(({ queryKey }) =>
-    queryClient.setQueryData(queryKey, [
-      { status: 'success', result: rawBalance },
-      { status: 'success', result: decimals },
-    ]),
-  )
+  const { queryKey } = readContractsQueryOptions(mockedWagmiConfig, {
+    contracts: [
+      { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [userAddress] },
+      { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
+    ] as const,
+  })
+  queryClient.setQueryData(queryKey, [
+    { status: 'success', result: rawBalance },
+    { status: 'success', result: decimals },
+  ])
 }
 
 export const seedErc20BalanceForAddresses = ({

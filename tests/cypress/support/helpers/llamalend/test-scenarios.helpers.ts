@@ -8,9 +8,18 @@ import { seedErc20BalanceForAddresses } from './query-cache.helpers'
 
 /** Seed token balances for both collateral and borrow (crvUSD) tokens so useReadContracts doesn't make real RPC calls */
 const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
-  const addresses = [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address]
-  seedErc20BalanceForAddresses({ chainId, tokenAddress: collateralAddress, addresses, rawBalance: 10n ** 20n })
-  seedErc20BalanceForAddresses({ chainId, tokenAddress: CRVUSD_ADDRESS as Address, addresses, rawBalance: 10n ** 22n })
+  seedErc20BalanceForAddresses({
+    chainId,
+    tokenAddress: collateralAddress,
+    addresses: [TEST_ADDRESS],
+    rawBalance: 10n ** 20n,
+  })
+  seedErc20BalanceForAddresses({
+    chainId,
+    tokenAddress: CRVUSD_ADDRESS as Address,
+    addresses: [TEST_ADDRESS],
+    rawBalance: 10n ** 22n,
+  })
 }
 
 type TestStubArg = string | number | boolean | bigint | symbol | null | undefined | object

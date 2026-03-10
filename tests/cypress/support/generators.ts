@@ -4,7 +4,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import type { Range } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils/decimal'
 
 export const MAX_USD_VALUE = 400_000_000
 

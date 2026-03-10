@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { type Address } from 'viem'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -43,11 +42,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks })
-        seedCrvUsdBalance({
-          chainId,
-          addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
-          rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n,
-        })
+        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
@@ -103,11 +98,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks })
-        seedCrvUsdBalance({
-          chainId,
-          addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
-          rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n,
-        })
+        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
