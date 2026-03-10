@@ -94,7 +94,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack divider={<InputDivider />}>
+      <Stack
+        divider={<InputDivider />}
+        sx={{ ...(isDevelopment && { outline: (t) => '1px dotted ' + t.design.Layer.Feedback.Warning }) }}
+      >
         {fromWallet && (
           <LoanFormTokenInput
             label={t`Add from wallet`}
