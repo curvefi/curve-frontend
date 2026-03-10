@@ -30,7 +30,7 @@ const overlapBySize = (direction: 'left' | 'right', overlap: number) => {
 
 export const StackedChainIcons = ({
   blockchainIds,
-  size = 'sm',
+  size = 'md',
   overlap = 1 / 3,
   sx,
   ...stackProps

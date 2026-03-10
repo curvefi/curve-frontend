@@ -38,8 +38,6 @@ const meta: Meta<typeof StackedChainIcons> = {
   },
   args: {
     blockchainIds: BLOCKCHAIN_IDS,
-    size: 'md',
-    overlap: 1 / 3,
   },
 }
 
