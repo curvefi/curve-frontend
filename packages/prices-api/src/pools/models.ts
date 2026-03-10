@@ -104,6 +104,29 @@ export type PoolLiquidityEvent = {
   provider: Address
 }
 
+export type PoolSnapshot = {
+  timestamp: number
+  a: number | null
+  fee: number | null
+  adminFee: number | null
+  virtualPrice: number | null
+  xcpProfit: number | null
+  xcpProfitA: number | null
+  baseDailyApr: number | null
+  baseWeeklyApr: number | null
+  offpegFeeMultiplier: number | null
+  gamma: number | null
+  midFee: number | null
+  outFee: number | null
+  feeGamma: number | null
+  allowedExtraProfit: number | null
+  adjustmentStep: number | null
+  maHalfTime: number | null
+  priceScale: number[] | null
+  priceOracle: number[] | null
+  blockNumber: number | null
+}
+
 export type MetadataCoin = {
   poolIndex: number
   symbol: string

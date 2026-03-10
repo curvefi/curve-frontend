@@ -101,6 +101,31 @@ export const parsePoolLiquidityEvent = (
   provider: x.provider,
 })
 
+export const parsePoolSnapshot = (
+  x: Responses.GetPoolSnapshotsResponse['data'][number],
+): Models.PoolSnapshot => ({
+  timestamp: x.timestamp,
+  a: x.a,
+  fee: x.fee,
+  adminFee: x.admin_fee,
+  virtualPrice: x.virtual_price,
+  xcpProfit: x.xcp_profit,
+  xcpProfitA: x.xcp_profit_a,
+  baseDailyApr: x.base_daily_apr,
+  baseWeeklyApr: x.base_weekly_apr,
+  offpegFeeMultiplier: x.offpeg_fee_multiplier,
+  gamma: x.gamma,
+  midFee: x.mid_fee,
+  outFee: x.out_fee,
+  feeGamma: x.fee_gamma,
+  allowedExtraProfit: x.allowed_extra_profit,
+  adjustmentStep: x.adjustment_step,
+  maHalfTime: x.ma_half_time,
+  priceScale: x.price_scale,
+  priceOracle: x.price_oracle,
+  blockNumber: x.block_number,
+})
+
 export const parseMetadataCoin = (x: Responses.GetPoolMetadataResponse['coins'][number]): Models.MetadataCoin => ({
   poolIndex: x.pool_index,
   symbol: x.symbol,

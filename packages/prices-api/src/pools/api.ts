@@ -142,7 +142,15 @@ export async function getPoolLiquidityEvents(
   }
 }
 
-export async function getPoolMetadata(chain: Chain, poolAddress: string, options?: Options) {
+export type GetPoolMetadataParams = {
+  chain: Chain
+  poolAddress: Address
+}
+
+export async function getPoolMetadata(
+  { chain, poolAddress }: GetPoolMetadataParams,
+  options?: Options,
+) {
   const host = getHost(options)
 
   const resp = await fetchJson<Responses.GetPoolMetadataResponse>(
@@ -150,4 +158,26 @@ export async function getPoolMetadata(chain: Chain, poolAddress: string, options
   )
 
   return Parsers.parsePoolMetadata(resp)
+}
+
+export type GetPoolSnapshotsParams = {
+  chain: Chain
+  poolAddress: Address
+  start: number
+  end: number
+  unit?: 'none' | 'day' | 'week'
+}
+
+export async function getPoolSnapshots(
+  { chain, poolAddress, start, end, unit = 'none' }: GetPoolSnapshotsParams,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const query = addQueryString({ start, end, unit })
+
+  const resp = await fetchJson<Responses.GetPoolSnapshotsResponse>(
+    `${host}/v1/snapshots/${chain}/${poolAddress}${query}`,
+  )
+
+  return resp.data.map(Parsers.parsePoolSnapshot)
 }

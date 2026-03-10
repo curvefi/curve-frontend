@@ -124,6 +124,33 @@ export type GetPoolLiquidityEventsResponse = PaginationMeta & {
   }[]
 }
 
+export type GetPoolSnapshotsResponse = {
+  chain: string
+  address: string
+  data: {
+    timestamp: number
+    a: number | null
+    fee: number | null
+    admin_fee: number | null
+    virtual_price: number | null
+    xcp_profit: number | null
+    xcp_profit_a: number | null
+    base_daily_apr: number | null
+    base_weekly_apr: number | null
+    offpeg_fee_multiplier: number | null
+    gamma: number | null
+    mid_fee: number | null
+    out_fee: number | null
+    fee_gamma: number | null
+    allowed_extra_profit: number | null
+    adjustment_step: number | null
+    ma_half_time: number | null
+    price_scale: number[] | null
+    price_oracle: number[] | null
+    block_number: number | null
+  }[]
+}
+
 type MetadataCoin = Coin & {
   decimals: number | null
 }
