@@ -50,7 +50,7 @@ export const PageHeader = ({
   )
 }
 
-const pageHeaderPadding = { paddingBlockEnd: Spacing.sm, paddingInline: Spacing.md }
+const PADDING_BLOCK = Spacing.sm
 
 /**
  * CSS rules for making the page header sticky.
@@ -67,8 +67,8 @@ const stickySx = (navHeight: number): StackProps['sx'] => ({
   zIndex: (t) => t.zIndex.appBar - 1,
   backgroundColor: (t) => t.palette.background.default,
   paddingBlockStart: {
-    mobile: pageHeaderPadding.paddingBlockEnd.mobile,
-    tablet: `calc(${pageHeaderPadding.paddingBlockEnd.tablet} + ${pageMargins.marginBlockStart.tablet})`,
+    mobile: PADDING_BLOCK.mobile,
+    tablet: pageMargins.marginBlockStart.tablet,
   },
 })
 
@@ -104,7 +104,7 @@ export const PageHeaderView = ({
       flexWrap={{ tablet: 'wrap' }}
       justifyContent={{ tablet: 'space-between' }}
       gap={Spacing.md}
-      {...pageHeaderPadding}
+      paddingBlockEnd={PADDING_BLOCK}
       sx={stickySx(navHeight)}
     >
       <Stack direction="row">
