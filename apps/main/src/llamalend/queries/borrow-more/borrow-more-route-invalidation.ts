@@ -1,4 +1,5 @@
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { RouteResponse } from '@primitives/router.utils'
 import {
   invalidateBorrowMoreExpectedCollateral,
   refetchBorrowMoreExpectedCollateral,
@@ -19,30 +20,29 @@ import { invalidateBorrowMoreMaxReceive, refetchBorrowMoreMaxReceive } from './b
 import { invalidateBorrowMorePriceImpact, refetchBorrowMorePriceImpact } from './borrow-more-price-impact.query'
 import { invalidateBorrowMorePrices, refetchBorrowMorePrices } from './borrow-more-prices.query'
 
-export const invalidateOrRefetchBorrowMoreRouteQueries = async (isRouteIdChanged: boolean, params: BorrowMoreParams) =>
-  await Promise.all(
-    (isRouteIdChanged
-      ? [
-          invalidateBorrowMoreExpectedCollateral,
-          invalidateBorrowMoreFutureLeverage,
-          invalidateBorrowMoreApproveGasEstimateQuery,
-          invalidateBorrowMoreGasEstimateQuery,
-          invalidateBorrowMoreHealth,
-          invalidateBorrowMoreIsApproved,
-          invalidateBorrowMoreMaxReceive,
-          invalidateBorrowMorePriceImpact,
-          invalidateBorrowMorePrices,
-        ]
-      : [
-          refetchBorrowMoreExpectedCollateral,
-          refetchBorrowMoreFutureLeverage,
-          refetchBorrowMoreApproveGasEstimateQuery,
-          refetchBorrowMoreGasEstimateQuery,
-          refetchBorrowMoreHealth,
-          refetchBorrowMoreIsApproved,
-          refetchBorrowMoreMaxReceive,
-          refetchBorrowMorePriceImpact,
-          refetchBorrowMorePrices,
-        ]
-    ).map((run) => run(params)),
-  )
+const refetch = [
+  refetchBorrowMoreExpectedCollateral,
+  refetchBorrowMoreFutureLeverage,
+  refetchBorrowMoreApproveGasEstimateQuery,
+  refetchBorrowMoreGasEstimateQuery,
+  refetchBorrowMoreHealth,
+  refetchBorrowMoreIsApproved,
+  refetchBorrowMoreMaxReceive,
+  refetchBorrowMorePriceImpact,
+  refetchBorrowMorePrices,
+]
+const invalidate = [
+  invalidateBorrowMoreExpectedCollateral,
+  invalidateBorrowMoreFutureLeverage,
+  invalidateBorrowMoreApproveGasEstimateQuery,
+  invalidateBorrowMoreGasEstimateQuery,
+  invalidateBorrowMoreHealth,
+  invalidateBorrowMoreIsApproved,
+  invalidateBorrowMoreMaxReceive,
+  invalidateBorrowMorePriceImpact,
+  invalidateBorrowMorePrices,
+]
+export const invalidateOrRefetchBorrowMoreRouteQueries = async (
+  route: RouteResponse | undefined,
+  params: BorrowMoreParams,
+) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))

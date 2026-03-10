@@ -174,9 +174,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        if (route) {
-          await invalidateOrRefetchRepayRouteQueries(route.id !== params.routeId, { ...params, routeId: route.id })
-        }
+        await invalidateOrRefetchRepayRouteQueries(route, { ...params, routeId: route?.id })
       },
     }),
     formErrors: useMemo(

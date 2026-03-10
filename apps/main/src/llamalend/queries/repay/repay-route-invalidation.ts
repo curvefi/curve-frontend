@@ -1,4 +1,5 @@
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
+import type { RouteResponse } from '@primitives/router.utils'
 import { invalidateRepayExpectedBorrowed, refetchRepayExpectedBorrowed } from './repay-expected-borrowed.query'
 import {
   invalidateRepayApproveGasEstimateQuery,
@@ -14,32 +15,31 @@ import { invalidateRepayPriceImpact, refetchRepayPriceImpact } from './repay-pri
 import { invalidateRepayPrices, refetchRepayPrices } from './repay-prices.query'
 import { invalidateRepayRouteImage, refetchRepayRouteImage } from './repay-route-image.query'
 
-export const invalidateOrRefetchRepayRouteQueries = async (isRouteIdChanged: boolean, params: RepayIsFullParams) =>
-  await Promise.all(
-    (isRouteIdChanged
-      ? [
-          invalidateRepayExpectedBorrowed,
-          invalidateRepayLoanEstimateGasQuery,
-          invalidateRepayApproveGasEstimateQuery,
-          invalidateRepayHealth,
-          invalidateRepayIsApproved,
-          invalidateRepayIsAvailable,
-          invalidateRepayIsFull,
-          invalidateRepayPriceImpact,
-          invalidateRepayPrices,
-          invalidateRepayRouteImage,
-        ]
-      : [
-          refetchRepayExpectedBorrowed,
-          refetchRepayLoanEstimateGasQuery,
-          refetchRepayApproveGasEstimateQuery,
-          refetchRepayHealth,
-          refetchRepayIsApproved,
-          refetchRepayIsAvailable,
-          refetchRepayIsFull,
-          refetchRepayPriceImpact,
-          refetchRepayPrices,
-          refetchRepayRouteImage,
-        ]
-    ).map((run) => run(params)),
-  )
+const refetch = [
+  refetchRepayExpectedBorrowed,
+  refetchRepayLoanEstimateGasQuery,
+  refetchRepayApproveGasEstimateQuery,
+  refetchRepayHealth,
+  refetchRepayIsApproved,
+  refetchRepayIsAvailable,
+  refetchRepayIsFull,
+  refetchRepayPriceImpact,
+  refetchRepayPrices,
+  refetchRepayRouteImage,
+]
+const invalidate = [
+  invalidateRepayExpectedBorrowed,
+  invalidateRepayLoanEstimateGasQuery,
+  invalidateRepayApproveGasEstimateQuery,
+  invalidateRepayHealth,
+  invalidateRepayIsApproved,
+  invalidateRepayIsAvailable,
+  invalidateRepayIsFull,
+  invalidateRepayPriceImpact,
+  invalidateRepayPrices,
+  invalidateRepayRouteImage,
+]
+export const invalidateOrRefetchRepayRouteQueries = async (
+  route: RouteResponse | undefined,
+  params: RepayIsFullParams,
+) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))

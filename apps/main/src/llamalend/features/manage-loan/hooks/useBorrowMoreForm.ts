@@ -161,9 +161,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       enabled: routeRequired,
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        if (route) {
-          await invalidateOrRefetchBorrowMoreRouteQueries(route.id !== params.routeId, { ...params, routeId: route.id })
-        }
+        await invalidateOrRefetchBorrowMoreRouteQueries(route, { ...params, routeId: route?.id })
       },
     }),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
