@@ -18,9 +18,10 @@ import {
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
-const expectedSubNavHeight = 40
-const expectedMainNavHeight = expectedSubNavHeight + 1 // 1px for the border
-const expectedMobileNavHeight = 56 + 1 // 1px for the border
+const border = 1
+const expectedMainNavHeight = 40
+const expectedSubNavHeight = expectedMainNavHeight
+const expectedMobileNavHeight = 56 + border
 const expectedConnectHeight = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
@@ -44,10 +45,10 @@ describe('Header', () => {
 
     it('should have the right size', () => {
       const isCrvusdMarketRoute = route.startsWith(CRVUSD_PAGE_MARKETS_ROUTE)
-      // crvusd market page route has no subnav
-      const expectedHeaderHeight = isCrvusdMarketRoute
-        ? expectedMainNavHeight
-        : expectedSubNavHeight + expectedMainNavHeight
+
+      const expectedHeaderHeight =
+        // crvusd market page route has no subnav
+        (isCrvusdMarketRoute ? expectedMainNavHeight : expectedSubNavHeight + expectedMainNavHeight) + border
 
       cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
 
@@ -122,17 +123,18 @@ describe('Header', () => {
 
     it(`should have the right size`, () => {
       const breakpoint = viewport[0] < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
+      const expectedHeaderHeight = expectedMobileNavHeight + (isLendMarketDetailRoute(route) ? expectedSubNavHeight : 0)
       const expectedFooterWidth = Math.max(
         expectedFooterMinWidth,
         viewport[0] - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
       )
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height')
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height')
       cy.get(`header`)
         .invoke('outerWidth')
         .should('equal', viewport[0] - SCROLL_WIDTH, 'Header width')
       cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth, 'Footer width')
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height changed')
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height changed')
       cy.get("[data-testid='navigation-connect-wallet']")
         .invoke('outerHeight')
         .should('equal', expectedConnectHeight, 'Connect height')

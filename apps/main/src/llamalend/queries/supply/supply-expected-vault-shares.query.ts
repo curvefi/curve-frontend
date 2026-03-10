@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import type { Query } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -20,11 +21,7 @@ import {
  */
 export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'depositExpectedVaultShares',
-      { depositAmount },
-    ] as const,
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'previewDeposit', { depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     (await requireVault(marketId).vault.previewDeposit(depositAmount)) as Decimal,
   category: 'llamalend.supply',
@@ -36,11 +33,7 @@ export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
  */
 export const { useQuery: useWithdrawRemovableVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, withdrawAmount }: WithdrawParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'withdrawRemovableVaultShares',
-      { withdrawAmount },
-    ] as const,
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'previewWithdraw', { withdrawAmount }] as const,
   queryFn: async ({ marketId, withdrawAmount }: WithdrawQuery) =>
     (await requireVault(marketId).vault.previewWithdraw(withdrawAmount)) as Decimal,
   category: 'llamalend.supply',
@@ -66,8 +59,6 @@ export function useWithdrawExpectedVaultShares<ChainId extends number>(
       prevVaultShares.data &&
       removableVaultShares.data &&
       decimal(new BigNumber(prevVaultShares.data).minus(removableVaultShares.data)),
-    // TODO: use combineQueryState, after refactoring `loading` to `isLoading`
-    error: prevVaultShares.error ?? removableVaultShares.error,
-    isLoading: prevVaultShares.isLoading || removableVaultShares.isLoading,
+    ...combineQueryState(prevVaultShares, removableVaultShares),
   }
 }

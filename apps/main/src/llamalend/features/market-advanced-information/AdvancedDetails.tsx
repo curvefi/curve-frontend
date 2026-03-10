@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
+import { MarketTypeSuffix } from '@/llamalend/constants'
+import { formatCollateralNotional } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
-  MarketTypeSuffix,
   MaxLeverageTooltip,
   TotalCollateralTooltip,
   UtilizationTooltip,
   TooltipOptions,
-} from '@/llamalend/features/market-details'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+} from '@/llamalend/widgets/tooltips'
 import { Box, CardHeader } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
@@ -86,16 +87,16 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="small"
           label={t`Total collateral`}
-          value={collateral?.total}
+          value={collateral?.combinedCollateralUsdValue}
           loading={collateral?.loading}
-          valueOptions={{ unit: { symbol: collateral?.symbol ?? '', position: 'suffix' } }}
+          valueOptions={{ unit: 'dollar' }}
           notional={
-            collateral?.totalUsdValue != null
-              ? {
-                  value: collateral.totalUsdValue,
-                  unit: 'dollar',
-                }
-              : undefined
+            collateral?.loading
+              ? undefined
+              : formatCollateralNotional(
+                  { value: collateral?.totalCollateral ?? null, symbol: collateral?.collateralSymbol ?? undefined },
+                  { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
+                )
           }
           valueTooltip={{
             title: t`Total Collateral`,

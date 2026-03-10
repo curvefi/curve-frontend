@@ -1,5 +1,6 @@
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { invalidateBorrowMoreExpectedCollateral } from './borrow-more-expected-collateral.query'
+import { invalidateBorrowMoreFutureLeverage } from './borrow-more-future-leverage.query'
 import {
   invalidateBorrowMoreApproveGasEstimateQuery,
   invalidateBorrowMoreGasEstimateQuery,
@@ -13,6 +14,7 @@ import { invalidateBorrowMorePrices } from './borrow-more-prices.query'
 export const invalidateBorrowMoreRouteQueries = async (params: BorrowMoreParams) => {
   await Promise.all([
     invalidateBorrowMoreExpectedCollateral(params),
+    invalidateBorrowMoreFutureLeverage(params),
     invalidateBorrowMoreApproveGasEstimateQuery(params),
     invalidateBorrowMoreGasEstimateQuery(params),
     invalidateBorrowMoreHealth(params),

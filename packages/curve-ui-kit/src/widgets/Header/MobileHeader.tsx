@@ -17,6 +17,7 @@ import { SocialSidebarSection } from './SocialSidebarSection'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
 import { useVisibleAppLinks } from './useVisibleAppLinks'
+import { getHeaderBorder } from './utils'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -65,7 +66,7 @@ export const MobileHeader = ({
         position: 'sticky',
         top: 0,
         boxShadow: 'none',
-        borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+        borderBottom: getHeaderBorder,
       }}
       data-testid="mobile-main-bar"
     >

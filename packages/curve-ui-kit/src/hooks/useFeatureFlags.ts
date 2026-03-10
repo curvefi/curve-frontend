@@ -36,15 +36,9 @@ export const useAnalyticsApp = useAlphaChannel
 /** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
 export const useFastbridge = useBetaChannel
 
-/** New page header with market metrics on market detail pages */
-export const useIntegratedLlamaHeader = useBetaChannel
-
-/** New lend market header subnav */
-export const useLendMarketSubNav = useIntegratedLlamaHeader
-
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () =>
   getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New tabs for BorrowPositionDetails */
-export const useNewPositionDetailsTabs = useIntegratedLlamaHeader
+/** New market page layout with forms on the right  */
+export const useRightFormTabsLayout = useBetaChannel

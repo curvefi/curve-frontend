@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js'
+import { Decimal } from '@primitives/decimal.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -16,6 +18,9 @@ const { AverageRates } = Duration
 
 export const LAST_MONTH = AverageRates.Monthly
 export const LAST_WEEK = AverageRates.Weekly
+
+export const computeDecimalTotalRate = (rate?: Decimal, rebasingYield?: number | null) =>
+  rate && decimal(new BigNumber(rate).minus(rebasingYield ?? 0))
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 
@@ -59,6 +64,72 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
     averageRate,
     averageRebasingYield,
     averageTotalRate: averageRate == null ? null : computeTotalRate(averageRate, averageRebasingYield ?? 0),
+  }
+}
+
+/** Sum a base rate with optional additional components, returning null if the base is null */
+export const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
+  base == null ? null : components.reduce<number>((sum, c) => sum + (c ?? 0), base)
+
+export const toNumberOrNull = (value: number | string | null | undefined) => (value == null ? null : Number(value))
+
+type SupplyRateMetricsParams = {
+  supplyApy: number | null
+  snapshots: LendingSnapshot[] | undefined
+  onChainCrvRates?: number[]
+  onChainRewardsApr?: { apy: number; symbol: string; tokenAddress: string }[]
+  daysBack?: number
+}
+
+/**
+ * Get the supply rate metrics for a given supply APY and lending snapshots, like average rate, total boosted rates.
+ * Parallels `getBorrowRateMetrics` for the supply side.
+ */
+export const getSupplyRateMetrics = ({
+  supplyApy,
+  snapshots,
+  onChainCrvRates,
+  onChainRewardsApr,
+  daysBack = LAST_MONTH,
+}: SupplyRateMetricsParams) => {
+  const averages = calculateAverageRates(snapshots, daysBack, {
+    lendApy: ({ lendApy }) => Number(lendApy) * 100,
+    rebasingYield: ({ borrowedToken }) => borrowedToken.rebasingYield,
+    aprCrvMinBoost: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
+    aprCrvMaxBoost: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
+    extraIncentivesApr: ({ extraRewardApr }) => extraRewardApr.reduce((acc, r) => acc + r.rate, 0),
+  })
+
+  const supplyAprCrvMinBoost = onChainCrvRates?.[0] ?? snapshots?.[0]?.lendAprCrv0Boost ?? 0
+  const supplyAprCrvMaxBoost = onChainCrvRates?.[1] ?? snapshots?.[0]?.lendAprCrvMaxBoost ?? 0
+  const rebasingYield = snapshots?.at(-1)?.borrowedToken?.rebasingYield ?? null
+  const extraIncentivesTotalApr = onChainRewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
+
+  return {
+    supplyApy,
+    averageLendApy: averages?.lendApy ?? null,
+    supplyAprCrvMinBoost,
+    supplyAprCrvMaxBoost,
+    averageAprCrvMinBoost: averages?.aprCrvMinBoost ?? null,
+    averageAprCrvMaxBoost: averages?.aprCrvMaxBoost ?? null,
+    rebasingYield,
+    averageRebasingYield: averages?.rebasingYield ?? null,
+    extraIncentivesTotalApr,
+    averageExtraIncentivesApr: averages?.extraIncentivesApr ?? null,
+    totalMinBoost: sumRates(supplyApy, rebasingYield, extraIncentivesTotalApr, supplyAprCrvMinBoost),
+    totalMaxBoost: sumRates(supplyApy, rebasingYield, extraIncentivesTotalApr, supplyAprCrvMaxBoost),
+    totalAverageMinBoost: sumRates(
+      averages?.lendApy,
+      averages?.rebasingYield,
+      averages?.extraIncentivesApr,
+      averages?.aprCrvMinBoost,
+    ),
+    totalAverageMaxBoost: sumRates(
+      averages?.lendApy,
+      averages?.rebasingYield,
+      averages?.extraIncentivesApr,
+      averages?.aprCrvMaxBoost,
+    ),
   }
 }
 

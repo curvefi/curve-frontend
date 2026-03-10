@@ -24,10 +24,8 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   isLite: boolean
   isCrvRewardsEnabled: boolean
   useApi: boolean
-  poolCustomTVL: { [poolAddress: string]: string }
   poolIsWrappedOnly: { [poolAddress: string]: boolean }
   poolFilters: string[]
-  hideSmallPoolsTvl: number
   isActiveNetwork: boolean
   missingPools: { name: string; url: string }[]
   swap: { [key: string]: string }
@@ -221,13 +219,6 @@ export type PricesApiSnapshotsResponse = {
 export type PoolDataCacheMapper = { [poolAddress: string]: PoolDataCache }
 export type PoolDataCacheOrApi = PoolData | PoolDataCache
 
-export type Tvl = {
-  poolId: string
-  value: string
-  errorMessage: string
-}
-export type TvlMapper = { [poolId: string]: Tvl }
-export type ValueMapperCached = { [poolId: string]: { value: string } }
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export interface PoolAlert extends TooltipProps {

@@ -25,10 +25,9 @@ type PoolStatsProps = {
 
 export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const { rChainId, rPoolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
+  const { rChainId: chainId, rPoolIdOrAddress: poolIdOrAddress } = routerParams
+  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
+  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[chainId]?.[poolId ?? ''])
 
   const { curveApi } = useCurve()
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
@@ -49,8 +48,8 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
       <MainStatsContainer flex flexColumn>
         <MainStatsWrapper grid>
           <Box grid gridRowGap={3}>
-            <CurrencyReserves rChainId={rChainId} rPoolId={poolId ?? ''} tvl={tvl} tokensMapper={tokensMapper} />
-            {poolData && <RewardsComp chainId={rChainId} poolData={poolData} rewardsApy={rewardsApy} />}
+            <CurrencyReserves chainId={chainId} poolId={poolId ?? ''} tokensMapper={tokensMapper} />
+            {poolData && <RewardsComp chainId={chainId} poolData={poolData} rewardsApy={rewardsApy} />}
             <Box grid gridRowGap={2}>
               {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
                 <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
