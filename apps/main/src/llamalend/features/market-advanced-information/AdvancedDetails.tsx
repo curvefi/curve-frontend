@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
+import { MarketTypeSuffix } from '@/llamalend/constants'
+import { formatCollateralNotional } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
-  MarketTypeSuffix,
   MaxLeverageTooltip,
   TotalCollateralTooltip,
   UtilizationTooltip,
   TooltipOptions,
-} from '@/llamalend/features/market-details'
-import { formatCollateralNotional } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+} from '@/llamalend/widgets/tooltips'
 import { Box, CardHeader } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
