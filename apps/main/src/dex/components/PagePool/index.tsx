@@ -85,10 +85,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { networkId, isLite, pricesApi } = network
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address
-  const { data: snapshots } = usePoolSnapshots({
-    chain: networkId as Chain,
-    poolAddress: (poolAddress ?? '') as `0x${string}`,
-  })
+  const shouldFetchSnapshots = pricesApi && !!poolAddress
+  const { data: snapshots } = usePoolSnapshots(
+    {
+      chain: networkId as Chain,
+      poolAddress: (poolAddress ?? '') as `0x${string}`,
+    },
+    shouldFetchSnapshots,
+  )
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]

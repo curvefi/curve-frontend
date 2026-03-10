@@ -54,6 +54,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
     if (!isFxSwap || a == null) return a
     return formatCryptoA(a, FXSWAP)
   }
+  const formatADisplay = (a: number | string | undefined) => formatNumber(convertA(a))
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -166,21 +167,23 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      <IndentDataAddressLink
-                        href={scanTokenPath(network, poolMetadata.oracles[idx]!.oracleAddress ?? '')}
-                      >
-                        {shortenAddress(poolMetadata.oracles[idx]!.oracleAddress ?? '')}
-                      </IndentDataAddressLink>
+                      {poolMetadata.oracles[idx]!.oracleAddress ? (
+                        <IndentDataAddressLink href={scanTokenPath(network, poolMetadata.oracles[idx]!.oracleAddress)}>
+                          {shortenAddress(poolMetadata.oracles[idx]!.oracleAddress)}
+                        </IndentDataAddressLink>
+                      ) : (
+                        <IndentData>-</IndentData>
+                      )}
                     </Box>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Function:`}</IndentDataTitle>
-                      <IndentData>{poolMetadata.oracles[idx]!.method}</IndentData>
+                      <IndentData>{poolMetadata.oracles[idx]!.method ?? '-'}</IndentData>
                     </Box>
                     <Box flex>
                       <Numeral>└─</Numeral>
                       <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
-                      <IndentData>{poolMetadata.oracles[idx]!.methodId}</IndentData>
+                      <IndentData>{poolMetadata.oracles[idx]!.methodId ?? '-'}</IndentData>
                     </Box>
                   </IndentWrapper>
                 )}
@@ -221,14 +224,14 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                             {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
                               future_A_time,
                               'short',
-                            )}, when A ramped from ${initial_A} to ${future_A}.`}
+                            )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`}
                           </>
                         )}
                     </>
                   }
                   tooltipProps={{ minWidth: '200px' }}
                 >
-                  {formatNumber(convertA(pricesApi ? snapshotData.a : A), { useGrouping: false })}
+                  {formatADisplay(pricesApi ? snapshotData.a : A)}
                   <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
                 </Chip>
               </PoolParameterValue>
@@ -249,8 +252,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                       } A so that it doesn't negatively change virtual price growth of shares`}
                       tooltipProps={{ placement: 'bottom-end' }}
                     >
-                      {formatNumber(convertA(initial_A), { useGrouping: false })} →{' '}
-                      {formatNumber(convertA(future_A), { useGrouping: false })}{' '}
+                      {formatADisplay(initial_A)} → {formatADisplay(future_A)}{' '}
                       <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
                     </StyledChip>
                   </PoolParameterValue>
