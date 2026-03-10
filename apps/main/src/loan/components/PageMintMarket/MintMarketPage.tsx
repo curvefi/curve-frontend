@@ -95,7 +95,16 @@ export const MintMarketPage = () => {
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
+    <DetailPageLayout
+      formTabs={
+        !isLoading &&
+        (loanExists ? (
+          <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
+        ) : (
+          <CreateLoanTabs {...formProps} />
+        ))
+      }
+    >
       <PageHeader
         chainId={rChainId}
         marketId={marketId}
@@ -103,32 +112,21 @@ export const MintMarketPage = () => {
         market={market}
         blockchainId={network.id as Chain}
       />
-      <DetailPageLayout
-        formTabs={
-          !isLoading &&
-          (loanExists ? (
-            <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
-          ) : (
-            <CreateLoanTabs {...formProps} />
-          ))
-        }
-      >
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          borrowPositionDetails={borrowPositionDetails}
-          activityQueryParams={activityQueryParams}
+      <PositionDetailsComposite
+        hasPosition={loanExists}
+        borrowPositionDetails={borrowPositionDetails}
+        activityQueryParams={activityQueryParams}
+      />
+      <Stack>
+        <MarketInformationComposite
+          market={market ?? null}
+          marketId={marketId}
+          chainId={rChainId}
+          page="manage"
+          previewPrices={previewPrices}
         />
-        <Stack>
-          <MarketInformationComposite
-            market={market ?? null}
-            marketId={marketId}
-            chainId={rChainId}
-            page="manage"
-            previewPrices={previewPrices}
-          />
-        </Stack>
-      </DetailPageLayout>
-    </>
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )

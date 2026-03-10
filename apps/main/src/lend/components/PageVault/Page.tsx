@@ -103,7 +103,7 @@ export const Page = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
+    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
       <PageHeader
         chainId={rChainId}
         marketId={rOwmId}
@@ -111,23 +111,21 @@ export const Page = () => {
         market={market}
         blockchainId={network.id as Chain}
       />
-      <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-        {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-        {!isHighSeverityAlert(marketAlert?.alertType) && (
-          <CampaignRewardsBanner
-            chainId={rChainId}
-            borrowAddress={market?.addresses?.controller || ''}
-            supplyAddress={market?.addresses?.vault || ''}
-          />
-        )}
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
-        </Stack>
-        <Stack>
-          <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
-        </Stack>
-      </DetailPageLayout>
-    </>
+      {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+      {!isHighSeverityAlert(marketAlert?.alertType) && (
+        <CampaignRewardsBanner
+          chainId={rChainId}
+          borrowAddress={market?.addresses?.controller || ''}
+          supplyAddress={market?.addresses?.vault || ''}
+        />
+      )}
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
+      </Stack>
+      <Stack>
+        <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
