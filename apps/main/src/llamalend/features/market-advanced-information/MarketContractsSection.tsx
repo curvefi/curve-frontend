@@ -40,7 +40,7 @@ const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: 
 
 export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
-  const { data: oracleAddress } = useMarketOracleAddress({ chainId, marketId: market?.id ?? '' })
+  const { data: oracleAddress } = useMarketOracleAddress({ chainId, marketId: market?.id })
 
   const tokenItems: ContractItem[] = market
     ? [
