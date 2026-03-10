@@ -63,7 +63,7 @@ describe('BorrowMoreForm (mocked)', () => {
           expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
           expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
         } else {
-          expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+          expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })
 
@@ -73,7 +73,7 @@ describe('BorrowMoreForm (mocked)', () => {
           expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
           expect(stubs.borrowMoreApprove).to.not.have.been.called
         } else {
-          expect(stubs.borrowMoreApprove).to.not.have.been.called
+          expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
         }
         expect(onSuccess).to.have.been.calledOnce
       })

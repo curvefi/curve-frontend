@@ -95,6 +95,9 @@ export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: b
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
+const getBorrowInput = () => cy.get('[data-testid="borrow-debt-input"] input[type="text"]')
+const getCollateralInput = () => cy.get('[data-testid="borrow-collateral-input"] input[type="text"]')
+
 /**
  * Fill in the create loan form. Assumes the form is already opened.
  */
@@ -108,10 +111,12 @@ export function writeCreateLoanForm({
   leverageEnabled: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
-  cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral).blur()
+  getCollateralInput().type(collateral)
+  getCollateralInput().blur()
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
   getActionValue('borrow-health').should('equal', '∞')
-  cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow).blur()
+  getBorrowInput().type(borrow)
+  getBorrowInput().blur()
   getActionValue('borrow-health').should('not.equal', '∞')
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }
@@ -128,9 +133,7 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   // wait for max borrow to load and verify the input value matches (using data-value for precision)
   cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .then((maxValue) =>
-      cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().should('have.value', maxValue),
-    )
+    .then((maxValue) => getBorrowInput().should('have.value', maxValue))
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
   checkLoanDetailsLoaded({ leverageEnabled })
 }

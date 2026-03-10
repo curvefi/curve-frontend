@@ -13,4 +13,6 @@ export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({
   getUsdRate: async () => 1,
   getMintMarket: () => mockMarket,
   getLendMarket: () => mockMarket,
+  setCustomFeeData: async () => {},
+  userState: async () => ({ collateral: '0', borrowed: '0', debt: '0', N: '0' }),
 })

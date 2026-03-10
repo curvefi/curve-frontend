@@ -36,7 +36,6 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       userBorrowed = '0',
       leverageEnabled,
     }: BorrowMoreQuery): Promise<TGas | null> => {
-      if (!+userCollateral && !+userBorrowed) return null
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':

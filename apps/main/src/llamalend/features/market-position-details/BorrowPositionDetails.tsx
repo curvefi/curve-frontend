@@ -1,7 +1,8 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { HealthDetails, BorrowInformation } from './'
+import { BorrowInformation } from './BorrowInformation'
+import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 

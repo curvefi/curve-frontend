@@ -15,6 +15,7 @@ const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
 
 type TestStubArg = string | number | boolean | bigint | symbol | null | undefined | object
 
+// define our own interface so we don't get errors from SinonStub
 type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((...args: TArgs) => Promise<TResult>) & {
   calledWithExactly: (...args: TArgs) => boolean
   callCount: number
@@ -24,9 +25,8 @@ const createStub = <TResult, TArgs extends readonly TestStubArg[] = readonly Tes
   cy.stub().resolves(result) as TestStub<TArgs, TResult>
 
 /** Creates an isApproved stub that returns false until approveStub has been called, then returns true. */
-const createIsApprovedStub = <TArgs extends readonly TestStubArg[]>(
-  approveStub: TestStub<readonly TestStubArg[], unknown>,
-) => cy.stub().callsFake(async () => approveStub.callCount > 0) as TestStub<TArgs, boolean>
+const createIsApprovedStub = (approveStub: TestStub<readonly [string], unknown>) =>
+  cy.stub().callsFake(async () => approveStub.callCount > 0) as TestStub<readonly [string], boolean>
 
 const generateMarketRates = () => ({
   borrowApr: oneDecimal(0.01, 0.3, 4),
@@ -73,7 +73,7 @@ export const createCreateLoanScenario = ({
       lowPrice,
     ]),
     createLoanMaxRecv: createStub(decimal(new BigNumber(borrow).plus(oneFloat(10, 400)).decimalPlaces(2))!),
-    createLoanIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(createLoanApprove),
+    createLoanIsApproved: approved ? createStub(true) : createIsApprovedStub(createLoanApprove),
     estimateGasCreateLoan: createStub(`${oneInt(80_000, 220_000)}`),
     createLoan: createStub(TEST_TX_HASH),
     createLoanApprove,
@@ -130,10 +130,12 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
     estimateGasBorrowMoreApprove: createStub(oneInt(90_000, 180_000)),
     borrowMoreHealth: createStub(oneDecimal(10, 65, 2)),
     borrowMoreMaxRecv: createStub(oneDecimal(100, 900, 2)),
-    borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(borrowMoreApprove),
+    borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub(borrowMoreApprove),
     borrowMore: createStub(TEST_TX_HASH),
     borrowMoreApprove,
     borrowMorePrices,
+    loanExists: createStub(true),
+    userPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
   } as const
 
   const market = createMockMintMarket({
@@ -147,6 +149,8 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
     borrowMoreApprove: stubs.borrowMoreApprove,
     borrowMore: stubs.borrowMore,
     borrowMorePrices: stubs.borrowMorePrices,
+    loanExists: stubs.loanExists,
+    userPrices: stubs.userPrices,
   })
 
   return {
@@ -184,7 +188,7 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
     estimateGasRepayApprove: estimateGasRepayApproveStub,
     repayHealth: createStub(oneDecimal(30, 95, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
-    repayIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(repayApproveStub),
+    repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
     repayApprove: repayApproveStub,
     repay: createStub(TEST_TX_HASH),
   } as const
@@ -242,10 +246,10 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     estimateGasSelfLiquidate: createStub(oneInt(150_000, 280_000)),
     repayHealth: createStub(oneDecimal(30, 98, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
-    repayIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(repayApproveStub),
+    repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
     repayApprove: repayApproveStub,
     repay: createStub(TEST_TX_HASH),
-    selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly []>(selfLiquidateApproveStub),
+    selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub(selfLiquidateApproveStub),
     selfLiquidateApprove: selfLiquidateApproveStub,
     selfLiquidate: createStub(TEST_TX_HASH),
   } as const
