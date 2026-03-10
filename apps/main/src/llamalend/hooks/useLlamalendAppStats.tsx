@@ -4,7 +4,6 @@ import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@primitives/fetch.utils'
 import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
-import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -52,17 +51,15 @@ export function useLlamalendAppStats(
   enabled: boolean = true,
 ) {
   const { address } = useConnection()
-  const isNewLendSubNav = useLendMarketSubNav()
   const isDesktop = useIsDesktop()
   const params = useMatchRoute<{ page: string }>({
     to: `$app/$network/$page`,
   })
 
-  const shouldShowStats =
-    isNewLendSubNav && isDesktop
-      ? // hide header stats on lend/crvusd market pages only
-        currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
-      : true
+  const shouldShowStats = isDesktop
+    ? // hide header stats on lend/crvusd market pages only
+      currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
+    : true
   const statsEnabled = enabled && shouldShowStats
 
   const { data: marketData } = useLlamaMarkets(address, statsEnabled)

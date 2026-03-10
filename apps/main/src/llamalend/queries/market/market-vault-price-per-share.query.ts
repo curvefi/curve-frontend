@@ -5,7 +5,7 @@ import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-key
 import { getLendMarket } from './market.query-helpers'
 
 export const { useQuery: useMarketVaultPricePerShare, invalidate: invalidateMarketVaultPricePerShare } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketVaultPricePerShare', 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'previewRedeem', 'v1'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLendMarket(marketId)
     return await market.vault.previewRedeem(1)

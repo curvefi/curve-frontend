@@ -1,6 +1,6 @@
-import { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
@@ -19,17 +19,35 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { pageMargins } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-type PageHeaderProps = {
+export const PageHeader = ({
+  chainId,
+  marketId,
+  isLoading,
+  market,
+  blockchainId,
+}: {
+  chainId: number
+  marketId: string
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   blockchainId: Chain
-  borrowRate: BorrowRate
-  supplyRate?: SupplyRate
-  availableLiquidity: AvailableLiquidity
+}) => {
+  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
+  return (
+    <PageHeaderView
+      isLoading={isLoading}
+      market={market}
+      blockchainId={blockchainId}
+      borrowRate={borrowRate}
+      supplyRate={supplyRate}
+      availableLiquidity={availableLiquidity}
+    />
+  )
 }
 
 const pageHeaderPadding = { paddingBlockEnd: Spacing.sm, paddingInline: Spacing.md }
@@ -37,14 +55,10 @@ const pageHeaderPadding = { paddingBlockEnd: Spacing.sm, paddingInline: Spacing.
 /**
  * CSS rules for making the page header sticky.
  *
- * There is a gap between the navbar and the page title where
- * scrolled content can briefly become visible. To prevent this,
- * a negative margin is applied and the same value is added as
- * top padding so the header remains visually fixed in the
- * intended position.
+ * There is a gap between the navbar and the page title where scrolled content can briefly become visible. To prevent this,
+ * a negative margin is applied and the same value is added as top padding so the header remains visually fixed in the intended position.
  *
- * An alternative approach would be using a ::before pseudo-element
- * to mask the scrolling content.
+ * An alternative approach would be using a ::before pseudo-element to mask the scrolling content.
  */
 const stickySx = (navHeight: number): StackProps['sx'] => ({
   position: { tablet: 'sticky' },
@@ -58,14 +72,22 @@ const stickySx = (navHeight: number): StackProps['sx'] => ({
   },
 })
 
-export const PageHeader = ({
+/** Separate view component in order to generate a good storybook example */
+export const PageHeaderView = ({
   isLoading,
   market,
   blockchainId,
   borrowRate,
   supplyRate,
   availableLiquidity,
-}: PageHeaderProps) => {
+}: {
+  isLoading: boolean
+  market: LlamaMarketTemplate | undefined
+  blockchainId: Chain
+  borrowRate: BorrowRate
+  supplyRate?: SupplyRate
+  availableLiquidity: AvailableLiquidity
+}) => {
   const push = useNavigate()
   const navHeight = useLayoutStore((state) => state.navHeight)
 

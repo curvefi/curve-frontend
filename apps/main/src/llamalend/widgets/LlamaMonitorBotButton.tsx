@@ -1,4 +1,3 @@
-import { LLAMA_MONITOR_BOT_URL } from '@/llamalend/constants'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
@@ -9,6 +8,8 @@ import { BellRingingIcon } from '@ui-kit/shared/icons/BellIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
+
+const LLAMA_MONITOR_BOT_URL = 'https://t.me/LlamalendMonitorBot'
 
 export const LlamaMonitorBotButton = () => {
   const isMobile = useIsMobile()
@@ -29,14 +30,19 @@ export const LlamaMonitorBotButton = () => {
       color="ghost"
       size="extraSmall"
       component={Link}
-      sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', '&:hover': { textDecoration: 'underline' } }}
+      sx={{
+        textDecoration: 'underline',
+        textUnderlineOffset: '2px',
+        textWrapMode: 'nowrap',
+        '&:hover': { textDecoration: 'underline' },
+      }}
       startIcon={<BellRingingIcon fontSize={'small'} />}
       endIcon={<ArrowTopRightIcon fontSize={'small'} />}
       href={LLAMA_MONITOR_BOT_URL}
       target="_blank"
       rel="noreferrer noopener"
     >
-      {t`Get notified with LlamaMonitor bot`}
+      {t`Get alerts`}
     </Button>
   )
 }

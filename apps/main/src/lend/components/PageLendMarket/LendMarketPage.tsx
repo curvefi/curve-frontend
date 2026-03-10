@@ -1,22 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
-import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
-import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
+import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
-import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
-import { getVaultPathname } from '@/lend/utils/utilsRouter'
-import { MarketDetails } from '@/llamalend/features/market-details'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -28,7 +24,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
-import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -57,7 +52,6 @@ export const LendMarketPage = () => {
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
-  const marketDetails = useMarketDetails({ chainId, market, marketId })
   const network = networks[chainId]
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
@@ -71,7 +65,6 @@ export const LendMarketPage = () => {
     marketType: LlamaMarketType.Lend,
     chainId,
     marketId,
-    blockchainId: network.id as Chain,
     market: market ?? null,
   })
   const activityQueryParams: UserCollateralEventsProps = {
@@ -128,7 +121,6 @@ export const LendMarketPage = () => {
     titleMapper,
     onPricesUpdated,
   }
-  const showPageHeader = useIntegratedLlamaHeader()
 
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
@@ -145,16 +137,13 @@ export const LendMarketPage = () => {
         ))
       }
     >
-      {showPageHeader && (
-        <PageHeader
-          isLoading={!isHydrated}
-          market={market}
-          blockchainId={network.id as Chain}
-          availableLiquidity={marketDetails.availableLiquidity}
-          borrowRate={marketDetails.borrowRate}
-          supplyRate={marketDetails.supplyRate}
-        />
-      )}
+      <PageHeader
+        chainId={chainId}
+        marketId={marketId}
+        isLoading={!isHydrated}
+        market={market}
+        blockchainId={network.id as Chain}
+      />
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
@@ -163,16 +152,13 @@ export const LendMarketPage = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
       )}
-      <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          borrowPositionDetails={borrowPositionDetails}
-          activityQueryParams={activityQueryParams}
-        />
-      </MarketInformationTabs>
+      <PositionDetailsComposite
+        hasPosition={loanExists}
+        borrowPositionDetails={borrowPositionDetails}
+        activityQueryParams={activityQueryParams}
+      />
       <Stack>
-        {!showPageHeader && <MarketDetails {...marketDetails} />}
-        <MarketInformationComp
+        <MarketInformationComposite
           pageProps={pageProps}
           type="borrow"
           loanExists={loanExists}
