@@ -1,6 +1,5 @@
 import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
-import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { APP_LINK, type AppName, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -58,7 +57,6 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
 export const useLlamalendRoutes = (): AppRoute[] => {
   const isDesktop = useIsDesktop()
   const llamalendMarketRoutes = useLlamalendMarketSubNavRoutes({ isMobile: false })
-  const isLendMarketSubNav = useLendMarketSubNav()
 
-  return isDesktop && isLendMarketSubNav ? llamalendMarketRoutes : APP_LINK.llamalend.routes
+  return isDesktop ? llamalendMarketRoutes : APP_LINK.llamalend.routes
 }
