@@ -2,6 +2,7 @@ import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/bor
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -79,13 +80,17 @@ export const {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
-        const { router } = getRouteById(routeId)
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
             userBorrowed,
             address: userAddress,
-            getExpected: getExpectedFn({ chainId, router, userAddress, slippage }),
+            getExpected: getExpectedFn({
+              chainId,
+              router: routeId ? getRouteById(routeId).router : RouteProviders,
+              userAddress,
+              slippage,
+            }),
           }),
         )
       }
