@@ -3,9 +3,10 @@ import { useMemo } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
+import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
-import { useStore } from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
@@ -18,6 +19,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { requireBlockchainId } from '@ui-kit/utils/network'
 
 type PoolParametersProps = {
   pricesApi: boolean
@@ -27,12 +29,18 @@ type PoolParametersProps = {
 
 export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
   const poolAddress = poolData.pool.address
-  const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
+  const blockchainId = requireBlockchainId(rChainId)
   const { data: basePools } = useBasePools({ chainId: rChainId })
-  const pricesApiPoolDataMapper = useStore((state) => state.pools.pricesApiPoolDataMapper)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const snapshotData = snapshotsMapper[poolAddress]
-  const pricesData = pricesApiPoolDataMapper[poolAddress]
+  const { data: pricesData } = usePoolMetadata({
+    chain: blockchainId,
+    poolAddress: poolAddress as `0x${string}`,
+  })
+  const { data: snapshots } = usePoolSnapshots({
+    chain: blockchainId,
+    poolAddress: poolAddress as `0x${string}`,
+  })
+  const snapshotData = snapshots?.[0]
 
   const { data: poolParameters } = usePoolParameters({ chainId: rChainId, poolId: poolData.pool.id })
   const { gamma, A, future_A, future_A_time, initial_A, initial_A_time, priceOracle, priceScale } = poolParameters ?? {}
@@ -84,6 +92,8 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
     return t`ERC4626`
   }
 
+  if (!pricesData || !snapshotData) return null
+
   return (
     <GridContainer variant="secondary">
       <PoolParametersWrapper>
@@ -92,22 +102,22 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           <PoolParameter>
             <PoolParameterTitle>{t`Pool Type:`}</PoolParameterTitle>
             <PoolParameterValue>
-              {returnPoolType(pricesData.pool_type, pricesData.coins.length)}
+              {returnPoolType(pricesData.poolType, pricesData.coins.length)}
               {pricesData.metapool && `, ${t`Metapool`}`}
               {basePools?.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
             </PoolParameterValue>
           </PoolParameter>
-          {pricesData.base_pool && (
+          {pricesData.basePool && (
             <PoolParameter>
               <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
-              <DataAddressLink href={scanTokenPath(network, pricesData.base_pool)}>
-                {shortenAddress(pricesData.base_pool)}
+              <DataAddressLink href={scanTokenPath(network, pricesData.basePool)}>
+                {shortenAddress(pricesData.basePool)}
               </DataAddressLink>
             </PoolParameter>
           )}
           <PoolParameter>
             <PoolParameterTitle>{t`Vyper Version:`}</PoolParameterTitle>
-            <PoolParameterValue>{pricesData.vyper_version}</PoolParameterValue>
+            <PoolParameterValue>{pricesData.vyperVersion}</PoolParameterValue>
           </PoolParameter>
           <PoolParameter>
             <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
@@ -117,7 +127,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           </PoolParameter>
         </SectionWrapper>
         {/* Coins with Asset types */}
-        {poolData.pool.isNg && pricesData.asset_types && (
+        {poolData.pool.isNg && pricesData.assetTypes && (
           <SectionWrapper>
             <SectionTitle>{t`Coins:`}</SectionTitle>
             {poolData.tokens.map((token, idx) => (
@@ -139,29 +149,31 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </>
-                  {poolData.pool.isNg && pricesData.asset_types && (
-                    <AssetType>{returnAssetType(pricesData.asset_types[idx])}</AssetType>
+                  {poolData.pool.isNg && pricesData.assetTypes && (
+                    <AssetType>{returnAssetType(pricesData.assetTypes[idx])}</AssetType>
                   )}
                 </Box>
                 {/* Oracle */}
-                {pricesData && pricesData.asset_types[idx] === 1 && (
+                {pricesData.assetTypes?.[idx] === 1 && pricesData.oracles?.[idx] && (
                   <IndentWrapper>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      <IndentDataAddressLink href={scanTokenPath(network, pricesData.oracles[idx].oracle_address)}>
-                        {shortenAddress(pricesData.oracles[idx].oracle_address)}
+                      <IndentDataAddressLink
+                        href={scanTokenPath(network, pricesData.oracles[idx]!.oracleAddress ?? '')}
+                      >
+                        {shortenAddress(pricesData.oracles[idx]!.oracleAddress ?? '')}
                       </IndentDataAddressLink>
                     </Box>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Function:`}</IndentDataTitle>
-                      <IndentData>{pricesData.oracles[idx].method}</IndentData>
+                      <IndentData>{pricesData.oracles[idx]!.method}</IndentData>
                     </Box>
                     <Box flex>
                       <Numeral>└─</Numeral>
                       <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
-                      <IndentData>{pricesData.oracles[idx].method_id}</IndentData>
+                      <IndentData>{pricesData.oracles[idx]!.methodId}</IndentData>
                     </Box>
                   </IndentWrapper>
                 )}
@@ -171,16 +183,16 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
         )}
         <SectionWrapper>
           <SectionTitle>{t`Pool Parameters:`}</SectionTitle>
-          {pricesApi && snapshotData.mid_fee !== null && (
+          {pricesApi && snapshotData.midFee !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Mid Fee:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e8(snapshotData.mid_fee)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e8(snapshotData.midFee)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.out_fee !== null && (
+          {pricesApi && snapshotData.outFee !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Out Fee:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e8(snapshotData.out_fee)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e8(snapshotData.outFee)}</PoolParameterValue>
             </PoolParameter>
           )}
           {snapshotData.a !== null && (
@@ -248,10 +260,10 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
               </Box>
             </RampUpContainer>
           )}
-          {pricesApi && snapshotData.offpeg_fee_multiplier !== null && (
+          {pricesApi && snapshotData.offpegFeeMultiplier !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Off Peg Multiplier:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e10(snapshotData.offpeg_fee_multiplier)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e10(snapshotData.offpegFeeMultiplier)}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.gamma !== null && (
@@ -260,28 +272,28 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
               <PoolParameterValue>{pricesApi ? convert1e18(snapshotData.gamma) : gamma}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.allowed_extra_profit !== null && (
+          {pricesApi && snapshotData.allowedExtraProfit !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Allowed Extra Profit:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e18(snapshotData.allowed_extra_profit)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e18(snapshotData.allowedExtraProfit)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.fee_gamma !== null && (
+          {pricesApi && snapshotData.feeGamma !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Fee Gamma:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e18(snapshotData.fee_gamma)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e18(snapshotData.feeGamma)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.adjustment_step !== null && (
+          {pricesApi && snapshotData.adjustmentStep !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Adjustment Step:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e18(snapshotData.adjustment_step)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e18(snapshotData.adjustmentStep)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.ma_half_time !== null && (
+          {pricesApi && snapshotData.maHalfTime !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Moving Average Time:`}</PoolParameterTitle>
-              <PoolParameterValue>{formatNumber(snapshotData.ma_half_time, { useGrouping: false })}</PoolParameterValue>
+              <PoolParameterValue>{formatNumber(snapshotData.maHalfTime, { useGrouping: false })}</PoolParameterValue>
             </PoolParameter>
           )}
         </SectionWrapper>
@@ -321,18 +333,18 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           </StatsSection>
         )}
 
-        {(snapshotData.xcp_profit || snapshotData.xcp_profit_a) && pricesApi && (
+        {(snapshotData.xcpProfit || snapshotData.xcpProfitA) && pricesApi && (
           <StatsSection>
-            {snapshotData.xcp_profit !== null && (
+            {snapshotData.xcpProfit !== null && (
               <StatsContainer>
                 <StatsSymbol>{t`Xcp Profit:`}</StatsSymbol>
-                <StatsData>{convert1e18(snapshotData.xcp_profit)}</StatsData>
+                <StatsData>{convert1e18(snapshotData.xcpProfit)}</StatsData>
               </StatsContainer>
             )}
-            {snapshotData.xcp_profit_a !== null && (
+            {snapshotData.xcpProfitA !== null && (
               <StatsContainer>
                 <StatsSymbol>{t`Xcp Profit A:`}</StatsSymbol>
-                <StatsData>{convert1e18(snapshotData.xcp_profit_a)}</StatsData>
+                <StatsData>{convert1e18(snapshotData.xcpProfitA)}</StatsData>
               </StatsContainer>
             )}
           </StatsSection>

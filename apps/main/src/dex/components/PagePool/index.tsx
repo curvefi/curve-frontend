@@ -13,6 +13,7 @@ import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -57,8 +58,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
-  const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
 
   const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
 
@@ -86,6 +85,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { networkId, isLite, pricesApi } = network
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address
+  const { data: snapshots } = usePoolSnapshots({
+    chain: networkId as Chain,
+    poolAddress: (poolAddress ?? '') as `0x${string}`,
+  })
+  const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
 
@@ -94,11 +98,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () => [
       { value: 'pool' as const, label: t`Pool Details` },
       ...(signerAddress ? [{ value: 'user' as const, label: t`Your Details` }] : []),
-      ...(pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]
-        ? [{ value: 'advanced' as const, label: t`Advanced` }]
-        : []),
+      ...(pricesApi && pricesApiPoolData && snapshotData ? [{ value: 'advanced' as const, label: t`Advanced` }] : []),
     ],
-    [signerAddress, pricesApi, pricesApiPoolData, snapshotsMapper, poolData?.pool.address],
+    [signerAddress, pricesApi, pricesApiPoolData, snapshotData],
   )
   const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTab>('pool')
 
@@ -114,18 +116,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       void fetchPoolStats(curve, poolData)
     }
   }, REFRESH_INTERVAL['5m'])
-
-  useEffect(() => {
-    if (
-      curve &&
-      poolAddress &&
-      pricesApi &&
-      pricesApiPoolsMapper?.[poolAddress] !== undefined &&
-      !snapshotsMapper[poolAddress]
-    ) {
-      void fetchPricesPoolSnapshots(rChainId, poolAddress)
-    }
-  }, [curve, fetchPricesPoolSnapshots, poolAddress, pricesApi, pricesApiPoolsMapper, rChainId, snapshotsMapper])
 
   // is seed
   useEffect(() => {
@@ -294,7 +284,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                 />
               </StatsWrapper>
             )}
-            {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
+            {poolInfoTab === 'advanced' && poolData && (
               <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
             )}
           </AppPageInfoContentWrapper>
