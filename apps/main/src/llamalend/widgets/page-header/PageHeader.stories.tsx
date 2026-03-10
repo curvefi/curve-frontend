@@ -1,14 +1,15 @@
 import type { ComponentProps } from 'react'
 import { ethAddress, zeroAddress } from 'viem'
-import type { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
+import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { PageHeader } from './PageHeader'
+import type { AvailableLiquidity } from './hooks/usePageHeader'
+import { PageHeaderView } from './PageHeader'
 
-type PageHeaderProps = ComponentProps<typeof PageHeader>
+type PageHeaderViewProps = ComponentProps<typeof PageHeaderView>
 
 const blockchainId: Chain = 'ethereum'
 
@@ -35,21 +36,22 @@ const borrowRate: BorrowRate = {
 }
 
 const supplyRate: SupplyRate = {
-  rate: 2.032,
-  averageRate: 2.028,
+  supplyApy: 2.032,
+  averageLendApy: 2.028,
   averageRateLabel: '30d',
   supplyAprCrvMinBoost: 2.004,
   supplyAprCrvMaxBoost: 3.012,
-  averageSupplyAprCrvMinBoost: 2.0035,
-  averageSupplyAprCrvMaxBoost: 3.0105,
+  averageAprCrvMinBoost: 2.0035,
+  averageAprCrvMaxBoost: 3.0105,
   rebasingYield: 1.001,
   averageRebasingYield: 1.0008,
-  totalSupplyRateMinBoost: 4.037,
-  totalSupplyRateMaxBoost: 4.045,
-  totalAverageSupplyRateMinBoost: 4.034,
-  totalAverageSupplyRateMaxBoost: 4.041,
+  totalMinBoost: 4.037,
+  totalMaxBoost: 4.045,
+  totalAverageMinBoost: 4.034,
+  totalAverageMaxBoost: 4.041,
   extraIncentives: [],
-  averageTotalExtraIncentivesApr: 4.002,
+  extraIncentivesTotalApr: null,
+  averageExtraIncentivesApr: 4.002,
   extraRewards: [],
   loading: false,
 }
@@ -60,9 +62,9 @@ const availableLiquidity: AvailableLiquidity = {
   loading: false,
 }
 
-const meta: Meta<typeof PageHeader> = {
+const meta: Meta<typeof PageHeaderView> = {
   title: 'Llamalend/Widgets/PageHeader',
-  component: PageHeader,
+  component: PageHeaderView,
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -75,10 +77,10 @@ const meta: Meta<typeof PageHeader> = {
 }
 
 export default meta
-type Story = StoryObj<typeof PageHeader>
+type Story = StoryObj<typeof PageHeaderView>
 
 const withWidth = (maxWidth: number | undefined, displayName: string) => {
-  const WithWidth = (args: PageHeaderProps) => (
+  const WithWidth = (args: PageHeaderViewProps) => (
     <Box
       sx={{
         width: '100%',
@@ -87,7 +89,7 @@ const withWidth = (maxWidth: number | undefined, displayName: string) => {
         ...(maxWidth && { maxWidth }),
       }}
     >
-      <PageHeader {...args} />
+      <PageHeaderView {...args} />
     </Box>
   )
 
@@ -95,7 +97,7 @@ const withWidth = (maxWidth: number | undefined, displayName: string) => {
   return WithWidth
 }
 
-const baseArgs: Omit<PageHeaderProps, 'market' | 'supplyRate'> = {
+const baseArgs: Omit<PageHeaderViewProps, 'market' | 'supplyRate'> = {
   isLoading: false,
   blockchainId,
   borrowRate,
@@ -149,12 +151,12 @@ export const LendMarketLoading: Story = {
     },
     supplyRate: {
       ...supplyRate,
-      rate: null,
-      averageRate: null,
-      totalSupplyRateMinBoost: null,
-      totalSupplyRateMaxBoost: null,
-      totalAverageSupplyRateMinBoost: null,
-      totalAverageSupplyRateMaxBoost: null,
+      supplyApy: null,
+      averageLendApy: null,
+      totalMinBoost: null,
+      totalMaxBoost: null,
+      totalAverageMinBoost: null,
+      totalAverageMaxBoost: null,
       loading: true,
     },
     availableLiquidity: { ...availableLiquidity, value: null, max: null, loading: true },

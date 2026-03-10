@@ -3,14 +3,12 @@ import type { UrlParams } from '@/lend/types/lend.types'
 import { useLlamalendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { usePathname, useParams } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
-import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { routeToPage } from '@ui-kit/shared/routes'
 import { PageTabsSwitcher } from '@ui-kit/widgets/Header/PageTabsSwitcher'
 import { SubNav } from '@ui-kit/widgets/Header/SubNav'
 
 export const LendMarketSubNavMobile = () => {
   const isDesktop = useIsDesktop()
-  const isLendMarketSubNav = useLendMarketSubNav()
   const { network: networkId } = useParams<UrlParams>()
   const pathname = usePathname()
   const routes = useLlamalendMarketSubNavRoutes({ isMobile: true })
@@ -18,7 +16,6 @@ export const LendMarketSubNavMobile = () => {
 
   return (
     !isDesktop &&
-    isLendMarketSubNav &&
     headerEl &&
     routes.length > 0 &&
     createPortal(

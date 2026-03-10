@@ -1,3 +1,5 @@
+import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import type { HealthMode } from './llamalend.types'
 
 /**
@@ -36,3 +38,8 @@ export const DEFAULT_HEALTH_MODE: HealthMode = {
  * Reference cutoff date used to infer and display the Llamalend market version in the UI, until the price API returns the version explicitly.
  */
 export const LLAMMALEND_V2_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025
+
+export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
+  [LlamaMarketType.Lend]: t`(Lending Markets)`,
+  [LlamaMarketType.Mint]: t`(Mint Markets)`,
+}
