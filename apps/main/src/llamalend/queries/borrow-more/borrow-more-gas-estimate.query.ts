@@ -1,5 +1,3 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
@@ -7,22 +5,45 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
-import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 
-const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral = '0', userBorrowed = '0', maxDebt }: BorrowMoreParams) =>
+const {
+  useQuery: useBorrowMoreApproveGasEstimate,
+  invalidate: invalidateBorrowMoreApproveGasEstimateQuery,
+  refetchQuery: refetchBorrowMoreApproveGasEstimateQuery,
+} = queryFactory({
+  queryKey: ({
+    chainId,
+    marketId,
+    userAddress,
+    userCollateral = '0',
+    userBorrowed = '0',
+    maxDebt,
+    leverageEnabled,
+    routeId,
+  }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.borrowMoreApprove',
       { userCollateral },
       { userBorrowed },
       { maxDebt },
+      { leverageEnabled },
+      { routeId },
     ] as const,
-  queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0' }: BorrowMoreQuery): Promise<TGas | null> => {
+  queryFn: async ({
+    marketId,
+    userCollateral = '0',
+    userBorrowed = '0',
+    leverageEnabled,
+  }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+userCollateral && !+userBorrowed) return null
-    const [type, impl] = getBorrowMoreImplementation(marketId)
+    const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.borrowMoreApprove({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
@@ -30,11 +51,15 @@ const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
         return await impl.estimateGas.borrowMoreApprove(userCollateral)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
 
-const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
+const {
+  useQuery: useBorrowMoreGasEstimate,
+  invalidate: invalidateBorrowMoreGasEstimateQuery,
+  refetchQuery: refetchBorrowMoreGasEstimateQuery,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -44,6 +69,8 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     debt = '0',
     maxDebt,
     slippage,
+    leverageEnabled,
+    routeId,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -53,6 +80,8 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
       { debt },
       { maxDebt },
       { slippage },
+      { leverageEnabled },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -60,10 +89,20 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     slippage,
+    leverageEnabled,
+    routeId,
   }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+debt) return null
-    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
+      userCollateral,
+      userBorrowed,
+      debt,
+      leverageEnabled,
+      routeId,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.borrowMore(...args)
       case 'V1':
       case 'V2':
         await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
@@ -72,38 +111,18 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
         return await impl.estimateGas.borrowMore(...args)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
 
-export const useBorrowMoreEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: BorrowMoreParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const {
-    data: isApproved,
-    isLoading: isApprovedLoading,
-    error: isApprovedError,
-  } = useBorrowMoreIsApproved(query, enabled)
-  const {
-    data: approveEstimate,
-    isLoading: approveLoading,
-    error: approveError,
-  } = useBorrowMoreApproveGasEstimate(query, enabled && isApproved === false)
-  const {
-    data: borrowEstimate,
-    isLoading: borrowLoading,
-    error: borrowError,
-  } = useBorrowMoreGasEstimate(query, enabled && isApproved === true)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas<ChainId>(networks, query.chainId, isApproved ? borrowEstimate : approveEstimate, enabled)
-  return {
-    data,
-    isLoading: [isApprovedLoading, approveLoading, borrowLoading, conversionLoading].some(Boolean),
-    error: [isApprovedError, approveError, borrowError, estimateError].find(Boolean),
-  }
-}
+export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useBorrowMoreIsApproved,
+  useApproveEstimate: useBorrowMoreApproveGasEstimate,
+  useActionEstimate: useBorrowMoreGasEstimate,
+})
+
+export const invalidateBorrowMoreEstimateGasQueries = async (params: BorrowMoreParams) =>
+  await Promise.all([invalidateBorrowMoreApproveGasEstimateQuery(params), invalidateBorrowMoreGasEstimateQuery(params)])
+
+export const refetchBorrowMoreEstimateGasQueries = async (params: BorrowMoreParams) =>
+  await Promise.all([refetchBorrowMoreApproveGasEstimateQuery(params), refetchBorrowMoreGasEstimateQuery(params)])

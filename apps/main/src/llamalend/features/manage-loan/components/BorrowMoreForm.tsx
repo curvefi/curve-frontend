@@ -1,18 +1,27 @@
-import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
+import { type ChangeEvent, useCallback } from 'react'
+import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
+import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
-import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import {
+  isLeverageBorrowMore,
+  isLeverageBorrowMoreSupported,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { q, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
@@ -21,15 +30,17 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onBorrowedMore,
+  onSuccess,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onBorrowedMore?: OnBorrowedMore
+  onSuccess?: OnBorrowedMore
   fromWallet?: boolean
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -46,36 +57,48 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     txHash,
     isApproved,
     formErrors,
+    routes,
     max,
-    health,
+    leverage,
   } = useBorrowMoreForm({
     market,
     network,
     enabled,
-    onBorrowedMore,
+    onSuccess,
+    onPricesUpdated,
   })
 
-  const isLeverage = isLeverageBorrowMore(market)
-  const swapRequired = isLeverage && +(values.userBorrowed ?? 0) > 0
-  const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
-  const fromBorrowed = fromWallet && isLeverage
+  const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
+  const fromBorrowed = fromWallet && isLeverageEnabled
+  const onLeverageToggle = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
+    [form],
+  )
+
   return (
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <BorrowMoreLoanInfoAccordion
+      footer={
+        <BorrowMoreLoanInfoList
+          market={market}
+          form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
-          hasLeverage={isLeverage}
-          health={health}
+          routes={routes}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
+          leverageEnabled={values.leverageEnabled}
         />
       }
     >
-      <Stack divider={<InputDivider />}>
+      <Stack
+        divider={<InputDivider />}
+        // add an ugly outline so devs know they are seeing something else than users would see
+        sx={{ ...(isDevelopment && { outline: (t) => '1px dotted ' + t.design.Layer.Feedback.Warning }) }}
+      >
         {fromWallet && (
           <LoanFormTokenInput
             label={t`Add from wallet`}
@@ -83,7 +106,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.id}
             name="userCollateral"
             form={form}
-            max={{ ...max.userCollateral, fieldName: max.userCollateral.field }}
+            max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
             testId="borrow-more-input-collateral"
             network={network}
           />
@@ -95,7 +118,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.id}
             name="userBorrowed"
             form={form}
-            max={{ ...max.userBorrowed, fieldName: max.userBorrowed.field }}
+            max={{ ...q(max.userBorrowed), fieldName: max.userBorrowed.field }}
             testId="borrow-more-input-user-borrowed"
             network={network}
           />
@@ -111,21 +134,52 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
+          message={
+            <Balance
+              prefix={t`Max borrow amount:`}
+              tooltip={t`Max available to borrow`}
+              symbol={borrowToken?.symbol}
+              balance={max.debt.data}
+              loading={max.debt.isLoading}
+              onClick={() => updateForm(form, { debt: max.debt.data })}
+            />
+          }
         />
       </Stack>
 
-      <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
+      {isLeverageBorrowMoreSupported(market) && (
+        <LeverageInput
+          checked={values.leverageEnabled}
+          leverage={leverage}
+          onToggle={onLeverageToggle}
+          maxLeverage={max.maxLeverage.data}
+        />
+      )}
+
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
 
       <Button
         type="submit"
         loading={isPending || !market}
         disabled={isDisabled}
         data-testid="borrow-more-submit-button"
+        data-validation={JSON.stringify({
+          hasMarket: !!market,
+          isLeverageEnabled,
+          isPending,
+          isDisabled,
+          isValid: form.formState.isValid,
+          isSubmitting: form.formState.isSubmitting,
+          isApproved: q(isApproved),
+          formErrors,
+          rawFormErrors: Object.entries(form.formState.errors),
+          dirtyFields: form.formState.dirtyFields,
+        })}
       >
-        {isPending ? t`Processing...` : notFalsy(isApproved?.data === false && t`Approve`, t`Borrow More`).join(' & ')}
+        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow More`)}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isBorrowed}
         error={borrowError}
         txHash={txHash}

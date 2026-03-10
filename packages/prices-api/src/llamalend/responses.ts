@@ -1,4 +1,5 @@
-import type { Address, Chain } from '..'
+import type { Address } from '@primitives/address.utils'
+import type { Chain, PaginationMeta } from '..'
 
 export type GetChainsResponse = {
   data: Chain[]
@@ -47,11 +48,13 @@ export type GetMarketsResponse = {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     borrowed_token: {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     leverage: number
     extra_reward_apr: {
@@ -111,11 +114,13 @@ export type GetSnapshotsResponse = {
         symbol: string
         address: Address
         rebasing_yield: number | null
+        rebasing_yield_apr: number | null
       }
       borrowed_token: {
         symbol: string
         address: Address
         rebasing_yield: number | null
+        rebasing_yield_apr: number | null
       }
       timestamp: string
       max_ltv: number
@@ -123,11 +128,8 @@ export type GetSnapshotsResponse = {
   ]
 }
 
-export type GetUserMarketsResponse = {
+export type GetUserMarketsResponse = PaginationMeta & {
   user: Address
-  page: number
-  per_page: number
-  count: number
   markets: {
     market_name: string
     controller: Address
@@ -141,7 +143,7 @@ export type GetAllUserMarketsResponse = {
   chains: Record<Chain, Pick<GetUserMarketsResponse, 'markets' | 'count'>>
 }
 
-export type GetUserLendingPositionsResponse = {
+export type GetUserLendingPositionsResponse = PaginationMeta & {
   user: Address
   markets: {
     market_name: string
@@ -152,9 +154,6 @@ export type GetUserLendingPositionsResponse = {
     current_shares_in_gauge: string
     boost_multiplier: number
   }[]
-  page: number
-  per_page: number
-  count: number
 }
 
 export type GetAllUserLendingPositionsResponse = {
@@ -213,11 +212,8 @@ type UserMarketEarnings = {
 
 export type GetUserMarketEarningsResponse = UserMarketEarnings
 
-export type GetUserMarketSnapshotsResponse = {
+export type GetUserMarketSnapshotsResponse = PaginationMeta & {
   user: Address
-  page: number
-  per_page: number
-  count: number
   data: UserMarketStats[]
 }
 

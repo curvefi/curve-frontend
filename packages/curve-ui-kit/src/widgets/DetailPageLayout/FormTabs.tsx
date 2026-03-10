@@ -1,8 +1,9 @@
 import type { UrlObject } from 'url'
-import { type ComponentType, type ReactNode, useState } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { type ComponentType, type ReactNode } from 'react'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
+import { notFalsy } from '@primitives/objects.utils'
+import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { FormContent } from './FormContent'
@@ -50,17 +51,6 @@ const createOptions = <Props extends object>(
       href: applyFnOrValue(href, params),
     })) ?? []
 
-const selectVisible = <Props extends object, Tab extends FormSubTab<Props>>(
-  tabs: Tab[],
-  key: string | undefined,
-  params: Props,
-) => {
-  const visible = tabs.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-  const result = visible.find(({ value }) => value === key) ?? visible[0]
-  if (!result) throw new Error(`No visible tab found for key ${key} in menu ${tabs.map((t) => t.value).join(', ')}`)
-  return result
-}
-
 type UseFormTabOptions<T extends object> = {
   menu: FormTab<T>[]
   params: T
@@ -68,12 +58,14 @@ type UseFormTabOptions<T extends object> = {
 
 /** Hook to manage form tabs and sub-tabs. */
 function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
-  const [tabKey, onChangeTab] = useState<string>()
-  const [subTabKey, onChangeSubTab] = useState<string>()
-  const tab = selectVisible(menu, tabKey, params)
   const tabs = createOptions(menu, params)
-  const subTab = tab.subTabs && selectVisible(tab.subTabs, subTabKey, params)
+  const { tab: tabKey, onTabChange: onChangeTab } = useTabs(tabs)
+
+  const tab = findTab(menu, tabKey)
   const subTabs = createOptions(tab.subTabs, params)
+  const { tab: subTabKey, onTabChange: onChangeSubTab } = useTabs(subTabs)
+
+  const subTab = tab.subTabs && findTab(tab.subTabs, subTabKey)
 
   const components = notFalsy(subTab?.component, tab.component)
   const urls = notFalsy(subTab?.href, tab.href)

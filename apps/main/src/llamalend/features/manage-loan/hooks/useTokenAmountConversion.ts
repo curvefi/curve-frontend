@@ -1,8 +1,10 @@
+import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
-import type { Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { decimal, type Decimal } from '@ui-kit/utils'
-
+import type { Query } from '@ui-kit/types/util'
+import { decimal } from '@ui-kit/utils'
 /** Converts an amount from one token to another using USD rates as an intermediary. */
 export function useTokenAmountConversion({
   chainId,
@@ -10,28 +12,38 @@ export function useTokenAmountConversion({
   tokenInAddress,
   tokenOutAddress,
 }: {
-  chainId?: number
-  amountIn?: Decimal
-  tokenInAddress?: Address
-  tokenOutAddress?: Address
+  chainId: number | null | undefined
+  amountIn: Query<Decimal>
+  tokenInAddress: Address | undefined
+  tokenOutAddress: Address | undefined
 }) {
-  const { data: tokenInUsdRate, isLoading: tokenInUsdRateLoading } = useTokenUsdRate({
+  const {
+    data: tokenInUsdRate,
+    isLoading: tokenInUsdRateLoading,
+    error: tokenInUsdRateError,
+  } = useTokenUsdRate({
     chainId,
     tokenAddress: tokenInAddress,
   })
 
-  const { data: tokenOutUsdRate, isLoading: tokenOutUsdRateLoading } = useTokenUsdRate({
+  const {
+    data: tokenOutUsdRate,
+    isLoading: tokenOutUsdRateLoading,
+    error: tokenOutUsdRateError,
+  } = useTokenUsdRate({
     chainId,
     tokenAddress: tokenOutAddress,
   })
 
-  const amountOut = useMemo(
-    () => (tokenInUsdRate && tokenOutUsdRate && amountIn ? (+amountIn * tokenInUsdRate) / tokenOutUsdRate : undefined),
-    [amountIn, tokenInUsdRate, tokenOutUsdRate],
-  )
-
   return {
-    data: decimal(amountOut),
-    isLoading: tokenInUsdRateLoading || tokenOutUsdRateLoading,
+    data: useMemo(
+      () =>
+        tokenInUsdRate && tokenOutUsdRate && amountIn.data
+          ? decimal(BigNumber(amountIn.data).times(tokenInUsdRate).div(tokenOutUsdRate))
+          : undefined,
+      [amountIn, tokenInUsdRate, tokenOutUsdRate],
+    ),
+    isLoading: tokenInUsdRateLoading || tokenOutUsdRateLoading || amountIn.isLoading,
+    error: tokenInUsdRateError ?? tokenOutUsdRateError ?? amountIn.error,
   }
 }

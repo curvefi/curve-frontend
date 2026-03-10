@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { DEFAULT_SORT } from '../columns'
+import { getDefaultSort } from '../columns'
 import { POOL_LIST_COLUMNS, PoolColumnId } from '../columns'
 import { POOL_LIST_COLUMN_OPTIONS, PoolColumnVariant } from '../columns'
 
@@ -29,7 +29,7 @@ export function usePoolListVisibilitySettings(
   },
 ) {
   const variant: PoolColumnVariant = isLite ? 'lite' : 'full'
-  const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as PoolColumnId
+  const sortField = (sorting.length ? sorting : getDefaultSort(isLite))[0].id as PoolColumnId
   const visibilitySettings = useVisibilitySettings(
     title,
     POOL_LIST_COLUMN_OPTIONS,

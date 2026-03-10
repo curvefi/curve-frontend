@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address } from '@primitives/address.utils'
 
 /*
  * Note that collateral can be two tokens due to soft-liquidations.
@@ -15,9 +15,10 @@ export type Market = {
   rate: number
   // borrowApy = rate * 100
   borrowApy: number
-  // borrowTotalApy = borrowApy - collateral_yield_apy
+  // @deprecated compute this using borrowApy and collateralToken.rebasingYield
   borrowTotalApy: number
   borrowApr: number
+  // @deprecated compute this using borrowApr and collateralToken.rebasingYieldApr
   borrowTotalApr: number
   apyLend: number
   aprLend: number
@@ -47,11 +48,13 @@ export type Market = {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   borrowedToken: {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   leverage: number
   extraRewardApr: {
@@ -67,8 +70,6 @@ export type Snapshot = {
   rate: number
   borrowApy: number
   borrowApr: number
-  borrowTotalApy: number
-  borrowTotalApr: number
   lendApy: number
   lendApr: number
   lendAprCrv0Boost: number
@@ -104,11 +105,13 @@ export type Snapshot = {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   borrowedToken: {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   timestamp: Date
   maxLtv: number

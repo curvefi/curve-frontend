@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
-import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
@@ -15,27 +14,31 @@ import {
   borrowMoreMutationValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 
-export type OnBorrowedMore = LlammaMutationOptions<BorrowMoreMutation>['onSuccess']
+export type OnBorrowedMore = OnTransactionSuccess<BorrowMoreMutation>
 
 export type BorrowMoreOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onBorrowedMore?: OnBorrowedMore
+  onSuccess?: OnBorrowedMore
   onReset?: () => void
   userAddress: Address | undefined
 }
 
 const approveBorrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0' }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
   if (!+userCollateral && !+userBorrowed) return []
-  const [type, impl] = getBorrowMoreImplementation(market.id)
+  const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
+    case 'zapV2':
+      return (await impl.borrowMoreApprove({ userCollateral, userBorrowed })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]
@@ -46,10 +49,19 @@ const approveBorrowMore = async (
 
 const borrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
 ): Promise<Hex> => {
-  const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, { userCollateral, userBorrowed, debt })
+  const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
+    userCollateral,
+    userBorrowed,
+    debt,
+    leverageEnabled,
+    routeId,
+    slippage,
+  })
   switch (type) {
+    case 'zapV2':
+      return (await impl.borrowMore(...args)) as Hex
     case 'V1':
     case 'V2':
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
@@ -63,7 +75,7 @@ export const useBorrowMoreMutation = ({
   network,
   network: { chainId },
   marketId,
-  onBorrowedMore,
+  onSuccess,
   onReset,
   userAddress,
 }: BorrowMoreOptions) => {
@@ -72,20 +84,20 @@ export const useBorrowMoreMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: async () =>
-          await fetchBorrowMoreIsApproved({ marketId, chainId, userAddress, ...mutation }, { staleTime: 0 }),
-        onApprove: async () => await approveBorrowMore(market, mutation),
+          await fetchBorrowMoreIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),
+        onApprove: async () => await approveBorrowMore(market, variables),
         message: t`Approved borrow more`,
         config,
       })
-      return { hash: await borrowMore(market, mutation) }
+      return { hash: await borrowMore(market, variables) }
     },
     validationSuite: borrowMoreMutationValidationSuite,
     pendingMessage: (mutation, { market }) => t`Borrowing more... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Borrowed more! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onBorrowedMore,
+    onSuccess,
     onReset,
   })
 

@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address } from '@primitives/address.utils'
 
 export type GetSolverCompetitionResponse = {
   auctionStartBlock: number

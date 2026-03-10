@@ -1,15 +1,16 @@
-import { PageAnalytics } from '@/dao/components/PageAnalytics/Page'
-import { PageGauge } from '@/dao/components/PageGauge/Page'
-import { PageGauges } from '@/dao/components/PageGauges/Page'
-import { PageProposal } from '@/dao/components/PageProposal/Page'
-import { PageDao } from '@/dao/components/PageProposals/Page'
-import { PageUser } from '@/dao/components/PageUser/Page'
-import { PageVeCrv } from '@/dao/components/PageVeCrv/Page'
-import { DaoLayout } from '@/dao/DaoLayout'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
+
+const DaoLayout = lazyRouteComponent(() => import('@/dao/DaoLayout'), 'DaoLayout')
+const PageAnalytics = lazyRouteComponent(() => import('@/dao/components/PageAnalytics/Page'), 'PageAnalytics')
+const PageGauges = lazyRouteComponent(() => import('@/dao/components/PageGauges/Page'), 'PageGauges')
+const PageGauge = lazyRouteComponent(() => import('@/dao/components/PageGauge/Page'), 'PageGauge')
+const PageDao = lazyRouteComponent(() => import('@/dao/components/PageProposals/Page'), 'PageDao')
+const PageProposal = lazyRouteComponent(() => import('@/dao/components/PageProposal/Page'), 'PageProposal')
+const PageUser = lazyRouteComponent(() => import('@/dao/components/PageUser/Page'), 'PageUser')
+const PageVeCrv = lazyRouteComponent(() => import('@/dao/components/PageVeCrv/Page'), 'PageVeCrv')
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

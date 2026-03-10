@@ -1,4 +1,4 @@
-import { fromEntries, recordEntries } from '../objects.util'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -44,11 +44,13 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   borrowedToken: {
     symbol: x.borrowed_token.symbol,
     address: x.borrowed_token.address,
     rebasingYield: x.borrowed_token.rebasing_yield,
+    rebasingYieldApr: x.borrowed_token.rebasing_yield_apr,
   },
   leverage: x.leverage,
   extraRewardApr: x.extra_reward_apr.map((y) => ({
@@ -65,10 +67,8 @@ export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),
-  borrowApy: x.borrow_apy / 100,
-  borrowApr: x.borrow_apr / 100,
-  borrowTotalApy: x.borrow_total_apy / 100,
-  borrowTotalApr: x.borrow_total_apr / 100,
+  borrowApy: x.borrow_apy, // value already in percentage: 0.12 => 0.12%
+  borrowApr: x.borrow_apr, // value already in percentage: 0.12 => 0.12%
   lendApy: x.lend_apy / 100,
   lendApr: x.lend_apr / 100,
   lendAprCrv0Boost: x.lend_apr_crv_0_boost / 100,
@@ -105,11 +105,13 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   borrowedToken: {
     symbol: x.borrowed_token.symbol,
     address: x.borrowed_token.address,
     rebasingYield: x.borrowed_token.rebasing_yield,
+    rebasingYieldApr: x.borrowed_token.rebasing_yield_apr,
   },
   maxLtv: x.max_ltv,
 })

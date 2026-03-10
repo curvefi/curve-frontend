@@ -1,15 +1,16 @@
+import type { ComponentPropsWithRef } from 'react'
 import { useRef } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { TableCellBalances } from '@/dex/components/PageDashboard/components/TableCellBalances'
 import { TableCellClaimables } from '@/dex/components/PageDashboard/components/TableCellClaimables'
 import { TableCellProfit } from '@/dex/components/PageDashboard/components/TableCellProfit'
 import { TableCellRewards } from '@/dex/components/PageDashboard/components/TableCellRewards'
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import { PoolLabel } from '@/dex/components/PoolLabel'
 import { Tr, Td } from '@ui/Table'
 import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRow = ({
   isLite,
@@ -22,8 +23,7 @@ export const TableRow = ({
   updatePath,
 }: DashboardTableRowProps) => {
   const rowRef = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
-  const isVisible = entry?.isIntersecting || false
+  const { isIntersecting: isVisible } = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
 
   const { poolId, userCrvApy } = dashboardData
 
@@ -61,11 +61,15 @@ export const TableRow = ({
   )
 }
 
-export const DetailText = styled.span`
+type SpanProps = ComponentPropsWithRef<'span'>
+
+export const DetailText: IStyledComponent<'web', SpanProps> = styled.span`
   font-size: var(--font-size-1);
   opacity: 0.8;
 `
 
-export const Info = styled.div`
+type DivProps = ComponentPropsWithRef<'div'>
+
+export const Info: IStyledComponent<'web', DivProps> = styled.div`
   white-space: nowrap;
 `

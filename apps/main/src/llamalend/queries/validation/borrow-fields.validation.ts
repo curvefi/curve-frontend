@@ -1,7 +1,7 @@
-import { enforce, test, skipWhen } from 'vest'
+import { enforce, skipWhen, test } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
-import { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
@@ -25,12 +25,6 @@ export const validateDebt = (debt: Decimal | undefined | null, required: boolean
   })
 }
 
-export const validateSlippage = (slippage: Decimal | null | undefined) => {
-  test('slippage', 'Slippage must be a number between 0 and 100', () => {
-    enforce(slippage).isNumeric().gte(0).lte(100)
-  })
-}
-
 export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = PRESET_RANGES) => {
   test('range', `Range must be number between ${MaxLtv} and ${Safe}`, () => {
     enforce(range).isNumeric().gte(MaxLtv).lte(Safe)
@@ -44,12 +38,11 @@ export const validateMaxDebt = (
 ) => {
   skipWhen(!isMaxDebtRequired, () => {
     test('maxDebt', 'Maximum debt must be calculated before debt can be validated', () => {
-      enforce(maxDebt).isNotNullish()
+      enforce(maxDebt).isNumeric()
     })
   })
   skipWhen(maxDebt == null || debt == null, () => {
     test('maxDebt', `The given debt exceeds the maximum of ${maxDebt}`, () => {
-      enforce(maxDebt).isNotNullish()
       enforce(debt).lte(maxDebt)
     })
   })
@@ -81,13 +74,27 @@ export const validateLeverageValuesSupported = (marketId: string | null | undefi
   })
 }
 
+export const validateRoute = (routeId: string | null | undefined, isRequired: boolean) => {
+  skipWhen(!isRequired && !routeId, () => {
+    test('routeId', 'Route is required', () => {
+      enforce(routeId).isTruthy()
+    })
+  })
+}
+
 export const validateMaxBorrowed = (
   userBorrowed: Decimal | undefined | null,
-  maxBorrowed: Decimal | undefined | null,
+  {
+    maxBorrowed,
+    label,
+  }: {
+    label: string
+    maxBorrowed: Decimal | undefined | null
+  },
 ) => {
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
-    test('userBorrowed', `The maximum borrow amount is ${maxBorrowed}`, () => {
-      enforce(userBorrowed).lte(maxBorrowed)
+    test('userBorrowed', `The maximum ${label} is ${maxBorrowed}`, () => {
+      enforce(userBorrowed).lessThanOrEquals(maxBorrowed)
     })
   })
 }
@@ -98,7 +105,7 @@ export const validateMaxCollateral = (
 ) => {
   skipWhen(userCollateral == null || maxCollateral == null, () => {
     test('userCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
-      enforce(userCollateral).lte(maxCollateral)
+      enforce(userCollateral).lessThanOrEquals(maxCollateral)
     })
   })
 }

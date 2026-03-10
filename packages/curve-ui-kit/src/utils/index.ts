@@ -1,33 +1,14 @@
 import { getAddress, isAddress } from 'viem'
 
-export * from './array'
 export * from './address'
 export * from './bigNumber'
-export * from './shortenString'
+export * from './env'
 export * from './web3'
 export * from './network'
 export * from './number'
 export * from './decimal'
-export * from './searchText'
 export * from './mui'
-
-export enum ReleaseChannel {
-  Beta = 'Beta',
-  Stable = 'Stable',
-  Legacy = 'Legacy',
-}
-
-export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
-export const noCypressTestConnector = Boolean((window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector)
-
-export const isDevelopment = process.env.NODE_ENV === 'development' || !!window.localStorage.getItem('developer') // allow devs to test alpha features in prod by setting localStorage
-export const isPreviewHost = window.location.hostname.includes('vercel.app')
-
-const isDefaultBeta =
-  isDevelopment || (window.location.hostname !== 'curve.finance' && window.location.hostname !== 'www.curve.finance')
-
-export const defaultReleaseChannel = isDefaultBeta ? ReleaseChannel.Beta : ReleaseChannel.Stable
-export const enableLogging = isDefaultBeta
+export * from './errors'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming
@@ -52,17 +33,4 @@ export async function copyToClipboard(text: string) {
     console.warn('Copy to clipboard failed', error)
     return false
   }
-}
-
-type Falsey = null | undefined | 0 | false | ''
-
-/**
- * Asserts that a value is truthy, and returns the value if so.
- * Throws an error with the provided message if the value is falsy.
- */
-export function assert<T>(value: T | Falsey, message: string) {
-  if (!value) {
-    throw new Error(message)
-  }
-  return value
 }

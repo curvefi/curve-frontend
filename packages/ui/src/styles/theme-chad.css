@@ -21,7 +21,7 @@ body.theme-chad {
 
   /* ------ Global ------ */
   --page--text-color: var(--text-600);
-  --page--background-color: hsl(242, 56%, 83%);
+  --page--background-color: #bdbbec;
   --page--header--background-color: var(--page--background-color);
 
   --layout--home--background-color: var(--white);
@@ -174,7 +174,6 @@ body.theme-chad {
   --table--background-color: var(--gray-600);
   --table_row--hover--color: var(--gray-700);
   --table_head--background-color: var(--gray-500);
-
 
   /* Tooltip */
   --tooltip--border-color: var(--border-600);

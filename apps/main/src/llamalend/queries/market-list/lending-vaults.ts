@@ -8,7 +8,8 @@ import {
   Market,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
-import { fromEntries, recordEntries } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import {
@@ -17,7 +18,6 @@ import {
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { type Address } from '@ui-kit/utils'
 
 export type LendingVault = Market & { chain: ChainName }
 
@@ -27,6 +27,7 @@ export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateL
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
       markets.map((market) => ({ ...market, chain: chain as ChainName })),
     ),
+  category: 'llamalend.marketList',
   validationSuite: EmptyValidationSuite,
 })
 
@@ -43,6 +44,7 @@ const {
         userMarkets.map((market) => market.controller),
       ]),
     ) as Record<ChainName, Address[]>,
+  category: 'llamalend.user',
   validationSuite: userAddressValidationSuite,
 })
 
@@ -55,6 +57,7 @@ const {
     ['user-lending-vault', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
+  category: 'llamalend.user',
   validationSuite: userContractValidationSuite,
 })
 
@@ -67,6 +70,7 @@ const {
     ['user-lending-vault', 'earnings', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, contractAddress, blockchainId }: UserContractQuery) =>
     getUserMarketEarnings(userAddress, blockchainId, contractAddress),
+  category: 'llamalend.user',
   validationSuite: userContractValidationSuite,
 })
 
@@ -95,6 +99,7 @@ const {
   invalidate: invalidateUserLendingSupplies,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v4'] as const,
+  category: 'llamalend.user',
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Address[]>> => {
     const positions = await getAllUserLendingPositions(userAddress)
     return fromEntries(

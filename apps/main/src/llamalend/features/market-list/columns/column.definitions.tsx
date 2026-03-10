@@ -2,13 +2,7 @@ import { ReactNode } from 'react'
 import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  boolFilterFn,
-  filterByText,
-  listNotEmptyFilterFn,
-  multiFilterFn,
-  rangeFilterFn,
-} from '@ui-kit/shared/ui/DataTable/filters'
+import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
@@ -16,11 +10,13 @@ import {
   CompactUsdCell,
   HealthCell,
   LineGraphCell,
+  LiquidityUsdCell,
   LtvCell,
   MarketTitleCell,
   PercentCell,
   PriceCell,
   RateCell,
+  TvlCell,
   UtilizationCell,
 } from '../cells'
 import {
@@ -78,16 +74,6 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: headers[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
-    filterFn: filterByText(
-      'controllerAddress',
-      'ammAddress',
-      'vaultAddress',
-      'assets.borrowed.address',
-      'assets.borrowed.symbol',
-      'assets.collateral.address',
-      'assets.collateral.symbol',
-      'type',
-    ),
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({
@@ -187,7 +173,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: headers[LlamaMarketColumnId.LiquidityUsd],
-    cell: CompactUsdCell,
+    cell: LiquidityUsdCell,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
@@ -208,7 +194,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor(LlamaMarketColumnId.Tvl, {
     header: headers[LlamaMarketColumnId.Tvl],
-    cell: CompactUsdCell,
+    cell: TvlCell,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.Tvl, <TvlHeaderTooltipContent />),
@@ -221,18 +207,6 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
   hidden('assets.borrowed.symbol', LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(
-    LlamaMarketColumnId.UserHasPositions,
-    LlamaMarketColumnId.UserHasPositions,
-    (row, columnId, filterValue?: MarketRateType | boolean) => {
-      const data = row.getValue<LlamaMarket[LlamaMarketColumnId.UserHasPositions]>(columnId)
-      return (
-        filterValue === undefined ||
-        (typeof filterValue === 'boolean' && Boolean(data) === Boolean(filterValue)) ||
-        (typeof filterValue === 'string' && Boolean(data?.[filterValue]))
-      )
-    },
-  ),
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),

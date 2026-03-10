@@ -1,13 +1,15 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
-import { DetailsContracts } from '@/lend/components/DetailsMarket/components/DetailsContracts'
+import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
-import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import { AdvancedDetails, MarketInfoSections } from '@/llamalend/features/market-advanced-information'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -15,41 +17,39 @@ type MarketInformationCompProps = {
   pageProps: PageContentProps
   loanExists: boolean | undefined
   type: 'borrow' | 'supply'
+  previewPrices?: Range<Decimal> | undefined
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInformationCompProps) => {
+export const MarketInformationComp = ({ pageProps, loanExists, type, previewPrices }: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const newBandsChartEnabled = useNewBandsChart()
+  const showPageHeader = useIntegratedLlamaHeader()
 
   return (
     <>
-      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} />
-      {type === 'borrow' && !newBandsChartEnabled && isAdvancedMode && (
+      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
+      {type === 'borrow' && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}
-      {market && isAdvancedMode && (
+      {market && showPageHeader && (
         <Stack
-          sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            flexDirection: 'column',
-            // 1100px
-            '@media (min-width: 68.75rem)': {
-              flexDirection: 'row',
-            },
-          }}
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
         >
-          <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
-            <DetailsContracts rChainId={rChainId} market={market} />
-          </Stack>
-
-          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action={type} />
+          {showPageHeader && (
+            <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
+          )}
+          <MarketInfoSections
+            chainId={rChainId}
+            marketType={LlamaMarketType.Lend}
+            market={market}
+            network={networks[rChainId]}
+          />
         </Stack>
       )}
     </>

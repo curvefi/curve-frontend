@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { type FunctionComponent, useMemo } from 'react'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -16,7 +16,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { useUserMarketStats } from '../../queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
-import { LineGraphCell } from './cells'
+import { LineGraphCell, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
@@ -25,29 +25,23 @@ import { LlamaMarketColumnId } from './columns'
 
 const { Spacing } = SizesAndSpaces
 
-type RateTooltipProps = { market: LlamaMarket; children: ReactElement; title: string }
-
 const ratesConfig: Record<
   MarketRateType,
   {
-    tooltipComponent: (props: RateTooltipProps) => ReactElement
+    tooltipComponent: FunctionComponent<RateTooltipProps>
     title: string
     rateKey: keyof LlamaMarket['rates']
   }
 > = {
   [MarketRateType.Supply]: {
-    tooltipComponent: ({ children, ...rest }) => <SupplyRateLendTooltip {...rest}>{children}</SupplyRateLendTooltip>,
+    tooltipComponent: SupplyRateLendTooltip,
     title: t`Supply yield`,
     rateKey: 'lendTotalApyMinBoosted',
   },
   [MarketRateType.Borrow]: {
-    tooltipComponent: ({ children, ...rest }) => (
-      <BorrowRateTooltip columnId={LlamaMarketColumnId.NetBorrowRate} {...rest}>
-        {children}
-      </BorrowRateTooltip>
-    ),
-    title: t`Net borrow APR`,
-    rateKey: 'borrowTotalApr',
+    tooltipComponent: BorrowRateTooltip,
+    title: t`Borrow APR`,
+    rateKey: 'borrowApr',
   },
 }
 
@@ -63,7 +57,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
   return (
     rateValue != null && (
       <Grid size={6}>
-        <Tooltip title={title} market={market}>
+        <Tooltip market={market}>
           <Stack direction="row" alignItems="center" gap={2}>
             {/* todo: omit metric component tooltip */}
             <Metric label={title} value={rateValue} valueOptions={{ unit: 'percentage' }} />

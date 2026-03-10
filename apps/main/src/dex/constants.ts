@@ -1,4 +1,3 @@
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 
 export const LARGE_APY = 5000
@@ -24,14 +23,11 @@ export const ROUTE = {
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
-  hideSmallPoolsTvl: SMALL_POOL_TVL,
   isLite: false,
   isActiveNetwork: true,
   missingPools: [],
-  poolCustomTVL: {}, // hardcode tvl for pool
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
-  poolListFormValuesDefault: {},
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
   showInSelectNetwork: true,

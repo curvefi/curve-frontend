@@ -1,5 +1,6 @@
+import type { ComponentPropsWithRef } from 'react'
 import { useMemo } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useBasePools } from '@/dex/queries/base-pools.query'
@@ -523,7 +524,9 @@ const StatsData = styled.p`
   font-size: var(--font-size-2);
 `
 
-export const ExternalLinkToken = styled(TextEllipsis)`
+type SpanProps = ComponentPropsWithRef<'span'>
+
+export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `

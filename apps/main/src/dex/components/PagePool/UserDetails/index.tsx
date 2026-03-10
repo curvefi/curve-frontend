@@ -5,8 +5,9 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { useUserPoolInfo } from '@/dex/queries/user-pool-info.query'
+import { useUserPoolInfo } from '@/dex/hooks/useUserPoolInfo'
 import { useStore } from '@/dex/store/useStore'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Stats } from '@ui/Stats'
 import { Table } from '@ui/Table'
@@ -15,7 +16,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { shortenAddress, type Address } from '@ui-kit/utils'
+import { shortenAddress } from '@ui-kit/utils'
 
 const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
 
@@ -33,10 +34,11 @@ export const MySharesStats = ({
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
 
-  const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo(
-    { chainId: rChainId, poolId, userAddress: curve?.signerAddress as Address | undefined },
-    !!curve && !!poolId,
-  )
+  const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo({
+    chainId: rChainId,
+    poolId,
+    userAddress: curve?.signerAddress as Address | undefined,
+  })
 
   const userWithdrawAmounts = userPoolInfo?.userWithdrawAmounts ?? DEFAULT_WITHDRAW_AMOUNTS
   const userLpShare = userPoolInfo?.userShare?.lpShare

@@ -3,14 +3,14 @@ import type { UseFormReturn } from 'react-hook-form'
 import { getTokens } from '@/llamalend/llama.utils'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
   {
@@ -44,14 +44,11 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     mapQuery(userState, (d) => d.debt),
   )
 
+  useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
+  useEffect(() => updateForm(form, { maxBorrowed: maxBorrowed.data }), [form, maxBorrowed.data])
+  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
   useEffect(
-    () => form.setValue('maxCollateral', maxUserCollateral.data, setValueOptions),
-    [form, maxUserCollateral.data],
-  )
-  useEffect(() => form.setValue('maxBorrowed', maxBorrowed.data, setValueOptions), [form, maxBorrowed.data])
-  useEffect(() => form.setValue('isFull', isFull.data, setValueOptions), [form, isFull.data])
-  useEffect(
-    () => form.setValue('maxStateCollateral', userState.data?.collateral, setValueOptions),
+    () => updateForm(form, { maxStateCollateral: userState.data?.collateral }),
     [form, userState.data?.collateral],
   )
 

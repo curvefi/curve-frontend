@@ -48,6 +48,14 @@ This repository is organized as follows:
 
 Check the [README](./tests/README.md) in the `tests` directory for instructions on how to run end-to-end tests using Cypress.
 
+To run a specific Cypress spec:
+
+```bash
+cd tests
+yarn cy run --e2e --spec cypress/e2e/<path>/<test>.cy.ts
+yarn cy run --component --spec cypress/component/<path>/<test>.cy.tsx
+```
+
 ## Troubleshooting
 
 If you have any questions, please contact the dev channel on the [Curve Discord](https://discord.gg/sGDwYnb6W9)

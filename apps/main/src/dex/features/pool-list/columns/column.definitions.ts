@@ -1,16 +1,8 @@
-import { sum } from 'lodash'
-import { Pool } from '@/dex/types/main.types'
-import { createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import type { ColumnDef, DeepKeys } from '@tanstack/table-core'
-import { AccessorFn } from '@tanstack/table-core'
+import { sumBy } from 'lodash'
+import { createColumnHelper } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  boolFilterFn,
-  filterByText,
-  inListFilterFn,
-  multiFilterFn,
-  rangeFilterFn,
-} from '@ui-kit/shared/ui/DataTable/filters'
+import { boolFilterFn, inListFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { PoolTitleCell } from '../cells/PoolTitleCell/PoolTitleCell'
 import { RewardsBaseCell } from '../cells/RewardsBaseCell'
 import { RewardsBaseHeader } from '../cells/RewardsBaseHeader'
@@ -30,32 +22,25 @@ const headers = {
   [PoolColumnId.Tvl]: t`TVL`,
 }
 
-type PoolColumn = ColumnDef<PoolListItem, unknown>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PoolColumn = ColumnDef<PoolListItem, any>
 
 /** Define a hidden column. */
 const hidden = (
-  id: PoolColumnId,
-  accessor: DeepKeys<PoolListItem> | AccessorFn<PoolListItem>,
-  filterFn: FilterFnOption<PoolListItem>,
-) => columnHelper.accessor(accessor, { id, filterFn, meta: { hidden: true }, sortUndefined: 'last' })
-
-export const POOL_TEXT_FIELDS = [
-  'pool.wrappedCoins',
-  'pool.wrappedCoinAddresses',
-  'pool.underlyingCoins',
-  'pool.underlyingCoinAddresses',
-  'pool.name',
-  'pool.address',
-  'pool.gauge.address',
-  'pool.lpToken',
-] satisfies DeepKeys<{ pool: Pool }>[]
+  accessor: Parameters<typeof columnHelper.accessor>[0],
+  options?: Parameters<typeof columnHelper.accessor>[1],
+) =>
+  columnHelper.accessor(accessor, {
+    ...options,
+    meta: { ...options?.meta, hidden: true },
+    sortUndefined: 'last',
+  })
 
 export const POOL_LIST_COLUMNS = [
   columnHelper.accessor('pool.name', {
     id: PoolColumnId.PoolName,
     header: t`Pool`,
     cell: PoolTitleCell,
-    filterFn: filterByText(...POOL_TEXT_FIELDS),
   }),
   columnHelper.accessor((row) => (row.rewards?.base ? +row.rewards.base.day : null), {
     id: PoolColumnId.RewardsBase,
@@ -79,7 +64,7 @@ export const POOL_LIST_COLUMNS = [
     enableMultiSort: false, // that's done in the separate columns RewardsCrv and RewardsIncentives
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
-  columnHelper.accessor((row) => (row.volume ? +row.volume?.value : null), {
+  columnHelper.accessor((row) => (row.volume ? +row.volume : null), {
     id: PoolColumnId.Volume,
     header: headers[PoolColumnId.Volume],
     cell: UsdCell,
@@ -87,7 +72,7 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  columnHelper.accessor((row) => (row.tvl ? +row.tvl.value : null), {
+  columnHelper.accessor((row) => (row.tvl ? +row.tvl : null), {
     id: PoolColumnId.Tvl,
     header: headers[PoolColumnId.Tvl],
     cell: UsdCell,
@@ -95,8 +80,11 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  hidden(PoolColumnId.UserHasPositions, PoolColumnId.UserHasPositions, boolFilterFn),
-  hidden(PoolColumnId.PoolTags, (p) => p.tags, inListFilterFn),
-  hidden(PoolColumnId.RewardsCrv, (row) => row.rewards?.crv, multiFilterFn),
-  hidden(PoolColumnId.RewardsIncentives, (row) => (row.rewards ? sum(row.rewards.other) : undefined), multiFilterFn),
+  hidden(PoolColumnId.UserHasPositions, { id: PoolColumnId.UserHasPositions, filterFn: boolFilterFn }),
+  hidden((p) => p.tags, { id: PoolColumnId.PoolTags, filterFn: inListFilterFn }),
+  hidden((row) => row.rewards?.crv[0] /* non-boosted apr */, { id: PoolColumnId.RewardsCrv, filterFn: multiFilterFn }),
+  hidden((row) => (row.rewards ? sumBy(row.rewards.other, (x) => x.apy) : undefined), {
+    id: PoolColumnId.RewardsIncentives,
+    filterFn: multiFilterFn,
+  }),
 ] satisfies PoolColumn[]

@@ -1,19 +1,20 @@
 import { useCallback } from 'react'
-import { type Address, Hex } from 'viem'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Address, type Hex } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { Decimal } from '@ui-kit/utils'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 
 type RemoveCollateralMutation = { userCollateral: Decimal }
 
 export type RemoveCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRemoved: LlammaMutationOptions<RemoveCollateralMutation>['onSuccess']
+  onSuccess?: OnTransactionSuccess<RemoveCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -22,7 +23,7 @@ export const useRemoveCollateralMutation = ({
   network,
   network: { chainId },
   marketId,
-  onRemoved,
+  onSuccess,
   onReset,
   userAddress,
 }: RemoveCollateralOptions) => {
@@ -37,7 +38,7 @@ export const useRemoveCollateralMutation = ({
     pendingMessage: (mutation, { market }) => t`Removing collateral... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) =>
       t`Collateral removed successfully! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onRemoved,
+    onSuccess,
     onReset,
   })
 

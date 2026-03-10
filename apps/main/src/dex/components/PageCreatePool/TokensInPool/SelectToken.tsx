@@ -1,6 +1,5 @@
 import { Key } from 'react'
 import { styled } from 'styled-components'
-import { type Address } from 'viem'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -25,6 +24,7 @@ import {
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Checkbox } from '@ui/Checkbox'

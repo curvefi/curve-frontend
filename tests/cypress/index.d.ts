@@ -1,4 +1,5 @@
 import 'cypress'
+import { mount } from 'cypress/react'
 
 declare global {
   namespace Cypress {

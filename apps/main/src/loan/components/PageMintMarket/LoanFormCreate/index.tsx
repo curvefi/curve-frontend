@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import { AlertFormError } from '@/loan/components/AlertFormError'
 import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
@@ -25,7 +24,7 @@ import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getMintMarketPathname } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { Accordion } from '@ui/Accordion'
+import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { LinkButton } from '@ui/LinkButton'
@@ -39,7 +38,7 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 const useFetchInitial = ({
   market: llamma,
@@ -127,7 +126,6 @@ export const LoanFormCreate = ({
   const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
@@ -412,7 +410,6 @@ export const LoanFormCreate = ({
         formValues={formValues}
         haveSigner={haveSigner}
         healthMode={healthMode}
-        isAdvanceMode={isAdvancedMode}
         isLeverage={isLeverage}
         isReady={isReady}
         llamma={market}
@@ -453,12 +450,6 @@ export const LoanFormCreate = ({
           </LinkButton>
         )}
       </LoanFormConnect>
-
-      {!isAdvancedMode && (
-        <Accordion btnLabel={t`Loan Parameters`}>
-          <MarketParameters chainId={rChainId} marketId={market?.id ?? ''} marketType="mint" action="borrow" />
-        </Accordion>
-      )}
     </>
   )
 }

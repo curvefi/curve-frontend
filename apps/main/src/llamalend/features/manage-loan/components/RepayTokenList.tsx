@@ -5,17 +5,17 @@ import { RepayTokenOption } from '@/llamalend/features/manage-loan/hooks/useRepa
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { TokenSection } from '@ui-kit/features/select-token/ui/modal/TokenSection'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Query } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
+import { QueryProp } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -24,7 +24,7 @@ export type RepayTokenListProps<ChainId extends IChainId> = {
   network: NetworkDict<ChainId>[ChainId]
   onToken: (token: RepayTokenOption) => void
   tokens: RepayTokenOption[]
-  stateCollateral: Query<Decimal | undefined>
+  stateCollateral: QueryProp<Decimal | undefined>
 }
 
 export function RepayTokenList<ChainId extends IChainId>({

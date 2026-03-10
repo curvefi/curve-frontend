@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
@@ -8,11 +9,12 @@ import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { requireChainId } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
@@ -72,7 +74,7 @@ const getTooltipBody = (
   columnId: LlamaMarketColumnId,
   stats: ReturnType<typeof useUserMarketStats>['data'],
   isLoading: boolean,
-): React.ReactNode | undefined => {
+): ReactNode | undefined => {
   if (columnId === LlamaMarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
   }
@@ -96,12 +98,6 @@ const getTooltipBody = (
             (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0),
           loading: isLoading,
         }}
-        collateralLoss={
-          stats?.collateralLoss && {
-            ...stats.collateralLoss,
-            loading: isLoading,
-          }
-        }
       />
     )
   }
@@ -121,7 +117,7 @@ const AssetValue = ({
   value: number | undefined
   isValueLoading: boolean
   tooltipTitle: string
-  tooltipBody: React.ReactNode
+  tooltipBody: ReactNode
 }) => (
   <WithSkeleton loading={isValueLoading}>
     <Tooltip title={tooltipTitle} body={tooltipBody}>
@@ -175,15 +171,15 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
   const [primaryValue, secondaryValue] = getAssetValues(columnId, stats) ?? [getValue(), undefined]
 
-  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = useTokenUsdPrice({
-    blockchainId: primaryAsset.chain,
-    contractAddress: primaryAsset.address,
+  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = useTokenUsdRate({
+    chainId: requireChainId(primaryAsset.chain),
+    tokenAddress: primaryAsset.address,
   })
 
-  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = useTokenUsdPrice(
+  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = useTokenUsdRate(
     {
-      blockchainId: secondaryAsset?.chain,
-      contractAddress: secondaryAsset?.address,
+      chainId: secondaryAsset && requireChainId(secondaryAsset.chain),
+      tokenAddress: secondaryAsset?.address,
     },
     secondaryAsset && !!secondaryValue,
   )

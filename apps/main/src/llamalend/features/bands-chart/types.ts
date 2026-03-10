@@ -1,4 +1,4 @@
-import { Decimal } from '@ui-kit/utils/decimal'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export type BandsChartToken = { symbol: string; address: string } | undefined
 

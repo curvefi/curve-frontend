@@ -1,7 +1,14 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { TextCaption } from '@ui/TextCaption'
 
-export const FieldsWrapper = styled.div<{ $showBorder?: boolean }>`
+type DivProps = ComponentPropsWithRef<'div'>
+type FieldsWrapperProps = { $showBorder?: boolean }
+type FieldsTitleProps = { $noMargin?: boolean }
+type TextCaptionStyleProps = { isBold?: boolean; isBlock?: boolean; isCaps?: boolean }
+type H3Props = ComponentPropsWithRef<'h3'>
+
+export const FieldsWrapper: IStyledComponent<'web', FieldsWrapperProps & DivProps> = styled.div<FieldsWrapperProps>`
   display: grid;
   grid-gap: var(--spacing-3);
 
@@ -16,8 +23,8 @@ export const FieldsWrapper = styled.div<{ $showBorder?: boolean }>`
   }}
 `
 
-export const FieldsTitle = styled(TextCaption).attrs(() => ({ as: 'h3', isBold: true, isCaps: true }))<{
-  $noMargin?: boolean
-}>`
+export const FieldsTitle: IStyledComponent<'web', FieldsTitleProps & TextCaptionStyleProps & H3Props> = styled(
+  TextCaption,
+).attrs(() => ({ as: 'h3', isBold: true, isCaps: true }))<FieldsTitleProps>`
   padding-top: var(--spacing-2);
 `

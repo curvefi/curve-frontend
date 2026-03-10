@@ -1,5 +1,5 @@
-import type { Address } from '@curvefi/prices-api'
 import { oneOf } from '@cy/support/generators'
+import type { Address } from '@primitives/address.utils'
 
 type Token = {
   symbol: string

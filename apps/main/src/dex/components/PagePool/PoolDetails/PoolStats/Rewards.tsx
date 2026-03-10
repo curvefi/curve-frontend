@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
+import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import { ChipVolatileBaseApy } from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { LARGE_APY } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -9,6 +9,7 @@ import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -19,7 +20,7 @@ import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard, type Address } from '@ui-kit/utils'
+import { copyToClipboard } from '@ui-kit/utils'
 
 type RewardsProps = {
   chainId: ChainId
@@ -57,7 +58,10 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
               <StyledInformationIcon name="InformationSquare" size={16} />
             </Tooltip>
             <StyledDescriptionChip>
-              <ExternalLink $noStyles href="https://resources.curve.finance/pools/calculating-yield/#base-vapy">
+              <ExternalLink
+                $noStyles
+                href="https://docs.curve.finance/user/dex/understanding-rewards#how-rewards-are-displayed"
+              >
                 {t`Learn more`}
               </ExternalLink>
             </StyledDescriptionChip>
@@ -130,7 +134,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
           </Box>
           {!isLite && (
             <BoostingLink>
-              <ExternalLink $noStyles href="https://resources.curve.finance/reward-gauges/boosting-your-crv-rewards/">
+              <ExternalLink $noStyles href="https://docs.curve.finance/user/vecrv/boosting">
                 {t`Learn more about Boosting your CRV rewards`}
               </ExternalLink>
             </BoostingLink>

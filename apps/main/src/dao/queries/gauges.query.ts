@@ -1,5 +1,5 @@
-import { fetchJson } from '@curvefi/prices-api/fetch'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { fetchJson } from '@primitives/fetch.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { shortenAddress } from '@ui-kit/utils'
@@ -92,6 +92,6 @@ export const {
       ]),
     )
   },
-  staleTime: '5m',
+  category: 'dao.gauges',
   validationSuite: EmptyValidationSuite,
 })

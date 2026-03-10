@@ -6,13 +6,17 @@ import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfile } from '@ui-kit/features/user-profile'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
-import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
-import { PageTabs } from './PageTabs'
+import { PageTabsSwitcher } from './PageTabsSwitcher'
+import { SubNav } from './SubNav'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
+import { getHeaderBorder } from './utils'
+
+const { Spacing } = SizesAndSpaces
 
 export const DesktopHeader = ({
   currentMenu,
@@ -21,17 +25,30 @@ export const DesktopHeader = ({
   pages,
   appStats,
   networkId,
-  isLite = false,
 }: HeaderImplementationProps) => (
-  <AppBar color="transparent" ref={useMainNavRef()} data-testid="desktop-main-nav" sx={{ position: 'sticky', top: 0 }}>
+  <AppBar
+    color="transparent"
+    ref={useMainNavRef()}
+    data-testid="desktop-main-nav"
+    sx={{
+      position: 'sticky',
+      top: 0,
+      boxShadow: 'none',
+      borderBottom: getHeaderBorder,
+    }}
+  >
     <GlobalBanner networkId={networkId} chainId={chainId} />
 
     <Toolbar
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
+      sx={{
+        backgroundColor: (t) => t.design.Layer[2].Fill,
+        justifyContent: 'space-around',
+        paddingY: 0,
+      }}
       data-testid="main-nav"
     >
-      <Container>
-        <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
+      <Container sx={{ paddingInline: Spacing.md }}>
+        <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
         <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
         <Box sx={{ flexGrow: 1 }} />
@@ -43,25 +60,15 @@ export const DesktopHeader = ({
         </Box>
       </Container>
     </Toolbar>
-    <Toolbar
-      sx={{
-        backgroundColor: (t) => t.design.Layer[2].Fill,
-        justifyContent: 'space-around',
-        borderWidth: '1px 0',
-        borderColor: (t) => t.design.Layer[2].Outline,
-        borderStyle: 'solid',
-        boxSizing: 'content-box',
-        height: DEFAULT_BAR_SIZE,
-      }}
-      data-testid="subnav"
-    >
-      <Container>
-        <PageTabs pages={pages} />
+
+    {pages.length > 0 && (
+      <SubNav testId="subnav">
+        <PageTabsSwitcher pages={pages} />
         <Box flexGrow={1} />
-        <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+        <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
           <HeaderStats appStats={appStats} />
         </Box>
-      </Container>
-    </Toolbar>
+      </SubNav>
+    )}
   </AppBar>
 )

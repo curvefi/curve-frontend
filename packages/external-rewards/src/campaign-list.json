@@ -6,9 +6,6 @@
     "campaign": "Etherfi.json"
   },
   {
-    "campaign": "Kelpdao.json"
-  },
-  {
     "campaign": "Mellow.json"
   },
   {
@@ -24,13 +21,7 @@
     "campaign": "Lombard.json"
   },
   {
-    "campaign": "SolvProtocol.json"
-  },
-  {
     "campaign": "Hinkal.json"
-  },
-  {
-    "campaign": "LevelMoney.json"
   },
   {
     "campaign": "DTrinity.json"
@@ -55,12 +46,6 @@
   },
   {
     "campaign": "Carrot.json"
-  },
-  {
-    "campaign": "Bills.json"
-  },
-  {
-    "campaign": "StableLabs.json"
   },
   {
     "campaign": "Infinifi.json"
@@ -115,5 +100,8 @@
   },
   {
     "campaign": "Re.json"
+  },
+  {
+    "campaign": "Raac.json"
   }
 ]

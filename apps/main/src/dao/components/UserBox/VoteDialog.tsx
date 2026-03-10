@@ -1,5 +1,4 @@
 import { styled } from 'styled-components'
-import type { Address } from 'viem'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
@@ -7,6 +6,7 @@ import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
+import type { Address } from '@primitives/address.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
@@ -35,7 +35,7 @@ export const VoteDialog = ({
   proposalType,
 }: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
-  const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId: proposalId, proposalType: proposalType })
+  const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId, proposalType })
   const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
     userAddress: userAddress ?? '',
   })

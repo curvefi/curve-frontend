@@ -1,6 +1,6 @@
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 
-export const ShadowedBox = styled.div`
+export const ShadowedBox: IStyledComponent<'web'> = styled.div`
   width: 100%;
 
   border: 3px solid var(--border-400);

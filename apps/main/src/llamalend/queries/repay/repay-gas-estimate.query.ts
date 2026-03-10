@@ -1,14 +1,17 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-const { useQuery: useRepayLoanEstimateGas } = queryFactory({
+const {
+  useQuery: useRepayLoanEstimateGas,
+  invalidate: invalidateRepayLoanEstimateGasQuery,
+  refetchQuery: refetchRepayLoanEstimateGasQuery,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -18,6 +21,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     userAddress,
     isFull,
     slippage,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -27,6 +31,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
       { userBorrowed },
       { isFull },
       { slippage },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -36,14 +41,23 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     isFull,
     userAddress,
     slippage,
+    routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await market.estimateGas.fullRepay(userAddress)
     }
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+      slippage,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.repay(...args)
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repay(...args, +slippage)
@@ -53,11 +67,15 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
         return await impl.estimateGas.repay(...args)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
-const { useQuery: useRepayApproveGasEstimate } = queryFactory({
+const {
+  useQuery: useRepayApproveGasEstimate,
+  invalidate: invalidateRepayApproveGasEstimateQuery,
+  refetchQuery: refetchRepayApproveGasEstimateQuery,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -66,6 +84,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -74,6 +93,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -82,13 +102,16 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed,
     isFull,
     userAddress,
+    routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
@@ -98,35 +121,18 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
         return await impl.estimateGas.repayApprove(userBorrowed)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
-export const useRepayEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: RepayIsApprovedParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const { chainId } = query
-  const { data: isApproved, isLoading: isApprovedLoading, error: isApprovedError } = useRepayIsApproved(query, enabled)
-  const {
-    data: approveEstimate,
-    isLoading: approveLoading,
-    error: approveError,
-  } = useRepayApproveGasEstimate(query, enabled && isApproved === false)
-  const {
-    data: repayEstimate,
-    isLoading: repayLoading,
-    error: repayError,
-  } = useRepayLoanEstimateGas(query, enabled && isApproved === true)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, isApproved ? repayEstimate : approveEstimate, enabled)
-  return {
-    data,
-    isLoading: [isApprovedLoading, approveLoading, repayLoading, conversionLoading].some(Boolean),
-    error: [isApprovedError, approveError, repayError, estimateError].find(Boolean),
-  }
-}
+export const useRepayEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useRepayIsApproved,
+  useApproveEstimate: useRepayApproveGasEstimate,
+  useActionEstimate: useRepayLoanEstimateGas,
+})
+
+export const invalidateRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+  await Promise.all([invalidateRepayApproveGasEstimateQuery(params), invalidateRepayLoanEstimateGasQuery(params)])
+
+export const refetchRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+  await Promise.all([refetchRepayApproveGasEstimateQuery(params), refetchRepayLoanEstimateGasQuery(params)])

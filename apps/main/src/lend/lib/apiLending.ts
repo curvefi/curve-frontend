@@ -29,12 +29,12 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
-import { getErrorMessage } from '@/llamalend/helpers'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { getErrorMessage } from '@ui-kit/utils'
 
 export const helpers = {
   isTooMuch: (val1: string | number | undefined, val2: string | number | undefined) => {

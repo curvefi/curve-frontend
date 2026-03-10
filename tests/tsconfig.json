@@ -11,7 +11,8 @@
       "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
       "@external-rewards": ["../../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
+      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
+      "@primitives/*": ["../../packages/primitives/src/*"]
     }
   },
   "include": [

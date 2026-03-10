@@ -51,6 +51,7 @@ export const createLightDesign = (
       Info: Light.Layer.Feedback.Info,
       Success: Light.Layer.Feedback.Success,
       Warning: Light.Layer.Feedback.Warning,
+      Danger: Light.Layer.Feedback.Danger,
       Error: Light.Layer.Feedback.Error,
     },
     TypeAction: {
@@ -96,6 +97,7 @@ export const createLightDesign = (
         Success: Light.Text.Feedback.Success,
         Warning: Light.Text.Feedback.Warning,
         Error: Light.Text.Feedback.Error,
+        Danger: Light.Text.Feedback.Danger,
         Inverted: Grays[50],
       },
     },
@@ -205,7 +207,6 @@ export const createLightDesign = (
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[10],
@@ -501,6 +502,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Success: Dark.Layer.Feedback.Success,
       Warning: Dark.Layer.Feedback.Warning,
       Error: Dark.Layer.Feedback.Error,
+      Danger: Dark.Layer.Feedback.Danger,
     },
     TypeAction: {
       Selected: Dark.Layer.TypeAction.Selected,
@@ -545,6 +547,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         Success: Dark.Text.Feedback.Success,
         Warning: Dark.Text.Feedback.Warning,
         Error: Dark.Text.Feedback.Error,
+        Danger: Dark.Text.Feedback.Danger,
         Inverted: Grays[950],
       },
     },
@@ -654,7 +657,6 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[975],
@@ -910,6 +912,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Info: Chad.Layer.Feedback.Info,
       Success: Chad.Layer.Feedback.Success,
       Warning: Chad.Layer.Feedback.Warning,
+      Danger: Chad.Layer.Feedback.Danger,
       Error: Chad.Layer.Feedback.Error,
     },
     TypeAction: {
@@ -955,6 +958,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Success: Chad.Text.Feedback.Success,
         Warning: Chad.Text.Feedback.Warning,
         Error: Chad.Text.Feedback.Error,
+        Danger: Chad.Text.Feedback.Danger,
         Inverted: Grays[50],
       },
     },
@@ -1064,7 +1068,6 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[10],

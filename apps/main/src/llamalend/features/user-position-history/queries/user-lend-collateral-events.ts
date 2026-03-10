@@ -1,5 +1,5 @@
-import type { Address } from 'viem'
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/lending'
+import type { Address } from '@primitives/address.utils'
 import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import type { UserQuery, ContractQuery } from '@ui-kit/lib/model/query'
@@ -17,6 +17,6 @@ export const { useQuery: useUserLendCollateralEventsQuery } = queryFactory({
     userAddress,
   }: UserLendCollateralEventsQuery): Promise<UserCollateralEvents> =>
     getUserMarketCollateralEvents(userAddress, blockchainId, contractAddress!),
-  refetchInterval: '1m',
+  category: 'llamalend.user',
   validationSuite: userCollateralEventsValidationSuite,
 })

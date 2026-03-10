@@ -10,15 +10,16 @@ interface Props {
 }
 
 export const DetailInfoBorrowRate = ({ parameters }: Props) => {
-  const { rate, future_rate: futureRate } = parameters ?? {}
-  const loading = lodash.isUndefined(rate) && lodash.isUndefined(futureRate)
+  const borrowApr = parameters?.rates?.borrowApr
+  const futureBorrowApr = parameters?.future_rates?.borrowApr
+  const loading = lodash.isUndefined(borrowApr) && lodash.isUndefined(futureBorrowApr)
 
   return (
     <DetailInfo loading={loading} loadingSkeleton={[100, 20]} label={t`Borrow APR:`}>
       <span>
-        {formatNumber(rate, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}{' '}
+        {formatNumber(borrowApr, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}{' '}
         <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
-        <strong>{formatNumber(futureRate, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}</strong>
+        <strong>{formatNumber(futureBorrowApr, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}</strong>
       </span>
     </DetailInfo>
   )

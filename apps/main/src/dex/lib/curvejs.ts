@@ -16,7 +16,7 @@ import {
   RewardOther,
   RewardsApy,
 } from '@/dex/types/main.types'
-import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
+import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -36,6 +36,7 @@ import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
+import { getErrorMessage } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 
 const { isUndefined } = lodash
@@ -44,27 +45,6 @@ const helpers = { waitForTransaction, waitForTransactions }
 
 // curve
 const network = {
-  fetchAllPoolsList: async (curve: CurveApi, network: NetworkConfig) => {
-    log('fetchAllPoolsList', curve.chainId)
-    // must call api in this order, must use api to get non-cached version of gaugeStatus
-    const useApi = network.useApi
-    await Promise.allSettled([
-      curve.factory.fetchPools(useApi),
-      curve.cryptoFactory.fetchPools(useApi),
-      curve.twocryptoFactory.fetchPools(useApi),
-      curve.crvUSDFactory.fetchPools(useApi),
-      curve.tricryptoFactory.fetchPools(useApi),
-      curve.stableNgFactory.fetchPools(useApi),
-    ])
-    await Promise.allSettled([
-      curve.factory.fetchNewPools(),
-      curve.cryptoFactory.fetchNewPools(),
-      curve.twocryptoFactory.fetchNewPools(),
-      curve.tricryptoFactory.fetchNewPools(),
-      curve.stableNgFactory.fetchNewPools(),
-    ])
-    return curve.getPoolList()
-  },
   fetchNetworkConfig: (curve: CurveApi) => ({
     hasDepositAndStake: curve.hasDepositAndStake(),
     hasRouter: curve.hasRouter(),
@@ -101,36 +81,6 @@ const network = {
 }
 
 const pool = {
-  getTvl: async (p: Pool, network: NetworkConfig) => {
-    const resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    try {
-      resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (p.inApi) {
-        resp.errorMessage = 'Unable to get tvl'
-      }
-      return resp
-    }
-  },
-  getVolume: async (p: Pool, network: NetworkConfig) => {
-    const resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    if (network.isLite) return resp
-
-    try {
-      resp.value = await p.stats.volume()
-      return resp
-    } catch (error) {
-      if (p.inApi) {
-        console.error(error)
-        resp.errorMessage = 'Unable to get volume'
-      }
-      return resp
-    }
-  },
   poolBalances: async (p: Pool, isWrapped: boolean) => {
     if (p.curve.isNoRPC) {
       return { error: t`Connect your wallet to see pool balances` }

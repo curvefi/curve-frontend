@@ -7,7 +7,3 @@
  * import-time access errors like `window.eip6963Connectors.map(...)`.
  */
 window.eip6963Connectors ??= []
-
-Cypress.on('window:before:load', (win) => {
-  win.eip6963Connectors ??= []
-})

@@ -5,7 +5,10 @@ import { VaultUnstake } from '@/lend/components/PageVault/VaultUnstake'
 import { VaultWithdrawRedeem } from '@/lend/components/PageVault/VaultWithdrawRedeem'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
+import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { useLendingMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -53,6 +56,33 @@ const NewVaultMenu = [
         ),
       },
     ],
+  },
+  {
+    value: 'stake',
+    label: t`Stake`,
+    subTabs: [
+      {
+        value: 'stake',
+        label: t`Stake`,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <StakeForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
+      {
+        value: 'unstake',
+        label: t`Unstake`,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <UnstakeForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
+    ],
+  },
+  {
+    value: 'claim',
+    label: t`Claim`,
+    component: ({ rChainId, market, isLoaded }: VaultProps) => (
+      <ClaimTab networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    ),
   },
 ] satisfies FormTab<VaultProps>[]
 

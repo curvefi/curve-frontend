@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { canRepayFromStateCollateral, canRepayFromUserCollateral, getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
 
 export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'userBorrowed' }

@@ -1,9 +1,9 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 
@@ -14,7 +14,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'add-collateral-gas-estimation',
+      'estimateGas.addCollateral',
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {
@@ -31,6 +31,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
     ])
     return (Number(approveGas) + Number(addCollateralGas)) as TGas
   },
+  category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })
 
@@ -49,6 +50,6 @@ export const useAddCollateralEstimateGas = <ChainId extends IChainId>(
     data,
     isLoading: conversionLoading,
     error: conversionError,
-  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
+  } = useEstimateGas(networks, chainId, estimate, enabled)
   return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
 }

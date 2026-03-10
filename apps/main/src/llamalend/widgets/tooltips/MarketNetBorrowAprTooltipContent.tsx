@@ -11,48 +11,50 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
-export type MarketBorrowRateTooltipContentProps = {
+export type MarketNetBorrowAprTooltipContentProps = {
   marketType: LlamaMarketType
-  borrowRate: number | null | undefined
-  totalBorrowRate: number | null | undefined
-  totalAverageBorrowRate: number | null | undefined
-  averageRate: number | null | undefined
+  borrowApr: number | null | undefined
+  averageApr: number | null | undefined
+  totalBorrowApr: number | null | undefined
+  totalAverageBorrowApr: number | null | undefined
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: CampaignPoolRewards[]
-  rebasingYield: number | null | undefined
+  rebasingYieldApr: number | null | undefined
   collateralSymbol: string | null | undefined
   isLoading?: boolean
 }
 
 const messages: Record<LlamaMarketType, string> = {
-  [LlamaMarketType.Lend]: t`The net borrow APR is the total cost related to your borrow and varies according to the monetary policy of the market.`,
-  [LlamaMarketType.Mint]: t`The net borrow APR is the total cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
+  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
+  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
 }
 
 export const MarketNetBorrowAprTooltipContent = ({
   marketType,
-  borrowRate,
-  totalBorrowRate,
-  totalAverageBorrowRate,
-  averageRate,
+  borrowApr,
+  totalBorrowApr,
+  totalAverageBorrowApr,
+  averageApr,
   periodLabel,
   extraRewards,
-  rebasingYield,
+  rebasingYieldApr,
   collateralSymbol,
   isLoading,
-}: MarketBorrowRateTooltipContentProps) => (
+}: MarketNetBorrowAprTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription text={messages[marketType]} />
 
-    {!!rebasingYield && (
-      <TooltipDescription text={t`The collateral of this market is yield bearing and offers extra yield.`} />
+    {!!rebasingYieldApr && (
+      <TooltipDescription
+        text={t`Net borrow APR represents your effective borrowing cost after yields and incentives.`}
+      />
     )}
 
     <Stack>
       <TooltipItems secondary>
-        <TooltipItem title={t`Borrow APR`}>{formatPercent(borrowRate ?? 0)}</TooltipItem>
+        <TooltipItem title={t`Borrow APR`}>{formatPercent(borrowApr ?? 0)}</TooltipItem>
         <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-          {averageRate ? formatPercent(averageRate) : 'N/A'}
+          {averageApr == null ? 'N/A' : formatPercent(averageApr)}
         </TooltipItem>
       </TooltipItems>
 
@@ -67,24 +69,24 @@ export const MarketNetBorrowAprTooltipContent = ({
         </TooltipItems>
       )}
 
-      {!!rebasingYield && (
+      {rebasingYieldApr != null && (
         <TooltipItems secondary>
-          <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(-rebasingYield)}</TooltipItem>
+          <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(-rebasingYieldApr)}</TooltipItem>
           {!!collateralSymbol && (
             <TooltipItem variant="subItem" title={collateralSymbol}>
-              {formatPercent(-rebasingYield)}
+              {formatPercent(-rebasingYieldApr)}
             </TooltipItem>
           )}
         </TooltipItems>
       )}
 
-      {totalBorrowRate != null && (
+      {totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) && (
         <TooltipItems>
           <TooltipItem variant="primary" title={t`Net borrow APR`}>
-            {formatPercent(totalBorrowRate)}
+            {formatPercent(totalBorrowApr)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {totalAverageBorrowRate ? formatPercent(totalAverageBorrowRate) : 'N/A'}
+            {totalAverageBorrowApr == null ? 'N/A' : formatPercent(totalAverageBorrowApr)}
           </TooltipItem>
         </TooltipItems>
       )}

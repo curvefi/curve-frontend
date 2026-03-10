@@ -1,4 +1,4 @@
-import { fetchJson } from '@curvefi/prices-api/fetch'
+import { fetchJson } from '@primitives/fetch.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 
@@ -83,6 +83,6 @@ export const { useQuery: useGaugesLegacy } = queryFactory({
       return acc
     }, {})
   },
-  staleTime: '5m',
+  category: 'dao.gauges',
   validationSuite: EmptyValidationSuite,
 })

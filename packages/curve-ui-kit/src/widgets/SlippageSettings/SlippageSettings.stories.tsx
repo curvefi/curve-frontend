@@ -1,9 +1,9 @@
 import { ComponentProps, useState } from 'react'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
-import { Decimal } from '@ui-kit/utils'
 import { SlippageSettings } from './SlippageSettings'
 
 const SlippageSettingsComponent = ({

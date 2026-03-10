@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 export const StatsStack = () => {
-  const { data: yieldData, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1Y' })
+  const { data: yieldData, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1M' })
   const { data: revenueData, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
   const { data: statisticsData, isFetching: statisticsIsFetching } = useScrvUsdStatistics({})
 
@@ -30,7 +30,7 @@ export const StatsStack = () => {
       <Grid>
         <Metric
           label="Total crvUSD Staked"
-          value={yieldData?.[yieldData.length - 1]?.supply}
+          value={yieldData?.[yieldData.length - 1]?.assets}
           valueOptions={{ unit: CRVUSD_OPTION }}
           loading={yieldIsFetching}
           copyText={t`Copied total crvUSD staked`}

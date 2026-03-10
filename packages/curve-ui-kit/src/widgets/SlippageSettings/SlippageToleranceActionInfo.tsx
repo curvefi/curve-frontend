@@ -1,19 +1,23 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { decimal, Decimal, formatPercent as formatPercent } from '@ui-kit/utils'
+import { ActionInfoSize } from '@ui-kit/shared/ui/ActionInfo/ActionInfo'
+import { decimal, formatPercent as formatPercent } from '@ui-kit/utils'
 import { SlippageSettings } from '@ui-kit/widgets/SlippageSettings/SlippageSettings'
 
 export const SlippageToleranceActionInfoPure = ({
   maxSlippage,
   onSave,
+  size,
 }: {
   maxSlippage: Decimal
   onSave: (newSlippage: Decimal) => void
+  size?: ActionInfoSize
 }) => (
   <ActionInfo
-    label={t`Slippage tolerance`}
+    label={t`Slippage`}
     value={formatPercent(maxSlippage)}
     valueRight={
       <SlippageSettings
@@ -23,6 +27,7 @@ export const SlippageToleranceActionInfoPure = ({
         onSave={onSave}
       />
     }
+    size={size}
     testId="borrow-slippage"
   />
 )

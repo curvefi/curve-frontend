@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ChainIcon } from '../icons/ChainIcon'
+import { TokenChainIcon } from './TokenChainIcon'
 import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
@@ -26,22 +25,27 @@ export const TokenPair = ({ chain, assets: { primary, secondary }, hideChainIcon
       blockchainId={chain}
       address={secondary.address}
       tooltip={secondary.symbol}
-      sx={{ position: 'absolute', top: '33%', left: '33%' }}
+      sx={{
+        position: 'absolute',
+        top: '33%',
+        left: '33%',
+        width: { mobile: '65%', tablet: '67%' },
+        height: { mobile: '65%', tablet: '67%' },
+      }}
     />
-
     <TokenIcon
       blockchainId={chain}
       address={primary.address}
       tooltip={primary.symbol}
-      sx={{ position: 'absolute', bottom: '33%', right: '33%' }}
+      sx={{
+        position: 'absolute',
+        bottom: '33%',
+        right: '33%',
+        width: { mobile: '65%', tablet: '67%' },
+        height: { mobile: '65%', tablet: '67%' },
+      }}
     />
 
-    {!hideChainIcon && (
-      <Tooltip title={chain} placement="top" slotProps={{ popper: { sx: { textTransform: 'capitalize' } } }}>
-        <Box sx={{ position: 'absolute', top: '-16.66%', left: '-16.66%' }}>
-          <ChainIcon size="sm" blockchainId={chain} />
-        </Box>
-      </Tooltip>
-    )}
+    {!hideChainIcon && <TokenChainIcon chain={chain} />}
   </Box>
 )

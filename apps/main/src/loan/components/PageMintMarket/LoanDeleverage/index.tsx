@@ -24,6 +24,7 @@ import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
+import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
@@ -42,7 +43,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
 
@@ -69,7 +70,6 @@ export const LoanDeleverage = ({
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
@@ -324,39 +324,26 @@ export const LoanDeleverage = ({
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvancedMode ? (
-          <DetailInfoLiqRange
-            isManage
-            {...detailInfo}
-            detailInfoLeverage={
-              <DetailInfoLeverageWrapper>
-                <LeveragePriceImpactDetail />
-                <DetailInfoTradeRoutes
-                  loading={detailInfo.loading}
-                  routes={detailInfo.routeName}
-                  input={formValues.collateral}
-                  inputSymbol={llamma?.collateralSymbol ?? ''}
-                  output={detailInfo.receiveStablecoin}
-                  outputSymbol={getTokenName(llamma).stablecoin}
-                />
-              </DetailInfoLeverageWrapper>
-            }
-            healthMode={healthMode}
-            loanDetails={loanDetails}
-            userLoanDetails={userLoanDetails}
-          />
-        ) : (
-          <>
-            <LeveragePriceImpactDetail />
-            <DetailInfo
-              label={`Receive ${getTokenName(llamma).stablecoin}:`}
-              loading={detailInfo.loading}
-              loadingSkeleton={[100, 20]}
-            >
-              <strong>{formatNumber(detailInfo.receiveStablecoin)}</strong>
-            </DetailInfo>
-          </>
-        )}
+        <DetailInfoLiqRange
+          isManage
+          {...detailInfo}
+          detailInfoLeverage={
+            <DetailInfoLeverageWrapper>
+              <LeveragePriceImpactDetail />
+              <DetailInfoTradeRoutes
+                loading={detailInfo.loading}
+                routes={detailInfo.routeName}
+                input={formValues.collateral}
+                inputSymbol={llamma?.collateralSymbol ?? ''}
+                output={detailInfo.receiveStablecoin}
+                outputSymbol={getTokenName(llamma).stablecoin}
+              />
+            </DetailInfoLeverageWrapper>
+          }
+          healthMode={healthMode}
+          loanDetails={loanDetails}
+          userLoanDetails={userLoanDetails}
+        />
 
         <DetailInfoHealth
           isManage

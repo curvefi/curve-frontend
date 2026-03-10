@@ -1,5 +1,5 @@
-import type { Address } from 'viem'
-import type { Decimal } from '@ui-kit/utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export enum DepositRewardStep {
   APPROVAL = 'APPROVAL',

@@ -54,20 +54,14 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   })
 }
 
-function getPriceFormatter(ohlcData: LpPriceOhlcDataFormatted[]) {
-  if (!ohlcData?.length) {
-    return {
-      type: 'custom' as const,
-      formatter: (price: number) => priceFormatter(price, 1), // Safe default delta
-    }
-  }
-
-  const min = Math.min(...ohlcData.map((x) => x.low))
-  const max = Math.max(...ohlcData.map((x) => x.high))
+function getPriceFormat(ohlcData: LpPriceOhlcDataFormatted[] | undefined) {
+  const delta = ohlcData?.length
+    ? Math.max(...ohlcData.map((x) => x.high)) - Math.min(...ohlcData.map((x) => x.low))
+    : 1
 
   return {
     type: 'custom' as const,
-    formatter: (price: number) => priceFormatter(price, max - min),
+    formatter: (price: number) => priceFormatter(price, delta),
   }
 }
 
@@ -134,6 +128,7 @@ export const CandleChart = ({
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  const hasAppliedInitialOffset = useRef(false)
   const ohlcDataRef = useRef(ohlcData)
 
   const isMounted = useRef(true)
@@ -544,11 +539,32 @@ export const CandleChart = ({
   useEffect(() => {
     if (!chartRef.current || !candlestickSeriesRef.current || !ohlcData) return
 
-    const priceFormat = getPriceFormatter(ohlcData)
+    const priceFormat = getPriceFormat(ohlcData)
     candlestickSeriesRef.current.setData(ohlcData)
     candlestickSeriesRef.current.applyOptions({ priceFormat })
     chartRef.current.applyOptions({ localization: { priceFormatter: priceFormat.formatter } })
   }, [ohlcData])
+
+  // Apply initial right-side spacing (10% of chart width) only on first data load between chart data and y-axis price scale
+  // This effect runs when wrapperWidth changes to ensure chart is rendered with proper dimensions
+  useEffect(() => {
+    if (!chartRef.current || !ohlcData?.length || hasAppliedInitialOffset.current || wrapperWidth <= 0) return
+
+    // Use requestAnimationFrame to ensure the chart has finished rendering
+    requestAnimationFrame(() => {
+      if (!chartRef.current || hasAppliedInitialOffset.current) return
+
+      const timeScale = chartRef.current.timeScale()
+      const chartWidth = timeScale.width()
+      const barSpacing = timeScale.options().barSpacing
+
+      if (chartWidth > 0 && barSpacing > 0) {
+        const paddingBars = (chartWidth * 0.1) / barSpacing // 10% spacing
+        timeScale.scrollToPosition(+paddingBars, false)
+        hasAppliedInitialOffset.current = true
+      }
+    })
+  }, [ohlcData, wrapperWidth])
 
   // Update oracle price data when it changes
   useEffect(() => {
@@ -705,28 +721,11 @@ export const CandleChart = ({
 
     let order = 0
 
-    // Define series refs and their order based on liquidation range logic
-    const getLiquidationRangeSeries = () => {
-      if (!liquidationRange || !liquidationRange.current || !liquidationRange.new) {
-        return [currentRangeSeriesRef.current, newRangeSeriesRef.current]
-      }
-
-      const currentBottom =
-        liquidationRange.current.price2?.[0]?.value ?? liquidationRange.current.price1?.[0]?.value ?? 0
-      const newBottom = liquidationRange.new.price2?.[0]?.value ?? liquidationRange.new.price1?.[0]?.value ?? 0
-
-      const addNewFirst = newBottom < currentBottom
-
-      return addNewFirst
-        ? [newRangeSeriesRef.current, currentRangeSeriesRef.current]
-        : [currentRangeSeriesRef.current, newRangeSeriesRef.current]
-    }
-
-    // Define all series in order: liquidation ranges, volume, OHLC, oracle price
+    // Define all series in order (later = rendered on top): historical, current, new, OHLC, oracle
     const allSeries = [
       ...historicalRangeSeriesRefs.current,
-      ...getLiquidationRangeSeries(),
-      // volumeSeriesRef.current,
+      currentRangeSeriesRef.current,
+      newRangeSeriesRef.current,
       candlestickSeriesRef.current,
       oraclePriceSeriesRef.current,
     ]
@@ -737,7 +736,7 @@ export const CandleChart = ({
         series.setSeriesOrder(order++)
       }
     })
-  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
+  }, [liquidationRange, liqRangeCurrentVisible, liqRangeNewVisible])
 
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {

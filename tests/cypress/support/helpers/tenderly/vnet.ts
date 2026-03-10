@@ -1,5 +1,6 @@
-import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
+import type { Hex } from '@primitives/address.utils'
+import { resetWagmiConfigForTests } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { DeepPartial } from '@ui-kit/types/util'
 import { tenderlyAccount } from './account'
 import {
@@ -31,14 +32,17 @@ export const getRpcUrls = (
   publicRpcUrl: vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')!.url,
 })
 
+export type TenderlyWagmiConfigFromVNet = {
+  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
+  privateKey?: Hex
+}
+
 export function createTenderlyWagmiConfigFromVNet({
   vnet,
   privateKey = generatePrivateKey(),
-}: {
-  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
-  privateKey?: Hex
-}) {
+}: TenderlyWagmiConfigFromVNet) {
   const { publicRpcUrl } = getRpcUrls(vnet)
+  resetWagmiConfigForTests() // fixes issues with wagmi reconnect in tests
   return createTenderlyWagmiConfig({
     privateKey,
     rpcUrl: publicRpcUrl,
@@ -102,6 +106,7 @@ export function createVirtualTestnet(
   opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions> & { chain_id?: number },
 ) {
   let vnet: CreateVirtualTestnetResponse
+  let shouldDeleteVnet = true
 
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
@@ -111,7 +116,7 @@ export function createVirtualTestnet(
       slug: `testnet-${chain_id}-${uuid}`,
       display_name: `Testnet for ${chain_id} (${uuid})`,
       fork_config: { network_id: chain_id },
-      virtual_network_config: { chain_config: { chain_id: chain_id } },
+      virtual_network_config: { chain_config: { chain_id } },
       sync_state_config: { enabled: false },
     }
 
@@ -119,8 +124,14 @@ export function createVirtualTestnet(
     createVirtualTestnetRequest(options).then((created) => (vnet = created))
   })
 
+  afterEach(function (this: Mocha.Context) {
+    // delete vnet only if all tests in the current suite passed
+    shouldDeleteVnet &&= this.currentTest?.state === 'passed'
+  })
+
   after(() => {
     if (!vnet) return
+    if (!shouldDeleteVnet) return console.warn(`Keeping vnet '${vnet.id}' alive because of test failures.`)
     deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
   })
 

@@ -4,7 +4,7 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { useReleaseChannel } from './useLocalStorage'
+import { getReleaseChannel, useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
@@ -15,23 +15,36 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  *  */
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New DEX market list (PoolListPage) */
-export const useDexMarketList = useBetaChannel
-
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
-export const useLendingMuiForm = useAlphaChannel
+export const useLendingMuiForm = useBetaChannel
 
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = useAlphaChannel
+export const useManageLoanMuiForm = useBetaChannel
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
 
 /** New card for managing soft liquidations */
-export const useManageSoftLiquidation = useAlphaChannel
+export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
+
+/** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
+export const useFastbridge = useBetaChannel
+
+/** New page header with market metrics on market detail pages */
+export const useIntegratedLlamaHeader = useStableChannel
+
+/** New lend market header subnav */
+export const useLendMarketSubNav = useIntegratedLlamaHeader
+
+/** New ZapV2 leverage implementation for LlamaLend markets */
+export const isZapV2Enabled = () =>
+  getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+
+/** New tabs for BorrowPositionDetails */
+export const useNewPositionDetailsTabs = useIntegratedLlamaHeader

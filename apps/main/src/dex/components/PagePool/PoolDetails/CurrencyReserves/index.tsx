@@ -3,8 +3,9 @@ import { CurrencyReservesContent } from '@/dex/components/PagePool/PoolDetails/C
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTokensLinksMapper } from '@/dex/hooks/usePoolTokensLinksMapper'
+import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, TokensMapper, Tvl } from '@/dex/types/main.types'
+import { ChainId, TokensMapper } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
@@ -13,20 +14,21 @@ import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard } from '@ui-kit/utils'
 
 interface Props {
-  rChainId: ChainId
-  rPoolId: string
+  chainId: ChainId
+  poolId: string
   tokensMapper: TokensMapper
-  tvl: Tvl
 }
 
-export const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
-  const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
+export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
+  const { data: network } = useNetworkByChain({ chainId })
+  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[chainId]?.[poolId])
+  const poolData = useStore((state) => state.pools.poolsMapper[chainId]?.[poolId])
+  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
 
   const poolDataCachedOrApi = poolData ?? poolDataMapperCached
-  const poolTokensLinks = usePoolTokensLinksMapper(rChainId, poolDataCachedOrApi)
+  const poolTokensLinks = usePoolTokensLinksMapper(chainId, poolDataCachedOrApi)
+
+  const { data: tvl } = usePoolTvl({ chainId, poolId })
 
   return (
     <article>
@@ -39,7 +41,7 @@ export const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props
             cr={currencyReserves?.tokens.find((t) => t.tokenAddress === tokenAddress)}
             haveSameTokenName={poolDataCachedOrApi.tokensCountBy[token] > 1}
             network={network}
-            rChainId={rChainId}
+            rChainId={chainId}
             tokensMapper={tokensMapper}
             token={token}
             tokenAddress={tokenAddress}
@@ -52,7 +54,7 @@ export const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props
       <StyledStats flex flexJustifyContent="space-between">
         {t`USD total`}
         <StyledChip size="md">
-          {formatNumber(tvl?.value, FORMAT_OPTIONS.USD)}{' '}
+          {formatNumber(tvl, FORMAT_OPTIONS.USD)}{' '}
           <IconTooltip placement="bottom-end">{t`USD total balance updates every ~5 minute`}</IconTooltip>
         </StyledChip>
       </StyledStats>

@@ -5,7 +5,8 @@ import {
   getUserMarketStats,
   Market as MintMarketFromApi,
 } from '@curvefi/prices-api/crvusd'
-import { mapRecord, recordEntries } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import {
@@ -14,7 +15,6 @@ import {
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { Address } from '@ui-kit/utils'
 
 export type MintMarket = MintMarketFromApi & {
   chain: Chain
@@ -24,6 +24,7 @@ export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMint
   queryKey: () => ['mint-markets', 'v2'] as const,
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map((market) => ({ ...market, chain }))),
+  category: 'llamalend.marketList',
   validationSuite: EmptyValidationSuite,
 })
 
@@ -35,6 +36,7 @@ const {
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
     mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map((market) => market.controller)),
+  category: 'llamalend.user',
   validationSuite: userAddressValidationSuite,
 })
 
@@ -49,6 +51,7 @@ const {
     ['user-mint-markets', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
+  category: 'llamalend.user',
   validationSuite: userContractValidationSuite,
 })
 

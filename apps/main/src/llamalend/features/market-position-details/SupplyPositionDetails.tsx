@@ -1,38 +1,18 @@
+import { type SupplyRate } from '@/llamalend/features/market-details'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { CardHeader, Box } from '@mui/material'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { ExtraIncentive } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
-import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
-import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
+import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
 
-type SupplyRate = {
-  rate: number | undefined | null
-  averageRate: number | undefined | null
-  averageRateLabel: string
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+type UserSupplyRate = SupplyRate & {
   userCurrentCRVApr: number | undefined | null
   userTotalCurrentSupplyApr: number | undefined | null
-  supplyAprCrvMinBoost: number | undefined | null
-  supplyAprCrvMaxBoost: number | undefined | null
-  averageSupplyAprCrvMinBoost: number | undefined | null
-  averageSupplyAprCrvMaxBoost: number | undefined | null
-  //total = rate - rebasingYield + combined extra incentives
-  totalSupplyRateMinBoost: number | null
-  totalSupplyRateMaxBoost: number | null
-  totalAverageSupplyRateMinBoost: number | null
-  totalAverageSupplyRateMaxBoost: number | null
-  extraIncentives: ExtraIncentive[]
-  averageTotalExtraIncentivesApr: number | undefined | null
-  extraRewards: CampaignPoolRewards[]
-  loading: boolean
 }
 export type Shares = {
   value: number | undefined | null
@@ -53,13 +33,13 @@ export type SupplyAsset = {
 }
 
 export type SupplyPositionDetailsProps = {
-  supplyRate: SupplyRate
+  userSupplyRate: UserSupplyRate
   shares: Shares
   supplyAsset: SupplyAsset
   boost: Boost
 }
 
-export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
     totalSupplyRateMaxBoost,
     totalSupplyRateMinBoost,
@@ -75,7 +55,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
     userTotalCurrentSupplyApr,
     loading: supplyRateLoading,
     rebasingYield,
-  } = supplyRate
+  } = userSupplyRate
   const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount } = supplyAsset
   const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
   const { value: boostValue, loading: boostLoading } = boost
@@ -99,7 +79,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`Supply rate`}
           value={userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost}
-          loading={totalSupplyRateMinBoost == null && supplyRateLoading}
+          loading={supplyRateLoading}
           valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
             totalSupplyRateMaxBoost
@@ -137,7 +117,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`Amount supplied`}
           value={depositedAmount}
-          loading={depositedAmount == null && supplyAssetLoading}
+          loading={supplyAssetLoading}
           valueOptions={{ unit: 'dollar' }}
           notional={
             depositedAmount
@@ -159,10 +139,10 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`Vault shares`}
           value={sharesValue}
-          loading={sharesValue == null && sharesLoading}
+          loading={sharesLoading}
           valueOptions={{}}
           notional={
-            sharesStaked && sharesValue
+            sharesStaked != null && sharesValue != null
               ? {
                   value: (sharesStaked / sharesValue) * 100,
                   unit: { symbol: t`% staked`, position: 'suffix' },
@@ -181,7 +161,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`veCRV Boost`}
           value={boostValue}
-          loading={boostValue == null && boostLoading}
+          loading={boostLoading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
             title: t`veCRV Boost`,

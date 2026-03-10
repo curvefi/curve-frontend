@@ -1,20 +1,18 @@
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { fromEntries, range } from '@curvefi/prices-api/objects.util'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
+import { fromEntries, range } from '@primitives/objects.utils'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
 
 // keep the general pool TVL below the special HighTVL row to guarantee ordering in tests
-const oneLargeTvl = () => oneFloat(SMALL_POOL_TVL, MAX_USD_VALUE)
-const oneSmallTvl = () => oneFloat(SMALL_POOL_TVL)
+const oneTvl = () => oneFloat(MAX_USD_VALUE)
 
 const oneLendingPool = (
   chain: Chain,
-  { utilization = oneFloat(0, 0.99), tvl = oneLargeTvl() }: { utilization?: number; tvl?: number },
+  { utilization = oneFloat(0, 0.99), tvl = oneTvl() }: { utilization?: number; tvl?: number },
 ): GetMarketsResponse['data'][number] => {
   const collateral = oneToken(chain)
   const borrowed = oneToken(chain)
@@ -58,8 +56,8 @@ const oneLendingPool = (
     total_assets: totalAssets,
     total_debt_usd: totalDebtUsd,
     total_assets_usd: totalAssetsUsd,
-    minted: minted,
-    redeemed: redeemed,
+    minted,
+    redeemed,
     minted_usd: minted * borrowedPrice,
     redeemed_usd: redeemed * borrowedPrice,
     loan_discount: oneFloat(1e18),
@@ -71,8 +69,18 @@ const oneLendingPool = (
     borrowed_balance: borrowedBalance,
     collateral_balance_usd: collateralBalanceUsd,
     borrowed_balance_usd: borrowedBalanceUsd,
-    collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
-    borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
+    collateral_token: {
+      symbol: collateral.symbol,
+      address: collateral.address,
+      rebasing_yield: null,
+      rebasing_yield_apr: null,
+    },
+    borrowed_token: {
+      symbol: borrowed.symbol,
+      address: borrowed.address,
+      rebasing_yield: null,
+      rebasing_yield_apr: null,
+    },
     extra_reward_apr: [],
     created_at: oneDate({ maxDate: MARKET_CUTOFF_DATE }).toISOString(),
     max_ltv: oneFloat(60, 110), // between 60% and 110%
@@ -84,11 +92,9 @@ export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 export const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
-  const count = oneInt(2, 20)
+  const count = oneInt(15, 20)
   const data = [
-    ...range(count).map((index) =>
-      oneLendingPool(chain, { utilization: index / count, tvl: oneFloat() > 0.9 ? oneSmallTvl() : oneLargeTvl() }),
-    ),
+    ...range(count).map((index) => oneLendingPool(chain, { utilization: index / count, tvl: oneTvl() })),
     ...(chain == 'ethereum'
       ? ([
           {
@@ -111,10 +117,6 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
             address: HighUtilizationAddress,
             vault: HighUtilizationAddress,
             controller: HighUtilizationAddress,
-          },
-          {
-            // small TVL to test the slider filter
-            ...oneLendingPool(chain, { tvl: SMALL_POOL_TVL / 2 }),
           },
         ] as GetMarketsResponse['data'])
       : []),

@@ -1,4 +1,5 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { InternalLink } from '@ui/Link'
 import type { InternalLinkProps } from '@ui/Link/InternalLink'
 import { formatNumber } from '@ui/utils'
@@ -20,18 +21,20 @@ export const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableR
   </TableRowWrapper>
 )
 
-export const TableRowWrapper = styled.div<{ columns: number; gridTemplateColumns?: string }>`
-  display: grid;
-  grid-template-columns: ${({ columns, gridTemplateColumns }) =>
-    gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
-  padding: var(--spacing-1) var(--spacing-3);
-  border-bottom: 1px solid var(--gray-500a20);
-  &:last-child {
-    border-bottom: none;
-  }
-`
+type TableRowWrapperProps = { columns: number; gridTemplateColumns?: string }
+export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & ComponentPropsWithRef<'div'>> =
+  styled.div<TableRowWrapperProps>`
+    display: grid;
+    grid-template-columns: ${({ columns, gridTemplateColumns }) =>
+      gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
+    padding: var(--spacing-1) var(--spacing-3);
+    border-bottom: 1px solid var(--gray-500a20);
+    &:last-child {
+      border-bottom: none;
+    }
+  `
 
-export const TableData = styled.p`
+export const TableData: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
   font-variant-numeric: tabular-nums;
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
@@ -55,7 +58,7 @@ export const TableData = styled.p`
   }
 `
 
-export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
+export const TableDataLink: IStyledComponent<'web', InternalLinkProps> = styled(InternalLink)<InternalLinkProps>`
   font-variant-numeric: tabular-nums;
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);

@@ -1,6 +1,7 @@
+import type { ComponentProps, ComponentPropsWithRef } from 'react'
 import { useState } from 'react'
 import { Item, Section } from 'react-stately'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { ComboBoxAddress } from '@/dex/components/PageDashboard/components/ComboBoxAddress'
 import { FormClaimFees } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { FormVecrv } from '@/dex/components/PageDashboard/components/FormVecrv'
@@ -102,7 +103,12 @@ const AddressSearchWrapper = styled.div`
   }
 `
 
-export const StyledStats = styled(Stats)`
+type DivProps = ComponentPropsWithRef<'div'>
+type H3Props = ComponentPropsWithRef<'h3'>
+type BoxComponentProps = ComponentProps<typeof Box>
+type StatsComponentProps = ComponentProps<typeof Stats>
+
+export const StyledStats: IStyledComponent<'web', StatsComponentProps> = styled(Stats)`
   border-color: var(--summary_content--border-color);
 `
 
@@ -110,7 +116,7 @@ const TabContentWrapper = styled(Box)``
 
 const TabWrapper = styled(Box)``
 
-export const SummaryTitle = styled.h3`
+export const SummaryTitle: IStyledComponent<'web', H3Props> = styled.h3`
   font-size: var(--font-size-3);
   margin-bottom: 0.5rem;
 
@@ -123,7 +129,7 @@ export const SummaryTitle = styled.h3`
   }
 `
 
-export const StyledTotalBalanceWrapper = styled.div`
+export const StyledTotalBalanceWrapper: IStyledComponent<'web', DivProps> = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
 `
@@ -155,7 +161,10 @@ const TitleWrapper = styled.div`
   }
 `
 
-export const SummarySpinnerWrapper = styled(SpinnerWrapper)<{ isMain?: boolean }>`
+type SummarySpinnerWrapperProps = { isMain?: boolean }
+export const SummarySpinnerWrapper: IStyledComponent<'web', SummarySpinnerWrapperProps & DivProps> = styled(
+  SpinnerWrapper,
+)<SummarySpinnerWrapperProps>`
   padding: var(--spacing-1);
   position: absolute;
   top: 0;
@@ -169,7 +178,7 @@ export const SummarySpinnerWrapper = styled(SpinnerWrapper)<{ isMain?: boolean }
   }};
 `
 
-export const SummaryInnerContent = styled(Box)`
+export const SummaryInnerContent: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   position: relative;
   min-height: 4.375rem; // 70px
 `

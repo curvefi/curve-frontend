@@ -37,11 +37,25 @@ export type DeepPartial<T> = {
  */
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
+export type AllowUndefined<T> = { [P in keyof T]: T[P] | undefined }
+
 /**
  * A generic type representing the result of a query operation.
  * @template T - The type of the data returned by the query.
  */
-export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error | null | undefined }
+export type Query<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'error'>
+
+/** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
+export type QueryProp<T> = Query<T> & {
+  readonly __brand: 'QueryProp'
+}
+
+/**
+ * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
+ * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
+ * react trying to serialize the react-query proxy object.
+ */
+export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
 
 /**
  * Maps a Query type to extract partial data from it.
@@ -50,15 +64,9 @@ export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error |
 export const mapQuery = <TSource, TResult>(
   { data, isLoading, error }: Query<TSource>,
   selector: (data: TSource) => TResult | null | undefined,
-): Query<TResult> => ({
-  isLoading,
-  data: data == null ? undefined : (selector(data) ?? undefined),
-  error,
-})
-
-/**
- * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
- * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
- * react trying to serialize the react-query proxy object.
- */
-export const q = <T>({ data, isLoading, error }: UseQueryResult<T>): Query<T> => ({ data, isLoading, error })
+) =>
+  q({
+    isLoading,
+    data: data == null ? undefined : (selector(data) ?? undefined),
+    error,
+  })

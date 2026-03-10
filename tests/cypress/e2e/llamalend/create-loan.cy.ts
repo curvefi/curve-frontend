@@ -1,23 +1,20 @@
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
   oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
-
-// todo: remove this once we know the test is stable
-const RETRY = { retries: { openMode: 0, runMode: 2 } }
 
 describe('Create loan', () => {
   recordValues(LlamaMarketType).forEach((marketType) => {
-    const { collateral, borrow, path } = oneLoanTestMarket(marketType)
-    const leverageEnabled = false // "max_borrowable" query always fails because of the 'fake' e2e account :(
+    const { collateral, borrow, path, label, hasLeverage } = oneLoanTestMarket(marketType)
+    const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
-    it(`for ${marketType} market`, RETRY, () => {
+    it(label, () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled })
       checkLoanDetailsLoaded({ leverageEnabled })

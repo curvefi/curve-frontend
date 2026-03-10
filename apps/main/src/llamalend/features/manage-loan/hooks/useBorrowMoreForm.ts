@@ -1,28 +1,36 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
-import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
+import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
+import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
-  type BorrowMoreParams,
+  getBorrowMoreImplementation,
+  isLeverageBorrowMore,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { invalidateOrRefetchBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
+import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
+  type BorrowMoreParams,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import type { Decimal } from '@primitives/decimal.utils'
+import { pick } from '@primitives/objects.utils'
+import type { RouteResponse } from '@primitives/router.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { mapQuery, type Range } from '@ui-kit/types/util'
+import { decimalSum } from '@ui-kit/utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowMoreForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 const useBorrowMoreParams = <ChainId>({
   userCollateral,
@@ -30,6 +38,8 @@ const useBorrowMoreParams = <ChainId>({
   debt,
   maxDebt,
   slippage,
+  leverageEnabled,
+  routeId,
   chainId,
   marketId,
   userAddress,
@@ -37,7 +47,7 @@ const useBorrowMoreParams = <ChainId>({
   chainId: ChainId
   marketId: string | undefined
   userAddress: Address | undefined
-}): BorrowMoreParams<ChainId> =>
+}) =>
   useDebouncedValue(
     useMemo(
       () => ({
@@ -49,8 +59,10 @@ const useBorrowMoreParams = <ChainId>({
         debt,
         maxDebt,
         slippage,
+        leverageEnabled,
+        routeId,
       }),
-      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage],
+      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled, routeId],
     ),
   )
 
@@ -61,19 +73,33 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxCollateral: undefined,
   maxBorrowed: undefined,
   maxDebt: undefined,
+  routeId: undefined,
+  leverageEnabled: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
+
+const useChartPricesCallback = (
+  params: BorrowMoreParams,
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
+  enabled: boolean | undefined,
+) => {
+  const { data } = useBorrowMorePrices(params, enabled)
+  useEffect(() => onPricesUpdated(data), [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
+}
 
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onBorrowedMore,
+  onSuccess,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
-  onBorrowedMore?: NonNullable<OnBorrowedMore>
+  onSuccess?: NonNullable<OnBorrowedMore>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -89,6 +115,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
+  const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
+  const routeRequired = !!implementation && isRouterRequired(implementation)
 
   const {
     onSubmit,
@@ -100,29 +128,46 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   } = useBorrowMoreMutation({
     network,
     marketId,
-    onBorrowedMore,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })
 
+  useChartPricesCallback(params, onPricesUpdated, enabled)
   useCallbackAfterFormUpdate(form, resetBorrow)
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
+  const isPending = formState.isSubmitting || isBorrowing
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isBorrowing,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid || isPending,
     borrowToken,
     collateralToken,
     isBorrowed,
     borrowError,
     txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
-    formErrors,
+    formErrors: useFormErrors(formState),
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: borrowToken,
+      tokenOut: collateralToken,
+      amountIn: decimalSum(params.debt, params.userBorrowed),
+      ...pick(params, 'slippage', 'routeId'),
+      enabled: routeRequired,
+      onChange: async (route: RouteResponse | undefined) => {
+        updateForm(form, { routeId: route?.id })
+        await invalidateOrRefetchBorrowMoreRouteQueries(route, { ...params, routeId: route?.id })
+      },
+    }),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
-    health: useBorrowMoreHealth(params, enabled && !!values.debt),
+    leverage: mapQuery(
+      useBorrowMoreFutureLeverage(params, isLeverageBorrowMore(market, values.leverageEnabled)),
+      (value) => value,
+    ),
   }
 }

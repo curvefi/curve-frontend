@@ -1,19 +1,23 @@
-import type { Suite } from 'vest'
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { type NetworkDict } from '@/llamalend/llamalend.types'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
+import { useCreateLoanIsApproved } from './create-loan-approved.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanApproveEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
 type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanApproveEstimateGasQuery<T>>
 
-const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
+const {
+  useQuery: useCreateLoanApproveEstimateGas,
+  invalidate: invalidateCreateLoanApproveEstimateGasQuery,
+  refetchQuery: refetchCreateLoanApproveEstimateGasQuery,
+} = queryFactory({
   queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -28,34 +32,95 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
     userCollateral = '0',
     leverageEnabled,
   }: CreateLoanApproveEstimateGasQuery) => {
-    const market = getLlamaMarket(marketId)
-    return !leverageEnabled
-      ? await market.estimateGas.createLoanApprove(userCollateral)
-      : market instanceof LendMarketTemplate
-        ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-        : market.leverageV2.hasLeverage()
-          ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-          : await market.leverage.estimateGas.createLoanApprove(userCollateral)
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.createLoanApprove({ userCollateral, userBorrowed })
+      case 'V1':
+      case 'V2':
+        return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+      case 'V0':
+      case 'unleveraged':
+        return await impl.estimateGas.createLoanApprove(userCollateral)
+    }
   },
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: false }) as Suite<
-    keyof CreateLoanApproveEstimateGasQuery,
-    string
-  >,
+  category: 'llamalend.createLoan',
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
-// todo: expand this to consider estimation after approval, see `useRepayEstimateGas`
-export const useCreateLoanEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: GasEstimateParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const { chainId } = query
-  const { data: estimate, isLoading: estimateLoading, error } = useCreateLoanApproveEstimateGas(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
-  return { data, isLoading: estimateLoading || conversionLoading, error: error ?? estimateError }
-}
+const {
+  useQuery: useCreateLoanEstimateGasQuery,
+  invalidate: invalidateCreateLoanEstimateGasQuery,
+  refetchQuery: refetchCreateLoanEstimateGasQuery,
+} = queryFactory({
+  queryKey: ({
+    chainId,
+    marketId,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
+    leverageEnabled,
+    range,
+    slippage,
+    routeId,
+  }: GasEstimateParams) =>
+    [
+      ...rootKeys.market({ chainId, marketId }),
+      'estimateGas.createLoan',
+      { userBorrowed },
+      { userCollateral },
+      { debt },
+      { leverageEnabled },
+      { range },
+      { slippage },
+      { routeId },
+    ] as const,
+  queryFn: async ({
+    marketId,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
+    leverageEnabled,
+    range,
+    slippage,
+    routeId,
+  }: CreateLoanApproveEstimateGasQuery): Promise<TGas> => {
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.createLoan({
+          userCollateral,
+          userBorrowed,
+          debt,
+          range,
+          ...parseMutationRoute(routeId, slippage),
+        })
+      case 'V1':
+      case 'V2':
+        return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
+      case 'V0':
+        return await impl.estimateGas.createLoan(userCollateral, debt, range, +slippage)
+      case 'unleveraged':
+        return await impl.estimateGas.createLoan(userCollateral, debt, range)
+    }
+  },
+  category: 'llamalend.createLoan',
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
+  dependencies: (params) => [
+    createLoanMaxReceiveKey(params),
+    ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
+  ],
+})
+
+export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useCreateLoanIsApproved,
+  useApproveEstimate: useCreateLoanApproveEstimateGas,
+  useActionEstimate: useCreateLoanEstimateGasQuery,
+})
+
+export const invalidateCreateLoanEstimateGasQueries = async (params: GasEstimateParams) =>
+  await Promise.all([invalidateCreateLoanApproveEstimateGasQuery(params), invalidateCreateLoanEstimateGasQuery(params)])
+
+export const refetchCreateLoanEstimateGasQueries = async (params: GasEstimateParams) =>
+  await Promise.all([refetchCreateLoanApproveEstimateGasQuery(params), refetchCreateLoanEstimateGasQuery(params)])

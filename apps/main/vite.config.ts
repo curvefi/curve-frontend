@@ -3,17 +3,55 @@ import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import vercel from 'vite-plugin-vercel'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
-const { API_PROXY_TARGET = 'http://localhost:3010', VERCEL_ENV } = process.env
+const {
+  API_PROXY_TARGET = 'http://localhost:3010',
+  SENTRY_AUTH_TOKEN,
+  SENTRY_ORG,
+  SENTRY_PROJECT,
+  GITHUB_SHA,
+} = process.env
+const shouldUploadSourcemaps = !!SENTRY_PROJECT || !!GITHUB_SHA
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig(({ command }) => ({
   // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
-  server: { port: 3000, hmr: true, proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } } },
-  build: { sourcemap: [mode, VERCEL_ENV].some((target) => ['development', 'preview'].includes(target!)) },
+  server: {
+    port: 3000,
+    hmr: true,
+    proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } },
+    ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
+  },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      onwarn: (warn, handler) =>
+        (warn.code === 'INVALID_ANNOTATION' && warn.id?.includes('/node_modules/ox/_esm/core/')) || // ignore `ox` /*#__PURE__*/ annotations
+        (warn.code === 'EVAL' && warn.id?.endsWith('/apps/main/src/main.tsx')) // required eval()
+          ? undefined
+          : handler(warn),
+    },
+  },
   preview: { port: 3000 },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
-  plugins: [react(), svgr(), vercel()],
+  plugins: [
+    react(),
+    svgr(),
+    vercel(),
+    ...(shouldUploadSourcemaps
+      ? [
+          sentryVitePlugin({
+            authToken: SENTRY_AUTH_TOKEN,
+            org: SENTRY_ORG!,
+            project: SENTRY_PROJECT!,
+            release: { name: GITHUB_SHA! },
+            sourcemaps: { assets: './dist/**' },
+            telemetry: false,
+          }),
+        ]
+      : []),
+  ],
   optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
   resolve: {
     alias: [
@@ -22,9 +60,13 @@ export default defineConfig(({ command, mode }) => ({
       { find: '@ui-kit', replacement: resolve(__dirname, '../../packages/curve-ui-kit/src') },
       { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
+      { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
   },
-  define: { 'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"' },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
+    'process.env.PUBLIC_MAINTENANCE_MESSAGE': JSON.stringify(process.env.PUBLIC_MAINTENANCE_MESSAGE),
+  },
   vercel: {
     buildCommand: 'yarn build',
     rewrites: [

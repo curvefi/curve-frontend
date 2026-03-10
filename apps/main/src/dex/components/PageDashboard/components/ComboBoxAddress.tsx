@@ -101,7 +101,7 @@ function ListBox<T extends object>(
   const { listBoxProps } = useListBox(props, state, listBoxRef)
 
   return (
-    <StyledList as="ul" {...listBoxProps} ref={listBoxRef}>
+    <StyledList as="ul" {...(listBoxProps as object)} ref={listBoxRef}>
       {[...state.collection].map((item) => (
         <ListBoxSection key={item.key} section={item} state={state} />
       ))}

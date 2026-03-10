@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ChangeEvent } from 'react'
 import { fn } from 'storybook/test'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -23,7 +23,7 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
           const newValue = event.target.value
           setValue(newValue)
           const isChecked = newValue === 'option1'
-          onChange?.(event as React.ChangeEvent<HTMLInputElement>, isChecked)
+          onChange?.(event as ChangeEvent<HTMLInputElement>, isChecked)
         }}
       >
         <FormControlLabel

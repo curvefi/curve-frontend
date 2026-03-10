@@ -1,4 +1,4 @@
-import { type Amount } from './decimal'
+import type { Amount } from '@primitives/decimal.utils'
 import { getUnitOptions, type Unit } from './units'
 
 // Sometimes API returns overflowed USD values. Don't show them!

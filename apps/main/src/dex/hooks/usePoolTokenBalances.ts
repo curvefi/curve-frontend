@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import type { Address } from 'viem'
 import type { Config } from 'wagmi'
+import type { Address } from '@primitives/address.utils'
 import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import type { FieldsOf } from '@ui-kit/lib'

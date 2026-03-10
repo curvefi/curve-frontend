@@ -44,6 +44,10 @@ export type Chain = (typeof chains)[number]
 
 export const isChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
 
-// Copied from Viem such that you don't actually need a Viem dependency but may also use Ethers.
-export type Hex = `0x${string}`
-export type Address = Hex
+export type PaginationMeta = {
+  page: number
+  /** items/events per page */
+  per_page: number
+  /** total number of items/events available on endpoint */
+  count: number
+}

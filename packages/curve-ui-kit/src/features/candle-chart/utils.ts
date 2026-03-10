@@ -83,42 +83,56 @@ const ABBREVIATION_CUTOFF = 10000 // Values above this are abbreviated (e.g., 15
 const ABBREVIATION_DECIMALS = 2 // Decimals to show when abbreviating (e.g., 15.23K)
 
 /**
- * Formats a price value for the chart's price axis with adaptive decimal precision
- * based on the visible price range. Ensures labels are meaningful whether viewing
- * stablecoins (~$1.00), micro-cap tokens (fractions of a cent), or high-value assets.
+ * Formats a price value for the chart's price axis with ~4 significant digits.
+ * Precision is determined by the smaller of the value's magnitude or the delta (price range),
+ * ensuring meaningful precision for both large price swings and tight ranges (e.g., stablecoin pegs).
  *
  * @param x - The price value to format
- * @param delta - The difference in price between minimum and maximum price in the visible range
+ * @param delta - The price range (max - min) visible on the chart, used to determine precision
  * @returns Formatted price string
  *
  * @example
- * priceFormatter(1500.123, 1000, 2000)    // "1500" (delta >= 1 but 1500 < ABBREVIATION_CUTOFF → 0 decimals)
- * priceFormatter(0.999, 0.987, 1.000)     // "0.9990"  (delta = 0.013 → 4 decimals)
- * priceFormatter(0.00015, 0.0001, 0.0002) // "0.000150" (delta = 0.0001 → 6 decimals)
- * priceFormatter(15000.5, 14000, 16000)   // "15K"     (abbreviated when > 10,000)
+ * // Based on value magnitude (when delta is large):
+ * priceFormatter(1234.5, 1000)    // "1235"    (1000+ → 0 decimals)
+ * priceFormatter(123.456, 100)    // "123.5"   (100-999 → 1 decimal)
+ * priceFormatter(1.23456, 1)      // "1.235"   (1-9 → 3 decimals)
+ *
+ * // Based on delta (when delta is small relative to value):
+ * priceFormatter(1.000234, 0.001) // "1.0002"  (delta determines precision)
+ * priceFormatter(15000.5, 10000)  // "15K"     (abbreviated when > 10,000)
  */
 export const priceFormatter = (x: number, delta: number) => {
-  // Handle invalid delta values (NaN, Infinity, negative, or zero)
-  if (!Number.isFinite(delta) || delta <= 0) {
-    delta = 1 // Safe fallback
+  // Handle zero or invalid values
+  if (!Number.isFinite(x) || x === 0) {
+    return '0'
   }
 
-  return formatNumber(x, {
-    /*
-     * For delta < 1 we're basically looking at the order of magnitude of the delta
-     * to determine how many decimals are needed to show meaningful differences.
-     *
-     * The "+2" accounts for tick spacing (~delta/5), ensuring adjacent ticks
-     * display distinct values. Without it, ticks like 0.987, 0.990, 0.993
-     * would all show as "0.99".
-     *
-     * Examples:
-     * - delta = 0.1   → 2 - floor(-1)    = 3 decimals
-     * - delta = 0.013 → 2 - floor(-1.89) = 4 decimals
-     * - delta = 0.001 → 2 - floor(-3)    = 5 decimals
-     */
-    decimals: delta >= 1 ? (x > ABBREVIATION_CUTOFF ? ABBREVIATION_DECIMALS : 0) : 2 - Math.floor(Math.log10(delta)),
-    abbreviate: x > ABBREVIATION_CUTOFF,
+  if (x > ABBREVIATION_CUTOFF) {
+    return formatNumber(x, {
+      decimals: ABBREVIATION_DECIMALS,
+      abbreviate: true,
+      useGrouping: false,
+    })
+  }
+
+  /*
+   * Determine decimal precision to show ~4 significant digits.
+   * Use delta magnitude when the price range is very tight relative to the value
+   * (important for stablecoin pegs where values ~1.0 but variation is tiny).
+   * Cap at 4 decimals to avoid overly precise displays.
+   */
+  const valueMagnitude = Math.floor(Math.log10(Math.abs(x)))
+  const deltaMagnitude = delta > 0 ? Math.floor(Math.log10(delta)) : valueMagnitude
+  // Only use delta-based precision when range is tight (delta < 1% of value's order of magnitude)
+  const magnitude = deltaMagnitude < valueMagnitude - 1 ? deltaMagnitude : valueMagnitude
+  const decimals = Math.min(4, Math.max(0, 3 - magnitude))
+
+  const formatted = formatNumber(x, {
+    decimals,
+    abbreviate: false,
     useGrouping: false,
   })
+
+  // Remove trailing zeros after decimal point (e.g., "1.200" → "1.2")
+  return String(parseFloat(formatted))
 }

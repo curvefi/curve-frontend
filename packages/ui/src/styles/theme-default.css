@@ -67,7 +67,7 @@ body.theme-default {
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
-  --page--background-color: var(--whitel62);
+  --page--background-color: #f0edeb;
   --page--header--background-color: var(--white);
 
   --layout--home--background-color: var(--whitel98);

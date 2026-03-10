@@ -1,4 +1,11 @@
-import { AppRoute, DEFAULT_PAGES, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
+import {
+  AppRoute,
+  CRVUSD_PAGE_MARKETS_ROUTE,
+  DEFAULT_PAGES,
+  getRouteApp,
+  getRouteTestId,
+  oneAppRoute,
+} from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
   LOAD_TIMEOUT,
@@ -9,10 +16,12 @@ import {
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
-const expectedMainNavHeight = 56
-const expectedSubNavHeight = 42 // 40 + 2px border
-const expectedMobileNavHeight = 56
+const border = 1
+const expectedMainNavHeight = 40
+const expectedSubNavHeight = expectedMainNavHeight
+const expectedMobileNavHeight = 56 + border
 const expectedConnectHeight = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
@@ -35,21 +44,36 @@ describe('Header', () => {
     })
 
     it('should have the right size', () => {
+      const isCrvusdMarketRoute = route.startsWith(CRVUSD_PAGE_MARKETS_ROUTE)
+
+      const expectedHeaderHeight =
+        // crvusd market page route has no subnav
+        (isCrvusdMarketRoute ? expectedMainNavHeight : expectedSubNavHeight + expectedMainNavHeight) + border
+
       cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
-      cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
-      cy.get(`header`)
-        .invoke('outerHeight')
-        .should('equal', expectedSubNavHeight + expectedMainNavHeight)
-      cy.get(`header`)
-        .invoke('outerWidth')
-        .should('equal', viewport[0] - SCROLL_WIDTH)
+
+      if (isCrvusdMarketRoute) {
+        cy.get("[data-testid='subnav']").should('not.exist')
+      } else {
+        cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
+      }
+
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
-      const expectedFooterWidth = Math.min(
-        expectedFooterMaxWidth,
-        viewport[0] - expectedFooterXMargin.desktop - SCROLL_WIDTH,
-      )
-      cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
+      cy.window().then((win) => {
+        // get scroll width dynamically, crvusd page with small header doesn't render a scrollbar
+        const scrollWidth = win.innerWidth - win.document.documentElement.clientWidth
+        const expectedFooterWidth = Math.min(
+          expectedFooterMaxWidth,
+          viewport[0] - expectedFooterXMargin.desktop - scrollWidth,
+        )
+
+        cy.get(`header`)
+          .invoke('outerWidth')
+          .should('equal', viewport[0] - scrollWidth)
+        cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
+      })
     })
 
     it('should switch themes', () => {
@@ -99,20 +123,29 @@ describe('Header', () => {
 
     it(`should have the right size`, () => {
       const breakpoint = viewport[0] < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
+      const expectedHeaderHeight = expectedMobileNavHeight + (isLendMarketDetailRoute(route) ? expectedSubNavHeight : 0)
       const expectedFooterWidth = Math.max(
         expectedFooterMinWidth,
         viewport[0] - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
       )
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height')
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height')
       cy.get(`header`)
         .invoke('outerWidth')
         .should('equal', viewport[0] - SCROLL_WIDTH, 'Header width')
       cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth, 'Footer width')
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height changed')
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height changed')
       cy.get("[data-testid='navigation-connect-wallet']")
         .invoke('outerHeight')
         .should('equal', expectedConnectHeight, 'Connect height')
+    })
+
+    it('should show lend subnav only on lend market pages', () => {
+      if (isLendMarketDetailRoute(route)) {
+        cy.get("[data-testid='lend-market-subnav']").should('be.visible')
+      } else {
+        cy.get("[data-testid='lend-market-subnav']").should('not.exist')
+      }
     })
 
     it('should open the menu and navigate', () => {
@@ -219,5 +252,10 @@ describe('Header', () => {
     cy.get(`[data-testid='menu-item-chain-arbitrum']`).click()
     cy.get(`[data-testid^='menu-item-chain-']`, API_LOAD_TIMEOUT).should('not.exist')
     cy.get(`[data-testid='chain-icon-arbitrum']`).should('be.visible')
+  }
+
+  function isLendMarketDetailRoute(route: AppRoute) {
+    const [app, , page, marketId] = route.split('/')
+    return app === 'lend' && page === LEND_ROUTES.PAGE_MARKETS.replace(/^\//, '') && !!marketId
   }
 })

@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
-import { useMarketOnChainRewards, useMarketPricePerShare } from '@/lend/entities/market-details'
-import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
-import { useUserSupplyBoost } from '@/lend/entities/user-supply-boost'
 import { networks } from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
-import type { Address, Chain } from '@curvefi/prices-api'
+import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
+import { useUserMarketBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
@@ -26,13 +26,14 @@ export const useSupplyPositionDetails = ({
   market,
   marketId,
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
+  const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
   })
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
-  const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
+  const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketVaultPricePerShare({
     chainId,
     marketId,
   })
@@ -40,13 +41,13 @@ export const useSupplyPositionDetails = ({
     chainId,
     marketId,
   })
-  const { data: onChainRewards, isLoading: isOnChainRewardsLoading } = useMarketOnChainRewards({
+  const { data: onChainRewards, isLoading: isOnChainRewardsLoading } = useMarketVaultOnChainRewards({
     chainId,
     marketId,
   })
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({
-    chainId: chainId,
-    marketId: marketId,
+    chainId,
+    marketId,
   })
   const { data: suppliedAssetUsdRate, isLoading: suppliedAssetUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -108,10 +109,16 @@ export const useSupplyPositionDetails = ({
       (averageTotalExtraIncentivesApr ?? 0) +
       (averageSupplyAprCrvMaxBoost ?? 0)
 
+  const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null
+  const depositedAmount =
+    marketPricePerShare && userBalances?.vaultShares && userBalances?.gauge
+      ? Number(marketPricePerShare) * (Number(userBalances.vaultShares) + Number(userBalances.gauge))
+      : null
+
   return {
-    supplyRate: {
+    userSupplyRate: {
       rate: supplyApy,
-      averageRate: averageRate,
+      averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
@@ -135,32 +142,34 @@ export const useSupplyPositionDetails = ({
         : [],
       averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr ?? null,
       extraRewards: campaigns,
-      loading: islendingSnapshotsLoading || isOnChainRewardsLoading || isUserBalancesLoading || isMarketRatesLoading,
+      loading:
+        islendingSnapshotsLoading ||
+        isOnChainRewardsLoading ||
+        isUserBalancesLoading ||
+        isMarketRatesLoading ||
+        !isHydrated,
     },
     boost: {
       value: userSupplyBoost,
-      loading: isUserSupplyBoostLoading,
+      loading: isUserSupplyBoostLoading || !isHydrated,
     },
     shares: {
-      value: userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null,
+      value: sharesValue,
       staked: userBalances?.gauge ? Number(userBalances.gauge) : null,
-      loading: isUserBalancesLoading,
+      loading: isUserBalancesLoading || !isHydrated,
     },
     supplyAsset: {
       symbol: market?.borrowed_token.symbol,
       address: market?.borrowed_token.address,
       usdRate: suppliedAssetUsdRate,
-      depositedAmount:
-        marketPricePerShare && userBalances?.vaultShares && userBalances?.gauge
-          ? Number(marketPricePerShare) * (Number(userBalances.vaultShares) + Number(userBalances.gauge))
-          : null,
+      depositedAmount,
       depositedUsdValue:
         suppliedAssetUsdRate && marketPricePerShare && userBalances?.vaultShares && userBalances?.gauge
           ? Number(marketPricePerShare) *
             (Number(userBalances.vaultShares) + Number(userBalances.gauge)) *
             suppliedAssetUsdRate
           : null,
-      loading: isMarketPricePerShareLoading || suppliedAssetUsdRateLoading || isUserBalancesLoading,
+      loading: isMarketPricePerShareLoading || suppliedAssetUsdRateLoading || isUserBalancesLoading || !isHydrated,
     },
   }
 }

@@ -4,6 +4,7 @@ import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -32,6 +33,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible,
   chips,
   searchText,
+  disableSearchAutoFocus,
   onSearch,
 }: {
   leftChildren: ReactNode
@@ -44,17 +46,20 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   searchText: string // text to search for, only used for mobile
+  disableSearchAutoFocus?: boolean
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
-  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
+  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
+  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
+  const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
+
   return (
     <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
@@ -70,6 +75,16 @@ export const TableFilters = <ColumnIds extends string>({
           gap={Spacing.xs}
           flexWrap="wrap"
         >
+          {hasSearchBar && (
+            <TableSearchField
+              value={searchValue}
+              onChange={setSearchValue}
+              testId={filterExpandedKey}
+              {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
+              isExpanded={isExpandedOrValue}
+              disableAutoFocus={disableSearchAutoFocus}
+            />
+          )}
           {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
@@ -88,15 +103,6 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
           {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
-          {hasSearchBar && (
-            <TableSearchField
-              value={searchText}
-              onChange={onSearch}
-              testId={filterExpandedKey}
-              toggleExpanded={toggleSearchExpanded}
-              isExpanded={isExpandedOrValue}
-            />
-          )}
         </Grid>
         <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
           {chips}

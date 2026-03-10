@@ -1,7 +1,7 @@
 import { hashFn } from 'wagmi/query'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
+import type { Persister } from '@tanstack/query-persist-client-core'
 import { QueryClient } from '@tanstack/react-query'
-import { isCypress } from '@ui-kit/utils'
 import { mutationCache, queryCache } from './cache'
 
 export const queryClient = new QueryClient({
@@ -16,9 +16,4 @@ export const queryClient = new QueryClient({
   mutationCache,
 })
 
-export const persister =
-  typeof window !== 'undefined' && !isCypress
-    ? createSyncStoragePersister({
-        storage: window.localStorage,
-      })
-    : null
+export const persister: Persister = createAsyncStoragePersister({ storage: window.localStorage })

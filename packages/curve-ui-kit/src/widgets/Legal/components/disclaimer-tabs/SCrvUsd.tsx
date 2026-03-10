@@ -1,11 +1,10 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
@@ -30,38 +29,14 @@ export const SCrvUsd = ({ currentApp, network }: TabProps) => (
         mobile: 'column',
         tablet: 'row',
       }}
-      gap={Spacing.xs}
-      sx={{
-        marginInline: Spacing.md,
-      }}
+      gap={Spacing.md}
+      sx={{ marginInline: Spacing.md }}
     >
-      <Button
-        component={Link}
-        variant="link"
-        href="https://docs.curve.finance/scrvusd/overview/"
-        target="_blank"
-        endIcon={<ArrowOutwardIcon />}
-        sx={{
-          padding: Spacing.xs,
-          '&': { fontWeight: '500' },
-        }}
-      >
-        {t`scrvUSD protocol docs`}
-      </Button>
-
-      <Button
-        component={Link}
-        variant="link"
+      <ExternalLink href="https://docs.curve.finance/scrvusd/overview/" label={t`scrvUSD protocol docs`} />
+      <ExternalLink
         href="https://docs.curve.finance/assets/pdf/ChainSecurity_Curve_scrvUSD_audit.pdf"
-        target="_blank"
-        endIcon={<ArrowOutwardIcon />}
-        sx={{
-          padding: Spacing.xs,
-          '&': { fontWeight: '500' },
-        }}
-      >
-        {t`scrvUSD smart contract audits`}
-      </Button>
+        label={t`scrvUSD smart contract audits`}
+      />
     </Stack>
 
     <Header>{t`crvUSD Dependency`}</Header>

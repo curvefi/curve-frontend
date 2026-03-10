@@ -8,12 +8,13 @@ import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { type ChainId } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,4 +1,5 @@
-import type { Address, Chain } from '..'
+import type { Address } from '@primitives/address.utils'
+import type { Chain } from '..'
 
 export type GetOraclesResponse = {
   last_recorded_block: number

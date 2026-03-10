@@ -1,9 +1,15 @@
-import { styled, css } from 'styled-components'
+import type { ComponentProps, ComponentPropsWithRef } from 'react'
+import { styled, css, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
+import type { IconProps } from '@ui/Icon/Icon'
 import { IconButton } from '@ui/IconButton'
 
-export const DescriptionChip = styled.p`
+type PProps = ComponentPropsWithRef<'p'>
+type BoxComponentProps = ComponentProps<typeof Box>
+type IconButtonComponentProps = ComponentProps<typeof IconButton>
+
+export const DescriptionChip: IStyledComponent<'web', PProps> = styled.p`
   font-size: var(--font-size-2);
   font-weight: 500;
 `
@@ -22,7 +28,7 @@ const actionStyles = css`
     background-color: var(--button_icon--hover--background-color);
   }
 `
-export const StyledIconButton = styled(IconButton)`
+export const StyledIconButton: IStyledComponent<'web', IconButtonComponentProps> = styled(IconButton)`
   ${actionStyles}
 `
 
@@ -31,7 +37,7 @@ type StatsProps = {
   padding?: boolean
 }
 
-export const StyledStats = styled(Box)<StatsProps>`
+export const StyledStats: IStyledComponent<'web', StatsProps & BoxComponentProps> = styled(Box)<StatsProps>`
   align-items: center;
   display: flex;
   padding: var(--spacing-1);
@@ -51,7 +57,7 @@ export const StyledStats = styled(Box)<StatsProps>`
   }}
 `
 
-export const StyledInformationSquare16 = styled(Icon)`
+export const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
   opacity: 0.4;
 
   &:hover {

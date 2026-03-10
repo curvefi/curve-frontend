@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Link from '@mui/material/Link'
 import { Link as TanstackLink } from '@tanstack/react-router'
 import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
@@ -6,7 +7,7 @@ import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
  * InlineLink component is a link that is displayed inline with text.
  * Tanstack Link manages both internal and external links
  */
-export const InlineLink = ({ to, children }: { to?: string; children: React.ReactNode }) => {
+export const InlineLink = ({ to, children }: { to?: string; children: ReactNode }) => {
   const isExternal = to?.startsWith('http')
   return (
     <Link

@@ -9,6 +9,7 @@ module.exports = {
   ],
   plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint', 'react', 'react-hooks', 'react-refresh'],
   rules: {
+    'object-shorthand': 'warn',
     'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
     'react/react-in-jsx-scope': 'off', // Not needed in React 17+
@@ -24,7 +25,7 @@ module.exports = {
         // this syntax is confusing: 'target' is importing, 'from' is imported
         zones: [
           { from: 'apps', target: 'packages' }, // packages cannot import apps
-          ...['dex', 'dao', 'lend', 'loan', 'llamalend'].map((importedApp, index, importingApp) => ({
+          ...['dex', 'dao', 'lend', 'loan', 'llamalend', 'bridge'].map((importedApp, index, importingApp) => ({
             target: importingApp
               .filter(
                 // target ==> forbid import all apps except itself. Allow lend/loan apps to import llamalend
@@ -79,6 +80,21 @@ module.exports = {
           caseInsensitive: true,
         },
         'newlines-between': 'never',
+      },
+    ],
+    'no-restricted-syntax': [
+      'error',
+      {
+        message:
+          'Do not call .setValue() directly on react-hook-form values. Use `updateForm` from @ui-kit/utils/react-form.utils.',
+        selector:
+          "Program:has(TSTypeReference[typeName.name='UseFormReturn']) CallExpression[callee.type='MemberExpression'][callee.property.name='setValue']",
+      },
+      {
+        message:
+          'Do not call .trigger() directly on react-hook-form values. Use `updateForm` from @ui-kit/utils/react-form.utils.',
+        selector:
+          "Program:has(TSTypeReference[typeName.name='UseFormReturn']) CallExpression[callee.type='MemberExpression'][callee.property.name='trigger']",
       },
     ],
   },

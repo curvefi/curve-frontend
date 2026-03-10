@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { type Amount } from './decimal'
+import type { Amount } from '@primitives/decimal.utils'
 import {
   defaultNumberFormatter,
   formatNumber,

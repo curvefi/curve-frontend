@@ -1,27 +1,35 @@
 import lodash from 'lodash'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
+import Stack from '@mui/material/Stack'
+import { fromEntries } from '@primitives/objects.utils'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
+import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
-import { type LlamaMarketsResult } from '../../queries/market-list/llama-markets'
+import type { LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
+import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
+import { UserPositionSummary } from './UserPositionsSummary'
+
 const { isEqual } = lodash
+
+const searchKey = 'search-user-positions' as const
 
 const LOCAL_STORAGE_KEYS = {
   // not using the t`` here as the value is used as a key in the local storage
@@ -39,48 +47,100 @@ const SORT_QUERY_FIELD = {
   [MarketRateType.Supply]: 'userSortSupply',
 }
 
+/** This hook for tabs inside the datatable is temporary, we want to get rid of the tabs altogether */
+const useTabs = (results: LlamaMarketsResult | undefined) => {
+  const { markets = [], userHasPositions } = results ?? {}
+
+  // Calculate total positions number across all markets (independent of filters)
+  const openPositionsCount = useMemo(
+    (): Record<MarketRateType, string | undefined> =>
+      fromEntries(
+        Object.values(MarketRateType).map((type) => [
+          type,
+          markets && `${markets.filter((market) => market.userHasPositions?.[type]).length}`,
+        ]),
+      ),
+    [markets],
+  )
+
+  // Define tabs with position counts
+  const tabs: TabOption<MarketRateType>[] = useMemo(
+    () => [
+      {
+        value: MarketRateType.Borrow,
+        label: t`Borrowing`,
+        suffix: openPositionsCount[MarketRateType.Borrow],
+      },
+      {
+        value: MarketRateType.Supply,
+        label: t`Lending`,
+        suffix: openPositionsCount[MarketRateType.Supply],
+      },
+    ],
+    [openPositionsCount],
+  )
+
+  // Show the first tab that has user positions by default, or the first tab if none are found
+  const defaultTab = useMemo(
+    () => tabs.find(({ value }) => userHasPositions?.Lend[value] || userHasPositions?.Mint[value]) ?? tabs[0],
+    [userHasPositions, tabs],
+  )
+  const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
+
+  // Update tab when defaultTab changes (e.g., when user positions data loads)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTab(defaultTab.value)
+  }, [defaultTab.value])
+
+  return [tab, setTab, tabs] as const
+}
+
 const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
-
-const useDefaultUserFilter = (type: MarketRateType) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
 
 export type UserPositionsTableProps = {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   isError: boolean
   loading: boolean
-  tab: MarketRateType
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: UserPositionsTableProps) => {
-  const { markets: data = [], userHasPositions } = result ?? {}
-  const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
+export const UserPositionsTable = ({ onReload, result, loading, isError }: UserPositionsTableProps) => {
+  const { markets = [], userHasPositions } = result ?? {}
+  const [tab, setTab, tabs] = useTabs(result)
 
-  const defaultFilters = useDefaultUserFilter(tab)
+  const userData = useMemo(() => markets.filter((market) => market.userHasPositions?.[tab]), [markets, tab])
+
   const title = LOCAL_STORAGE_KEYS[tab]
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
-    title,
-    columns: LlamaMarketColumnId,
+
+  const {
+    globalFilter,
+    setGlobalFilter,
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters,
     defaultFilters,
-    scope: tab.toLowerCase(),
-  })
+  } = useFilters({ columns: LlamaMarketColumnId, scope: tab.toLowerCase(), searchKey })
+  const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
+  const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain]
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data: userData,
-    state: { expanded, sorting, columnVisibility, columnFilters },
+    state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
+    globalFilterFn,
     ...getTableOptions(result),
   })
 
@@ -102,33 +162,50 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
     >
-      <TableFilters<LlamaMarketColumnId>
-        filterExpandedKey={title}
-        leftChildren={<TableSearchField value={searchText} onChange={onSearch} testId={`${title}-search`} isExpanded />}
-        loading={loading}
-        onReload={onReload}
-        visibilityGroups={columnSettings}
-        toggleVisibility={toggleVisibility}
-        searchText={searchText}
-        onSearch={onSearch}
-        collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
-        chips={
-          <>
-            <LlamaChainFilterChips data={userData} {...filterProps} />
-            <LlamaListChips
-              hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
-              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-              resetFilters={resetFilters}
-              userHasPositions={userHasPositions}
-              onSortingChange={onSortingChange}
-              sortField={sortField}
-              data={userData}
-              userPositionsTab={tab}
-              {...filterProps}
-            />
-          </>
-        }
-      />
+      <Stack>
+        <TableFilters<LlamaMarketColumnId>
+          filterExpandedKey={title}
+          loading={loading}
+          onReload={onReload}
+          visibilityGroups={columnSettings}
+          toggleVisibility={toggleVisibility}
+          hasSearchBar
+          disableSearchAutoFocus
+          searchText={globalFilter}
+          onSearch={setGlobalFilter}
+          leftChildren={<TableFiltersTitles title={t`Your Positions`} />}
+          collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
+          chips={
+            <>
+              <LlamaChainFilterChips data={userData} {...filterProps} />
+              <LlamaListChips
+                hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
+                hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+                resetFilters={resetFilters}
+                onSortingChange={onSortingChange}
+                sortField={sortField}
+                data={userData}
+                userPositionsTab={tab}
+                {...filterProps}
+              />
+            </>
+          }
+        />
+        <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          // needed for the bottom border to be the same height as the tabs
+          alignItems="stretch"
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+            flexGrow: 1,
+            borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
+          }}
+        >
+          <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} overflow="standard" />
+        </Stack>
+      </Stack>
     </DataTable>
   )
 }

@@ -64,9 +64,6 @@ export type QuickSwapSlice = {
       isRefetch?: boolean,
     ): Promise<void>
 
-    // select token list
-    setPoolListFormValues(hideSmallPools: boolean): void
-
     // steps
     fetchStepApprove(
       activeKey: string,
@@ -112,7 +109,6 @@ export const createQuickSwapSlice = (
       const state = get()
       const sliceState = state[sliceKey]
 
-      let activeKey = sliceState.activeKey
       const { chainId, signerAddress } = curve
       const { fromAddress, toAddress } = searchedParams
 
@@ -126,7 +122,7 @@ export const createQuickSwapSlice = (
         })
 
         cFormValues.fromAmount = userBalance
-        activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
+        const activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
@@ -209,6 +205,7 @@ export const createQuickSwapSlice = (
             routesAndOutput: {
               [cActiveKey]: {
                 ...resp,
+                router: 'curve',
                 loading: false,
                 exchangeRates: getRouterSwapsExchangeRates(exchangeRates, searchedParams, tokensNameMapper),
                 fetchedToAmount: '',
@@ -342,13 +339,6 @@ export const createQuickSwapSlice = (
       // api calls
       await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
       void sliceState.fetchEstGasApproval(curve, searchedParams)
-    },
-
-    // select token list
-    setPoolListFormValues: (hideSmallPools) => {
-      const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
-      storedPoolListFormValues.hideSmallPools = hideSmallPools
-      get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
 
     // steps

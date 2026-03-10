@@ -7,6 +7,9 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
+import { refetchPoolIds } from '../queries/pool-ids.query'
+import { refetchPoolTvls } from '../queries/pool-tvl.query'
+import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -91,24 +94,15 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    const networks = await fetchNetworks()
-    const network = networks[chainId]
+    await fetchNetworks() // Pool ids have a dependency on networks
+    const poolIds = await refetchPoolIds({ chainId })
 
-    // get poolList
-    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-
-    // if no pools found for network, set tvl, volume and pools state to empty object
-    if (!poolIds.length) {
-      state.pools.setEmptyPoolListDefault(chainId)
-      state.tokens.setEmptyPoolListDefault(curveApi)
-      return
-    }
-
-    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
-    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
-      chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
-
-    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
+    // After rehydration is completed by the refetch above, any future query refactored
+    // out of `fetchPools` that depends on all pool ids should be manually invalidated.
+    // You could argue that hooks with 'isHydrated' in the `enabled` parameter would suffice,
+    // but we're still encountering situations where not all data is properly loaded.
+    await Promise.all([refetchPoolVolumes({ chainId }), refetchPoolTvls({ chainId })])
+    await state.pools.fetchPools(curveApi, poolIds)
 
     log('Hydrating DEX - Complete')
   },

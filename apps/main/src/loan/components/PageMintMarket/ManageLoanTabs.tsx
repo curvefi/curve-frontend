@@ -2,11 +2,10 @@ import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/A
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionTab'
-import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
-import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
-import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
+import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
+import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import { hasDeleverage } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { CollateralDecrease } from '@/loan/components/PageMintMarket/CollateralDecrease'
 import { CollateralIncrease } from '@/loan/components/PageMintMarket/CollateralIncrease'
 import { LoanDecrease } from '@/loan/components/PageMintMarket/LoanDecrease'
@@ -15,19 +14,36 @@ import { LoanIncrease } from '@/loan/components/PageMintMarket/LoanIncrease'
 import { LoanLiquidate } from '@/loan/components/PageMintMarket/LoanLiquidate'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import type { Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-const ImproveHealthTab = ({ rChainId, market }: ManageLoanProps) => (
-  <ImproveHealth
-    {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
+// casting the networks for the loan app so we don't need to make the whole form generic
+const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
+type MintManageLoanProps = ManageLoanProps & {
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+}
+
+const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+  <BorrowMoreForm
+    networks={networks}
+    chainId={rChainId}
+    market={market ?? undefined}
+    enabled={isReady}
+    onPricesUpdated={onPricesUpdated}
   />
 )
 
-const ClosePositionTab = ({ rChainId, market }: ManageLoanProps) => (
-  <ClosePosition
-    {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
+const RepayTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+  <RepayForm
+    networks={networks}
+    chainId={rChainId}
+    market={market ?? undefined}
+    enabled={isReady}
+    onPricesUpdated={onPricesUpdated}
   />
 )
 
@@ -55,22 +71,18 @@ const MintManageLegacyMenu = [
     component: LoanDeleverage,
     visible: ({ market }) => !market || hasDeleverage(market),
   },
-] satisfies FormTab<ManageLoanProps>[]
+] satisfies FormTab<MintManageLoanProps>[]
 
 const MintManageNewMenu = [
   {
     value: 'borrow',
     label: t`Borrow`,
-    component: ({ rChainId, market, isReady }: ManageLoanProps) => (
-      <BorrowMoreForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
-    ),
+    component: BorrowTab,
   },
   {
     value: 'repay',
     label: t`Repay`,
-    component: ({ rChainId, market, isReady }: ManageLoanProps) => (
-      <RepayForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
-    ),
+    component: RepayTab,
   },
   {
     value: 'collateral',
@@ -79,36 +91,59 @@ const MintManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, market, isReady }: ManageLoanProps) => (
+        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
           <AddCollateralForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, market, isReady }: ManageLoanProps) => (
+        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
           <RemoveCollateralForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
         ),
       },
     ],
   },
-] satisfies FormTab<ManageLoanProps>[]
+] satisfies FormTab<MintManageLoanProps>[]
 
 const MintManageSoftLiquidationMenu = [
   {
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
     subTabs: [
-      { value: 'improve-health', label: t`Improve health`, component: ImproveHealthTab },
-      { value: 'close-position', label: t`Close position`, component: ClosePositionTab },
+      {
+        value: 'improve-health',
+        label: t`Improve health`,
+        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+          <ImproveHealthForm
+            chainId={rChainId}
+            market={market ?? undefined}
+            networks={softLiqNetworks}
+            enabled={isReady}
+            onPricesUpdated={onPricesUpdated}
+          />
+        ),
+      },
+      {
+        value: 'close-position',
+        label: t`Close position`,
+        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
+          <ClosePositionForm
+            chainId={rChainId}
+            market={market ?? undefined}
+            networks={softLiqNetworks}
+            enabled={isReady}
+          />
+        ),
+      },
     ],
   },
-] satisfies FormTab<ManageLoanProps>[]
+] satisfies FormTab<MintManageLoanProps>[]
 
 export const ManageLoanTabs = ({
   isInSoftLiquidation,
   ...pageProps
-}: ManageLoanProps & { isInSoftLiquidation: boolean | undefined }) => {
+}: MintManageLoanProps & { isInSoftLiquidation: boolean }) => {
   const shouldUseSoftLiquidation = useManageSoftLiquidation() && isInSoftLiquidation
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
@@ -116,5 +151,5 @@ export const ManageLoanTabs = ({
     : shouldUseManageLoanMuiForm
       ? MintManageNewMenu
       : MintManageLegacyMenu
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu == MintManageLegacyMenu} />
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu === MintManageLegacyMenu} />
 }

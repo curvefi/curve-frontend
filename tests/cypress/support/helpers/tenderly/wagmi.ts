@@ -1,6 +1,7 @@
-import { defineChain, http, type Hex } from 'viem'
+import { defineChain, http } from 'viem'
 import { mainnet, arbitrum } from 'viem/chains'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
+import { type Hex } from '@primitives/address.utils'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet'
 import { createTenderlyConnector } from './connector'
 

@@ -1,5 +1,6 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
+import { FetchError } from '@primitives/fetch.utils'
 import {
   QueryFunctionContext,
   queryOptions,
@@ -10,7 +11,7 @@ import {
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
+import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
 import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
@@ -50,6 +51,13 @@ type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [...infer 
       : never // Elements fail the check
   : never // Not an array
 
+/** Specific class of errors thrown from inside queryFn to skip query retries on failure */
+export class NoRetryError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
 /**
  * Reconstructs params from a query key tuple by merging all object entries.
  *
@@ -73,9 +81,7 @@ export function queryFactory<
 >({
   queryFn: runQuery,
   queryKey,
-  staleTime = '5m',
-  gcTime = '10m',
-  refetchInterval,
+  category,
   validationSuite,
   dependencies,
   disableLog,
@@ -84,9 +90,7 @@ export function queryFactory<
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
   validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
-  gcTime?: keyof typeof REFRESH_INTERVAL
-  staleTime?: keyof typeof REFRESH_INTERVAL
-  refetchInterval?: keyof typeof REFRESH_INTERVAL
+  category: QueryCategory
   dependencies?: (params: TParams) => QueryKey[]
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
@@ -94,6 +98,7 @@ export function queryFactory<
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
+      ...QUERY_CATEGORIES[category],
       queryKey: queryKey(params),
       queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => {
         try {
@@ -104,13 +109,14 @@ export function queryFactory<
           throw error
         }
       },
-      gcTime: REFRESH_INTERVAL[gcTime],
-      staleTime: REFRESH_INTERVAL[staleTime],
-      refetchInterval: refetchInterval && REFRESH_INTERVAL[refetchInterval],
       enabled:
         enabled &&
         checkValidity(validationSuite, params) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
+      retry: (failureCount, error) =>
+        !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
+        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
+        failureCount < 3,
       ...options,
     })
   return {

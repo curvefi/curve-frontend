@@ -1,8 +1,8 @@
 import { useEffect, useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Decimal } from '@ui-kit/utils'
 import { formatNumber } from '@ui-kit/utils/number'
 import { DecimalRangeValue, SliderInput } from '../SliderInput'
 

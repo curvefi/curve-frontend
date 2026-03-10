@@ -1,16 +1,10 @@
 import { forwardRef } from 'react'
 import IconButton from '@mui/material/IconButton'
-import { keyframes } from '@mui/material/styles'
 import SvgIcon from '@mui/material/SvgIcon'
-import { Duration, Transition, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { LoadingAnimation, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
-
-const reloadSpin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`
 
 /**
  * A button for controlling the DataTable.
@@ -25,12 +19,7 @@ export const TableButton = forwardRef<
     icon: typeof SvgIcon
   }
 >(function TableButton({ active, icon: Icon, rotateIcon, testId, ...rest }, ref) {
-  const iconProps = rotateIcon && {
-    sx: {
-      animation: `${reloadSpin} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
-      transformOrigin: 'center',
-    },
-  }
+  const iconProps = rotateIcon && { sx: LoadingAnimation }
   active = active || rotateIcon
   return (
     <IconButton

@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { Address } from '@ui-kit/utils'
+import Box from '@mui/material/Box'
+import type { Address } from '@primitives/address.utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { t } from '@ui-kit/lib/i18n'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateAllUserLendingSupplies,
@@ -11,7 +17,9 @@ import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { UserPositionsTabs } from './UserPositionTabs'
+import { UserPositionsTable } from './UserPositionsTable'
+
+const { Spacing } = SizesAndSpaces
 
 /**
  * Creates a callback to reload the markets and user data.
@@ -49,15 +57,31 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
  * Page for displaying the lending markets table.
  */
 export const LlamaMarketsList = () => {
-  const { address } = useConnection()
+  const { connect } = useWallet()
+  const { address, isConnecting } = useConnection()
   const { data, isError, isLoading, isFetching } = useLlamaMarkets(address)
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {(data?.userHasPositions || !address) && (
-        <UserPositionsTabs onReload={onReload} result={data} isError={isError} loading={loading} />
+      {address ? (
+        data?.userHasPositions && (
+          <UserPositionsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+        )
+      ) : (
+        <Box paddingBlock={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <EmptyStateCard
+            action={
+              <ConnectWalletButton
+                label={t`Connect to view positions`}
+                onClick={() => connect()}
+                loading={isConnecting}
+              />
+            }
+          />
+        </Box>
       )}
+
       <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
     </ListPageWrapper>
   )

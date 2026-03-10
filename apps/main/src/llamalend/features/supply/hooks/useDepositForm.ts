@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -15,11 +14,8 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<DepositForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
   depositAmount: undefined,
@@ -30,12 +26,12 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onDeposited,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onDeposited?: NonNullable<DepositOptions['onDeposited']>
+  onSuccess?: NonNullable<DepositOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -55,7 +51,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     defaultValues: emptyDepositForm(),
   })
 
-  const values = watchForm(form)
+  const depositAmount = watchField(form, 'depositAmount')
 
   const params = useDebouncedValue(
     useMemo(
@@ -63,9 +59,9 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
         chainId,
         marketId,
         userAddress,
-        depositAmount: values.depositAmount,
+        depositAmount,
       }),
-      [chainId, marketId, userAddress, values.depositAmount],
+      [chainId, marketId, userAddress, depositAmount],
     ),
   )
 
@@ -76,35 +72,29 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     error: depositError,
     data,
     reset: resetDeposit,
-  } = useDepositMutation({
-    marketId,
-    network,
-    onDeposited,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useDepositMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
 
   useCallbackAfterFormUpdate(form, resetDeposit)
 
   useEffect(() => {
-    form.setValue('maxDepositAmount', maxUserDeposit.data, { shouldValidate: true })
+    updateForm(form, { maxDepositAmount: maxUserDeposit.data })
   }, [form, maxUserDeposit.data])
 
+  const isPending = formState.isSubmitting || isDepositing
   return {
     form,
-    values,
     params,
-    isPending: form.formState.isSubmitting || isDepositing,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid || isPending,
     borrowToken,
     isDeposited,
     depositError,
     txHash: data?.hash,
     max: maxUserDeposit,
     isApproved: useDepositIsApproved(params, enabled),
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

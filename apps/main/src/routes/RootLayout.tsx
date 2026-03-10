@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
 import { useNetworksQuery } from '@/dex/entities/networks'
@@ -14,6 +14,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
+import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
@@ -40,15 +41,22 @@ function useHydrationMethods(): HydratorMap {
   return useMemo(() => ({ crvusd, dex, lend }), [crvusd, dex, lend])
 }
 
+const useBreadcrumbs = (pathname: string, { origin, search } = window.location) =>
+  useEffect(
+    () => addBreadcrumb(`Navigated to ${pathname}`, 'navigation', { origin, pathname, search }),
+    [origin, pathname, search],
+  )
+
 // Inner component that uses TanStack Query hooks
 const NetworkAwareLayout = () => {
   const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
-  const currentApp = getCurrentApp(usePathname())
+  const pathname = usePathname()
+  const currentApp = getCurrentApp(pathname)
   const onChainUnavailable = useOnChainUnavailable(networks)
   const hydrate = useHydrationMethods()
   const config = useWagmiConfig(networks)
-
+  useBreadcrumbs(pathname)
   useLayoutStoreResponsive()
 
   return (

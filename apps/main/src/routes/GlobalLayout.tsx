@@ -3,6 +3,7 @@ import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
+import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { networks as crvusdNetworks } from '@/loan/networks'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -14,23 +15,23 @@ import { ScrollUpButton } from '@ui-kit/shared/ui/ScrollUpButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { Header as Header } from '@ui-kit/widgets/Header'
+import { Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
-const useAppStats = (currentApp: AppName, network: NetworkDef) => {
-  const llamaLendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
-  const isLlamalend = llamaLendApps.includes(currentApp)
+const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', 'llamalend']
 
-  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId }, isLlamalend)
+const useAppStats = (currentApp: AppName, network: NetworkDef) => {
+  const isLlamalendApp = LLAMALEND_APPS.includes(currentApp)
+  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId, currentApp }, isLlamalendApp)
   const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
 
-  return isLlamalend ? llamalendStats : currentApp === 'dex' ? dexStats : []
+  return isLlamalendApp ? llamalendStats : currentApp === 'dex' ? dexStats : []
 }
 
 const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
-  llamalend: APP_LINK.llamalend.routes,
+  llamalend: useLlamalendRoutes(),
   dex: useDexRoutes(network),
   bridge: APP_LINK.bridge.routes,
   analytics: APP_LINK.analytics.routes,

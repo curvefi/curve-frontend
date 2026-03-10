@@ -43,7 +43,7 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
     isLoading: pricesProposalLoading,
     isError: pricesProposalError,
     isSuccess: pricesProposalSuccess,
-  } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType: proposalType })
+  } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType })
   const proposal = proposalsMapper?.[rProposalId] ?? null
 
   const isLoading = pricesProposalLoading || proposalsListLoading
@@ -99,7 +99,7 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  onClick={() => invalidateProposalPricesApi({ proposalId: +voteId, proposalType: proposalType })}
+                  onClick={() => invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
                 />
               </ErrorWrapper>
             )}

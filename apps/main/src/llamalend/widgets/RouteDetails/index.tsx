@@ -1,6 +1,8 @@
+import type { ComponentPropsWithRef } from 'react'
 import { useState } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { Button } from '@ui/Button'
+import type { ButtonProps } from '@ui/Button/types'
 import { TextCaption } from '@ui/TextCaption'
 import { t } from '@ui-kit/lib/i18n'
 import { ExpectedLabel } from './components/ExpectedLabel'
@@ -89,7 +91,11 @@ const SectionTitle = styled(TextCaption).attrs(() => ({ as: 'h3', isBold: true, 
   opacity: 0.8;
 `
 
-export const DetailsButton = styled(Button)<{ $isOpen?: boolean }>`
+type DetailsButtonProps = ButtonProps & { $isOpen?: boolean }
+
+export const DetailsButton: IStyledComponent<'web', DetailsButtonProps & ComponentPropsWithRef<'button'>> = styled(
+  Button,
+)<DetailsButtonProps>`
   align-items: center;
   color: inherit;
   display: inline-flex;

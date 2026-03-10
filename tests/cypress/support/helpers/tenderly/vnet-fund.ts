@@ -1,5 +1,5 @@
-import type { Hex } from 'viem'
 import { oneInt } from '@cy/support/generators'
+import type { Hex } from '@primitives/address.utils'
 
 /**
  * Funds ETH to multiple addresses in a Tenderly virtual testnet.

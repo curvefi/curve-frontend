@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import { TITLE } from '@/loan/constants'
 import { crvusdjsApi as curvejsApi } from '@/loan/lib/apiCrvusd'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName, IRates } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
@@ -43,9 +43,9 @@ export type LoanPriceInfo = {
 }
 export type LoanParameter = {
   fee: string
-  future_rate?: string
   admin_fee: string
-  rate: string
+  rates: IRates
+  future_rates?: IRates
   liquidation_discount: string
   loan_discount: string
 }

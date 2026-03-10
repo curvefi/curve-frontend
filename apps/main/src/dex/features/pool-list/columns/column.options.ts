@@ -1,4 +1,3 @@
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { PoolColumnId } from './index'
@@ -14,8 +13,14 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         enabled: true,
       },
       {
-        label: t`Rewards`,
-        columns: notFalsy(PoolColumnId.RewardsBase, PoolColumnId.RewardsOther),
+        label: t`Rewards Base`,
+        columns: [PoolColumnId.RewardsBase],
+        active: !isLite,
+        enabled: true,
+      },
+      {
+        label: t`Rewards Other`,
+        columns: [PoolColumnId.RewardsOther],
         active: true,
         enabled: true,
       },
@@ -40,3 +45,5 @@ export const POOL_LIST_COLUMN_OPTIONS = {
   lite: createVisibility({ isLite: true }),
 }
 export type PoolColumnVariant = keyof typeof POOL_LIST_COLUMN_OPTIONS
+
+export const getDefaultSort = (isLite: boolean) => [{ id: isLite ? PoolColumnId.Tvl : PoolColumnId.Volume, desc: true }]

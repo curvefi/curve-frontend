@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import { StoreApi } from 'zustand'
 import type {
@@ -15,14 +14,15 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/compone
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
-import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
+import { fulfilledValue, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { Chain } from '@ui-kit/utils'
+import { Chain, getErrorMessage } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { userPoolRewardCrvApy } from '../queries/user-pool-info.query'
+import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
 type StateKey = keyof typeof DEFAULT_STATE

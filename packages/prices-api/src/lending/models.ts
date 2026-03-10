@@ -1,4 +1,5 @@
-import type { Address, Chain } from '..'
+import type { Address } from '@primitives/address.utils'
+import type { Chain } from '..'
 
 type Bar = {
   value: number

@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
-import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
+import type { PartialRecord } from '@primitives/objects.utils'
 import {
   type Column,
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -64,6 +65,7 @@ export const getTableOptions = <T>(result: T | undefined) => ({
   // only pass the filtered model once loaded, it causes an error: https://github.com/TanStack/table/issues/5026
   getFilteredRowModel: result && getFilteredRowModel<T>(),
   getExpandedRowModel: getExpandedRowModel<T>(),
+  getPaginationRowModel: getPaginationRowModel<T>(),
   autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data
   maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
 })

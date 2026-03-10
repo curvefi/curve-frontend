@@ -1,4 +1,5 @@
-import { styled } from 'styled-components'
+import type { ComponentProps, ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { Box } from '@ui/Box'
@@ -90,7 +91,10 @@ const TokenLabelLink = styled(ExternalLink)`
   text-decoration: none;
 `
 
-export const TokenBalancePercent = styled(Chip)`
+type SpanProps = ComponentPropsWithRef<'span'>
+type ChipComponentProps = ComponentProps<typeof Chip>
+
+export const TokenBalancePercent: IStyledComponent<'web', ChipComponentProps> = styled(Chip)`
   align-items: center;
   display: inline-flex;
   justify-content: right;
@@ -102,7 +106,7 @@ export const TokenBalancePercent = styled(Chip)`
   }
 `
 
-export const ExternalLinkToken = styled(TextEllipsis)`
+export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `

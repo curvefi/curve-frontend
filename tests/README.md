@@ -32,6 +32,13 @@ yarn cy:run:e2e
 yarn cy:run:component
 ```
 
+To run a specific Cypress spec (via the `cy` script):
+
+```sh
+yarn cy run --e2e --spec cypress/e2e/<path>/<test>.cy.ts
+yarn cy run --component --spec cypress/component/<path>/<test>.cy.tsx
+```
+
 ### Folder Structure
 
 Tests for each DApp are created in the corresponding directory:

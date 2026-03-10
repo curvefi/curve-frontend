@@ -1,3 +1,4 @@
+import { keyframes } from '@mui/material/styles'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 export const Grays = {
@@ -139,7 +140,8 @@ export const Duration = {
   Delay: 100,
   Flicker: 1000,
   Focus: 50,
-  FormDebounce: 250,
+  FormDebounce: 350,
+  TransactionPollTimeout: 2 * 60 * 1000, // 2 minutes
   Toast: { success: 5000, info: 5000, warning: 10000, error: 10000 },
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
@@ -148,7 +150,16 @@ export const Duration = {
     Daily: TIME_FRAMES.DAY_MS,
     Monthly: TIME_FRAMES.MONTH_MS,
   },
+  AverageRates: {
+    Weekly: 7,
+    Monthly: 30,
+  },
 }
 
 export const Transition = `ease-out`
 export const TransitionFunction = `${Transition} ${Duration.Transition}ms`
+
+export const LoadingAnimation = {
+  animation: `${keyframes` 100% { transform: rotate(360deg); }`} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
+  transformOrigin: 'center',
+}

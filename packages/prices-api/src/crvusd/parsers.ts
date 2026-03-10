@@ -1,4 +1,4 @@
-import { fromEntries, recordEntries } from '../objects.util'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -25,11 +25,13 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   stablecoinToken: {
     symbol: x.stablecoin_token.symbol,
     address: x.stablecoin_token.address,
     rebasingYield: x.stablecoin_token.rebasing_yield,
+    rebasingYieldApr: x.stablecoin_token.rebasing_yield_apr,
   },
   fees: {
     pending: x.pending_fees,
@@ -45,6 +47,8 @@ export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   timestamp: toDate(x.dt),
   rate: x.rate,
+  borrowApy: x.borrow_apy, // value already in percentage: 0.12 => 0.12%
+  borrowApr: x.borrow_apr, // value already in percentage: 0.12 => 0.12%
   nLoans: x.n_loans,
   minted: x.minted,
   redeemed: x.redeemed,
@@ -68,11 +72,13 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   stablecoinToken: {
     symbol: x.stablecoin_token.symbol,
     address: x.stablecoin_token.address,
     rebasingYield: x.stablecoin_token.rebasing_yield,
+    rebasingYieldApr: x.stablecoin_token.rebasing_yield_apr,
   },
   maxLtv: x.max_ltv,
 })

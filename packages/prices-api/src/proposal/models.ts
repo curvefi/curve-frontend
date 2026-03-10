@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address } from '@primitives/address.utils'
 
 export const proposalTypes = ['ownership', 'parameter'] as const
 export type ProposalType = (typeof proposalTypes)[number]

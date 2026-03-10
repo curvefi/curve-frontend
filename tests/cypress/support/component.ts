@@ -1,6 +1,7 @@
 import '@cy/eip6963-test-setup'
 import '@/global-extensions'
 import { mount } from 'cypress/react'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 
 /** Global Cypress exception handler to ignore specific known errors. */
 Cypress.on(
@@ -16,3 +17,7 @@ beforeEach(() => {
   // Intercept default crypto image to prevent 404s in all component tests using TokenIcon component
   cy.intercept('GET', '/images/default-crypto.png', { fixture: 'images/default-crypto.png' })
 })
+
+if (Cypress.config('isInteractive')) {
+  skipTestsAfterFailure()
+}

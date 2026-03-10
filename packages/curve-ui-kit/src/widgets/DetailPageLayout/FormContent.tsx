@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
  * Wrapper that applies background and padding to the form content, including optional header and footer.
  * @param children The main content of the form
  * @param header The optional subtabs, used in legacy forms
- * @param footer The footer of the form outside the background area, used in new forms for the info accordion
+ * @param footer The footer of the form outside the background area, used in new forms for the action info list
  */
 export const FormContent = ({
   children,

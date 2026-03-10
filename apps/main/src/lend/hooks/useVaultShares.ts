@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { ChainId } from '@/lend/types/lend.types'
+import { useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
-import { useMarketPricePerShare } from '../entities/market-details'
 
 function formatNumberWithPrecision(value: number, precisionDigits: number) {
   const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
@@ -13,7 +13,7 @@ function formatNumberWithPrecision(value: number, precisionDigits: number) {
 
 export function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const { data: pricePerShare, error: errorPricePerShare } = useMarketPricePerShare({
+  const { data: pricePerShare, error: errorPricePerShare } = useMarketVaultPricePerShare({
     chainId: rChainId,
     marketId: rOwmId,
   })

@@ -1,28 +1,29 @@
 import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
-import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
-import { AddCollateralInfoAccordion } from './AddCollateralInfoAccordion'
+import { AddCollateralInfoList } from './AddCollateralInfoList'
 
 export const AddCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  onAdded,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
+  onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
 }) => {
   const network = networks[chainId]
 
@@ -30,6 +31,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     action,
     values,
@@ -38,18 +40,16 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     collateralToken,
     borrowToken,
     txHash,
-  } = useAddCollateralForm({
-    market,
-    network,
-    onAdded,
-  })
+    maxCollateral,
+  } = useAddCollateralForm({ market, network, onSuccess })
 
   return (
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <AddCollateralInfoAccordion
+      footer={
+        <AddCollateralInfoList
+          form={form}
           params={params}
           values={values}
           collateralToken={collateralToken}
@@ -68,10 +68,11 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           form={form}
           testId="add-collateral-input"
           network={network}
+          max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
         />
       </Stack>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={action.isSuccess}
         error={action.error}
         txHash={txHash}
@@ -84,7 +85,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={isDisabled}
         data-testid="add-collateral-submit-button"
       >
         {isPending

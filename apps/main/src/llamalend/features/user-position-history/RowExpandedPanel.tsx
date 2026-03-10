@@ -1,11 +1,9 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
@@ -47,20 +45,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
         </Stack>
       </Stack>
 
-      {txUrl && (
-        <Button
-          component={Link}
-          href={txUrl}
-          target="_blank"
-          rel="noreferrer"
-          variant="link"
-          color="ghost"
-          size="extraSmall"
-          endIcon={<ArrowOutwardIcon />}
-        >
-          {t`View Transaction`}
-        </Button>
-      )}
+      {txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
     </Stack>
   )
 }

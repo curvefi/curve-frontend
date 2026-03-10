@@ -16,8 +16,8 @@ export type GlobalBannerProps = {
   chainId: number
 }
 
-// Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
-const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
+// Update `PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
+const maintenanceMessage = process.env.PUBLIC_MAINTENANCE_MESSAGE
 
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()

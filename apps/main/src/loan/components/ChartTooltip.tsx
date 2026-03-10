@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import { styled } from 'styled-components'
+import type { ComponentProps, ComponentPropsWithRef, ReactNode } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { breakpoints } from '@ui/utils/responsive'
@@ -10,7 +10,11 @@ export const ChartTooltip = ({ children }: { children: ReactNode }) => (
   </Wrapper>
 )
 
-export const Wrapper = styled(Box)`
+type DivProps = ComponentPropsWithRef<'div'>
+type BoxComponentProps = ComponentProps<typeof Box>
+type IconComponentProps = ComponentProps<typeof Icon>
+
+export const Wrapper: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   background-color: var(--tooltip--background-color);
   color: var(--tooltip--color);
   font-size: var(--font-size-2);
@@ -18,12 +22,12 @@ export const Wrapper = styled(Box)`
   padding: 1rem 1.25rem;
 `
 
-export const TipTitle = styled.div`
+export const TipTitle: IStyledComponent<'web', DivProps> = styled.div`
   font-weight: bold;
   margin-bottom: 2px;
 `
 
-export const TipContent = styled(Box)`
+export const TipContent: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   align-items: center;
   display: grid;
   justify-content: flex-start;
@@ -33,7 +37,7 @@ export const TipContent = styled(Box)`
   }
 `
 
-export const TipIcon = styled(Icon)`
+export const TipIcon: IStyledComponent<'web', IconComponentProps> = styled(Icon)`
   position: relative;
   left: -2px;
 `

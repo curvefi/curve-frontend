@@ -2,6 +2,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { coinbaseWallet, injected, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
 
+if (!window.eip6963Connectors) {
+  throw new Error('eip6963Connectors not initialized, make sure eip-6963.ts is loaded before this file')
+}
+
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
@@ -22,6 +26,5 @@ export const connectors: CreateConnectorFn[] = [
     },
   }),
   injected({ target: { id: 'injected', name: t`Browser Wallet`, provider: () => window.ethereum } }),
-  // Dynamically add more injected connectors - purposefully crash if the array is not initialized
   ...window.eip6963Connectors.map((target) => injected({ target })),
 ]

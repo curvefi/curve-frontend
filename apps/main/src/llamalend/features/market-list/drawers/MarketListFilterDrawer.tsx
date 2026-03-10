@@ -1,5 +1,4 @@
-import React from 'react'
-import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { Button, Grid } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -19,7 +18,6 @@ import { LendingMarketsFilters } from '../LendingMarketsFilters'
 const { Spacing } = SizesAndSpaces
 
 type Props = {
-  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   hasFavorites: boolean | undefined
   data: LlamaMarket[]
   minLiquidity?: number
@@ -30,7 +28,6 @@ type Props = {
 } & FilterProps<LlamaMarketColumnId>
 
 export const MarketListFilterDrawer = ({
-  userHasPositions,
   hasFavorites,
   data,
   minLiquidity,
@@ -71,9 +68,7 @@ export const MarketListFilterDrawer = ({
         {hasPopularFilters && <DrawerHeader title={t`Popular Filters`} />}
         <Grid container spacing={Spacing.sm}>
           {hasPopularFilters && <LlamaListMarketChips {...filterProps} />}
-          {showUserChips && (
-            <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-          )}
+          {showUserChips && <LlamaListUserChips hasFavorites={hasFavorites} {...filterProps} />}
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
         <LendingMarketsFilters {...filterProps} data={data} />

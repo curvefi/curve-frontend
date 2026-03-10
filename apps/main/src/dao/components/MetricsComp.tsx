@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box/Box'
 import { Loader } from '@ui/Loader/Loader'
 
@@ -31,20 +31,24 @@ const StyledLoader = styled(Loader)<{ row?: boolean }>`
   margin-left: ${({ row }) => (row ? 'var(--spacing-2)' : '0')};
 `
 
-export const MetricsTitle = styled.p<{ row?: boolean }>`
-  font-size: var(--font-size-1);
-  font-weight: var(--bold);
-  opacity: 0.5;
-  ${({ row }) => (row ? 'align-self: flex-end' : '')};
-  &.align-right {
-    @media (min-width: 32.5rem) {
-      text-align: right;
+type MetricsTitleProps = { row?: boolean }
+export const MetricsTitle: IStyledComponent<'web', MetricsTitleProps & ComponentPropsWithRef<'p'>> =
+  styled.p<MetricsTitleProps>`
+    font-size: var(--font-size-1);
+    font-weight: var(--bold);
+    opacity: 0.5;
+    ${({ row }) => (row ? 'align-self: flex-end' : '')};
+    &.align-right {
+      @media (min-width: 32.5rem) {
+        text-align: right;
+      }
     }
-  }
-`
+  `
 
-export const MetricsColumnData = styled.h3<{ noMargin?: boolean; capitalize?: boolean }>`
-  margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
-  font-size: var(--font-size-2);
-  text-transform: ${({ capitalize }) => (capitalize ? 'capitalize' : 'none')};
-`
+type MetricsColumnDataProps = { noMargin?: boolean; capitalize?: boolean }
+export const MetricsColumnData: IStyledComponent<'web', MetricsColumnDataProps & ComponentPropsWithRef<'h3'>> =
+  styled.h3<MetricsColumnDataProps>`
+    margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
+    font-size: var(--font-size-2);
+    text-transform: ${({ capitalize }) => (capitalize ? 'capitalize' : 'none')};
+  `

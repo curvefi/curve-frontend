@@ -7,7 +7,10 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noEmit": false
+    "noEmit": false,
+    "paths": {
+      "@primitives/*": ["../../primitives/src/*"]
+    }
   },
   "include": ["src"]
 }

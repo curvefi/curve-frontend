@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 /** Configuration for Vite (used for storybook) */
 export default defineConfig({
   cacheDir: resolve(__dirname, '../../.cache/vite/curve-ui-kit'),
+  build: { sourcemap: true },
   plugins: [react()],
   resolve: {
     alias: {
@@ -14,6 +15,7 @@ export default defineConfig({
       '@ui-kit': resolve(__dirname, './src'),
       '@external-rewards': resolve(__dirname, '../external-rewards/src/index.ts'),
       '@curvefi/prices-api': resolve(__dirname, '../prices-api/src'),
+      '@primitives': resolve(__dirname, '../primitives/src'),
     },
   },
 })

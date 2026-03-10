@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -20,7 +20,6 @@ type LlamaListChipsProps = {
   resetFilters: () => void
   hasFilters: boolean
   children?: ReactNode
-  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   hasFavorites?: boolean
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
@@ -33,7 +32,6 @@ export const LlamaListChips = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
-  userHasPositions,
   hasFavorites,
   onSortingChange,
   sortField,
@@ -55,7 +53,6 @@ export const LlamaListChips = ({
           </Grid>
           <Grid size={6}>
             <MarketListFilterDrawer
-              userHasPositions={userHasPositions}
               hasFavorites={hasFavorites}
               data={data}
               minLiquidity={minLiquidity}
@@ -76,7 +73,7 @@ export const LlamaListChips = ({
           )}
           {!userPositionsTab && (
             <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-              <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+              <LlamaListUserChips hasFavorites={hasFavorites} {...filterProps} />
             </Grid>
           )}
         </>

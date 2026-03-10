@@ -1,5 +1,6 @@
+import type { ComponentPropsWithRef } from 'react'
 import { forwardRef, ButtonHTMLAttributes, useRef } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
 import { Box } from '@ui/Box/Box'
 import type { ButtonProps } from '@ui/Button/types'
@@ -35,9 +36,10 @@ export const Button = forwardRef<
   )
 })
 
-export const StyledButton = styled.button<ButtonProps>`
-  ${buttonBaseStyles};
-`
+export const StyledButton: IStyledComponent<'web', ButtonProps & ComponentPropsWithRef<'button'>> =
+  styled.button<ButtonProps>`
+    ${buttonBaseStyles};
+  `
 
 const BoxSpinner = styled(Box)`
   position: absolute;

@@ -1,21 +1,22 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { DepositOptions } from '@/llamalend/mutations/deposit.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
-import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useDepositForm } from '../hooks/useDepositForm'
-import { DepositSupplyInfoAccordion } from './DepositSupplyInfoAccordion'
+import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 
 export type DepositFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onDeposited?: NonNullable<DepositOptions['onDeposited']>
+  onSuccess?: NonNullable<DepositOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
@@ -25,7 +26,7 @@ export const DepositForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onDeposited,
+  onSuccess,
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -42,18 +43,13 @@ export const DepositForm = <ChainId extends IChainId>({
     formErrors,
     isApproved,
     max,
-  } = useDepositForm({
-    market,
-    network,
-    enabled,
-    onDeposited,
-  })
+  } = useDepositForm({ market, network, enabled, onSuccess })
 
   return (
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={<DepositSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<DepositSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to deposit`}
@@ -61,7 +57,7 @@ export const DepositForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name="depositAmount"
         form={form}
-        max={max}
+        max={q(max)}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
       />
@@ -75,7 +71,7 @@ export const DepositForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isDeposited}
         error={depositError}
         txHash={txHash}

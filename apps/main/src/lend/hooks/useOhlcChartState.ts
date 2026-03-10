@@ -4,33 +4,29 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useUserPrices } from '@/llamalend/queries/user-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
+import type { Decimal } from '@primitives/decimal.utils'
 import {
-  useLlammaChartSelections,
+  useChartLegendToggles,
   useChartTimeSettings,
   useLiquidationRange,
-  useChartLegendToggles,
+  useLlammaChartSelections,
 } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
-import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/candle-chart/utils'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import type { Range } from '@ui-kit/types/util'
 
 export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
   rOwmId: string
+  previewPrices: Range<Decimal> | undefined
 }
 
-export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) => {
-  const { address: userAddress } = useConnection()
-  const { data: userPrices } = useUserPrices({
-    chainId: rChainId,
-    marketId: rOwmId,
-    userAddress,
-  })
-  const market = useOneWayMarket(rChainId, rOwmId).data
+const useLegacyChartPrices = () => {
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -50,6 +46,38 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
   const removeCollateralPrices = useStore(
     (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
+  return useMemo(() => {
+    if (repayLeveragePrices?.length) return repayLeveragePrices
+    if (removeCollateralPrices?.length) return removeCollateralPrices
+    if (addCollateralPrices?.length) return addCollateralPrices
+    if (repayLoanPrices?.length) return repayLoanPrices
+    if (borrowMorePrices?.length) return borrowMorePrices
+    if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
+      const prices = liqRangesMapper[formValues.n].prices
+      return [prices[1], prices[0]]
+    }
+    return loanCreateLeverageDetailInfo?.prices ?? null
+  }, [
+    repayLeveragePrices,
+    removeCollateralPrices,
+    addCollateralPrices,
+    repayLoanPrices,
+    borrowMorePrices,
+    formValues.n,
+    liqRangesMapper,
+    loanCreateLeverageDetailInfo,
+  ]) as Range<Decimal> | undefined
+}
+
+export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcChartStateProps) => {
+  const { address: userAddress } = useConnection()
+  const storePreviewPrices = useLegacyChartPrices()
+  const { data: userPrices } = useUserPrices({
+    chainId: rChainId,
+    marketId: rOwmId,
+    userAddress,
+  })
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
@@ -71,65 +99,35 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
   )
 
-  // LLAMMA tokens come from market data
-  const marketTokens = useMemo(
-    () =>
-      market
-        ? {
-            collateralSymbol: market.collateral_token.symbol,
-            borrowedSymbol: market.borrowed_token.symbol,
-          }
-        : null,
-    [market],
-  )
-
-  const { selectChartList, selectedChartKey, setSelectedChart, isLoading } = useLlammaChartSelections({
+  const { selectChartList, selectedChartKey, isLoading } = useLlammaChartSelections({
     oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
-    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.data.length > 0 },
+    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.oraclePriceData.length > 0 },
     oracleTokens,
-    marketTokens,
   })
 
   // Select chart data based on current selection
   const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
-  const noDataAvailable = !isLoading && currentChart.data.length === 0
+  // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty, pass empty array for ohlc data when llamma is selected
+  const ohlcData = selectedChartKey === 'llamma' ? [] : chartOraclePoolOhlc.data
+  const noDataAvailable = !isLoading && currentChart.oraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+    // if the oracle data endpoint doesn't have oracle price data, there's a higher chance that it still exists in the llamma endpoint
     if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
     return undefined
   }, [chartOraclePoolOhlc.oraclePriceData, chartLlammaOhlc.oraclePriceData])
 
-  // Determine which new liquidation prices to show (priority order)
-  const newLiqPrices = useMemo(() => {
-    if (repayLeveragePrices?.length) return repayLeveragePrices
-    if (removeCollateralPrices?.length) return removeCollateralPrices
-    if (addCollateralPrices?.length) return addCollateralPrices
-    if (repayLoanPrices?.length) return repayLoanPrices
-    if (borrowMorePrices?.length) return borrowMorePrices
-    if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
-      const prices = liqRangesMapper[formValues.n].prices
-      return [prices[1], prices[0]] // Swap order for this source to match the order we want to display in
-    }
-    return loanCreateLeverageDetailInfo?.prices
-  }, [
-    repayLeveragePrices,
-    removeCollateralPrices,
-    addCollateralPrices,
-    repayLoanPrices,
-    borrowMorePrices,
-    formValues.n,
-    liqRangesMapper,
-    loanCreateLeverageDetailInfo,
-  ])
+  const newLiqPrices = previewPrices ?? storePreviewPrices
 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!newLiqPrices,
     hasLiquidationRange: !!userPrices,
+    llammaEndpoint: selectedChartKey === 'llamma',
   })
 
   const selectedLiqRange = useLiquidationRange({
-    chartData: currentChart.data,
+    chartData: ohlcData,
     fallbackData: currentChart.oraclePriceData,
     currentPrices: userPrices,
     newPrices: newLiqPrices,
@@ -205,7 +203,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     hideCandleSeriesLabel: true,
     chartHeight: DEFAULT_CHART_HEIGHT,
     chartStatus,
-    ohlcData: currentChart.data,
+    ohlcData,
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
@@ -226,7 +224,6 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     ohlcDataUnavailable: noDataAvailable,
     isLoading,
     selectedChartKey,
-    setSelectedChart,
     setTimeOption,
     legendSets,
     ohlcChartProps,

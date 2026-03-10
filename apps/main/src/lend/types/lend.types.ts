@@ -4,6 +4,7 @@ import { TITLE } from '@/lend/constants'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { Address } from '@primitives/address.utils'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
@@ -26,14 +27,12 @@ export interface NetworkConfig<TId extends string = string, TChainId extends num
   TId,
   TChainId
 > {
-  smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
   hideMarketsInUI: { [owmId: string]: boolean }
   marketListFilter: string[]
   marketListFilterType: string[]
   pricesData: boolean
-  marketListShowOnlyInSmallMarkets: { [marketId: string]: boolean }
 }
 
 export type MaxRecvLeverageResp = {
@@ -84,6 +83,7 @@ export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
   rOwmId: string
+  userAddress: Address | undefined
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null

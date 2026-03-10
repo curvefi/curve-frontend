@@ -1,47 +1,66 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
-import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import { networks } from '@/loan/networks'
-import { recordEntries } from '@curvefi/prices-api/objects.util'
-import { oneBool } from '@cy/support/generators'
-import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import {
+  checkBorrowMoreDetailsLoaded,
+  submitBorrowMoreForm,
+  touchBorrowMoreForm,
+  writeBorrowMoreForm,
+} from '@cy/support/helpers/borrow-more.helpers'
+import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,
-  LOAN_TEST_MARKETS,
+  oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import {
   checkRepayDetailsLoaded,
   selectRepayToken,
   submitRepayForm,
+  touchRepayLoanForm,
   writeRepayLoanForm,
-} from '@cy/support/helpers/repay-loan.helpers'
-import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+} from '@cy/support/helpers/llamalend/repay-loan.helpers'
+import {
+  checkClosePositionDetailsLoaded,
+  submitClosePositionForm,
+  submitImproveHealthForm,
+  touchImproveHealthForm,
+  writeImproveHealthForm,
+} from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
+import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
-import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
-import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
+import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import type { Decimal } from '@primitives/decimal.utils'
+import { recordValues } from '@primitives/objects.utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
-const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
+const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
-const prefetch = () => prefetchMarkets({})
-
-type Spy = ReturnType<typeof cy.spy>
-recordEntries(LOAN_TEST_MARKETS)
-  .flatMap(([marketType, markets]) => markets.map((market) => ({ marketType, ...market })))
-  .filter(({ hasLeverage }) => !hasLeverage)
-  .forEach(({ id, collateralAddress: tokenAddress, collateral, borrow, repay, chainId, hasLeverage, label }) => {
+testCases.forEach(
+  ({
+    id,
+    collateralAddress: tokenAddress,
+    collateral,
+    borrow,
+    borrowMore,
+    repay,
+    improveHealth,
+    chainId,
+    hasLeverage,
+    label,
+  }) => {
     describe(label, () => {
+      skipTestsAfterFailure()
+
+      const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toFixed() as Decimal
+      const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toFixed() as Decimal
+      const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toFixed() as Decimal
+
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
       const getVirtualNetwork = createVirtualTestnet((uuid) => ({
@@ -50,76 +69,106 @@ recordEntries(LOAN_TEST_MARKETS)
         fork_config: { block_number: 'latest' },
       }))
 
-      const leverageEnabled = hasLeverage && oneBool()
+      /**
+       * Leverage disabled in the tests for now because it depends on Odos routes.
+       * It will soon be migrated to our own router API, so it will be easier to mock.
+       */
+      const leverageEnabled = hasLeverage && false
+      const debtTokenSymbol = 'crvUSD'
+      let adminRpcUrl: string
 
-      let onCreated: Spy
-      let onRepaid: Spy
+      let onSuccess: ReturnType<typeof cy.stub>
+      let onPricesUpdated: ReturnType<typeof cy.stub>
 
       beforeEach(() => {
-        onCreated = cy.spy().as('onCreated')
-        onRepaid = cy.spy().as('onRepaid')
+        onSuccess = cy.stub().as('onSuccess')
+        onPricesUpdated = cy.stub().as('onPricesUpdated')
         const vnet = getVirtualNetwork()
-        const { adminRpcUrl } = getRpcUrls(vnet)
+        adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
         fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
         fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
       })
 
-      function RepayFlowTest() {
-        const { isHydrated } = useCurve()
-        const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
-
-        const { data: loanExists } = useLoanExists({ chainId, marketId: id, userAddress: address })
-
-        if (!market) return <Skeleton />
-        return loanExists == false ? (
-          <CreateLoanForm
-            market={market}
-            networks={networks}
-            chainId={chainId}
-            onUpdate={onUpdate}
-            onCreated={onCreated}
-          />
-        ) : (
-          <RepayForm market={market} networks={networks} chainId={chainId} enabled onRepaid={onRepaid} />
-        )
-      }
-
-      const LoanTestWrapper = () => (
-        <ComponentTestWrapper
-          config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
-          autoConnect
-        >
-          <CurveProvider
-            app="llamalend"
-            network={networks[chainId]}
-            onChainUnavailable={console.error}
-            hydrate={{ llamalend: prefetch }}
-          >
-            <Box sx={{ maxWidth: 520 }}>
-              <RepayFlowTest />
-            </Box>
-          </CurveProvider>
-        </ComponentTestWrapper>
+      const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
+        <LlammalendTestCase
+          tab={tab}
+          vnet={getVirtualNetwork()}
+          privateKey={privateKey}
+          chainId={chainId}
+          marketId={id}
+          userAddress={address}
+          onSuccess={onSuccess}
+          onPricesUpdated={onPricesUpdated}
+        />
       )
+
+      const expectCallbacks = () => {
+        expect(onSuccess).to.be.calledOnce
+        expect(onPricesUpdated).to.be.called
+      }
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        submitCreateLoanForm().then(() => expect(onCreated).to.be.calledOnce)
+        submitCreateLoanForm().then(expectCallbacks)
+      })
+
+      it(`borrows more`, () => {
+        cy.mount(<LoanTestWrapper tab="borrow-more" />)
+        writeBorrowMoreForm({ debt: borrowMore })
+        checkBorrowMoreDetailsLoaded({
+          expectedCurrentDebt: borrow,
+          expectedFutureDebt: debtAfterBorrowMore,
+          leverageEnabled,
+        })
+        submitBorrowMoreForm().then(expectCallbacks)
+        touchBorrowMoreForm() // make sure the new debt is shown
+        checkCurrentDebt(debtAfterBorrowMore)
       })
 
       it(`repays the loan`, () => {
-        cy.mount(<LoanTestWrapper />)
-        selectRepayToken('crvUSD')
+        cy.mount(<LoanTestWrapper tab="repay" />)
+        selectRepayToken({ symbol: debtTokenSymbol, tokenAddress: CRVUSD_ADDRESS, hasLeverage })
         writeRepayLoanForm({ amount: repay })
         checkRepayDetailsLoaded({
-          expectedPreviousDebt: borrow,
-          expectedDebt: [BigNumber(borrow).minus(repay), 'crvUSD'].join(''),
-          hasLeverage,
+          debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: debtTokenSymbol },
+          leverageEnabled,
         })
-        submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)
+        submitRepayForm().then(expectCallbacks)
+        touchRepayLoanForm() // make sure the new debt is shown
+        checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: debtTokenSymbol })
+      })
+
+      it(`increases health`, () => {
+        cy.mount(<LoanTestWrapper tab="improve-health" />)
+        writeImproveHealthForm({ amount: improveHealth })
+        checkRepayDetailsLoaded({
+          debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
+        })
+        submitImproveHealthForm().then(expectCallbacks)
+        touchImproveHealthForm() // make sure the new debt is shown
+        checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
+      })
+
+      it(`closes the loan`, () => {
+        // extra crvUSD to close the loan due to the safety buffer
+        fundErc20({
+          adminRpcUrl,
+          amountWei: CREATE_LOAN_FUND_AMOUNT,
+          tokenAddress: CRVUSD_ADDRESS,
+          recipientAddresses: [address],
+        })
+        cy.mount(<LoanTestWrapper tab="close" />)
+        checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
+        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
+        submitClosePositionForm('error', 'Transaction failed').then(() => {
+          // unfortunately cannot cause soft liquidation in the tests yet
+          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
+          expect(onSuccess).to.not.be.called
+        })
       })
     })
-  })
+  },
+)

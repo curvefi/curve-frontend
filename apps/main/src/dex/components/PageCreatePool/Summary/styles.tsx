@@ -1,9 +1,15 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { Icon } from '@ui/Icon'
+import type { IconProps } from '@ui/Icon/Icon'
 import { ExternalLink } from '@ui/Link/ExternalLink'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import type { ExternalLinkProps } from '@ui/Link/ExternalLink'
+import { TokenIcon, type TokenIconProps } from '@ui-kit/shared/ui/TokenIcon'
 
-export const CategoryColumn = styled.div`
+type DivProps = ComponentPropsWithRef<'div'>
+type PProps = ComponentPropsWithRef<'p'>
+
+export const CategoryColumn: IStyledComponent<'web', DivProps> = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -17,7 +23,7 @@ export const CategoryColumn = styled.div`
   }
 `
 
-export const CategoryDataRow = styled.div`
+export const CategoryDataRow: IStyledComponent<'web', DivProps> = styled.div`
   display: flex;
   margin-left: var(--spacing-2);
   margin-right: var(--spacing-2);
@@ -25,12 +31,12 @@ export const CategoryDataRow = styled.div`
   align-items: center;
 `
 
-export const ExtraMarginRow = styled(CategoryDataRow)`
+export const ExtraMarginRow: IStyledComponent<'web', DivProps> = styled(CategoryDataRow)`
   display: flex;
   margin-top: var(--spacing-2);
 `
 
-export const CategoryDataColumn = styled.div`
+export const CategoryDataColumn: IStyledComponent<'web', DivProps> = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: var(--spacing-2);
@@ -38,7 +44,7 @@ export const CategoryDataColumn = styled.div`
   margin-bottom: var(--spacing-2);
 `
 
-export const SummaryCategoryTitle = styled.p`
+export const SummaryCategoryTitle: IStyledComponent<'web', PProps> = styled.p`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
@@ -46,14 +52,14 @@ export const SummaryCategoryTitle = styled.p`
   opacity: 0.7;
 `
 
-export const SummaryDataTitle = styled.p`
+export const SummaryDataTitle: IStyledComponent<'web', PProps> = styled.p`
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   padding-right: var(--spacing-1);
   color: var(--page--text-color);
 `
 
-export const SummarySubTitle = styled.p`
+export const SummarySubTitle: IStyledComponent<'web', PProps> = styled.p`
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   padding-right: var(--spacing-1);
@@ -61,14 +67,14 @@ export const SummarySubTitle = styled.p`
   opacity: 0.7;
 `
 
-export const SummaryData = styled.p`
+export const SummaryData: IStyledComponent<'web', PProps> = styled.p`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   margin-left: auto;
   font-weight: var(--semi-bold);
 `
 
-export const SummaryDataPlaceholder = styled.p`
+export const SummaryDataPlaceholder: IStyledComponent<'web', PProps> = styled.p`
   font-style: italic;
   padding-left: var(--spacing-1);
   font-size: var(--font-size-2);
@@ -80,18 +86,18 @@ export const SummaryDataPlaceholder = styled.p`
   }
 `
 
-export const StyledCheckmark = styled(Icon)`
+export const StyledCheckmark: IStyledComponent<'web', IconProps> = styled(Icon)`
   color: var(--primary-400);
   margin-right: var(--spacing-1);
 `
 
-export const TokenRow = styled.div`
+export const TokenRow: IStyledComponent<'web', DivProps> = styled.div`
   display: flex;
   margin-bottom: calc(var(--spacing-1) + (var(--spacing-1) / 2));
   align-items: center;
 `
 
-export const TokenSymbol = styled.p`
+export const TokenSymbol: IStyledComponent<'web', PProps> = styled.p`
   display: flex;
   justify-content: center;
   margin-right: auto;
@@ -99,7 +105,7 @@ export const TokenSymbol = styled.p`
   color: var(--page--text-color);
 `
 
-export const TokenType = styled.p`
+export const TokenType: IStyledComponent<'web', PProps> = styled.p`
   margin-right: auto;
   font-weight: var(--semi-bold);
   font-size: var(--font-size-2);
@@ -107,7 +113,7 @@ export const TokenType = styled.p`
   color: var(--page--text-color);
 `
 
-export const AddressLink = styled(ExternalLink)`
+export const AddressLink: IStyledComponent<'web', ExternalLinkProps> = styled(ExternalLink)`
   font-size: var(--font-size-2);
   font-weight: var(--font-weight--bold);
 
@@ -121,6 +127,6 @@ export const AddressLink = styled(ExternalLink)`
   }
 `
 
-export const ButtonTokenIcon = styled(TokenIcon)`
+export const ButtonTokenIcon: IStyledComponent<'web', TokenIconProps> = styled(TokenIcon)`
   margin-right: 0.25rem;
 `

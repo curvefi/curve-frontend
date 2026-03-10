@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { type MouseEvent, type ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -10,7 +10,7 @@ import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowsHorizontalIcon } from '@ui-kit/shared/icons/ArrowsHorizontalIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui-kit/utils/mui'
+import { applySxProps, type SxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
@@ -26,7 +26,8 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   chartSelections: {
     selections: ChartSelections<TChartKey>[]
     activeSelection: TChartKey | undefined
-    setActiveSelection: (value: TChartKey) => void
+    /** optional: not all charts have multiple options */
+    setActiveSelection?: (value: TChartKey) => void
   }
   timeOption?: {
     options: readonly TTimeOption[]
@@ -39,10 +40,10 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   }
   chartOptionVariant: 'select' | 'buttons-group'
   flipChart?: () => void
-  customButton?: React.ReactNode
+  customButton?: ReactNode
   /** When true, displays "Loading" in the chart selection area and disables interaction */
   isLoading?: boolean
-  sx?: SxProps[]
+  sx?: SxProps
 }
 
 export const ChartHeader = <TChartKey extends string, TTimeOption extends string = string>({
@@ -53,14 +54,15 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   flipChart,
   customButton,
   isLoading = false,
-  sx = [],
+  sx,
 }: ChartHeaderProps<TChartKey, TTimeOption>) => {
   const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: TChartKey) => {
     // ensure that one option is always selected by checking null
-    if (key != null) chartSelections.setActiveSelection(key)
+    if (key != null && chartSelections.setActiveSelection) chartSelections.setActiveSelection(key)
   }
   const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
-    if (event.target.value != null) chartSelections.setActiveSelection(event.target.value as TChartKey)
+    if (event.target.value != null && chartSelections.setActiveSelection)
+      chartSelections.setActiveSelection(event.target.value as TChartKey)
   }
   const handleTimeOption = (event: SelectChangeEvent<TTimeOption>) => {
     if (event.target.value != null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
@@ -68,6 +70,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   const foundChartOption = chartSelections.selections.find(
     (selection) => selection.key === chartSelections.activeSelection,
   )
+  const hasSingleOption = chartSelections.selections.length === 1
 
   return (
     <Stack
@@ -75,19 +78,11 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
       alignItems="center"
       justifyContent="space-between"
       flexWrap="wrap"
-      sx={[
-        {
-          rowGap: Spacing.md,
-          columnGap: Spacing.sm,
-        },
-        ...sx,
-      ]}
+      sx={applySxProps({ rowGap: Spacing.md, columnGap: Spacing.sm }, sx)}
     >
       {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
-      {chartOptionVariant === 'buttons-group' ? (
-        <Typography variant="headingXsBold" color="textSecondary">
-          {isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}
-        </Typography>
+      {chartOptionVariant === 'buttons-group' || hasSingleOption ? (
+        <Typography variant="bodySBold">{isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}</Typography>
       ) : isLoading ? (
         <Select value="loading" size="small" sx={{ alignSelf: 'center' }} disabled>
           <MenuItem value="loading">
@@ -122,6 +117,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
       <Stack direction="row" alignItems="center">
         <ToggleButtonGroup exclusive value={chartSelections.activeSelection} onChange={handleChartOptionToggle}>
           {chartOptionVariant === 'buttons-group' &&
+            !hasSingleOption &&
             chartSelections.selections.map((selection) => (
               <ToggleButton value={selection.key} key={selection.key} size="small">
                 {selection.label}

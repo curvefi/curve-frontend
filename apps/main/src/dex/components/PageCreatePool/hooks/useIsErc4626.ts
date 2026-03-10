@@ -1,5 +1,6 @@
-import { erc4626Abi, type Address } from 'viem'
+import { erc4626Abi } from 'viem'
 import { useReadContract } from 'wagmi'
+import type { Address } from '@primitives/address.utils'
 
 export function useIsErc4626({ address }: { address?: Address }) {
   const {

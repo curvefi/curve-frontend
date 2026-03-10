@@ -20,6 +20,7 @@ import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
+import type { Decimal } from '@primitives/decimal.utils'
 import { Checkbox } from '@ui/Checkbox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
@@ -27,13 +28,12 @@ import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export const LoanDecrease = ({
   curve,
@@ -62,8 +62,6 @@ export const LoanDecrease = ({
   const setFormValues = useStore((state) => state.loanDecrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanDecrease.setStateByKey)
   const resetState = useStore((state) => state.loanDecrease.resetState)
-
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -292,15 +290,13 @@ export const LoanDecrease = ({
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvancedMode && (
-          <DetailInfoLiqRange
-            isManage
-            {...detailInfo}
-            healthMode={healthMode}
-            loanDetails={loanDetails}
-            userLoanDetails={userLoanDetails}
-          />
-        )}
+        <DetailInfoLiqRange
+          isManage
+          {...detailInfo}
+          healthMode={healthMode}
+          loanDetails={loanDetails}
+          userLoanDetails={userLoanDetails}
+        />
         <DetailInfoHealth
           isManage
           {...detailInfo}

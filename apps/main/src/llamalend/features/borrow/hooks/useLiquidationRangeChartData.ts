@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
+import { useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import type { LiquidationRangeData } from '@/llamalend/widgets/ChartLiquidationRange'
 import { t } from '@ui-kit/lib/i18n'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'

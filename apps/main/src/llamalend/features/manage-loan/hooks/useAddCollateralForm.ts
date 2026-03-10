@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -16,19 +15,16 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onAdded,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
-  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
+  onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -37,7 +33,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const tokens = market && getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
-  const { data: maxCollateral } = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
+  const maxCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
@@ -66,30 +62,32 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
     network,
-    onAdded,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
-
+  const { formState } = form
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
-    form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
-  }, [form, maxCollateral])
+    updateForm(form, { maxCollateral: maxCollateral.data })
+  }, [form, maxCollateral.data])
 
+  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || action.isPending,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
     isApproved: useAddCollateralIsApproved(params),
-    formErrors,
+    formErrors: useFormErrors(formState),
+    maxCollateral,
   }
 }

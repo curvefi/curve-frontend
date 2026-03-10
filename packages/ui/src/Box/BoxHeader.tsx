@@ -1,6 +1,7 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 
-export const BoxHeader = styled.header`
+export const BoxHeader: IStyledComponent<'web', ComponentPropsWithRef<'header'>> = styled.header`
   align-items: center;
   display: flex;
   justify-content: space-between;

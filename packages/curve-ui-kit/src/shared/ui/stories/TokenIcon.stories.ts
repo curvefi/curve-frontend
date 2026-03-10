@@ -26,6 +26,10 @@ const meta: Meta<typeof TokenIcon> = {
       options: ['sm', 'mui-sm', 'mui-md', 'lg', 'xl'],
       description: 'Size of the icon',
     },
+    showChainIcon: {
+      control: 'boolean',
+      description: 'Whether to show the blockchain chain badge icon',
+    },
   },
   args: {
     blockchainId: 'ethereum',
@@ -71,6 +75,19 @@ export const Disabled: Story = {
   args: {
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     disabled: true,
+  },
+}
+
+export const WithChainIcon: Story = {
+  args: {
+    showChainIcon: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token icon with blockchain chain badge overlay.',
+      },
+    },
   },
 }
 

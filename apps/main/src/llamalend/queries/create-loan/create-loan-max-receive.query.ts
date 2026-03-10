@@ -1,13 +1,18 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { RouteProviders } from '@primitives/router.utils'
+import { getExpectedFn } from '@ui-kit/entities/router-api'
+import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { assert, decimal, Decimal } from '@ui-kit/utils'
+import { assert, decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
-import { createLoanFormValidationGroup } from '../validation/borrow.validation'
+import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
-type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt'> & { userCollateral: Decimal }
+type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt' | 'routeId'> & {
+  userCollateral: Decimal
+  userAddress: Address
+}
 type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
 type CreateLoanMaxReceiveResult = {
@@ -38,64 +43,70 @@ const convertNumbers = ({
   collateralFromMaxDebt: decimal(collateralFromMaxDebt),
 })
 
-export const maxReceiveValidation = createValidationSuite(
-  ({
-    chainId,
-    marketId,
-    userBorrowed,
-    userCollateral = '0',
-    range,
-    slippage,
-    leverageEnabled,
-  }: CreateLoanMaxReceiveParams) => {
-    marketIdValidationSuite({ chainId, marketId })
-    createLoanFormValidationGroup(
-      { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled },
-      { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
-    )
-  },
-)
-
-export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceiveKey } = queryFactory({
+export const {
+  useQuery: useCreateLoanMaxReceive,
+  queryKey: createLoanMaxReceiveKey,
+  invalidate: invalidateCreateLoanMaxReceive,
+  refetchQuery: refetchCreateLoanMaxReceive,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
+    userAddress,
     userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
+    slippage,
   }: CreateLoanMaxReceiveParams) =>
     [
-      ...rootKeys.market({ chainId, marketId }),
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'createLoanMaxRecv',
       { userBorrowed },
       { userCollateral },
       { range },
       { leverageEnabled },
+      { slippage },
     ] as const,
   queryFn: async ({
+    chainId,
     marketId,
+    userAddress,
     userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
+    slippage,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
-    const market = getLlamaMarket(marketId)
-    if (!leverageEnabled) {
-      return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'zapV2': {
+        return convertNumbers(
+          await impl.createLoanMaxRecv({
+            userCollateral,
+            userBorrowed,
+            range,
+            getExpected: getExpectedFn({ chainId, router: RouteProviders, userAddress, slippage }),
+          }),
+        )
+      }
+      case 'V1':
+      case 'V2':
+        return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))
+      case 'V0': {
+        assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
+        const result = await impl.createLoanMaxRecv(userCollateral, range)
+        const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
+        return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
+      }
+      case 'unleveraged':
+        return convertNumbers({ maxDebt: await impl.createLoanMaxRecv(userCollateral, range) })
     }
-    if (market instanceof LendMarketTemplate) {
-      return convertNumbers(await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, range))
-    }
-    if (market.leverageV2.hasLeverage()) {
-      return convertNumbers(await market.leverageV2.createLoanMaxRecv(userCollateral, userBorrowed, range))
-    }
-
-    assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
-    const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
-    const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
-    return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
   },
-  staleTime: '1m',
-  validationSuite: maxReceiveValidation,
+  category: 'llamalend.createLoan',
+  validationSuite: createLoanQueryValidationSuite({
+    debtRequired: false,
+    isMaxDebtRequired: false,
+    isLeverageRequired: false,
+  }),
 })

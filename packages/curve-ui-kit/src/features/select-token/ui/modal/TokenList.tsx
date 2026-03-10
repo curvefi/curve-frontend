@@ -1,16 +1,15 @@
-import lodash from 'lodash'
 import { type ReactNode, useMemo, useState } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
+import { notFalsy } from '@primitives/objects.utils'
 import { TokenSection, type TokenSectionProps } from '@ui-kit/features/select-token/ui/modal/TokenSection'
+import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { searchByText } from '@ui-kit/utils/searchText'
 import type { TokenOption as Option } from '../../types'
 import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
@@ -58,16 +57,7 @@ export const TokenList = ({
 
   const showFavorites = !!favorites?.length && !search
 
-  const tokensSearched = useMemo(() => {
-    if (!search) return tokens
-
-    const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol'], {
-      tokens: ['address'],
-      other: [],
-    })
-
-    return lodash.uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
-  }, [tokens, search])
+  const tokensSearched = useFuzzySearch(tokens, search, ['symbol', 'address'])
 
   /**
    * Filters and sorts tokens that the user owns (has a balance > 0).

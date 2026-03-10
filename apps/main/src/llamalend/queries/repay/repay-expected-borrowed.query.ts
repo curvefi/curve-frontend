@@ -1,5 +1,6 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
@@ -12,7 +13,12 @@ export type RepayExpectedBorrowedResult = {
   avgPrice?: Decimal
 }
 
-export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrowedQueryKey } = queryFactory({
+export const {
+  useQuery: useRepayExpectedBorrowed,
+  queryKey: repayExpectedBorrowedQueryKey,
+  invalidate: invalidateRepayExpectedBorrowed,
+  refetchQuery: refetchRepayExpectedBorrowed,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -21,6 +27,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userBorrowed = '0',
     userAddress,
     slippage,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -29,6 +36,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
       { userCollateral },
       { userBorrowed },
       { slippage },
+      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -38,9 +46,17 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userCollateral,
     userBorrowed,
     slippage,
+    routeId,
   }: RepayQuery) => {
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+    })
     switch (type) {
+      case 'zapV2':
+        return (await impl.repayExpectedBorrowed(...args)) as RepayExpectedBorrowedResult
       case 'V1':
       case 'V2':
         return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult
@@ -54,6 +70,6 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
         }
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

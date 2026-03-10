@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import {
   useLocation as useTanstackLocation,
+  useMatchRoute as useTanstackMatchRoute,
   useNavigate as useTanstackNavigate,
   useParams as useTanstackParams,
 } from '@tanstack/react-router'
@@ -43,3 +44,13 @@ export const useParams = <T>(): T => {
 export const usePathname = () => useTanstackLocation().pathname
 
 export const useLocation = useTanstackLocation
+
+/**
+ * Use matchRoute from tanstack router and return typed params or false if the route does not match.
+ */
+export function useMatchRoute<T extends Record<string, string> = Record<string, string>>(
+  options: Parameters<ReturnType<typeof useTanstackMatchRoute>>[0],
+): T | false {
+  const matchRoute = useTanstackMatchRoute()
+  return matchRoute(options) as T | false
+}

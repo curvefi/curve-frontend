@@ -9,24 +9,18 @@ import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/A
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionTab'
-import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
-import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
-import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
+import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
+import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import type { Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-type ManageLoanProps = PageContentProps<MarketUrlParams>
-
-const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
-)
-
-const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
-)
+type ManageLoanProps = PageContentProps<MarketUrlParams> & {
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+}
 
 const LendManageLegacyMenu = [
   {
@@ -58,15 +52,27 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-      <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    component: ({ rChainId: chainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+      <BorrowMoreForm
+        networks={networks}
+        chainId={chainId}
+        market={market}
+        onPricesUpdated={onPricesUpdated}
+        enabled={isLoaded}
+      />
     ),
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-      <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    component: ({ rChainId: chainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+      <RepayForm
+        networks={networks}
+        chainId={chainId}
+        market={market}
+        onPricesUpdated={onPricesUpdated}
+        enabled={isLoaded}
+      />
     ),
   },
   {
@@ -76,15 +82,15 @@ const LendManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-          <AddCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
+          <AddCollateralForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-          <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
+          <RemoveCollateralForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
         ),
       },
     ],
@@ -96,8 +102,26 @@ const LendManageSoftLiquidationMenu = [
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
     subTabs: [
-      { value: 'improve-health', label: t`Improve health`, component: ImproveHealthTab },
-      { value: 'close-position', label: t`Close position`, component: ClosePositionTab },
+      {
+        value: 'improve-health',
+        label: t`Improve health`,
+        component: ({ rChainId: chainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+          <ImproveHealthForm
+            chainId={chainId}
+            market={market}
+            networks={networks}
+            enabled={isLoaded}
+            onPricesUpdated={onPricesUpdated}
+          />
+        ),
+      },
+      {
+        value: 'close-position',
+        label: t`Close position`,
+        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
+          <ClosePositionForm chainId={chainId} networks={networks} market={market} enabled={isLoaded} />
+        ),
+      },
     ],
   },
 ] satisfies FormTab<ManageLoanProps>[]

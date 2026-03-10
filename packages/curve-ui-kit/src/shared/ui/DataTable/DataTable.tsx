@@ -1,6 +1,7 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
+import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -33,17 +34,34 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
 }
 
 /**
+ * Scrolls to the top of the table container whenever the page changes with manual pagination.
+ */
+function useScrollToTopOnPageChange<T extends TableItem>(
+  table: TanstackTable<T>,
+  containerRef: RefObject<HTMLElement | null>,
+) {
+  const { pageIndex } = table.getState().pagination
+  useEffect(() => {
+    containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [pageIndex, containerRef])
+}
+
+/**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
+ * Skipped for manual pagination since data changes on every page change.
  */
 function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+  const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
   const lastResultCount = useRef<number>(resultCount)
   useEffect(() => {
-    // Reset to first page, only if we had results before (links must keep working)
-    if (lastResultCount.current) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    // Skip for manual pagination - data is expected to change on page change
+    if (isManualPagination) return
+    // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
+    if (lastResultCount.current && resultCount) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
     lastResultCount.current = resultCount
-  }, [resultCount])
+  }, [resultCount, isManualPagination])
 }
 
 const { Sizing } = SizesAndSpaces
@@ -58,6 +76,9 @@ export const DataTable = <T extends TableItem>({
   maxHeight,
   rowLimit,
   viewAllLabel,
+  shouldStickFirstColumn = false,
+  hideHeader = false,
+  footerRow,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -67,8 +88,10 @@ export const DataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
+  hideHeader?: boolean
+  footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
-  const { table, shouldStickFirstColumn } = rowProps
+  const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, handleShowAll } = useTableRowLimit(rowLimit)
   // When number of rows are limited, show only rowLimit rows
@@ -81,49 +104,46 @@ export const DataTable = <T extends TableItem>({
   // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
+  const containerRef = useRef<HTMLDivElement>(null)
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
+  useScrollToTopOnPageChange(table, containerRef)
+  const tableHeaderSx = (t: Theme) => ({
+    position: 'sticky',
+    top: maxHeight ? 0 : top,
+    zIndex: t.zIndex.tableHeader,
+    backgroundColor: t.design.Table.Header.Fill,
+    marginBlock: Sizing['sm'],
+  })
+  const showFooter = showPagination || showViewAllButton || footerRow
 
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
+    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
-        sx={useMemo(
-          () => ({
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-          }),
-          [],
-        )}
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        }}
         data-testid={!loading && 'data-table'}
       >
-        <TableHead
-          sx={useMemo(
-            () => (t) => ({
-              position: 'sticky',
-              top: maxHeight ? 0 : top,
-              zIndex: t.zIndex.tableHeader,
-              backgroundColor: t.design.Table.Header.Fill,
-              marginBlock: Sizing['sm'],
-            }),
-            [maxHeight, top],
-          )}
-          data-testid="data-table-head"
-        >
-          {children && <FilterRow table={table}>{children}</FilterRow>}
+        {!hideHeader && (
+          <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+            {children && <FilterRow table={table}>{children}</FilterRow>}
 
-          {headerGroups.map((headerGroup) => (
-            <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
-              {headerGroup.headers.map((header, index) => (
-                <HeaderCell
-                  key={header.id}
-                  header={header}
-                  isSticky={!index && shouldStickFirstColumn}
-                  width={`calc(100% / ${columnCount})`}
-                />
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
+            {headerGroups.map((headerGroup) => (
+              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+                {headerGroup.headers.map((header, index) => (
+                  <HeaderCell
+                    key={header.id}
+                    header={header}
+                    isSticky={!index && shouldStickFirstColumn}
+                    width={`calc(100% / ${columnCount})`}
+                  />
+                ))}
+              </TableRow>
+            ))}
+          </TableHead>
+        )}
         <TableBody>
           {loading ? (
             <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
@@ -131,24 +151,33 @@ export const DataTable = <T extends TableItem>({
             emptyState
           ) : (
             visibleRows.map((row, index) => (
-              <DataRow<T> key={row.id} row={row} isLast={index === visibleRows.length - 1} {...rowProps} />
+              <DataRow<T>
+                key={row.id}
+                row={row}
+                isLast={index === visibleRows.length - 1}
+                shouldStickFirstColumn={shouldStickFirstColumn}
+                {...rowProps}
+              />
             ))
           )}
         </TableBody>
-        {(showPagination || showViewAllButton) && (
+        {showFooter && (
           <TableFooter>
-            <TableRow>
-              {showViewAllButton && (
+            {footerRow && <TableRow>{footerRow}</TableRow>}
+            {showViewAllButton && (
+              <TableRow>
                 <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}
                 </TableViewAllCell>
-              )}
-              {showPagination && (
+              </TableRow>
+            )}
+            {showPagination && (
+              <TableRow>
                 <TableCell colSpan={columnCount}>
                   <TablePagination table={table} />
                 </TableCell>
-              )}
-            </TableRow>
+              </TableRow>
+            )}
           </TableFooter>
         )}
       </Table>

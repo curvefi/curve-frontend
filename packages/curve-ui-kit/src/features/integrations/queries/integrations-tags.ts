@@ -1,5 +1,5 @@
-import { fetchJson } from '@curvefi/prices-api/fetch'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { fetchJson } from '@primitives/fetch.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -14,8 +14,8 @@ export const { useQuery: useIntegrationsTags } = queryFactory({
     const resp = await fetchJson<IntegrationTag[]>(INTEGRATIONS_TAGS_URL)
     return parseIntegrationsTags(resp)
   },
-  staleTime: '1h',
   validationSuite: EmptyValidationSuite,
+  category: 'global.integrations',
 })
 
 const INTEGRATIONS_TAGS_COLORS = [

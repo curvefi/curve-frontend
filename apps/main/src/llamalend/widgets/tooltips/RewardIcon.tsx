@@ -17,10 +17,6 @@ export const RewardIcon = ({ imageId, size = 'xs', sx }: { imageId: string; size
     src={imageId}
     width={getSize(size)}
     height={getSize(size)}
-    sx={(theme) => ({
-      width: IconSize[size],
-      height: IconSize[size],
-      ...applySxProps(sx, theme),
-    })}
+    sx={applySxProps({ width: IconSize[size], height: IconSize[size] }, sx)}
   />
 )

@@ -1,11 +1,12 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
+import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
-import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { type PartialRecord, recordValues } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
-import { type DeepKeys } from '@tanstack/table-core'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
@@ -13,7 +14,6 @@ import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { type Address } from '@ui-kit/utils'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
   getLendingVaultsOptions,
@@ -35,6 +35,7 @@ export type AssetDetails = {
   balance: number | null
   balanceUsd: number | null
   rebasingYield: number | null
+  rebasingYieldApr: number | null
 }
 
 export type LlamaMarket = {
@@ -80,8 +81,6 @@ export type LlamaMarketsResult = {
   hasFavorites: boolean
 }
 
-export type LlamaMarketKey = DeepKeys<LlamaMarket>
-
 const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
   ethereum: {
     // sfrxETH v1 mint market
@@ -92,12 +91,68 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': t`This market is deprecated.`,
     // LBTC-crvUSD v1 mint market
     '0x8aca5A776a878Ea1F8967e70a23b8563008f58Ef': t`This market is deprecated.`,
+    // sDOLA-crvUSD 2024-07-17 lend market
+    '0xCf3DF6C1B4A6b38496661B31170de9508b867C8E': t`This market is deprecated.`,
+    // sDOLA-crvUSD
+    '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86': t`This market is deprecated after donation attack.`,
+    // crvUSD-WETH old lend market
+    '0xa5D9137d2A1Ee912469d911A8E74B6c77503bac8': t`This market is deprecated.`,
+    //crvUSD-tBTC old lend market
+    '0xe438658874b0acf4D81c24172E137F0eE00621b8': t`This market is deprecated.`,
+    // USD0USD0++-crvUSD old lend market
+    '0xDC8b1Caf2e10dE76fb67E82C2485E7d4fA098C53': t`This market is deprecated.`,
+    // ynETH-crvUSD lend market
+    '0xdC5D5EE1223D4C8b7eAc8e876793f2171e7e8dEb': t`This market is deprecated.`,
+    // crvUSD-ynETH lend market
+    '0x757C61d89bD0406BfcBB68178BBfaE79ECa46c0f': t`This market is deprecated.`,
+    // LBTC-crvUSD lend market
+    '0xC28C2FD809FC1795f90de1C9dA2131434A77721d': t`This market is deprecated.`,
+    // sUSDf-crvUSD lend market
+    '0xD961B0Da2B0Fb04439c96B552777720B5FC551A0': t`This market is deprecated.`,
+    // yvUSDC-1-crvUSD lend market
+    '0xB62B9272679d7A495d7e9698d8663F217224408a': t`This market is deprecated.`,
+    // yvUSDS-1-crvUSD lend market
+    '0xE786af7faef857C8D850d648723Eec0A27cd8581': t`This market is deprecated.`,
+    // yvWETH-1-crvUSD lend market
+    '0x5bfEE37053d711F49A0aCf5afEd6496fA68dCE32': t`This market is deprecated.`,
+    // zkBTC-crvUSD lend market
+    '0xbe0f8c48776c0433B2b778AE9c076C21683ebe7B': t`This market is deprecated.`,
+    // zkBTC-crvUSD (2) lend market
+    '0xbCc9AcD2E7934bb8B5d734416737694AcDD9E25a': t`This market is deprecated.`,
+    // sdeUSD-crvUSD lend market
+    '0xFA4f65B3Dc477738ce8618e9145E1f0Ad9E29034': t`This market is deprecated.`,
+    // ezETH-crvUSD lend market
+    '0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3': t`This market is deprecated.`,
   },
   arbitrum: {
     // iBTC-crvUSD lend market
     '0x3e293dB65c81742e32b74E21A0787d2936beeDf7': t`iBTC is undergoing systematic unwinding`,
     // EYWA-crvUSD lend market
     '0x7a5A1c91dAF5A41942F90b3f8a9c4d3526294c16': t`This market is deprecated.`,
+    // FXN-crvUSD lend market
+    '0x7Adcc491f0B7f9BC12837B8F5Edf0e580d176F1f': t`This market is deprecated.`,
+    // FXN-crvUSD lend market
+    '0xAe659CE8f2f23649E09e92D164244AA127A7a2c7': t`This market is deprecated.`,
+    // CRV-crvUSD lend market
+    '0xF4e35f69D0BeE1AFC26EE73f12Fa7fA220F16F40': t`This market is deprecated.`,
+    // IBTC-crvUSD lend market
+    '0x991Bf50A34972227e681127D9127a1Dc54f67a3b': t`This market is deprecated.`,
+    // tBTC-crvUSD lend market
+    '0x4153532Eb32D57a1a08cD024c66E79635aFC8e3a': t`This market is deprecated.`,
+    // stXAI-crvUSD lend market
+    '0x5A2b666E6f36CB0a17CF03c9feb421855Ca9751D': t`This market is deprecated.`,
+    // stXAI-crvUSD lend market
+    '0x6c1cD25cC6320f992EDE07F6a6e93810e8855bc2': t`This market is deprecated.`,
+    // WBTC-crvUSD old lend market
+    '0x28c20590de7539C316191F413686dcF794d8898E': t`This market is deprecated.`,
+    // gmUSDC-crvUSD lend market
+    '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D': t`This market is deprecated.`,
+    // gmUSDC-crvUSD lend market
+    '0x5014AB37Fca7201baDEc3C0d0f28Dc7899cdC7D5': t`This market is deprecated.`,
+    // stXAI-crvUSD lend market
+    '0x398e6dd92Df9F792D0107668871e6F49ebdfE028': t`This market is deprecated.`,
+    // ARB-crvUSD old lend market
+    '0x76709bC0dA299Ab0234EEC51385E900922AE98f5': t`This market is deprecated.`,
   },
   sonic: {
     // sTS-crvUSD lend market
@@ -122,6 +177,10 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     '0xC5Cd9f6A1Fb88bed782f475F72fF686ED35b7e8e': t`This market is deprecated.`,
     // WETH-crvUSD lend market
     '0x9dba46e6a06FBf24CA11f8912B44338fe1b28Ea9': t`This market is deprecated.`,
+  },
+  fraxtal: {
+    // CRV-crvUSD
+    '0x99d5b47D431f1963940F72ffa6F25bC0B9849CbF': t`This market is deprecated.`,
   },
 }
 
@@ -189,9 +248,7 @@ const convertLendingVault = (
     borrowedBalanceUsd,
     collateralBalanceUsd,
     borrowApy,
-    borrowTotalApy,
     borrowApr,
-    borrowTotalApr,
     aprLend: lendApr,
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
@@ -231,7 +288,7 @@ const convertLendingVault = (
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    totalDebtUsd: totalDebtUsd,
+    totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
     tvl:
       borrowedBalanceUsd + // collateral converted to crvusd
@@ -247,9 +304,9 @@ const convertLendingVault = (
       lendTotalApyMaxBoosted:
         lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
       borrowApy,
-      borrowTotalApy,
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
-      borrowTotalApr,
+      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
       incentives: extraRewardApr
         ? extraRewardApr.map(({ address, symbol, rate }) => ({
             title: symbol,
@@ -294,9 +351,7 @@ const convertMintMarket = (
     stablecoinToken,
     llamma,
     borrowApy,
-    borrowTotalApy,
     borrowApr,
-    borrowTotalApr,
     borrowed,
     borrowedUsd,
     borrowable,
@@ -326,7 +381,8 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
-        rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
+        rebasingYield: stablecoinToken.rebasingYield,
+        rebasingYieldApr: stablecoinToken.rebasingYieldApr,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -334,7 +390,8 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
-        rebasingYield: collateralToken.rebasingYield ? Number(collateralToken.rebasingYield) : null,
+        rebasingYield: collateralToken.rebasingYield,
+        rebasingYieldApr: collateralToken.rebasingYieldApr,
       },
     },
     maxLtv,
@@ -351,9 +408,9 @@ const convertMintMarket = (
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
       borrowApy,
-      borrowTotalApy,
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
-      borrowTotalApr,
+      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
       incentives: [],
     },
     type: LlamaMarketType.Mint,

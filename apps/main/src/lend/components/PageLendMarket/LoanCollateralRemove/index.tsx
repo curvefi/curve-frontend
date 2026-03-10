@@ -19,6 +19,7 @@ import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
+import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
@@ -27,12 +28,11 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -48,8 +48,6 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
   const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
   const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
   const resetState = useStore((state) => state.loanCollateralRemove.resetState)
-
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -264,16 +262,14 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvancedMode && (
-          <DetailInfoLiqRange
-            isManage
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            {...detailInfo}
-            healthMode={healthMode}
-            userActiveKey={userActiveKey}
-          />
-        )}
+        <DetailInfoLiqRange
+          isManage
+          rChainId={rChainId}
+          rOwmId={rOwmId}
+          {...detailInfo}
+          healthMode={healthMode}
+          userActiveKey={userActiveKey}
+        />
         <DetailInfoHealth
           isManage
           rChainId={rChainId}

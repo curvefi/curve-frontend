@@ -1,6 +1,4 @@
-import { get } from 'lodash'
 import type { FilterFn } from '@tanstack/react-table'
-import { type DeepKeys } from '@tanstack/table-core'
 import { Range } from '@ui-kit/types/util'
 
 export const serializeRangeFilter = <T extends string | number>(range: Range<T | null> | null) =>
@@ -29,17 +27,3 @@ export const rangeFilterFn: FilterFunction = (row, columnId, filterValue?: strin
   const value = row.getValue<number>(columnId)
   return (min == null || value >= min) && (max == null || value <= max)
 }
-
-export const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) =>
-  filter
-    .toLowerCase()
-    .split(/\s+/)
-    .every((filterWord) => fields.some((field) => get(data, field)?.toLowerCase?.().includes(filterWord)))
-
-/**
- * Creates a filter function for the given search fields
- */
-export const filterByText =
-  <T,>(...fields: DeepKeys<T>[]): FilterFn<T> =>
-  (row, _columnId, filter: string) =>
-    matchText(row.original, fields, filter)

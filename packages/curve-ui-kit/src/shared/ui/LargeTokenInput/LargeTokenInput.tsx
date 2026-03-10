@@ -12,13 +12,15 @@ import {
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
-import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'
@@ -38,7 +40,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
     label: `${p}%`,
-    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal),
+    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}`),
   })),
 }
 
@@ -79,6 +81,7 @@ export type LargeTokenInputProps = {
 
   /** Optional configuration for max balance behavior, which for now are the slider and chips. */
   maxBalance?: {
+    isLoading?: boolean
     balance?: Decimal
     /** Whether to display the percentage slider. */
     showSlider?: boolean
@@ -146,7 +149,7 @@ function calculateNewBalance(max: Decimal, newPercentage: Decimal): Decimal {
   // Avoid loss of precision when clicking 'Max' or '100%'.
   if (Number(newPercentage) === 100) return max
 
-  return new BigNumber(max).times(newPercentage).div(100).toString() as Decimal
+  return new BigNumber(max).times(newPercentage).div(100).toFixed() as Decimal
 }
 
 /**
@@ -166,8 +169,8 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
-/** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
-const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
+/** Converts two decimals to BigNumber for comparison */
+const bigNumEquals = (a?: Decimal, b?: Decimal) => a == b || (a != null && b != null && new BigNumber(a).isEqualTo(b))
 
 const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
 
@@ -192,7 +195,6 @@ export const LargeTokenInput = ({
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
     callback: onBalance,
-    debounceMs: Duration.FormDebounce,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
     equals: bigNumEquals,
   })
@@ -200,6 +202,7 @@ export const LargeTokenInput = ({
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
+  const chipDisabled = disabled || maxBalance?.isLoading
 
   const maxBalanceValue = maxBalance?.balance
   const handlePercentageChange = useCallback(
@@ -304,11 +307,12 @@ export const LargeTokenInput = ({
                 {chips.map((chip) => (
                   <Chip
                     key={`input-chip-${chip.label}`}
-                    label={chip.label}
+                    label={<WithSkeleton loading={!!maxBalance?.isLoading}>{chip.label}</WithSkeleton>}
+                    data-testid={!chipDisabled && `input-chip-${chip.label}`}
                     size="extraSmall"
                     color="default"
                     clickable
-                    disabled={disabled}
+                    disabled={chipDisabled}
                     onClick={() => {
                       const newBalance = chip.newBalance(maxBalance?.balance)
                       if (newBalance !== undefined) {

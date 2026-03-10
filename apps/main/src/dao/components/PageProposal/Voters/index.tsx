@@ -22,7 +22,7 @@ type Props = {
 export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
   const { data: pricesProposal, isSuccess: pricesProposalSuccess } = useProposalPricesApiQuery({
     proposalId: +voteId,
-    proposalType: proposalType,
+    proposalType,
   })
 
   return (

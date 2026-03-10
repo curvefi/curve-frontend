@@ -8,12 +8,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChartUserBands } from './ChartUserBands'
 
 type BandsCompProps = {
-  llamma: Llamma | null
-  llammaId: string
+  market: Llamma | null
+  marketId: string
   page: 'create' | 'manage'
 }
 
-export const BandsComp = ({ llamma, llammaId, page }: BandsCompProps) => {
+export const BandsComp = ({ market, marketId, page }: BandsCompProps) => {
   const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(page === 'create' ? 'market' : 'user')
 
   const SelectorMenu =
@@ -38,9 +38,9 @@ export const BandsComp = ({ llamma, llammaId, page }: BandsCompProps) => {
 
   return (
     <Stack>
-      {selectedBand === 'user' && <ChartUserBands llamma={llamma} llammaId={llammaId} selectorMenu={SelectorMenu} />}
+      {selectedBand === 'user' && <ChartUserBands market={market} marketId={marketId} selectorMenu={SelectorMenu} />}
       {selectedBand === 'market' && (
-        <DetailsBandsChart llammaId={llammaId} llamma={llamma} selectorMenu={SelectorMenu} />
+        <DetailsBandsChart marketId={marketId} market={market} selectorMenu={SelectorMenu} />
       )}
     </Stack>
   )
