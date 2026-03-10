@@ -35,7 +35,7 @@ async function getOdosQuote(
     to_address: tokenOut,
     amount: amountIn,
     slippage: `${slippage}`,
-    pathVizImage: 'true',
+    pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
     caller_address: userAddress,
     blacklist: '',
   }

@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all run build",
+    "test": "yarn workspaces foreach --parallel --all run test",
     "start": "yarn workspace main start",
     "dev": "yarn workspace main dev",
     "dev-router-api": "yarn workspace router-api dev",
