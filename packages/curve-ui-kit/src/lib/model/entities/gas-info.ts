@@ -1,3 +1,4 @@
+import { BrowserProvider } from 'ethers'
 import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
@@ -43,8 +44,13 @@ const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
   if (llamaApi?.chainId === chainId) return llamaApi
 }
 
-const getProvider = () => useWallet.getState().provider!
-type Provider = ReturnType<typeof getProvider>
+const getProvider = () => {
+  const { provider } = useWallet.getState()
+  if (!provider) {
+    throw new Error('Provider not available, make sure the wallet is connected before calling this query')
+  }
+  return provider
+}
 
 /**
  * We're dealing with a query here that's not read-only and has side effects.
@@ -251,7 +257,7 @@ function parsePolygonGasInfo(gasInfo: {
   }
 }
 
-async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: string) {
+async function parseGasInfo(curve: AnyCurveApi, provider: BrowserProvider, l2GasUrl?: string) {
   // Returns the current recommended FeeData to use in a transaction.
   // For an EIP-1559 transaction, the maxFeePerGas and maxPriorityFeePerGas should be used.
   // For legacy transactions and networks which do not support EIP-1559, the gasPrice should be used.
@@ -330,14 +336,11 @@ export const useGasInfoAndUpdateLib = <TChainId extends number>(
   { chainId, networks }: GasInfoQueryOptions<TChainId>,
   enabled?: boolean,
 ) => {
-  const { provider } = useWallet()
+  const { provider } = useWallet() // validate provider manually because otherwise query won't get enabled when connected
   return useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), !!provider && enabled)
 }
 
-/**
- * Sets gas info query data and updates the library. This wrapper exists as the base query requires query options
- * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
- */
+/** Sets gas info query data directly in the query cache. */
 export const setGasInfoAndUpdateLib = <TChainId extends number>(
   { chainId, networks }: GasInfoQueryOptions<TChainId>,
   gasInfo: GasInfo,

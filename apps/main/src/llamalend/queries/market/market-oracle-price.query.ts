@@ -1,5 +1,5 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { MarketParams, type MarketQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { type MarketParams, type MarketQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 
 export const { useQuery: useMarketOraclePrice } = queryFactory({
