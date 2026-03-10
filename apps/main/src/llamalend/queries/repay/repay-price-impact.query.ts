@@ -7,7 +7,11 @@ import { getRepayImplementation } from './repay-query.helpers'
 
 type RepayPriceImpactResult = number
 
-export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceImpact } = queryFactory({
+export const {
+  useQuery: useRepayPriceImpact,
+  invalidate: invalidateRepayPriceImpact,
+  refetchQuery: refetchRepayPriceImpact,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

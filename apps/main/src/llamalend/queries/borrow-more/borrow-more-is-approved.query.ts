@@ -7,6 +7,7 @@ export const {
   useQuery: useBorrowMoreIsApproved,
   fetchQuery: fetchBorrowMoreIsApproved,
   invalidate: invalidateBorrowMoreIsApproved,
+  refetchQuery: refetchBorrowMoreIsApproved,
 } = queryFactory({
   queryKey: ({
     chainId,

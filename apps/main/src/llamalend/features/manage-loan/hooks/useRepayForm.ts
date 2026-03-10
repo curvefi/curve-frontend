@@ -10,7 +10,7 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
-import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
+import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -174,7 +174,9 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        if (route) await invalidateRepayRouteQueries({ ...params, routeId: route.id })
+        if (route) {
+          await invalidateOrRefetchRepayRouteQueries(route.id !== params.routeId, { ...params, routeId: route.id })
+        }
       },
     }),
     formErrors: useMemo(

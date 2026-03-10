@@ -28,6 +28,7 @@ export const {
   useQuery: useBorrowMoreExpectedCollateral,
   queryKey: getBorrowMoreExpectedCollateralKey,
   invalidate: invalidateBorrowMoreExpectedCollateral,
+  refetchQuery: refetchBorrowMoreExpectedCollateral,
 } = queryFactory({
   queryKey: ({
     chainId,
