@@ -123,3 +123,43 @@ export type GetPoolLiquidityEventsResponse = PaginationMeta & {
     provider: Address
   }[]
 }
+
+type MetadataCoin = Coin & {
+  decimals: number | null
+}
+
+type Oracle = {
+  oracle_address: string | null
+  method_id: string | null
+  method: string | null
+  is_verified: boolean
+}
+
+type PoolType =
+  | 'main'
+  | 'crypto'
+  | 'factory'
+  | 'factory_crypto'
+  | 'crvusd'
+  | 'factory_tricrypto'
+  | 'stableswapng'
+  | 'twocryptong'
+
+export type GetPoolMetadataResponse = {
+  name: string
+  registry: string
+  registry_type: string
+  lp_token_address: Address
+  coins: MetadataCoin[]
+  gauges: string[]
+  pool_type: PoolType
+  metapool: boolean
+  base_pool: string | null
+  asset_types: number[] | null
+  oracles: (Oracle | null)[] | null
+  vyper_version: string | null
+  deployment_tx: string | null
+  deployment_block: number | null
+  deployment_date: string | null
+  has_donations: boolean
+}

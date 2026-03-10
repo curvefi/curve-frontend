@@ -141,3 +141,13 @@ export async function getPoolLiquidityEvents(
     events: response.data.map(Parsers.parsePoolLiquidityEvent),
   }
 }
+
+export async function getPoolMetadata(chain: Chain, poolAddress: string, options?: Options) {
+  const host = getHost(options)
+
+  const resp = await fetchJson<Responses.GetPoolMetadataResponse>(
+    `${host}/v1/pools/${chain}/${poolAddress}/metadata`,
+  )
+
+  return Parsers.parsePoolMetadata(resp)
+}

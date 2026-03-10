@@ -100,3 +100,36 @@ export const parsePoolLiquidityEvent = (
   txHash: x.transaction_hash,
   provider: x.provider,
 })
+
+export const parseMetadataCoin = (x: Responses.GetPoolMetadataResponse['coins'][number]): Models.MetadataCoin => ({
+  poolIndex: x.pool_index,
+  symbol: x.symbol,
+  address: x.address,
+  decimals: x.decimals,
+})
+
+export const parseOracle = (x: NonNullable<NonNullable<Responses.GetPoolMetadataResponse['oracles']>[number]>): Models.Oracle => ({
+  oracleAddress: x.oracle_address,
+  methodId: x.method_id,
+  method: x.method,
+  isVerified: x.is_verified,
+})
+
+export const parsePoolMetadata = (x: Responses.GetPoolMetadataResponse): Models.PoolMetadata => ({
+  name: x.name,
+  registry: x.registry,
+  registryType: x.registry_type,
+  lpTokenAddress: x.lp_token_address,
+  coins: x.coins.map(parseMetadataCoin),
+  gauges: [...x.gauges],
+  poolType: x.pool_type,
+  metapool: x.metapool,
+  basePool: x.base_pool,
+  assetTypes: x.asset_types ? [...x.asset_types] : null,
+  oracles: x.oracles?.map((o) => (o ? parseOracle(o) : null)) ?? null,
+  vyperVersion: x.vyper_version,
+  deploymentTx: x.deployment_tx,
+  deploymentBlock: x.deployment_block,
+  deploymentDate: x.deployment_date ? toDate(x.deployment_date) : null,
+  hasDonations: x.has_donations,
+})
