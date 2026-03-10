@@ -147,15 +147,10 @@ export type GetPoolMetadataParams = {
   poolAddress: Address
 }
 
-export async function getPoolMetadata(
-  { chain, poolAddress }: GetPoolMetadataParams,
-  options?: Options,
-) {
+export async function getPoolMetadata({ chain, poolAddress }: GetPoolMetadataParams, options?: Options) {
   const host = getHost(options)
 
-  const resp = await fetchJson<Responses.GetPoolMetadataResponse>(
-    `${host}/v1/pools/${chain}/${poolAddress}/metadata`,
-  )
+  const resp = await fetchJson<Responses.GetPoolMetadataResponse>(`${host}/v1/pools/${chain}/${poolAddress}/metadata`)
 
   return Parsers.parsePoolMetadata(resp)
 }

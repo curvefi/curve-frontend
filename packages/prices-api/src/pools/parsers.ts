@@ -101,9 +101,7 @@ export const parsePoolLiquidityEvent = (
   provider: x.provider,
 })
 
-export const parsePoolSnapshot = (
-  x: Responses.GetPoolSnapshotsResponse['data'][number],
-): Models.PoolSnapshot => ({
+export const parsePoolSnapshot = (x: Responses.GetPoolSnapshotsResponse['data'][number]): Models.PoolSnapshot => ({
   timestamp: x.timestamp,
   a: x.a,
   fee: x.fee,
@@ -133,7 +131,9 @@ export const parseMetadataCoin = (x: Responses.GetPoolMetadataResponse['coins'][
   decimals: x.decimals,
 })
 
-export const parseOracle = (x: NonNullable<NonNullable<Responses.GetPoolMetadataResponse['oracles']>[number]>): Models.Oracle => ({
+export const parseOracle = (
+  x: NonNullable<NonNullable<Responses.GetPoolMetadataResponse['oracles']>[number]>,
+): Models.Oracle => ({
   oracleAddress: x.oracle_address,
   methodId: x.method_id,
   method: x.method,
