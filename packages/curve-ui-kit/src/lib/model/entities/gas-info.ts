@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
-import { formatNumber, type BaseConfig } from '@ui/utils'
+import { type BaseConfig, formatNumber } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
@@ -9,7 +9,6 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import type { Query as QueryResult } from '@ui-kit/types/util'
 import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
-import { providerValidationGroup } from '../query/provider-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
 export type GasInfoQuery<T = number> = ChainQuery<T> & {
@@ -47,9 +46,6 @@ const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
 const getProvider = () => useWallet.getState().provider!
 type Provider = ReturnType<typeof getProvider>
 
-const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
-  [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const
-
 /**
  * We're dealing with a query here that's not read-only and has side effects.
  * Specifically, `curve.setCustomFeeData` is being called which affects the gas prices used in
@@ -68,7 +64,8 @@ const {
   fetchQuery: fetchGasInfoAndUpdateLibBase,
   setQueryData: setGasInfoAndUpdateLibBase,
 } = queryFactory({
-  queryKey: createQueryKey,
+  queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
+    [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
   queryFn: async ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     const curve = getAnyCurve(chainId)!
     const provider = getProvider()
@@ -154,7 +151,6 @@ const {
         if (chainId) enforce(getAnyCurve(chainId)?.chainId).message('Library should be loaded').equals(chainId)
       })
     })
-    providerValidationGroup()
   }),
 })
 
@@ -333,7 +329,10 @@ export const fetchGasInfoAndUpdateLib = <TChainId extends number>({
 export const useGasInfoAndUpdateLib = <TChainId extends number>(
   { chainId, networks }: GasInfoQueryOptions<TChainId>,
   enabled?: boolean,
-) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), enabled)
+) => {
+  const { provider } = useWallet()
+  return useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), !!provider && enabled)
+}
 
 /**
  * Sets gas info query data and updates the library. This wrapper exists as the base query requires query options
