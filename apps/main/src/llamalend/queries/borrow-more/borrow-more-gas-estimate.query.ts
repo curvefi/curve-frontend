@@ -121,9 +121,8 @@ export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({
   useActionEstimate: useBorrowMoreGasEstimate,
 })
 
-export {
-  invalidateBorrowMoreApproveGasEstimateQuery,
-  invalidateBorrowMoreGasEstimateQuery,
-  refetchBorrowMoreApproveGasEstimateQuery,
-  refetchBorrowMoreGasEstimateQuery,
-}
+export const invalidateBorrowMoreEstimateGasQueries = async (params: BorrowMoreParams) =>
+  await Promise.all([invalidateBorrowMoreApproveGasEstimateQuery(params), invalidateBorrowMoreGasEstimateQuery(params)])
+
+export const refetchBorrowMoreEstimateGasQueries = async (params: BorrowMoreParams) =>
+  await Promise.all([refetchBorrowMoreApproveGasEstimateQuery(params), refetchBorrowMoreGasEstimateQuery(params)])

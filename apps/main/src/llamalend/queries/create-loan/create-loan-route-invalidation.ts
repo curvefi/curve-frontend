@@ -1,7 +1,7 @@
 import type { CreateLoanDebtParams } from '@/llamalend/features/borrow/types'
 import {
-  invalidateCreateLoanEstimateGasQuery,
-  refetchCreateLoanEstimateGasQuery,
+  invalidateCreateLoanEstimateGasQueries,
+  refetchCreateLoanEstimateGasQueries,
 } from '@/llamalend/queries/create-loan/create-loan-approve-estimate-gas.query'
 import {
   invalidateCreateLoanIsApproved,
@@ -41,7 +41,7 @@ const invalidate = [
   invalidateCreateLoanMaxReceive,
   invalidateCreateLoanPriceImpact,
   invalidateCreateLoanPrices,
-  invalidateCreateLoanEstimateGasQuery,
+  invalidateCreateLoanEstimateGasQueries,
 ]
 
 const refetch = [
@@ -52,7 +52,7 @@ const refetch = [
   refetchCreateLoanMaxReceive,
   refetchCreateLoanPriceImpact,
   refetchCreateLoanPrices,
-  refetchCreateLoanEstimateGasQuery,
+  refetchCreateLoanEstimateGasQueries,
 ]
 
 export const invalidateOrRefetchCreateLoanRouteQueries = async (

@@ -131,9 +131,8 @@ export const useRepayEstimateGas = createApprovedEstimateGasHook({
   useActionEstimate: useRepayLoanEstimateGas,
 })
 
-export {
-  invalidateRepayApproveGasEstimateQuery,
-  invalidateRepayLoanEstimateGasQuery,
-  refetchRepayApproveGasEstimateQuery,
-  refetchRepayLoanEstimateGasQuery,
-}
+export const invalidateRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+  await Promise.all([invalidateRepayApproveGasEstimateQuery(params), invalidateRepayLoanEstimateGasQuery(params)])
+
+export const refetchRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+  await Promise.all([refetchRepayApproveGasEstimateQuery(params), refetchRepayLoanEstimateGasQuery(params)])

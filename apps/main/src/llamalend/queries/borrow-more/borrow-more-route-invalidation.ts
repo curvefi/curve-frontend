@@ -9,10 +9,8 @@ import {
   refetchBorrowMoreFutureLeverage,
 } from './borrow-more-future-leverage.query'
 import {
-  invalidateBorrowMoreApproveGasEstimateQuery,
-  invalidateBorrowMoreGasEstimateQuery,
-  refetchBorrowMoreApproveGasEstimateQuery,
-  refetchBorrowMoreGasEstimateQuery,
+  invalidateBorrowMoreEstimateGasQueries,
+  refetchBorrowMoreEstimateGasQueries,
 } from './borrow-more-gas-estimate.query'
 import { invalidateBorrowMoreHealth, refetchBorrowMoreHealth } from './borrow-more-health.query'
 import { invalidateBorrowMoreIsApproved, refetchBorrowMoreIsApproved } from './borrow-more-is-approved.query'
@@ -23,8 +21,7 @@ import { invalidateBorrowMorePrices, refetchBorrowMorePrices } from './borrow-mo
 const refetch = [
   refetchBorrowMoreExpectedCollateral,
   refetchBorrowMoreFutureLeverage,
-  refetchBorrowMoreApproveGasEstimateQuery,
-  refetchBorrowMoreGasEstimateQuery,
+  refetchBorrowMoreEstimateGasQueries,
   refetchBorrowMoreHealth,
   refetchBorrowMoreIsApproved,
   refetchBorrowMoreMaxReceive,
@@ -34,8 +31,7 @@ const refetch = [
 const invalidate = [
   invalidateBorrowMoreExpectedCollateral,
   invalidateBorrowMoreFutureLeverage,
-  invalidateBorrowMoreApproveGasEstimateQuery,
-  invalidateBorrowMoreGasEstimateQuery,
+  invalidateBorrowMoreEstimateGasQueries,
   invalidateBorrowMoreHealth,
   invalidateBorrowMoreIsApproved,
   invalidateBorrowMoreMaxReceive,
