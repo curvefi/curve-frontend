@@ -19,5 +19,5 @@ export const { useQuery: usePoolSnapshots } = queryFactory({
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolSnapshotsParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),
-  category: 'dex.pool',
+  category: 'dex.pools',
 })
