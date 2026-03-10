@@ -6,7 +6,7 @@ type ResizeObserverOptions = {
 }
 
 /**
- * A hook that observes an element's dimension changes and returns the current dimensions.
+ * A hook that observes an element's dimension changes (including borders) and returns the current dimensions.
  * Only updates when dimensions change beyond the threshold.
  *
  * @param elementRef - React ref object for the element to observe
@@ -46,7 +46,7 @@ export function useResizeObserver(
     setDimensions([width, height])
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
-      const { width, height } = updatedEntry?.contentRect ?? {}
+      const { inlineSize: width, blockSize: height } = updatedEntry?.borderBoxSize[0] ?? {}
       const dimensions = [width, height].map((d) => Math.round(d || 0)) as [number, number]
       // Allow initial height to be set if prev is null
       setDimensions((prev): [number, number] =>
