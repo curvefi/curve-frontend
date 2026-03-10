@@ -125,7 +125,18 @@ export const LendMarketPage = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
+    <DetailPageLayout
+      formTabs={
+        chainId &&
+        marketId &&
+        !isLoanExistsLoading &&
+        (loanExists ? (
+          <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
+        ) : (
+          <LoanCreateTabs {...pageProps} params={params} />
+        ))
+      }
+    >
       <PageHeader
         chainId={chainId}
         marketId={marketId}
@@ -133,41 +144,28 @@ export const LendMarketPage = () => {
         market={market}
         blockchainId={network.id as Chain}
       />
-      <DetailPageLayout
-        formTabs={
-          chainId &&
-          marketId &&
-          !isLoanExistsLoading &&
-          (loanExists ? (
-            <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
-          ) : (
-            <LoanCreateTabs {...pageProps} params={params} />
-          ))
-        }
-      >
-        {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-        {!isHighSeverityAlert(marketAlert?.alertType) && (
-          <CampaignRewardsBanner
-            chainId={chainId}
-            borrowAddress={market?.addresses?.controller || ''}
-            supplyAddress={market?.addresses?.vault || ''}
-          />
-        )}
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          borrowPositionDetails={borrowPositionDetails}
-          activityQueryParams={activityQueryParams}
+      {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+      {!isHighSeverityAlert(marketAlert?.alertType) && (
+        <CampaignRewardsBanner
+          chainId={chainId}
+          borrowAddress={market?.addresses?.controller || ''}
+          supplyAddress={market?.addresses?.vault || ''}
         />
-        <Stack>
-          <MarketInformationComposite
-            pageProps={pageProps}
-            type="borrow"
-            loanExists={loanExists}
-            previewPrices={previewPrices}
-          />
-        </Stack>
-      </DetailPageLayout>
-    </>
+      )}
+      <PositionDetailsComposite
+        hasPosition={loanExists}
+        borrowPositionDetails={borrowPositionDetails}
+        activityQueryParams={activityQueryParams}
+      />
+      <Stack>
+        <MarketInformationComposite
+          pageProps={pageProps}
+          type="borrow"
+          loanExists={loanExists}
+          previewPrices={previewPrices}
+        />
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )

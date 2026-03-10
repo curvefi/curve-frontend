@@ -39,3 +39,6 @@ export const useFastbridge = useBetaChannel
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () =>
   getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+
+/** New market page layout with forms on the right  */
+export const useRightFormTabsLayout = useBetaChannel
