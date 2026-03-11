@@ -1,6 +1,7 @@
 import { type BrowserProvider } from 'ethers'
 import { useCallback } from 'react'
 import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
+import { ConnectorAlreadyConnectedError } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import { isCypress } from '@ui-kit/utils/env'
 import { useCurve } from './CurveContext'
@@ -42,6 +43,7 @@ export const useWallet = () => {
         await connectAsync({ connector: connector ?? connectors[0] })
         setShowModal(false)
       } catch (err) {
+        if (err instanceof ConnectorAlreadyConnectedError) return setShowModal(false)
         console.error('Error connecting wallet:', err)
         throw err
       }
