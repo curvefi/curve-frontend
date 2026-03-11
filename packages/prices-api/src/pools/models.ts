@@ -135,7 +135,7 @@ export type MetadataCoin = {
 }
 
 export type Oracle = {
-  oracleAddress: string | null
+  oracleAddress: Address | null
   methodId: string | null
   method: string | null
   isVerified: boolean

@@ -9,6 +9,7 @@ import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { ChainId, PoolData } from '@/dex/types/main.types'
+import { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -29,17 +30,17 @@ type PoolParametersProps = {
 }
 
 export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
-  const poolAddress = poolData.pool.address
+  const poolAddress = poolData.pool.address as Address
   const blockchainId = requireBlockchainId(rChainId)
   const { data: basePools } = useBasePools({ chainId: rChainId })
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { data: poolMetadata } = usePoolMetadata({
     chain: blockchainId,
-    poolAddress: poolAddress as `0x${string}`,
+    poolAddress,
   })
   const { data: snapshots } = usePoolSnapshots({
     chain: blockchainId,
-    poolAddress: poolAddress as `0x${string}`,
+    poolAddress,
   })
   const snapshotData = snapshots?.[0]
 
@@ -167,9 +168,9 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      {poolMetadata.oracles[idx]!.oracleAddress ? (
-                        <IndentDataAddressLink href={scanTokenPath(network, poolMetadata.oracles[idx]!.oracleAddress)}>
-                          {shortenAddress(poolMetadata.oracles[idx]!.oracleAddress)}
+                      {poolMetadata.oracles[idx].oracleAddress ? (
+                        <IndentDataAddressLink href={scanTokenPath(network, poolMetadata.oracles[idx].oracleAddress)}>
+                          {shortenAddress(poolMetadata.oracles[idx].oracleAddress)}
                         </IndentDataAddressLink>
                       ) : (
                         <IndentData>-</IndentData>
@@ -178,12 +179,12 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Function:`}</IndentDataTitle>
-                      <IndentData>{poolMetadata.oracles[idx]!.method ?? '-'}</IndentData>
+                      <IndentData>{poolMetadata.oracles[idx].method ?? '-'}</IndentData>
                     </Box>
                     <Box flex>
                       <Numeral>└─</Numeral>
                       <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
-                      <IndentData>{poolMetadata.oracles[idx]!.methodId ?? '-'}</IndentData>
+                      <IndentData>{poolMetadata.oracles[idx].methodId ?? '-'}</IndentData>
                     </Box>
                   </IndentWrapper>
                 )}
@@ -342,7 +343,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           </StatsSection>
         )}
 
-        {(snapshotData.xcpProfit || snapshotData.xcpProfitA) && pricesApi && (
+        {pricesApi && (snapshotData.xcpProfit != null || snapshotData.xcpProfitA != null) && (
           <StatsSection>
             {snapshotData.xcpProfit !== null && (
               <StatsContainer>
