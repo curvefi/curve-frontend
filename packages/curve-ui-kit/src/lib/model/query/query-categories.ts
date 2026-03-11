@@ -1,6 +1,6 @@
 import { QUERY_TYPES } from '@ui-kit/lib/model/query/query-types'
 
-const { user, table, marketDetail, static: staticData, form, urgent } = QUERY_TYPES
+const { user, table, chart, marketDetail, static: staticData, form, urgent } = QUERY_TYPES
 
 /**
  * This is the final level of categorization for queries.
@@ -57,6 +57,9 @@ export const QUERY_CATEGORIES = {
   // Savings (scrvUSD)
   'savings.stats': marketDetail,
   'savings.user': user,
+
+  // Analytics
+  'analytics.chart': chart,
 } as const
 
 export type QueryCategory = keyof typeof QUERY_CATEGORIES

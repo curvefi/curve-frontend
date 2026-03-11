@@ -1,26 +1,44 @@
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
-import { invalidateBorrowMoreExpectedCollateral } from './borrow-more-expected-collateral.query'
-import { invalidateBorrowMoreFutureLeverage } from './borrow-more-future-leverage.query'
+import type { RouteResponse } from '@primitives/router.utils'
 import {
-  invalidateBorrowMoreApproveGasEstimateQuery,
-  invalidateBorrowMoreGasEstimateQuery,
+  invalidateBorrowMoreExpectedCollateral,
+  refetchBorrowMoreExpectedCollateral,
+} from './borrow-more-expected-collateral.query'
+import {
+  invalidateBorrowMoreFutureLeverage,
+  refetchBorrowMoreFutureLeverage,
+} from './borrow-more-future-leverage.query'
+import {
+  invalidateBorrowMoreEstimateGasQueries,
+  refetchBorrowMoreEstimateGasQueries,
 } from './borrow-more-gas-estimate.query'
-import { invalidateBorrowMoreHealth } from './borrow-more-health.query'
-import { invalidateBorrowMoreIsApproved } from './borrow-more-is-approved.query'
-import { invalidateBorrowMoreMaxReceive } from './borrow-more-max-receive.query'
-import { invalidateBorrowMorePriceImpact } from './borrow-more-price-impact.query'
-import { invalidateBorrowMorePrices } from './borrow-more-prices.query'
+import { invalidateBorrowMoreHealth, refetchBorrowMoreHealth } from './borrow-more-health.query'
+import { invalidateBorrowMoreIsApproved, refetchBorrowMoreIsApproved } from './borrow-more-is-approved.query'
+import { invalidateBorrowMoreMaxReceive, refetchBorrowMoreMaxReceive } from './borrow-more-max-receive.query'
+import { invalidateBorrowMorePriceImpact, refetchBorrowMorePriceImpact } from './borrow-more-price-impact.query'
+import { invalidateBorrowMorePrices, refetchBorrowMorePrices } from './borrow-more-prices.query'
 
-export const invalidateBorrowMoreRouteQueries = async (params: BorrowMoreParams) => {
-  await Promise.all([
-    invalidateBorrowMoreExpectedCollateral(params),
-    invalidateBorrowMoreFutureLeverage(params),
-    invalidateBorrowMoreApproveGasEstimateQuery(params),
-    invalidateBorrowMoreGasEstimateQuery(params),
-    invalidateBorrowMoreHealth(params),
-    invalidateBorrowMoreIsApproved(params),
-    invalidateBorrowMoreMaxReceive(params),
-    invalidateBorrowMorePriceImpact(params),
-    invalidateBorrowMorePrices(params),
-  ])
-}
+const refetch = [
+  refetchBorrowMoreExpectedCollateral,
+  refetchBorrowMoreFutureLeverage,
+  refetchBorrowMoreEstimateGasQueries,
+  refetchBorrowMoreHealth,
+  refetchBorrowMoreIsApproved,
+  refetchBorrowMoreMaxReceive,
+  refetchBorrowMorePriceImpact,
+  refetchBorrowMorePrices,
+]
+const invalidate = [
+  invalidateBorrowMoreExpectedCollateral,
+  invalidateBorrowMoreFutureLeverage,
+  invalidateBorrowMoreEstimateGasQueries,
+  invalidateBorrowMoreHealth,
+  invalidateBorrowMoreIsApproved,
+  invalidateBorrowMoreMaxReceive,
+  invalidateBorrowMorePriceImpact,
+  invalidateBorrowMorePrices,
+]
+export const invalidateOrRefetchBorrowMoreRouteQueries = async (
+  route: RouteResponse | undefined,
+  params: BorrowMoreParams,
+) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))

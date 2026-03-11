@@ -17,6 +17,7 @@ export const {
   useQuery: useRepayExpectedBorrowed,
   queryKey: repayExpectedBorrowedQueryKey,
   invalidate: invalidateRepayExpectedBorrowed,
+  refetchQuery: refetchRepayExpectedBorrowed,
 } = queryFactory({
   queryKey: ({
     chainId,

@@ -7,7 +7,11 @@ import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstimateGasQuery } = queryFactory({
+const {
+  useQuery: useRepayLoanEstimateGas,
+  invalidate: invalidateRepayLoanEstimateGasQuery,
+  refetchQuery: refetchRepayLoanEstimateGasQuery,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -67,7 +71,11 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
-const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApproveGasEstimateQuery } = queryFactory({
+const {
+  useQuery: useRepayApproveGasEstimate,
+  invalidate: invalidateRepayApproveGasEstimateQuery,
+  refetchQuery: refetchRepayApproveGasEstimateQuery,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -123,4 +131,8 @@ export const useRepayEstimateGas = createApprovedEstimateGasHook({
   useActionEstimate: useRepayLoanEstimateGas,
 })
 
-export { invalidateRepayApproveGasEstimateQuery, invalidateRepayLoanEstimateGasQuery }
+export const invalidateRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+  await Promise.all([invalidateRepayApproveGasEstimateQuery(params), invalidateRepayLoanEstimateGasQuery(params)])
+
+export const refetchRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+  await Promise.all([refetchRepayApproveGasEstimateQuery(params), refetchRepayLoanEstimateGasQuery(params)])

@@ -5,6 +5,7 @@ import {
   QueryFunctionContext,
   queryOptions,
   useQuery,
+  keepPreviousData,
   type DefaultError,
   type FetchQueryOptions,
   type QueryKey,
@@ -85,6 +86,7 @@ export function queryFactory<
   validationSuite,
   dependencies,
   disableLog,
+  keepPreviousData: shouldKeepPreviousData,
   ...options
 }: {
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
@@ -95,6 +97,7 @@ export function queryFactory<
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
+  keepPreviousData?: boolean
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
@@ -117,6 +120,7 @@ export function queryFactory<
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
         !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
         failureCount < 3,
+      ...(shouldKeepPreviousData && { placeholderData: keepPreviousData }),
       ...options,
     })
   return {

@@ -34,8 +34,6 @@ const buildEnsoRouteId = (route: EnsoRouteResponse['route']) =>
 
 /**
  * Calls Enso's router to get the optimal route and builds the response.
- * - Uses GET /api/v1/shortcuts/route
- * - Base URL configurable via ENSO_API_URL (defaults to https://api.enso.finance)
  */
 export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> => {
   const {

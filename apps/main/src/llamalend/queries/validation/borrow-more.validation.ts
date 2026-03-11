@@ -44,18 +44,21 @@ export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
   Pick<CalculatedValues, 'maxDebt'>
 export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainId>>
 
-const validateBorrowMoreFieldsForMarket = (
-  marketId: string | null | undefined,
-  leverageEnabled: boolean | null | undefined,
-  _userCollateral: Decimal | null | undefined,
-  _userBorrowed: Decimal | null | undefined,
-  _debt: Decimal | null | undefined,
-  routeId: string | null | undefined,
-) => {
+const validateBorrowMoreFieldsForMarket = ({
+  marketId,
+  leverageEnabled,
+  routeId,
+  debtRequired,
+}: {
+  marketId: string | null | undefined
+  leverageEnabled: boolean | null | undefined
+  routeId: string | null | undefined
+  debtRequired: boolean
+}) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
     const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
-    validateRoute(routeId, !!leverageEnabled && isRouterRequired(type))
+    validateRoute(routeId, debtRequired && !!leverageEnabled && isRouterRequired(type))
   })
 }
 
@@ -116,7 +119,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt, routeId)
+  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debtRequired })
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)

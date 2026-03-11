@@ -11,6 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ArrowsHorizontalIcon } from '@ui-kit/shared/icons/ArrowsHorizontalIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps, type SxProps } from '@ui-kit/utils/mui'
+import { SelectTimeOption, type TimeOption } from './SelectTimeOption'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,11 +30,7 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
     /** optional: not all charts have multiple options */
     setActiveSelection?: (value: TChartKey) => void
   }
-  timeOption?: {
-    options: readonly TTimeOption[]
-    activeOption: TTimeOption
-    setActiveOption: (newTimeOption: TTimeOption) => void
-  }
+  timeOption?: TimeOption<TTimeOption>
   expandChart?: {
     isExpanded: boolean
     toggleChartExpanded: () => void
@@ -63,9 +60,6 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
     if (event.target.value != null && chartSelections.setActiveSelection)
       chartSelections.setActiveSelection(event.target.value as TChartKey)
-  }
-  const handleTimeOption = (event: SelectChangeEvent<TTimeOption>) => {
-    if (event.target.value != null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
   }
   const foundChartOption = chartSelections.selections.find(
     (selection) => selection.key === chartSelections.activeSelection,
@@ -124,25 +118,12 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
               </ToggleButton>
             ))}
           {timeOption && (
-            <Select
-              value={timeOption.activeOption}
-              onChange={handleTimeOption}
-              size="small"
-              sx={{ alignSelf: 'center' }}
-              disabled={isLoading}
-              MenuProps={{
-                anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
-                transformOrigin: { vertical: 'top', horizontal: 'right' },
-              }}
-            >
-              {timeOption.options.map((timeOption) => (
-                <MenuItem value={timeOption} key={timeOption}>
-                  <Typography variant="bodySBold" sx={{ textTransform: 'uppercase' }}>
-                    {timeOption}
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Select>
+            <SelectTimeOption
+              options={timeOption.options}
+              activeOption={timeOption.activeOption}
+              setActiveOption={timeOption.setActiveOption}
+              isLoading={isLoading}
+            />
           )}
           {customButton}
           {expandChart && (
