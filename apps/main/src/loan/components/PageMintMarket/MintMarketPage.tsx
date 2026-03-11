@@ -113,7 +113,7 @@ export const MintMarketPage = () => {
         />
       }
     >
-      {loanExists === true && (
+      {loanExists && (
         <PositionDetailsComposite
           hasPosition={loanExists}
           borrowPositionDetails={borrowPositionDetails}

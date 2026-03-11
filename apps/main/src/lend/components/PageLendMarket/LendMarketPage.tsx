@@ -153,7 +153,7 @@ export const LendMarketPage = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
       )}
-      {loanExists === true && (
+      {loanExists && (
         <PositionDetailsComposite
           hasPosition={loanExists}
           borrowPositionDetails={borrowPositionDetails}
