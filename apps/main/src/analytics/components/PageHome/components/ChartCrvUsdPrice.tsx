@@ -71,6 +71,7 @@ export function ChartCrvUsdPrice() {
                   formatter,
                 }),
             },
+            // 0.95 and 1.05 cover 99% of a stablecoin's price range. And you don't want spikes to cause the chart to become unreadable.
             min: Math.max(Math.min(...chartData.map((x) => x.price)), 0.95),
             max: Math.min(Math.max(...chartData.map((x) => x.price)), 1.05),
           },
