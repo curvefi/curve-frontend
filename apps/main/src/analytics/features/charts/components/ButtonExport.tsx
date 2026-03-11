@@ -5,6 +5,11 @@ import { DownloadIcon } from '@ui-kit/shared/icons/DownloadIcon'
 /** Plain series data keyed by column name. `time` is a UTC timestamp. */
 type SeriesData = Record<string, { time: number; value: number }[]>
 
+/**
+ * Builds CSV content from series data.
+ * @remarks Values are not escaped for the delimiter,
+ * it's not expected to be part of an actual value.
+ */
 function createCsvData(data: SeriesData): string {
   const columns = llama(Object.keys(data)).orderBy((x) => x)
 
