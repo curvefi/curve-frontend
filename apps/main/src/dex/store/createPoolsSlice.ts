@@ -39,7 +39,6 @@ const { chunk, countBy, groupBy, isNaN } = lodash
 
 type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }
-  poolsLoading: { [chainId: string]: boolean }
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
@@ -99,7 +98,6 @@ export type PoolsSlice = {
 
 const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
-  poolsLoading: {},
   haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
@@ -140,7 +138,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         set(
           produce((state: State) => {
             state.pools.error = ''
-            state.pools.poolsLoading[chainId] = true
           }),
         )
 
@@ -166,7 +163,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
               ...parsedTokensNameMapper(poolDatas),
             }
             state.pools.haveAllPools[chainId] = true
-            state.pools.poolsLoading[chainId] = false
           }),
         )
 
@@ -187,7 +183,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         set(
           produce((state: State) => {
             state.pools.error = 'Unable to load pool list, please refresh or try again later.'
-            state.pools.poolsLoading[chainId] = false
           }),
         )
       }
