@@ -1,7 +1,7 @@
-import { ethers } from 'ethers'
+import type { BrowserProvider } from 'ethers'
 import PromisePool from '@supercharge/promise-pool'
 
-type Provider = ethers.BrowserProvider
+export type Provider = BrowserProvider
 
 export const waitForTransaction = async (hash: string, provider: Provider) => {
   const tx = await provider.waitForTransaction(hash)

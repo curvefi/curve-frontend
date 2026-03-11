@@ -1,10 +1,10 @@
-import { BrowserProvider } from 'ethers'
 import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { type BaseConfig, formatNumber } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
+import type { Provider } from '@ui-kit/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import type { Query as QueryResult } from '@ui-kit/types/util'
@@ -257,7 +257,7 @@ function parsePolygonGasInfo(gasInfo: {
   }
 }
 
-async function parseGasInfo(curve: AnyCurveApi, provider: BrowserProvider, l2GasUrl?: string) {
+async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: string) {
   // Returns the current recommended FeeData to use in a transaction.
   // For an EIP-1559 transaction, the maxFeePerGas and maxPriorityFeePerGas should be used.
   // For legacy transactions and networks which do not support EIP-1559, the gasPrice should be used.

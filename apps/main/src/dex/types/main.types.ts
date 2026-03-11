@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -6,6 +5,7 @@ import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
+export type { Provider } from '@ui-kit/lib/ethers'
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = IChainId | number
@@ -78,7 +78,6 @@ export const FormTypes = [
 ] as const
 export type RFormType = (typeof FormTypes)[number]
 export type Pool = PoolTemplate
-export type Provider = ethers.BrowserProvider
 export type ClaimableReward = {
   token: string
   symbol: string
