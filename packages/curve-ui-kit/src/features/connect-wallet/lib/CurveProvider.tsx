@@ -70,6 +70,7 @@ export const CurveProvider = <App extends AppName>({
     /** Initialize the app by hydrating the library if needed. */
     const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
       if (globalLibs.hydrated[app] != lib && hydrate[app]) {
+        globalLibs.hydrated[app] = undefined
         setConnectState(HYDRATING)
         await hydrate[app](config, lib, prevLib, wallet) // if thrown, it will be caught in initLib
       }
