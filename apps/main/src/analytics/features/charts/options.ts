@@ -71,7 +71,10 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
     axisLine: { show: true, lineStyle: { color: palette.gridLinesColor } },
     axisTick: { show: true, lineStyle: { color: palette.gridLinesColor } },
     splitLine: { show: true, lineStyle: { color: palette.gridLinesColor } }, // vertical grid lines
-    axisLabel: { color: palette.axisLabelsColor },
+    axisLabel: {
+      color: palette.axisLabelsColor,
+      align: 'left' /** fixes y axis shifting to right due to first x axis label */,
+    },
     boundaryGap: false,
   },
   yAxis: {
