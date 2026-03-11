@@ -1,6 +1,4 @@
-import { useMemo } from 'react'
-import { createPortal } from 'react-dom'
-import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
+import Portal from '@mui/material/Portal'
 import { useDismissBanner } from '@ui-kit/hooks/useLocalStorage'
 import { Banner, BannerProps } from '@ui-kit/shared/ui/Banner'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -25,19 +23,20 @@ export const PoolAlertBanner = ({
   alertType: AlertType
 }) => {
   const { shouldShowBanner, dismissBanner } = useDismissBanner(poolAlertBannerKey, Duration.Banner.Daily)
-  const isDesktop = useIsDesktop()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- isDesktop triggers re-query when header changes (desktop ↔ mobile)
-  const portalTarget = useMemo(() => document.getElementsByTagName('header')[0], [isDesktop])
   const severity = alertTypeToBannerSeverity[alertType]
 
   return (
-    shouldShowBanner &&
-    portalTarget &&
-    createPortal(
-      <Banner subtitle={banner.subtitle} severity={severity} onClick={dismissBanner} learnMoreUrl={banner.learnMoreUrl}>
-        {banner.title}
-      </Banner>,
-      portalTarget,
+    shouldShowBanner && (
+      <Portal container={() => document.getElementsByTagName('header').item(0)}>
+        <Banner
+          subtitle={banner.subtitle}
+          severity={severity}
+          onClick={dismissBanner}
+          learnMoreUrl={banner.learnMoreUrl}
+        >
+          {banner.title}
+        </Banner>
+      </Portal>
     )
   )
 }
