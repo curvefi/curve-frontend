@@ -21,7 +21,7 @@ describe('Create loan', () => {
       checkLoanRangeSlider({ leverageEnabled })
       // e2e tests run with a 'fake' account so the transaction fails
       submitCreateLoanForm('error', 'Transaction failed').then(() =>
-        cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('unknown account'),
+        cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('fee cap'),
       )
     })
   })
