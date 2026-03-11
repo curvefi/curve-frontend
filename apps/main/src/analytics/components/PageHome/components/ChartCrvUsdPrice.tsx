@@ -110,10 +110,7 @@ export function ChartCrvUsdPrice() {
         </>
       }
     >
-      <ChartFooter
-        legendSets={legendSets}
-        description={t`Total crvUSD in circulation (Supply) versus the amount actively borrowed against collateral (Borrowed). The gap between the two lines reflects Pegkeeper debt — crvUSD minted by the protocol to stabilize the peg, not backed by user collateral.`}
-      />
+      <ChartFooter legendSets={legendSets} description={t`The aggregate price of crvUSD on all Curve pools.`} />
     </EChartsCard>
   )
 }
