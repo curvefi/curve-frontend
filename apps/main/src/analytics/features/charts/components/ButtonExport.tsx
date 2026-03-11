@@ -30,9 +30,7 @@ function createCsvData(data: SeriesData): string {
     })
     .value()
 
-  const csvContent = ['time;' + columns.value().join(';'), ...rows].join('\n')
-
-  return csvContent
+  return ['time;' + columns.value().join(';'), ...rows].join('\n')
 }
 
 function triggerDownload(filename: string, csvContent: string) {
