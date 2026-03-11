@@ -112,7 +112,7 @@ export function ChartCrvUsdPrice() {
     >
       <ChartFooter
         legendSets={legendSets}
-        description={t`Tracks the aggregate crvUSD stablecoin price across all Curve pools, showing deviation from the perfect $1.00 peg`}
+        description={t`Total crvUSD in circulation (Supply) versus the amount actively borrowed against collateral (Borrowed). The gap between the two lines reflects Pegkeeper debt — crvUSD minted by the protocol to stabilize the peg, not backed by user collateral.`}
       />
     </EChartsCard>
   )
