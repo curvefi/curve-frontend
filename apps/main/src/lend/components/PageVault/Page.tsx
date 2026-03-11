@@ -26,7 +26,6 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 export const Page = () => {
@@ -129,9 +128,7 @@ export const Page = () => {
           <SupplyPositionDetails {...supplyPositionDetails} />
         </Stack>
       )}
-      <Stack gap={PAGE_SPACING}>
-        <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
-      </Stack>
+      <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

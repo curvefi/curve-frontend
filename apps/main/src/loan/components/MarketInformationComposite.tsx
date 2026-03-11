@@ -8,6 +8,7 @@ import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
+import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { networks } from '../networks'
 
 const { Spacing } = SizesAndSpaces
@@ -30,7 +31,7 @@ export const MarketInformationComposite = ({
   const newBandsChartEnabled = useNewBandsChart()
 
   return (
-    <>
+    <Stack gap={PAGE_SPACING}>
       <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
       {!newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
@@ -38,7 +39,7 @@ export const MarketInformationComposite = ({
         </Stack>
       )}
       {market && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <Stack>
           <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
           <MarketInfoLayout
             chainId={chainId}
@@ -48,6 +49,6 @@ export const MarketInformationComposite = ({
           />
         </Stack>
       )}
-    </>
+    </Stack>
   )
 }

@@ -14,7 +14,6 @@ import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
 import { isChain, type Chain } from '@curvefi/prices-api'
-import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -26,7 +25,6 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils/address'
-import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 export const MintMarketPage = () => {
@@ -122,15 +120,13 @@ export const MintMarketPage = () => {
           activityQueryParams={activityQueryParams}
         />
       )}
-      <Stack gap={PAGE_SPACING}>
-        <MarketInformationComposite
-          market={market ?? null}
-          marketId={marketId}
-          chainId={rChainId}
-          page="manage"
-          previewPrices={previewPrices}
-        />
-      </Stack>
+      <MarketInformationComposite
+        market={market ?? null}
+        marketId={marketId}
+        chainId={rChainId}
+        page="manage"
+        previewPrices={previewPrices}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

@@ -18,7 +18,6 @@ import type { UserCollateralEventsProps } from '@/llamalend/features/user-positi
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isChain, type Chain } from '@curvefi/prices-api'
-import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -29,7 +28,6 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { MarketAlertBanner } from '../MarketAlertBanner'
 
@@ -162,14 +160,12 @@ export const LendMarketPage = () => {
           activityQueryParams={activityQueryParams}
         />
       )}
-      <Stack gap={PAGE_SPACING}>
-        <MarketInformationComposite
-          pageProps={pageProps}
-          type="borrow"
-          loanExists={loanExists}
-          previewPrices={previewPrices}
-        />
-      </Stack>
+      <MarketInformationComposite
+        pageProps={pageProps}
+        type="borrow"
+        loanExists={loanExists}
+        previewPrices={previewPrices}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
