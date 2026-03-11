@@ -1,7 +1,6 @@
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import { t } from '@ui-kit/lib/i18n'
@@ -69,20 +68,15 @@ export const getSections = () => [
         icon: <NewsIcon />,
       },
       {
-        label: t`User Docs`,
+        label: t`Documentation`,
         href: 'https://docs.curve.finance/',
-        icon: <HelpOutlineIcon />,
+        icon: <DocsIcon />,
       },
       {
         label: t`Integrations`,
         // Would've loved to have used ROUTE.PAGE_INTEGRATIONS, but they differ per app.
         href: 'integrations/',
         icon: <IntegrationsIcon />,
-      },
-      {
-        label: t`Technical Docs`,
-        href: 'https://docs.curve.finance/',
-        icon: <DocsIcon />,
       },
       {
         label: t`Github`,
