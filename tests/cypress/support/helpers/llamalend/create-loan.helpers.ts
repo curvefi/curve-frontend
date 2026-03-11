@@ -10,6 +10,7 @@ import { getActionValue } from './action-info.helpers'
 const chainId = Chain.Ethereum
 
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
+const collateralDecimals = 18
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
@@ -17,6 +18,7 @@ export const LOAN_TEST_MARKETS = {
       id: 'wsteth',
       label: 'wstETH-crvUSD Old Mint Market',
       collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
+      controllerAddress: '0x100daa78fc509db39ef7d04de0c1abd299f4c6ce',
       collateral: '0.1',
       borrow: '10',
       borrowMore: '2',
@@ -25,11 +27,13 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
       hasLeverage: false,
+      collateralDecimals,
     },
     {
       id: 'wbtc',
       label: 'WBTC-crvUSD New Mint Market',
       collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
+      controllerAddress: '0x4e59541306910ad6dc1dac0ac9dfb29bd9f15c67',
       collateral: '1',
       borrow: '100',
       borrowMore: '10',
@@ -38,6 +42,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
+      collateralDecimals,
     },
   ],
   [LlamaMarketType.Lend]: [
@@ -45,6 +50,7 @@ export const LOAN_TEST_MARKETS = {
       id: 'one-way-market-7',
       label: 'sUSDe-crvUSD Old Lend Market',
       collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
+      controllerAddress: '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
       collateral: '100',
       borrow: '90',
       borrowMore: '5',
@@ -53,11 +59,13 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
       hasLeverage: false,
+      collateralDecimals,
     },
     {
       id: 'one-way-market-14',
       label: 'USDe-crvUSD New Lend Market',
       collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
+      controllerAddress: '0x74f88Baa966407b50c10B393bBD789639EFfE78B',
       collateral: '1',
       borrow: '0.9',
       borrowMore: '0.02',
@@ -66,6 +74,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
       hasLeverage: true,
+      collateralDecimals,
     },
   ],
 } as const
