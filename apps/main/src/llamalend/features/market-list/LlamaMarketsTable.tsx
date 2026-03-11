@@ -6,7 +6,7 @@ import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
@@ -59,11 +59,12 @@ export const LlamaMarketsTable = ({
   )
 
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
-    useFilters({
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
+    {
       columns: LlamaMarketColumnId,
       defaultFilters,
-    })
+    },
+  )
   const globalFilterFn = useLlamaGlobalFilterFn(data, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
@@ -121,8 +122,7 @@ export const LlamaMarketsTable = ({
           <>
             <LlamaChainFilterChips data={data} {...filterProps} />
             <LlamaListChips
-              hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-              hasFilters={hasFilters}
+              hiddenCount={getHiddenCount(table)}
               resetFilters={resetFilters}
               hasFavorites={hasFavorites}
               onSortingChange={onSortingChange}

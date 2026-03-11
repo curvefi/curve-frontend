@@ -12,7 +12,7 @@ export function useRangeFilter<TColumnId extends string>({
   maxValue,
 }: FilterProps<TColumnId> & { id: TColumnId; maxValue: number }) {
   const defaultRange = useMemo<Range<number>>(() => {
-    const [defaultMin, defaultMax] = parseRangeFilter(defaultFilters.find((f) => f.id === id)?.value) ?? []
+    const [defaultMin, defaultMax] = parseRangeFilter(defaultFilters?.find((f) => f.id === id)?.value) ?? []
     return [defaultMin ?? 0, defaultMax ?? maxValue]
   }, [defaultFilters, id, maxValue])
 

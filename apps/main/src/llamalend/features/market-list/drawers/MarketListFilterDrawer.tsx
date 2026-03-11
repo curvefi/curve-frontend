@@ -21,9 +21,8 @@ type Props = {
   hasFavorites: boolean | undefined
   data: LlamaMarket[]
   minLiquidity?: number
-  hiddenMarketCount?: number
+  hiddenCount: number
   resetFilters: () => void
-  hasFilters: boolean
   userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
@@ -31,9 +30,8 @@ export const MarketListFilterDrawer = ({
   hasFavorites,
   data,
   minLiquidity,
-  hiddenMarketCount,
+  hiddenCount,
   resetFilters,
-  hasFilters,
   userPositionsTab,
   ...filterProps
 }: Props) => {
@@ -51,18 +49,14 @@ export const MarketListFilterDrawer = ({
           onClick={openDrawer}
           data-testid="btn-drawer-filter-lamalend-markets"
         >
-          {t`Filter`} {hiddenMarketCount ? `(${hiddenMarketCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
+          {t`Filter`} {hiddenCount ? `(${hiddenCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
       open={open}
       setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Filters`}>
-        <HiddenMarketsResetFilters
-          hiddenMarketCount={hiddenMarketCount}
-          resetFilters={resetFilters}
-          hasFilters={hasFilters}
-        />
+        <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />
       </DrawerHeader>
       <DrawerItems data-testid="drawer-filter-menu-lamalend-markets">
         {hasPopularFilters && <DrawerHeader title={t`Popular Filters`} />}

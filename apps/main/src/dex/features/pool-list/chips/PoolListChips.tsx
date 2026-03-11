@@ -12,18 +12,16 @@ import { PoolSortDrawer } from '../drawers/PoolSortDrawer'
 const { Spacing } = SizesAndSpaces
 
 export const PoolListChips = ({
-  hiddenMarketCount,
+  hiddenCount,
   resetFilters,
-  hasFilters,
   onSortingChange,
   sortField,
   searchText,
   onSearch,
   ...filterProps
 }: {
-  hiddenMarketCount?: number
+  hiddenCount: number
   resetFilters: () => void
-  hasFilters: boolean
   children?: ReactNode
   onSortingChange: OnChangeFn<SortingState>
   sortField: PoolColumnId
@@ -40,9 +38,8 @@ export const PoolListChips = ({
           </Grid>
           <Grid size={6}>
             <PoolListFilterDrawer
-              hiddenMarketCount={hiddenMarketCount}
+              hiddenCount={hiddenCount}
               resetFilters={resetFilters}
-              hasFilters={hasFilters}
               searchText={searchText}
               onSearch={onSearch}
               {...filterProps}
@@ -54,13 +51,7 @@ export const PoolListChips = ({
           <PoolListFilterChips {...filterProps} />
         </Grid>
       )}
-      {hiddenMarketCount != null && !isMobile && (
-        <HiddenMarketsResetFilters
-          hiddenMarketCount={hiddenMarketCount}
-          resetFilters={resetFilters}
-          hasFilters={hasFilters}
-        />
-      )}
+      {!isMobile && <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />}
     </Grid>
   )
 }

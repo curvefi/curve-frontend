@@ -16,9 +16,8 @@ import { LlamaListUserChips } from './LlamaListUserChips'
 const { Spacing } = SizesAndSpaces
 
 type LlamaListChipsProps = {
-  hiddenMarketCount?: number
+  hiddenCount: number
   resetFilters: () => void
-  hasFilters: boolean
   children?: ReactNode
   hasFavorites?: boolean
   onSortingChange: OnChangeFn<SortingState>
@@ -29,9 +28,8 @@ type LlamaListChipsProps = {
 } & FilterProps<LlamaMarketColumnId>
 
 export const LlamaListChips = ({
-  hiddenMarketCount,
+  hiddenCount,
   resetFilters,
-  hasFilters,
   hasFavorites,
   onSortingChange,
   sortField,
@@ -56,9 +54,8 @@ export const LlamaListChips = ({
               hasFavorites={hasFavorites}
               data={data}
               minLiquidity={minLiquidity}
-              hiddenMarketCount={hiddenMarketCount}
+              hiddenCount={hiddenCount}
               resetFilters={resetFilters}
-              hasFilters={hasFilters}
               userPositionsTab={userPositionsTab}
               {...filterProps}
             />
@@ -78,12 +75,8 @@ export const LlamaListChips = ({
           )}
         </>
       )}
-      {hiddenMarketCount != null && !isMobile && (
-        <HiddenMarketsResetFilters
-          hiddenMarketCount={hiddenMarketCount}
-          resetFilters={resetFilters}
-          hasFilters={hasFilters}
-        />
+      {hiddenCount != null && !isMobile && (
+        <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />
       )}
     </Grid>
   )

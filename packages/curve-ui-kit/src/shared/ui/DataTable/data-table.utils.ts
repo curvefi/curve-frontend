@@ -55,7 +55,7 @@ export const getExtraColumnPadding = <T>(column: Column<T, unknown>) => ({
 
 export type FilterProps<T extends string> = {
   columnFiltersById: PartialRecord<T, string>
-  defaultFilters: { id: T; value: string }[]
+  defaultFilters?: { id: T; value: string }[]
   setColumnFilter: (id: T, value: string | null) => void
 }
 
@@ -116,3 +116,6 @@ export function useCellSx<T extends TableItem>({
 }
 
 export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getState().columnOrder.includes(columnId)
+
+export const getHiddenCount = <T>(table: Table<T>): number =>
+  table.getPreFilteredRowModel().rows.length - table.getFilteredRowModel().rows.length

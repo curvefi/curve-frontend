@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { useSearchParams } from '@ui-kit/hooks/router'
@@ -58,8 +57,6 @@ function parseFilters<TColumnId extends string>(
   ]
 }
 
-const empty: never[] = []
-
 /**
  * Manages per-column filters that are synced with URL query parameters.
  *
@@ -69,7 +66,7 @@ const empty: never[] = []
  */
 function useColumnFilters<TColumnId extends string>({
   columns,
-  defaultFilters = empty,
+  defaultFilters,
   scope,
 }: {
   columns: ColumnEnum<TColumnId>
@@ -85,10 +82,6 @@ function useColumnFilters<TColumnId extends string>({
   return {
     columnFilters,
     defaultFilters,
-    hasFilters: useMemo(
-      () => columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters),
-      [columnFilters, defaultFilters],
-    ),
     columnFiltersById: useMemo(() => fromEntries(columnFilters.map((f) => [f.id, f.value])), [columnFilters]),
     setColumnFilter: useCallback(
       (id: TColumnId, value: string | null) => updateSearchParams({ [scopedKey(scope, id)]: value }),

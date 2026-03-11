@@ -13,17 +13,15 @@ import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/Poo
 const { Spacing } = SizesAndSpaces
 
 type Props = {
-  hiddenMarketCount?: number
+  hiddenCount: number
   resetFilters: () => void
-  hasFilters: boolean
   searchText: string
   onSearch: (value: string) => void
 } & PoolListFilterChipsProps
 
 export const PoolListFilterDrawer = ({
-  hiddenMarketCount,
+  hiddenCount,
   resetFilters,
-  hasFilters,
   searchText,
   onSearch,
   setColumnFilter,
@@ -48,18 +46,14 @@ export const PoolListFilterDrawer = ({
           onClick={openDrawer}
           data-testid="btn-drawer-filter-dex-pools"
         >
-          {t`Filter`} {hiddenMarketCount ? `(${hiddenMarketCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
+          {t`Filter`} {hiddenCount ? `(${hiddenCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
       open={open}
       setOpen={setOpen}
     >
       <DrawerHeader title={t`Filters`}>
-        <HiddenMarketsResetFilters
-          hiddenMarketCount={hiddenMarketCount}
-          resetFilters={resetFilters}
-          hasFilters={hasFilters}
-        />
+        <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />
       </DrawerHeader>
       <Stack
         direction="column"
