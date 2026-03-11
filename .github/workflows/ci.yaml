@@ -44,6 +44,8 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build  # make sure the build works + uploads source maps to Sentry
       - run: yarn test
+        env:
+          ENSO_API_KEY: ${{ secrets.ENSO_API_KEY }}
 
   cypress-component:
     strategy:
