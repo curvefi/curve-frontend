@@ -96,7 +96,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack gap={Spacing.xs}>
+      <Stack
+        gap={Spacing.xs}
+        // add an ugly outline so devs know they are seeing something else than users would see
+        sx={{ ...(isDevelopment && { outline: (t) => '1px dotted ' + t.design.Layer.Feedback.Warning }) }}
+      >
         {fromWallet && (
           <LoanFormTokenInput
             label={t`Add from wallet`}

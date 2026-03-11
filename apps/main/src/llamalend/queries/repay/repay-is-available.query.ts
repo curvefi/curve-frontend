@@ -3,7 +3,11 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvailable } = queryFactory({
+export const {
+  useQuery: useRepayIsAvailable,
+  invalidate: invalidateRepayIsAvailable,
+  refetchQuery: refetchRepayIsAvailable,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

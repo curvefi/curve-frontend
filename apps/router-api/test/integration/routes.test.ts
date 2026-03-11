@@ -1,6 +1,8 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import type { PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouteResponse } from '@primitives/router.utils'
+import { toWei } from '../../src/router.utils'
 import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
@@ -17,6 +19,8 @@ const ARBITRUM_USDT = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
 const CHAIN_ID_CORN = '21000000'
 const CORN = '0x44f49ff0da2498bcb1d3dc7c0f999578f67fd8c6'
 const CORN_WBTCN = '0xda5ddd7270381a7c2717ad10d1c0ecb19e3cdfb2'
+const BTC_DECIMALS = 18
+const USD_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
 type SuccessCase = { query: QueryString; expectedRoutes?: number }
@@ -26,16 +30,26 @@ type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorRespons
 /**
  * Success cases per provider. Curve supports amountIn and amountOut; Enso and Odos require amountIn.
  */
-const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>> = {
+const successCasesByProvider: PartialRecord<RouteProvider, Record<string, SuccessCase>> = {
   curve: {
     'ethereum amountIn': {
-      query: { chainId: CHAIN_ID_ETHEREUM, tokenIn: [ETHEREUM_USDC], tokenOut: [ETHEREUM_USDT], amountIn: ['1000000'] },
+      query: {
+        chainId: CHAIN_ID_ETHEREUM,
+        tokenIn: [ETHEREUM_USDC],
+        tokenOut: [ETHEREUM_USDT],
+        amountIn: [toWei('1000000', USD_DECIMALS)],
+      },
     },
     'arbitrum amountOut': {
-      query: { chainId: CHAIN_ID_ARBITRUM, tokenIn: [ARBITRUM_USDC], tokenOut: [ARBITRUM_USDT], amountOut: ['1000'] },
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountOut: [toWei('1000', USD_DECIMALS)],
+      },
     },
     'corn amountIn': {
-      query: { chainId: CHAIN_ID_CORN, tokenIn: [CORN], tokenOut: [CORN_WBTCN], amountIn: ['10'] },
+      query: { chainId: CHAIN_ID_CORN, tokenIn: [CORN], tokenOut: [CORN_WBTCN], amountIn: [toWei('10', BTC_DECIMALS)] },
     },
   },
   enso: {
@@ -44,7 +58,7 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
         chainId: CHAIN_ID_ETHEREUM,
         tokenIn: [ETHEREUM_USDT],
         tokenOut: [ETHEREUM_USDC],
-        amountIn: ['1000'],
+        amountIn: [toWei('1000', USD_DECIMALS)],
         router: ['enso'],
         userAddress: ['0xF977814e90dA44bFA03b6295A0616a897441aceC'], // binance hot wallet (largest USDT holder on Ethereum now)
       },
@@ -54,13 +68,18 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
         chainId: CHAIN_ID_ARBITRUM,
         tokenIn: [ARBITRUM_USDC],
         tokenOut: [ARBITRUM_USDT],
-        amountIn: ['100'],
+        amountIn: [toWei('100', USD_DECIMALS)],
         router: ['enso'],
         userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
       },
     },
     'arbitrum amountOut': {
-      query: { chainId: CHAIN_ID_ARBITRUM, tokenIn: [ARBITRUM_USDC], tokenOut: [ARBITRUM_USDT], amountOut: ['1000'] },
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountOut: [toWei('1000', USD_DECIMALS)],
+      },
       expectedRoutes: 0, // Enso requires amountIn to return routes
     },
   },
@@ -70,7 +89,7 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
         chainId: CHAIN_ID_ETHEREUM,
         tokenIn: [ETHEREUM_USDT],
         tokenOut: [ETHEREUM_USDC],
-        amountIn: ['1000'],
+        amountIn: [toWei('1000', USD_DECIMALS)],
         router: ['odos'],
         // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
         userAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
@@ -141,7 +160,7 @@ const failureCases: Record<string, FailureCase> = {
   },
 }
 
-describe.sequential('GET /api/router/v1/routes integration', () => {
+describe('GET routes integration', () => {
   let server: FastifyInstance
   beforeAll(() => (server = createRouterApiServer()))
   afterAll(() => server.close())
@@ -161,7 +180,7 @@ describe.sequential('GET /api/router/v1/routes integration', () => {
           expect(route.id).toBeTypeOf('string')
           expect(route.id.length).toBeGreaterThan(0)
           expect(route.router).toBe(router)
-          expect(route.amountOut).toMatch(/^[0-9]+\.?[0-9]*$/)
+          expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
           expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
           expect(route.createdAt).toBeTypeOf('number')
           expect(route.route.length).toBeGreaterThan(0)
