@@ -55,7 +55,6 @@ export const getExtraColumnPadding = <T>(column: Column<T, unknown>) => ({
 
 export type FilterProps<T extends string> = {
   columnFiltersById: PartialRecord<T, string>
-  defaultFilters?: { id: T; value: string }[]
   setColumnFilter: (id: T, value: string | null) => void
 }
 

@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react'
-import { llamaFilterTooltip } from '@/llamalend/features/market-list/filters/llamaGlobalFilter'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
@@ -24,7 +23,6 @@ type LlamaListChipsProps = {
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
   data: LlamaMarket[]
-  minLiquidity?: number
   userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
@@ -35,7 +33,6 @@ export const LlamaListChips = ({
   onSortingChange,
   sortField,
   data,
-  minLiquidity = 0,
   userPositionsTab,
   ...filterProps
 }: LlamaListChipsProps) => {
@@ -54,7 +51,6 @@ export const LlamaListChips = ({
             <MarketListFilterDrawer
               hasFavorites={hasFavorites}
               data={data}
-              minLiquidity={minLiquidity}
               hiddenCount={hiddenCount}
               resetFilters={resetFilters}
               userPositionsTab={userPositionsTab}
@@ -77,11 +73,7 @@ export const LlamaListChips = ({
         </>
       )}
       {hiddenCount != null && !isMobile && (
-        <HiddenCountResetButton
-          hiddenCount={hiddenCount}
-          resetFilters={resetFilters}
-          filterTooltip={llamaFilterTooltip}
-        />
+        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
       )}
     </Grid>
   )

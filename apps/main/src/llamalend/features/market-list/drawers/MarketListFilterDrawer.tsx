@@ -1,4 +1,3 @@
-import { llamaFilterTooltip } from '@/llamalend/features/market-list/filters/llamaGlobalFilter'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { Button, Grid } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -21,7 +20,6 @@ const { Spacing } = SizesAndSpaces
 type Props = {
   hasFavorites: boolean | undefined
   data: LlamaMarket[]
-  minLiquidity?: number
   hiddenCount: number
   resetFilters: () => void
   userPositionsTab?: MarketRateType
@@ -30,7 +28,6 @@ type Props = {
 export const MarketListFilterDrawer = ({
   hasFavorites,
   data,
-  minLiquidity,
   hiddenCount,
   resetFilters,
   userPositionsTab,
@@ -57,11 +54,7 @@ export const MarketListFilterDrawer = ({
       setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Filters`}>
-        <HiddenCountResetButton
-          hiddenCount={hiddenCount}
-          resetFilters={resetFilters}
-          filterTooltip={llamaFilterTooltip}
-        />
+        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
       </DrawerHeader>
       <DrawerItems data-testid="drawer-filter-menu-lamalend-markets">
         {hasPopularFilters && <DrawerHeader title={t`Popular Filters`} />}
