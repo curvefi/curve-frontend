@@ -34,7 +34,6 @@ const approveBorrowMore = async (
   market: LlamaMarketTemplate,
   { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
-  if (!+userCollateral && !+userBorrowed) return []
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':

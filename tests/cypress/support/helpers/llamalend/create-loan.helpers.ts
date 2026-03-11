@@ -5,7 +5,7 @@ import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils/network'
-import { getActionValue } from './action-info.helpers'
+import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -78,10 +78,11 @@ export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarket
  * The action info list is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+  getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('estimated-tx-cost').should('include', '$')
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -93,6 +94,9 @@ export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: b
 
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
+
+const getBorrowInput = () => cy.get('[data-testid="borrow-debt-input"] input[type="text"]')
+const getCollateralInput = () => cy.get('[data-testid="borrow-collateral-input"] input[type="text"]')
 
 /**
  * Fill in the create loan form. Assumes the form is already opened.
@@ -107,10 +111,12 @@ export function writeCreateLoanForm({
   leverageEnabled: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
-  cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
+  getCollateralInput().type(collateral)
+  getCollateralInput().blur()
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
   getActionValue('borrow-health').should('equal', '∞')
-  cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
+  getBorrowInput().type(borrow)
+  getBorrowInput().blur()
   getActionValue('borrow-health').should('not.equal', '∞')
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }
@@ -127,9 +133,7 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   // wait for max borrow to load and verify the input value matches (using data-value for precision)
   cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .then((maxValue) =>
-      cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().should('have.value', maxValue),
-    )
+    .then((maxValue) => getBorrowInput().should('have.value', maxValue))
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
   checkLoanDetailsLoaded({ leverageEnabled })
 }
