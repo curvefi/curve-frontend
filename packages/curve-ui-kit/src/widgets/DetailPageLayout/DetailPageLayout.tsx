@@ -1,18 +1,22 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useRef } from 'react'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useRightFormTabsLayout } from '@ui-kit/hooks/useFeatureFlags'
+import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { pageMargins } from './constants'
+import { PAGE_MARGIN, PAGE_SPACING } from './constants'
 import { FormSkeleton } from './FormSkeleton'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { MaxWidth } = SizesAndSpaces
 
-const stickySx = (navHeight: number) => ({
+const stickySx = (navHeight: number, pageHeaderHeight: number) => ({
   alignSelf: { tablet: 'flex-start' },
   position: { tablet: 'sticky' },
-  top: { tablet: `calc(${navHeight}px + ${Spacing.md.tablet})` },
+  top: {
+    tablet: `calc(${navHeight}px + ${pageHeaderHeight}px + ${pageHeaderHeight ? PAGE_MARGIN.marginBlockStart.tablet : '0px'})`,
+  },
 })
 
 /**
@@ -23,18 +27,24 @@ const stickySx = (navHeight: number) => ({
  */
 export const DetailPageLayout = ({
   formTabs,
+  header,
   children,
   footer,
 }: {
   formTabs: ReactNode
+  header?: ReactNode
   children?: ReactNode
   footer?: ReactNode
 }) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   const isNewLayout = useRightFormTabsLayout()
+  const isDesktop = useIsDesktop()
+  // header ref needed to compute the top position of the sticky forms
+  const headerRef = useRef<HTMLDivElement>(null)
+  const [, pageHeaderHeight = 0] = useResizeObserver(headerRef) ?? []
 
   return (
-    <Grid container data-testid="detail-page-layout" spacing={Spacing.lg} sx={pageMargins}>
+    <Grid container data-testid="detail-page-layout" spacing={PAGE_SPACING} sx={PAGE_MARGIN}>
       {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
           Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
       {formTabs !== null && (
@@ -45,14 +55,19 @@ export const DetailPageLayout = ({
             sx={{
               // action forms on the right for Beta
               order: { mobile: 1, tablet: isNewLayout ? 2 : 1 },
-              ...(isNewLayout && stickySx(navHeight)),
+              // include page header height for desktop only, page header height can be too big for tablet
+              ...(isNewLayout && stickySx(navHeight, isDesktop ? pageHeaderHeight : 0)),
             }}
           >
             {formTabs || <FormSkeleton />}
           </Grid>
           <Grid size="grow" sx={{ order: { mobile: 2, tablet: isNewLayout ? 1 : 2 } }}>
-            <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-              {children}
+            {/* Additional Stack because no gap between the page header and the children */}
+            <Stack flexDirection="column">
+              {header && <Stack ref={headerRef}>{header}</Stack>}
+              <Stack flexDirection="column" flexGrow={1} gap={PAGE_SPACING}>
+                {children}
+              </Stack>
             </Stack>
           </Grid>
         </>

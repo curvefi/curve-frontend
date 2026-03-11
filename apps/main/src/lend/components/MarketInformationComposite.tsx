@@ -37,12 +37,12 @@ export const MarketInformationComposite = ({
     <>
       <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
       {type === 'borrow' && !newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}
       {market && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, marginTop: Spacing.md }}>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
           <MarketInfoLayout
             chainId={rChainId}

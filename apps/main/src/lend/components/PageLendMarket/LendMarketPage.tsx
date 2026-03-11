@@ -29,6 +29,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
+import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { MarketAlertBanner } from '../MarketAlertBanner'
 
@@ -136,14 +137,16 @@ export const LendMarketPage = () => {
           <LoanCreateTabs {...pageProps} params={params} />
         ))
       }
+      header={
+        <PageHeader
+          chainId={chainId}
+          marketId={marketId}
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+        />
+      }
     >
-      <PageHeader
-        chainId={chainId}
-        marketId={marketId}
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-      />
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
@@ -157,7 +160,7 @@ export const LendMarketPage = () => {
         borrowPositionDetails={borrowPositionDetails}
         activityQueryParams={activityQueryParams}
       />
-      <Stack>
+      <Stack gap={PAGE_SPACING}>
         <MarketInformationComposite
           pageProps={pageProps}
           type="borrow"

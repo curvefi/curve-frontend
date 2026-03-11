@@ -33,12 +33,12 @@ export const MarketInformationComposite = ({
     <>
       <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
       {!newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
       )}
       {market && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, marginTop: Spacing.md }}>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
           <MarketInfoLayout
             chainId={chainId}

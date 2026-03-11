@@ -26,6 +26,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils/address'
+import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 export const MintMarketPage = () => {
@@ -104,20 +105,22 @@ export const MintMarketPage = () => {
           <CreateLoanTabs {...formProps} />
         ))
       }
+      header={
+        <PageHeader
+          chainId={rChainId}
+          marketId={marketId}
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+        />
+      }
     >
-      <PageHeader
-        chainId={rChainId}
-        marketId={marketId}
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-      />
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
         activityQueryParams={activityQueryParams}
       />
-      <Stack>
+      <Stack gap={PAGE_SPACING}>
         <MarketInformationComposite
           market={market ?? null}
           marketId={marketId}

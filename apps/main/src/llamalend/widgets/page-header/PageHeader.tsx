@@ -18,7 +18,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { pageMargins } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { PAGE_MARGIN } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
@@ -63,12 +63,12 @@ const PADDING_BLOCK = Spacing.sm
 const stickySx = (navHeight: number): StackProps['sx'] => ({
   position: { tablet: 'sticky' },
   top: { tablet: `${navHeight}px` },
-  marginBlockStart: { tablet: `calc(${pageMargins.marginBlockStart.tablet} * -1)` },
+  marginBlockStart: { tablet: `calc(${PAGE_MARGIN.marginBlockStart.tablet} * -1)` },
   zIndex: (t) => t.zIndex.appBar - 1,
   backgroundColor: (t) => t.palette.background.default,
   paddingBlockStart: {
     mobile: PADDING_BLOCK.mobile,
-    tablet: pageMargins.marginBlockStart.tablet,
+    tablet: PAGE_MARGIN.marginBlockStart.tablet,
   },
 })
 

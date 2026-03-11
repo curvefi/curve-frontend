@@ -26,6 +26,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
+import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 export const Page = () => {
@@ -103,14 +104,18 @@ export const Page = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-      <PageHeader
-        chainId={rChainId}
-        marketId={rOwmId}
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-      />
+    <DetailPageLayout
+      formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}
+      header={
+        <PageHeader
+          chainId={rChainId}
+          marketId={rOwmId}
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+        />
+      }
+    >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
@@ -122,7 +127,7 @@ export const Page = () => {
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
       </Stack>
-      <Stack>
+      <Stack gap={PAGE_SPACING}>
         <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
       </Stack>
     </DetailPageLayout>
