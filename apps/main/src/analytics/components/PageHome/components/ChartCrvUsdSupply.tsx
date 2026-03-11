@@ -57,7 +57,7 @@ export function ChartCrvUsdSupply() {
 
   const chartData = useMemo(
     () =>
-      llama(data ?? [])
+      llama(data)
         .groupBy((x) => new Date(x.timestamp).getTime())
         .entries()
         .map(([, x]) => ({

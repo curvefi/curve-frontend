@@ -201,4 +201,4 @@ class LlamaArray<T> {
 }
 
 /** Wraps an array in a LlamaArray for chainable, non-polluting utility methods. */
-export const llama = <T>(arr: T[]): LlamaArray<T> => new LlamaArray(arr)
+export const llama = <T>(arr: T[] | undefined): LlamaArray<T> => new LlamaArray(arr ?? [])

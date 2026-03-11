@@ -45,7 +45,7 @@ export function ChartCrvUsdPrice() {
 
   const chartData = useMemo(
     () =>
-      llama(data ?? [])
+      llama(data)
         .map((x) => ({
           time: new Date(x.timestamp).getTime(),
           price: x.price,
