@@ -6,7 +6,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 
-export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePrices } = queryFactory({
+export const {
+  useQuery: useBorrowMorePrices,
+  invalidate: invalidateBorrowMorePrices,
+  refetchQuery: refetchBorrowMorePrices,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

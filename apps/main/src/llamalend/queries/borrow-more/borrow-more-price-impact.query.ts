@@ -4,7 +4,11 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
-export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowMorePriceImpact } = queryFactory({
+export const {
+  useQuery: useBorrowMorePriceImpact,
+  invalidate: invalidateBorrowMorePriceImpact,
+  refetchQuery: refetchBorrowMorePriceImpact,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

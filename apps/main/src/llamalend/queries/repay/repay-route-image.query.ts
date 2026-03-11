@@ -3,7 +3,11 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { useQuery: useRepayRouteImage, invalidate: invalidateRepayRouteImage } = queryFactory({
+export const {
+  useQuery: useRepayRouteImage,
+  invalidate: invalidateRepayRouteImage,
+  refetchQuery: refetchRepayRouteImage,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

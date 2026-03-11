@@ -8,7 +8,11 @@ import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
-export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHealth } = queryFactory({
+export const {
+  useQuery: useBorrowMoreHealth,
+  invalidate: invalidateBorrowMoreHealth,
+  refetchQuery: refetchBorrowMoreHealth,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
