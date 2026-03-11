@@ -2,6 +2,9 @@ import { Stack, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable/ResetFiltersButton'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 export const HiddenCountResetButton = ({
   hiddenCount,
@@ -19,10 +22,10 @@ export const HiddenCountResetButton = ({
     }
   >
     <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
-      <Stack direction="row" gap={1} alignItems="center">
+      <Stack direction="row" gap={Spacing.xxs} alignItems="center">
         <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
         <Typography variant="highlightS" data-testid="hidden-market-count">
-          {hiddenCount ?? '-'}
+          {hiddenCount}
         </Typography>
       </Stack>
       <ResetFiltersButton onClick={resetFilters} hidden={!hiddenCount} />
