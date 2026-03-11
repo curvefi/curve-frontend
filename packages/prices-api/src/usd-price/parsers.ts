@@ -7,3 +7,9 @@ export const parseUsdPrice = (x: Responses.GetUsdPriceResponse): Models.UsdPrice
   usdPrice: x.data.usd_price,
   lastUpdated: toDate(x.data.last_updated),
 })
+
+export const parseUsdPriceHistory = (x: Responses.GetUsdPriceHistoryResponse): Models.UsdPriceHistory =>
+  x.data.map(({ price, timestamp }) => ({
+    price,
+    timestamp: toDate(timestamp),
+  }))
