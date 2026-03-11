@@ -8,7 +8,11 @@ import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHealth } = queryFactory({
+export const {
+  useQuery: useCreateLoanHealth,
+  invalidate: invalidateCreateLoanHealth,
+  refetchQuery: refetchCreateLoanHealth,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

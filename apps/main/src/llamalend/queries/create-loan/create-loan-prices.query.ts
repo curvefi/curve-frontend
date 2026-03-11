@@ -14,7 +14,11 @@ export type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuer
 type CreateLoanPricesResult = [Decimal, Decimal]
 const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as CreateLoanPricesResult
 
-export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPrices } = queryFactory({
+export const {
+  useQuery: useCreateLoanPrices,
+  invalidate: invalidateCreateLoanPrices,
+  refetchQuery: refetchCreateLoanPrices,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

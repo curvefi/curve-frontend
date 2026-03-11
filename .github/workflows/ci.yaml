@@ -44,7 +44,6 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build  # make sure the build works + uploads source maps to Sentry
       - run: yarn test
-        working-directory: tests
 
   cypress-component:
     strategy:

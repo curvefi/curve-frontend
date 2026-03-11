@@ -1,6 +1,6 @@
-import { createPortal } from 'react-dom'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { useLlamalendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
+import Portal from '@mui/material/Portal'
 import { usePathname, useParams } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { routeToPage } from '@ui-kit/shared/routes'
@@ -12,20 +12,18 @@ export const LendMarketSubNavMobile = () => {
   const { network: networkId } = useParams<UrlParams>()
   const pathname = usePathname()
   const routes = useLlamalendMarketSubNavRoutes({ isMobile: true })
-  const headerEl = document.getElementsByTagName('header').item(0)
 
   return (
     !isDesktop &&
-    headerEl &&
-    routes.length > 0 &&
-    createPortal(
-      <SubNav testId="lend-market-subnav">
-        <PageTabsSwitcher
-          pages={routes.map((route) => routeToPage(route, { networkId, pathname }))}
-          overflow="fullWidth"
-        />
-      </SubNav>,
-      headerEl,
+    routes.length > 0 && (
+      <Portal container={() => document.getElementsByTagName('header').item(0)}>
+        <SubNav testId="lend-market-subnav">
+          <PageTabsSwitcher
+            pages={routes.map((route) => routeToPage(route, { networkId, pathname }))}
+            overflow="fullWidth"
+          />
+        </SubNav>
+      </Portal>
     )
   )
 }
