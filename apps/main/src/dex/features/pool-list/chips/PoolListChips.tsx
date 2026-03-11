@@ -2,7 +2,8 @@ import { type ReactNode } from 'react'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
+import { t } from '@ui-kit/lib/i18n'
+import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolColumnId } from '../columns'
 import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
@@ -51,7 +52,13 @@ export const PoolListChips = ({
           <PoolListFilterChips {...filterProps} />
         </Grid>
       )}
-      {!isMobile && <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />}
+      {!isMobile && (
+        <HiddenCountResetButton
+          hiddenCount={hiddenCount}
+          resetFilters={resetFilters}
+          filterTooltip={`${t`You have active filters.`} (${t`small markets are hidden by default due to low TVL.`})`}
+        />
+      )}
     </Grid>
   )
 }

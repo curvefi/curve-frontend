@@ -3,7 +3,7 @@ import { Button, Grid, Stack } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
-import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
+import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -53,7 +53,7 @@ export const PoolListFilterDrawer = ({
       setOpen={setOpen}
     >
       <DrawerHeader title={t`Filters`}>
-        <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />
+        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
       </DrawerHeader>
       <Stack
         direction="column"

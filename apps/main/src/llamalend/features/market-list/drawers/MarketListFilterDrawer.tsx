@@ -1,10 +1,11 @@
+import { llamaFilterTooltip } from '@/llamalend/features/market-list/filters/llamaGlobalFilter'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { Button, Grid } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
+import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
@@ -56,7 +57,11 @@ export const MarketListFilterDrawer = ({
       setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Filters`}>
-        <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />
+        <HiddenCountResetButton
+          hiddenCount={hiddenCount}
+          resetFilters={resetFilters}
+          filterTooltip={llamaFilterTooltip}
+        />
       </DrawerHeader>
       <DrawerItems data-testid="drawer-filter-menu-lamalend-markets">
         {hasPopularFilters && <DrawerHeader title={t`Popular Filters`} />}

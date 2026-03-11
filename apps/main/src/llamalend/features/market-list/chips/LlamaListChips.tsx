@@ -1,10 +1,11 @@
 import { type ReactNode } from 'react'
+import { llamaFilterTooltip } from '@/llamalend/features/market-list/filters/llamaGlobalFilter'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
+import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns'
@@ -76,7 +77,11 @@ export const LlamaListChips = ({
         </>
       )}
       {hiddenCount != null && !isMobile && (
-        <HiddenMarketsResetFilters hiddenCount={hiddenCount} resetFilters={resetFilters} />
+        <HiddenCountResetButton
+          hiddenCount={hiddenCount}
+          resetFilters={resetFilters}
+          filterTooltip={llamaFilterTooltip}
+        />
       )}
     </Grid>
   )
