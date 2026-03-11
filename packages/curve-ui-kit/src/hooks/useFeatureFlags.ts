@@ -33,9 +33,6 @@ export const useManageSoftLiquidation = useBetaChannel
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
 
-/** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
-export const useFastbridge = useBetaChannel
-
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () =>
   getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
