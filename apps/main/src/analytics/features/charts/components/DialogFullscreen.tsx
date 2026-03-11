@@ -1,19 +1,21 @@
 import type { ReactNode } from 'react'
 import Dialog from '@mui/material/Dialog'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
-export const DialogFullscreen = ({ children, onClose }: { children: ReactNode; onClose: () => void }) => {
-  const isMobile = useIsMobile()
-
-  return (
-    <Dialog
-      open
-      onClose={onClose}
-      maxWidth={false}
-      fullScreen
-      slotProps={{ paper: { sx: { width: isMobile ? '90dvw' : '80dvw', height: isMobile ? '90dvh' : '80dvh' } } }}
-    >
-      {children}
-    </Dialog>
-  )
-}
+export const DialogFullscreen = ({ children, onClose }: { children: ReactNode; onClose: () => void }) => (
+  <Dialog
+    open
+    onClose={onClose}
+    maxWidth={false}
+    fullScreen
+    slotProps={{
+      paper: {
+        sx: {
+          width: { mobile: '90dvw', tablet: '80dvw' },
+          height: { mobile: '90dvh', tablet: '80dvh' },
+        },
+      },
+    }}
+  >
+    {children}
+  </Dialog>
+)
