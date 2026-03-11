@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
@@ -27,13 +26,7 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const useDefaultLlamaFilter = (minTvl: number) =>
-  useMemo(
-    () => [
-      { id: LlamaMarketColumnId.DeprecatedMessage, value: 'no' },
-      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minTvl, null])! },
-    ],
-    [minTvl],
-  )
+  useMemo(() => [{ id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minTvl, null])! }], [minTvl])
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 const minLiquidity = 0
@@ -50,13 +43,7 @@ export const LlamaMarketsTable = ({
   loading: boolean
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
-
-  const data = useMemo(
-    // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
-    // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
-    () => (markets ?? []).filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()),
-    [markets],
-  )
+  const data = useMemo(() => markets ?? [], [markets])
 
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
