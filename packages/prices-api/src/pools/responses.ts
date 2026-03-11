@@ -156,7 +156,7 @@ type MetadataCoin = Coin & {
 }
 
 type Oracle = {
-  oracle_address: string | null
+  oracle_address: Address | null
   method_id: string | null
   method: string | null
   is_verified: boolean
