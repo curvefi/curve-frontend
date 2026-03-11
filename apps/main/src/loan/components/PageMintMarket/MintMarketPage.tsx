@@ -115,11 +115,13 @@ export const MintMarketPage = () => {
         />
       }
     >
-      <PositionDetailsComposite
-        hasPosition={loanExists}
-        borrowPositionDetails={borrowPositionDetails}
-        activityQueryParams={activityQueryParams}
-      />
+      {loanExists === true && (
+        <PositionDetailsComposite
+          hasPosition={loanExists}
+          borrowPositionDetails={borrowPositionDetails}
+          activityQueryParams={activityQueryParams}
+        />
+      )}
       <Stack gap={PAGE_SPACING}>
         <MarketInformationComposite
           market={market ?? null}

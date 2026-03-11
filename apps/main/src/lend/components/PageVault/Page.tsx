@@ -15,7 +15,7 @@ import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
@@ -124,9 +124,11 @@ export const Page = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
       )}
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
-      </Stack>
+      {hasSupplyPosition && (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <SupplyPositionDetails {...supplyPositionDetails} />
+        </Stack>
+      )}
       <Stack gap={PAGE_SPACING}>
         <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
       </Stack>
