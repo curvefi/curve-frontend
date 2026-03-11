@@ -288,9 +288,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                 />
               </StatsWrapper>
             )}
-            {poolInfoTab === 'advanced' && poolData && (
-              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
-            )}
+            {poolInfoTab === 'advanced' && poolData && <PoolParameters poolData={poolData} rChainId={rChainId} />}
           </AppPageInfoContentWrapper>
         </Stack>
       </DetailPageLayout>

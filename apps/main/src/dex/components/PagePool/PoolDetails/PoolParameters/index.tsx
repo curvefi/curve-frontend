@@ -24,12 +24,11 @@ import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
 type PoolParametersProps = {
-  pricesApi: boolean
   poolData: PoolData
   rChainId: ChainId
 }
 
-export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
+export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   const poolAddress = poolData.pool.address as Address
   const blockchainId = requireBlockchainId(rChainId)
   const { data: basePools } = useBasePools({ chainId: rChainId })
@@ -194,13 +193,13 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
         )}
         <SectionWrapper>
           <SectionTitle>{t`Pool Parameters:`}</SectionTitle>
-          {pricesApi && snapshotData.midFee !== null && (
+          {snapshotData.midFee !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Mid Fee:`}</PoolParameterTitle>
               <PoolParameterValue>{convert1e8(snapshotData.midFee)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.outFee !== null && (
+          {snapshotData.outFee !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Out Fee:`}</PoolParameterTitle>
               <PoolParameterValue>{convert1e8(snapshotData.outFee)}</PoolParameterValue>
@@ -232,7 +231,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
                   }
                   tooltipProps={{ minWidth: '200px' }}
                 >
-                  {formatADisplay(pricesApi ? snapshotData.a : A)}
+                  {formatADisplay(A)}
                   <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
                 </Chip>
               </PoolParameterValue>
@@ -270,37 +269,37 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
               </Box>
             </RampUpContainer>
           )}
-          {pricesApi && snapshotData.offpegFeeMultiplier !== null && (
+          {snapshotData.offpegFeeMultiplier !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Off Peg Multiplier:`}</PoolParameterTitle>
               <PoolParameterValue>{convert1e10(snapshotData.offpegFeeMultiplier)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.gamma !== null && (
+          {snapshotData.gamma !== null && (
             <PoolParameter>
-              <PoolParameterTitle>Gamma:</PoolParameterTitle>
-              <PoolParameterValue>{pricesApi ? convert1e18(snapshotData.gamma) : gamma}</PoolParameterValue>
+              <PoolParameterTitle>{t`Gamma:`}</PoolParameterTitle>
+              <PoolParameterValue>{gamma}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.allowedExtraProfit !== null && (
+          {snapshotData.allowedExtraProfit !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Allowed Extra Profit:`}</PoolParameterTitle>
               <PoolParameterValue>{convert1e18(snapshotData.allowedExtraProfit)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.feeGamma !== null && (
+          {snapshotData.feeGamma !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Fee Gamma:`}</PoolParameterTitle>
               <PoolParameterValue>{convert1e18(snapshotData.feeGamma)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.adjustmentStep !== null && (
+          {snapshotData.adjustmentStep !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Adjustment Step:`}</PoolParameterTitle>
               <PoolParameterValue>{convert1e18(snapshotData.adjustmentStep)}</PoolParameterValue>
             </PoolParameter>
           )}
-          {pricesApi && snapshotData.maHalfTime !== null && (
+          {snapshotData.maHalfTime !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Moving Average Time:`}</PoolParameterTitle>
               <PoolParameterValue>{formatNumber(snapshotData.maHalfTime, { useGrouping: false })}</PoolParameterValue>
@@ -343,7 +342,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           </StatsSection>
         )}
 
-        {pricesApi && (snapshotData.xcpProfit != null || snapshotData.xcpProfitA != null) && (
+        {(snapshotData.xcpProfit != null || snapshotData.xcpProfitA != null) && (
           <StatsSection>
             {snapshotData.xcpProfit !== null && (
               <StatsContainer>
