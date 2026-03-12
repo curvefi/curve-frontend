@@ -3,7 +3,7 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 
-const { useQuery, fetchQuery, getQueryData, queryKey } = queryFactory({
+const { useQuery, fetchQuery, getQueryData } = queryFactory({
   queryKey: () => ['networks'] as const,
   queryFn: getNetworksLib,
   validationSuite: EmptyValidationSuite, // no args
@@ -12,7 +12,7 @@ const { useQuery, fetchQuery, getQueryData, queryKey } = queryFactory({
 
 export const useNetworksQuery = () => useQuery({})
 export const fetchNetworks = () => fetchQuery({})
-export const networksQueryKey = () => queryKey({})
+
 export const getNetworks = () => {
   const result = getQueryData({})
   if (!result) {
