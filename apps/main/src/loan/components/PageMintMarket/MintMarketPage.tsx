@@ -39,11 +39,7 @@ export const MintMarketPage = () => {
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
 
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId: rChainId,
-    marketId,
-    userAddress: address,
-  })
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
@@ -117,13 +113,11 @@ export const MintMarketPage = () => {
         />
       }
     >
-      {!isLoanExistsLoading && (
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          borrowPositionDetails={borrowPositionDetails}
-          activityQueryParams={activityQueryParams}
-        />
-      )}
+      <PositionDetailsComposite
+        hasPosition={loanExists}
+        borrowPositionDetails={borrowPositionDetails}
+        activityQueryParams={activityQueryParams}
+      />
       <MarketInformationComposite
         market={market ?? null}
         marketId={marketId}

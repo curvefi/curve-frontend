@@ -34,15 +34,15 @@ export const PositionDetailsComposite = ({
     activityIsError,
   })
 
+  const activeTab = findTab(tabOptions, tab)
+
   return (
-    tabOptions.length > 0 && (
-      <Stack>
-        <Stack alignItems="end" direction="row" justifyContent="space-between" width="100%">
-          <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
-          <LlamaMonitorBotButton />
-        </Stack>
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{findTab(tabOptions, tab).render()}</Stack>
+    <Stack>
+      <Stack alignItems="end" direction="row" justifyContent="space-between" width="100%">
+        <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
+        <LlamaMonitorBotButton />
       </Stack>
-    )
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{activeTab.render()}</Stack>
+    </Stack>
   )
 }
