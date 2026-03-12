@@ -1,3 +1,4 @@
+import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketCapAndAvailable, useMarketRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
@@ -15,6 +16,7 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
 export type AvailableLiquidity = {
   value: number | null | undefined
@@ -78,8 +80,10 @@ export const usePageHeader = ({
   blockchainId: Chain | undefined
 }) => {
   const isMarketMetadataLoading = !market
-  const lendMarket = market instanceof LendMarketTemplate ? market : undefined
-  const vaultAddress = lendMarket?.addresses.vault as Address | undefined
+  const isLendMarket = market instanceof LendMarketTemplate
+  const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined
+  const controllerAddress = (isLendMarket ? market.addresses.controller : market?.controller) as Address | undefined
+  const marketType = isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
 
   const { data: snapshots, isLoading: isSnapshotsLoading } = useLlamaSnapshot(
     market ?? undefined,
@@ -92,15 +96,17 @@ export const usePageHeader = ({
   const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
   const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketVaultOnChainRewards(
     { chainId, marketId },
-    lendMarket != null,
+    isLendMarket,
   )
 
   const { data: controllerCampaigns } = useCampaignsByAddress({
     blockchainId,
-    address: lendMarket?.addresses.controller as Address | undefined,
+    address: controllerAddress,
   })
   const { data: vaultCampaigns } = useCampaignsByAddress({ blockchainId, address: vaultAddress })
-  const campaigns = lendMarket ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
+  const campaigns = isLendMarket ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
+  const borrowCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Borrow)
+  const supplyCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Supply)
 
   const metrics = getBorrowRateMetrics({
     borrowRate: toNumberOrNull(marketRates?.borrowApr),
@@ -116,16 +122,16 @@ export const usePageHeader = ({
     averageRebasingYield: metrics.averageRebasingYield,
     totalBorrowRate: metrics.totalRate,
     totalAverageBorrowRate: metrics.averageTotalRate,
-    extraRewards: campaigns,
+    extraRewards: borrowCampaigns,
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
 
-  const supplyRate = lendMarket
+  const supplyRate = isLendMarket
     ? buildSupplyRate({
         marketRates,
         marketOnChainRewards,
         lendingSnapshots: snapshots as LendingSnapshot[] | undefined,
-        campaigns,
+        campaigns: supplyCampaigns,
         blockchainId,
         loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
       })

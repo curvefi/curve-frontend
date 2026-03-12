@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
@@ -10,12 +9,12 @@ import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
 export type { Wallet } from '@ui-kit/features/connect-wallet'
+export type { Provider } from '@ui-kit/lib/ethers'
 
 export type Api = LlamaApi
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
-export type Provider = ethers.BrowserProvider
 export type EstimatedGas = number | number[] | null
 export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 

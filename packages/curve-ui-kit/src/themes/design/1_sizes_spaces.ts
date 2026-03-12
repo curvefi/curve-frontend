@@ -173,11 +173,4 @@ export const SizesAndSpaces = {
     userEventsTable: '28.875rem', // 462px
     drawer: '80vh',
   },
-  Inset: {
-    scrollUpButton: {
-      mobile: '1.25rem', // 20px
-      tablet: '4rem', // 64px
-      desktop: '4rem', // 64px
-    },
-  },
 } as const

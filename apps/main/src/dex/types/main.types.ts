@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -6,6 +5,7 @@ import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
+export type { Provider } from '@ui-kit/lib/ethers'
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = IChainId | number
@@ -78,7 +78,6 @@ export const FormTypes = [
 ] as const
 export type RFormType = (typeof FormTypes)[number]
 export type Pool = PoolTemplate
-export type Provider = ethers.BrowserProvider
 export type ClaimableReward = {
   token: string
   symbol: string
@@ -167,54 +166,6 @@ export type PoolDataCache = {
     implementation: string
     referenceAsset: string
   }
-}
-export type PricesApiPoolData = {
-  name: string
-  registry: string
-  lp_token_address: string
-  coins: {
-    pool_index: number
-    symbol: string
-    address: string
-  }[]
-  pool_type: string
-  metapool: boolean | null
-  base_pool: string | null
-  asset_types: number[]
-  oracles: {
-    oracle_address: string
-    method_id: string
-    method: string
-  }[]
-  vyper_version: string
-}
-export type SnapshotsMapper = { [poolAddress: string]: PricesApiSnapshotsData }
-export type PricesApiSnapshotsData = {
-  timestamp: number
-  a: number
-  fee: number
-  admin_fee: number
-  virtual_price: number
-  xcp_profit: number
-  xcp_profit_a: number
-  base_daily_apr: number
-  base_weekly_apr: number
-  offpeg_fee_multiplier: number
-  gamma: number
-  mid_fee: number
-  out_fee: number
-  fee_gamma: number
-  allowed_extra_profit: number
-  adjustment_step: number
-  ma_half_time: number
-  price_scale: number[]
-  price_oracle: number[]
-  block_number: number
-}
-export type PricesApiSnapshotsResponse = {
-  address: string
-  chain: string
-  data: PricesApiSnapshotsData[]
 }
 export type PoolDataCacheMapper = { [poolAddress: string]: PoolDataCache }
 export type PoolDataCacheOrApi = PoolData | PoolDataCache

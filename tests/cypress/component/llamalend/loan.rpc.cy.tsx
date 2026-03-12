@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
   touchBorrowMoreForm,
   writeBorrowMoreForm,
-} from '@cy/support/helpers/borrow-more.helpers'
-import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
+} from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import {
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,

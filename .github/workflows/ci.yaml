@@ -66,6 +66,9 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
 
       - run: yarn run cy:run:component --browser ${{ matrix.browser }}
         working-directory: tests
@@ -96,7 +99,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - name: Optimize dependencies
+      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
 

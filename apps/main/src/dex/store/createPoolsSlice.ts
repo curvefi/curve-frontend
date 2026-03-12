@@ -13,10 +13,7 @@ import {
   CurveApi,
   PoolData,
   PoolDataMapper,
-  PricesApiPoolData,
-  PricesApiSnapshotsResponse,
   RewardsApyMapper,
-  SnapshotsMapper,
   TokensMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
@@ -32,7 +29,6 @@ import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { Chain as ChainEnum } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
@@ -43,15 +39,12 @@ const { chunk, countBy, groupBy, isNaN } = lodash
 
 type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }
-  poolsLoading: { [chainId: string]: boolean }
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
   stakedMapper: {
     [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
   }
-  pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
-  snapshotsMapper: SnapshotsMapper
   pricesApiState: {
     chartOhlcData: LpPriceOhlcDataFormatted[]
     chartStatus: FetchingStatus
@@ -76,7 +69,6 @@ export type PoolsSlice = {
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
     setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
-    fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
     fetchPricesApiCharts: (
       chainId: ChainId,
       chartSelection: ChartSelection,
@@ -106,13 +98,10 @@ export type PoolsSlice = {
 
 const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
-  poolsLoading: {},
   haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
   stakedMapper: {},
-  pricesApiPoolDataMapper: {},
-  snapshotsMapper: {},
   pricesApiState: {
     chartOhlcData: [],
     chartStatus: 'LOADING',
@@ -149,7 +138,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         set(
           produce((state: State) => {
             state.pools.error = ''
-            state.pools.poolsLoading[chainId] = true
           }),
         )
 
@@ -175,7 +163,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
               ...parsedTokensNameMapper(poolDatas),
             }
             state.pools.haveAllPools[chainId] = true
-            state.pools.poolsLoading[chainId] = false
           }),
         )
 
@@ -196,7 +183,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         set(
           produce((state: State) => {
             state.pools.error = 'Unable to load pool list, please refresh or try again later.'
-            state.pools.poolsLoading[chainId] = false
           }),
         )
       }
@@ -359,35 +345,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           state.pools.poolsMapper[chainId][poolId] = updatedPoolData
         }),
       )
-    },
-    fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
-      const networks = await fetchNetworks()
-      if (networks[chainId].pricesApi) {
-        const startTime = Math.floor((Date.now() - TIME_FRAMES.DAY_MS) / 1000)
-        const endTime = Math.floor(Date.now() / 1000)
-        const network = networks[chainId].id.toLowerCase()
-
-        try {
-          const poolInfoPromise = fetch(`https://prices.curve.finance/v1/pools/${network}/${poolAddress}/metadata`)
-          const snapshotsPromise = fetch(
-            `https://prices.curve.finance/v1/snapshots/${network}/${poolAddress}?start=${startTime}&end=${endTime}`,
-          )
-
-          const response = await Promise.all([poolInfoPromise, snapshotsPromise])
-
-          const poolInfoData: PricesApiPoolData = await response[0].json()
-          const snapShotsData: PricesApiSnapshotsResponse = await response[1].json()
-
-          set(
-            produce((state: State) => {
-              state.pools.snapshotsMapper[poolAddress] = snapShotsData.data[0]
-              state.pools.pricesApiPoolDataMapper[poolAddress] = poolInfoData
-            }),
-          )
-        } catch (error) {
-          console.warn(error)
-        }
-      }
     },
     fetchPricesApiCharts: async (
       chainId: ChainId,

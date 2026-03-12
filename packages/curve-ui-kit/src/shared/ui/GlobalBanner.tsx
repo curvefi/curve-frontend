@@ -22,7 +22,7 @@ const maintenanceMessage = process.env.PUBLIC_MAINTENANCE_MESSAGE
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
-  const { switchChain } = useSwitchChain()
+  const { mutate: switchChain } = useSwitchChain()
   const { connectState } = useCurve()
   const walletChainId = useChainId()
   const pathname = usePathname()
