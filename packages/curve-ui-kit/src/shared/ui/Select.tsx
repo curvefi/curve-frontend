@@ -12,7 +12,11 @@ type SelectProps = Omit<MuiSelectProps, 'variant'> & {
   variant?: MuiSelectProps['variant'] | 'ghost'
 }
 
-/** Wrapper component for Mui's Select component that adds additional functionality, like a ghost variant */
+/**
+ * Wrapper component for Mui's Select component that adds additional functionality, like a ghost variant
+ *
+ * Mui does not allow us to override the variants (it's not an interface extendable via mui-select.d.ts but a normal type).
+ */
 export const Select = ({ sx, variant, ...props }: SelectProps) => (
   <MuiSelect
     variant={variant === 'ghost' ? 'outlined' : variant}
