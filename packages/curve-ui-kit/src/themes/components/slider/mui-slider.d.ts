@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/no-unused-vars */
+// eslint-disable-next-line no-restricted-imports
 import '@mui/material/Slider'
 
 type SliderSizes = 'small' | 'medium'
@@ -16,7 +16,9 @@ type SliderSizeOverrides = { [key in SliderSizes]: true }
 type SliderRailBackground = 'default' | 'filled' | 'bordered' | 'safe' | 'danger'
 
 declare module '@mui/material/Slider' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface SliderPropsSizeOverrides extends SliderSizeOverrides {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface SliderOwnProps<Value extends number | number[]> {
     // data-prefix to prevent DOM validation errors
     'data-rail-background'?: SliderRailBackground
