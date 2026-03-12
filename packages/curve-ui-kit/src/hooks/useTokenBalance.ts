@@ -1,4 +1,4 @@
-import { chunk, zip } from 'lodash'
+import { zip } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { type Address, erc20Abi, ethAddress, formatUnits, isAddressEqual } from 'viem'
 import { useBalance, useConfig, useReadContracts } from 'wagmi'
@@ -7,10 +7,10 @@ import { type QueryObserverOptions, useQueries, type UseQueryResult } from '@tan
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { type ChainQuery, REFRESH_INTERVAL, type UserQuery } from '@ui-kit/lib/model'
+import { readContractGroups } from '@ui-kit/lib/queries'
 import { uniqAddresses } from '@ui-kit/utils'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
 import type { Config, GetBalanceReturnType, ReadContractsReturnType } from '@wagmi/core'
-import { multicall } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
 
 type TokenQuery = { tokenAddress: Address }
@@ -202,15 +202,14 @@ export function useTokenBalances(
 }
 
 /**
- * Prefetch balances for multiple tokens into the query cache via a single multicall.
+ * Prefetch balances for multiple tokens into the query cache via one batched read.
  *
- * We call Wagmi's `multicall` directly instead of `prefetchQuery` per token because
- * Wagmi only batches calls within a single `readContracts` invocation into one `eth_call`.
- * Separate `prefetchQuery` calls each produce their own multicall, even when fired in rapid
- * succession within Viem's batch window. In other words, it batches with multicall, but not
- * efficiently to the extent that we need. By flattening all token contracts (balanceOf + decimals)
- * into one `multicall`, we guarantee minimal RPC round-trips — which matters for 1000+ tokens
- * on rate-limited public RPCs.
+ * We use the shared grouped-read helper instead of `prefetchQuery` per token because wagmi
+ * only batches calls when they are issued through a single `readContracts` invocation.
+ * Separate `prefetchQuery` calls each create their own read path, which is too expensive for
+ * large token lists. By flattening all token contracts (balanceOf + decimals) into one grouped
+ * read, we keep minimal RPC round-trips on supported chains while inheriting wagmi's direct-call
+ * fallback on chains without `multicall3`.
  */
 export const prefetchTokenBalances = async (
   config: Config,
@@ -230,21 +229,20 @@ export const prefetchTokenBalances = async (
     })
   }
 
-  // Batch all ERC-20 tokens into a single multicall, then seed individual cache entries.
-  // Wagmi config handles multicall batching by batchSize under the hood (defaults to 1_024 bytes)
+  // Batch all ERC-20 tokens into one grouped read, then seed individual cache entries.
   if (!erc20Addresses.length) return
 
   const tokenContracts = erc20Addresses.map((tokenAddress) =>
     getERC20QueryContracts({ chainId, userAddress, tokenAddress }),
   )
-  const results = await multicall(config, { chainId, contracts: tokenContracts.flat() })
   const updatedAt = Date.now()
-
-  // Each token uses 2 contracts (balanceOf + decimals), so chunk results by 2
-  // Failures are fine — allowFailure defaults to true, so failed calls are seeded as
-  // { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
-  // already handle per-token failures gracefully.
-  zip(tokenContracts, chunk(results, 2))
-    .map(([contracts, tokenResults]) => [readContractsQueryOptions(config, { contracts }), tokenResults] as const)
-    .forEach(([{ queryKey }, tokenResults]) => queryClient.setQueryData(queryKey, tokenResults, { updatedAt }))
+  const seedResults = (resultsByToken: ERC20ReadResult[]) =>
+    zip(tokenContracts, resultsByToken)
+      .map(([contracts, tokenResults]) => [readContractsQueryOptions(config, { contracts }), tokenResults] as const)
+      .forEach(([{ queryKey }, tokenResults]) => queryClient.setQueryData(queryKey, tokenResults, { updatedAt }))
+  seedResults(
+    (await readContractGroups(config, {
+      groups: erc20Addresses.map((tokenAddress) => getERC20QueryContracts({ chainId, userAddress, tokenAddress })),
+    })) as ERC20ReadResult[],
+  )
 }
