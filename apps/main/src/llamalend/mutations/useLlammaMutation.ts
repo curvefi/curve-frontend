@@ -1,3 +1,4 @@
+import { useConnection } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useCurve } from '@ui-kit/features/connect-wallet'
@@ -31,8 +32,8 @@ export function useLlammaMutation<TVariables extends object>({
   /** The current network config */
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
 }) {
-  const { llamaApi, wallet } = useCurve()
-  const userAddress = wallet?.address
+  const { llamaApi } = useCurve()
+  const { address: userAddress } = useConnection()
 
   return useTransactionMutation<TVariables, LlammaContext>({
     ...options,

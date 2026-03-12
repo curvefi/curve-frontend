@@ -221,7 +221,7 @@ jobs:
           SLACK_TEXT: >-
             ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
             on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
-            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>
+            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}>
             by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
           curl --request POST \

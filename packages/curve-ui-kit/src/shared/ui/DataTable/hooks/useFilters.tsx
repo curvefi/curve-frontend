@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { useSearchParams } from '@ui-kit/hooks/router'
@@ -39,56 +38,38 @@ const updateSearchParams = (updates: Record<string, string | null>) => {
  *
  * @param search The current URLSearchParams from the browser location.
  * @param columns Enum-like record mapping names to valid column IDs.
- * @param defaultFilters Fallback filters applied when a column has no URL value.
  * @param scope Optional prefix to namespace URL keys for this table instance.
  */
 function parseFilters<TColumnId extends string>(
   search: URLSearchParams,
   columns: ColumnEnum<TColumnId>,
-  defaultFilters: ColumnFilters<TColumnId> | undefined,
   scope?: string,
 ): ColumnFilters<TColumnId> {
   const allowed = new Set(recordValues(columns).map((id) => scopedKey(scope, id)))
   const filterPrefix = scopedPrefix(scope)
-  return [
-    ...(defaultFilters?.filter(({ id }) => !search.has(scopedKey(scope, id))) ?? []),
-    ...Array.from(search.entries())
-      .filter(([key, value]) => value && allowed.has(key))
-      .map(([key, value]) => ({ id: key.slice(filterPrefix.length) as TColumnId, value })),
-  ]
+  return Array.from(search.entries())
+    .filter(([key, value]) => value && allowed.has(key))
+    .map(([key, value]) => ({ id: key.slice(filterPrefix.length) as TColumnId, value }))
 }
-
-const empty: never[] = []
 
 /**
  * Manages per-column filters that are synced with URL query parameters.
  *
  * @param columns Enum-like record of valid column IDs for this table.
- * @param defaultFilters Filters applied when a column has no corresponding URL param.
  * @param scope Optional namespace prefix to avoid URL key collisions across tables.
  */
 function useColumnFilters<TColumnId extends string>({
   columns,
-  defaultFilters = empty,
   scope,
 }: {
   columns: ColumnEnum<TColumnId>
-  defaultFilters?: ColumnFilters<TColumnId>
   scope?: string
 }) {
   const searchParams = useSearchParams()
-  const columnFilters = useMemo(
-    () => parseFilters(searchParams, columns, defaultFilters, scope),
-    [searchParams, columns, defaultFilters, scope],
-  )
+  const columnFilters = useMemo(() => parseFilters(searchParams, columns, scope), [searchParams, columns, scope])
 
   return {
     columnFilters,
-    defaultFilters,
-    hasFilters: useMemo(
-      () => columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters),
-      [columnFilters, defaultFilters],
-    ),
     columnFiltersById: useMemo(() => fromEntries(columnFilters.map((f) => [f.id, f.value])), [columnFilters]),
     setColumnFilter: useCallback(
       (id: TColumnId, value: string | null) => updateSearchParams({ [scopedKey(scope, id)]: value }),
