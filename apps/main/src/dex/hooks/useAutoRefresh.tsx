@@ -7,19 +7,15 @@ import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useNetworks } from '../entities/networks'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
-  const { curveApi } = useCurve()
+  const { curveApi, isHydrated } = useCurve()
   const { data: networks } = useNetworks()
   const fetchPools = useStore((state) => state.pools.fetchPools)
   const poolIds = useMemo(
-    () => curveApi && curveApi?.chainId === chainId && curveApi.getPoolList(),
-    [chainId, curveApi],
+    () => isHydrated && curveApi?.chainId === chainId && curveApi?.getPoolList(),
+    [chainId, curveApi, isHydrated],
   )
 
   useGasInfoAndUpdateLib({ chainId, networks })
 
-  usePageVisibleInterval(() => {
-    if (curveApi && poolIds) {
-      void fetchPools(curveApi, poolIds)
-    }
-  }, REFRESH_INTERVAL['15m'])
+  usePageVisibleInterval(() => curveApi && poolIds && fetchPools(curveApi, poolIds), REFRESH_INTERVAL['15m'])
 }

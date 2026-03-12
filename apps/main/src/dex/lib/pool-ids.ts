@@ -1,7 +1,7 @@
 import { log } from '@ui-kit/lib/logging'
 import type { ChainQuery } from '@ui-kit/lib/model'
-import type { CurveApi } from '../types/main.types'
 import { getNetworks } from '../entities/networks'
+import type { CurveApi } from '../types/main.types'
 
 /**
  * Hydrates the passed `curve` instance with all DEX pool registries and returns the
@@ -21,8 +21,6 @@ export async function fetchPoolIds(curve: CurveApi, { chainId }: ChainQuery): Pr
 
   log(`Hydrating DEX - Fetching pool ids { useApi: ${useApi}, hasRpc: ${!curve.isNoRPC} }`)
 
-  // Keep the factory order aligned with the previous query implementation because some
-  // downstream consumers rely on factory state being warmed in this order.
   await Promise.all([
     curve.factory.fetchPools(useApi),
     curve.cryptoFactory.fetchPools(useApi),
