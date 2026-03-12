@@ -12,7 +12,7 @@ import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
-import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -149,6 +149,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
                 decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
               ...combineQueryState(prevCollateral, expectedCollateralQuery),
             }),
+            exchangeRate: mapQuery(expectedCollateralQuery, (data) => data?.avgPrice ?? null),
             routes,
             slippage,
             onSlippageChange,
@@ -165,7 +166,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             }),
             prevCollateral,
           })}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
     />

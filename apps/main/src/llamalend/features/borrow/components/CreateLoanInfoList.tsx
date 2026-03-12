@@ -3,7 +3,7 @@ import type { FieldError, UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
-import { useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { useMarketFutureRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -73,7 +73,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       rates={marketFutureRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
       loanToValue={q(
@@ -103,6 +102,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         leverageValue,
         leverageCollateral,
         leverageTotalCollateral,
+        exchangeRate: mapQuery(expectedCollateral, (data) => data?.avgPrice ?? null),
         priceImpact: q(priceImpact),
         slippage,
         onSlippageChange,

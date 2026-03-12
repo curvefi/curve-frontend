@@ -5,7 +5,7 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
@@ -85,6 +85,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
+  const expectedBorrowed = useRepayExpectedBorrowed(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   const debtDelta = q({
     data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
@@ -141,13 +142,13 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           isOpen,
         ),
       )}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       routes={routes}
       borrowSymbol={borrowToken?.symbol}
       {...(hasLeverage &&
         swapRequired && {
           leverageEnabled: swapRequired,
+          exchangeRate: mapQuery(expectedBorrowed, (data) => data?.avgPrice ?? null),
           slippage,
           onSlippageChange,
           priceImpact: q(priceImpact),
