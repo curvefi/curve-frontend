@@ -23,7 +23,7 @@ export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol: debtToken = t`
       <Typography variant="bodySRegular" color="textSecondary">
         <Trans>
           Your position cannot be closed because the outstanding debt amount is greater than the available collateral
-          value. Additionally, your wallet does not contain sufficient <strong>{debtToken}</strong> tokens to cover the
+          value. Additionally, your wallet does not contain sufficient <strong>{debtToken}</strong> to cover the
           remaining debt balance that exceeds your collateral.
         </Trans>
       </Typography>
