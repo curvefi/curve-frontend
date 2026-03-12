@@ -124,13 +124,7 @@ export function ChartCrvUsdSupply() {
       onCloseFullscreen={closeFullscreen}
       action={
         <>
-          <SelectTimeOption
-            ghost
-            options={PERIODS}
-            activeOption={period}
-            setActiveOption={setPeriod}
-            isLoading={loading}
-          />
+          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           <ButtonExport
             filename="crvusd_supply"
             data={{

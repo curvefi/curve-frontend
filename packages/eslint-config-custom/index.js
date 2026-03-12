@@ -42,6 +42,20 @@ module.exports = {
         ],
       },
     ],
+
+    'no-restricted-imports': [
+      'warn',
+      {
+        paths: [
+          { name: '@mui/material/Select', message: "Use `import { Select } from '@ui-kit/shared/ui/Select'` instead." },
+          {
+            name: '@mui/material/Tooltip',
+            message: "Use `import { Tooltip } from '@ui-kit/shared/ui/Tooltip'` instead.",
+          },
+        ],
+      },
+    ],
+
     '@typescript-eslint/no-floating-promises': 'warn',
     '@typescript-eslint/no-unused-vars': [
       'warn',
