@@ -127,7 +127,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             leverageEnabled,
             leverageValue: q(leverageValue),
             prevLeverageValue: q(prevLeverageValue),
-            prevLeverageCollateral: q({
+            prevLeverageCollateral: {
               data:
                 prevCollateral.data &&
                 prevLeverageValue.data &&
@@ -137,18 +137,18 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
                   ),
                 ),
               ...combineQueryState(prevCollateral, prevLeverageValue),
-            }),
+            },
             leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
               decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
             ),
             prevLeverageTotalCollateral: prevCollateral,
-            leverageTotalCollateral: q({
+            leverageTotalCollateral: {
               data:
                 expectedCollateralQuery.data?.totalCollateral &&
                 prevCollateral.data &&
                 decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
               ...combineQueryState(prevCollateral, expectedCollateralQuery),
-            }),
+            },
             exchangeRate: mapQuery(expectedCollateralQuery, (data) => data?.avgPrice ?? null),
             routes,
             slippage,
@@ -156,14 +156,14 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             priceImpact: q(priceImpact),
           }
         : {
-            collateral: q({
+            collateral: {
               data: collateralDelta &&
                 prevCollateral.data && {
                   value: decimal(new BigNumber(prevCollateral.data).plus(collateralDelta))!,
                   tokenSymbol: collateralToken?.symbol,
                 },
               ...combineQueryState(prevCollateral, expectedCollateralQuery),
-            }),
+            },
             prevCollateral,
           })}
       collateralSymbol={collateralToken?.symbol}

@@ -87,10 +87,10 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const expectedBorrowed = useRepayExpectedBorrowed(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
-  const debtDelta = q({
+  const debtDelta = {
     data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
     ...combineQueryState(prevDebt, debt),
-  })
+  }
 
   const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
     {
