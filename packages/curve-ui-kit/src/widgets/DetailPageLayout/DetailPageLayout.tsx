@@ -40,7 +40,7 @@ const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
     // removed page header height as it can be too big for tablet
     tablet: `calc(${navHeight}px + ${PAGE_MARGIN.marginBlockStart.tablet})`,
     // page margin block start already included in the header height
-    desktop: `calc(${navHeight}px + ${pageHeaderHeight}px)`,
+    desktop: `calc(${navHeight}px + ${pageHeaderHeight}px + ${pageHeaderHeight ? '0px' : PAGE_MARGIN.marginBlockStart.desktop})`,
   },
 })
 
@@ -98,9 +98,9 @@ export const DetailPageLayout = ({
       )}
       <Grid size="grow">
         {/* Additional Stack because no gap between the page header and the children */}
-        <Stack flexDirection="column">
+        <Stack>
           {!isMobile && renderHeader}
-          <Stack flexDirection="column" flexGrow={1} gap={PAGE_SPACING}>
+          <Stack flexGrow={1} gap={PAGE_SPACING}>
             {children}
           </Stack>
         </Stack>
