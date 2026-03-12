@@ -23,7 +23,7 @@ type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined
   extraRewards: CampaignPoolRewards[]
-  tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
+  tooltipType: Extract<RewardsAction, 'borrow' | 'loan' | 'supply'>
   extraIncentives: ExtraIncentiveItem[]
 }
 

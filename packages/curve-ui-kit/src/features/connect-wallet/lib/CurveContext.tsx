@@ -5,6 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import type { NetworkDef } from '@ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import type { Provider } from '@ui-kit/lib/ethers'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
 const { FAILURE, LOADING } = ConnectState
@@ -18,7 +19,7 @@ type CurveContextValue = {
   llamaApi?: LlamaApi
   error?: unknown
   wallet?: Wallet
-  provider?: BrowserProvider
+  provider?: Provider
   network?: NetworkDef
   isHydrated: boolean
   isReconnecting: boolean

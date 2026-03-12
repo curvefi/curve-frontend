@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
-import { formatNumber, type BaseConfig } from '@ui/utils'
+import { type BaseConfig, formatNumber } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
+import type { Provider } from '@ui-kit/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import type { Query as QueryResult } from '@ui-kit/types/util'
 import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
-import { providerValidationGroup } from '../query/provider-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
 export type GasInfoQuery<T = number> = ChainQuery<T> & {
@@ -21,7 +21,7 @@ export type GasInfoQuery<T = number> = ChainQuery<T> & {
 
 export type GasInfoParams<T = number> = FieldsOf<GasInfoQuery<T>>
 
-type GasInfo = {
+export type GasInfo = {
   gasPrice: number | null
   max: number[]
   priority: number[]
@@ -44,11 +44,13 @@ const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
   if (llamaApi?.chainId === chainId) return llamaApi
 }
 
-const getProvider = () => useWallet.getState().provider!
-type Provider = ReturnType<typeof getProvider>
-
-const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
-  [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const
+const getProvider = () => {
+  const { provider } = useWallet.getState()
+  if (!provider) {
+    throw new Error('Provider not available, make sure the wallet is connected before calling this query')
+  }
+  return provider
+}
 
 /**
  * We're dealing with a query here that's not read-only and has side effects.
@@ -63,8 +65,13 @@ const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoPara
  * the data returned is not being used, simply for its side effect.
  * The exported function names have the 'andUpdateLib' suffix to indicate this behavior.
  */
-const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateLibBase } = queryFactory({
-  queryKey: createQueryKey,
+const {
+  useQuery: useGasInfoAndUpdateLibBase,
+  fetchQuery: fetchGasInfoAndUpdateLibBase,
+  setQueryData: setGasInfoAndUpdateLibBase,
+} = queryFactory({
+  queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
+    [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
   queryFn: async ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     const curve = getAnyCurve(chainId)!
     const provider = getProvider()
@@ -150,7 +157,6 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
         if (chainId) enforce(getAnyCurve(chainId)?.chainId).message('Library should be loaded').equals(chainId)
       })
     })
-    providerValidationGroup()
   }),
 })
 
@@ -293,7 +299,7 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
 
 type Network = { gasPricesUrl: string; gasL2: boolean }
 
-type GasInfoQueryOptions<TChainId extends number> = {
+export type GasInfoQueryOptions<TChainId extends number = number> = {
   chainId?: TChainId | null
   networks: Record<TChainId, Network>
 }
@@ -329,7 +335,16 @@ export const fetchGasInfoAndUpdateLib = <TChainId extends number>({
 export const useGasInfoAndUpdateLib = <TChainId extends number>(
   { chainId, networks }: GasInfoQueryOptions<TChainId>,
   enabled?: boolean,
-) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), enabled)
+) => {
+  const { provider } = useWallet() // validate provider manually because otherwise query won't get enabled when connected
+  return useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), !!provider && enabled)
+}
+
+/** Sets gas info query data directly in the query cache. */
+export const setGasInfoAndUpdateLib = <TChainId extends number>(
+  { chainId, networks }: GasInfoQueryOptions<TChainId>,
+  gasInfo: GasInfo,
+) => setGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), gasInfo)
 
 // calculates L1+L2 gas for optimistic rollups
 const calculateOptimisticRollupGas = ([l2Gas, l1Gas]: number[], [l2GasPriceWei, l1GasPriceWei]: [number, number]) =>

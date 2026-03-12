@@ -5,11 +5,15 @@ import { NumberField } from '@/dex/components/PageCreatePool/components/NumberFi
 import { Switch } from '@/dex/components/PageCreatePool/components/Switch'
 import { WarningBox as TokenWarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
+  FXSWAP,
+  FXSWAP_A_CONFIG,
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
   TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
   POOL_PRESETS,
+  formatCryptoA,
+  parseCryptoA,
 } from '@/dex/components/PageCreatePool/constants'
 import { InitialPrice } from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
 import { SelectPreset } from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
@@ -25,6 +29,9 @@ type Props = {
   chainId: ChainId
   haveSigner: boolean
 }
+
+const FEE_FORMAT_OPTIONS = { maximumFractionDigits: 8 }
+const CRYPTO_FORMAT_OPTIONS = { maximumSignificantDigits: 21, maximumFractionDigits: 21 }
 
 export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const advanced = useStore((state) => state.createPool.advanced)
@@ -65,12 +72,17 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const [outValue, setOutValue] = useState<string>(outFee)
 
   const STABLESWAP_MIN_MAX = STABLESWAP_MIN_MAX_PARAMETERS(+stableSwapFee)
+  const preset = POOL_PRESETS[poolPresetIndex]?.defaultParams
 
   const CRYPTOSWAP_MIN_MAX = useMemo(() => {
     if (tokensInPool.tokenA.address !== '' && tokensInPool.tokenB.address !== '' && tokensInPool.tokenC.address !== '')
       return TRICRYPTO_MIN_MAX_PARAMETERS
     return TWOCRYPTO_MIN_MAX_PARAMETERS
   }, [tokensInPool])
+  const isFxSwap = swapType === FXSWAP
+  const [cryptoAMin, cryptoAMax] = isFxSwap
+    ? [FXSWAP_A_CONFIG.min, FXSWAP_A_CONFIG.max]
+    : [CRYPTOSWAP_MIN_MAX.a.min, CRYPTOSWAP_MIN_MAX.a.max]
 
   const updateStableFeeValue = (value: number) => {
     updateStableSwapFee(new BigNumber(value).toString())
@@ -84,6 +96,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     updateOutFee(new BigNumber(value).toString())
     setOutValue(new BigNumber(value).toString())
   }
+  const updateCryptoAValue = (value: number) => {
+    updateCryptoA(parseCryptoA(value, swapType))
+  }
+  const cryptoAValue = formatCryptoA(cryptoA, swapType)
 
   useEffect(() => {
     setStableFeeValue(stableSwapFee)
@@ -112,28 +128,26 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   // manage case where user removes value from input and unfocuses input
   useEffect(() => {
     if (swapType === STABLESWAP) {
-      if (stableFeeValue === 'NaN') updateStableSwapFee(POOL_PRESETS[poolPresetIndex].defaultParams.stableSwapFee)
-      if (stableA === 'NaN') updateStableA(POOL_PRESETS[poolPresetIndex].defaultParams.stableA)
-      if (maExpTime === 'NaN') updateMaExpTime(POOL_PRESETS[poolPresetIndex].defaultParams.maExpTime)
-      if (offpegFeeMultiplier === 'NaN')
-        updateOffpegFeeMultiplier(POOL_PRESETS[poolPresetIndex].defaultParams.offpegFeeMultiplier)
+      if (stableFeeValue === 'NaN') updateStableSwapFee(preset.stableSwapFee)
+      if (stableA === 'NaN') updateStableA(preset.stableA)
+      if (maExpTime === 'NaN') updateMaExpTime(preset.maExpTime)
+      if (offpegFeeMultiplier === 'NaN') updateOffpegFeeMultiplier(preset.offpegFeeMultiplier)
     } else {
       if (midFee === 'NaN') {
-        updateMidFee(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
-        updateOutFee(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+        updateMidFee(preset.midFee)
+        updateOutFee(preset.outFee)
       }
       if (outFee === 'NaN') {
-        updateOutFee(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
-        setMidValue(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
-        setOutValue(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+        updateOutFee(preset.outFee)
+        setMidValue(preset.midFee)
+        setOutValue(preset.outFee)
       }
-      if (cryptoA === 'NaN') updateCryptoA(POOL_PRESETS[poolPresetIndex].defaultParams.cryptoA)
-      if (gamma === 'NaN') updateGamma(POOL_PRESETS[poolPresetIndex].defaultParams.gamma)
-      if (allowedExtraProfit === 'NaN')
-        updateAllowedExtraProfit(POOL_PRESETS[poolPresetIndex].defaultParams.allowedExtraProfit)
-      if (feeGamma === 'NaN') updateFeeGamma(POOL_PRESETS[poolPresetIndex].defaultParams.feeGamma)
-      if (adjustmentStep === 'NaN') updateAdjustmentStep(POOL_PRESETS[poolPresetIndex].defaultParams.adjustmentStep)
-      if (maHalfTime === 'NaN') updateMaHalfTime(POOL_PRESETS[poolPresetIndex].defaultParams.maHalfTime)
+      if (cryptoA === 'NaN') updateCryptoA(preset.cryptoA)
+      if (gamma === 'NaN') updateGamma(preset.gamma)
+      if (allowedExtraProfit === 'NaN') updateAllowedExtraProfit(preset.allowedExtraProfit)
+      if (feeGamma === 'NaN') updateFeeGamma(preset.feeGamma)
+      if (adjustmentStep === 'NaN') updateAdjustmentStep(preset.adjustmentStep)
+      if (maHalfTime === 'NaN') updateMaHalfTime(preset.maHalfTime)
     }
   }, [
     adjustmentStep,
@@ -146,7 +160,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     midFee,
     offpegFeeMultiplier,
     outFee,
-    poolPresetIndex,
+    preset,
     stableA,
     stableFeeValue,
     swapType,
@@ -164,30 +178,30 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     updateStableSwapFee,
   ])
 
-  const resetFees = (poolPresetIndex: number) => {
+  const resetFees = () => {
     if (swapType === STABLESWAP) {
-      updateStableSwapFee(POOL_PRESETS[poolPresetIndex].defaultParams.stableSwapFee)
-      setStableFeeValue(POOL_PRESETS[poolPresetIndex].defaultParams.stableSwapFee)
+      updateStableSwapFee(preset.stableSwapFee)
+      setStableFeeValue(preset.stableSwapFee)
     } else {
-      updateMidFee(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
-      updateOutFee(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
-      setMidValue(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
-      setOutValue(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+      updateMidFee(preset.midFee)
+      updateOutFee(preset.outFee)
+      setMidValue(preset.midFee)
+      setOutValue(preset.outFee)
     }
   }
 
   const resetAdvanced = () => {
     if (swapType === STABLESWAP) {
-      updateStableA(POOL_PRESETS[poolPresetIndex].defaultParams.stableA)
-      updateMaExpTime(POOL_PRESETS[poolPresetIndex].defaultParams.maExpTime)
-      updateOffpegFeeMultiplier(POOL_PRESETS[poolPresetIndex].defaultParams.offpegFeeMultiplier)
+      updateStableA(preset.stableA)
+      updateMaExpTime(preset.maExpTime)
+      updateOffpegFeeMultiplier(preset.offpegFeeMultiplier)
     } else {
-      updateCryptoA(POOL_PRESETS[poolPresetIndex].defaultParams.cryptoA)
-      updateGamma(POOL_PRESETS[poolPresetIndex].defaultParams.gamma)
-      updateAllowedExtraProfit(POOL_PRESETS[poolPresetIndex].defaultParams.allowedExtraProfit)
-      updateFeeGamma(POOL_PRESETS[poolPresetIndex].defaultParams.feeGamma)
-      updateAdjustmentStep(POOL_PRESETS[poolPresetIndex].defaultParams.adjustmentStep)
-      updateMaHalfTime(POOL_PRESETS[poolPresetIndex].defaultParams.maHalfTime)
+      updateCryptoA(preset.cryptoA)
+      updateGamma(preset.gamma)
+      updateAllowedExtraProfit(preset.allowedExtraProfit)
+      updateFeeGamma(preset.feeGamma)
+      updateAdjustmentStep(preset.adjustmentStep)
+      updateMaHalfTime(preset.maHalfTime)
     }
   }
 
@@ -209,7 +223,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
         <BlurWrapper blur={poolPresetIndex === null}>
           <TitleRow flex flexAlignItems={'center'}>
             <SectionTitle>{t`Fees`}</SectionTitle>
-            <ResetButton size={'small'} onClick={() => resetFees(poolPresetIndex)}>
+            <ResetButton size={'small'} onClick={resetFees}>
               {t`Reset Fees`}
             </ResetButton>
           </TitleRow>
@@ -220,9 +234,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 value={+stableFeeValue}
                 minValue={STABLESWAP_MIN_MAX.swapFee.min}
                 maxValue={STABLESWAP_MIN_MAX.swapFee.max}
-                formatOptions={{
-                  maximumFractionDigits: 8,
-                }}
+                formatOptions={FEE_FORMAT_OPTIONS}
                 onChange={updateStableFeeValue}
               />
             </>
@@ -236,9 +248,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 onChange={updateMidValue}
                 minValue={CRYPTOSWAP_MIN_MAX.midFee.min}
                 maxValue={CRYPTOSWAP_MIN_MAX.midFee.max}
-                formatOptions={{
-                  maximumFractionDigits: 8,
-                }}
+                formatOptions={FEE_FORMAT_OPTIONS}
               />
               <Description>{t`Mid fee governs fees charged during low volatility.`}</Description>
               <NumberField
@@ -249,9 +259,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 onChange={updateOutValue}
                 minValue={+midFee}
                 maxValue={CRYPTOSWAP_MIN_MAX.outFee.max}
-                formatOptions={{
-                  maximumFractionDigits: 8,
-                }}
+                formatOptions={FEE_FORMAT_OPTIONS}
               />
               <Description>{t`Out fee governs fees charged during high volatility.`}</Description>
               <InitialPriceWrapper>
@@ -322,15 +330,12 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
               {advanced && swapType !== STABLESWAP && (
                 <>
                   <NumberField
-                    label={t`A (${CRYPTOSWAP_MIN_MAX.a.min} - ${CRYPTOSWAP_MIN_MAX.a.max})`}
-                    value={+cryptoA}
-                    minValue={CRYPTOSWAP_MIN_MAX.a.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.a.max}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
-                    onChange={updateCryptoA}
+                    label={t`A (${cryptoAMin} - ${cryptoAMax})`}
+                    value={+cryptoAValue}
+                    minValue={cryptoAMin}
+                    maxValue={cryptoAMax}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
+                    onChange={updateCryptoAValue}
                   />
                   <NumberField
                     label={`Gamma (${new BigNumber(CRYPTOSWAP_MIN_MAX.gamma.min).toString()} - ${new BigNumber(
@@ -339,10 +344,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     value={+gamma}
                     minValue={CRYPTOSWAP_MIN_MAX.gamma.min}
                     maxValue={CRYPTOSWAP_MIN_MAX.gamma.max}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateGamma}
                   />
                   <NumberField
@@ -350,10 +352,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     value={+allowedExtraProfit}
                     minValue={CRYPTOSWAP_MIN_MAX.allowedExtraProfit.min}
                     maxValue={CRYPTOSWAP_MIN_MAX.allowedExtraProfit.max}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateAllowedExtraProfit}
                   />
                   <NumberField
@@ -361,10 +360,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     value={+feeGamma}
                     minValue={CRYPTOSWAP_MIN_MAX.feeGamma.min}
                     maxValue={CRYPTOSWAP_MIN_MAX.feeGamma.max}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateFeeGamma}
                   />
                   <NumberField
@@ -372,10 +368,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     value={+adjustmentStep}
                     minValue={CRYPTOSWAP_MIN_MAX.adjustmentStep.min}
                     maxValue={CRYPTOSWAP_MIN_MAX.adjustmentStep.max}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateAdjustmentStep}
                   />
                   <NumberField
@@ -383,10 +376,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     value={+maHalfTime}
                     minValue={CRYPTOSWAP_MIN_MAX.maHalfTime.min}
                     maxValue={CRYPTOSWAP_MIN_MAX.maHalfTime.max}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateMaHalfTime}
                   />
                 </>
