@@ -9,7 +9,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
 import { RemoveCollateralInfoList } from './RemoveCollateralInfoList'
 
@@ -59,7 +58,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack divider={<InputDivider />}>
+      <Stack>
         <LoanFormTokenInput
           label={t`Amount to Remove`}
           token={collateralToken}
