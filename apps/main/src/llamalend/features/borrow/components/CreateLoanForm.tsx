@@ -16,16 +16,18 @@ import type { AlertType } from '@ui/AlertBox/types'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
+
+const { Spacing } = SizesAndSpaces
 
 type BorrowDisabledAlert = {
   alertType?: AlertType
@@ -100,7 +102,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       }
       data-testid="create-loan-form"
     >
-      <Stack divider={<InputDivider />}>
+      <Stack gap={Spacing.xs}>
         <LoanFormTokenInput
           label={t`Collateral`}
           token={collateralToken}

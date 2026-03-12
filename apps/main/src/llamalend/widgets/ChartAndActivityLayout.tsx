@@ -20,8 +20,7 @@ import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/Chart
 import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
-import { SubTabsSwitcher } from '@ui-kit/shared/ui/Tabs/SubTabsSwitcher'
-import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -67,58 +66,62 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const showBands = newBandsChartEnabled && bands && isBandsVisible
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
-      <SubTabsSwitcher tabs={TABS} value={tab} onChange={setTab} />
-      {tab === 'events' && <LlammaActivityEvents {...activity} />}
-      {tab === 'trades' && <LlammaActivityTrades {...activity} />}
-      {tab === 'chart' && (
-        <Stack sx={{ gap: Spacing.sm }}>
-          <ChartHeader
-            chartOptionVariant="select"
-            chartSelections={{
-              selections: chart.ohlcChartProps.selectChartList,
-              activeSelection: chart.selectedChartKey,
-            }}
-            timeOption={{
-              options: TIME_OPTIONS,
-              activeOption: chart.ohlcChartProps.timeOption,
-              setActiveOption: chart.setTimeOption,
-            }}
-            isLoading={chart.isLoading}
-            customButton={
-              newBandsChartEnabled &&
-              bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
-            }
-          />
-          <Stack
-            display={{ mobile: 'block', tablet: showBands ? 'grid' : undefined }}
-            gridTemplateColumns={{ tablet: showBands ? '1fr 14rem' : undefined }}
-          >
-            {chart.ohlcDataUnavailable ? (
-              <ErrorMessage
-                title="An error ocurred"
-                subtitle={t`Chart data is not yet available for this market.`}
-                errorMessage={t`Chart data is not yet available for this market.`}
-                sx={{ alignSelf: 'center' }}
-              />
-            ) : (
-              <ChartWrapper {...chart.ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
-            )}
-            {showBands && (
-              <BandsChart
-                isLoading={bands.isLoading}
-                isError={bands.isError}
-                collateralToken={bands.collateralToken}
-                borrowToken={bands.borrowToken}
-                chartData={bands.chartData}
-                userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
-                oraclePrice={bands.oraclePrice}
-              />
-            )}
+    <Stack>
+      <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+        {tab === 'events' && <LlammaActivityEvents {...activity} />}
+        {tab === 'trades' && <LlammaActivityTrades {...activity} />}
+        {tab === 'chart' && (
+          <Stack sx={{ gap: Spacing.sm }}>
+            <ChartHeader
+              chartOptionVariant="select"
+              chartSelections={{
+                selections: chart.ohlcChartProps.selectChartList,
+                activeSelection: chart.selectedChartKey,
+              }}
+              timeOption={{
+                options: TIME_OPTIONS,
+                activeOption: chart.ohlcChartProps.timeOption,
+                setActiveOption: chart.setTimeOption,
+              }}
+              isLoading={chart.isLoading}
+              customButton={
+                newBandsChartEnabled &&
+                bands && (
+                  <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
+                )
+              }
+            />
+            <Stack
+              display={{ mobile: 'block', tablet: showBands ? 'grid' : undefined }}
+              gridTemplateColumns={{ tablet: showBands ? '1fr 14rem' : undefined }}
+            >
+              {chart.ohlcDataUnavailable ? (
+                <ErrorMessage
+                  title="An error ocurred"
+                  subtitle={t`Chart data is not yet available for this market.`}
+                  errorMessage={t`Chart data is not yet available for this market.`}
+                  sx={{ alignSelf: 'center' }}
+                />
+              ) : (
+                <ChartWrapper {...chart.ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
+              )}
+              {showBands && (
+                <BandsChart
+                  isLoading={bands.isLoading}
+                  isError={bands.isError}
+                  collateralToken={bands.collateralToken}
+                  borrowToken={bands.borrowToken}
+                  chartData={bands.chartData}
+                  userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+                  oraclePrice={bands.oraclePrice}
+                />
+              )}
+            </Stack>
+            <ChartFooter legendSets={chart.legendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
           </Stack>
-          <ChartFooter legendSets={chart.legendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
-        </Stack>
-      )}
+        )}
+      </Stack>
     </Stack>
   )
 }
