@@ -7,7 +7,6 @@ import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { pushSearchParams } from '@ui-kit/utils/urls'
 import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Header, Paragraph, Section } from '../general/Section'
@@ -98,8 +97,7 @@ export const SCrvUsd = ({ currentApp, network }: TabProps) => (
         <RouterLink
           color="textSecondary"
           href={getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_LEGAL)}
-          onClick={(e) => pushSearchParams(e, { tab: 'disclaimers', subtab: 'crvusd' })}
-          target="_blank"
+          search={{ tab: 'disclaimers', subtab: 'crvusd' }}
         >
           {t`crvUSD Risk Disclaimer`}
         </RouterLink>{' '}

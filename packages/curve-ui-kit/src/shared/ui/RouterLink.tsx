@@ -1,6 +1,8 @@
 import MuiLink, { LinkProps as MuiLinkProps } from '@mui/material/Link'
-import { Link as TanstackLink } from '@tanstack/react-router'
+import { Link as TanstackLink, type LinkProps as TanstackLinkProps } from '@tanstack/react-router'
 
-export const RouterLink = ({ href, ...props }: MuiLinkProps) => (
-  <MuiLink component={TanstackLink} to={href} {...props} />
+type RouterLinkProps = MuiLinkProps & Pick<TanstackLinkProps, 'search'>
+
+export const RouterLink = ({ href, search, ...props }: RouterLinkProps) => (
+  <MuiLink component={TanstackLink} to={href} search={search} {...props} />
 )

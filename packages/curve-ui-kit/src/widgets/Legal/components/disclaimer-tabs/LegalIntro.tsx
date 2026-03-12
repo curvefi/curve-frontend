@@ -2,7 +2,6 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { pushSearchParams } from '@ui-kit/utils/urls'
 import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Paragraph } from '../general/Section'
@@ -14,7 +13,7 @@ export const LegalIntro = ({ currentApp, network }: TabProps) => (
       <RouterLink
         color="textSecondary"
         href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
-        onClick={(e) => pushSearchParams(e, { tab: 'terms' })}
+        search={{ tab: 'terms' }}
       >
         {t`Terms and Conditions`}
       </RouterLink>

@@ -29,6 +29,30 @@ export function useSearchParams(): URLSearchParams {
 }
 
 /**
+ * Update URL search params while staying on the current route.
+ * Merges the provided params into the existing search params.
+ * Set a key to `undefined` to remove it from the URL.
+ */
+export function useUpdateSearchParams() {
+  const navigate = useTanstackNavigate()
+  return useCallback(
+    (params: Record<string, string | undefined>) =>
+      navigate({
+        to: '.',
+        search: (prev: Record<string, string>) => {
+          const next = { ...prev }
+          for (const [key, value] of Object.entries(params)) {
+            if (value === undefined) delete next[key]
+            else next[key] = value
+          }
+          return next
+        },
+      }),
+    [navigate],
+  )
+}
+
+/**
  * Use URL params from tanstack router.
  * Note that during navigation, this will reflect the *old* params until the navigation is complete.
  */

@@ -1,13 +1,12 @@
-import { MouseEvent, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { useSearchParams, useUpdateSearchParams, useParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { pushSearchParams } from '@ui-kit/utils/urls'
 import { CrvUsd } from './components/disclaimer-tabs/CrvUsd'
 import { Dex } from './components/disclaimer-tabs/Dex'
 import { LlamaLend } from './components/disclaimer-tabs/LlamaLend'
@@ -36,6 +35,7 @@ function useAfterHydration(result: string) {
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const searchParams = useSearchParams()
+  const updateSearchParams = useUpdateSearchParams()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
   const subtabParam = searchParams?.get('subtab')
@@ -43,30 +43,6 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
     subtabParam !== null && VALID_DISCLAIMER_TABS.has(subtabParam as DisclaimerTab)
       ? (subtabParam as DisclaimerTab)
       : DEFAULT_DISCLAIMERS_TABS[currentApp]
-
-  const tabs = useMemo(
-    () => [
-      ...TABS.map(({ value, ...props }) => ({
-        ...props,
-        value,
-        href: { query: { tab: value } },
-        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { tab: value }),
-      })),
-    ],
-    [],
-  )
-
-  const disclaimerTabs = useMemo(
-    () => [
-      ...DISCLAIMER_TABS.map(({ value, ...props }) => ({
-        ...props,
-        value,
-        href: { query: { tab: 'disclaimers', subtab: value } },
-        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { subtab: value }),
-      })),
-    ],
-    [],
-  )
 
   return (
     <Stack
@@ -90,7 +66,13 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <LastUpdated />
           </Grid>
           <Grid size={12}>
-            <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
+            <TabsSwitcher
+              variant="contained"
+              value={tab}
+              options={TABS}
+              onChange={(value) => updateSearchParams({ tab: value })}
+              testIdPrefix="legal-tab"
+            />
           </Grid>
         </Grid>
 
@@ -104,7 +86,8 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               <TabsSwitcher
                 variant="underlined"
                 value={disclaimerTab}
-                options={disclaimerTabs}
+                options={DISCLAIMER_TABS}
+                onChange={(value) => updateSearchParams({ subtab: value })}
                 testIdPrefix="legal-disclaimer-tab"
               />
               {/* Box with bottom border for consistent underline of the TabsSwitcher */}
