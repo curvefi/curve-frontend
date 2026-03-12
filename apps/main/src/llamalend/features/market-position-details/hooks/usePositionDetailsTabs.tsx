@@ -7,14 +7,11 @@ import { t } from '@ui-kit/lib/i18n'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPositionDetails, type BorrowPositionDetailsProps } from '../BorrowPositionDetails'
-import { NoPosition } from '../NoPosition'
 
 const { Spacing } = SizesAndSpaces
 
 export type PositionDetailsTab = 'borrowDetails' | 'activity'
 type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => ReactNode }
-
-const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'
 
 export const usePositionDetailsTabs = ({
   events,
@@ -33,12 +30,15 @@ export const usePositionDetailsTabs = ({
 
   const tabOptions = useMemo<PositionDetailsTabOption[]>(
     () => [
-      {
-        value: DEFAULT_TAB,
-        label: t`Borrow Details`,
-        render: () =>
-          hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />,
-      },
+      ...(hasPosition
+        ? [
+            {
+              value: 'borrowDetails' as const,
+              label: t`Borrow Details`,
+              render: () => <BorrowPositionDetails {...borrowPositionDetails} />,
+            },
+          ]
+        : []),
       ...(hasActivity
         ? [
             {
@@ -61,6 +61,6 @@ export const usePositionDetailsTabs = ({
     [hasActivity, hasPosition, borrowPositionDetails, events, activityIsLoading, activityIsError],
   )
 
-  const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)
+  const { tab, onTabChange } = useTabs(tabOptions)
   return { tab, onTabChange, tabOptions }
 }

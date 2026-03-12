@@ -153,13 +153,11 @@ export const LendMarketPage = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
       )}
-      {loanExists && (
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          borrowPositionDetails={borrowPositionDetails}
-          activityQueryParams={activityQueryParams}
-        />
-      )}
+      <PositionDetailsComposite
+        hasPosition={loanExists}
+        borrowPositionDetails={borrowPositionDetails}
+        activityQueryParams={activityQueryParams}
+      />
       <MarketInformationComposite
         pageProps={pageProps}
         type="borrow"
