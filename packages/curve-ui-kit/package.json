@@ -30,6 +30,8 @@
     "@tanstack/react-table": "8.21.3",
     "@walletconnect/ethereum-provider": "^2.23.4",
     "dayjs": "^1.11.19",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.6",
     "viem": "^2.45.0",
     "wagmi": "^3.4.1"
   },
