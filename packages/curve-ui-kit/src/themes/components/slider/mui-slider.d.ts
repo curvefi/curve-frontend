@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/no-unused-vars */
 // eslint-disable-next-line no-restricted-imports
 import '@mui/material/Slider'
 
