@@ -10,8 +10,8 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
+import { GearIcon } from '../../icons/GearIcon'
 import { ReloadIcon } from '../../icons/ReloadIcon'
-import { ToolkitIcon } from '../../icons/ToolkitIcon'
 import { TableButton } from './TableButton'
 import { TableSearchField } from './TableSearchField'
 import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
@@ -89,7 +89,7 @@ export const TableFilters = <ColumnIds extends string>({
             <TableButton
               ref={settingsRef}
               onClick={openVisibilitySettings}
-              icon={ToolkitIcon}
+              icon={GearIcon}
               testId="btn-visibility-settings"
               active={visibilitySettingsOpen}
             />
