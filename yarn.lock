@@ -8728,6 +8728,8 @@ __metadata:
     "@vitejs/plugin-react": "npm:*"
     "@walletconnect/ethereum-provider": "npm:^2.23.4"
     dayjs: "npm:^1.11.19"
+    echarts: "npm:^6.0.0"
+    echarts-for-react: "npm:^3.0.6"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     storybook: "npm:10.2.13"
