@@ -5,3 +5,8 @@ export type UsdPrice = {
   usdPrice: number
   lastUpdated: Date
 }
+
+export type UsdPriceHistory = {
+  price: number
+  timestamp: Date
+}[]

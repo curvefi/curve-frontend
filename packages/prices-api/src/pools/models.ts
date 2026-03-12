@@ -103,3 +103,69 @@ export type PoolLiquidityEvent = {
   txHash: Address
   provider: Address
 }
+
+export type PoolSnapshot = {
+  timestamp: number
+  a: number | null
+  fee: number | null
+  adminFee: number | null
+  virtualPrice: number | null
+  xcpProfit: number | null
+  xcpProfitA: number | null
+  baseDailyApr: number | null
+  baseWeeklyApr: number | null
+  offpegFeeMultiplier: number | null
+  gamma: number | null
+  midFee: number | null
+  outFee: number | null
+  feeGamma: number | null
+  allowedExtraProfit: number | null
+  adjustmentStep: number | null
+  maHalfTime: number | null
+  priceScale: number[] | null
+  priceOracle: number[] | null
+  blockNumber: number | null
+}
+
+export type MetadataCoin = {
+  poolIndex: number
+  symbol: string
+  address: Address
+  decimals: number | null
+}
+
+export type Oracle = {
+  oracleAddress: Address | null
+  methodId: string | null
+  method: string | null
+  isVerified: boolean
+}
+
+export type PoolType =
+  | 'main'
+  | 'crypto'
+  | 'factory'
+  | 'factory_crypto'
+  | 'crvusd'
+  | 'factory_tricrypto'
+  | 'stableswapng'
+  | 'twocryptong'
+
+export type PoolMetadata = {
+  name: string
+  registry: string
+  registryType: string
+  lpTokenAddress: Address
+  coins: MetadataCoin[]
+  gauges: string[]
+  poolType: PoolType
+  metapool: boolean
+  basePool: string | null
+  assetTypes: number[] | null
+  oracles: (Oracle | null)[] | null
+  vyperVersion: string | null
+  deploymentTx: string | null
+  deploymentBlock: number | null
+  deploymentDate: Date | null
+  hasDonations: boolean
+}

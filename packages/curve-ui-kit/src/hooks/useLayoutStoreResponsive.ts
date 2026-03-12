@@ -1,9 +1,6 @@
-import lodash from 'lodash'
 import { useCallback, useEffect } from 'react'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-
-const { delay } = lodash
 
 export const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window
@@ -11,7 +8,6 @@ export const useLayoutStoreResponsive = () => {
   const pageWidth = useLayoutStore((state) => state.pageWidth)
   const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
   const setPageVisible = useLayoutStore((state) => state.setPageVisible)
-  const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
 
   const handleResizeListener = useCallback(() => {
     if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
@@ -26,7 +22,6 @@ export const useLayoutStoreResponsive = () => {
 
   useEffect(() => {
     if (!window || !document) return
-    const handleScrollListener = () => updateShowScrollButton(window.scrollY)
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
 
     handleResizeListener()
@@ -34,12 +29,10 @@ export const useLayoutStoreResponsive = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', () => handleResizeListener())
-      window.removeEventListener('scroll', () => handleScrollListener())
     }
-  }, [document, handleResizeListener, setPageVisible, updateShowScrollButton])
+  }, [document, handleResizeListener, setPageVisible])
 }
