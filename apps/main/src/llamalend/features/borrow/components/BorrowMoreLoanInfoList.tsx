@@ -16,6 +16,7 @@ import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market
 import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
+import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -136,25 +137,11 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             leverageValue: q(leverageValue),
             prevLeverageValue: q(prevLeverageValue),
             prevLeverageCollateral: {
-              data:
-                prevCollateral.data &&
-                prevLeverageValue.data &&
-                decimal(
-                  new BigNumber(prevCollateral.data).minus(
-                    new BigNumber(prevCollateral.data).div(prevLeverageValue.data),
-                  ),
-                ),
+              data: calculateLeverageCollateral(prevCollateral.data, prevLeverageValue.data),
               ...combineQueryState(prevCollateral, prevLeverageValue),
             },
             leverageCollateral: {
-              data:
-                leverageTotalCollateral.data &&
-                leverageValue.data &&
-                decimal(
-                  new BigNumber(leverageTotalCollateral.data).minus(
-                    new BigNumber(leverageTotalCollateral.data).div(leverageValue.data),
-                  ),
-                ),
+              data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
               ...combineQueryState(leverageTotalCollateral, leverageValue),
             },
             prevLeverageTotalCollateral: prevCollateral,
