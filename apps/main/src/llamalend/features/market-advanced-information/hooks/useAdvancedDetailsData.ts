@@ -52,7 +52,7 @@ export const useAdvancedDetailsData = ({
     },
     availableLiquidity: {
       available: capAndAvailable?.available,
-      cap: capAndAvailable?.cap,
+      totalAssets: capAndAvailable?.totalAssets,
       loading: !market || capAndAvailableLoading,
     },
   }

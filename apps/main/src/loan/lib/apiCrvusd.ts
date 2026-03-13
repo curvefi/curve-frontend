@@ -168,7 +168,7 @@ const detailInfo = {
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
     const totalCollateral = fulfilledValue(totalCollateralResult) ?? '0'
     const totalStablecoin = fulfilledValue(totalStablecoinResult) ?? '0'
-    const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { cap: '0', available: '0' }
+    const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { totalAssets: '0', available: '0' }
 
     return {
       oraclePriceBand,

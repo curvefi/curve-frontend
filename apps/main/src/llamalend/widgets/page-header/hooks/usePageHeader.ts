@@ -139,7 +139,7 @@ export const usePageHeader = ({
 
   const availableLiquidity: AvailableLiquidity = {
     value: toNumberOrNull(capAndAvailable?.available),
-    max: toNumberOrNull(capAndAvailable?.cap),
+    max: toNumberOrNull(capAndAvailable?.totalAssets),
     loading: isCapAndAvailableLoading || isMarketMetadataLoading,
   }
 

@@ -106,11 +106,11 @@ const market = {
       .handleError((errorObj, market) => {
         console.error(errorObj)
         const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { cap: '', available: '', error }
+        results[market.id] = { totalAssets: '', available: '', error }
       })
       .process(async (market) => {
-        const resp = await market.stats.capAndAvailable(useMultiCall, USE_API)
-        results[market.id] = { ...resp, error: '' }
+        const { totalAssets, available } = await market.stats.capAndAvailable(useMultiCall, USE_API)
+        results[market.id] = { totalAssets, available, error: '' }
       })
 
     return results

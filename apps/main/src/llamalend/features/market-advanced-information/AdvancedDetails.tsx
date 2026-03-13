@@ -32,14 +32,14 @@ const formatLiquidity = (value: number) =>
 
 type AvailableLiquidityValues = {
   available?: Decimal
-  cap?: Decimal
+  totalAssets?: Decimal
 }
 
-const getUtilizationMetrics = ({ available, cap }: AvailableLiquidityValues) => {
-  if (available == null || cap == null) return {}
+const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityValues) => {
+  if (available == null || totalAssets == null) return {}
 
   const availableBN = new BigNumber(available)
-  const capBN = new BigNumber(cap)
+  const capBN = new BigNumber(totalAssets)
   if (capBN.isZero()) return {}
 
   const usedLiquidity = capBN.minus(availableBN)
