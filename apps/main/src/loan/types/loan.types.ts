@@ -1,4 +1,3 @@
-import { BrowserProvider } from 'ethers'
 import type { ReactNode } from 'react'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import { TITLE } from '@/loan/constants'
@@ -8,6 +7,7 @@ import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 
+export type { Provider } from '@ui-kit/lib/ethers'
 export type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
@@ -20,8 +20,6 @@ export type CollateralUrlParams = NetworkUrlParams & { collateralId: string }
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
-
-export type Provider = BrowserProvider
 
 export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
   api: typeof curvejsApi

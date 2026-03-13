@@ -1,5 +1,3 @@
-import { BrowserProvider } from 'ethers'
-
 /* createCreateLoanSlice */
 export type DetailInfo = { healthFull: string; healthNotFull: string; prices: string[]; bands: [number, number] }
 
@@ -19,6 +17,3 @@ export type LiqRange = {
 
 export type LiqRangeSliderIdx = LiqRange & { sliderIdx: number }
 export type LiqRangesMapper = { [n: string]: LiqRangeSliderIdx }
-
-/* createWalletSlice */
-export type Provider = BrowserProvider

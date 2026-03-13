@@ -10,6 +10,7 @@ import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
+import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 
 const { Spacing } = SizesAndSpaces
 
@@ -34,15 +35,15 @@ export const MarketInformationComposite = ({
   const newBandsChartEnabled = useNewBandsChart()
 
   return (
-    <>
+    <Stack gap={PAGE_SPACING}>
       <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
       {type === 'borrow' && !newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}
       {market && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, marginTop: Spacing.md }}>
+        <Stack>
           <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
           <MarketInfoLayout
             chainId={rChainId}
@@ -52,6 +53,6 @@ export const MarketInformationComposite = ({
           />
         </Stack>
       )}
-    </>
+    </Stack>
   )
 }

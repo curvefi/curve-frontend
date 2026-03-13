@@ -5,7 +5,7 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
@@ -30,10 +30,11 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
 
   const { data, isLoading, userHasPositions } = usePoolListData(network)
 
-  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
-    useFilters({
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
+    {
       columns: PoolColumnId,
-    })
+    },
+  )
   const globalFilterFn = usePoolsGlobalFilterFn(data ?? [], globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(getDefaultSort(isLite))
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
@@ -42,7 +43,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sorting,
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters: EMPTY }
+  const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
@@ -80,8 +81,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         chips={
           <PoolListChips
             poolFilters={poolFilters}
-            hiddenMarketCount={data ? data.length - resultCount : 0}
-            hasFilters={hasFilters}
+            hiddenCount={getHiddenCount(table)}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}
