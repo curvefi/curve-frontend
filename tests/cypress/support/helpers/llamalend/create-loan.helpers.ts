@@ -56,15 +56,15 @@ export const LOAN_TEST_MARKETS = {
     },
     {
       id: 'one-way-market-14',
-      label: 'USDe-crvUSD New Lend Market',
-      collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
+      label: 'sreUSD-crvUSD New Lend Market',
+      collateralAddress: '0x557ab1e003951a73c12d16f0fea8490e39c33c35', // sreUSD
       collateral: '1',
-      borrow: '0.9',
+      borrow: '0.8',
       borrowMore: '0.02',
-      repay: '0.8',
+      repay: '0.7',
       improveHealth: '0.01',
       chainId,
-      path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
+      path: '/lend/ethereum/markets/0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9',
       hasLeverage: true,
     },
   ],
