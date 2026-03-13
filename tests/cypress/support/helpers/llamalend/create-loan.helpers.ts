@@ -55,7 +55,7 @@ export const LOAN_TEST_MARKETS = {
       hasLeverage: false,
     },
     {
-      id: 'one-way-market-14',
+      id: 'one-way-market-41',
       label: 'sreUSD-crvUSD New Lend Market',
       collateralAddress: '0x557ab1e003951a73c12d16f0fea8490e39c33c35', // sreUSD
       collateral: '1',
