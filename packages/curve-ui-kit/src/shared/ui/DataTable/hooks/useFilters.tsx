@@ -77,16 +77,16 @@ const DEFAULT_SEARCH_KEY = 'search'
  */
 function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   const searchParams = useSearchParams()
-  const globalFilter = useMemo(() => searchParams.get(key) ?? '', [searchParams, key])
   const searchNavigate = useSearchNavigate(searchParams)
 
-  const setGlobalFilter = useCallback(
-    (value: string) => searchNavigate({ [key]: value || null }, { replace: true }),
-    [key, searchNavigate],
-  )
-  const resetGlobalFilter = useCallback(() => searchNavigate({ [key]: null }), [key, searchNavigate])
-
-  return { globalFilter, setGlobalFilter, resetGlobalFilter }
+  return {
+    globalFilter: useMemo(() => searchParams.get(key) ?? '', [searchParams, key]),
+    setGlobalFilter: useCallback(
+      (value: string) => searchNavigate({ [key]: value || null }, { replace: true }),
+      [key, searchNavigate],
+    ),
+    resetGlobalFilter: useCallback(() => searchNavigate({ [key]: null }), [key, searchNavigate]),
+  }
 }
 
 /**
@@ -103,16 +103,14 @@ export const useFilters = <TColumnId extends string>({
   const { resetGlobalFilter, ...globalFilter } = useGlobalFilter(searchKey)
   const { resetFilters: resetColumnFilters, ...columnFilters } = useColumnFilters(columnFilterOptions)
 
-  const resetFilters = useCallback(() => {
-    resetGlobalFilter()
-    resetColumnFilters()
-  }, [resetColumnFilters, resetGlobalFilter])
-
   return {
     ...globalFilter,
     ...columnFilters,
     resetGlobalFilter,
     resetColumnFilters,
-    resetFilters,
+    resetFilters: useCallback(() => {
+      resetGlobalFilter()
+      resetColumnFilters()
+    }, [resetColumnFilters, resetGlobalFilter]),
   }
 }

@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
-import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { getSearchString, useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { getSearchString, useSearchParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -33,7 +31,6 @@ function useAfterHydration(result: string) {
 }
 
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
-  const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const searchParams = useSearchParams()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'

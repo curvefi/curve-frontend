@@ -47,7 +47,7 @@ export function useSearchNavigate(searchParams: URLSearchParams) {
   const pathname = usePathname()
   return useCallback(
     (update: SearchParamsUpdate, options?: NavigateOptions) => {
-      navigate(getSearchString(update, searchParams) || pathname, options)
+      navigate(pathname + getSearchString(update, searchParams), options)
     },
     [navigate, pathname, searchParams],
   )
