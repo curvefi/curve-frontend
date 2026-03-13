@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
-import { useSearchParams } from '@ui-kit/hooks/router'
+import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 /**
  * Similar to `ColumnFiltersState` from react-table, but restricted to string values
@@ -15,21 +15,6 @@ type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
 /** Get scoped key for URLSearchParams */
 const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
-
-/**
- * Updates the browser history with new URL query parameters.
- * Removes keys mapped to `null`. Keeps commas unencoded for readability.
- * Uses `window.history` directly to remain router-agnostic and keep a stable function identity.
- *
- * @param updates A record of key-value pairs to set, or `null` to delete a key.
- */
-const updateSearchParams = (updates: Record<string, string | null>) => {
-  const { history, location } = window // avoid depending on the router so we can keep the function identity stable
-  const params = new URLSearchParams(location.search)
-  Object.entries(updates).forEach(([key, value]) => (value === null ? params.delete(key) : params.set(key, value)))
-  const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
-  history.replaceState(null, '', params.size ? `?${search}` : location.pathname)
-}
 
 /**
  * Parses URLSearchParams into a typed `ColumnFilters` array.
@@ -67,17 +52,18 @@ function useColumnFilters<TColumnId extends string>({
 }) {
   const searchParams = useSearchParams()
   const columnFilters = useMemo(() => parseFilters(searchParams, columns, scope), [searchParams, columns, scope])
+  const searchNavigate = useSearchNavigate(searchParams)
 
   return {
     columnFilters,
     columnFiltersById: useMemo(() => fromEntries(columnFilters.map((f) => [f.id, f.value])), [columnFilters]),
     setColumnFilter: useCallback(
-      (id: TColumnId, value: string | null) => updateSearchParams({ [scopedKey(scope, id)]: value }),
-      [scope],
+      (id: TColumnId, value: string | null) => searchNavigate({ [scopedKey(scope, id)]: value }, { replace: true }),
+      [scope, searchNavigate],
     ),
     resetFilters: useCallback(() => {
-      updateSearchParams(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])))
-    }, [columns, scope]),
+      searchNavigate(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])))
+    }, [columns, scope, searchNavigate]),
   }
 }
 
@@ -92,9 +78,13 @@ const DEFAULT_SEARCH_KEY = 'search'
 function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   const searchParams = useSearchParams()
   const globalFilter = useMemo(() => searchParams.get(key) ?? '', [searchParams, key])
+  const searchNavigate = useSearchNavigate(searchParams)
 
-  const setGlobalFilter = useCallback((value: string) => updateSearchParams({ [key]: value || null }), [key])
-  const resetGlobalFilter = useCallback(() => updateSearchParams({ [key]: null }), [key])
+  const setGlobalFilter = useCallback(
+    (value: string) => searchNavigate({ [key]: value || null }, { replace: true }),
+    [key, searchNavigate],
+  )
+  const resetGlobalFilter = useCallback(() => searchNavigate({ [key]: null }), [key, searchNavigate])
 
   return { globalFilter, setGlobalFilter, resetGlobalFilter }
 }
