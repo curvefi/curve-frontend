@@ -24,6 +24,7 @@ export const MarketInfoLayout = ({ chainId, marketType, market, network }: Marke
     paddingInline={Spacing.md}
     paddingBottom={Spacing.md}
     sx={{
+      backgroundColor: (t) => t.design.Layer[1].Fill,
       [`@media (min-width: ${MaxWidth.candleAndBandChart})`]: {
         gridTemplateColumns: '1fr 1fr',
       },

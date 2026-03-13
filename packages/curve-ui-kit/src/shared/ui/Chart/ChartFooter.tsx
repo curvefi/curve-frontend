@@ -57,7 +57,7 @@ export const ChartFooter = <T extends string>({
         )}
       </Stack>
       {description && (
-        <Typography variant="bodyXsRegular" sx={{ maxWidth: '90ch', color: 'text.secondary' }}>
+        <Typography variant="bodyXsRegular" color="textTertiary" sx={{ maxWidth: '90ch' }}>
           {description}
         </Typography>
       )}

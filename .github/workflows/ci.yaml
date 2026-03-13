@@ -44,7 +44,8 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build  # make sure the build works + uploads source maps to Sentry
       - run: yarn test
-        working-directory: tests
+        env:
+          ENSO_API_KEY: ${{ secrets.ENSO_API_KEY }}
 
   cypress-component:
     strategy:
@@ -65,6 +66,9 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
 
       - run: yarn run cy:run:component --browser ${{ matrix.browser }}
         working-directory: tests
@@ -95,7 +99,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - name: Optimize dependencies
+      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
 
@@ -217,7 +221,7 @@ jobs:
           SLACK_TEXT: >-
             ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
             on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
-            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>
+            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}>
             by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
           curl --request POST \

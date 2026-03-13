@@ -8,7 +8,11 @@ import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanBandsResult = [number, number]
 
-export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBands } = queryFactory({
+export const {
+  useQuery: useCreateLoanBands,
+  invalidate: invalidateCreateLoanBands,
+  refetchQuery: refetchCreateLoanBands,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

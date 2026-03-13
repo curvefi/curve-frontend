@@ -33,6 +33,7 @@ export const PositionDetailsComposite = ({
     activityIsLoading,
     activityIsError,
   })
+
   const activeTab = findTab(tabOptions, tab)
 
   return (

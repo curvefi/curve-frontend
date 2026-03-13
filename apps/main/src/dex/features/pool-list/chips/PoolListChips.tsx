@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
+import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolColumnId } from '../columns'
 import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
@@ -12,18 +12,16 @@ import { PoolSortDrawer } from '../drawers/PoolSortDrawer'
 const { Spacing } = SizesAndSpaces
 
 export const PoolListChips = ({
-  hiddenMarketCount,
+  hiddenCount,
   resetFilters,
-  hasFilters,
   onSortingChange,
   sortField,
   searchText,
   onSearch,
   ...filterProps
 }: {
-  hiddenMarketCount?: number
+  hiddenCount: number
   resetFilters: () => void
-  hasFilters: boolean
   children?: ReactNode
   onSortingChange: OnChangeFn<SortingState>
   sortField: PoolColumnId
@@ -40,9 +38,8 @@ export const PoolListChips = ({
           </Grid>
           <Grid size={6}>
             <PoolListFilterDrawer
-              hiddenMarketCount={hiddenMarketCount}
+              hiddenCount={hiddenCount}
               resetFilters={resetFilters}
-              hasFilters={hasFilters}
               searchText={searchText}
               onSearch={onSearch}
               {...filterProps}
@@ -54,13 +51,7 @@ export const PoolListChips = ({
           <PoolListFilterChips {...filterProps} />
         </Grid>
       )}
-      {hiddenMarketCount != null && !isMobile && (
-        <HiddenMarketsResetFilters
-          hiddenMarketCount={hiddenMarketCount}
-          resetFilters={resetFilters}
-          hasFilters={hasFilters}
-        />
-      )}
+      {!isMobile && <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />}
     </Grid>
   )
 }

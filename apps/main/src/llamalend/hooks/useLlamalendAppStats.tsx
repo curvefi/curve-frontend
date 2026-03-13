@@ -1,3 +1,4 @@
+import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
@@ -63,7 +64,7 @@ export function useLlamalendAppStats(
   const statsEnabled = enabled && shouldShowStats
 
   const { data: marketData } = useLlamaMarkets(address, statsEnabled)
-  const tvl = useMemo(() => (marketData?.markets ?? []).reduce((acc, market) => acc + market.tvl, 0), [marketData])
+  const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, statsEnabled && !!chainId)
   const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, statsEnabled)

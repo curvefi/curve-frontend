@@ -1,3 +1,4 @@
+import '@/analytics/llamadash'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'

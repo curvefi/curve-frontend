@@ -13,6 +13,7 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  * Pre-Beta channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  *  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified create loan form */
@@ -31,10 +32,7 @@ export const useNewBandsChart = useBetaChannel
 export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
-export const useAnalyticsApp = useAlphaChannel
-
-/** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
-export const useFastbridge = useBetaChannel
+export const useAnalyticsApp = useStableChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () =>

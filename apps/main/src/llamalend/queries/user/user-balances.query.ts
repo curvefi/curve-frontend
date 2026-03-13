@@ -16,11 +16,13 @@ export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } =
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
       const { collateral, borrowed, vaultShares, gauge } = await market.wallet.balances()
+      const vaultSharesConverted = (+vaultShares > 0 ? await market.vault.convertToAssets(vaultShares) : '0') as Decimal
       return {
         collateral: collateral as Decimal,
         borrowed: borrowed as Decimal,
         vaultShares: vaultShares as Decimal,
         gauge: gauge as Decimal,
+        vaultSharesConverted,
       }
     } else {
       const { stablecoin, collateral } = await market.wallet.balances()

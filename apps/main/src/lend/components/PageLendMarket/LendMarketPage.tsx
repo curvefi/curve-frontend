@@ -18,7 +18,6 @@ import type { UserCollateralEventsProps } from '@/llamalend/features/user-positi
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isChain, type Chain } from '@curvefi/prices-api'
-import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -136,14 +135,16 @@ export const LendMarketPage = () => {
           <LoanCreateTabs {...pageProps} params={params} />
         ))
       }
+      header={
+        <PageHeader
+          chainId={chainId}
+          marketId={marketId}
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+        />
+      }
     >
-      <PageHeader
-        chainId={chainId}
-        marketId={marketId}
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-      />
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
@@ -157,14 +158,12 @@ export const LendMarketPage = () => {
         borrowPositionDetails={borrowPositionDetails}
         activityQueryParams={activityQueryParams}
       />
-      <Stack>
-        <MarketInformationComposite
-          pageProps={pageProps}
-          type="borrow"
-          loanExists={loanExists}
-          previewPrices={previewPrices}
-        />
-      </Stack>
+      <MarketInformationComposite
+        pageProps={pageProps}
+        type="borrow"
+        loanExists={loanExists}
+        previewPrices={previewPrices}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
