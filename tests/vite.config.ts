@@ -2,6 +2,17 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+/**
+ * Shared Vite config for the `tests` workspace.
+ *
+ * This is used by Cypress component testing via the Vite dev server.
+ *
+ * Vitest has its own entrypoint in `vitest.config.ts`.
+ *
+ * Cypress e2e does not use this file directly. It has a separate custom
+ * preprocessor in `vite-cypress-preprocessor.ts` because e2e bundles
+ * individual spec/support files with different output constraints.
+ */
 export default defineConfig({
   cacheDir: resolve(__dirname, '../.cache/vite/tests'),
   plugins: [react()],

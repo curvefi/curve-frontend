@@ -4,7 +4,14 @@ import { build } from 'vite'
 const cache = new Map<string, string>()
 
 /**
- * Custom Vite-based preprocessor for Cypress e2e. We use Vite instead of webpack to:
+ * Custom Vite-based preprocessor for Cypress e2e.
+ *
+ * This exists alongside `tests/vite.config.ts` because e2e does not run through
+ * the normal Vite dev-server path used by Vitest and Cypress component tests.
+ * Instead, Cypress asks us to bundle individual spec/support files on demand,
+ * with custom output settings that fit the e2e runner.
+ *
+ * We use Vite instead of webpack to:
  * - avoid the webpack-specific resolution of optional wagmi connector peers
  * - keep bundling light-weight for specs
  * - consistent use of Vite across the monorepo
@@ -20,7 +27,19 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
   const viteConfig = {
     logLevel: 'error' as const,
     resolve: {
-      alias: [{ find: '@primitives', replacement: path.resolve(__dirname, '../packages/primitives/src') }],
+      alias: [
+        { find: '@cy', replacement: path.resolve(__dirname, './cypress') },
+        { find: '@', replacement: path.resolve(__dirname, '../apps/main/src/') },
+        { find: '@ui', replacement: path.resolve(__dirname, '../packages/ui/src/') },
+        { find: '@ui-kit', replacement: path.resolve(__dirname, '../packages/curve-ui-kit/src') },
+        {
+          find: '@external-rewards',
+          replacement: path.resolve(__dirname, '../packages/external-rewards/src/index.ts'),
+        },
+        { find: '@primitives', replacement: path.resolve(__dirname, '../packages/primitives/src') },
+        { find: '@curvefi/prices-api', replacement: path.resolve(__dirname, '../packages/prices-api/src') },
+        { find: '@curvefi/prices-api/', replacement: path.resolve(__dirname, '../packages/prices-api/src/') },
+      ],
     },
     define: {
       // Shim process for browser-only bundles; some deps expect it to exist.
