@@ -76,6 +76,14 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     isOpen,
   )
 
+  const leverageTotalCollateral = {
+    data:
+      expectedCollateralQuery.data?.totalCollateral &&
+      prevCollateral.data &&
+      decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
+    ...combineQueryState(prevCollateral, expectedCollateralQuery),
+  }
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -138,17 +146,19 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
                 ),
               ...combineQueryState(prevCollateral, prevLeverageValue),
             },
-            leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
-              decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
-            ),
-            prevLeverageTotalCollateral: prevCollateral,
-            leverageTotalCollateral: {
+            leverageCollateral: {
               data:
-                expectedCollateralQuery.data?.totalCollateral &&
-                prevCollateral.data &&
-                decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
-              ...combineQueryState(prevCollateral, expectedCollateralQuery),
+                leverageTotalCollateral.data &&
+                leverageValue.data &&
+                decimal(
+                  new BigNumber(leverageTotalCollateral.data).minus(
+                    new BigNumber(leverageTotalCollateral.data).div(leverageValue.data),
+                  ),
+                ),
+              ...combineQueryState(leverageTotalCollateral, leverageValue),
             },
+            prevLeverageTotalCollateral: prevCollateral,
+            leverageTotalCollateral,
             exchangeRate: mapQuery(expectedCollateralQuery, (data) => data?.avgPrice ?? null),
             routes,
             slippage,
