@@ -20,7 +20,10 @@ export const calculateLeverageCollateral = (
 ) =>
   totalCollateral &&
   leverage &&
-  decimal(new BigNumber(totalCollateral).minus(new BigNumber(totalCollateral).div(leverage)))
+  // leverage value can be 0 (e.g, full repay). Leverage collateral should be 0 then
+  (new BigNumber(leverage).isEqualTo(0)
+    ? '0'
+    : decimal(new BigNumber(totalCollateral).minus(new BigNumber(totalCollateral).div(leverage))))
 
 export const ACTION_INFO_GROUP_SX = { gap: Spacing.sm }
 
