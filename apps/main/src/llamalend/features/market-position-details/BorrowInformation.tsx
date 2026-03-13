@@ -1,4 +1,4 @@
-import { formatCollateralNotional } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, isLeveragedPosition } from '@/llamalend/llama.utils'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
@@ -113,16 +113,15 @@ export const BorrowInformation = ({
           clickable: true,
         }}
       />
-      {leverage?.value != null &&
-        leverage.value > 1 && ( // Leverage is only available on lend for now
-          <Metric
-            size="small"
-            label={t`Leverage`}
-            value={leverage.value}
-            loading={leverage.loading}
-            valueOptions={{ unit: 'multiplier' }}
-          />
-        )}
+      {leverage?.value != null && isLeveragedPosition(leverage.value) && (
+        <Metric
+          size="small"
+          label={t`Leverage`}
+          value={leverage.value}
+          loading={leverage.loading}
+          valueOptions={{ unit: 'multiplier' }}
+        />
+      )}
     </Stack>
   </Stack>
 )

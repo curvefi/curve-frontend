@@ -5,7 +5,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
-import { getRepayImplementation } from './repay-query.helpers'
+import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
 
 const {
   useQuery: useRepayLoanEstimateGas,
@@ -44,7 +44,7 @@ const {
     routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
-    const useFullRepay = isFull && !+stateCollateral && !+userCollateral
+    const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await market.estimateGas.fullRepay(userAddress)
     }
@@ -104,7 +104,7 @@ const {
     userAddress,
     routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
-    const useFullRepay = isFull && !+stateCollateral && !+userCollateral
+    const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }

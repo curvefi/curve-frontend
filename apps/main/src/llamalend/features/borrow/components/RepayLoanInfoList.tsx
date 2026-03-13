@@ -4,6 +4,7 @@ import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowA
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { isLeveragedPosition } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
@@ -27,7 +28,6 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
-import { isLeveragedPosition } from '@/llamalend/llama.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
   const remaining = new BigNumber(debt).minus(repayAmount)
