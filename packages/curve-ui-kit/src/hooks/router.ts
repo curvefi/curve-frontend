@@ -29,6 +29,16 @@ export function useSearchParams(): URLSearchParams {
 
 type SearchParamsUpdate = Record<string, string | string[] | null>
 
+export const getSearchString = (update: SearchParamsUpdate, previous?: URLSearchParams) => {
+  const params = new URLSearchParams(previous ?? '')
+  Object.entries(update).forEach(([key, value]) => {
+    params.delete(key)
+    if (Array.isArray(value)) value.forEach((item) => params.append(key, item))
+    else if (value != null) params.set(key, value)
+  })
+  return params.size ? `?${params}`.replaceAll('%2C', ',') : ''
+}
+
 /**
  * Update URL search params through TanStack Router using replace navigation.
  */
@@ -37,13 +47,7 @@ export function useSearchNavigate(searchParams: URLSearchParams) {
   const pathname = usePathname()
   return useCallback(
     (update: SearchParamsUpdate, options?: NavigateOptions) => {
-      const params = new URLSearchParams(searchParams)
-      Object.entries(update).forEach(([key, value]) => {
-        params.delete(key)
-        if (Array.isArray(value)) value.forEach((item) => params.append(key, item))
-        else if (value != null) params.set(key, value)
-      })
-      navigate(params.size ? `?${params}`.replaceAll('%2C', ',') : pathname, options)
+      navigate(getSearchString(update, searchParams) || pathname, options)
     },
     [navigate, pathname, searchParams],
   )

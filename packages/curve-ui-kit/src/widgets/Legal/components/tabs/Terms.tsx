@@ -1,14 +1,12 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { pushSearchParams } from '@ui-kit/utils/urls'
-import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../general/Section'
 
-export const Terms = ({ currentApp, network }: TabProps) => (
+export const Terms = () => (
   <>
     <Header>{t`Preamble`}</Header>
     <Section>
@@ -244,11 +242,7 @@ export const Terms = ({ currentApp, network }: TabProps) => (
     <Section>
       <Paragraph>
         {t`Please see our `}
-        <RouterLink
-          color="textSecondary"
-          href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
-          onClick={(e) => pushSearchParams(e, { tab: 'privacy' })}
-        >
+        <RouterLink color="textSecondary" href={getSearchString({ tab: 'privacy' })}>
           {t`Privacy Notice`}
         </RouterLink>
 
