@@ -49,7 +49,6 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
                 format: 'iife', // avoid top-level imports in the runner
                 inlineDynamicImports: true, // force a single bundle per spec
                 entryFileNames: filename, // keep original name for Cypress loader
-                manualChunks: undefined,
               },
             },
             lib: undefined,
