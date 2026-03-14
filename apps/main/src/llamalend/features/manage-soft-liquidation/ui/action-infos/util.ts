@@ -1,3 +1,4 @@
+import { toArray } from '@primitives/array.utils'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import type { TokenAmount } from './types'
 
@@ -44,7 +45,7 @@ export const formatValue = (x?: number, decimals: number = 2) =>
  * // Returns: "10.555 ETH"
  */
 export const formatTokens = (tokens: TokenAmount | TokenAmount[], decimals: number = 2) =>
-  (Array.isArray(tokens) ? tokens : [tokens])
+  toArray(tokens)
     .map(({ amount, symbol }) => {
       const value = Number(amount)
       const amountAbbreviated = abbreviateNumber(value)
