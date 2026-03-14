@@ -10,6 +10,10 @@ body.theme-chad {
   --button--font: "Minecraft","SF Mono Regular 11","Ubuntu Mono",monospace;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   display: block;
