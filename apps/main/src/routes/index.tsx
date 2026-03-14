@@ -5,6 +5,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { analyticsRoutes } from './analytics.routes'
 import { bridgeRoutes } from './bridge.routes'
@@ -34,6 +35,8 @@ const integrationsRedirectRoute = createRoute({
 
 export const router = createRouter({
   scrollRestoration: true,
+  defaultPendingComponent: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
+  defaultPendingMs: Duration.Transition,
   routeTree: rootRoute.addChildren([
     indexRoute,
     analyticsRoutes,

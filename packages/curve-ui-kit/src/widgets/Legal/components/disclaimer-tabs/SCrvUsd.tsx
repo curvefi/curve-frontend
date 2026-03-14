@@ -2,23 +2,21 @@ import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { pushSearchParams } from '@ui-kit/utils/urls'
-import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Header, Paragraph, Section } from '../general/Section'
 import { LegalIntro } from './LegalIntro'
 
 const { Spacing } = SizesAndSpaces
 
-export const SCrvUsd = ({ currentApp, network }: TabProps) => (
+export const SCrvUsd = () => (
   <>
     <Section>
-      <LegalIntro currentApp={currentApp} network={network} />
+      <LegalIntro />
 
       <Paragraph>{t`scrvUSD is an ERC4626 compliant vault that allows crvUSD holders to earn yield from protocol revenue. Deposits are not rehypothecated, can be readily redeemed for the underlying crvUSD at any time, and are non-transferrable except for the purpose of user-initiated redemption.`}</Paragraph>
       <Paragraph>{t`There are, nonetheless, design mechanisms that introduce risks and trust assumptions. Users should familiarize themselves with these before interacting with scrvUSD.`}</Paragraph>
@@ -97,8 +95,7 @@ export const SCrvUsd = ({ currentApp, network }: TabProps) => (
         {t`Read the`}{' '}
         <RouterLink
           color="textSecondary"
-          href={getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_LEGAL)}
-          onClick={(e) => pushSearchParams(e, { tab: 'disclaimers', subtab: 'crvusd' })}
+          href={getSearchString({ tab: 'disclaimers', subtab: 'crvusd' })}
           target="_blank"
         >
           {t`crvUSD Risk Disclaimer`}
