@@ -1,22 +1,28 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { pushSearchParams } from '@ui-kit/utils/urls'
+import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Header, Paragraph, Section, Title } from '../general/Section'
 import { LegalIntro } from './LegalIntro'
 
-export const LlamaLend = () => (
+export const LlamaLend = ({ currentApp, network }: TabProps) => (
   <>
     <Section>
-      <LegalIntro />
+      <LegalIntro currentApp={currentApp} network={network} />
 
       <Paragraph>{t`Curve Lending enables users to permissionlessly create and interact with isolated lending pairs composed of crvUSD, a decentralized stablecoin native to the Curve ecosystem, and various paired tokens. The notifications provided herein address risks associated with Curve Lending activities. The following list is not exhaustive.`}</Paragraph>
 
       <Paragraph>
         {t`Users wishing to acquaint themselves with a broader range of general risk disclosures are encouraged to read the`}{' '}
-        <RouterLink color="textSecondary" href={getSearchString({ tab: 'disclaimers', subtab: 'dex' })}>
+        <RouterLink
+          color="textSecondary"
+          href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
+          onClick={(e) => pushSearchParams(e, { tab: 'disclaimers', subtab: 'dex' })}
+        >
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </RouterLink>
         {t`. Users are also advised to review the public`}{' '}

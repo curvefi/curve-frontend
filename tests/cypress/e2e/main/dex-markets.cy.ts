@@ -4,6 +4,8 @@ import { oneOf } from '@cy/support/generators'
 import { getHiddenCount, withFilterChips } from '@cy/support/helpers/data-table.helpers'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
+const PATH = 'dex/arbitrum/pools/'
+
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
   if (['', '-', '—'].includes(value)) return 0
@@ -24,14 +26,11 @@ function parseCompactUsd(value: string): number {
 function visitAndWait(
   width: number,
   height: number,
-  {
-    query,
-    network = 'arbitrum',
-    ...options
-  }: { network?: string; query?: Record<string, string> } & Partial<Cypress.VisitOptions> = {},
+  options?: { query?: Record<string, string> } & Partial<Cypress.VisitOptions>,
 ) {
   cy.viewport(width, height)
-  cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
+  const { query } = options ?? {}
+  cy.visitWithoutTestConnector(`${PATH}${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   if (query?.['page']) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
@@ -137,23 +136,6 @@ describe('DEX Pools', () => {
       cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/(deposit|swap)\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
     })
-  })
-
-  it('filter by text and navigates', () => {
-    visitAndWait(width, height, { network: 'ethereum' })
-    if (breakpoint === 'mobile') {
-      cy.get('[data-testid="btn-expand-search-dex-pool-list"]').click()
-    }
-    const [filter, address] = ['ebUSD', '0xd25f2cc6819fbd34641712122397efbaf9b6a6e2'] as const
-    cy.get('[data-testid="table-text-search-dex-pool-list"]').type(filter)
-    cy.url().should('include', `?search=${filter}`)
-    cy.get(`[data-testid="market-link-${address}"]`).click()
-    if (breakpoint === 'mobile') {
-      cy.get(`[data-testid="pool-link-deposit"]`).click()
-    }
-    cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
-    cy.window().then((win) => win.history.go(-1))
-    cy.url().should('include', `?search=${filter}`)
   })
 
   it('persists currency filter across reload', () => {

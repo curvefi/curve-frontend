@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { MouseEvent, useEffect, useMemo, useState } from 'react'
+import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { getSearchString, useSearchParams } from '@ui-kit/hooks/router'
+import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { pushSearchParams } from '@ui-kit/utils/urls'
 import { CrvUsd } from './components/disclaimer-tabs/CrvUsd'
 import { Dex } from './components/disclaimer-tabs/Dex'
 import { LlamaLend } from './components/disclaimer-tabs/LlamaLend'
@@ -31,6 +34,7 @@ function useAfterHydration(result: string) {
 }
 
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
+  const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const searchParams = useSearchParams()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
@@ -45,10 +49,11 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
       ...TABS.map(({ value, ...props }) => ({
         ...props,
         value,
-        href: getSearchString({ tab: value }, searchParams),
+        href: { query: { tab: value } },
+        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { tab: value }),
       })),
     ],
-    [searchParams],
+    [],
   )
 
   const disclaimerTabs = useMemo(
@@ -56,10 +61,11 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
       ...DISCLAIMER_TABS.map(({ value, ...props }) => ({
         ...props,
         value,
-        href: getSearchString({ tab: 'disclaimers', subtab: value }, searchParams),
+        href: { query: { tab: 'disclaimers', subtab: value } },
+        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { subtab: value }),
       })),
     ],
-    [searchParams],
+    [],
   )
 
   return (
@@ -112,12 +118,18 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               />
             </Stack>
             <TabPanel>
-              {{ dex: <Dex />, lend: <LlamaLend />, crvusd: <CrvUsd />, scrvusd: <SCrvUsd /> }[disclaimerTab]}
+              {disclaimerTab === 'dex' && <Dex currentApp={currentApp} network={network} />}
+              {disclaimerTab === 'lend' && <LlamaLend currentApp={currentApp} network={network} />}
+              {disclaimerTab === 'crvusd' && <CrvUsd currentApp={currentApp} network={network} />}
+              {disclaimerTab === 'scrvusd' && <SCrvUsd currentApp={currentApp} network={network} />}
               <Footer />
             </TabPanel>
           </>
         ) : (
-          <TabPanel>{{ terms: <Terms />, privacy: <Privacy /> }[tab]}</TabPanel>
+          <TabPanel>
+            {tab === 'terms' && <Terms currentApp={currentApp} network={network} />}
+            {tab === 'privacy' && <Privacy />}
+          </TabPanel>
         )}
       </Stack>
     </Stack>
