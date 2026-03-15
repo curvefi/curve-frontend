@@ -55,7 +55,7 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
       onSubmit={onSubmit}
       footer={
         <>
-          <BridgeActionInfos bridgeCost={q(bridgeCost)} gas={q(gas)} isApproved={isApproved.data} />
+          <BridgeActionInfos bridgeCost={q(bridgeCost)} gas={q(gas)} isApproved={isApproved.data} chainId={chainId} />
           <BridgeInfoAlert />
         </>
       }
