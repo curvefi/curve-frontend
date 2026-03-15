@@ -26,7 +26,7 @@ export function usePoolTvl({ chainId, poolId }: PoolParams) {
   return usePoolTvlQuery({ chainId, poolId }, isHydrated)
 }
 
-const { useQuery: usePoolTvlsQuery, refetchQuery: refetchPoolTvls } = queryFactory({
+const { useQuery: usePoolTvlsQuery, invalidate: invalidatePoolTvls } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.tvl'] as const,
   queryFn: async () => {
     const poolIds = requireLib('curveApi').getPoolList()
@@ -43,7 +43,7 @@ const { useQuery: usePoolTvlsQuery, refetchQuery: refetchPoolTvls } = queryFacto
   }),
 })
 
-export { refetchPoolTvls }
+export { invalidatePoolTvls }
 
 /**
  * Hook to fetch TVLs for multiple pools on the same chain.

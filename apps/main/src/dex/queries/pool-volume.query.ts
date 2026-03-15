@@ -12,7 +12,7 @@ import {
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
-import { fetchNetworks, useNetworks } from '../entities/networks'
+import { useNetworks } from '../entities/networks'
 
 const getPoolVolumeFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
   requireLib('curveApi').getPool(poolId).stats.volume()
@@ -39,8 +39,8 @@ export function usePoolVolume({ chainId, poolId }: PoolParams) {
 
 const {
   useQuery: usePoolVolumesQuery,
-  fetchQuery: fetchPoolVolumesQuery,
-  refetchQuery: refetchPoolVolumesQuery,
+  fetchQuery: fetchPoolVolumes,
+  invalidate: invalidatePoolVolumes,
 } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.volume'] as const,
   queryFn: async (_params: ChainQuery) => {
@@ -78,26 +78,4 @@ export function usePoolVolumes({ chainId }: ChainParams) {
   return usePoolVolumesQuery({ chainId }, isHydrated && network && !network.isLite)
 }
 
-/**
- * Fetch trading volumes for multiple pools into the query cache.
- *
- * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
- */
-export async function fetchPoolVolumes({ chainId }: ChainParams) {
-  const networks = await fetchNetworks()
-  const network = networks?.[chainId ?? 0]
-  if (!network || network.isLite) return {}
-  return fetchPoolVolumesQuery({ chainId })
-}
-
-/**
- * Refetch trading volumes for multiple pools into the query cache.
- *
- * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
- */
-export async function refetchPoolVolumes({ chainId }: ChainParams) {
-  const networks = await fetchNetworks()
-  const network = networks?.[chainId ?? 0]
-  if (!network || network.isLite) return {}
-  return refetchPoolVolumesQuery({ chainId })
-}
+export { invalidatePoolVolumes, fetchPoolVolumes }
