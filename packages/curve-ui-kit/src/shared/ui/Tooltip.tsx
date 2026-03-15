@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
+// eslint-disable-next-line no-restricted-imports
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -51,3 +52,5 @@ export const Tooltip = ({ title, body, clickable, children, slotProps, ...props 
   ) : (
     children
   )
+
+export type { MuiTooltipProps }

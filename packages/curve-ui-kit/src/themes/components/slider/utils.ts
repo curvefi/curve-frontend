@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { SliderProps } from '@mui/material/Slider'
+import type { SliderProps } from '@ui-kit/shared/ui/Slider'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type {
