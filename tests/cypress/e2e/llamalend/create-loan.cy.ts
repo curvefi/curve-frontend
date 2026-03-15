@@ -15,8 +15,9 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
 
 describe('Create loan', () => {
-  recordValues(LlamaMarketType).forEach((marketType) => {
-    const { collateral, borrow, path, label, hasLeverage } = oneLoanTestMarket(marketType)
+  const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
+
+  testCases.forEach(({ collateral, borrow, path, label, hasLeverage }) => {
     const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
     it(label, () => {
