@@ -78,6 +78,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
             bridgeCost={q({ data: 0.69, isLoading: false, error: null })}
             gas={q({ data: { estGasCostUsd: 0.12 }, isLoading: false, error: null })}
             isApproved={isApproved}
+            chainId={fromChainId}
           />
           <BridgeInfoAlert />
         </>
