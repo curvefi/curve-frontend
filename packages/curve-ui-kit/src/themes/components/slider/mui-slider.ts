@@ -1,4 +1,5 @@
 /// <reference types="./mui-slider.d.ts" />
+// eslint-disable-next-line no-restricted-imports
 import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
