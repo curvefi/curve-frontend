@@ -12,9 +12,11 @@ import {
   useLlammaChartSelections,
 } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
+
+const { Height } = SizesAndSpaces
 
 export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
@@ -182,7 +184,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
-    chartHeight: DEFAULT_CHART_HEIGHT,
+    chartHeight: Height.chart,
     chartStatus,
     ohlcData,
     oraclePriceData,

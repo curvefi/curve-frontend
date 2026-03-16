@@ -13,10 +13,12 @@ import {
   useLlammaChartSelections,
 } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
+
+const { Height } = SizesAndSpaces
 
 export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
@@ -201,7 +203,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
-    chartHeight: DEFAULT_CHART_HEIGHT,
+    chartHeight: Height.chart,
     chartStatus,
     ohlcData,
     oraclePriceData,

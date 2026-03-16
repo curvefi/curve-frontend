@@ -7,9 +7,9 @@ import { formatDate } from '@ui/utils'
 import { EChartsLineChart, type LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatNumber } from '@ui-kit/utils'
 
-type Props = { data: ScrvUsdYieldWithAverages[]; height?: number; visibleSeries?: YieldKeys[] }
+type Props = { data: ScrvUsdYieldWithAverages[]; height: number; visibleSeries?: YieldKeys[] }
 
-export const RevenueLineChart = ({ data, height = 400, visibleSeries }: Props) => {
+export const RevenueLineChart = ({ data, height, visibleSeries }: Props) => {
   const {
     design: { Color },
   } = useTheme()

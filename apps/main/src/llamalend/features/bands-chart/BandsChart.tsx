@@ -2,8 +2,8 @@ import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Box, Skeleton } from '@mui/material'
-import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
@@ -13,6 +13,8 @@ import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
+
+const { Height } = SizesAndSpaces
 
 type BandsChartProps = {
   collateralToken: BandsChartToken
@@ -42,7 +44,7 @@ const BandsChartComponent = ({
   isLoading,
   userBandsBalances,
   oraclePrice,
-  height = DEFAULT_CHART_HEIGHT,
+  height = Height.chart,
 }: BandsChartProps) => {
   const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
