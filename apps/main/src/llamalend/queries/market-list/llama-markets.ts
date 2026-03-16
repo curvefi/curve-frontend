@@ -11,6 +11,7 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -530,7 +531,8 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   ),
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
-                    createdAt <= MARKET_CUTOFF_DATE.getTime() && (!deprecatedMessage || userHasPositions),
+                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || isLLv2Enabled()) &&
+                    (!deprecatedMessage || userHasPositions),
                 ),
               }
             : undefined

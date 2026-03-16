@@ -16,6 +16,8 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
+const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
 
@@ -35,8 +37,10 @@ export const useManageSoftLiquidation = useBetaChannel
 export const useAnalyticsApp = useStableChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
-export const isZapV2Enabled = () =>
-  getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+export const isZapV2Enabled = isAlpha
+
+/** New LlamaLend v2 implementation */
+export const isLLv2Enabled = isAlpha
 
 /** New market page layout with forms on the right  */
 export const useRightFormTabsLayout = useBetaChannel

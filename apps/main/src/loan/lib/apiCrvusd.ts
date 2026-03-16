@@ -161,7 +161,7 @@ const detailInfo = {
       llamma.stats.totalDebt(),
       llamma.stats.totalCollateral(),
       llamma.stats.totalStablecoin(),
-      llamma.stats.capAndAvailable(),
+      llamma.stats.capAndAvailable().then(({ cap: totalAssets, available }) => ({ totalAssets, available })),
     ])
     const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS

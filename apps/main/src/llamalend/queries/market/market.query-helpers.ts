@@ -11,6 +11,11 @@ export const getPricesImplementation = (marketId: string | LlamaMarketTemplate) 
   return market instanceof LendMarketTemplate ? market.prices : market
 }
 
+export const getStatsImplementation = (marketId: string | LlamaMarketTemplate) => {
+  const market = getLlamaMarket(marketId)
+  return market instanceof LendMarketTemplate ? market.stats : market
+}
+
 export const getUserPositionImplementation = (marketId: string | LlamaMarketTemplate) => {
   const market = getLlamaMarket(marketId)
   return market instanceof LendMarketTemplate ? market.userPosition : market
