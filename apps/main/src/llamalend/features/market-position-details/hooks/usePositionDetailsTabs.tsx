@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import Stack from '@mui/material/Stack'
+import { notFalsy } from '@primitives/objects.utils'
 import { useTabs } from '@ui-kit/hooks/useTabs'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -32,32 +33,29 @@ export const usePositionDetailsTabs = ({
   const hasActivity = events.length > 0
 
   const tabOptions = useMemo<PositionDetailsTabOption[]>(
-    () => [
-      {
-        value: DEFAULT_TAB,
-        label: t`Borrow Details`,
-        render: () =>
-          hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />,
-      },
-      ...(hasActivity
-        ? [
-            {
-              value: 'activity' as const,
-              label: t`Activity`,
-              render: () => (
-                <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
-                  <UserPositionHistory
-                    variant="flat"
-                    events={events}
-                    isLoading={activityIsLoading}
-                    isError={activityIsError}
-                  />
-                </Stack>
-              ),
-            },
-          ]
-        : []),
-    ],
+    () =>
+      notFalsy(
+        {
+          value: DEFAULT_TAB,
+          label: t`Borrow Details`,
+          render: () =>
+            hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />,
+        },
+        hasActivity && {
+          value: 'activity' as const,
+          label: t`Activity`,
+          render: () => (
+            <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
+              <UserPositionHistory
+                variant="flat"
+                events={events}
+                isLoading={activityIsLoading}
+                isError={activityIsError}
+              />
+            </Stack>
+          ),
+        },
+      ),
     [hasActivity, hasPosition, borrowPositionDetails, events, activityIsLoading, activityIsError],
   )
 

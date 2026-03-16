@@ -1,7 +1,6 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
-import { invalidateMarketCapAndAvailable, invalidateMarketTotalCollateral } from '../market'
-import { invalidateMarketRates } from '../market'
+import { invalidateMarketCapAndAvailable, invalidateMarketRates, invalidateMarketTotalCollateral } from '../market'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 import { invalidateUserBalances } from './user-balances.query'
@@ -9,7 +8,6 @@ import { invalidateUserBands } from './user-bands.query'
 import { invalidateUserCurrentLeverage } from './user-current-leverage.query'
 import { invalidateUserHealth } from './user-health.query'
 import { invalidateLoanExists } from './user-loan-exists.query'
-import { invalidateUserMarketBalances } from './user-market-balances.query'
 import { invalidateUserPrices } from './user-prices.query'
 import { invalidateUserState } from './user-state.query'
 
@@ -26,7 +24,6 @@ export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainI
     invalidateUserBalances({ marketId, userAddress, chainId }),
     invalidateUserBands({ marketId, userAddress, chainId }),
     invalidateUserCurrentLeverage({ marketId, userAddress, chainId }),
-    invalidateUserMarketBalances({ marketId, chainId }),
     invalidateUserPrices({ marketId, userAddress, chainId, loanExists: true }),
   ])
 

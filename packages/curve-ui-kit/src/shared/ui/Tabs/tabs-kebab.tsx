@@ -2,6 +2,7 @@ import { type RefObject } from 'react'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
+// eslint-disable-next-line no-restricted-imports
 import Tabs from '@mui/material/Tabs'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'

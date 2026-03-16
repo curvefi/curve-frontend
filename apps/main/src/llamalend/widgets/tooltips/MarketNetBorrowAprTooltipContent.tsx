@@ -29,6 +29,11 @@ const messages: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
 }
 
+const rewardActionByMarketType = {
+  [LlamaMarketType.Lend]: 'borrow',
+  [LlamaMarketType.Mint]: 'loan',
+} as const
+
 export const MarketNetBorrowAprTooltipContent = ({
   marketType,
   borrowApr,
@@ -62,7 +67,7 @@ export const MarketNetBorrowAprTooltipContent = ({
         <TooltipItems secondary>
           <RewardsTooltipItems
             title={t`Borrowing incentives`}
-            tooltipType={'borrow'}
+            tooltipType={rewardActionByMarketType[marketType]}
             extraRewards={extraRewards}
             extraIncentives={[]}
           />

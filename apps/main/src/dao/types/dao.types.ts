@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { curvejsApi } from '@/dao/lib/curvejs'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
@@ -6,6 +5,7 @@ import type { BaseConfig } from '@ui/utils'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
+export type { Provider } from '@ui-kit/lib/ethers'
 
 export type ChainId = number
 export type NetworkEnum = INetworkName
@@ -24,7 +24,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
   showInSelectNetwork: boolean
 }
 
-export type Provider = ethers.BrowserProvider
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
@@ -134,31 +133,3 @@ export enum ClaimButtonsKey {
   '3CRV' = '3CRV',
   crvUSD = 'crvUSD',
 }
-
-export type AlertFormErrorKey =
-  | 'error-user-rejected-action'
-  | 'error-est-gas-approval'
-  | 'error-invalid-provider'
-  | 'error-pool-list'
-  | 'error-step-approve'
-  | 'error-step-deposit'
-  | 'error-step-swap'
-  | 'error-step-stake'
-  | 'error-step-withdraw'
-  | 'error-step-unstake'
-  | 'error-swap-exchange-and-output'
-  | 'error-swap-not-available'
-  | 'error-deposit-bonus'
-  | 'error-deposit-balance'
-  | 'error-deposit-withdraw-expected'
-  | 'error-deposit-withdraw-expected-bonus'
-  | 'error-step-claim'
-  | 'error-get-claimable'
-  | 'error-get-dashboard-data'
-  | 'error-get-gas'
-  | 'error-get-locked-crv-info'
-  | 'error-step-claim-fees'
-  | 'error-step-create-locked-crv'
-  | 'error-step-locked-time'
-  | 'error-step-locked-crv'
-  | 'error-withdraw-locked-crv'

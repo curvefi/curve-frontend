@@ -133,18 +133,10 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
         <Button
           data-testid="pool-link-deposit"
           component={RouterLink}
-          href={path + ROUTE.PAGE_SWAP}
-        >{t`Deposit`}</Button>
-        <Button
-          data-testid="pool-link-withdraw"
-          component={RouterLink}
-          href={path + ROUTE.PAGE_POOL_WITHDRAW}
-        >{t`Withdraw`}</Button>
-        <Button
-          data-testid="pool-link-swap"
-          component={RouterLink}
           href={path + ROUTE.PAGE_POOL_DEPOSIT}
-        >{t`Swap`}</Button>
+        >{t`Deposit`}</Button>
+        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
+        <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</Button>
       </Stack>
     </>
   )

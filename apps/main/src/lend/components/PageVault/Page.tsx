@@ -15,7 +15,7 @@ import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
@@ -103,14 +103,18 @@ export const Page = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-      <PageHeader
-        chainId={rChainId}
-        marketId={rOwmId}
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-      />
+    <DetailPageLayout
+      formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}
+      header={
+        <PageHeader
+          chainId={rChainId}
+          marketId={rOwmId}
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+        />
+      }
+    >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
@@ -119,12 +123,12 @@ export const Page = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
       )}
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
-      </Stack>
-      <Stack>
-        <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
-      </Stack>
+      {hasSupplyPosition && (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <SupplyPositionDetails {...supplyPositionDetails} />
+        </Stack>
+      )}
+      <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

@@ -17,13 +17,15 @@ import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
+
+const { Spacing } = SizesAndSpaces
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
   market,
@@ -94,7 +96,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack divider={<InputDivider />}>
+      <Stack
+        gap={Spacing.xs}
+        // add an ugly outline so devs know they are seeing something else than users would see
+        sx={{ ...(isDevelopment && { outline: (t) => '1px dotted ' + t.design.Layer.Feedback.Warning }) }}
+      >
         {fromWallet && (
           <LoanFormTokenInput
             label={t`Add from wallet`}

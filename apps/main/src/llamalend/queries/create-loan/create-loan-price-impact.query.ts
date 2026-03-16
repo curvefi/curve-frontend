@@ -7,7 +7,11 @@ import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-col
 
 type CreateLoanPriceImpactResult = number // percentage
 
-export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateLoanPriceImpact } = queryFactory({
+export const {
+  useQuery: useCreateLoanPriceImpact,
+  invalidate: invalidateCreateLoanPriceImpact,
+  refetchQuery: refetchCreateLoanPriceImpact,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

@@ -2,7 +2,7 @@ import { networks } from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
-import { useUserMarketBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
+import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import { getSupplyRateMetrics, sumRates, toNumberOrNull } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -31,7 +31,7 @@ export const useSupplyPositionDetails = ({
     blockchainId,
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
   })
-  const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
+  const { data: userBalances, isLoading: isUserBalancesLoading } = useUserBalances({ chainId, marketId })
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketVaultPricePerShare({
     chainId,
     marketId,
