@@ -45,6 +45,8 @@ export const initSentry = () =>
       'User rejected',
       'User denied',
       'SwitchChainNotSupportedError',
+      // Browser wallet extensions may throw internal module errors — not caused by app code
+      'not found rainbowkit',
       // Browser translation/extension DOM mutations can break React reconciliation
       "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
     ],
