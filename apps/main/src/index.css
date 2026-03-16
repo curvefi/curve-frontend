@@ -10,6 +10,20 @@ body.theme-chad {
   --button--font: "Minecraft","SF Mono Regular 11","Ubuntu Mono",monospace;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
+/*
+ * Locks page scroll when a MUI modal or drawer is open.
+ * MUI sets aria-hidden="true" on #root (the app root) to hide background content from
+ * assistive technologies when an overlay is active. This uses that signal to prevent
+ * the page from scrolling behind the overlay.
+ */
+html:has(#root[aria-hidden='true']) {
+  overflow: hidden;
+}
+
 html,
 body {
   display: block;
