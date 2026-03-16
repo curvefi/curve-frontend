@@ -12,6 +12,7 @@ import GoNuts from './GoNuts.json'
 import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import Hyperwave from './Hyperwave.json'
+import Yld from './Yld.json'
 import Infinifi from './Infinifi.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
@@ -60,4 +61,5 @@ export {
   TermMax,
   Re,
   Raac,
+  Yld,
 }
