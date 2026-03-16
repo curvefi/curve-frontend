@@ -122,7 +122,7 @@ export const getChartOptions = (
   userBandsPriceRange: UserBandsPriceRange,
   oraclePrice: string | undefined,
   palette: BandsChartPalette,
-  tooltipFormatter: (params: unknown) => HTMLElement,
+  tooltipFormatter: (params: unknown) => HTMLElement | string,
 ): EChartsOption => {
   if (!chartData.length) return {}
 

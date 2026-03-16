@@ -59,7 +59,12 @@ export const RevenueChartTooltip = ({ datum, visibleSeries }: RevenueChartToolti
       <Typography variant="bodyMBold">{formatDate(timestamp, 'long')}</Typography>
       <Stack
         direction="column"
-        sx={{ marginTop: Spacing.sm, padding: Spacing.sm, gap: 1, backgroundColor: (theme) => theme.design.Layer[2].Fill }}
+        sx={{
+          marginTop: Spacing.sm,
+          padding: Spacing.sm,
+          gap: 1,
+          backgroundColor: (theme) => theme.design.Layer[2].Fill,
+        }}
       >
         {visibleSeries.map((series) => (
           <DataSet
