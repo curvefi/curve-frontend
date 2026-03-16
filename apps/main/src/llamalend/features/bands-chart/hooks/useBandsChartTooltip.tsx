@@ -9,9 +9,7 @@ export const useBandsChartTooltip = (
   borrowToken: BandsChartToken,
 ) => {
   const theme = useTheme()
-  return useEChartsReactTooltip(
-    chartData,
-    theme,
-    (data) => <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />,
-  )
+  return useEChartsReactTooltip(chartData, theme, (data) => (
+    <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
+  ))
 }
