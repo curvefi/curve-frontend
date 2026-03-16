@@ -1,4 +1,5 @@
 import { type Hex } from '@primitives/address.utils'
+import { toArray } from '@primitives/array.utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { waitFor } from '@ui-kit/utils/time.utils'
@@ -44,7 +45,7 @@ export async function waitForTransaction({
 }) {
   if (await isSatisfied()) return
   const results = await onExecute()
-  const txHashes = Array.isArray(results) ? results : [results]
+  const txHashes = toArray(results)
   if (txHashes.length > 0) {
     await Promise.all(txHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
     if (onSatisfiedMessage) notify(onSatisfiedMessage, 'success')

@@ -1,4 +1,5 @@
-import lodash from 'lodash'
+import { merge } from 'lodash'
+import { toArray } from '@primitives/array.utils'
 
 export const APP_STORAGE = {
   APP_DASHBOARD: 'curve-app-dashboard',
@@ -19,16 +20,12 @@ export function getStorageValue(key: Key) {
   }
 
   if (key === 'APP_DASHBOARD') {
-    return {
-      addresses: Array.isArray(parsedStoredValue.addresses)
-        ? (parsedStoredValue.addresses as string[])
-        : ([] as string[]),
-    }
+    return { addresses: toArray(parsedStoredValue.addresses) }
   }
 }
 
 export function setStorageValue<T>(key: Key, updatedValue: T) {
   const storedValue = getStorageValue(key)
-  const mergedStoredValue = lodash.merge(storedValue, updatedValue)
+  const mergedStoredValue = merge(storedValue, updatedValue)
   window.localStorage.setItem(APP_STORAGE[key], JSON.stringify(mergedStoredValue))
 }
