@@ -182,7 +182,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
   // Eagerly reset chart state as soon as the market identity changes, before the market entity resolves.
   // Without this, stale data from the previous market stays visible during the gap between navigation and fetch.
   useEffect(() => {
-    resetOhlcState(rChainId)
+    resetOhlcState()
   }, [rChainId, rOwmId, resetOhlcState])
 
   // Fetch chart data once the market entity has resolved (addresses are required for the API calls).
