@@ -44,6 +44,7 @@ export const initSentry = () =>
       // Wallet connection issues (often user-initiated)
       'User rejected',
       'User denied',
+      'SwitchChainNotSupportedError',
       // Browser translation/extension DOM mutations can break React reconciliation
       "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
     ],
