@@ -86,6 +86,7 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
   overflow?: TabsSwitcherProps<T>['overflow']
+  testIdPrefix?: string
 }
 
 /**
@@ -95,11 +96,23 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
  * @param options - useFormTabs options
  */
-export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
+export function FormTabs<T extends object>({
+  shouldWrap,
+  overflow = 'kebab',
+  testIdPrefix,
+  ...options
+}: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>
-      <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} overflow={overflow} />
+      <TabsSwitcher
+        variant="contained"
+        value={tab.value}
+        options={tabs}
+        onChange={onChangeTab}
+        overflow={overflow}
+        testIdPrefix={testIdPrefix}
+      />
 
       {subTab && subTabs.length > 1 && (
         <TabsSwitcher

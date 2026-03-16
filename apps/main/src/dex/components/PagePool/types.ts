@@ -1,7 +1,6 @@
 import {
   CurveApi,
   ChainId,
-  RFormType,
   TokensMapper,
   PoolData,
   PoolDataCache,
@@ -33,7 +32,7 @@ export type Seed = {
 export type PageTransferProps = {
   curve: CurveApi | null
   params: PoolUrlParams
-  routerParams: { rChainId: ChainId; rPoolIdOrAddress: string; rFormType: RFormType }
+  routerParams: { rChainId: ChainId; rPoolIdOrAddress: string }
   hasDepositAndStake: boolean
   poolData: PoolData | undefined
   poolDataCacheOrApi: PoolData | PoolDataCache

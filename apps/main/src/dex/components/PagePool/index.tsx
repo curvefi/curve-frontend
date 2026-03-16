@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
@@ -7,10 +7,9 @@ import { Deposit } from '@/dex/components/PagePool/Deposit'
 import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
 import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
 import { Withdraw } from '@/dex/components/PagePool/Withdraw'
-import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
@@ -20,12 +19,10 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
-import { AlertBox } from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
 import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
@@ -34,23 +31,56 @@ import { scanAddressPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate } from '@ui-kit/hooks/router'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
+import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
+type PoolFormTabsProps = PageTransferProps & {
+  chainIdPoolId: string
+  blockchainId: string
+  isAvailableManageGauge: boolean
+  maxSlippage: string
+  poolAlert: ReturnType<typeof usePoolAlert>
+  seed: Seed
+  tokensMapper: ReturnType<typeof useTokensMapper>['tokensMapper']
+}
+
+const BASE_POOL_FORM_MENU = [
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    component: Deposit,
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    component: Withdraw,
+  },
+  {
+    value: 'swap',
+    label: t`Swap`,
+    component: Swap,
+  },
+  {
+    value: 'manage-gauge',
+    label: t`Gauge`,
+    component: ({ poolData, routerParams }: PoolFormTabsProps) =>
+      poolData && <ManageGauge poolId={poolData.pool.id} chainId={routerParams.rChainId} />,
+    visible: ({ isAvailableManageGauge }: PoolFormTabsProps) => isAvailableManageGauge,
+  },
+] satisfies FormTab<PoolFormTabsProps>[]
+
 export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
-  const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
+  const { curve, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
+  const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
-  const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
   const { tokensMapper } = useTokensMapper(rChainId)
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
@@ -121,7 +151,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, REFRESH_INTERVAL['5m'])
 
-  // is seed
   useEffect(() => {
     if (!poolData || !currencyReserves) return
 
@@ -152,28 +181,19 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
   )
 
-  const tabs: TabOption<TransferFormType>[] = useMemo(
-    () => [
-      { value: 'deposit', label: t`Deposit` },
-      { value: 'withdraw', label: t`Withdraw` },
-      { value: 'swap', label: t`Swap` },
-      ...(isAvailableManageGauge ? [{ value: 'manage-gauge' as const, label: t`Gauge` }] : []),
-    ],
-    [isAvailableManageGauge],
+  const poolFormTabsParams = useMemo(
+    () => ({
+      ...pageTransferProps,
+      blockchainId: networkId,
+      chainIdPoolId,
+      isAvailableManageGauge,
+      maxSlippage,
+      poolAlert,
+      seed,
+      tokensMapper,
+    }),
+    [chainIdPoolId, isAvailableManageGauge, maxSlippage, networkId, pageTransferProps, poolAlert, seed, tokensMapper],
   )
-
-  const toggleForm = useCallback(
-    (updatedFormType: TransferFormType) => {
-      push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${updatedFormType}`))
-    },
-    [push, params],
-  )
-
-  useEffect(() => {
-    if (!isAvailableManageGauge && rFormType === 'manage-gauge') {
-      toggleForm('deposit')
-    }
-  }, [isAvailableManageGauge, rFormType, toggleForm])
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
@@ -182,64 +202,26 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       </StyledExternalLink>
     </AppPageFormTitleWrapper>
   )
+
   return (
     <>
       {poolAlert?.banner && (
         <PoolAlertBanner
           alertType={poolAlert.alertType}
           banner={poolAlert.banner}
-          poolAlertBannerKey={notFalsy('pool-alert-banner-dismissed', params.network, params.poolIdOrAddress).join('-')}
+          poolAlertBannerKey={notFalsy(
+            'pool-alert-banner-dismissed',
+            pageTransferProps.params.network,
+            pageTransferProps.params.poolIdOrAddress,
+          ).join('-')}
         />
       )}
       <DetailPageLayout
         formTabs={
-          <FormMargins>
+          <>
             {!isMdUp && <TitleComp />}
-            <TabsSwitcher
-              variant="contained"
-              value={!rFormType ? 'deposit' : rFormType}
-              onChange={(key) => toggleForm(key as TransferFormType)}
-              options={tabs}
-              testIdPrefix="pool-form-tab"
-            />
-            {rFormType === 'swap' ? (
-              poolAlert?.isDisableSwap ? (
-                <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-              ) : (
-                <Swap
-                  {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                />
-              )
-            ) : rFormType === 'deposit' ? (
-              <Deposit
-                {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
-                blockchainId={networkId}
-                hasDepositAndStake={hasDepositAndStake}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-              />
-            ) : rFormType === 'withdraw' ? (
-              <Withdraw
-                {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
-                blockchainId={networkId}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-              />
-            ) : (
-              rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-            )}
-          </FormMargins>
+            <FormTabs params={poolFormTabsParams} menu={BASE_POOL_FORM_MENU} testIdPrefix="pool-form-tab" />
+          </>
         }
       >
         {isMdUp && <TitleComp />}
@@ -305,7 +287,7 @@ const Title = styled(TextEllipsis)`
   font-size: var(--font-size-5);
 
   @media (max-width: ${breakpoints.xxs}rem) {
-    max-width: 7.125rem; // 114px;
+    max-width: 7.125rem;
   }
 `
 
@@ -316,9 +298,11 @@ const StatsWrapper = styled(Box)`
 
 const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
+
   @media (min-width: ${breakpoints.sm}rem) {
     margin-top: 0;
   }
+
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem 1.5rem;
   }

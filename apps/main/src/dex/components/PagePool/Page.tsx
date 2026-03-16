@@ -19,7 +19,7 @@ export const PagePool = () => {
   const push = useNavigate()
   const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
-  const { poolIdOrAddress: rPoolIdOrAddress, formType: rFormType, network: networkId } = props
+  const { poolIdOrAddress: rPoolIdOrAddress, network: networkId } = props
   const rChainId = useChainId(networkId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
 
@@ -62,16 +62,16 @@ export const PagePool = () => {
     [blacklist, rPoolIdOrAddress],
   )
 
-  return !rFormType || poolNotFound || isBlacklisted ? (
+  return poolNotFound || isBlacklisted ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
-    rFormType && poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
+    poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
       <Transfer
         curve={curveApi}
         params={props}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
-        routerParams={{ rChainId, rPoolIdOrAddress, rFormType }}
+        routerParams={{ rChainId, rPoolIdOrAddress }}
         hasDepositAndStake={hasDepositAndStake}
       />
     )

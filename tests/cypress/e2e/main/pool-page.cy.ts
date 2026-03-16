@@ -9,7 +9,7 @@ describe('Pool page', () => {
     'ethereum/pools/factory-stable-ng-561',
     'arbitrum/pools/2pool',
     'corn/pools/factory-stable-ng-0',
-  )}/deposit`
+  )}`
 
   it('should update slippage settings', () => {
     cy.visitWithoutTestConnector(path)
