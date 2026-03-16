@@ -211,19 +211,17 @@ jobs:
 
   notify:
     name: Notify Slack
-    if: failure() && github.ref_name == 'main'
+    if: (failure() && github.ref_name == 'main') || github.ref_name == 'e2e/fix'
     runs-on: ubuntu-latest
     timeout-minutes: 1
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
     steps:
       - name: Send Slack alert
-        env:
-          SLACK_TEXT: >-
-            ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
-            on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
-            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}>
-            by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
+          SLACK_TEXT="❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed> \
+          on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}> \
+          at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}> \
+          by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>"
           curl --request POST \
                --header 'Content-type: application/json' \
                --data-binary "{\"text\": \"$SLACK_TEXT\"}" \
