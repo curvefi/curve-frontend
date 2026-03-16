@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { RouteResponse } from '@primitives/router.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
@@ -14,7 +15,6 @@ import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimalMax } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
-import type { RouteOption } from './route-provider.types'
 import { RouteProviderCard, type RouteProviderCardProps } from './RouteProviderCard'
 import { RouteProviderIcons } from './RouteProviderIcons'
 
@@ -27,9 +27,9 @@ const providerLabels = {
 }
 
 export type RouteProviderProps = {
-  data: RouteOption[] | undefined
-  selectedRoute: RouteOption | undefined
-  onChange: (route: RouteOption) => void
+  data: RouteResponse[] | undefined
+  selectedRoute: RouteResponse | undefined
+  onChange: (route: RouteResponse) => void
   tokenOut: RouteProviderCardProps['tokenOut']
   isExpanded: boolean
   isLoading: boolean
@@ -57,7 +57,7 @@ export const RouteProvidersAccordion = ({
       title={t`Route provider`}
       info={
         error ? (
-          <ErrorIconButton error={error} />
+          <ErrorIconButton error={error} buttonSize="small" iconSize="small" />
         ) : (
           !isExpanded &&
           (selectedRoute ? (
@@ -83,14 +83,24 @@ export const RouteProvidersAccordion = ({
         <Stack>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="headingXsBold" color="textSecondary">
-              {t`Select a route`}
+              {routes?.length
+                ? t`Select a route`
+                : isLoading
+                  ? t`Finding the best route...`
+                  : routes === undefined
+                    ? t`Please fill in the form to get routes.`
+                    : t`No routes available`}
             </Typography>
             <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
               <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
             </IconButton>
           </Stack>
           <Typography variant="bodyXsRegular" color="textTertiary">
-            {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
+            {routes?.length === 0
+              ? t`We could not find any routes with your parameters.`
+              : routes || isLoading
+                ? t`Best route is selected based on net output after gas fees (only when possible to calculate).`
+                : t`Please fill in the form to get routes.`}
           </Typography>
         </Stack>
         <Stack gap={Spacing.xs}>

@@ -6,8 +6,9 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
-import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
+import { getUserHealthOptions, useUserCurrentLeverage } from '@/llamalend/queries/user'
+import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -36,14 +37,14 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   form: UseFormReturn<CollateralForm>
 }) {
   const isOpen = isFormTouched(form, 'userCollateral')
-  const userState = useUserState(params, isOpen)
+  const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
 
   const expectedCollateral = mapQuery(
-    userState,
-    (state) =>
-      userCollateral &&
-      state.collateral && {
-        value: decimal(new BigNumber(userCollateral).plus(state.collateral)) as Decimal,
+    prevCollateral,
+    (stateCollateral) =>
+      stateCollateral &&
+      userCollateral && {
+        value: decimal(new BigNumber(stateCollateral).plus(userCollateral)) as Decimal,
         tokenSymbol: collateralToken?.symbol,
       },
   )
@@ -54,7 +55,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       gas={q(useAddCollateralEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
-      rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -63,7 +63,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            expectedBorrowed: userState.data?.debt,
+            expectedBorrowed: prevDebt.data,
           },
           isOpen,
         ),
@@ -77,16 +77,20 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
             collateralToken,
             borrowToken,
             collateralDelta: userCollateral,
-            expectedBorrowed: userState.data?.debt,
+            expectedBorrowed: prevDebt.data,
           },
           isOpen && !!userCollateral,
         ),
       )}
-      userState={q(userState)}
+      prevDebt={prevDebt}
+      prevCollateral={prevCollateral}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
+      collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
     />
   )
 }

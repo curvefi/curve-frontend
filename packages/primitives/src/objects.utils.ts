@@ -61,3 +61,6 @@ export const range = (lengthOrStart: number, length?: number) =>
 export const repeat = <T>(value: T, times: number) => range(times).map(() => value)
 
 export const isEmpty = (obj: object) => Object.keys(obj).length === 0
+
+export const pick = <T, K extends keyof T>(obj: T, ...keys: K[]) =>
+  Object.fromEntries(keys.map((key) => [key, obj[key]])) as { [P in K]: T[P] }

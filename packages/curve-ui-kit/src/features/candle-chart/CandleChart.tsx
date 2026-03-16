@@ -736,7 +736,7 @@ export const CandleChart = ({
         series.setSeriesOrder(order++)
       }
     })
-  }, [liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
+  }, [liquidationRange, liqRangeCurrentVisible, liqRangeNewVisible])
 
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {

@@ -14,7 +14,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "fastify": "^5.7.3"
+    "fastify": "^5.8.1"
   },
   "peerDependencies": {
     "@curvefi/api": "*"

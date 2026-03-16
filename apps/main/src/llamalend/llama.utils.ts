@@ -11,6 +11,7 @@ import { type Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, formatNumber } from '@ui-kit/utils'
 import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
@@ -63,6 +64,11 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
+
+export const hasZapV2 = (market: LlamaMarketTemplate) =>
+  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+
+export const isRouterRequired = (type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveraged') => type == 'zapV2'
 
 export const hasGauge = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
@@ -241,6 +247,21 @@ export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: strin
   }
   return { bandBalancesArr, bandBalances }
 }
+
+/**
+ * Formats a collateral + borrowed notional string, e.g. "1.5K WETH + 200 crvUSD".
+ * Returns undefined if collateral value is not available.
+ */
+export const formatCollateralNotional = (
+  collateral: { value: number | null | undefined; symbol: string | undefined },
+  borrow: { value: number | null | undefined; symbol: string | undefined } | undefined,
+): string | undefined =>
+  notFalsy(
+    collateral.value &&
+      collateral.symbol &&
+      `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
+    borrow && borrow.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+  ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */
 export const getBorrowRateTooltipTitle = ({

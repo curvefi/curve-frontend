@@ -22,7 +22,7 @@ import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain, getErrorMessage } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { userPoolRewardCrvApy } from '../queries/user-pool-info.query'
+import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
 type StateKey = keyof typeof DEFAULT_STATE

@@ -1,4 +1,4 @@
-import { getLlamaMarket, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 
@@ -6,6 +6,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
  * Determines the appropriate create loan implementation based on market type and leverage settings.
  *
  * For leveraged operations:
+ * - LendMarketTemplate with zapV2 leverage: 'zapV2' using `market.leverageZapV2`
  * - LendMarketTemplate: 'V1' using `market.leverage`
  * - MintMarketTemplate with V2 leverage: 'V2' using `market.leverageV2`
  * - MintMarketTemplate without V2 leverage: 'V0' using `market.leverage`
@@ -19,10 +20,7 @@ export function getCreateLoanImplementation(marketId: string | LlamaMarketTempla
     return ['unleveraged', market] as const
   }
   if (market instanceof LendMarketTemplate) {
-    return ['V1', market.leverage] as const
+    return hasZapV2(market) ? (['zapV2', market.leverageZapV2] as const) : (['V1', market.leverage] as const)
   }
-  if (hasV2Leverage(market)) {
-    return ['V2', market.leverageV2] as const
-  }
-  return ['V0', market.leverage] as const
+  return hasV2Leverage(market) ? (['V2', market.leverageV2] as const) : (['V0', market.leverage] as const)
 }

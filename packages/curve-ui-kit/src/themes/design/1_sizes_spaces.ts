@@ -162,7 +162,6 @@ export const SizesAndSpaces = {
   Height: {
     modal: MappedModalHeight,
     row: Sizing[700],
-    userPositionsTitle: Sizing[500],
   },
   MinHeight: {
     tableNoResults: { sm: '15vh', lg: '35vh' },
@@ -173,12 +172,5 @@ export const SizesAndSpaces = {
     tokenSelector: '47rem', // 752px
     userEventsTable: '28.875rem', // 462px
     drawer: '80vh',
-  },
-  Inset: {
-    scrollUpButton: {
-      mobile: '1.25rem', // 20px
-      tablet: '4rem', // 64px
-      desktop: '4rem', // 64px
-    },
   },
 } as const

@@ -1,17 +1,13 @@
 import { useMemo, useState } from 'react'
-import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
@@ -28,15 +24,6 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
-const useDefaultLlamaFilter = (minTvl: number) =>
-  useMemo(
-    () => [
-      { id: LlamaMarketColumnId.DeprecatedMessage, value: 'no' },
-      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minTvl, null])! },
-    ],
-    [minTvl],
-  )
-
 const pagination = { pageIndex: 0, pageSize: 200 }
 
 export const LlamaMarketsTable = ({
@@ -51,21 +38,11 @@ export const LlamaMarketsTable = ({
   loading: boolean
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
+  const data = useMemo(() => markets ?? [], [markets])
 
-  const data = useMemo(
-    // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
-    // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
-    () => (markets ?? []).filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()),
-    [markets],
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
+    { columns: LlamaMarketColumnId },
   )
-
-  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
-  const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
-    useFilters({
-      columns: LlamaMarketColumnId,
-      defaultFilters,
-    })
   const globalFilterFn = useLlamaGlobalFilterFn(data, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
@@ -74,7 +51,7 @@ export const LlamaMarketsTable = ({
     userHasPositions,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
+  const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -113,8 +90,9 @@ export const LlamaMarketsTable = ({
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
-        searchText={globalFilter}
         hasSearchBar
+        disableSearchAutoFocus
+        searchText={globalFilter}
         onSearch={setGlobalFilter}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
@@ -122,14 +100,12 @@ export const LlamaMarketsTable = ({
           <>
             <LlamaChainFilterChips data={data} {...filterProps} />
             <LlamaListChips
-              hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-              hasFilters={hasFilters}
+              hiddenCount={getHiddenCount(table)}
               resetFilters={resetFilters}
               hasFavorites={hasFavorites}
               onSortingChange={onSortingChange}
               sortField={sortField}
               data={data}
-              minLiquidity={minLiquidity}
               {...filterProps}
             />
           </>

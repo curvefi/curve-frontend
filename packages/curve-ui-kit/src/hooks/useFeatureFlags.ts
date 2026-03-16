@@ -4,7 +4,7 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { useReleaseChannel } from './useLocalStorage'
+import { getReleaseChannel, useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
@@ -13,6 +13,7 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  * Pre-Beta channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  *  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified create loan form */
@@ -31,13 +32,11 @@ export const useNewBandsChart = useBetaChannel
 export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
-export const useAnalyticsApp = useAlphaChannel
+export const useAnalyticsApp = useStableChannel
 
-/** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
-export const useFastbridge = useBetaChannel
+/** New ZapV2 leverage implementation for LlamaLend markets */
+export const isZapV2Enabled = () =>
+  getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New page header with market metrics on market detail pages */
-export const useIntegratedLlamaHeader = useBetaChannel
-
-/** New lend market header subnav */
-export const useLendMarketSubNav = useIntegratedLlamaHeader
+/** New market page layout with forms on the right  */
+export const useRightFormTabsLayout = useBetaChannel

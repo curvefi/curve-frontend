@@ -1,5 +1,6 @@
-import { type PoolData, type RewardsApy, type Tvl, type Volume } from '@/dex/types/main.types'
+import { type PoolData, type RewardsApy } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export type PoolTag =
   | 'btc'
@@ -16,8 +17,8 @@ export type PoolTag =
 
 export type PoolListItem = PoolData & {
   rewards: RewardsApy | undefined
-  volume: Volume | undefined
-  tvl: Tvl | undefined
+  volume: Decimal | undefined
+  tvl: Decimal | undefined
   hasPosition: boolean | undefined
   network: INetworkName
   url: string

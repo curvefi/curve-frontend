@@ -138,7 +138,10 @@ export const DetailInfoHealth = ({
             <p>{t`The loan metric indicates the current health of your position.`}</p>
             <p>
               {t`Hard liquidation may be triggered when health is 0 or below.`}{' '}
-              <ExternalLink href="https://resources.curve.finance/lending/overview/#health-hard-liquidation" $noStyles>
+              <ExternalLink
+                href="https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works#understanding-health-your-safety-measurement"
+                $noStyles
+              >
                 Click here to learn more.
               </ExternalLink>
             </p>

@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
-import { getHiddenCount, toggleSmallPools, withFilterChips } from '@cy/support/helpers/data-table.helpers'
-import { setShowSmallPools } from '@cy/support/helpers/user-profile'
+import { getHiddenCount, withFilterChips } from '@cy/support/helpers/data-table.helpers'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-
-const PATH = 'dex/arbitrum/pools/'
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
@@ -28,11 +24,14 @@ function parseCompactUsd(value: string): number {
 function visitAndWait(
   width: number,
   height: number,
-  options?: { query?: Record<string, string> } & Partial<Cypress.VisitOptions>,
+  {
+    query,
+    network = 'arbitrum',
+    ...options
+  }: { network?: string; query?: Record<string, string> } & Partial<Cypress.VisitOptions> = {},
 ) {
   cy.viewport(width, height)
-  const { query } = options ?? {}
-  cy.visitWithoutTestConnector(`${PATH}${query ? `?${new URLSearchParams(query)}` : ''}`, options)
+  cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   if (query?.['page']) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
@@ -140,6 +139,23 @@ describe('DEX Pools', () => {
     })
   })
 
+  it('filter by text and navigates', () => {
+    visitAndWait(width, height, { network: 'ethereum' })
+    if (breakpoint === 'mobile') {
+      cy.get('[data-testid="btn-expand-search-dex-pool-list"]').click()
+    }
+    const [filter, address] = ['ebUSD', '0xd25f2cc6819fbd34641712122397efbaf9b6a6e2'] as const
+    cy.get('[data-testid="table-text-search-dex-pool-list"]').type(filter)
+    cy.url().should('include', `?search=${filter}`)
+    cy.get(`[data-testid="market-link-${address}"]`).click()
+    if (breakpoint === 'mobile') {
+      cy.get(`[data-testid="pool-link-deposit"]`).click()
+    }
+    cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
+    cy.window().then((win) => win.history.go(-1))
+    cy.url().should('include', `?search=${filter}`)
+  })
+
   it('persists currency filter across reload', () => {
     const filter = oneOf('usd', 'btc')
     visitAndWait(width, height, { query: { filter } })
@@ -155,11 +171,7 @@ describe('DEX Pools', () => {
       Cypress.$.makeArray($buttons).map((el) => el.dataset.testid?.replace('btn-page-', ''))
 
     // open page 5 (1-based)
-    visitAndWait(width, height, {
-      query: { page: '5' },
-      // show small pools so we have more pages to test with, and the tests are more stable
-      onBeforeLoad: (win) => setShowSmallPools(win.localStorage),
-    })
+    visitAndWait(width, height, { query: { page: '5' } })
 
     // Current page selected
     cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
@@ -193,19 +205,5 @@ describe('DEX Pools', () => {
         expect(getPages($buttons)).to.deep.equal(['prev', '1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`]),
       )
     })
-  })
-
-  it('filters small pools', () => {
-    // by default, small pools are hidden, if we sort by TVL (asc), we should see only pools above the threshold
-    visitAndWait(width, height, { query: { sort: 'tvl' } })
-    getTopUsdValues('tvl').then((vals) =>
-      expect(JSON.stringify(vals.filter((v) => v.parsed < SMALL_POOL_TVL))).to.equal('[]'),
-    )
-    toggleSmallPools(breakpoint)
-    // now for sure there is at least one empty TVL pool
-    cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$0')
-    getTopUsdValues('tvl').then((vals) =>
-      expect(JSON.stringify(vals.filter((v) => v.parsed < SMALL_POOL_TVL))).to.not.equal('[]'),
-    )
   })
 })

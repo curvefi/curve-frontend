@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
+import type { RouteResponse } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
-import type { RouteOption } from './route-provider.types'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
 
 const zeroAddress = '0x0000000000000000000000000000000000000000'
 
-const mockRoutes: RouteOption[] = [
+const mockRoutes: RouteResponse[] = [
   {
     id: 'curve',
     router: 'curve',

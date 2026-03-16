@@ -1,14 +1,12 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { pushSearchParams } from '@ui-kit/utils/urls'
-import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../general/Section'
 
-export const Terms = ({ currentApp, network }: TabProps) => (
+export const Terms = () => (
   <>
     <Header>{t`Preamble`}</Header>
     <Section>
@@ -91,8 +89,8 @@ export const Terms = ({ currentApp, network }: TabProps) => (
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
             {t`Technical Information: The Website provides access to various types of documentation related to the Curve ecosystem, including among others user guides (`}
-            <Link color="textSecondary" href="https://resources.curve.finance/" target="_blank">
-              {t`https://resources.curve.finance/`}
+            <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
+              {t`https://docs.curve.finance/`}
             </Link>
             {t`), GitHub repositories (`}
             <Link color="textSecondary" href="https://github.com/curvefi" target="_blank">
@@ -244,11 +242,7 @@ export const Terms = ({ currentApp, network }: TabProps) => (
     <Section>
       <Paragraph>
         {t`Please see our `}
-        <RouterLink
-          color="textSecondary"
-          href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
-          onClick={(e) => pushSearchParams(e, { tab: 'privacy' })}
-        >
+        <RouterLink color="textSecondary" href={getSearchString({ tab: 'privacy' })}>
           {t`Privacy Notice`}
         </RouterLink>
 
@@ -263,7 +257,11 @@ export const Terms = ({ currentApp, network }: TabProps) => (
       </Paragraph>
       <Paragraph>
         {t`Any and all rights related to the Website, including the official logos (as listed`}{' '}
-        <Link color="textSecondary" href="https://resources.curve.finance/glossary-branding/branding" target="_blank">
+        <Link
+          color="textSecondary"
+          href="https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74"
+          target="_blank"
+        >
           {t`here`}
         </Link>
         {t`) are held by us.`}

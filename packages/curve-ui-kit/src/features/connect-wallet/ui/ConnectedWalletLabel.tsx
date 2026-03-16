@@ -1,7 +1,7 @@
 import { useEnsName } from 'wagmi'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import type { Address } from '@primitives/address.utils'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress } from '@ui-kit/utils/address'
 
 export type ConnectedWalletLabelProps = ButtonProps & {
   address: Address

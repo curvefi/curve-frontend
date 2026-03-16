@@ -1,5 +1,6 @@
 import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
+import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteResponse, TransactionData } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
@@ -34,8 +35,6 @@ const buildEnsoRouteId = (route: EnsoRouteResponse['route']) =>
 
 /**
  * Calls Enso's router to get the optimal route and builds the response.
- * - Uses GET /api/v1/shortcuts/route
- * - Base URL configurable via ENSO_API_URL (defaults to https://api.enso.finance)
  */
 export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> => {
   const {
@@ -75,8 +74,7 @@ export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBas
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object
   const json = (await response.json()) as EnsoRouteResponse | EnsoRouteResponse[]
-  const data = Array.isArray(json) ? json : [json]
-  return data.map(
+  return toArray(json).map(
     ({ route, amountOut, ...routeProps }): RouteResponse => ({
       id: buildEnsoRouteId(route),
       router: 'enso',

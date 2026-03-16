@@ -7,10 +7,10 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CURVE_ASSETS_URL } from '@ui/utils'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { GlobeIcon } from '../icons/GlobeIcon'
 import { XIcon } from '../icons/XIcon'
+import { StackedChainIcons } from './StackedChainIcons'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -58,13 +58,11 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
             <Typography variant="headingSBold">{name}</Typography>
 
             {networks && Object.values(networks).some((x) => x) && (
-              <Stack flexGrow={1} direction="row" gap={Spacing.xs} alignItems="center" flexWrap="wrap">
-                {Object.entries(networks)
+              <StackedChainIcons
+                blockchainIds={Object.entries(networks)
                   .filter(([, enabled]) => enabled)
-                  .map(([networkId]) => (
-                    <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
-                  ))}
-              </Stack>
+                  .map(([networkId]) => networkId)}
+              />
             )}
           </Stack>
         </Stack>

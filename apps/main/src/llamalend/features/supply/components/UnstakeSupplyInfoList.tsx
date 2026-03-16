@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,

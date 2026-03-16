@@ -1,4 +1,4 @@
-import { type ChangeEvent, useCallback } from 'react'
+import { type ChangeEvent, type ReactNode, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -11,19 +11,28 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { joinButtonText } from '@primitives/string.utils'
+import { AlertBox } from '@ui/AlertBox'
+import type { AlertType } from '@ui/AlertBox/types'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
+
+const { Spacing } = SizesAndSpaces
+
+type BorrowDisabledAlert = {
+  alertType?: AlertType
+  message?: ReactNode
+}
 
 /**
  * The form contents for the create loan tab.
@@ -37,13 +46,16 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   chainId,
   onPricesUpdated,
   onSuccess,
+  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   onSuccess: CreateLoanOptions['onSuccess']
+  borrowDisabledAlert?: BorrowDisabledAlert
 }) => {
+  const isBorrowDisabled = !!borrowDisabledAlert
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -59,34 +71,38 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
+    routes,
     txHash,
     values,
     leverage,
   } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
 
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 
   return (
     <Form
       {...form}
-      onSubmit={onSubmit}
+      onSubmit={isBorrowDisabled ? form.handleSubmit(() => undefined) : onSubmit}
       footer={
         <CreateLoanInfoList
+          market={market}
           form={form}
           params={params}
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }
       data-testid="create-loan-form"
     >
-      <Stack divider={<InputDivider />}>
+      <Stack gap={Spacing.xs}>
         <LoanFormTokenInput
           label={t`Collateral`}
           token={collateralToken}
@@ -146,14 +162,18 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
       <HighPriceImpactAlert {...q(useCreateLoanPriceImpact(params, values.leverageEnabled))} />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid="create-loan-submit-button"
-      >
-        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
-      </Button>
+      {isBorrowDisabled ? (
+        <AlertBox alertType={borrowDisabledAlert.alertType!}>{borrowDisabledAlert.message}</AlertBox>
+      ) : (
+        <Button
+          type="submit"
+          loading={isPending || !market}
+          disabled={isDisabled}
+          data-testid="create-loan-submit-button"
+        >
+          {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
+        </Button>
+      )}
 
       <FormAlerts
         isSuccess={isCreated}

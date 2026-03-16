@@ -1,4 +1,4 @@
-import { SliderProps } from '@mui/material/Slider'
+import type { SliderProps } from '@ui-kit/shared/ui/Slider'
 import { type Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 

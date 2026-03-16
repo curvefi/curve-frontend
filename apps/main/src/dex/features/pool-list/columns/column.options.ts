@@ -45,3 +45,5 @@ export const POOL_LIST_COLUMN_OPTIONS = {
   lite: createVisibility({ isLite: true }),
 }
 export type PoolColumnVariant = keyof typeof POOL_LIST_COLUMN_OPTIONS
+
+export const getDefaultSort = (isLite: boolean) => [{ id: isLite ? PoolColumnId.Tvl : PoolColumnId.Volume, desc: true }]

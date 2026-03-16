@@ -4,12 +4,9 @@ import {
   calculateRangeToLiquidation,
   type BorrowPositionDetailsProps,
 } from '@/llamalend/features/market-position-details'
-import { calculateLtv, getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
-import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import {
   useUserBands,
@@ -18,28 +15,15 @@ import {
   useUserPrices,
   useUserState,
 } from '@/llamalend/queries/user'
-import {
-  getBorrowRateMetrics,
-  getSnapshotBorrowRate,
-  getSnapshotCollateralRebasingYieldRate,
-  LAST_MONTH,
-} from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { type Chain } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
-import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
-import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD } from '@ui-kit/utils/address'
 
 const fromLend = (market?: LendMarketTemplate | null) => ({
-  isLendMarket: true,
-  controllerAddress: market?.addresses.controller as Address | undefined,
   collateralTokenAddress: market?.addresses.collateral_token,
   collateralSymbol: market?.collateral_token?.symbol,
   borrowTokenAddress: market?.addresses.borrowed_token,
@@ -48,8 +32,6 @@ const fromLend = (market?: LendMarketTemplate | null) => ({
 })
 
 const fromMint = (market?: MintMarketTemplate | null) => ({
-  isLendMarket: false,
-  controllerAddress: market?.controller as Address | undefined,
   collateralTokenAddress: market?.collateral,
   collateralSymbol: market?.collateralSymbol,
   borrowTokenAddress: CRVUSD.address,
@@ -62,11 +44,10 @@ const resolveMarket = (marketType: LlamaMarketType, market: LlamaMarketTemplate 
     ? fromLend(market as LendMarketTemplate | undefined)
     : fromMint(market as MintMarketTemplate | undefined)
 
-type UsePositionDetailsParams = {
+export type UseBorrowPositionDetailsParams = {
   marketType: LlamaMarketType
   chainId: number
   marketId: string
-  blockchainId: Chain | undefined
   market: LlamaMarketTemplate | null | undefined
 }
 
@@ -74,20 +55,14 @@ export const useBorrowPositionDetails = ({
   marketType,
   chainId,
   marketId,
-  blockchainId,
   market,
-}: UsePositionDetailsParams): BorrowPositionDetailsProps => {
+}: UseBorrowPositionDetailsParams): BorrowPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
-  const {
-    isLendMarket,
-    controllerAddress,
-    collateralTokenAddress,
-    collateralSymbol,
-    borrowTokenAddress,
-    borrowSymbol,
-    leverageEnabled,
-  } = useMemo(() => resolveMarket(marketType, market), [marketType, market])
+  const { collateralTokenAddress, collateralSymbol, borrowTokenAddress, borrowSymbol, leverageEnabled } = useMemo(
+    () => resolveMarket(marketType, market),
+    [marketType, market],
+  )
 
   const userMarketParams = { chainId, marketId, userAddress }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(userMarketParams)
@@ -112,12 +87,7 @@ export const useBorrowPositionDetails = ({
   const { data: oraclePrice } = useMarketOraclePrice(marketParams)
   const { data: oraclePriceBand } = useMarketOraclePriceBand(marketParams)
   const { data: liquidationBand } = useMarketLiquidationBand(marketParams)
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(marketParams)
 
-  const { data: campaigns } = useCampaignsByAddress({
-    blockchainId,
-    address: controllerAddress?.toLowerCase() as Address | undefined,
-  })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: collateralTokenAddress,
@@ -127,44 +97,15 @@ export const useBorrowPositionDetails = ({
     tokenAddress: borrowTokenAddress,
   })
 
-  const snapshotParams = {
-    blockchainId,
-    contractAddress: controllerAddress,
-    agg: 'day' as const,
-    limit: LAST_MONTH,
-  }
-  const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots(snapshotParams, isLendMarket)
-  const { data: mintSnapshots, isLoading: isMintSnapshotsLoading } = useCrvUsdSnapshots(snapshotParams, !isLendMarket)
-  const activeSnapshots = isLendMarket ? lendSnapshots : mintSnapshots
-  const isSnapshotsLoading = isLendMarket ? isLendSnapshotsLoading : isMintSnapshotsLoading
-
   const { collateral, stablecoin: borrowed, debt } = hasLoan ? (userStateValue ?? {}) : {}
   const isPositionDetailsLoading = !market || !isHydrated
   const isUserDataLoading =
     isLoanExistsLoading || (hasLoan && (isUserStateLoading || isHealthFullLoading || isHealthNotFullLoading))
 
-  const borrowApr = marketRates?.borrowApr == null ? null : +marketRates.borrowApr
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral || !borrowed) return null
     return +collateral * +collateralUsdRate + +borrowed
   }, [collateral, borrowed, collateralUsdRate])
-
-  const {
-    averageRate: averageBorrowApr,
-    averageRebasingYield: averageRebasingYieldApr,
-    totalRate: totalBorrowRate,
-    averageTotalRate: totalAverageBorrowRate,
-    rebasingYield: rebasingYieldApr,
-  } = useMemo(
-    () =>
-      getBorrowRateMetrics({
-        borrowRate: borrowApr,
-        snapshots: activeSnapshots,
-        getBorrowRate: getSnapshotBorrowRate,
-        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
-      }),
-    [borrowApr, activeSnapshots],
-  )
 
   const healthValue = useMemo(() => {
     if (!hasLoan || !healthFullValue || !healthNotFullValue) return null
@@ -178,7 +119,6 @@ export const useBorrowPositionDetails = ({
   }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, borrowed])
 
   return {
-    marketType,
     liquidationAlert: {
       softLiquidation: status?.colorKey === 'soft_liquidation',
       hardLiquidation: status?.colorKey === 'hard_liquidation',
@@ -186,17 +126,6 @@ export const useBorrowPositionDetails = ({
     health: {
       value: healthValue,
       loading: isUserDataLoading || isPositionDetailsLoading,
-    },
-    borrowRate: {
-      rate: borrowApr,
-      averageRate: averageBorrowApr,
-      averageRateLabel: `${LAST_MONTH}D`,
-      rebasingYield: rebasingYieldApr,
-      averageRebasingYield: averageRebasingYieldApr,
-      totalBorrowRate,
-      totalAverageBorrowRate,
-      extraRewards: campaigns ?? [],
-      loading: isPositionDetailsLoading || isSnapshotsLoading || isMarketRatesLoading,
     },
     liquidationRange: {
       value: hasLoan && userPricesValue ? userPricesValue.map(Number) : null,
@@ -228,13 +157,6 @@ export const useBorrowPositionDetails = ({
         collateralUsdRateLoading ||
         borrowedUsdRateLoading ||
         (hasLoan && isUserStateLoading),
-    },
-    ltv: {
-      value:
-        collateralTotalValue && debt
-          ? calculateLtv(+debt, +(collateral ?? 0), +(borrowed ?? 0), borrowedUsdRate, collateralUsdRate)
-          : null,
-      loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isUserStateLoading),
     },
     ...(leverageEnabled && {
       leverage: {

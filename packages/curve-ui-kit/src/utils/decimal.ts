@@ -33,5 +33,8 @@ export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
     undefined,
   )
 
+export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
+  data.filter((d) => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
+
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

@@ -17,13 +17,15 @@ import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
+
+const { Spacing } = SizesAndSpaces
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
   market,
@@ -57,6 +59,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     txHash,
     isApproved,
     formErrors,
+    routes,
     max,
     leverage,
   } = useBorrowMoreForm({
@@ -68,10 +71,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 
@@ -81,17 +84,23 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
+          market={market}
           form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
         />
       }
     >
-      <Stack divider={<InputDivider />}>
+      <Stack
+        gap={Spacing.xs}
+        // add an ugly outline so devs know they are seeing something else than users would see
+        sx={{ ...(isDevelopment && { outline: (t) => '1px dotted ' + t.design.Layer.Feedback.Warning }) }}
+      >
         {fromWallet && (
           <LoanFormTokenInput
             label={t`Add from wallet`}
@@ -149,7 +158,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && swapRequired))} />
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
 
       <Button
         type="submit"
@@ -158,7 +167,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         data-testid="borrow-more-submit-button"
         data-validation={JSON.stringify({
           hasMarket: !!market,
-          swapRequired,
+          isLeverageEnabled,
           isPending,
           isDisabled,
           isValid: form.formState.isValid,

@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
+import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns'
@@ -16,27 +16,23 @@ import { LlamaListUserChips } from './LlamaListUserChips'
 const { Spacing } = SizesAndSpaces
 
 type LlamaListChipsProps = {
-  hiddenMarketCount?: number
+  hiddenCount: number
   resetFilters: () => void
-  hasFilters: boolean
   children?: ReactNode
   hasFavorites?: boolean
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
   data: LlamaMarket[]
-  minLiquidity?: number
   userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
 export const LlamaListChips = ({
-  hiddenMarketCount,
+  hiddenCount,
   resetFilters,
-  hasFilters,
   hasFavorites,
   onSortingChange,
   sortField,
   data,
-  minLiquidity = 0,
   userPositionsTab,
   ...filterProps
 }: LlamaListChipsProps) => {
@@ -55,10 +51,8 @@ export const LlamaListChips = ({
             <MarketListFilterDrawer
               hasFavorites={hasFavorites}
               data={data}
-              minLiquidity={minLiquidity}
-              hiddenMarketCount={hiddenMarketCount}
+              hiddenCount={hiddenCount}
               resetFilters={resetFilters}
-              hasFilters={hasFilters}
               userPositionsTab={userPositionsTab}
               {...filterProps}
             />
@@ -78,12 +72,8 @@ export const LlamaListChips = ({
           )}
         </>
       )}
-      {hiddenMarketCount != null && !isMobile && (
-        <HiddenMarketsResetFilters
-          hiddenMarketCount={hiddenMarketCount}
-          resetFilters={resetFilters}
-          hasFilters={hasFilters}
-        />
+      {hiddenCount != null && !isMobile && (
+        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
       )}
     </Grid>
   )

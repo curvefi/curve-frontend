@@ -4,7 +4,12 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
-export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsApproved } = queryFactory({
+export const {
+  useQuery: useCreateLoanIsApproved,
+  fetchQuery: fetchCreateLoanIsApproved,
+  invalidate: invalidateCreateLoanIsApproved,
+  refetchQuery: refetchCreateLoanIsApproved,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -27,6 +32,8 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
   }: CreateLoanDebtQuery): Promise<boolean> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.createLoanIsApproved({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.createLoanIsApproved(userCollateral, userBorrowed)
@@ -35,7 +42,7 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
         return await impl.createLoanIsApproved(userCollateral)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
   dependencies: (params) => (params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
 })

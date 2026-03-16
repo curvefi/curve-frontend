@@ -1,5 +1,5 @@
 import { keyframes } from '@mui/material/styles'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { REFRESH_INTERVAL, TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 export const Grays = {
   '10': '#fdfcfc',
@@ -153,6 +153,14 @@ export const Duration = {
   AverageRates: {
     Weekly: 7,
     Monthly: 30,
+  },
+  WagmiBatch: { Size: 3, Time: 50 },
+  DataRefresh: {
+    Urgent: REFRESH_INTERVAL['15s'],
+    Actionable: REFRESH_INTERVAL['1m'],
+    Informative: REFRESH_INTERVAL['5m'],
+    DontShowAfter: REFRESH_INTERVAL['10m'],
+    SemiStatic: REFRESH_INTERVAL['1d'],
   },
 }
 

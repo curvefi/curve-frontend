@@ -1,5 +1,5 @@
-export * from './MarketInfoSections'
+export * from './MarketInfoLayout'
 export * from './MarketContractsSection'
 export * from './MarketLoanParameters'
-export * from './MarketPrices'
 export * from './MarketParametersSection'
+export * from './AdvancedDetails'

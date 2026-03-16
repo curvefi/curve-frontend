@@ -6,9 +6,6 @@
     "campaign": "Etherfi.json"
   },
   {
-    "campaign": "Kelpdao.json"
-  },
-  {
     "campaign": "Mellow.json"
   },
   {
@@ -45,13 +42,7 @@
     "campaign": "Fx.json"
   },
   {
-    "campaign": "Pumpbtc.json"
-  },
-  {
     "campaign": "Carrot.json"
-  },
-  {
-    "campaign": "StableLabs.json"
   },
   {
     "campaign": "Infinifi.json"
@@ -109,5 +100,8 @@
   },
   {
     "campaign": "Raac.json"
+  },
+  {
+    "campaign": "Yld.json"
   }
 ]
