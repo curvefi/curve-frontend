@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
-import { IconProps } from '@mui/material/Icon'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
@@ -12,6 +11,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import type { SxProps } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
@@ -87,10 +87,10 @@ const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
   large: 'extraSmall',
 }
 
-const iconSize: Record<ActionInfoSize, IconProps['fontSize']> = {
-  small: 'small',
-  medium: 'medium',
-  large: 'medium',
+const iconSx: Record<ActionInfoSize, SxProps> = {
+  small: { width: IconSize.sm, height: IconSize.sm },
+  medium: { width: IconSize.md, height: IconSize.md },
+  large: { width: IconSize.md, height: IconSize.md },
 }
 
 const isSet = (v: ReactNode) => v || v === 0
@@ -158,24 +158,17 @@ export const ActionInfo = ({
 
       <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
         {showPrevValue && (
-          <Typography
-            variant={prevValueSize[size]}
-            color={prevValueColor ?? 'textTertiary'}
-            data-testid={`${testId}-previous-value`}
-            data-value={`${prevValue}`}
-          >
-            {prevValue}
-          </Typography>
-        )}
-
-        {showPrevValue && (
-          <ArrowForwardIcon
-            sx={{
-              width: IconSize.sm,
-              height: IconSize.sm,
-              color: (t) => t.palette.text.tertiary,
-            }}
-          />
+          <>
+            <Typography
+              variant={prevValueSize[size]}
+              color={prevValueColor ?? 'textTertiary'}
+              data-testid={`${testId}-previous-value`}
+              data-value={`${prevValue}`}
+            >
+              {prevValue}
+            </Typography>
+            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, ...iconSx[size] }} />
+          </>
         )}
 
         <Tooltip title={valueTooltip} placement="top">
@@ -211,7 +204,7 @@ export const ActionInfo = ({
             message={errorMessage}
             error={error}
             buttonSize={iconButtonSize[size]}
-            iconSize={iconSize[size]}
+            iconSx={iconSx[size]}
           />
         )}
         {copyValue && (

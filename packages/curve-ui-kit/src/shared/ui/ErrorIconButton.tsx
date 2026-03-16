@@ -1,19 +1,19 @@
 import { type IconButtonProps } from '@mui/material/IconButton'
-import type { SvgIconProps } from '@mui/material/SvgIcon'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
+import type { SxProps } from '@ui-kit/utils'
 
 export const ErrorIconButton = ({
   error,
   message,
   buttonSize,
-  iconSize,
+  iconSx,
 }: {
   message?: string | false | null
   error: Error | string | boolean
   buttonSize: IconButtonProps['size']
-  iconSize: SvgIconProps['fontSize']
+  iconSx: SxProps
 }) => (
   <CopyIconButton
     copyText={message || error.toString()}
@@ -22,6 +22,6 @@ export const ErrorIconButton = ({
     size={buttonSize}
     data-error={error.toString()}
   >
-    <ExclamationTriangleIcon fontSize={iconSize} color="error" />
+    <ExclamationTriangleIcon sx={iconSx} color="error" />
   </CopyIconButton>
 )

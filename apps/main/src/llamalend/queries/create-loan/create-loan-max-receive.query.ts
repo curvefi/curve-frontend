@@ -105,6 +105,7 @@ export const {
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({
     debtRequired: false,
+    collateralRequired: true,
     isMaxDebtRequired: false,
     isLeverageRequired: false,
   }),

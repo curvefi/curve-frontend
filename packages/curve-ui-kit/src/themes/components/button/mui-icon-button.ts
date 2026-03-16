@@ -37,8 +37,8 @@ export const defineMuiIconButton = ({ Button, Text }: DesignSystem): Components[
         fontFamily: Fonts[Text.FontFamily.Button],
       },
       sizeExtraExtraSmall: {
-        height: ButtonSize.xs,
-        minWidth: ButtonSize.xs,
+        height: ButtonSize.xxs,
+        minWidth: ButtonSize.xxs,
         '& svg': handleBreakpoints({ width: IconSize.xs, height: IconSize.xs }),
       },
       sizeExtraSmall: {
