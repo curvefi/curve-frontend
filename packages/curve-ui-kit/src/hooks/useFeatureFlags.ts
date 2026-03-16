@@ -10,13 +10,11 @@ const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**
- * Pre-Beta channel works like beta for preview/localhost urls, but completely hidden in production.
+ * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  *  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
-
 const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+// const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
