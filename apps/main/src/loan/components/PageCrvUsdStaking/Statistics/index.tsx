@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
@@ -20,7 +21,7 @@ import { RevenueDistributionsBarChart } from './DistributionsBarChart'
 import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing, MaxWidth, Height } = SizesAndSpaces
 
 const chartLabels: Record<StatisticsChart, string> = {
   savingsRate: t`Savings Rate`,
@@ -51,6 +52,8 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
     design: { Color },
   } = useTheme()
 
+  const [visibleSeries, setVisibleSeries] = useState<YieldKeys[]>(Object.keys(priceLineLabels) as YieldKeys[])
+
   const priceLineColors = {
     apyProjected: Color.Primary[500],
     proj_apy_7d_avg: Color.Secondary[500],
@@ -63,6 +66,11 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
       lineStroke: priceLineColors[key as YieldKeys],
       dash,
     },
+    toggled: visibleSeries.includes(key as YieldKeys),
+    onToggle: () =>
+      setVisibleSeries((prev) =>
+        prev.includes(key as YieldKeys) ? prev.filter((k) => k !== key) : [...prev, key as YieldKeys],
+      ),
   }))
 
   return (
@@ -92,7 +100,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
 
             {selectedStatisticsChart === 'savingsRate' && (
               <Stack>
-                <RevenueLineChart data={yieldData ?? []} />
+                <RevenueLineChart height={Height.chart} data={yieldData ?? []} visibleSeries={visibleSeries} />
                 <ChartFooter
                   legendSets={legendSets}
                   toggleOptions={timeOptions}
@@ -102,7 +110,9 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
               </Stack>
             )}
 
-            {selectedStatisticsChart === 'distributions' && <RevenueDistributionsBarChart data={revenueData ?? null} />}
+            {selectedStatisticsChart === 'distributions' && (
+              <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+            )}
 
             <AdvancedDetails network={networks[Chain.Ethereum]} />
           </Stack>

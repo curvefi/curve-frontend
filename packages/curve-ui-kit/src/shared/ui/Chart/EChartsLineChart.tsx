@@ -1,8 +1,8 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import { createRoot, type Root } from 'react-dom/client'
+import { useMemo, type ReactNode } from 'react'
 import { Box } from '@mui/material'
-import { ThemeProvider, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
+import { useEChartsReactTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsReactTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
@@ -20,25 +20,6 @@ export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-export type EChartsLineChartProps<
-  TData extends Record<string, unknown>,
-  TSeriesKey extends Extract<keyof TData, string>,
-  TXKey extends Extract<keyof TData, string>,
-> = {
-  data: TData[]
-  height?: number
-  xKey: TXKey
-  series: LineSeriesConfig<TSeriesKey>[]
-  visibleSeries?: TSeriesKey[]
-  yAxisDataKey: TSeriesKey
-  xTickFormatter?: (value: TData[TXKey]) => string
-  yTickFormatter?: (value: number) => string
-  renderTooltip?: (context: EChartsLineChartTooltipContext<TData, TSeriesKey>) => ReactNode
-}
-
-type TooltipArrayParams = { dataIndex: number }[]
-type TooltipItemParams = { dataIndex: number }
-
 const parseDashType = (dash?: string): 'solid' | number[] => {
   if (!dash || dash === 'none') return 'solid'
   const segments = dash
@@ -55,7 +36,7 @@ export const EChartsLineChart = <
   TXKey extends Extract<keyof TData, string>,
 >({
   data,
-  height = 400,
+  height,
   xKey,
   series,
   visibleSeries,
@@ -63,78 +44,43 @@ export const EChartsLineChart = <
   xTickFormatter,
   yTickFormatter,
   renderTooltip,
-}: EChartsLineChartProps<TData, TSeriesKey, TXKey>) => {
+}: {
+  data: TData[]
+  height?: number
+  xKey: TXKey
+  series: LineSeriesConfig<TSeriesKey>[]
+  visibleSeries?: TSeriesKey[]
+  yAxisDataKey: TSeriesKey
+  xTickFormatter?: (value: TData[TXKey]) => string
+  yTickFormatter?: (value: number) => string
+  renderTooltip?: (context: EChartsLineChartTooltipContext<TData, TSeriesKey>) => ReactNode
+}) => {
   const theme = useTheme()
   const {
     design: { Color, Text },
   } = theme
-  const tooltipRef = useRef<HTMLDivElement | null>(null)
-  const tooltipRootRef = useRef<Root | null>(null)
 
   const gridLineColor = Color.Neutral[300]
   const gridTextColor = Text.TextColors.Tertiary
-  const activeSeries = useMemo(() => {
-    if (!visibleSeries) return series
-    const visibleKeys = new Set<TSeriesKey>(visibleSeries)
-    return series.filter((item) => visibleKeys.has(item.key))
-  }, [series, visibleSeries])
-
-  const yAxisSeriesValues = useMemo(
-    () => data.map((item) => Number(item[yAxisDataKey])).filter((value) => Number.isFinite(value)),
-    [data, yAxisDataKey],
+  const activeSeries = useMemo(
+    () => (visibleSeries ? series.filter((item) => visibleSeries.includes(item.key)) : series),
+    [series, visibleSeries],
   )
 
   const { yMin, yMax } = useMemo(() => {
-    if (!yAxisSeriesValues.length) {
-      return { yMin: 0, yMax: 0 }
-    }
+    const values = data.map((item) => Number(item[yAxisDataKey])).filter(Number.isFinite)
+    if (!values.length) return { yMin: 0, yMax: 0 }
 
-    const min = Math.min(...yAxisSeriesValues)
-    const max = Math.max(...yAxisSeriesValues)
-
-    const padding = min === max ? 1 : (max - min) * 0.1
+    const min = Math.min(...values)
+    const max = Math.max(...values)
+    const padding = min === max ? 1 : (max - min) * 0.2
     return { yMin: min - padding, yMax: max + padding }
-  }, [yAxisSeriesValues])
+  }, [data, yAxisDataKey])
 
-  const tooltipFormatter = useCallback(
-    (params: unknown) => {
-      if (!renderTooltip) return ''
-
-      if (!tooltipRef.current) {
-        tooltipRef.current = document.createElement('div')
-        tooltipRootRef.current = createRoot(tooltipRef.current)
-      }
-
-      let dataIndex: number | undefined
-      if (Array.isArray(params)) {
-        const arr = params as TooltipArrayParams
-        dataIndex = arr.length > 0 ? arr[0].dataIndex : undefined
-      } else if (params && typeof params === 'object' && 'dataIndex' in params) {
-        dataIndex = (params as TooltipItemParams).dataIndex
-      }
-
-      const datum = dataIndex != null ? data[dataIndex] : null
-
-      if (datum && tooltipRootRef.current) {
-        tooltipRootRef.current.render(
-          <ThemeProvider theme={theme}>{renderTooltip({ datum, visibleSeries: activeSeries })}</ThemeProvider>,
-        )
-      } else if (tooltipRootRef.current) {
-        tooltipRootRef.current.render(null)
-      }
-
-      return tooltipRef.current
-    },
-    [activeSeries, data, renderTooltip, theme],
-  )
-
-  useEffect(
-    () => () => {
-      tooltipRootRef.current?.unmount()
-      tooltipRootRef.current = null
-      tooltipRef.current = null
-    },
-    [],
+  const tooltipFormatter = useEChartsReactTooltip(
+    data,
+    theme,
+    renderTooltip ? (datum: TData) => renderTooltip({ datum, visibleSeries: activeSeries }) : undefined,
   )
 
   const option: EChartsOption = useMemo(
@@ -166,6 +112,8 @@ export const EChartsLineChart = <
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
           hideOverlap: true,
+          showMinLabel: false,
+          showMaxLabel: false,
           margin: 4,
           formatter: (value: string | number) => {
             if (!xTickFormatter) return String(value)
@@ -191,7 +139,7 @@ export const EChartsLineChart = <
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
           showMinLabel: false,
-          showMaxLabel: false,
+          showMaxLabel: true,
           formatter: (value: number) => (yTickFormatter ? yTickFormatter(value) : `${value}`),
         },
       },
@@ -218,6 +166,10 @@ export const EChartsLineChart = <
         symbol: 'circle',
         symbolSize: 4,
         connectNulls: false,
+        itemStyle: {
+          color: line.color,
+          opacity: 1,
+        },
         lineStyle: {
           color: line.color,
           width: line.strokeWidth ?? 2,
@@ -241,7 +193,7 @@ export const EChartsLineChart = <
 
   return (
     <Box sx={{ position: 'relative', width: '99%' }}>
-      <ReactECharts option={option} style={{ width: '100%', height }} opts={{ renderer: 'canvas' }} />
+      <ReactECharts option={option} notMerge style={{ width: '100%', height }} opts={{ renderer: 'canvas' }} />
     </Box>
   )
 }
