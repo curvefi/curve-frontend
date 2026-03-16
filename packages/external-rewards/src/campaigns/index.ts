@@ -18,7 +18,6 @@ import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
-import Pumpbtc from './Pumpbtc.json'
 import Raac from './Raac.json'
 import Re from './Re.json'
 import Resolv from './Resolv.json'
@@ -27,6 +26,7 @@ import TermMax from './TermMax.json'
 import Tharwa from './Tharwa.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
+import Yld from './Yld.json'
 import Yuzu from './Yuzu.json'
 
 export {
@@ -44,7 +44,6 @@ export {
   Vnx,
   Hourglass,
   Fx,
-  Pumpbtc,
   Infinifi,
   Asymmetry,
   GoNuts,
@@ -60,4 +59,5 @@ export {
   TermMax,
   Re,
   Raac,
+  Yld,
 }

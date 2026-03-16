@@ -1,0 +1,21 @@
+{
+  "campaignName": "Yld Borrow crvUSD",
+  "platform": "yld",
+  "description": "External token rewards for borrowing.",
+  "platformImageId": "yld.png",
+  "dashboardLink": "https://yldfi.co/rewards",
+  "pools": [
+    {
+      "id": "null",
+      "action": "borrow",
+      "description": "null",
+      "campaignStart": "1773619200",
+      "campaignEnd": "1776211200",
+      "address": "0x24174143cCF438f0A1F6dCF93B468C127123A96E",
+      "network": "ethereum",
+      "multiplier": "crvUSD",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}

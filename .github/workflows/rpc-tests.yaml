@@ -27,7 +27,8 @@ jobs:
 
       - run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:rpc --browser electron 2>&1 | tee ../rpc-cypress.log # rpc tests are expensive, stick to one browser
+          yarn run cy:run:rpc --browser electron 2>&1 | \
+            tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null # rpc tests are expensive, stick to one browser
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
