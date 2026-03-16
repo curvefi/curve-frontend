@@ -70,7 +70,11 @@ jobs:
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
 
-      - run: yarn run cy:run:component --browser ${{ matrix.browser }}
+      - run: |
+          set -o pipefail
+          yarn run cy:run:component --browser ${{ matrix.browser }} 2>&1 | \
+            tee ../cypress-component-${{ matrix.browser }}-${{ matrix.count }}.log \
+              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
@@ -106,7 +110,9 @@ jobs:
       - name: Run RPC tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:rpc --browser electron 2>&1 | tee ../rpc-cypress.log # rpc tests are expensive, stick to one browser
+          # rpc tests are expensive, stick to one browser
+          yarn run cy:run:rpc --browser electron 2>&1 | \
+            tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
@@ -172,7 +178,9 @@ jobs:
         working-directory: tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
+          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | \
+            tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log \
+              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
@@ -217,13 +225,11 @@ jobs:
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
     steps:
       - name: Send Slack alert
-        env:
-          SLACK_TEXT: >-
-            ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
-            on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
-            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}>
-            by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
+          SLACK_TEXT="❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed> \
+          on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}> \
+          at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}> \
+          by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>"
           curl --request POST \
                --header 'Content-type: application/json' \
                --data-binary "{\"text\": \"$SLACK_TEXT\"}" \
