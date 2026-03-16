@@ -74,6 +74,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
+  const resetOhlcState = useStore((state) => state.ohlcCharts.resetState)
   const priceInfo = useStore((state) => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
@@ -161,6 +162,13 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     timeUnit,
   ])
 
+  // Eagerly reset chart state as soon as the market identity changes, before the market entity resolves.
+  // Without this, stale data from the previous market stays visible during the gap between navigation and fetch.
+  useEffect(() => {
+    resetOhlcState(chainId)
+  }, [chainId, marketId, resetOhlcState])
+
+  // Fetch chart data once the market entity has resolved (addresses are required for the API calls).
   useEffect(() => {
     if (market !== undefined) {
       refetchPricesData()
