@@ -1,3 +1,4 @@
+import { invalidateAllBandsChartQueries } from '@/llamalend/features/bands-chart/queries/invalidation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { invalidateMarketCapAndAvailable, invalidateMarketRates, invalidateMarketTotalCollateral } from '../market'
@@ -34,6 +35,7 @@ export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainI
 export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
   Promise.all([
     invalidateAllUserPositionQueries({ marketId, userAddress, chainId }),
+    invalidateAllBandsChartQueries({ marketId, userAddress, chainId }),
     invalidateMarketRates({ marketId, chainId }),
     invalidateMarketTotalCollateral({ marketId, chainId }),
     invalidateMarketCapAndAvailable({ marketId, chainId }),
