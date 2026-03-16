@@ -51,7 +51,7 @@ export const EChartsLineChart = <
   series: LineSeriesConfig<TSeriesKey>[]
   visibleSeries?: TSeriesKey[]
   yAxisDataKey: TSeriesKey
-  xTickFormatter?: (value: TData[TXKey]) => string
+  xTickFormatter?: (value: TData[TXKey] | number | string) => string
   yTickFormatter?: (value: number) => string
   renderTooltip?: (context: EChartsLineChartTooltipContext<TData, TSeriesKey>) => ReactNode
 }) => {
@@ -95,8 +95,7 @@ export const EChartsLineChart = <
         containLabel: true,
       },
       xAxis: {
-        type: 'category',
-        data: data.map((item) => item[xKey]),
+        type: 'time',
         boundaryGap: false,
         axisLine: { show: false },
         axisTick: { show: false },
@@ -111,13 +110,13 @@ export const EChartsLineChart = <
         axisLabel: {
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
-          hideOverlap: true,
+          hideOverlap: false,
           showMinLabel: false,
           showMaxLabel: false,
           margin: 4,
           formatter: (value: string | number) => {
             if (!xTickFormatter) return String(value)
-            return xTickFormatter(value as TData[TXKey])
+            return xTickFormatter(value)
           },
         },
       },
@@ -161,7 +160,7 @@ export const EChartsLineChart = <
       series: activeSeries.map((line) => ({
         name: line.label,
         type: 'line',
-        data: data.map((item) => Number(item[line.key])),
+        data: data.map((item) => [item[xKey], Number(item[line.key])]),
         showSymbol: false,
         symbol: 'circle',
         symbolSize: 4,
