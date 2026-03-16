@@ -1,7 +1,6 @@
 import { type MouseEvent, type ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
@@ -11,6 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ArrowsHorizontalIcon } from '@ui-kit/shared/icons/ArrowsHorizontalIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps, type SxProps } from '@ui-kit/utils/mui'
+import { Select } from '../Select'
 import { SelectTimeOption, type TimeOption } from './SelectTimeOption'
 
 const { Spacing } = SizesAndSpaces
@@ -57,10 +57,6 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
     // ensure that one option is always selected by checking null
     if (key != null && chartSelections.setActiveSelection) chartSelections.setActiveSelection(key)
   }
-  const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
-    if (event.target.value != null && chartSelections.setActiveSelection)
-      chartSelections.setActiveSelection(event.target.value as TChartKey)
-  }
   const foundChartOption = chartSelections.selections.find(
     (selection) => selection.key === chartSelections.activeSelection,
   )
@@ -87,7 +83,10 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
         <Stack direction="row" alignItems="center" gap={Spacing.sm}>
           <Select
             value={chartSelections.activeSelection ?? ''}
-            onChange={handleChartOptionSelect}
+            onChange={(event) => {
+              if (event.target.value != null && chartSelections.setActiveSelection)
+                chartSelections.setActiveSelection(event.target.value as TChartKey)
+            }}
             size="small"
             sx={{ alignSelf: 'center' }}
             MenuProps={{
