@@ -10,6 +10,8 @@
  * https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore?tab=readme-ov-file#_sortby-and-_orderby
  */
 
+import { toArray } from '@primitives/array.utils'
+
 /**
  * Represents a grouped object with key-value pairs.
  * The reason this exists is because we want to chain
@@ -118,8 +120,8 @@ class LlamaArray<T> {
     iteratees: ((item: T) => string | number) | Array<(item: T) => string | number>,
     orders: 'asc' | 'desc' | Array<'asc' | 'desc'> = 'asc',
   ): LlamaArray<T> {
-    const iterateesArray = Array.isArray(iteratees) ? iteratees : [iteratees]
-    const ordersArray = Array.isArray(orders) ? orders : [orders]
+    const iterateesArray = toArray(iteratees)
+    const ordersArray = toArray(orders)
 
     return new LlamaArray(
       [...this._value].sort((a, b) => {

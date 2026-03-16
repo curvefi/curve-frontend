@@ -42,6 +42,17 @@ module.exports = {
         ],
       },
     ],
+
+    'no-restricted-imports': [
+      'warn',
+      {
+        paths: ['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select'].map((component) => ({
+          name: `@mui/material/${component}`,
+          message: `Use \`import { ${component} } from '@ui-kit/shared/ui/${component}'\` instead.`,
+        })),
+      },
+    ],
+
     '@typescript-eslint/no-floating-promises': 'warn',
     '@typescript-eslint/no-unused-vars': [
       'warn',

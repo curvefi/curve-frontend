@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material'
+// eslint-disable-next-line no-restricted-imports
 import MuiSlider, { type SliderProps as MuiSliderProps } from '@mui/material/Slider'
 
 export type SliderProps = MuiSliderProps

@@ -1,7 +1,7 @@
 /// <reference types="./mui-select.d.ts" />
-import type { SelectProps } from '@mui/material/Select'
 import type { Components } from '@mui/material/styles'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import type { SelectProps } from '@ui-kit/shared/ui/Select'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { handleBreakpoints, type Responsive } from '../basic-theme'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'

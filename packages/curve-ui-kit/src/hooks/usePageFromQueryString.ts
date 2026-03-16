@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { OnChangeFn, PaginationState } from '@tanstack/react-table'
-import { useSearchParams } from '@ui-kit/hooks/router'
+import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 /**
  * Hook to manage pagination state synchronized with the URL query string.
@@ -11,6 +11,7 @@ import { useSearchParams } from '@ui-kit/hooks/router'
  */
 export function usePageFromQueryString(pageSize: number, fieldName = 'page') {
   const searchParams = useSearchParams()
+  const searchNavigate = useSearchNavigate(searchParams)
   const pageIndex = useMemo(
     () => (searchParams.has(fieldName) ? +searchParams.get(fieldName)! - 1 : 0),
     [fieldName, searchParams],
@@ -19,15 +20,9 @@ export function usePageFromQueryString(pageSize: number, fieldName = 'page') {
     (newPagination) => {
       const { pageIndex: newPage } =
         typeof newPagination == 'function' ? newPagination({ pageIndex, pageSize }) : newPagination
-      const params = new URLSearchParams(searchParams)
-      if (newPage > 0) {
-        params.set(fieldName, (newPage + 1).toString())
-      } else {
-        params.delete(fieldName)
-      }
-      window.history.pushState(null, '', params.size ? `?${params.toString()}` : window.location.pathname)
+      searchNavigate({ [fieldName]: newPage > 0 ? (newPage + 1).toString() : null }, { replace: true })
     },
-    [pageIndex, pageSize, searchParams, fieldName],
+    [pageIndex, pageSize, searchNavigate, fieldName],
   )
   return [{ pageSize, pageIndex }, onChange] as const
 }

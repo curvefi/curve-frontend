@@ -1,6 +1,7 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
+import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -524,7 +525,10 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   ...(mintMarkets.data ?? []).map((market) =>
                     convertMintMarket(market, favoriteMarketsSet, campaigns, userMints, countMarket(market)),
                   ),
-                ],
+                ].filter(
+                  ({ createdAt, deprecatedMessage, userHasPositions }) =>
+                    createdAt <= MARKET_CUTOFF_DATE.getTime() && (!deprecatedMessage || userHasPositions),
+                ),
               }
             : undefined
         return { ...combineQueriesMeta(results), data }

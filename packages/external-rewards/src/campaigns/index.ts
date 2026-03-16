@@ -12,13 +12,13 @@ import GoNuts from './GoNuts.json'
 import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import Hyperwave from './Hyperwave.json'
+import Yld from './Yld.json'
 import Infinifi from './Infinifi.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
-import Pumpbtc from './Pumpbtc.json'
 import Raac from './Raac.json'
 import Re from './Re.json'
 import Resolv from './Resolv.json'
@@ -44,7 +44,6 @@ export {
   Vnx,
   Hourglass,
   Fx,
-  Pumpbtc,
   Infinifi,
   Asymmetry,
   GoNuts,
@@ -60,4 +59,5 @@ export {
   TermMax,
   Re,
   Raac,
+  Yld,
 }
