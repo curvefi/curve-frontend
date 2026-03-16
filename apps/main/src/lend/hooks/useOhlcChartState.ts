@@ -78,8 +78,17 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
     userAddress,
   })
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
-  const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
+  const oraclePoolFetchStatus = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
+  const oraclePoolData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.data)
+  const oraclePoolOraclePriceData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
+  const oraclePoolCollateralSymbol = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.collateralToken.symbol)
+  const oraclePoolBorrowedSymbol = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.borrowedToken.symbol)
+  const oraclePoolRefetchingCapped = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.refetchingCapped)
+  const oraclePoolLastFetchEndTime = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.lastFetchEndTime)
+  const llammaFetchStatus = useStore((state) => state.ohlcCharts.chartLlammaOhlc.fetchStatus)
+  const llammaOraclePriceData = useStore((state) => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
+  const llammaRefetchingCapped = useStore((state) => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
+  const llammaLastFetchEndTime = useStore((state) => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOraclePoolOhlcData = useStore((state) => state.ohlcCharts.fetchOraclePoolOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
@@ -91,33 +100,32 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
   // Token symbols for chart labels (oracle tokens comes from API response)
   const oracleTokens = useMemo(
     () =>
-      chartOraclePoolOhlc.collateralToken.symbol && chartOraclePoolOhlc.borrowedToken.symbol
-        ? {
-            collateralSymbol: chartOraclePoolOhlc.collateralToken.symbol,
-            borrowedSymbol: chartOraclePoolOhlc.borrowedToken.symbol,
-          }
+      oraclePoolCollateralSymbol && oraclePoolBorrowedSymbol
+        ? { collateralSymbol: oraclePoolCollateralSymbol, borrowedSymbol: oraclePoolBorrowedSymbol }
         : null,
-    [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
+    [oraclePoolCollateralSymbol, oraclePoolBorrowedSymbol],
   )
 
   const { selectChartList, selectedChartKey, isLoading } = useLlammaChartSelections({
-    oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
-    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.oraclePriceData.length > 0 },
+    oracleChart: { fetchStatus: oraclePoolFetchStatus, hasData: oraclePoolData.length > 0 },
+    llammaChart: { fetchStatus: llammaFetchStatus, hasData: llammaOraclePriceData.length > 0 },
     oracleTokens,
   })
 
-  // Select chart data based on current selection
-  const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
+  const isLlamma = selectedChartKey === 'llamma'
   // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty, pass empty array for ohlc data when llamma is selected
-  const ohlcData = selectedChartKey === 'llamma' ? [] : chartOraclePoolOhlc.data
-  const noDataAvailable = !isLoading && currentChart.oraclePriceData.length === 0
+  const ohlcData = isLlamma ? [] : oraclePoolData
+  const currentOraclePriceData = isLlamma ? llammaOraclePriceData : oraclePoolOraclePriceData
+  const currentRefetchingCapped = isLlamma ? llammaRefetchingCapped : oraclePoolRefetchingCapped
+  const currentLastFetchEndTime = isLlamma ? llammaLastFetchEndTime : oraclePoolLastFetchEndTime
+  const noDataAvailable = !isLoading && currentOraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
-    if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+    if (oraclePoolOraclePriceData.length > 0) return oraclePoolOraclePriceData
     // if the oracle data endpoint doesn't have oracle price data, there's a higher chance that it still exists in the llamma endpoint
-    if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
+    if (llammaOraclePriceData.length > 0) return llammaOraclePriceData
     return undefined
-  }, [chartOraclePoolOhlc.oraclePriceData, chartLlammaOhlc.oraclePriceData])
+  }, [oraclePoolOraclePriceData, llammaOraclePriceData])
 
   const newLiqPrices = previewPrices ?? storePreviewPrices
 
@@ -129,7 +137,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
 
   const selectedLiqRange = useLiquidationRange({
     chartData: ohlcData,
-    fallbackData: currentChart.oraclePriceData,
+    fallbackData: currentOraclePriceData,
     currentPrices: userPrices,
     newPrices: newLiqPrices,
   })
@@ -218,9 +226,9 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
     selectedChartKey: selectedChartKey ?? '',
     selectChartList,
     refetchPricesData,
-    refetchingCapped: currentChart.refetchingCapped,
+    refetchingCapped: currentRefetchingCapped,
     fetchMoreChartData,
-    lastFetchEndTime: currentChart.lastFetchEndTime,
+    lastFetchEndTime: currentLastFetchEndTime,
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
