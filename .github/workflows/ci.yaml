@@ -211,7 +211,7 @@ jobs:
 
   notify:
     name: Notify Slack
-    if: (failure() && github.ref_name == 'main') || github.ref_name == 'e2e/fix'
+    if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
