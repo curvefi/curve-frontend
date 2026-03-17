@@ -1,3 +1,4 @@
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -12,7 +13,7 @@ type TestMarket = {
   borrowMore: Decimal
   repay: Decimal
   improveHealth: Decimal
-  chainId: Chain
+  chainId: LlamaChainId
   path: string
   hasLeverage: boolean
   canBorrowMax?: boolean
