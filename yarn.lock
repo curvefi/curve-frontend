@@ -8440,12 +8440,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"context@npm:^3.0.33":
-  version: 3.0.33
-  resolution: "context@npm:3.0.33"
+"context@npm:^4.0.14":
+  version: 4.0.14
+  resolution: "context@npm:4.0.14"
   dependencies:
-    vest-utils: "npm:^1.3.3"
-  checksum: 10c0/30eccee8e9e1aa38354e4e6b75a44d6f8038bb0cd0d5857ad7f33ee9b950c07836f2992ead9eef596933c6033d78332a0c20fa29133f40e897383c715161e02a
+    vest-utils: "npm:^2.0.14"
+  checksum: 10c0/ac4912a99dc365ab368ae0054f936d4cadc10e5fc3b209a1170f6fd5699f1426103548ae8e6cdf8c65ea3967914cef13510f4fd17005ad5d1ccd305718f17067
   languageName: node
   linkType: hard
 
@@ -12548,7 +12548,7 @@ __metadata:
     typescript: "npm:*"
     typescript-eslint: "npm:^8.54.0"
     ui: "npm:*"
-    vest: "npm:^5.4.6"
+    vest: "npm:^6.2.7"
     vite: "npm:*"
     vite-plugin-svgr: "npm:^4.5.0"
     vite-plugin-vercel: "npm:9.1.1"
@@ -12875,13 +12875,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"n4s@npm:^5.0.28":
-  version: 5.0.28
-  resolution: "n4s@npm:5.0.28"
+"n4s@npm:^6.1.11":
+  version: 6.1.11
+  resolution: "n4s@npm:6.1.11"
   dependencies:
-    context: "npm:^3.0.33"
-    vest-utils: "npm:^1.3.3"
-  checksum: 10c0/d8c172b668c09fed7cfff17b1b7c6d0f7a541d2034c004b35807898b9f2ad07661c89bd17630816b514e77d90b540aea91701b48b4fb155eaa1893547677626a
+    context: "npm:^4.0.14"
+    vest-utils: "npm:^2.0.14"
+  checksum: 10c0/de72ebdaa6ce2b67313dc268e2557855f51c5be6635eaa254ea2b86594678af1ea5d5f4644c58ff0ea319b78b84d6f0c86357ea5993a26c9024426ec0740f82b
   languageName: node
   linkType: hard
 
@@ -16074,12 +16074,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vast@npm:^1.0.42":
-  version: 1.0.42
-  resolution: "vast@npm:1.0.42"
+"vast@npm:^2.0.14":
+  version: 2.0.14
+  resolution: "vast@npm:2.0.14"
   dependencies:
-    vest-utils: "npm:^1.3.3"
-  checksum: 10c0/fd610c3234b764b589792e4c590f578e21b07901e3128a637da3ba536377dc7d4412a2d9e78c5b962bbd46e3bf68a08442c9dd3f849611551836d5a246977a6e
+    vest-utils: "npm:^2.0.14"
+  checksum: 10c0/4e1a830831cba762abfefd6f93b758fe2b811918ae152c9c805e4ed3c8561a1a27a38444149cc3d659cd190d2b1111f099ba472e2ec45a91441fb62ee66d9093
   languageName: node
   linkType: hard
 
@@ -16094,33 +16094,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vest-utils@npm:^1.3.3":
-  version: 1.3.3
-  resolution: "vest-utils@npm:1.3.3"
-  checksum: 10c0/ceea14e4b287e53e77819d0c1b6c20706110b0ca725e42be7c73ab810f46a74e0666a052ea64e5f3cc9ea8656e5700dee341544116b8283ea229be089336d9c2
+"vest-utils@npm:^2.0.14":
+  version: 2.0.14
+  resolution: "vest-utils@npm:2.0.14"
+  checksum: 10c0/a8551ed780d0e76e215835bf4072270ae5ac90b0dbc3dc263ab660c05c32ada82fd86d6afcea13ca6b3a23dabfd52fe35d15493ba02c7c32722063ad264f516b
   languageName: node
   linkType: hard
 
-"vest@npm:^5.4.6":
-  version: 5.4.6
-  resolution: "vest@npm:5.4.6"
+"vest@npm:^6.2.7":
+  version: 6.2.7
+  resolution: "vest@npm:6.2.7"
   dependencies:
-    context: "npm:^3.0.33"
-    n4s: "npm:^5.0.28"
-    vast: "npm:^1.0.42"
-    vest-utils: "npm:^1.3.3"
-    vestjs-runtime: "npm:^1.5.1"
-  checksum: 10c0/99b118e39b74b820993f75124adc2add24c18dda642b257abcb94cbc31bddcfbd9c099752d445e35de4bad96d1b0bcd7da4b47d728b0e39fea597256c5e139ce
+    context: "npm:^4.0.14"
+    n4s: "npm:^6.1.11"
+    vast: "npm:^2.0.14"
+    vest-utils: "npm:^2.0.14"
+    vestjs-runtime: "npm:^2.0.14"
+  checksum: 10c0/9b56b6f2105f00e2a20e5e06e8054b6cc00cb3a2cd963d7ada6a8c16ee7a4fa6b75c80837949c34131ee047f02be04fbd5af36bbfb360a77d5022efb73627cec
   languageName: node
   linkType: hard
 
-"vestjs-runtime@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "vestjs-runtime@npm:1.5.1"
+"vestjs-runtime@npm:^2.0.14":
+  version: 2.0.14
+  resolution: "vestjs-runtime@npm:2.0.14"
   dependencies:
-    context: "npm:^3.0.33"
-    vest-utils: "npm:^1.3.3"
-  checksum: 10c0/b8fec01d1107b48df3ef258ff23d37d98d62df45c197dc08dc2059576e26d34af3a82e58e227786a308c54a0f89169385bc39b568d2e04cb8f8d5ee54e6df15c
+    context: "npm:^4.0.14"
+    vest-utils: "npm:^2.0.14"
+  checksum: 10c0/7df66230a7f0374a3398c2a4e3faa038239082c99ff6588e49f134707ccfcebef3683ef950fa51cee68171f4aab512a5bc9692d4aef20ae3c120758e8f559762
   languageName: node
   linkType: hard
 
