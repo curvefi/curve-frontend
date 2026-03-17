@@ -31,7 +31,6 @@ import {
   touchImproveHealthForm,
   writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
-import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/test-markets'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -43,7 +42,7 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
-;[...LOAN_TEST_MARKETS.Lend].forEach(
+testCases.forEach(
   ({
     id,
     collateralAddress: tokenAddress,
