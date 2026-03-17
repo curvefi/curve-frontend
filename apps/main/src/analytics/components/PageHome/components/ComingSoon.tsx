@@ -19,7 +19,7 @@ export const ComingSoon = () => (
     <CardContent size="small">
       <Stack gap={Spacing.sm} alignItems="center" justifyContent="center" minHeight={MIN_HEIGHT}>
         <Stack gap={Spacing.xs} alignItems="center">
-          <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
+          <LlamaIcon color="primary" sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
 
           <Stack alignItems="center" textAlign="center" sx={{ maxWidth: MaxWidth.emptyStateCard, textWrap: 'pretty' }}>
             <Typography variant="headingXsBold">{t`Analytics v2 in progress`}</Typography>
