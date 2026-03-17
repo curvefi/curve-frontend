@@ -13,7 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const MIN_HEIGHT = 300 // (default) min height of charts when not in fullscreen
+export const MIN_HEIGHT = 300 // (default) min height of charts when not in fullscreen
 
 type ChartCardProps = {
   /** Card title */
