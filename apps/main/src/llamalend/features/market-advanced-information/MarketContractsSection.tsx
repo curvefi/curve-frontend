@@ -96,14 +96,17 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
     : []
 
   return (
-    <Stack>
-      <CardHeader title={t`Contracts`} size="small" data-inline />
-      <Stack paddingBlock={Spacing.sm}>
-        {tokenItems.map(({ key, label, address }) => (
-          <AddressActionInfo key={key} network={network} title={label} address={address} />
-        ))}
+    <Stack gap={Spacing.md}>
+      <Stack gap={Spacing.sm}>
+        <CardHeader title={t`Contracts`} size="small" data-inline />
+        <Stack>
+          {tokenItems.map(({ key, label, address }) => (
+            <AddressActionInfo key={key} network={network} title={label} address={address} />
+          ))}
+        </Stack>
       </Stack>
-      <Stack paddingBlock={Spacing.sm}>
+
+      <Stack>
         {infraItems.map(({ key, label, address, fallbackValue }) =>
           fallbackValue ? (
             <ActionInfo key={key} label={label} value={fallbackValue ?? t`No gauge`} />

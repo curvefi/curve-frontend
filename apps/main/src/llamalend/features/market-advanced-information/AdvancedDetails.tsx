@@ -8,17 +8,14 @@ import {
   UtilizationTooltip,
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
-import { Box, Stack, Typography } from '@mui/material'
+import { Box, Card, CardContent, CardHeader } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
-
-const { Spacing } = SizesAndSpaces
 
 export type AdvancedDetailsProps = {
   chainId: number | undefined | null
@@ -61,14 +58,13 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
-    <Stack gap={Spacing.xs}>
-      <Typography variant="headingXsBold">{t`Advanced Details`}</Typography>
-      <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Card>
+      <CardHeader title={t`Advanced Details`} size="small" />
+      <CardContent>
         <Box
           display="grid"
           gap={3}
           sx={{
-            padding: Spacing.md,
             gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
           }}
         >
@@ -95,7 +91,10 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
               collateral?.loading
                 ? undefined
                 : formatCollateralNotional(
-                    { value: collateral?.totalCollateral ?? null, symbol: collateral?.collateralSymbol ?? undefined },
+                    {
+                      value: collateral?.totalCollateral ?? null,
+                      symbol: collateral?.collateralSymbol ?? undefined,
+                    },
                     { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
                   )
             }
@@ -120,7 +119,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
             />
           )}
         </Box>
-      </Box>
-    </Stack>
+      </CardContent>
+    </Card>
   )
 }
