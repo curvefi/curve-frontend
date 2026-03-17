@@ -25,6 +25,7 @@ export const StatsStack = () => {
         gridAutoRows: '1fr',
         gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(2, 1fr)', desktop: 'repeat(4, 1fr)' },
         gap: Spacing.lg,
+        paddingBlockEnd: Spacing.md,
       }}
     >
       <Grid>
