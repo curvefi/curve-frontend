@@ -113,12 +113,12 @@ export const BorrowInformation = ({
           clickable: true,
         }}
       />
-      {leverage?.value != null && isLeveragedPosition(leverage.value) && (
+      {isLeveragedPosition(leverage?.value) && (
         <Metric
           size="small"
           label={t`Leverage`}
-          value={leverage.value}
-          loading={leverage.loading}
+          value={leverage?.value}
+          loading={leverage?.loading}
           valueOptions={{ unit: 'multiplier' }}
         />
       )}
