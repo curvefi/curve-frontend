@@ -1,5 +1,5 @@
-import { useChainId, useConnection, useSwitchChain } from 'wagmi'
-import { isFailure, useCurve, type WagmiChainId } from '@ui-kit/features/connect-wallet'
+import { useChainId, useConnection } from 'wagmi'
+import { isFailure, useCurve, useSwitchChain, type WagmiChainId } from '@ui-kit/features/connect-wallet'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -22,8 +22,8 @@ const maintenanceMessage = process.env.PUBLIC_MAINTENANCE_MESSAGE
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
-  const { mutate: switchChain } = useSwitchChain()
   const { connectState } = useCurve()
+  const switchChain = useSwitchChain()
   const walletChainId = useChainId()
   const pathname = usePathname()
   const currentApp = getCurrentApp(pathname)
@@ -52,7 +52,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
         <Banner
           severity="warning"
           buttonText={t`Change network`}
-          onClick={() => switchChain({ chainId: chainId as WagmiChainId })}
+          onClick={() => void switchChain({ chainId: chainId as WagmiChainId })}
         >
           {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
           <strong>{networkId}</strong>.{' '}
