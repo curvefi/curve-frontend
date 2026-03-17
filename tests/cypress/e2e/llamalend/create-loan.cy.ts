@@ -17,14 +17,14 @@ const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
 describe('Create loan', () => {
   const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
-  testCases.forEach(({ collateral, borrow, path, label, hasLeverage }) => {
+  testCases.forEach(({ collateral, borrow, path, label, hasLeverage, canBorrowMax = true }) => {
     const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
     it(label, () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled })
       checkLoanDetailsLoaded({ leverageEnabled })
-      checkLoanRangeSlider({ leverageEnabled })
+      checkLoanRangeSlider({ leverageEnabled, canBorrowMax })
       // e2e tests run with a 'fake' account so the transaction fails
       submitCreateLoanForm('error', 'Transaction failed').then(() =>
         cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),

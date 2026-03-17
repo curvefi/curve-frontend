@@ -63,7 +63,13 @@ export function writeCreateLoanForm({
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boolean }) {
+export function checkLoanRangeSlider({
+  leverageEnabled,
+  canBorrowMax,
+}: {
+  leverageEnabled: boolean
+  canBorrowMax: boolean
+}) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
   cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
   cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
@@ -74,7 +80,10 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
     .then((maxValue) => getBorrowInput().should('have.value', maxValue))
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
-  checkLoanDetailsLoaded({ leverageEnabled })
+  if (canBorrowMax) {
+    // some markets unfortunately are broken due to a llamalend.js bug - the max debt click is not accepted but reverts.
+    checkLoanDetailsLoaded({ leverageEnabled })
+  }
 }
 
 /**

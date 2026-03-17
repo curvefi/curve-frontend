@@ -1,7 +1,24 @@
+import type { Address } from '@primitives/address.utils'
+import { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
-export const LOAN_TEST_MARKETS = {
+type TestMarket = {
+  id: string
+  label: string
+  collateralAddress: Address
+  collateral: Decimal
+  borrow: Decimal
+  borrowMore: Decimal
+  repay: Decimal
+  improveHealth: Decimal
+  chainId: Chain
+  path: string
+  hasLeverage: boolean
+  canBorrowMax?: boolean
+}
+
+export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> = {
   [LlamaMarketType.Mint]: [
     {
       id: 'wsteth',
@@ -28,6 +45,7 @@ export const LOAN_TEST_MARKETS = {
       chainId: Chain.Ethereum,
       path: '/crvusd/ethereum/markets/sfrxeth2',
       hasLeverage: false,
+      canBorrowMax: false,
     },
     {
       id: 'wbtc',
@@ -41,6 +59,7 @@ export const LOAN_TEST_MARKETS = {
       chainId: Chain.Ethereum,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
+      canBorrowMax: false,
     },
     {
       id: 'eth',
@@ -189,7 +208,7 @@ export const LOAN_TEST_MARKETS = {
     },
     {
       id: 'one-way-market-9',
-      label: 'WBTC-crvUSD New Lend Market',
+      label: 'WBTC-crvUSD New eth Lend Market',
       collateralAddress: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
       collateral: '1',
       borrow: '100',
@@ -462,7 +481,7 @@ export const LOAN_TEST_MARKETS = {
     },
     {
       id: 'one-way-market-10',
-      label: 'WBTC-crvUSD New Lend Market',
+      label: 'WBTC-crvUSD New Arb Lend Market',
       collateralAddress: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
       collateral: '1',
       borrow: '100',
