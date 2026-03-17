@@ -11,6 +11,7 @@ import {
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
@@ -21,9 +22,9 @@ const testCases = [
 ]
 
 describe('BorrowMoreForm (mocked)', () => {
-  afterEach(() => {
-    resetLlamaTestContext()
-  })
+  beforeEach(() => mockMintSnapshots({ limit: 1 }))
+
+  afterEach(() => resetLlamaTestContext())
 
   testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {

@@ -3,7 +3,7 @@ export const mockMintMarkets = () =>
     fixture: 'minting-markets.json',
   })
 
-export const mockMintSnapshots = () =>
-  cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots?fetch_on_chain=true&limit=7', {
+export const mockMintSnapshots = ({ limit = 7 }: { limit?: number } = {}) =>
+  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots?*limit=${limit}`, {
     fixture: 'minting-snapshots.json',
   })

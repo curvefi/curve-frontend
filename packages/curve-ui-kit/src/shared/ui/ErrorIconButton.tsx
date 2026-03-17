@@ -21,6 +21,7 @@ export const ErrorIconButton = ({
     label={t`Copy error to clipboard`}
     confirmationText={t`Error copied to clipboard`}
     size={buttonSize}
+    data-error={error.toString()}
   >
     {/* we need 3 & here because the IconButton overrides the size quite specifically per viewport */}
     <ExclamationTriangleIcon sx={{ '&&&': iconSx }} color="error" />
