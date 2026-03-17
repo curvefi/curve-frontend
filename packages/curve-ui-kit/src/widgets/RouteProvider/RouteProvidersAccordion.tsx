@@ -56,6 +56,7 @@ export const RouteProvidersAccordion = ({
       ghost
       title={t`Route provider`}
       size="extraSmall"
+      testId="route-provider-accordion"
       info={
         error ? (
           <ErrorIconButton

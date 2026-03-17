@@ -13,6 +13,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { applySxProps } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
@@ -88,11 +89,11 @@ const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
   large: 'extraSmall',
 }
 
-const iconSx: Record<ActionInfoSize, SystemStyleObject<Theme>> = {
+const sizeSx = {
   small: { width: IconSize.sm, height: IconSize.sm },
   medium: { width: IconSize.md, height: IconSize.md },
   large: { width: IconSize.md, height: IconSize.md },
-}
+} as const satisfies Record<ActionInfoSize, SystemStyleObject<Theme>>
 
 const isSet = (v: ReactNode) => v || v === 0
 
@@ -146,7 +147,13 @@ export const ActionInfo = ({
   value ??= prevValue ?? emptyValue
 
   return (
-    <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
+    <Stack
+      direction="row"
+      alignItems="center"
+      columnGap={Spacing.sm}
+      data-testid={testId}
+      sx={applySxProps(sx, { height: sizeSx[size].height })}
+    >
       <Typography
         flexGrow={1}
         variant={labelSize[size]}
@@ -168,7 +175,7 @@ export const ActionInfo = ({
             >
               {prevValue}
             </Typography>
-            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, ...iconSx[size] }} />
+            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, ...sizeSx[size] }} />
           </>
         )}
 
@@ -205,7 +212,7 @@ export const ActionInfo = ({
             message={errorMessage}
             error={error}
             buttonSize={iconButtonSize[size]}
-            iconSx={iconSx[size]}
+            iconSx={sizeSx[size]}
           />
         )}
         {copyValue && (
