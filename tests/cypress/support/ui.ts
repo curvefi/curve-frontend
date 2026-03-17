@@ -54,7 +54,7 @@ export const RETRY_IN_CI = { retries: { openMode: 0, runMode: 5 } }
 export function skipTestsAfterFailure() {
   let failed = false
   beforeEach(function () {
-    if (failed) this.skip() // skip when any test failed since they are interdependent
+    // if (failed) this.skip() // skip when any test failed since they are interdependent
   })
 
   afterEach(function () {

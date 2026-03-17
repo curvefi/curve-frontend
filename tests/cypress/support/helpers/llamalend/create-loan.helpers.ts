@@ -1,75 +1,13 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
+import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/test-markets'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Chain } from '@ui-kit/utils/network'
 import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
-const chainId = Chain.Ethereum
-
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
-
-export const LOAN_TEST_MARKETS = {
-  [LlamaMarketType.Mint]: [
-    // todo: fix buggy market that cannot borrow max: { id: 'wsteth', label: 'wstETH-crvUSD Old Mint Market', collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', collateral: '0.1', borrow: '10', borrowMore: '2', repay: '1', improveHealth: '1', chainId, path: '/crvusd/ethereum/markets/wsteth', hasLeverage: false },
-    {
-      id: 'sfrxeth2',
-      label: '2nd sfrxETH-crvUSD Old Mint Market',
-      collateralAddress: '0xac3e018457b222d93114458476f3e3416abbe38f', // sfrxETH
-      collateral: '0.1',
-      borrow: '10',
-      borrowMore: '2',
-      repay: '1',
-      improveHealth: '1',
-      chainId,
-      path: '/crvusd/ethereum/markets/sfrxeth2',
-      hasLeverage: false,
-    },
-    {
-      id: 'wbtc',
-      label: 'WBTC-crvUSD New Mint Market',
-      collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
-      collateral: '1',
-      borrow: '100',
-      borrowMore: '10',
-      repay: '30',
-      improveHealth: '10',
-      chainId,
-      path: '/crvusd/ethereum/markets/wbtc',
-      hasLeverage: true,
-    },
-  ],
-  [LlamaMarketType.Lend]: [
-    {
-      id: 'one-way-market-7',
-      label: 'sUSDe-crvUSD Old Lend Market',
-      collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
-      collateral: '100',
-      borrow: '90',
-      borrowMore: '5',
-      repay: '50',
-      improveHealth: '30',
-      chainId,
-      path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
-      hasLeverage: false,
-    },
-    {
-      id: 'one-way-market-41',
-      label: 'sreUSD-crvUSD New Lend Market',
-      collateralAddress: '0x557ab1e003951a73c12d16f0fea8490e39c33c35', // sreUSD
-      collateral: '1',
-      borrow: '0.8',
-      borrowMore: '0.02',
-      repay: '0.7',
-      improveHealth: '0.01',
-      chainId,
-      path: '/lend/ethereum/markets/0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9',
-      hasLeverage: true,
-    },
-  ],
-} as const
 
 export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
   oneOf(...LOAN_TEST_MARKETS[type])

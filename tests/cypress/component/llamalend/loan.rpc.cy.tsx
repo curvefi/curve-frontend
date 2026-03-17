@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
+import { ethAddress } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
@@ -30,6 +31,7 @@ import {
   touchImproveHealthForm,
   writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
+import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/test-markets'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -41,7 +43,7 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
-testCases.forEach(
+;[...LOAN_TEST_MARKETS.Lend].forEach(
   ({
     id,
     collateralAddress: tokenAddress,
@@ -86,7 +88,9 @@ testCases.forEach(
         const vnet = getVirtualNetwork()
         adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
         fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
-        fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
+        if (tokenAddress != ethAddress) {
+          fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
+        }
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
       })
 
