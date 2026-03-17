@@ -4,7 +4,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Sizing, Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 export const defineMuiCardHeader = (
   design: DesignSystem,
@@ -12,34 +12,38 @@ export const defineMuiCardHeader = (
 ): Components['MuiCardHeader'] => ({
   styleOverrides: {
     root: {
+      padding: 0,
       ...handleBreakpoints({
-        paddingBlockStart: Spacing.lg,
-        paddingBlockEnd: Spacing.sm,
-        paddingInline: Spacing.md,
+        paddingInlineStart: Spacing.sm,
+        paddingBlockEnd: Spacing.xs,
+        minHeight: ButtonSize.lg,
+        gap: Spacing.xs,
       }),
-      borderBottom: `1px solid ${design.Layer[3].Outline}`,
-      minHeight: `calc(${ButtonSize.lg} + 1px)`, // 1px to account for border
       '& .MuiCardHeader-avatar': handleBreakpoints({ marginRight: Spacing.md }),
+      alignItems: 'end',
     },
-    action: { alignContent: 'center', alignSelf: 'center', margin: 0 },
+    action: { margin: 0, alignSelf: 'end' },
     title: typography.headingSBold,
   },
   variants: [
     {
       props: { size: 'small' },
       style: {
-        minHeight: 'auto',
-        maxHeight: Sizing.md.desktop,
-        paddingBlockStart: Spacing.md.desktop,
-        paddingBlockEnd: Spacing.xs.desktop,
-        '& .MuiCardHeader-title': typography.headingXsBold,
+        '& .MuiCardHeader-title': {
+          color: design.Text.TextColors.Secondary,
+          ...typography.headingXsBold,
+        },
+        ...handleBreakpoints({ minHeight: ButtonSize.sm }),
       },
     },
     {
       props: { 'data-inline': true },
-      style: handleBreakpoints({
-        paddingInline: 0,
-      }),
+      style: {
+        borderBottom: `1px solid ${design.Layer[3].Outline}`,
+        ...handleBreakpoints({
+          paddingInline: 0,
+        }),
+      },
     },
   ],
 })
