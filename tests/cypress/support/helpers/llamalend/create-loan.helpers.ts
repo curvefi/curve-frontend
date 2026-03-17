@@ -13,17 +13,18 @@ export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 w
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
+    // todo: fix buggy market that cannot borrow max: { id: 'wsteth', label: 'wstETH-crvUSD Old Mint Market', collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', collateral: '0.1', borrow: '10', borrowMore: '2', repay: '1', improveHealth: '1', chainId, path: '/crvusd/ethereum/markets/wsteth', hasLeverage: false },
     {
-      id: 'wsteth',
-      label: 'wstETH-crvUSD Old Mint Market',
-      collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
+      id: 'sfrxeth2',
+      label: '2nd sfrxETH-crvUSD Old Mint Market',
+      collateralAddress: '0xac3e018457b222d93114458476f3e3416abbe38f', // sfrxETH
       collateral: '0.1',
       borrow: '10',
       borrowMore: '2',
       repay: '1',
       improveHealth: '1',
       chainId,
-      path: '/crvusd/ethereum/markets/wsteth',
+      path: '/crvusd/ethereum/markets/sfrxeth2',
       hasLeverage: false,
     },
     {

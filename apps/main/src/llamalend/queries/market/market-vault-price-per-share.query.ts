@@ -8,7 +8,9 @@ export const { useQuery: useMarketVaultPricePerShare, invalidate: invalidateMark
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'previewRedeem', 'v1'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLendMarket(marketId)
-    return await market.vault.previewRedeem(1)
+    // Use convertToAssets instead of redeem preview: previewRedeem can revert when the vault
+    // has no immediately available liquidity, while convertToAssets still returns 1 share's value.
+    return await market.vault.convertToAssets(1)
   },
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,

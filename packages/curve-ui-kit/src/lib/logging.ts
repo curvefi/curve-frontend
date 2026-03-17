@@ -1,3 +1,4 @@
+import { toArray } from '@primitives/array.utils'
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
 import { enableLogging, isCypress } from '@ui-kit/utils/env'
 
@@ -75,9 +76,9 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
   if (!enableLogging) return
 
   const timestamp = new Date().toISOString()
-  const keyArray = typeof key === 'string' ? key.split('.') : Array.isArray(key) ? key : [key]
+  const keyArray = typeof key === 'string' ? key.split('.') : toArray(key)
 
-  const formatKeyArray = (keyArray: unknown[]): [string, string[]] => {
+  const formatKeyArray = (keyArray: readonly unknown[]): [string, string[]] => {
     let formattedString = ''
     const styles: string[] = []
 

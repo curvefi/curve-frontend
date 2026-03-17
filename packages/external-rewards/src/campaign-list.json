@@ -42,9 +42,6 @@
     "campaign": "Fx.json"
   },
   {
-    "campaign": "Pumpbtc.json"
-  },
-  {
     "campaign": "Carrot.json"
   },
   {
@@ -103,5 +100,8 @@
   },
   {
     "campaign": "Raac.json"
+  },
+  {
+    "campaign": "Yld.json"
   }
 ]
