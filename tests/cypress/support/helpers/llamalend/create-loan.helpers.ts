@@ -43,7 +43,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
-      collateralDecimals,
+      collateralDecimals: 8,
     },
   ],
   [LlamaMarketType.Lend]: [
