@@ -1,6 +1,6 @@
 export type { Wallet, CurveApi, LlamaApi } from './lib/types'
 export { createWagmiConfig, type WagmiChainId } from './lib/wagmi/wagmi-config'
-export { createChainFromNetwork, wagmiChainsMap } from './lib/wagmi/chains'
+export { createChainFromNetwork } from './lib/wagmi/chains'
 export { createTransportFromNetwork } from './lib/wagmi/transports'
 export { connectors } from './lib/wagmi/connectors'
 export { defaultGetRpcUrls } from './lib/wagmi/rpc'

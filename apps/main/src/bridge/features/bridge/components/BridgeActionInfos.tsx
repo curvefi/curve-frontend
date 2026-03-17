@@ -1,5 +1,4 @@
 import Stack from '@mui/material/Stack'
-import { wagmiChainsMap } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type EstimatedTxCostProps } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
@@ -8,11 +7,10 @@ import { formatNumber } from '@ui-kit/utils'
 type BridgeActionInfosProps = EstimatedTxCostProps & {
   /** Query returning the estimated bridge cost in the chain's native token. */
   bridgeCost: QueryProp<number>
-  chainId: number
+  nativeTokenSymbol: string
 }
 
-export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, chainId }: BridgeActionInfosProps) => {
-  const nativeTokenSymbol = wagmiChainsMap[chainId]?.nativeCurrency.symbol ?? 'ETH'
+export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymbol }: BridgeActionInfosProps) => {
 
   return (
     <Stack>
