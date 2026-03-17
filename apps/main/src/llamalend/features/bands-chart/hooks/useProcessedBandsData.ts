@@ -17,7 +17,7 @@ export const useProcessedBandsData = ({
   borrowedUsdRate,
 }: ProcessedBandsData) =>
   useMemo(() => {
-    if (!marketBandsBalances && !userBandsBalances) return []
+    if (!marketBandsBalances) return []
 
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
