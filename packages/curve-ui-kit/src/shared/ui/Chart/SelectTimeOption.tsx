@@ -22,7 +22,7 @@ export const SelectTimeOption = <TTimeOption extends string = string>({
     onChange={(event) => {
       if (event.target.value != null) setActiveOption(event.target.value as TTimeOption)
     }}
-    size="small"
+    size="tiny"
     sx={{ alignSelf: 'center' }}
     disabled={isLoading}
     MenuProps={{
