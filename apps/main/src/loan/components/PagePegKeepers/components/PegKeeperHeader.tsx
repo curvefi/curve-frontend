@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -24,26 +23,15 @@ export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate
         sx={{
           // Default space between avatar and card header content is a bit too big for this specific card, so we reduce it by half
           '--avatar-margin-right': Spacing.md,
-          marginRight: 'calc(-1 * var(--avatar-margin-right) / 2)',
+          marginRight: 'calc(-1 * var(--avatar-margin-right) / 1.25)',
         }}
       />
     }
     title={
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
         {underlyingCoins[0]}
-        {/** Box is needed to apply sx styling and adjust the chip's position; Chips don't support sx */}
-        <Box
-          sx={{
-            position: 'absolute',
-            right: Spacing.md,
-            top: Spacing.md,
-            display: 'flex', // Block displays have lineheight which add whitespace
-          }}
-        >
-          <PegChip status={pegStatus(rate)} />
-        </Box>
+        <PegChip status={pegStatus(rate)} />
       </Stack>
     }
-    sx={{ position: 'relative' }}
   />
 )

@@ -1,4 +1,7 @@
 import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { SxProps } from '@ui-kit/utils'
 import { usePegkeeper } from '../hooks/usePegkeeper'
 import type { PegKeeper as PegKeeperType } from '../types'
@@ -6,6 +9,8 @@ import { PegKeeperAdvancedDetails } from './PegKeeperAdvancedDetails'
 import { PegKeeperHeader } from './PegKeeperHeader'
 import { PegKeeperMetrics } from './PegKeeperMetrics'
 import { PegKeeperRebalanceButton } from './PegKeeperRebalanceButton'
+
+const { Spacing } = SizesAndSpaces
 
 type Props = PegKeeperType & {
   testId?: string
@@ -28,30 +33,34 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
         rate={rate}
       />
 
-      <PegKeeperMetrics
-        rate={rate}
-        debt={debt}
-        debtCeiling={debtCeiling}
-        poolName={poolName}
-        underlyingCoins={underlyingCoins}
-        testId={testId}
-      />
+      <CardContent>
+        <Stack gap={Spacing.md}>
+          <PegKeeperMetrics
+            rate={rate}
+            debt={debt}
+            debtCeiling={debtCeiling}
+            poolName={poolName}
+            underlyingCoins={underlyingCoins}
+            testId={testId}
+          />
 
-      <PegKeeperAdvancedDetails
-        address={address}
-        estCallerProfit={estCallerProfit}
-        poolId={poolId}
-        poolName={poolName}
-        poolAddress={poolAddress}
-        testId={testId}
-      />
+          <PegKeeperAdvancedDetails
+            address={address}
+            estCallerProfit={estCallerProfit}
+            poolId={poolId}
+            poolName={poolName}
+            poolAddress={poolAddress}
+            testId={testId}
+          />
 
-      <PegKeeperRebalanceButton
-        canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
-        isRebalancing={isRebalancing}
-        onRebalance={rebalance}
-        testId={testId}
-      />
+          <PegKeeperRebalanceButton
+            canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
+            isRebalancing={isRebalancing}
+            onRebalance={rebalance}
+            testId={testId}
+          />
+        </Stack>
+      </CardContent>
     </Card>
   )
 }
