@@ -10,11 +10,15 @@ export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) =
 }
 
 export const validateUserCollateral = (userCollateral: Decimal | undefined | null, required: boolean = false) => {
-  test('userCollateral', `Collateral amount must be a non-negative number`, () => {
-    if (required || userCollateral != null) {
-      enforce(userCollateral).isNumeric()[required ? 'gt' : 'gte'](0)
-    }
-  })
+  test(
+    'userCollateral',
+    `Collateral amount must be a ${required ? 'positive' : 'non-negative'} number`,
+    () => {
+      if (required || userCollateral != null) {
+        enforce(userCollateral).isNumeric()[required ? 'gt' : 'gte'](0)
+      }
+    },
+  )
 }
 
 export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
