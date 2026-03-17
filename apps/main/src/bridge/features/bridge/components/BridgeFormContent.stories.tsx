@@ -33,11 +33,11 @@ const SupportedNetworks: IFastBridgeNetwork[] = [
 ]
 
 // Mock networks for chain selection
-const BridgeNetworks = [
-  { chainId: Chain.Arbitrum, id: 'arbitrum', name: 'Arbitrum' },
-  { chainId: Chain.Optimism, id: 'optimism', name: 'Optimism' },
-  { chainId: Chain.Fraxtal, id: 'fraxtal', name: 'Fraxtal' },
-] as NetworkDef[]
+const BridgeNetworks: NetworkDef[] = [
+  { chainId: Chain.Arbitrum, id: 'arbitrum', name: 'Arbitrum', symbol: 'ETH' } as NetworkDef,
+  { chainId: Chain.Optimism, id: 'optimism', name: 'Optimism', symbol: 'ETH' } as NetworkDef,
+  { chainId: Chain.Fraxtal, id: 'fraxtal', name: 'Fraxtal', symbol: 'FRAX' } as NetworkDef,
+]
 
 const BridgeForm = (props: BridgeFormContentParams) => {
   const [fromChainId, setFromChainId] = useState(SupportedNetworks[0].chainId)
@@ -78,7 +78,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
             bridgeCost={q({ data: 0.69, isLoading: false, error: null })}
             gas={q({ data: { estGasCostUsd: 0.12 }, isLoading: false, error: null })}
             isApproved={isApproved}
-            chainId={fromChainId}
+            nativeTokenSymbol={BridgeNetworks.find((n) => n.chainId === fromChainId)!.symbol}
           />
           <BridgeInfoAlert />
         </>
