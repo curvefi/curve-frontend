@@ -50,7 +50,7 @@ const MappedFontSize = {
 } as const
 
 const MappedButtonSize = {
-  xxs: Sizing[150], // 14px
+  xxs: Sizing[200], // 16px
   xs: Sizing[300], // 24px
   sm: Sizing[500], // 40px
   md: Sizing[600], // 48px

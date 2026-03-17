@@ -1,17 +1,18 @@
 import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
+import type { Theme } from '@mui/material'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import type { SystemStyleObject } from '@mui/system'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { SxProps } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
@@ -87,7 +88,7 @@ const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
   large: 'extraSmall',
 }
 
-const iconSx: Record<ActionInfoSize, SxProps> = {
+const iconSx: Record<ActionInfoSize, SystemStyleObject<Theme>> = {
   small: { width: IconSize.sm, height: IconSize.sm },
   medium: { width: IconSize.md, height: IconSize.md },
   large: { width: IconSize.md, height: IconSize.md },
@@ -199,7 +200,7 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && !loading && (
+        {error && (
           <ErrorIconButton
             message={errorMessage}
             error={error}
