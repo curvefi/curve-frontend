@@ -99,8 +99,9 @@ export function ChartCrvUsdPrice() {
           <ButtonExport
             filename="crvusd_price"
             data={{ price: chartData.map((x) => ({ time: x.time, value: x.price })) }}
+            fullscreen={fullscreen}
           />
-          <ButtonFullscreen onToggle={toggleFullscreen} />
+          <ButtonFullscreen onToggle={toggleFullscreen} fullscreen={fullscreen} />
         </>
       }
     >
