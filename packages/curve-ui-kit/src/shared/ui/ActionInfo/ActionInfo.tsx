@@ -18,7 +18,7 @@ import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, IconSize, ButtonSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium' | 'large'
 
@@ -95,6 +95,12 @@ const sizeSx = {
   large: { width: IconSize.md, height: IconSize.md },
 } as const satisfies Record<ActionInfoSize, SystemStyleObject<Theme>>
 
+const rowHeight: Record<ActionInfoSize, string> = {
+  small: ButtonSize.xxs,
+  medium: ButtonSize.xs,
+  large: ButtonSize.xs,
+}
+
 const isSet = (v: ReactNode) => v || v === 0
 
 type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor'>
@@ -152,7 +158,7 @@ export const ActionInfo = ({
       alignItems="center"
       columnGap={Spacing.sm}
       data-testid={testId}
-      sx={applySxProps(sx, { height: sizeSx[size].height })}
+      sx={applySxProps(sx, { minHeight: rowHeight[size] })}
     >
       <Typography
         flexGrow={1}
