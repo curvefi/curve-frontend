@@ -2,7 +2,7 @@ import { generatePrivateKey } from 'viem/accounts'
 import type { Hex } from '@primitives/address.utils'
 import { resetWagmiConfigForTests } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { DeepPartial } from '@ui-kit/types/util'
-import { tenderlyAccount } from './account'
+import { getTenderlyAccount, loadTenderlyAccount } from './account'
 import {
   createVirtualTestnet as createVirtualTestnetRequest,
   type CreateVirtualTestnetOptions,
@@ -41,6 +41,7 @@ export function createTenderlyWagmiConfigFromVNet({
   vnet,
   privateKey = generatePrivateKey(),
 }: TenderlyWagmiConfigFromVNet) {
+  const tenderlyAccount = getTenderlyAccount()
   const { publicRpcUrl } = getRpcUrls(vnet)
   resetWagmiConfigForTests() // fixes issues with wagmi reconnect in tests
   return createTenderlyWagmiConfig({
@@ -77,7 +78,9 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
   let vnet: GetVirtualTestnetResponse
 
   before(() => {
-    getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then((fetched) => (vnet = fetched))
+    loadTenderlyAccount().then((tenderlyAccount) =>
+      getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then((fetched) => (vnet = fetched)),
+    )
   })
 
   return () => vnet
@@ -120,8 +123,11 @@ export function createVirtualTestnet(
       sync_state_config: { enabled: false },
     }
 
-    const options = Cypress._.merge(tenderlyAccount, defaultOptions, givenOptions)
-    createVirtualTestnetRequest(options).then((created) => (vnet = created))
+    loadTenderlyAccount().then((account) =>
+      createVirtualTestnetRequest(Cypress._.merge(account, defaultOptions, givenOptions)).then(
+        (created) => (vnet = created),
+      ),
+    )
   })
 
   afterEach(function (this: Mocha.Context) {
@@ -132,7 +138,7 @@ export function createVirtualTestnet(
   after(() => {
     if (!vnet) return
     if (!shouldDeleteVnet) return console.warn(`Keeping vnet '${vnet.id}' alive because of test failures.`)
-    deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
+    deleteVirtualTestnetRequest({ ...getTenderlyAccount(), vnetId: vnet.id })
   })
 
   return () => vnet
@@ -165,12 +171,15 @@ export function forkVirtualTestnet(
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
     const defaultOpts = { wait: true }
-    const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
-    forkVirtualTestnetRequest(finalOpts).then((forked) => (vnet = forked))
+    loadTenderlyAccount().then((tenderlyAccount) => {
+      const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
+      forkVirtualTestnetRequest(finalOpts).then((forked) => (vnet = forked))
+    })
   })
 
   after(() => {
     if (!vnet) return
+    const tenderlyAccount = getTenderlyAccount()
     deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
   })
 
