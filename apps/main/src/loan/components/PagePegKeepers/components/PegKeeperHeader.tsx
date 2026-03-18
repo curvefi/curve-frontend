@@ -21,7 +21,7 @@ export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate
         blockchainId="ethereum"
         address={underlyingCoinAddresses[0]}
         sx={{
-          // Default space between avatar and card header content is a bit too big for this specific card, so we reduce it by half
+          // Default space between avatar and card header content is a bit too big for this specific card, so we reduce it a bit
           '--avatar-margin-right': Spacing.md,
           marginRight: 'calc(-1 * var(--avatar-margin-right) / 1.25)',
         }}
