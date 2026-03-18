@@ -10,14 +10,13 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { formatTokenAmounts } from '../llama.utils'
 
 export type WithdrawOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<WithdrawMutation>
   onReset: () => void
+  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -25,11 +24,10 @@ export const useWithdrawMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: WithdrawOptions) => {
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<WithdrawMutation>({
+  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<WithdrawMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'withdraw'] as const,
@@ -42,11 +40,10 @@ export const useWithdrawMutation = ({
       t`Withdrawing... ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Withdraw successful! ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(async (form: WithdrawForm) => mutate(form as WithdrawMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess }
 }

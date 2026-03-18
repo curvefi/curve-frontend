@@ -70,7 +70,7 @@ type TransactionMutationOptionsBase<
   /** Validation suite to validate variables before mutationFn is called. */
   validationSuite: ValidationSuite
   /** Additional fields to pass to the validation suite beyond the variables. */
-  validationParams?: Record<string, unknown>
+  validationParams: Record<string, unknown>
   /** Message to display while waiting for transaction submission */
   pendingMessage: (variables: TVariables, context: TContext) => string
   /** Message to display while waiting for transaction confirmation */
@@ -84,8 +84,10 @@ type TransactionMutationOptionsBase<
     variables: TVariables,
     context: TContext,
   ) => unknown | Promise<unknown>
-  /** Callback executed when mutation is reset */
-  onReset?: () => void
+  /** Callback executed to reset the form when mutation is finished successfully */
+  onReset: () => void
+  /** Whether the form has been modified. Only use `undefined` if the form has no fields. */
+  isDirty: boolean | undefined
 }
 
 /**
@@ -127,6 +129,7 @@ export function useTransactionMutation<
   confirmingMessage,
   onSuccess,
   onReset,
+  isDirty,
 }: TransactionMutationOptionsBase<TVariables, TContext, TData>) {
   const { wallet } = useCurve()
   const userAddress = wallet?.address
@@ -136,7 +139,7 @@ export function useTransactionMutation<
   const [error, setError] = useState<Error | null>(null)
 
   // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
-  const { mutate, data, isPending, isSuccess, reset } = useMutation({
+  const { mutate, data, isPending, isSuccess } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
@@ -192,5 +195,11 @@ export function useTransactionMutation<
     },
   })
 
-  return { mutate, error, ...data, isPending, isSuccess, reset }
+  return {
+    mutate,
+    error: isDirty === false ? null : error,
+    isPending,
+    isSuccess: isDirty !== true && isSuccess,
+    ...data,
+  }
 }

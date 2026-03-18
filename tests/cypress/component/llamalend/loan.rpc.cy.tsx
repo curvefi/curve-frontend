@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
@@ -77,11 +76,9 @@ testCases.forEach(
       const debtTokenSymbol = 'crvUSD'
       let adminRpcUrl: string
 
-      let onSuccess: ReturnType<typeof cy.stub>
       let onPricesUpdated: ReturnType<typeof cy.stub>
 
       beforeEach(() => {
-        onSuccess = cy.stub().as('onSuccess')
         onPricesUpdated = cy.stub().as('onPricesUpdated')
         const vnet = getVirtualNetwork()
         adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
@@ -98,21 +95,15 @@ testCases.forEach(
           chainId={chainId}
           marketId={id}
           userAddress={address}
-          onSuccess={onSuccess}
           onPricesUpdated={onPricesUpdated}
         />
       )
-
-      const expectCallbacks = () => {
-        expect(onSuccess).to.be.calledOnce
-        expect(onPricesUpdated).to.be.called
-      }
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        submitCreateLoanForm().then(expectCallbacks)
+        submitCreateLoanForm().then(() => expect(onPricesUpdated).to.be.called)
       })
 
       it(`borrows more`, () => {
@@ -123,7 +114,7 @@ testCases.forEach(
           expectedFutureDebt: debtAfterBorrowMore,
           leverageEnabled,
         })
-        submitBorrowMoreForm().then(expectCallbacks)
+        submitBorrowMoreForm().then(() => expect(onPricesUpdated).to.be.called)
         touchBorrowMoreForm() // make sure the new debt is shown
         checkCurrentDebt(debtAfterBorrowMore)
       })
@@ -136,7 +127,7 @@ testCases.forEach(
           debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: debtTokenSymbol },
           leverageEnabled,
         })
-        submitRepayForm().then(expectCallbacks)
+        submitRepayForm().then(() => expect(onPricesUpdated).to.be.called)
         touchRepayLoanForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: debtTokenSymbol })
       })
@@ -147,7 +138,7 @@ testCases.forEach(
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
         })
-        submitImproveHealthForm().then(expectCallbacks)
+        submitImproveHealthForm().then(() => expect(onPricesUpdated).to.be.called)
         touchImproveHealthForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
@@ -163,11 +154,10 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
-        submitClosePositionForm('error', 'Transaction failed').then(() => {
+        submitClosePositionForm('error', 'Transaction failed').then(() =>
           // unfortunately cannot cause soft liquidation in the tests yet
-          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
-          expect(onSuccess).to.not.be.called
-        })
+          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode'),
+        )
       })
     })
   },

@@ -35,7 +35,6 @@ describe('RepayForm (mocked)', () => {
         approved,
       })
 
-      const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       void collateral
@@ -45,13 +44,7 @@ describe('RepayForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <RepayForm
-            market={market}
-            networks={networks}
-            chainId={chainId}
-            onSuccess={onSuccess}
-            onPricesUpdated={onPricesUpdated}
-          />
+          <RepayForm market={market} networks={networks} chainId={chainId} onPricesUpdated={onPricesUpdated} />
         </MockLoanTestWrapper>,
       )
 
@@ -83,7 +76,6 @@ describe('RepayForm (mocked)', () => {
         } else {
           expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
         }
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

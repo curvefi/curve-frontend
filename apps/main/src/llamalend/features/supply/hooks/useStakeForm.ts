@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type StakeOptions, useStakeMutation } from '@/llamalend/mutations/stake.mutation'
+import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useUserBalances } from '@/llamalend/queries/user'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
@@ -14,7 +14,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyStakeForm = (): StakeForm => ({
   stakeAmount: undefined,
@@ -33,12 +33,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<StakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -76,10 +74,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     isSuccess: isStaked,
     error: stakeError,
     data,
-    reset: resetStake,
-  } = useStakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
-
-  useCallbackAfterFormUpdate(form, resetStake)
+  } = useStakeMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
 
   useEffect(() => {
     updateForm(form, { maxStakeAmount: maxUserStake.data })

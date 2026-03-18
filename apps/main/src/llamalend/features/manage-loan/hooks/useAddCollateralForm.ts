@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
+import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
@@ -15,16 +15,14 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
-  onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -62,13 +60,12 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
     network,
-    onSuccess,
     onReset: form.reset,
+    isDirty: form.formState.isDirty,
     userAddress,
   })
 
   const { formState } = form
-  useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
     updateForm(form, { maxCollateral: maxCollateral.data })

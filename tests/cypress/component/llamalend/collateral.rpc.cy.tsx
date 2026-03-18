@@ -50,7 +50,6 @@ describe('Collateral forms', () => {
             chainId={chainId}
             marketId={id}
             userAddress={address}
-            onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
           />
         )
