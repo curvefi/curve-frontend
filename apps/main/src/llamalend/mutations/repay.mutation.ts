@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
@@ -17,7 +16,7 @@ import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { decimal, waitForApproval } from '@ui-kit/utils'
+import { waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
   stateCollateral: Decimal
