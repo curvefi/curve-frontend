@@ -1,7 +1,8 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { normalizeBands, getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { BN } from '@ui/utils'
-import type { MarketQuery } from '@ui-kit/lib/model'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import type { MarketParams, MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
@@ -9,6 +10,7 @@ import { fetchChartBandBalancesData, sortBands } from './utils'
 import { liquidationBandValidationGroup, oraclePriceBandValidationGroup } from './validation'
 
 const isMarket = true
+const QUERY_KEY = 'bandsBalances' as const
 
 type MarketBandsBalancesQuery = MarketQuery & {
   liquidationBand: number
@@ -24,7 +26,7 @@ export const marketBandsBalancesValidationSuite = createValidationSuite((params:
 
 export const { useQuery: useMarketBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, liquidationBand, oraclePriceBand }: MarketBandsBalancesParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'bandsBalances', { liquidationBand }, { oraclePriceBand }] as const,
+    [...rootKeys.market({ chainId, marketId }), QUERY_KEY, { liquidationBand }, { oraclePriceBand }] as const,
   queryFn: async ({ marketId, liquidationBand, oraclePriceBand }: MarketBandsBalancesQuery) => {
     const market = getLlamaMarket(marketId)
     const normalizedLiquidationBand = liquidationBand ?? null
@@ -62,3 +64,10 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
   category: 'llamalend.market',
   validationSuite: marketBandsBalancesValidationSuite,
 })
+
+/**
+ * Prefix-based invalidation because the query key includes extra params (liquidationBand, oraclePriceBand)
+ * that aren't available at invalidation time. Band balances can change even when those params stay the same.
+ */
+export const invalidateMarketBandsBalances = ({ chainId, marketId }: MarketParams) =>
+  queryClient.invalidateQueries({ queryKey: [...rootKeys.market({ chainId, marketId }), QUERY_KEY] })
