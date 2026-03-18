@@ -44,7 +44,7 @@ export const EChartsCard = ({
 }: ChartCardProps) => (
   <WithWrapper shouldWrap={fullscreen} Wrapper={DialogFullscreen} onClose={() => onCloseFullscreen?.()}>
     {/** A lot of flex and height code is to make sure the chart expands correctly in fullscreen mode */}
-    <Card sx={{ '&.MuiPaper-root': { display: 'flex', flexDirection: 'column', height: '100%' } }}>
+    <Card component={Stack} height="100%">
       <CardHeader
         {...(!fullscreen && { size: 'small' })}
         title={title}
@@ -55,10 +55,7 @@ export const EChartsCard = ({
         }
       />
 
-      <CardContent
-        {...(!fullscreen && { size: 'small' })}
-        sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
-      >
+      <CardContent component={Stack} flexGrow={1} {...(!fullscreen && { size: 'small' })}>
         <Stack gap={Spacing.md} flexGrow={1}>
           <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
             {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
