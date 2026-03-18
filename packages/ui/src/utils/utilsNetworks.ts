@@ -135,7 +135,7 @@ export const NETWORK_BASE_CONFIG = {
     id: 'fraxtal',
     chainId: Chain.Fraxtal,
     rpcUrl: `https://rpc.frax.com`,
-    nativeCurrencySymbol: 'frxETH',
+    nativeCurrencySymbol: 'FRAX',
     explorerUrl: 'https://fraxscan.com/',
   },
   [Chain.XLayer]: {
