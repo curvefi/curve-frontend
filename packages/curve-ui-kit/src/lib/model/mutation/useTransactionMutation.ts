@@ -84,7 +84,7 @@ type TransactionMutationOptionsBase<
     variables: TVariables,
     context: TContext,
   ) => unknown | Promise<unknown>
-  /** Callback executed to reset the form when mutation is finished */
+  /** Callback executed to reset the form when mutation is finished successfully */
   onReset: () => void
   /** Whether the form has been modified. Only use `undefined` if the form has no fields. */
   isDirty: boolean | undefined
@@ -198,8 +198,8 @@ export function useTransactionMutation<
   return {
     mutate,
     error: isDirty === false ? null : error,
-    ...data,
     isPending,
     isSuccess: isDirty !== true && isSuccess,
+    ...data,
   }
 }
