@@ -19,6 +19,7 @@ export const defineMuiCardHeader = (
         minHeight: ButtonSize.lg,
         gap: Spacing.xs,
       }),
+      '& .MuiCardHeader-title': { color: design.Text.TextColors.Secondary },
       '& .MuiCardHeader-avatar': handleBreakpoints({ marginRight: Spacing.md }),
       alignItems: 'end',
     },
@@ -29,10 +30,7 @@ export const defineMuiCardHeader = (
     {
       props: { size: 'small' },
       style: {
-        '& .MuiCardHeader-title': {
-          color: design.Text.TextColors.Secondary,
-          ...typography.headingXsBold,
-        },
+        '& .MuiCardHeader-title': typography.headingXsBold,
         ...handleBreakpoints({ minHeight: ButtonSize.sm }),
       },
     },
