@@ -2,9 +2,13 @@ import { MarketInfoLayout, AdvancedDetails } from '@/llamalend/features/market-a
 import { BandsComp } from '@/loan/components/BandsComp'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -39,15 +43,25 @@ export const MarketInformationComposite = ({
         </Stack>
       )}
       {market && (
-        <Stack>
-          <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
-          <MarketInfoLayout
-            chainId={chainId}
-            marketType={LlamaMarketType.Mint}
-            market={market}
-            network={networks[chainId]}
-          />
-        </Stack>
+        <Card>
+          <CardHeader title={t`Advanced Details`} size="small" />
+          <CardContent>
+            <Stack>
+              <AdvancedDetails
+                chainId={chainId}
+                marketId={marketId}
+                market={market}
+                marketType={LlamaMarketType.Mint}
+              />
+              <MarketInfoLayout
+                chainId={chainId}
+                marketType={LlamaMarketType.Mint}
+                market={market}
+                network={networks[chainId]}
+              />
+            </Stack>
+          </CardContent>
+        </Card>
       )}
     </Stack>
   )
