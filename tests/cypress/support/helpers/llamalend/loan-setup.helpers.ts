@@ -1,5 +1,5 @@
 import { encodeFunctionData, parseAbi, parseEther, parseUnits, type Address } from 'viem'
-import { tenderlyAccount } from '@cy/support/helpers/tenderly/account'
+import { getTenderlyAccount } from '@cy/support/helpers/tenderly/account'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -49,7 +49,7 @@ export const approveTokenForSpender = ({
   tokenAmountWei: bigint
 }) =>
   sendVnetTransaction({
-    tenderly: { ...tenderlyAccount, vnetId: vnet.id },
+    tenderly: { ...getTenderlyAccount(), vnetId: vnet.id },
     tx: {
       from: userAddress,
       to: tokenAddress,
@@ -77,7 +77,7 @@ export const createLoanOnController = ({
   range?: bigint
 }) =>
   sendVnetTransaction({
-    tenderly: { ...tenderlyAccount, vnetId: vnet.id },
+    tenderly: { ...getTenderlyAccount(), vnetId: vnet.id },
     tx: {
       from: userAddress,
       to: controllerAddress,
