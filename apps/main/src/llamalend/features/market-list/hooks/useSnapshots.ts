@@ -28,8 +28,8 @@ type UseSnapshotsResult<T> = {
 
 const RateKeys = {
   [MarketRateType.Borrow]: 'borrowApr',
-  [MarketRateType.Supply]: 'lendApr',
-} as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApr'>
+  [MarketRateType.Supply]: 'lendApy',
+} as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApy'>
 
 const DAYS_BACK = LAST_WEEK
 

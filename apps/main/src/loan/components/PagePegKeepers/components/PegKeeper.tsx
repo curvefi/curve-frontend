@@ -35,14 +35,7 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
 
       <CardContent>
         <Stack gap={Spacing.md}>
-          <PegKeeperMetrics
-            rate={rate}
-            debt={debt}
-            debtCeiling={debtCeiling}
-            poolName={poolName}
-            underlyingCoins={underlyingCoins}
-            testId={testId}
-          />
+          <PegKeeperMetrics rate={rate} debt={debt} debtCeiling={debtCeiling} poolName={poolName} testId={testId} />
 
           <PegKeeperAdvancedDetails
             address={address}

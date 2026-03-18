@@ -1,6 +1,7 @@
 import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute, type RouteMutationMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
@@ -11,6 +12,10 @@ type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'user
   slippage?: RepayQuery['slippage']
 }
 export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+
+/** Returns true when repayment closes the loan using only debt tokens from the wallet. */
+export const isFullRepayFromDebtToken = (isFull: boolean, stateCollateral: Decimal, userCollateral: Decimal) =>
+  isFull && !+stateCollateral && !+userCollateral
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.

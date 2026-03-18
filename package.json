@@ -26,9 +26,9 @@
     "storybook:build": "yarn workspace curve-ui-kit run build:storybook"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.2",
-    "@commitlint/config-conventional": "^20.4.2",
-    "@commitlint/load": "20.4.0",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@commitlint/load": "20.5.0",
     "@eslint/eslintrc": "*",
     "@eslint/js": "*",
     "@types/react": "*",
@@ -39,7 +39,7 @@
     "ethers": "*",
     "husky": "^9.1.7",
     "immer": "*",
-    "lint-staged": "16.3.0",
+    "lint-staged": "16.4.0",
     "lodash": "*",
     "prettier": "^3.8.1",
     "react": "*",
@@ -59,7 +59,7 @@
   },
   "resolutions": {
     "@curvefi/api": "2.68.38",
-    "@eslint/eslintrc": "3.3.4",
+    "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
     "@types/node": "25.0.10",
     "@types/react": "19.2.14",
@@ -76,6 +76,6 @@
     "typescript": "5.9.3",
     "vite": "7.3.1",
     "vitest": "^4.0.15",
-    "zustand": "5.0.11"
+    "zustand": "5.0.12"
   }
 }

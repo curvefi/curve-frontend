@@ -1,13 +1,14 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
-import { Query } from '@ui-kit/types/util'
+import { Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
-export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) => ({
-  error: queries.find((x) => x?.error)?.error ?? null,
-  isLoading: queries.some((x) => x?.isLoading),
-})
+export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
+  ({
+    error: queries.find((x) => x?.error)?.error ?? null,
+    isLoading: queries.some((x) => x?.isLoading),
+  }) as Omit<QueryProp<unknown>, 'data'>
 
 /** Combines the metadata of multiple queries into a single object. */
 export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsArray<T>) => ({

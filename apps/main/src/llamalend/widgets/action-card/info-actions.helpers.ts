@@ -1,9 +1,10 @@
-import type { Amount } from '@primitives/decimal.utils'
+import BigNumber from 'bignumber.js'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { QueryProp } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -12,6 +13,17 @@ export const formatAmount = (value: Amount | null | undefined, symbol?: string) 
 
 export const formatLeverage = (value: Amount | null | undefined) =>
   value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 2, unit: 'multiplier' })
+
+export const calculateLeverageCollateral = (
+  totalCollateral: Decimal | null | undefined,
+  leverage: Decimal | null | undefined,
+) =>
+  totalCollateral &&
+  leverage &&
+  // leverage value can be 0 (e.g, full repay). Leverage collateral should be 0 then
+  (new BigNumber(leverage).isEqualTo(0)
+    ? '0'
+    : decimal(new BigNumber(totalCollateral).minus(new BigNumber(totalCollateral).div(leverage))))
 
 export const ACTION_INFO_GROUP_SX = { gap: Spacing.sm }
 
