@@ -16,7 +16,8 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { mapQuery, type Range } from '@ui-kit/types/util'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -119,6 +120,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const maxTokenValues = useMaxTokenValues(collateralToken?.address, params, form)
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 
   useChartPricesCallback(params, onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
@@ -131,13 +134,17 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isPending,
     isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    maxTokenValues: useMaxTokenValues(collateralToken?.address, params, form),
+    maxTokenValues,
     borrowToken,
     collateralToken,
     isCreated,
     creationError,
     txHash: data?.hash,
-    leverage: mapQuery(useCreateLoanExpectedCollateral(params, values.leverageEnabled), (d) => d.leverage),
+    leverage: {
+      data: expectedCollateral.data?.leverage,
+      // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
+      ...combineQueryState(maxTokenValues.debt, expectedCollateral),
+    },
     isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({

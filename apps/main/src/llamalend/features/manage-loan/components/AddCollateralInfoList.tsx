@@ -6,7 +6,6 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -88,7 +87,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
     />

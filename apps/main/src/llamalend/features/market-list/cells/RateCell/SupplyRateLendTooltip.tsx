@@ -18,7 +18,7 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
   ) // todo: `error` is ignored
   const {
     rates,
-    rates: { lendTotalApyMinBoosted, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
+    rates: { lendTotalApyMinBoosted, lendApy, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
     assets: { borrowed },
     rewards,
     type: marketType,
@@ -28,7 +28,7 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
 
   return (
     <MarketSupplyRateTooltipContent
-      supplyRate={lendApr}
+      supplyRate={lendApy}
       averageRate={averageRate}
       periodLabel={period}
       extraRewards={poolRewards}
