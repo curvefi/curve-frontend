@@ -14,7 +14,6 @@ import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.qu
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -98,10 +97,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const expectedBorrowed = useRepayExpectedBorrowed(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
-  const isFullDebtTokenRepay = isFullRepayFromDebtToken(isFull, stateCollateral ?? '0', userCollateral ?? '0')
   const prevLeverageValue = useUserCurrentLeverage(params, isOpen && !!hasLeverage)
   const leverageEnabled = isLeveragedPosition(prevLeverageValue.data)
-  const futureLeverageQuery = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFullDebtTokenRepay)
+  const futureLeverageQuery = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
   const debtDelta = {
     data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
     ...combineQueryState(prevDebt, debt),
@@ -126,7 +124,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
     isOpen,
   )
 
-  const leverageValue = isFullDebtTokenRepay ? { data: decimal(0), isLoading: false, error: null } : futureLeverageQuery
+  const leverageValue = isFull ? { data: decimal(0), isLoading: false, error: null } : futureLeverageQuery
 
   const prevLeverageTotalCollateral = {
     data: prevCollateral.data,
@@ -134,7 +132,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   }
 
   const leverageTotalCollateral = {
-    data: isFullDebtTokenRepay
+    data: isFull
       ? decimal(0)
       : prevCollateral.data && decimal(new BigNumber(prevCollateral.data).minus(stateCollateral ?? '0')),
     ...combineQueryState(prevCollateral, leverageValue),

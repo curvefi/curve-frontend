@@ -119,8 +119,7 @@ export const useRepayMutation = ({
       mutate({
         ...form,
         isFull,
-        // Apply buffer when the user selected max to prevent dust
-        userBorrowed: isFull ? decimal(BigNumber(1).plus(form.slippage).times(userBorrowed)) : userBorrowed,
+        userBorrowed,
       } as RepayMutation),
     [mutate],
   )
