@@ -1,5 +1,5 @@
 import { encodeFunctionData, parseAbi, parseEther, parseUnits, type Address } from 'viem'
-import { getTenderlyAccount } from '@cy/support/helpers/tenderly/account'
+import { loadTenderlyAccount, type TenderlyAccount } from '@cy/support/helpers/tenderly/account'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -12,7 +12,7 @@ const CONTROLLER_ABI = parseAbi(['function create_loan(uint256 collateral, uint2
 /**
  * Adds eth and collateral tokens to the user's account, enough so that our tests can setup a loan.
  */
-export const fundUserForLoanSetup = ({
+const fundUserForLoanSetup = ({
   vnet,
   userAddress,
   collateralAddress,
@@ -35,21 +35,23 @@ export const fundUserForLoanSetup = ({
 }
 
 /** Approves a token for a spender so the loan can be created. */
-export const approveTokenForSpender = ({
+const approveTokenForSpender = ({
   vnet,
   userAddress,
   tokenAddress,
   spenderAddress,
   tokenAmountWei,
+  tenderlyAccount,
 }: {
   vnet: CreateVirtualTestnetResponse
   userAddress: Address
   tokenAddress: Address
   spenderAddress: Address
   tokenAmountWei: bigint
+  tenderlyAccount: TenderlyAccount
 }) =>
   sendVnetTransaction({
-    tenderly: { ...getTenderlyAccount(), vnetId: vnet.id },
+    tenderly: { ...tenderlyAccount, vnetId: vnet.id },
     tx: {
       from: userAddress,
       to: tokenAddress,
@@ -61,13 +63,14 @@ export const approveTokenForSpender = ({
     },
   })
 
-export const createLoanOnController = ({
+const createLoanOnController = ({
   vnet,
   userAddress,
   controllerAddress,
   collateralAmountWei,
   debtAmountWei,
   range = 10n,
+  tenderlyAccount,
 }: {
   vnet: CreateVirtualTestnetResponse
   userAddress: Address
@@ -75,9 +78,10 @@ export const createLoanOnController = ({
   collateralAmountWei: bigint
   debtAmountWei: bigint
   range?: bigint
+  tenderlyAccount: TenderlyAccount
 }) =>
   sendVnetTransaction({
-    tenderly: { ...getTenderlyAccount(), vnetId: vnet.id },
+    tenderly: { ...tenderlyAccount, vnetId: vnet.id },
     tx: {
       from: userAddress,
       to: controllerAddress,
@@ -123,13 +127,14 @@ export const setupTenderlyLoan = ({
   })
 
   // the call above uses cy.request, but to use async we need cy.then()
-  cy.then(async () => {
+  loadTenderlyAccount().then(async (tenderlyAccount) => {
     await approveTokenForSpender({
       vnet,
       userAddress,
       tokenAddress: collateralAddress,
       spenderAddress: controllerAddress,
       tokenAmountWei: collateralWei,
+      tenderlyAccount,
     })
     await createLoanOnController({
       vnet,
@@ -137,6 +142,7 @@ export const setupTenderlyLoan = ({
       controllerAddress,
       collateralAmountWei: collateralWei,
       debtAmountWei: borrowWei,
+      tenderlyAccount,
     })
   })
 }
