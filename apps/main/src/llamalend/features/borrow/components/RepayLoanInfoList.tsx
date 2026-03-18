@@ -125,12 +125,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   )
 
   const leverageValue = isFull ? { data: decimal(0), isLoading: false, error: null } : futureLeverageQuery
-
-  const prevLeverageTotalCollateral = {
-    data: prevCollateral.data,
-    ...combineQueryState(prevCollateral, prevLeverageValue),
-  }
-
   const leverageTotalCollateral = {
     data: isFull
       ? decimal(0)
@@ -184,7 +178,10 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
               data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
               ...combineQueryState(leverageTotalCollateral, leverageValue),
             },
-            prevLeverageTotalCollateral,
+            prevLeverageTotalCollateral: {
+              data: prevCollateral.data,
+              ...combineQueryState(prevCollateral, prevLeverageValue),
+            },
             leverageTotalCollateral,
           }
         : {
