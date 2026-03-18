@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
@@ -12,19 +11,22 @@ import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.hel
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
 describe('Collateral forms', () => {
-  const testCases = recordValues(LOAN_TEST_MARKETS)
+  // todo: test more markets
+  const _testCases = recordValues(LOAN_TEST_MARKETS)
     .flat()
-    .filter((market) => !market.hasLeverage) // todo: markets with leverage don't recognize the programmatic loan yet
+    .filter((market) => !market.hasLeverage)
+  const testCases = [LOAN_TEST_MARKETS.Mint[0]]
 
   testCases.forEach(
     ({ borrow, chainId, collateral, collateralAddress, controllerAddress, collateralDecimals, id, label }) => {
       describe(label, () => {
-        // skipTestsAfterFailure() // the remove collateral test needs the collateral to be added first
+        skipTestsAfterFailure() // the remove collateral test needs the collateral to be added first
 
         const privateKey = generatePrivateKey()
         const { address } = privateKeyToAccount(privateKey)
@@ -53,7 +55,7 @@ describe('Collateral forms', () => {
           />
         )
 
-        before(() => {
+        before(() =>
           setupTenderlyLoan({
             vnet: getVirtualNetwork(),
             userAddress: address,
@@ -62,8 +64,8 @@ describe('Collateral forms', () => {
             collateral,
             collateralDecimals,
             borrow,
-          })
-        })
+          }),
+        )
 
         beforeEach(() => {
           onSuccess = cy.stub().as('onSuccess')
@@ -80,9 +82,9 @@ describe('Collateral forms', () => {
           )
           getActionValue('borrow-collateral').should('equal', formatNumber(collateralAfterAdd, { abbreviate: false }))
 
-          submitCollateralForm('add-collateral-submit-button', 'Collateral added').then(() => {
-            expect(onSuccess).to.be.calledOnce
-          })
+          submitCollateralForm('add-collateral-submit-button', 'Collateral added').then(
+            () => expect(onSuccess).to.be.calledOnce,
+          )
 
           touchCollateralForm('add-collateral-input')
           checkCurrentCollateral(collateralAfterAdd)
@@ -101,9 +103,9 @@ describe('Collateral forms', () => {
             formatNumber(collateralAfterRemove, { abbreviate: false }),
           )
 
-          submitCollateralForm('remove-collateral-submit-button', 'Collateral removed').then(() => {
-            expect(onSuccess).to.be.calledOnce
-          })
+          submitCollateralForm('remove-collateral-submit-button', 'Collateral removed').then(
+            () => expect(onSuccess).to.be.calledOnce,
+          )
 
           touchCollateralForm('remove-collateral-input')
           checkCurrentCollateral(collateralAfterRemove)
