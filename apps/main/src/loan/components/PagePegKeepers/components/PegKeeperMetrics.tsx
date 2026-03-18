@@ -4,24 +4,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_UNIT } from '../constants'
-import type { PegKeeperDetails, Pool } from '../types'
+import type { PegKeeperDetails } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
 type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & {
-  poolName: Pool['name']
-  underlyingCoins: Pool['underlyingCoins']
+  poolName: string
   testId?: string
 }
 
-export const PegKeeperMetrics = ({
-  rate,
-  debt,
-  debtCeiling,
-  poolName,
-  underlyingCoins,
-  testId = 'pegkeeper',
-}: Props) => (
+export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = 'pegkeeper' }: Props) => (
   <CardContent>
     <Stack gap={Spacing.sm}>
       <Stack direction="row" gap={Spacing.md}>
@@ -49,7 +41,7 @@ export const PegKeeperMetrics = ({
           label={t`Debt ceiling`}
           loading={debtCeiling == null}
           value={Number(debtCeiling)}
-          valueOptions={{ unit: { symbol: underlyingCoins[0], position: 'suffix' }, abbreviate: true }}
+          valueOptions={{ unit: CRVUSD_UNIT, abbreviate: true }}
           testId={`${testId}-metric-ceiling`}
           sx={{ flex: 1 }}
         />

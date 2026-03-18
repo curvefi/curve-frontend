@@ -28,14 +28,7 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
         rate={rate}
       />
 
-      <PegKeeperMetrics
-        rate={rate}
-        debt={debt}
-        debtCeiling={debtCeiling}
-        poolName={poolName}
-        underlyingCoins={underlyingCoins}
-        testId={testId}
-      />
+      <PegKeeperMetrics rate={rate} debt={debt} debtCeiling={debtCeiling} poolName={poolName} testId={testId} />
 
       <PegKeeperAdvancedDetails
         address={address}

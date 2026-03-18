@@ -8,7 +8,11 @@ import { decimal } from '@ui-kit/utils/decimal'
  * Query to get the user's current leverage value in a market.
  * Note this does not support leverage values for old mint markets (marketId < 6).
  */
-export const { useQuery: useUserCurrentLeverage, invalidate: invalidateUserCurrentLeverage } = queryFactory({
+export const {
+  useQuery: useUserCurrentLeverage,
+  queryKey: userCurrentLeverageQueryKey,
+  invalidate: invalidateUserCurrentLeverage,
+} = queryFactory({
   queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) =>
     [...rootKeys.userMarket({ chainId, userAddress, marketId }), 'currentLeverage'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
