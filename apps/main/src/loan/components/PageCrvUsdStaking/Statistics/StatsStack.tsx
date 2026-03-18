@@ -30,6 +30,7 @@ export const StatsStack = () => {
     >
       <Grid>
         <Metric
+          size="small"
           label="Total crvUSD Staked"
           value={yieldData?.[yieldData.length - 1]?.assets}
           valueOptions={{ unit: CRVUSD_OPTION }}
@@ -39,6 +40,7 @@ export const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
+          size="small"
           label="Current projected APY"
           value={statisticsData?.apyProjected}
           valueOptions={{ unit: 'percentage' }}
@@ -48,6 +50,7 @@ export const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
+          size="small"
           label="Total Revenue Distributed"
           value={revenueData?.totalDistributed ? weiToEther(Number(revenueData.totalDistributed)) : undefined}
           valueOptions={{ unit: CRVUSD_OPTION }}
@@ -57,6 +60,7 @@ export const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
+          size="small"
           label="Weekly Accumulated Revenue"
           value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue}
           valueOptions={{ unit: CRVUSD_OPTION }}
