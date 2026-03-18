@@ -18,7 +18,7 @@ export const loadTenderlyAccount = () =>
   cy
     .env(['TENDERLY_ACCOUNT_SLUG', 'TENDERLY_PROJECT_SLUG', 'TENDERLY_ACCESS_KEY'])
     .then(
-      ({ TENDERLY_ACCESS_KEY: accountSlug, TENDERLY_ACCOUNT_SLUG: projectSlug, TENDERLY_PROJECT_SLUG: accessKey }) => {
+      ({ TENDERLY_ACCOUNT_SLUG: accountSlug, TENDERLY_PROJECT_SLUG: projectSlug, TENDERLY_ACCESS_KEY: accessKey }) => {
         assert(
           [accountSlug, projectSlug, accessKey].every(Boolean),
           'Tenderly account environment variables are not set',
