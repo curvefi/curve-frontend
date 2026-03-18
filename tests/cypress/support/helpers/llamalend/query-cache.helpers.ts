@@ -1,7 +1,9 @@
-import { type Address, erc20Abi } from 'viem'
+import { type Address, erc20Abi, parseUnits } from 'viem'
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryClient } from '@ui-kit/lib/api'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { readContractsQueryOptions } from '@wagmi/core/query'
+import { oneInt } from '../../generators'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
 
 export const seedErc20BalanceQuery = ({
@@ -55,18 +57,20 @@ export const seedErc20BalanceForAddresses = ({
 export const seedCrvUsdBalance = ({
   chainId,
   addresses,
-  rawBalance,
+  min,
+  max = `${Number(min) * 100}`,
   decimals = 18,
 }: {
   chainId: number
   addresses: Address[]
-  rawBalance: bigint
+  min: Decimal
+  max?: Decimal
   decimals?: number
 }) =>
   seedErc20BalanceForAddresses({
     chainId,
     tokenAddress: CRVUSD_ADDRESS as Address,
     addresses,
-    rawBalance,
+    rawBalance: parseUnits(`${oneInt(Math.ceil(Number(min)), Math.ceil(Number(max)))}`, decimals),
     decimals,
   })

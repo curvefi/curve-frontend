@@ -3,7 +3,6 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
@@ -42,7 +41,7 @@ describe('RepayForm (mocked)', () => {
       void collateral
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks })
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], rawBalance: BigInt(oneInt(15, 80)) * 10n ** 18n })
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
