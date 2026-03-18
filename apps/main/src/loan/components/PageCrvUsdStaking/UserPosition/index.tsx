@@ -40,7 +40,7 @@ export const UserPosition = () => {
 
   return (
     <Card>
-      <CardHeader title={t`Position Details`} />
+      <CardHeader size="small" title={t`Position Details`} />
       <CardContent>
         <Stack gap={Spacing.md}>
           <Grid
