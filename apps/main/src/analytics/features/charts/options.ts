@@ -10,7 +10,16 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
   gridLinesColor: theme.design.Color.Neutral[300],
   axisLabelsColor: theme.design.Text.TextColors.Tertiary,
 
-  colors: [theme.design.Chart.Lines.Line1, theme.design.Chart.Lines.Line2, theme.design.Chart.Lines.Line3],
+  colors: [
+    theme.design.Chart.Lines.Line1,
+    theme.design.Chart.Lines.Line2,
+    theme.design.Chart.Lines.Line3,
+    theme.design.Chart.Lines.Line4,
+    theme.design.Chart.Lines.Line5,
+    theme.design.Chart.Lines.Line6,
+    theme.design.Chart.Lines.Line7,
+    theme.design.Chart.Lines.Line8,
+  ],
 })
 
 type ChartPalette = ReturnType<typeof createPalette>
@@ -52,10 +61,7 @@ export function createChartOptions({ options, palette }: { options: EChartsOptio
     ...options,
     series: toArray(options.series).map((serie, i) =>
       // Need the casting for deepMerge to stop complaining. No time to fix type constraints right now.
-      deepMerge(
-        createSerieDefaults(palette, i, serie.type) as Record<string, unknown>,
-        serie as Record<string, unknown>,
-      ),
+      deepMerge(createSerieDefaults(palette, i, serie) as Record<string, unknown>, serie as Record<string, unknown>),
     ),
   }
   return deepMerge(createDefaults(palette), withSerieDefaults)
@@ -87,18 +93,24 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
   },
 })
 
-const createSerieDefaults = (palette: ChartPalette, i: number, type: string | undefined): SeriesOption => ({
+const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOption): SeriesOption => ({
   symbol: 'circle',
   symbolSize: 8,
   showSymbol: false, // hidden by default, only shown on hover (emphasis below)
   emphasis: {
     scale: true,
     disabled: false,
+    itemStyle: { color: '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // white fill only on hover dot
   },
   silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
   // The 2nd line chart should be dashed, hence 'type' is being set
-  lineStyle: { color: palette.colors[i], width: 2, ...(i === 1 && type === 'line' && { type: 10 }) },
-  itemStyle: { color: '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // styles the symbol on hover
+  lineStyle: {
+    color: palette.colors[i],
+    width: 2,
+    ...(i === 1 && serie.type === 'line' && !('areaStyle' in serie) && { type: 10 }),
+  },
+  itemStyle: { color: palette.colors[i] ?? '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // tooltip marker color
+  ...('areaStyle' in serie && { areaStyle: { color: palette.colors[i] } }),
 })
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */
