@@ -89,8 +89,8 @@ const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
   large: 'extraSmall',
 }
 
-const sizeSx = {
-  small: { width: IconSize.sm, height: IconSize.sm },
+const iconSx = {
+  small: { width: IconSize.xs, height: IconSize.xs },
   medium: { width: IconSize.md, height: IconSize.md },
   large: { width: IconSize.md, height: IconSize.md },
 } as const satisfies Record<ActionInfoSize, SystemStyleObject<Theme>>
@@ -181,7 +181,7 @@ export const ActionInfo = ({
             >
               {prevValue}
             </Typography>
-            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, ...sizeSx[size] }} />
+            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, ...iconSx[size] }} />
           </>
         )}
 
@@ -213,14 +213,7 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && (
-          <ErrorIconButton
-            message={errorMessage}
-            error={error}
-            buttonSize={iconButtonSize[size]}
-            iconSx={sizeSx[size]}
-          />
-        )}
+        {error && <ErrorIconButton message={errorMessage} error={error} size={iconButtonSize[size]} />}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}

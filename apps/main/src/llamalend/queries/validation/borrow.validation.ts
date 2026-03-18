@@ -37,7 +37,7 @@ export const createLoanFormValidationGroup = (
 ) =>
   group('createLoanFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
-    validateUserCollateral(userCollateral, collateralRequired)
+    validateUserCollateral(userCollateral, { required: collateralRequired })
     validateDebt(debt, debtRequired)
     validateSlippage({ slippage })
     validateRange(range)

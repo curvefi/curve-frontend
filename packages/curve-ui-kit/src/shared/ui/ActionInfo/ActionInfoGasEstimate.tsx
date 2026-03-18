@@ -33,7 +33,7 @@ export const ActionInfoGasEstimate = ({ gas, isApproved }: EstimatedTxCostProps)
     value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
     valueTooltip={gas.data?.tooltip}
     loading={gas.isLoading}
-    valueLeft={<FireIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
+    valueLeft={<FireIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
     size="small"
     error={gas.error}
     testId="estimated-tx-cost"

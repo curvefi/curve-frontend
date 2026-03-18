@@ -18,7 +18,7 @@ import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparis
 import { RouteProviderCard, type RouteProviderCardProps } from './RouteProviderCard'
 import { RouteProviderIcons } from './RouteProviderIcons'
 
-const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 const providerLabels = {
   curve: t`Curve`,
@@ -59,11 +59,7 @@ export const RouteProvidersAccordion = ({
       testId="route-provider-accordion"
       info={
         error ? (
-          <ErrorIconButton
-            error={error}
-            buttonSize="extraSmall"
-            iconSx={{ width: IconSize.sm.mobile, height: IconSize.sm.mobile }}
-          />
+          <ErrorIconButton error={error} size="extraExtraSmall" />
         ) : (
           !isExpanded &&
           (selectedRoute || isLoading ? (
