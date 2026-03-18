@@ -168,6 +168,7 @@ export const LoanActionInfoList = ({
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               {...combineActionInfoState(prices, prevPrices)}
               size="small"
+              alignItems="start"
               testId="borrow-price-range"
             />
           )}
