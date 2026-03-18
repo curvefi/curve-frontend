@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useChainId, useSwitchChain, useConfig } from 'wagmi'
+import { useChainId, useConfig } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { CurveContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import {
@@ -12,6 +12,7 @@ import {
 } from '@ui-kit/features/connect-wallet/lib/types'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
+import { useSwitchChain } from './useSwitchChain'
 import { globalLibs, isWalletMatching } from './utils'
 
 const { FAILURE, LOADING, HYDRATING, SUCCESS } = ConnectState
@@ -38,7 +39,7 @@ export const CurveProvider = <App extends AppName>({
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
   const walletChainId = useChainId()
-  const { mutateAsync: switchChainAsync } = useSwitchChain()
+  const switchChain = useSwitchChain()
   const { wallet, provider, isReconnecting } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
   const libKey = AppLibs[app]
@@ -55,12 +56,12 @@ export const CurveProvider = <App extends AppName>({
     if (isFocused) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setConnectState(LOADING)
-      switchChainAsync({ chainId: network.chainId }).catch((e) => {
+      switchChain({ chainId: network.chainId }).catch((e) => {
         console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
         setConnectState(FAILURE)
       })
     }
-  }, [isFocused, isReconnecting, walletChainId, network, onChainUnavailable, switchChainAsync, wallet])
+  }, [isFocused, isReconnecting, walletChainId, network, onChainUnavailable, switchChain, wallet])
 
   useEffect(() => {
     if (isReconnecting) return // wait for wagmi to auto-reconnect

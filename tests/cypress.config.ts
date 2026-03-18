@@ -2,6 +2,7 @@ import { defineConfig } from 'cypress'
 import { vitePreprocessor } from './vite-cypress-preprocessor'
 
 export default defineConfig({
+  allowCypressEnv: false,
   defaultCommandTimeout: 5000,
   pageLoadTimeout: 20000,
   video: true,

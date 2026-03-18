@@ -53,7 +53,7 @@ export type LlamaMarket = {
   totalCollateralUsd: number
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
-    lendApr: number | null // base lend APR %
+    lendApy: number | null // base lend APY %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
     lendTotalApyMinBoosted: number | null
@@ -147,7 +147,7 @@ const convertLendingVault = (
     collateralBalanceUsd,
     borrowApy,
     borrowApr,
-    aprLend: lendApr,
+    apyLend: lendApy,
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
@@ -194,13 +194,13 @@ const convertLendingVault = (
       totalAssetsUsd - // supplied assets
       totalDebtUsd,
     rates: {
-      lendApr,
+      lendApy,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
       lendTotalApyMinBoosted:
-        lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
+        lendApy + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
       lendTotalApyMaxBoosted:
-        lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
+        lendApy + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
       borrowApy,
       borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
@@ -300,7 +300,7 @@ const convertMintMarket = (
     totalDebtUsd: borrowedUsd,
     totalCollateralUsd: collateralAmountUsd,
     rates: {
-      lendApr: null,
+      lendApy: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
       lendTotalApyMinBoosted: null,

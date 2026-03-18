@@ -68,7 +68,7 @@ export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBas
   const { ok, status, statusText } = response
   if (!ok) {
     const [message, body] = ['Enso route request failed', await response.text()]
-    log.error({ message, status, statusText, url, body })
+    log.error({ message, status, statusText, url, body, authenticated: !!ENSO_API_KEY })
     return []
   }
 

@@ -111,7 +111,7 @@ export type OhlcChartSlice = {
       start: number,
       end: number,
     ): Promise<void>
-    resetState(chainId: ChainId): void
+    resetState(): void
   }
 }
 

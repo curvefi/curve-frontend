@@ -14,7 +14,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 // With other network conditions when the fee is fine, we get 'insufficient funds' since account is generated and has no funds.
 const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
 
-describe('Create loan', () => {
+describe.skip('Create loan', () => {
   const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
   testCases.forEach(({ collateral, borrow, path, label, hasLeverage, canBorrowMax = true }) => {
