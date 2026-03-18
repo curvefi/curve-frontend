@@ -122,6 +122,7 @@ const MappedModalHeight = {
   md: '80dvh',
 }
 const MappedColumnWidth = { sm: 125, md: 200, lg: 350 }
+
 export const SizesAndSpaces = {
   Spacing: MappedSpacing,
   Sizing: MappedSizing,

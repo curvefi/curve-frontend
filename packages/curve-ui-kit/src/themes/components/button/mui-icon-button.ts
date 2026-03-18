@@ -1,4 +1,5 @@
 /// <reference path="./mui-icon-button.d.ts" />
+import { IconButtonProps } from '@mui/material/IconButton'
 import type { Components } from '@mui/material/styles'
 import { recordEntries } from '@primitives/objects.utils'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
@@ -8,6 +9,26 @@ import { Fonts } from '../../fonts'
 import { buttonColor } from './utils'
 
 const { ButtonSize, OutlineWidth, IconSize } = SizesAndSpaces
+
+type IconButtonSize = NonNullable<IconButtonProps['size']>
+
+/** size mapping of the svg icons inside the icon buttons */
+export const IconButtonIconSize = {
+  extraExtraSmall: 'xs',
+  extraSmall: 'md',
+  small: 'lg',
+  medium: 'xl',
+  large: 'xxl',
+} satisfies Record<IconButtonSize, keyof typeof IconSize>
+
+const iconButtonSize = (designSize: keyof typeof ButtonSize, muiSize: IconButtonSize) => ({
+  height: ButtonSize[designSize],
+  minWidth: ButtonSize[designSize],
+  '& svg': handleBreakpoints({
+    width: IconSize[IconButtonIconSize[muiSize]],
+    height: IconSize[IconButtonIconSize[muiSize]],
+  }),
+})
 
 // note: should use IconSize instead of ButtonSize? Plus introduce many more sizes (xs to 4xl)
 export const defineMuiIconButton = ({ Button, Text }: DesignSystem): Components['MuiIconButton'] => {
@@ -36,31 +57,11 @@ export const defineMuiIconButton = ({ Button, Text }: DesignSystem): Components[
         ':focus-visible': { borderColor: Focus_Outline },
         fontFamily: Fonts[Text.FontFamily.Button],
       },
-      sizeExtraExtraSmall: {
-        height: ButtonSize.xxs,
-        minWidth: ButtonSize.xxs,
-        '& svg': handleBreakpoints({ width: IconSize.xs, height: IconSize.xs }),
-      },
-      sizeExtraSmall: {
-        height: ButtonSize.xs,
-        minWidth: ButtonSize.xs,
-        '& svg': handleBreakpoints({ width: IconSize.md, height: IconSize.md }),
-      },
-      sizeSmall: {
-        height: ButtonSize.sm,
-        minWidth: ButtonSize.sm,
-        '& svg': handleBreakpoints({ width: IconSize.lg, height: IconSize.lg }),
-      },
-      sizeMedium: {
-        height: ButtonSize.md,
-        minWidth: ButtonSize.md,
-        '& svg': handleBreakpoints({ width: IconSize.xl, height: IconSize.xl }),
-      },
-      sizeLarge: {
-        height: ButtonSize.lg,
-        minWidth: ButtonSize.lg,
-        '& svg': handleBreakpoints({ width: IconSize.xxl, height: IconSize.xxl }),
-      },
+      sizeExtraExtraSmall: iconButtonSize('xxs', 'extraExtraSmall'),
+      sizeExtraSmall: iconButtonSize('xs', 'extraSmall'),
+      sizeSmall: iconButtonSize('sm', 'small'),
+      sizeMedium: iconButtonSize('md', 'medium'),
+      sizeLarge: iconButtonSize('lg', 'large'),
       loadingIndicator: {
         // IconButton sizes change the size of all svg, but the loading indicator gets larger than its container
         svg: { maxWidth: '100%', maxHeight: '100%' },

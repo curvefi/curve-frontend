@@ -1,16 +1,15 @@
 import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
-import type { Theme } from '@mui/material'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import type { SystemStyleObject } from '@mui/system'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps } from '@ui-kit/utils'
@@ -18,7 +17,7 @@ import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, IconSize, ButtonSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium' | 'large'
 
@@ -83,17 +82,11 @@ const valueSize = {
   large: 'bodyMBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
+const iconButtonSize = {
   small: 'extraExtraSmall',
   medium: 'extraSmall',
   large: 'extraSmall',
-}
-
-const iconSx = {
-  small: { width: IconSize.xs, height: IconSize.xs },
-  medium: { width: IconSize.md, height: IconSize.md },
-  large: { width: IconSize.md, height: IconSize.md },
-} as const satisfies Record<ActionInfoSize, SystemStyleObject<Theme>>
+} satisfies Record<ActionInfoSize, IconButtonProps['size']>
 
 const rowHeight: Record<ActionInfoSize, string> = {
   small: ButtonSize.xxs,
@@ -152,6 +145,8 @@ export const ActionInfo = ({
   const showPrevValue = isSet(value) && isSet(prevValue)
   value ??= prevValue ?? emptyValue
 
+  const buttonSize = iconButtonSize[size]
+  const iconSize = IconButtonIconSize[buttonSize]
   return (
     <Stack
       direction="row"
@@ -181,7 +176,7 @@ export const ActionInfo = ({
             >
               {prevValue}
             </Typography>
-            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, ...iconSx[size] }} />
+            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, width: iconSize, height: iconSize }} />
           </>
         )}
 
@@ -213,13 +208,13 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && <ErrorIconButton message={errorMessage} error={error} size={iconButtonSize[size]} />}
+        {error && <ErrorIconButton message={errorMessage} error={error} size={buttonSize} />}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}
             label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
             confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
-            size={iconButtonSize[size]}
+            size={buttonSize}
           />
         )}
 
@@ -229,7 +224,7 @@ export const ActionInfo = ({
             href={link}
             target="_blank"
             rel="noopener"
-            size={iconButtonSize[size]}
+            size={buttonSize}
           >
             <CallMade />
           </IconButton>
