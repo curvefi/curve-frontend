@@ -1,9 +1,16 @@
 import { invalidateAllBandsChartQueries } from '@/llamalend/features/bands-chart/queries/invalidation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
-import { invalidateMarketCapAndAvailable, invalidateMarketRates, invalidateMarketTotalCollateral } from '../market'
+import {
+  invalidateMarketCapAndAvailable,
+  invalidateMarketRates,
+  invalidateMarketTotalCollateral,
+  invalidateMarketVaultOnChainRewards,
+  invalidateMarketVaultPricePerShare,
+} from '../market'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
+import { invalidateClaimableCrv, invalidateClaimableRewards } from '../supply/supply-claimable-rewards.query'
 import { invalidateUserBalances } from './user-balances.query'
 import { invalidateUserBands } from './user-bands.query'
 import { invalidateUserCurrentLeverage } from './user-current-leverage.query'
@@ -11,6 +18,7 @@ import { invalidateUserHealth } from './user-health.query'
 import { invalidateLoanExists } from './user-loan-exists.query'
 import { invalidateUserPrices } from './user-prices.query'
 import { invalidateUserState } from './user-state.query'
+import { invalidateUserSupplyBoost } from './user-supply-boost.query'
 
 /**
  * Helper function to invalidate all user-position queries for a market.
@@ -26,6 +34,9 @@ export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainI
     invalidateUserBands({ marketId, userAddress, chainId }),
     invalidateUserCurrentLeverage({ marketId, userAddress, chainId }),
     invalidateUserPrices({ marketId, userAddress, chainId, loanExists: true }),
+    invalidateUserSupplyBoost({ marketId, userAddress, chainId }),
+    invalidateClaimableRewards({ marketId, userAddress, chainId }),
+    invalidateClaimableCrv({ marketId, userAddress, chainId }),
   ])
 
 /**
@@ -42,4 +53,6 @@ export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId 
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),
     invalidateAllUserLendingSupplies(userAddress),
+    invalidateMarketVaultPricePerShare({ marketId, chainId }),
+    invalidateMarketVaultOnChainRewards({ marketId, chainId }),
   ])

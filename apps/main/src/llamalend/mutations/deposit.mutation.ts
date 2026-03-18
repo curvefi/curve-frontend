@@ -48,7 +48,8 @@ export const useDepositMutation = ({
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
-        isApproved: async () => await fetchDepositIsApproved({ chainId, marketId, ...variables }, { staleTime: 0 }),
+        isApproved: async () =>
+          await fetchDepositIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
         onApprove: async () => await approveDeposit(lendMarket, variables),
         message: t`Approved deposit`,
         config,
