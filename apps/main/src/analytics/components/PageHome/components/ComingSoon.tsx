@@ -1,4 +1,5 @@
 import { MIN_HEIGHT } from '@/analytics/features/charts/components/EChartsCard'
+import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -17,11 +18,18 @@ export const ComingSoon = () => (
   <Card>
     <CardHeader title={t`Coming soon`} size="small" />
     <CardContent size="small">
-      <Stack gap={Spacing.sm} alignItems="center" justifyContent="center" minHeight={MIN_HEIGHT}>
+      <Stack
+        gap={Spacing.sm}
+        alignItems="center"
+        justifyContent="center"
+        minHeight={MIN_HEIGHT}
+        marginInline="auto"
+        sx={{ maxWidth: MaxWidth.emptyStateCard }}
+      >
         <Stack gap={Spacing.xs} alignItems="center">
           <LlamaIcon color="primary" sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
 
-          <Stack alignItems="center" textAlign="center" sx={{ maxWidth: MaxWidth.emptyStateCard, textWrap: 'pretty' }}>
+          <Stack alignItems="center" textAlign="center" sx={{ textWrap: 'pretty' }}>
             <Typography variant="headingXsBold">{t`Analytics v2 in progress`}</Typography>
 
             <Stack gap={Spacing.md}>
@@ -36,7 +44,8 @@ export const ComingSoon = () => (
           </Stack>
         </Stack>
 
-        <Stack direction="row" gap={Spacing.xs} flexWrap="wrap" justifyContent="center">
+        {/** Using grid here for equal sized buttons */}
+        <Box display="grid" gap={Spacing.xs} gridTemplateColumns={{ tablet: '1fr 1fr' }}>
           <ExternalLink
             wide
             variant="contained"
@@ -44,7 +53,6 @@ export const ComingSoon = () => (
             href="https://curvemonitor.com/"
             label={t`CurveMonitor`}
             startIcon={<LAFIcon color="warning" />}
-            sx={{ width: `calc(${MaxWidth.emptyStateCard} / 2)` }}
           />
 
           <ExternalLink
@@ -54,9 +62,8 @@ export const ComingSoon = () => (
             href="https://crvhub.com/"
             label={t`CRVHub`}
             startIcon={<CrvHubIcon />}
-            sx={{ width: `calc(${MaxWidth.emptyStateCard} / 2)` }}
           />
-        </Stack>
+        </Box>
       </Stack>
     </CardContent>
   </Card>
