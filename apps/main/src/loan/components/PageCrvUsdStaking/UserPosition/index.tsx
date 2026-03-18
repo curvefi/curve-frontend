@@ -7,7 +7,6 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { useStore } from '@/loan/store/useStore'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -18,9 +17,6 @@ const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbrevia
 
 export const UserPosition = () => {
   const { address } = useConnection()
-  const {
-    design: { Layer },
-  } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
   const usdRateLoading = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus === 'loading')
@@ -43,15 +39,8 @@ export const UserPosition = () => {
       <CardHeader size="small" title={t`Position Details`} />
       <CardContent>
         <Stack gap={Spacing.md}>
-          <Grid
-            container
-            wrap="wrap"
-            columnGap={Spacing.lg}
-            rowGap={Spacing.md}
-            padding={Spacing.lg}
-            sx={{ backgroundColor: Layer[2].Fill, border: `2px solid ${Layer.Highlight.Outline}`, width: '100%' }}
-          >
-            <Grid flexGrow={1}>
+          <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
+            <Grid size={6}>
               <Metric
                 size="large"
                 label={t`Your crvUSD Staked`}
@@ -60,7 +49,7 @@ export const UserPosition = () => {
                 loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
               />
             </Grid>
-            <Grid flexGrow={1}>
+            <Grid size={6}>
               <Metric
                 size="large"
                 label={t`Your share of the vault`}
@@ -70,8 +59,9 @@ export const UserPosition = () => {
               />
             </Grid>
           </Grid>
-          <Grid container columnGap={Spacing.lg} rowGap={Spacing.md} wrap="wrap">
-            <Grid flexGrow={1}>
+
+          <Grid container columnSpacing={Spacing.lg} rowSpacing={Spacing.md} wrap="wrap">
+            <Grid size={3}>
               <Metric
                 size="small"
                 label={t`30 Days Projection`}
@@ -83,7 +73,8 @@ export const UserPosition = () => {
                 }}
               />
             </Grid>
-            <Grid flexGrow={1}>
+
+            <Grid size={3}>
               <Metric
                 size="small"
                 label={t`1 Year Projection`}
@@ -95,7 +86,8 @@ export const UserPosition = () => {
                 }}
               />
             </Grid>
-            <Grid flexGrow={1}>
+
+            <Grid size={3}>
               <Metric
                 size="small"
                 label={t`Estimated APY`}
