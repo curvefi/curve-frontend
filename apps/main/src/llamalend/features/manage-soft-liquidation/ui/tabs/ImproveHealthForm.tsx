@@ -2,7 +2,6 @@ import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayL
 import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayForm'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -27,14 +26,12 @@ export const ImproveHealthForm = ({
   networks,
   chainId,
   enabled,
-  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onSuccess?: RepayOptions['onSuccess']
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
@@ -59,7 +56,6 @@ export const ImproveHealthForm = ({
     market,
     network,
     enabled,
-    onSuccess,
     onPricesUpdated,
   })
 

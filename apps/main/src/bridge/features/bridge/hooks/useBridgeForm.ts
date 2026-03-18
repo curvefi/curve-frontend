@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
@@ -10,7 +11,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -108,12 +109,11 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     isPending: isApproving,
     error: approveError,
     data: approveData,
-    reset: resetApprove,
   } = useBridgeApproveMutation({
     chainId,
-    onApproved: async () => {
-      await invalidateBridgeIsApproved(params)
-    },
+    onApproved: async () => await invalidateBridgeIsApproved(params),
+    onReset: form.reset,
+    isDirty: form.formState.isDirty,
   })
 
   // Bridge mutation
@@ -123,15 +123,12 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     isSuccess: isBridged,
     error: bridgeError,
     data: bridgeData,
-    reset: resetBridge,
   } = useBridgeMutation({
     chainId,
     onReset: form.reset,
+    isDirty: form.formState.isDirty,
+    onBridged: noop,
   })
-
-  // Reset mutation state on form changes after mutations
-  useCallbackAfterFormUpdate(form, resetApprove)
-  useCallbackAfterFormUpdate(form, resetBridge)
 
   /**
    * Set fromChainId to the chainId passed to this form, which is the chain from the URL.

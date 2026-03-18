@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type WithdrawOptions, useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
+import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
 import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import {
   withdrawFormValidationSuite,
@@ -14,7 +14,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   withdrawAmount: undefined,
@@ -24,12 +24,10 @@ const emptyWithdrawForm = (): WithdrawForm => ({
 export const useWithdrawForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<WithdrawOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -65,12 +63,9 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     isSuccess: isWithdrawn,
     error: withdrawError,
     data,
-    reset: resetWithdraw,
-  } = useWithdrawMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
+  } = useWithdrawMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
 
   const { formState } = form
-
-  useCallbackAfterFormUpdate(form, resetWithdraw)
 
   useEffect(() => {
     updateForm(form, { maxWithdrawAmount: maxUserWithdraw.data })

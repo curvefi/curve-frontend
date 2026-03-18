@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
@@ -6,7 +7,6 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForTransaction } from '@ui-kit/utils'
 import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
 
@@ -15,19 +15,14 @@ type ClaimMutation = Record<string, never>
 export type ClaimOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<ClaimMutation>
   userAddress: Address | undefined
 }
 
-export const useClaimMutation = ({
-  network: _network,
-  network: { chainId },
-  marketId,
-  onSuccess,
-  userAddress,
-}: ClaimOptions) => {
+const noFormFieldOptions = { isDirty: undefined, onReset: noop }
+
+export const useClaimMutation = ({ network: _network, network: { chainId }, marketId, userAddress }: ClaimOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<ClaimMutation>({
+  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<ClaimMutation>({
     network: _network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claim'] as const,
@@ -51,10 +46,10 @@ export const useClaimMutation = ({
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,
     successMessage: () => t`Claimed rewards!`,
-    onSuccess,
+    ...noFormFieldOptions, // no form fields
   })
 
   const onSubmit = useCallback(() => mutate({}), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess }
 }

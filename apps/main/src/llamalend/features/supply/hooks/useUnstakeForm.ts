@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type UnstakeOptions, useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
+import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import { useUserBalances } from '@/llamalend/queries/user'
 import {
   unstakeFormValidationSuite,
@@ -17,7 +17,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   unstakeAmount: undefined,
@@ -35,12 +35,10 @@ const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Addr
 export const useUnstakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<UnstakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -78,12 +76,15 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     isSuccess: isUnstaked,
     error: unstakeError,
     data,
-    reset: resetUnstake,
-  } = useUnstakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
+  } = useUnstakeMutation({
+    marketId,
+    network,
+    onReset: form.reset,
+    isDirty: form.formState.isDirty,
+    userAddress,
+  })
 
   const { formState } = form
-
-  useCallbackAfterFormUpdate(form, resetUnstake)
 
   useEffect(() => {
     updateForm(form, { maxUnstakeAmount: maxUserUnstake.data })

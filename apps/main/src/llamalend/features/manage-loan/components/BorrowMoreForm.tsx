@@ -2,7 +2,6 @@ import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import {
   isLeverageBorrowMore,
@@ -32,7 +31,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
   onPricesUpdated,
 }: {
@@ -40,7 +38,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: OnBorrowedMore
   fromWallet?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
@@ -66,7 +63,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onSuccess,
     onPricesUpdated,
   })
 

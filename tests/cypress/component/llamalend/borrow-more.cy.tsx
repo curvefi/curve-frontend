@@ -29,7 +29,6 @@ describe('BorrowMoreForm (mocked)', () => {
     it(title, () => {
       const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
         createBorrowMoreScenario({ chainId, approved })
-      const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
@@ -37,13 +36,7 @@ describe('BorrowMoreForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <BorrowMoreForm
-            market={market}
-            networks={networks}
-            chainId={chainId}
-            onSuccess={onSuccess}
-            onPricesUpdated={onPricesUpdated}
-          />
+          <BorrowMoreForm market={market} networks={networks} chainId={chainId} onPricesUpdated={onPricesUpdated} />
         </MockLoanTestWrapper>,
       )
 
@@ -75,7 +68,6 @@ describe('BorrowMoreForm (mocked)', () => {
         } else {
           expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
         }
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

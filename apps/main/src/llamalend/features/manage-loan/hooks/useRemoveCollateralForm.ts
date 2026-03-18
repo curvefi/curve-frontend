@@ -3,10 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  type RemoveCollateralOptions,
-  useRemoveCollateralMutation,
-} from '@/llamalend/mutations/remove-collateral.mutation'
+import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
@@ -18,7 +15,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -27,12 +24,10 @@ export const useRemoveCollateralForm = <
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<RemoveCollateralOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -69,14 +64,12 @@ export const useRemoveCollateralForm = <
   const { onSubmit, ...action } = useRemoveCollateralMutation({
     marketId,
     network,
-    onSuccess,
     onReset: form.reset,
+    isDirty: form.formState.isDirty,
     userAddress,
   })
   const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
-
-  useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
     updateForm(form, { maxCollateral: maxRemovable.data })

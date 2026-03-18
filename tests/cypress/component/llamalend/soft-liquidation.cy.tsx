@@ -38,7 +38,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
           chainId,
           approved,
         })
-        const onSuccess = cy.spy().as('onSuccess')
         const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
         setLlamaApi(llamaApi)
@@ -51,7 +50,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
               market={market}
               networks={networks}
               chainId={chainId}
-              onSuccess={onSuccess}
               onPricesUpdated={onPricesUpdated}
             />
           </MockLoanTestWrapper>,
@@ -85,7 +83,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
             expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
           }
           expect(stubs.repay).to.have.been.calledWithExactly(...expected.improveHealth.submit)
-          expect(onSuccess).to.have.been.calledOnce
         })
       })
     })
@@ -95,7 +92,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
         const { debt, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({ chainId, approved })
-        const onSuccess = cy.spy().as('onSuccess')
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks })
@@ -103,7 +99,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ClosePositionForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} />
+            <ClosePositionForm market={market} networks={networks} chainId={chainId} />
           </MockLoanTestWrapper>,
         )
 
@@ -121,7 +117,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
             expect(stubs.selfLiquidateApprove).to.have.been.calledWithExactly(...expected.closePosition.approve)
           }
           expect(stubs.selfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.submit)
-          expect(onSuccess).to.have.been.calledOnce
         })
       })
     })

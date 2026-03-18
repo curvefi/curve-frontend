@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import type { ClaimOptions } from '@/llamalend/mutations/claim.mutation'
 import { useClaimMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { UserMarketParams } from '@ui-kit/lib/model'
@@ -13,12 +12,10 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: ClaimOptions['onSuccess']
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -53,7 +50,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isSuccess: isClaimed,
     error: claimError,
     data,
-  } = useClaimMutation({ marketId, network, onSuccess, userAddress })
+  } = useClaimMutation({ marketId, network, userAddress })
 
   return {
     params,

@@ -5,7 +5,7 @@ import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/u
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
+import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
@@ -24,7 +24,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { AllowUndefined, Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors, updateForm } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -109,13 +109,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
-  onSuccess?: NonNullable<RepayOptions['onSuccess']>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
@@ -135,17 +133,15 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isSuccess: isRepaid,
     error: repayError,
     data,
-    reset: resetRepay,
   } = useRepayMutation({
     network,
     marketId,
-    onSuccess,
     onReset: form.reset,
+    isDirty: form.formState.isDirty,
     userAddress,
   })
 
   useChartPricesCallback(params, onPricesUpdated, enabled)
-  useCallbackAfterFormUpdate(form, resetRepay) // reset mutation state on form change
 
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)

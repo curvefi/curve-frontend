@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { WithdrawOptions } from '@/llamalend/mutations/withdraw.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -15,7 +14,6 @@ export type WithdrawFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<WithdrawOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
@@ -25,7 +23,6 @@ export const WithdrawForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: WithdrawFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -41,7 +38,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     txHash,
     formErrors,
     max,
-  } = useWithdrawForm({ market, network, enabled, onSuccess })
+  } = useWithdrawForm({ market, network, enabled })
 
   return (
     <Form

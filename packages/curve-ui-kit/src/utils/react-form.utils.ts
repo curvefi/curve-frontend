@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
 
@@ -43,11 +43,6 @@ export const filterFormErrors = <TFieldValues extends FieldValues>(formState: Fo
 
 export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   useMemo(() => filterFormErrors(formState), [formState])
-
-export const useCallbackAfterFormUpdate = <TFieldValues extends FieldValues>(
-  form: UseFormReturn<TFieldValues>,
-  callback: () => void,
-) => useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 /** Checks if any of the given fields are touched in the form. */
 export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: Path<T>[]) =>

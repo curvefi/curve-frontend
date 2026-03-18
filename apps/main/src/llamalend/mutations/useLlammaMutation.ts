@@ -24,7 +24,6 @@ type LlammaContext = TransactionContext & {
 export function useLlammaMutation<TVariables extends object>({
   network: { chainId, id: networkId },
   marketId,
-  onSuccess,
   ...options
 }: TransactionMutationOptions<TVariables, LlammaContext> & {
   /** The llamma market id */
@@ -45,10 +44,9 @@ export function useLlammaMutation<TVariables extends object>({
       const market = getLlamaMarket(marketId)
       return { ...baseContext, llamaApi, market }
     },
-    onSuccess: async (data, receipt, variables, context) => {
+    onSuccess: async (_data, receipt, _variables, context) => {
       updateUserEventsApi(context.wallet, { id: networkId }, context.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
-      await onSuccess?.(data, receipt, variables, context)
     },
   })
 }

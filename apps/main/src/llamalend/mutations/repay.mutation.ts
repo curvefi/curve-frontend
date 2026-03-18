@@ -16,7 +16,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { decimal, waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
@@ -31,8 +30,8 @@ type RepayMutation = {
 export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<RepayMutation>
-  onReset?: () => void
+  onReset: () => void
+  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -84,16 +83,9 @@ const repay = async (
   }
 }
 
-export const useRepayMutation = ({
-  network,
-  network: { chainId },
-  marketId,
-  onSuccess,
-  onReset,
-  userAddress,
-}: RepayOptions) => {
+export const useRepayMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: RepayOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
+  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
@@ -110,8 +102,7 @@ export const useRepayMutation = ({
     validationSuite: repayFromCollateralIsFullValidationSuite,
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(
@@ -125,5 +116,5 @@ export const useRepayMutation = ({
     [mutate],
   )
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess }
 }
