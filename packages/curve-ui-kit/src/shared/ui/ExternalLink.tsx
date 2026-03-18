@@ -10,6 +10,7 @@ export const ExternalLink = ({
 }: {
   href: string
   label: string
+  /** Puts start icon on the left with the label, and end icon all the way to the right */
   wide?: boolean
 } & ButtonOwnProps) => (
   <Button
