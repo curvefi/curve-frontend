@@ -10,29 +10,26 @@ type BridgeActionInfosProps = EstimatedTxCostProps & {
   nativeTokenSymbol: string
 }
 
-export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymbol }: BridgeActionInfosProps) => {
+export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymbol }: BridgeActionInfosProps) => (
+  <Stack>
+    <ActionInfo
+      label={t`Estimated bridge cost`}
+      value={
+        bridgeCost.data == null
+          ? undefined
+          : formatNumber(bridgeCost.data, {
+              unit: {
+                symbol: ` ${nativeTokenSymbol}`,
+                position: 'suffix',
+              },
+              abbreviate: false,
+            })
+      }
+      size="small"
+      loading={bridgeCost.isLoading}
+      error={bridgeCost.error}
+    />
 
-  return (
-    <Stack>
-      <ActionInfo
-        label={t`Estimated bridge cost`}
-        value={
-          bridgeCost.data == null
-            ? undefined
-            : formatNumber(bridgeCost.data, {
-                unit: {
-                  symbol: ` ${nativeTokenSymbol}`,
-                  position: 'suffix',
-                },
-                abbreviate: false,
-              })
-        }
-        size="small"
-        loading={bridgeCost.isLoading}
-        error={bridgeCost.error}
-      />
-
-      <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />
-    </Stack>
-  )
-}
+    <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />
+  </Stack>
+)
