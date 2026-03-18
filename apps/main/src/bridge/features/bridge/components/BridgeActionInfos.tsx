@@ -5,11 +5,12 @@ import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 
 type BridgeActionInfosProps = EstimatedTxCostProps & {
-  /** Query returning the estimated bridge cost in ETH. */
+  /** Query returning the estimated bridge cost in the chain's native token. */
   bridgeCost: QueryProp<number>
+  nativeTokenSymbol: string
 }
 
-export const BridgeActionInfos = ({ bridgeCost, gas, isApproved }: BridgeActionInfosProps) => (
+export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymbol }: BridgeActionInfosProps) => (
   <Stack>
     <ActionInfo
       label={t`Estimated bridge cost`}
@@ -18,7 +19,7 @@ export const BridgeActionInfos = ({ bridgeCost, gas, isApproved }: BridgeActionI
           ? undefined
           : formatNumber(bridgeCost.data, {
               unit: {
-                symbol: ' ETH',
+                symbol: ` ${nativeTokenSymbol}`,
                 position: 'suffix',
               },
               abbreviate: false,
