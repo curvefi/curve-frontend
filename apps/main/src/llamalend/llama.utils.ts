@@ -8,7 +8,7 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { type Address, Hex } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
@@ -56,6 +56,9 @@ export const hasV1Deleverage = (market: LlamaMarketTemplate) =>
 // hasV2Leverage works for deleverage as well
 export const hasDeleverage = (market: LlamaMarketTemplate) =>
   hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+
+/** check if an open position is a leveraged position, using the leverage value */
+export const isLeveragedPosition = (leverage: Amount | undefined | null) => leverage != null && Number(leverage) !== 1
 
 export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)

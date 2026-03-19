@@ -131,8 +131,9 @@ export function ChartCrvUsdSupply() {
               supply: chartData.map((x) => ({ time: x.time, value: x.supply })),
               borrowed: chartData.map((x) => ({ time: x.time, value: x.borrowed })),
             }}
+            fullscreen={fullscreen}
           />
-          <ButtonFullscreen onToggle={toggleFullscreen} />
+          <ButtonFullscreen onToggle={toggleFullscreen} fullscreen={fullscreen} />
         </>
       }
     >
