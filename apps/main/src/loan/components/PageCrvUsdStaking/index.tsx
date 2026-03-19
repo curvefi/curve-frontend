@@ -112,7 +112,7 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
         >
           {isChartExpanded && (
             <>
-              {!isUserScrvUsdBalanceZero && <UserPosition chartExpanded={isChartExpanded} />}
+              {!isUserScrvUsdBalanceZero && <UserPosition />}
               <Statistics
                 hideExpandChart={columnView}
                 isChartExpanded={isChartExpanded}
