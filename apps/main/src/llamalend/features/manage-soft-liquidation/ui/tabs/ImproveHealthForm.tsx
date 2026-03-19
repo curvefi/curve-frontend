@@ -87,7 +87,6 @@ export const ImproveHealthForm = ({
         max={{ ...q(maxRepay), fieldName: maxRepay.field }}
         testId="improve-health-input-debt"
         network={network}
-        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         message={
           <Balance
             prefix={t`Max repay amount:`}
@@ -95,7 +94,7 @@ export const ImproveHealthForm = ({
             symbol={borrowToken?.symbol}
             balance={maxRepay.data}
             loading={maxRepay.isLoading}
-            onClick={() => updateForm(form, { userBorrowed: maxRepay.data, isFull: true })}
+            onClick={() => updateForm(form, { userBorrowed: maxRepay.data })}
           />
         }
       />

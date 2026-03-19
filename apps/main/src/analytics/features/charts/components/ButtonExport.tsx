@@ -62,8 +62,16 @@ function triggerDownload(filename: string, csvContent: string) {
  *   data={{ supply: [{ time: 1625097600000, value: 1000 }], borrowed: [...] }}
  * />
  */
-export const ButtonExport = ({ filename, data }: { filename: string; data: SeriesData }) => (
-  <IconButton onClick={() => triggerDownload(filename, createCsvData(data))} size="small">
+export const ButtonExport = ({
+  filename,
+  data,
+  fullscreen,
+}: {
+  filename: string
+  data: SeriesData
+  fullscreen: boolean
+}) => (
+  <IconButton onClick={() => triggerDownload(filename, createCsvData(data))} size={fullscreen ? 'small' : 'extraSmall'}>
     <DownloadIcon />
   </IconButton>
 )

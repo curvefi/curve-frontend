@@ -1,11 +1,10 @@
-import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
+import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   type RepayForm,
   repayFromCollateralIsFullValidationSuite,
@@ -16,7 +15,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { decimal, waitForApproval } from '@ui-kit/utils'
+import { waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
   stateCollateral: Decimal
@@ -39,7 +38,7 @@ const approveRepay = async (
   market: LlamaMarketTemplate,
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId }: RepayMutation,
 ) => {
-  if (isFull && !+stateCollateral && !+userCollateral) {
+  if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await market.fullRepayApprove()) as Hex[]
   }
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
@@ -60,7 +59,7 @@ const repay = async (
   market: LlamaMarketTemplate,
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
-  if (isFull && !+stateCollateral && !+userCollateral) {
+  if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await market.fullRepay()) as Hex
   }
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
@@ -110,8 +109,7 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
       mutate({
         ...form,
         isFull,
-        // Apply buffer when the user selected max to prevent dust
-        userBorrowed: isFull ? decimal(BigNumber(1).plus(form.slippage).times(userBorrowed)) : userBorrowed,
+        userBorrowed,
       } as RepayMutation),
     [mutate],
   )
