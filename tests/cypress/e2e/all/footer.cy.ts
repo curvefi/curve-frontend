@@ -1,11 +1,9 @@
-import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneMobileViewport, oneTabletViewport } from '@cy/support/ui'
-
-const viewports = [oneDesktopViewport(), oneTabletViewport(), oneMobileViewport()]
+import { allViewports, LOAD_TIMEOUT, oneAppPath } from '@cy/support/ui'
 
 describe('Footer', () => {
-  viewports.forEach((viewport) => {
-    it(`should contain multiple links on ${viewport[0]}x${viewport[1]} viewport`, () => {
-      cy.viewport(...viewport)
+  allViewports().forEach(([width, height]) => {
+    it(`should contain multiple links on ${width}x${height} viewport`, () => {
+      cy.viewport(width, height)
       cy.visit(`/${oneAppPath()}`)
       cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
       cy.get("[data-testid='footer'] a")

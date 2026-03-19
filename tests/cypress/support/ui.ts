@@ -14,14 +14,16 @@ export const oneMobileViewport = () =>
 export const oneTabletViewport = () =>
   [oneInt(TABLET_BREAKPOINT, DESKTOP_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'tablet'] as const
 
-export const oneMobileOrTabletViewport = () =>
-  [oneInt(MIN_WIDTH, DESKTOP_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+export const oneMobileOrTabletViewport = () => oneOf<Viewport>(oneMobileViewport(), oneTabletViewport())
+
+export const oneTabletOrDesktopViewport = () => oneOf<Viewport>(oneTabletViewport(), oneDesktopViewport())
 
 export type Breakpoint = 'mobile' | 'tablet' | 'desktop'
+export type Viewport = readonly [number, number, Breakpoint]
 
-export const allViewports = () => [oneMobileViewport(), oneTabletViewport(), oneDesktopViewport()] as const
+export const allViewports = () => [oneMobileViewport(), oneTabletViewport(), oneDesktopViewport()] satisfies Viewport[]
 
-export const oneViewport = () => oneOf(allViewports())
+export const oneViewport = () => oneOf(...allViewports())
 
 const isInViewport = ($el: JQuery) => {
   const height = Cypress.$(cy.state('window')).height()!
