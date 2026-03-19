@@ -110,7 +110,7 @@ const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOpti
     ...(i === 1 && serie.type === 'line' && !('areaStyle' in serie) && { type: 10 }),
   },
   itemStyle: { color: palette.colors[i] ?? '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // tooltip marker color
-  ...('areaStyle' in serie && { areaStyle: { color: palette.colors[i] } }),
+  ...('areaStyle' in serie && { areaStyle: { color: palette.colors[i], opacity: 0.66 } }),
 })
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */
