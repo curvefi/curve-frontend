@@ -43,6 +43,7 @@ describe('BorrowMoreForm (mocked)', () => {
             chainId={chainId}
             onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
+            enabled
           />
         </MockLoanTestWrapper>,
       )
