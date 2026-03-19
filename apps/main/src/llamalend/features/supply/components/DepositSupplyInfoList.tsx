@@ -5,7 +5,6 @@ import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
-import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
@@ -37,7 +36,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
 
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
-  const prevAmountSupplied = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
+  const prevAmountSupplied = mapQuery(userBalances, (d) => d.vaultSharesConverted)
 
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
   const additionalVaultShares = useDepositExpectedVaultShares(params, isOpen)

@@ -29,28 +29,6 @@ export const { useQuery: useSharesToAssetsAmount } = queryFactory({
 })
 
 /**
- * Get the user vault share balance and convert it to underlying asset amounts.
- */
-export const useUserVaultSharesToAssetsAmount = (query: FieldsOf<UserMarketQuery>, enabled?: boolean) => {
-  const {
-    data: userVaultShareBalances,
-    isLoading: userVaultShareBalancesLoading,
-    error: userVaultShareBalancesError,
-  } = useUserBalances(query, enabled)
-  const {
-    data,
-    isLoading: sharesToAssetsLoading,
-    error: sharesToAssetsError,
-  } = useSharesToAssetsAmount({ ...query, shares: userVaultShareBalances?.vaultShares }, enabled)
-
-  return {
-    data,
-    isLoading: [userVaultShareBalancesLoading, sharesToAssetsLoading].some(Boolean),
-    error: [userVaultShareBalancesError, sharesToAssetsError].find(Boolean) ?? null,
-  }
-}
-
-/**
  * Get the user staked vault share balance (gauge) and convert it to underlying asset amounts.
  */
 export const useUserStakedVaultSharesToAssetsAmount = (query: FieldsOf<UserMarketQuery>, enabled?: boolean) => {
