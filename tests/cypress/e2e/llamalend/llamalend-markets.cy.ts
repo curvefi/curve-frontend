@@ -48,6 +48,20 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height, breakpoint])
     })
 
+    it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
+      withFilterChips(breakpoint, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      })
+      expandFirstRowOnMobile(breakpoint)
+      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
+      withFilterChips(breakpoint, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+      })
+    })
+
     it('should have sticky headers', () => {
       cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
       cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
@@ -299,20 +313,6 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
       }
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
-    })
-
-    it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      })
-      expandFirstRowOnMobile(breakpoint)
-      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-      })
     })
 
     it('should hide columns', () => {
