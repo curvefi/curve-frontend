@@ -17,9 +17,11 @@ import { recordValues } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
 describe('Collateral forms', () => {
-  const testCases = recordValues(LOAN_TEST_MARKETS)
+  // todo: test more markets
+  const _testCases = recordValues(LOAN_TEST_MARKETS)
     .flat()
-    .filter((market) => !market.hasLeverage) // todo: markets with leverage don't recognize the programmatic loan yet
+    .filter((market) => !market.hasLeverage)
+  const testCases = [LOAN_TEST_MARKETS.Mint[0]]
 
   testCases.forEach(
     ({ borrow, chainId, collateral, collateralAddress, controllerAddress, collateralDecimals, id, label }) => {

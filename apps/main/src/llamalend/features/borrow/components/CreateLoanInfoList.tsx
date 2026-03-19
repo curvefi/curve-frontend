@@ -1,21 +1,20 @@
-import BigNumber from 'bignumber.js'
 import type { FieldError, UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
-import { useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { useMarketFutureRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils/decimal'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
+import { calculateLeverageCollateral } from '../../../widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
@@ -48,8 +47,8 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
-  const leverageCollateral = mapQuery(leverageTotalCollateral, (levTotCol) =>
-    decimal(new BigNumber(levTotCol).minus(userCollateral ?? '0')),
+  const leverageCollateral = mapQuery(expectedCollateral, (data) =>
+    calculateLeverageCollateral(data.totalCollateral, data.leverage),
   )
   const priceImpact = useCreateLoanPriceImpact(params, isOpen)
 
@@ -73,7 +72,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       rates={marketFutureRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
       loanToValue={q(
@@ -103,6 +101,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         leverageValue,
         leverageCollateral,
         leverageTotalCollateral,
+        exchangeRate: mapQuery(expectedCollateral, (data) => data?.avgPrice ?? null),
         priceImpact: q(priceImpact),
         slippage,
         onSlippageChange,

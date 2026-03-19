@@ -8,7 +8,7 @@ import {
   UtilizationTooltip,
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
-import { Box, Stack, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
@@ -61,66 +61,57 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
-    <Stack gap={Spacing.xs}>
-      <Typography variant="headingXsBold">{t`Advanced Details`}</Typography>
-      <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <Box
-          display="grid"
-          gap={3}
-          sx={{
-            padding: Spacing.md,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
+    <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
+      <Metric
+        size="small"
+        label={t`Utilization`}
+        value={utilization}
+        loading={availableLiquidity?.loading}
+        valueOptions={{ unit: 'percentage' }}
+        notional={utilization != null ? utilizationBreakdown : undefined}
+        valueTooltip={{
+          title: t`Utilization ${MarketTypeSuffix[marketType]}`,
+          body: <UtilizationTooltip marketType={marketType} />,
+          ...TooltipOptions,
+        }}
+      />
+      <Metric
+        size="small"
+        label={t`Total collateral`}
+        value={collateral?.combinedCollateralUsdValue}
+        loading={collateral?.loading}
+        valueOptions={{ unit: 'dollar' }}
+        notional={
+          collateral?.loading
+            ? undefined
+            : formatCollateralNotional(
+                {
+                  value: collateral?.totalCollateral ?? null,
+                  symbol: collateral?.collateralSymbol ?? undefined,
+                },
+                { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
+              )
+        }
+        valueTooltip={{
+          title: t`Total Collateral`,
+          body: <TotalCollateralTooltip />,
+          ...TooltipOptions,
+        }}
+      />
+      {maxLeverage && (
+        <Metric
+          size="small"
+          label={t`Max leverage`}
+          value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
+          loading={maxLeverage?.loading}
+          valueOptions={{ unit: 'multiplier' }}
+          valueTooltip={{
+            title: t`Maximum Leverage`,
+            body: <MaxLeverageTooltip />,
+            ...TooltipOptions,
           }}
-        >
-          <Metric
-            size="small"
-            label={t`Utilization`}
-            value={utilization}
-            loading={availableLiquidity?.loading}
-            valueOptions={{ unit: 'percentage' }}
-            notional={utilization != null ? utilizationBreakdown : undefined}
-            valueTooltip={{
-              title: t`Utilization ${MarketTypeSuffix[marketType]}`,
-              body: <UtilizationTooltip marketType={marketType} />,
-              ...TooltipOptions,
-            }}
-          />
-          <Metric
-            size="small"
-            label={t`Total collateral`}
-            value={collateral?.combinedCollateralUsdValue}
-            loading={collateral?.loading}
-            valueOptions={{ unit: 'dollar' }}
-            notional={
-              collateral?.loading
-                ? undefined
-                : formatCollateralNotional(
-                    { value: collateral?.totalCollateral ?? null, symbol: collateral?.collateralSymbol ?? undefined },
-                    { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
-                  )
-            }
-            valueTooltip={{
-              title: t`Total Collateral`,
-              body: <TotalCollateralTooltip />,
-              ...TooltipOptions,
-            }}
-          />
-          {maxLeverage && (
-            <Metric
-              size="small"
-              label={t`Max leverage`}
-              value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
-              loading={maxLeverage?.loading}
-              valueOptions={{ unit: 'multiplier' }}
-              valueTooltip={{
-                title: t`Maximum Leverage`,
-                body: <MaxLeverageTooltip />,
-                ...TooltipOptions,
-              }}
-            />
-          )}
-        </Box>
-      </Box>
-    </Stack>
+        />
+      )}
+    </Box>
   )
 }

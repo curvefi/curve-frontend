@@ -1,9 +1,11 @@
 import { invalidateAllBandsChartQueries } from '@/llamalend/features/bands-chart/queries/invalidation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
+import { invalidateAddCollateralFutureLeverage } from '../add-collateral/add-collateral-future-leverage.query'
 import { invalidateMarketCapAndAvailable, invalidateMarketRates, invalidateMarketTotalCollateral } from '../market'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
+import { invalidateRemoveCollateralFutureLeverage } from '../remove-collateral/remove-collateral-future-leverage.query'
 import { invalidateUserBalances } from './user-balances.query'
 import { invalidateUserBands } from './user-bands.query'
 import { invalidateUserCurrentLeverage } from './user-current-leverage.query'
@@ -26,6 +28,8 @@ export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainI
     invalidateUserBands({ marketId, userAddress, chainId }),
     invalidateUserCurrentLeverage({ marketId, userAddress, chainId }),
     invalidateUserPrices({ marketId, userAddress, chainId, loanExists: true }),
+    invalidateAddCollateralFutureLeverage({ marketId, userAddress, chainId }),
+    invalidateRemoveCollateralFutureLeverage({ marketId, userAddress, chainId }),
   ])
 
 /**

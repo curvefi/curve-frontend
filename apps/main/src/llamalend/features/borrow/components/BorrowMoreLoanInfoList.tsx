@@ -12,10 +12,11 @@ import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
-import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
+import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -76,6 +77,14 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     isOpen,
   )
 
+  const leverageTotalCollateral = {
+    data:
+      expectedCollateralQuery.data?.totalCollateral &&
+      prevCollateral.data &&
+      decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
+    ...combineQueryState(prevCollateral, expectedCollateralQuery),
+  }
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -127,45 +136,33 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             leverageEnabled,
             leverageValue: q(leverageValue),
             prevLeverageValue: q(prevLeverageValue),
-            prevLeverageCollateral: q({
-              data:
-                prevCollateral.data &&
-                prevLeverageValue.data &&
-                decimal(
-                  new BigNumber(prevCollateral.data).minus(
-                    new BigNumber(prevCollateral.data).div(prevLeverageValue.data),
-                  ),
-                ),
+            prevLeverageCollateral: {
+              data: calculateLeverageCollateral(prevCollateral.data, prevLeverageValue.data),
               ...combineQueryState(prevCollateral, prevLeverageValue),
-            }),
-            leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
-              decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
-            ),
+            },
+            leverageCollateral: {
+              data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
+              ...combineQueryState(leverageTotalCollateral, leverageValue),
+            },
             prevLeverageTotalCollateral: prevCollateral,
-            leverageTotalCollateral: q({
-              data:
-                expectedCollateralQuery.data?.totalCollateral &&
-                prevCollateral.data &&
-                decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
-              ...combineQueryState(prevCollateral, expectedCollateralQuery),
-            }),
+            leverageTotalCollateral,
+            exchangeRate: mapQuery(expectedCollateralQuery, (data) => data?.avgPrice ?? null),
             routes,
             slippage,
             onSlippageChange,
             priceImpact: q(priceImpact),
           }
         : {
-            collateral: q({
+            collateral: {
               data: collateralDelta &&
                 prevCollateral.data && {
                   value: decimal(new BigNumber(prevCollateral.data).plus(collateralDelta))!,
                   tokenSymbol: collateralToken?.symbol,
                 },
               ...combineQueryState(prevCollateral, expectedCollateralQuery),
-            }),
+            },
             prevCollateral,
           })}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
     />
