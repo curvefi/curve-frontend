@@ -25,10 +25,12 @@ export const StatsStack = () => {
         gridAutoRows: '1fr',
         gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(2, 1fr)', desktop: 'repeat(4, 1fr)' },
         gap: Spacing.lg,
+        paddingBlockEnd: Spacing.md,
       }}
     >
       <Grid>
         <Metric
+          size="small"
           label="Total crvUSD Staked"
           value={yieldData?.[yieldData.length - 1]?.assets}
           valueOptions={{ unit: CRVUSD_OPTION }}
@@ -38,6 +40,7 @@ export const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
+          size="small"
           label="Current projected APY"
           value={statisticsData?.apyProjected}
           valueOptions={{ unit: 'percentage' }}
@@ -47,6 +50,7 @@ export const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
+          size="small"
           label="Total Revenue Distributed"
           value={revenueData?.totalDistributed ? weiToEther(Number(revenueData.totalDistributed)) : undefined}
           valueOptions={{ unit: CRVUSD_OPTION }}
@@ -56,6 +60,7 @@ export const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
+          size="small"
           label="Weekly Accumulated Revenue"
           value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue}
           valueOptions={{ unit: CRVUSD_OPTION }}

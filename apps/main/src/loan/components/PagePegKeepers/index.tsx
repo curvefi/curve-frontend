@@ -8,7 +8,7 @@ import { PEG_KEEPERS } from './constants'
 
 const {
   Spacing,
-  Grid: { Column_Spacing, Row_Spacing },
+  Grid: { Column_Spacing },
 } = SizesAndSpaces
 
 export const Page = () => (
@@ -16,27 +16,24 @@ export const Page = () => (
     sx={{
       paddingBlock: Spacing.xl,
       paddingInline: Spacing.md,
-      gap: Spacing.xxl,
+      gap: Spacing.lg,
     }}
     data-testid="pegkeepers"
   >
-    <Statistics />
+    <Stack>
+      <Statistics />
 
-    <Box
-      display="grid"
-      columnGap={Column_Spacing}
-      rowGap={Row_Spacing}
-      gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))"
-    >
-      {PEG_KEEPERS.map((pegkeeper) => (
-        <PegKeeper
-          key={pegkeeper.address}
-          {...pegkeeper}
-          sx={{ maxWidth: '30rem' }}
-          testId={`pegkeeper-card-${pegkeeper.address}`}
-        />
-      ))}
-    </Box>
+      <Box display="grid" columnGap={Column_Spacing} gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))">
+        {PEG_KEEPERS.map((pegkeeper) => (
+          <PegKeeper
+            key={pegkeeper.address}
+            {...pegkeeper}
+            sx={{ maxWidth: '30rem' }}
+            testId={`pegkeeper-card-${pegkeeper.address}`}
+          />
+        ))}
+      </Box>
+    </Stack>
 
     <Footer />
   </Stack>
