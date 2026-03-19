@@ -8,7 +8,7 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { CRV_ADDRESS, decimal } from '@ui-kit/utils'
+import { decimal, getCrvAddress } from '@ui-kit/utils'
 
 export const FieldLockedAmt = ({
   curve,
@@ -74,7 +74,7 @@ export const FieldLockedAmt = ({
         loading: haveSigner && crv === '',
         symbol: 'CRV',
       }}
-      tokenSelector={<TokenLabel blockchainId="ethereum" address={CRV_ADDRESS} label="CRV" />}
+      tokenSelector={<TokenLabel blockchainId="ethereum" address={getCrvAddress(curve?.chainId)} label="CRV" />}
     >
       {isAdjustCrv && lockedAmt && Number(lockedAmt) != 0 && futureVeCrv != null && (
         <HelperMessage

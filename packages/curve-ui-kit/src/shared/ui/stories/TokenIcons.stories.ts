@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Chain, CRV_ADDRESS } from '@ui-kit/utils'
 import { TokenIcons } from '../TokenIcons'
 
 const TOKENS = [
@@ -24,7 +25,7 @@ const TOKENS = [
   },
   {
     symbol: 'CRV',
-    address: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+    address: CRV_ADDRESS[Chain.Ethereum],
   },
   {
     symbol: 'CVX',

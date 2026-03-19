@@ -1,20 +1,11 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import {
-  ClaimableReward,
-  useClaimableCrv,
-  useClaimableRewards,
-} from '@/llamalend/queries/supply/supply-claimable-rewards.query'
+import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { CRV } from '@ui-kit/utils/address'
-
-export type ClaimableToken = ClaimableReward & {
-  notional?: number
-}
+import { CRV_SYMBOL, getCrvAddress } from '@ui-kit/utils/address'
 
 export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMarketParams<ChainId>, enabled = true) => {
   const { chainId } = params
@@ -30,9 +21,11 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
+  const crvAddress = getCrvAddress(chainId)
+
   const tokenAddresses = useMemo(
-    () => [CRV.address, ...(claimableRewards?.map((r) => r.token) ?? [])],
-    [claimableRewards],
+    () => notFalsy(crvAddress, ...(claimableRewards?.map((r) => r.token) ?? [])),
+    [claimableRewards, crvAddress],
   )
   const {
     data: usdRates,
@@ -42,7 +35,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
-      claimableCrv && { amount: claimableCrv, token: CRV.address as Address, symbol: CRV.symbol as string },
+      crvAddress && claimableCrv && { amount: claimableCrv, token: crvAddress, symbol: CRV_SYMBOL },
       ...(claimableRewards ?? []),
     )
     return tokens
@@ -51,7 +44,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
         ...item,
         ...(usdRates?.[item.token] != null && { notional: Number(item.amount) * usdRates[item.token] }),
       }))
-  }, [claimableCrv, claimableRewards, usdRates])
+  }, [claimableCrv, claimableRewards, usdRates, crvAddress])
 
   const totalNotionals = useMemo(() => {
     const notionals = notFalsy(...claimableTokens.map((item) => item.notional))

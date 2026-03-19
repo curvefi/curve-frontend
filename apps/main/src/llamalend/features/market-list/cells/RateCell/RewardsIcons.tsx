@@ -11,7 +11,7 @@ import { useMarketExtraIncentives } from '../../hooks/useMarketExtraIncentives'
 const { IconSize } = SizesAndSpaces
 
 export const RewardsIcons = ({
-  market: { rewards, type: marketType, rates },
+  market: { rewards, type: marketType, rates, chain },
   rateType,
 }: {
   market: LlamaMarket

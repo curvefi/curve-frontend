@@ -5,6 +5,7 @@ import { Button, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Chain, CRV_ADDRESS } from '@ui-kit/utils'
 import type { TokenOption } from './types'
 import { TokenList, type TokenListProps } from './ui/modal/TokenList'
 import { TokenSelector } from './'
@@ -44,7 +45,7 @@ const defaultTokens: TokenOption[] = [
   },
   {
     chain: 'ethereum',
-    address: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+    address: CRV_ADDRESS[Chain.Ethereum],
     symbol: 'CRV',
     volume: 12,
   },
