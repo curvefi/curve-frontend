@@ -1,29 +1,38 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type WithdrawOptions, useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
-import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
+import { useUserBalances } from '@/llamalend/queries/user'
 import {
+  type WithdrawMutation,
   withdrawFormValidationSuite,
   WithdrawParams,
   type WithdrawForm,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import { Decimal } from '@primitives/decimal.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { mapQuery } from '@ui-kit/types/util'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   withdrawAmount: undefined,
   maxWithdrawAmount: undefined,
+  isFull: false,
 })
+
+const getIsWithdrawFull = (withdrawAmount: Decimal | undefined, maxUserWithdrawAmount: Decimal | undefined) =>
+  withdrawAmount && maxUserWithdrawAmount && new BigNumber(withdrawAmount).gte(new BigNumber(maxUserWithdrawAmount))
 
 export const useWithdrawForm = <ChainId extends LlamaChainId>({
   market,
   network,
+  enabled,
   onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
@@ -37,7 +46,8 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const maxUserWithdraw = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, enabled)
+  const maxUserWithdrawAmount = mapQuery(userBalances, (d) => d.vaultSharesConverted)
 
   const form = useForm<WithdrawForm>({
     ...formDefaultOptions,
@@ -54,10 +64,14 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
         marketId,
         userAddress,
         withdrawAmount: values.withdrawAmount,
+        isFull: values.isFull,
+        userVaultShares: userBalances.data?.vaultShares,
       }),
-      [chainId, marketId, userAddress, values.withdrawAmount],
+      [chainId, marketId, userAddress, userBalances.data?.vaultShares, values.isFull, values.withdrawAmount],
     ),
   )
+
+  const isFull = getIsWithdrawFull(params.withdrawAmount ?? undefined, maxUserWithdrawAmount.data)
 
   const {
     onSubmit,
@@ -73,22 +87,32 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, resetWithdraw)
 
   useEffect(() => {
-    updateForm(form, { maxWithdrawAmount: maxUserWithdraw.data })
-  }, [form, maxUserWithdraw.data])
+    updateForm(form, {
+      maxWithdrawAmount: maxUserWithdrawAmount.data,
+      isFull,
+    })
+  }, [form, maxUserWithdrawAmount.data, isFull])
 
   const isPending = formState.isSubmitting || isWithdrawing
+
   return {
     form,
     values,
     params,
     isPending,
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit: form.handleSubmit(async ({ withdrawAmount = '0', isFull = false }: WithdrawForm) => {
+      await onSubmit({
+        withdrawAmount,
+        isFull,
+        userVaultShares: userBalances.data?.vaultShares ?? '0',
+      } as WithdrawMutation)
+    }),
     isDisabled: !formState.isValid || isPending,
     borrowToken,
     isWithdrawn,
     withdrawError,
     txHash: data?.hash,
-    max: maxUserWithdraw,
+    max: maxUserWithdrawAmount,
     formErrors: useFormErrors(formState),
   }
 }

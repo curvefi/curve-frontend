@@ -27,7 +27,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   tokens,
   form,
 }: WithdrawSupplyInfoListProps<ChainId>) {
-  const { chainId, marketId, userAddress, withdrawAmount } = params
+  const { chainId, marketId, userAddress, withdrawAmount, isFull } = params
   const isOpen = isFormTouched(form, 'withdrawAmount')
 
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
@@ -38,19 +38,17 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
 
   const prevAmountSupplied = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
-  const amountSupplied = mapQuery(
-    prevAmountSupplied,
-    (prevAmount) => withdrawAmount && decimal(new BigNumber(prevAmount).minus(withdrawAmount)),
-  )
 
   return (
     <SupplyActionInfoList
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevVaultShares}
-      vaultShares={q(vaultShares)}
+      vaultShares={q(isFull ? mapQuery(prevVaultShares, () => decimal(0)) : vaultShares)}
       prevAmountSupplied={q(prevAmountSupplied)}
-      amountSupplied={amountSupplied}
+      amountSupplied={mapQuery(prevAmountSupplied, (prevAmount) =>
+        isFull ? decimal(0) : withdrawAmount && decimal(new BigNumber(prevAmount).minus(withdrawAmount)),
+      )}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
       gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
