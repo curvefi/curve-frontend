@@ -1,6 +1,6 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   ClaimableReward,
   useClaimableCrv,
@@ -17,8 +17,12 @@ export type ClaimableToken = ClaimableReward & {
   notional?: number
 }
 
-export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMarketParams<ChainId>, enabled = true) => {
-  const { chainId, marketId } = params
+export const useClaimableTokens = <ChainId extends LlamaChainId>(
+  params: UserMarketParams<ChainId>,
+  market: LlamaMarketTemplate | undefined,
+  enabled = true,
+) => {
+  const { chainId } = params
 
   const {
     data: claimableRewards,
@@ -31,10 +35,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
-  const crvAddress = useMemo(
-    () => (marketId ? (getLlamaMarket(marketId).getLlamalend().constants.ALIASES.crv as Address) : undefined),
-    [marketId],
-  )
+  const crvAddress = useMemo(() => market?.getLlamalend().constants.ALIASES.crv as Address | undefined, [market])
 
   const tokenAddresses = useMemo(
     () => [...notFalsy(crvAddress), ...(claimableRewards?.map((r) => r.token) ?? [])],

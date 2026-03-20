@@ -48,7 +48,7 @@ export const useClaimMutation = ({
       if (!shouldClaimRewards) return { hash: crvHash! }
 
       const rewardsHash = (await lendMarket.vault.claimRewards()) as Hex
-      // TODO: return multiple tx hashes
+      // TODO: allow multiple tx hashes in `TransactionResult`
       return { hash: rewardsHash }
     },
     validationSuite: claimValidationSuite,
