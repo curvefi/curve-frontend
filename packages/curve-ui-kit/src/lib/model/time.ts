@@ -20,5 +20,24 @@ export const TIME_FRAMES = {
   WEEK: 7 * 24 * 60 * 60,
   MONTH: 30 * 24 * 60 * 60,
   MONTH_MS: 30 * 24 * 60 * 60 * 1000,
+  HALF_YEAR_MS: 180 * 24 * 60 * 60 * 1000,
   YEAR_MS: 365 * 24 * 60 * 60 * 1000,
+} as const
+
+const MINUTE_MS = 60 * 1000
+const HOUR_MS = 60 * MINUTE_MS
+
+export const TIME_OPTION_MS = {
+  '15m': 15 * MINUTE_MS,
+  '30m': 30 * MINUTE_MS,
+  '1h': HOUR_MS,
+  '4h': 4 * HOUR_MS,
+  '6h': 6 * HOUR_MS,
+  '12h': 12 * HOUR_MS,
+  '1d': TIME_FRAMES.DAY_MS,
+  '7d': 7 * TIME_FRAMES.DAY_MS,
+  '14d': 14 * TIME_FRAMES.DAY_MS,
+  '1M': TIME_FRAMES.MONTH_MS,
+  '6M': TIME_FRAMES.HALF_YEAR_MS,
+  '1Y': TIME_FRAMES.YEAR_MS,
 } as const

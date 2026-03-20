@@ -204,6 +204,7 @@ export const getChartOptions = (
         lineStyle: {
           color: palette.gridColor,
           type: 'solid',
+          width: 0.5,
         },
       },
     },
@@ -238,6 +239,7 @@ export const getChartOptions = (
         lineStyle: {
           color: palette.gridColor,
           type: 'solid',
+          width: 0.5,
         },
       },
       min: priceMin,
