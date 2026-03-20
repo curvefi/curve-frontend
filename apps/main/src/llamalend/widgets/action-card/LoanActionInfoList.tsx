@@ -3,6 +3,7 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
@@ -164,9 +165,10 @@ export const LoanActionInfoList = ({
               label={t`Liquidation zone`}
               value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
-              valueRight={debt?.data?.tokenSymbol}
+              valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               {...combineActionInfoState(prices, prevPrices)}
               size="small"
+              alignItems="start"
               testId="borrow-price-range"
             />
           )}
