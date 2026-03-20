@@ -9,7 +9,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 type UserBalancesQuery = UserQuery & MarketQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>
 
-export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } = queryFactory({
+export const { useQuery: useUserBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'wallet.balances'] as const,
   queryFn: async ({ marketId }: UserBalancesQuery) => {

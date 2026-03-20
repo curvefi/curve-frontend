@@ -8,7 +8,7 @@ export const AlertUnstakeFirst = () => (
     <AlertTitle>{t`Unstake required`}</AlertTitle>
     <Typography variant="bodySRegular" color="textSecondary">
       <Trans>
-        Please <b>unstake</b> your assets first.
+        Please <strong>unstake</strong> your assets first.
       </Trans>
     </Typography>
   </Alert>
