@@ -10,6 +10,7 @@ import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
  */
 export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
   Promise.all([
+    // we invalidate all market queries, not just for the user, as a user action changes the whole market
     queryClient.invalidateQueries({ queryKey: rootKeys.market({ chainId, marketId }) }),
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),
