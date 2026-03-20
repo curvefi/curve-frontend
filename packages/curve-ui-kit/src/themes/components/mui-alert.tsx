@@ -28,6 +28,7 @@ export const defineMuiAlert = (
       ...handleBreakpoints({
         ...bodyXsRegular,
         borderWidth: OutlineWidth,
+        boxShadow: 'none',
         paddingInline: Spacing.xs,
         paddingBlockStart: 0,
         paddingBlockEnd: Spacing.xs,

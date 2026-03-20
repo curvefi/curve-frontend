@@ -16,10 +16,8 @@ export const { useQuery: useRemoveCollateralFutureLeverage } = queryFactory({
       'removeCollateralFutureLeverage',
       { userCollateral },
     ] as const,
-  queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) => {
-    const market = getLlamaMarket(marketId)
-    return decimal(await market.removeCollateralFutureLeverage(userCollateral, userAddress)) ?? null
-  },
+  queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>
+    decimal(await getLlamaMarket(marketId).removeCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
   category: 'llamalend.removeCollateral',
   validationSuite: leverageCollateralValidationSuite,
   dependencies: (params) => [userCurrentLeverageQueryKey(params)],
