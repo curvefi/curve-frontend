@@ -4,10 +4,10 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
-import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useWithdrawForm } from '../hooks/useWithdrawForm'
+import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 export type WithdrawFormProps<ChainId extends IChainId> = {
@@ -41,6 +41,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     txHash,
     formErrors,
     max,
+    maxStakedShares,
   } = useWithdrawForm({ market, network, enabled, onSuccess })
 
   return (
@@ -55,14 +56,18 @@ export const WithdrawForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name="withdrawAmount"
         form={form}
-        max={q(max)}
+        max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
         positionBalance={{
-          position: q(max),
+          position: max,
           tooltip: t`Vault shares value`,
         }}
       />
+
+      {max.data && maxStakedShares.data && Number(max.data) === 0 && Number(maxStakedShares.data) > 0 && (
+        <AlertUnstakeFirst />
+      )}
 
       <Button
         type="submit"

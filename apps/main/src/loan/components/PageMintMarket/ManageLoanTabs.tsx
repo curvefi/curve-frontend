@@ -91,15 +91,27 @@ const MintManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
+        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+          <AddCollateralForm
+            networks={networks}
+            chainId={rChainId}
+            market={market ?? undefined}
+            enabled={isReady}
+            onPricesUpdated={onPricesUpdated}
+          />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
+        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+          <RemoveCollateralForm
+            networks={networks}
+            chainId={rChainId}
+            market={market ?? undefined}
+            enabled={isReady}
+            onPricesUpdated={onPricesUpdated}
+          />
         ),
       },
     ],

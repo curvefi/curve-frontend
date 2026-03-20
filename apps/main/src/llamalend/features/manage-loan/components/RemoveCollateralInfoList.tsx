@@ -6,6 +6,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
+import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import { getUserHealthOptions, useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -90,6 +91,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useRemoveCollateralFutureLeverage(params, isOpen))}
+      prices={q(useRemoveCollateralPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
     />

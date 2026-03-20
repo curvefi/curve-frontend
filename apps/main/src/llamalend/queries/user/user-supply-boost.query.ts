@@ -1,22 +1,18 @@
-import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
-import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
+import type { UserMarketQuery, UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
+import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import { requireVault } from '../validation/supply.validation'
 
-const _fetchUserSupplyBoost = async ({ marketId }: MarketQuery): Promise<number | null> => {
-  const api = requireLib('llamaApi')
-  if (!api.signerAddress) {
-    return null
-  }
-  const market = api.getLendMarket(marketId)
-  const boost = await market.userPosition.userBoost(api.signerAddress)
+const _fetchUserSupplyBoost = async ({ marketId, userAddress }: UserMarketQuery): Promise<number | null> => {
+  const market = requireVault(marketId)
+  const boost = await market.userPosition.userBoost(userAddress)
   return boost ? +boost : null
 }
 
 export const { useQuery: useUserSupplyBoost } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'userBoost', 'v1'] as const,
+  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userBoost', 'v1'] as const,
   queryFn: _fetchUserSupplyBoost,
   category: 'llamalend.user',
-  validationSuite: marketIdValidationSuite,
+  validationSuite: userMarketValidationSuite,
 })

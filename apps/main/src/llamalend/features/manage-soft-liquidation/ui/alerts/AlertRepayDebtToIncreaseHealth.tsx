@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 export const AlertRepayDebtToIncreaseHealth = () => (
-  <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
+  <Alert severity="info" variant="outlined">
     <AlertTitle>{t`Repay debt to increase Health`}</AlertTitle>
 
     <Stack gap={Spacing.sm}>

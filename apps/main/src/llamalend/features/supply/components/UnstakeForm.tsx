@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useUnstakeForm } from '../hooks/useUnstakeForm'
+import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
 export type UnstakeFormProps<ChainId extends IChainId> = {
@@ -63,6 +64,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
           tooltip: t`Staked vault shares`,
         }}
       />
+      {Number(max.data) > 0 && <AlertUnstakeOnly />}
 
       <Button
         type="submit"

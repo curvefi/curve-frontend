@@ -56,6 +56,7 @@ export const Page = () => {
     chainId: rChainId,
     market,
     marketId: rOwmId,
+    userAddress,
   })
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 

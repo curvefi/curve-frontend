@@ -3,7 +3,6 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useWithdrawExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
-import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import { useUserBalances } from '@/llamalend/queries/user'
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
@@ -27,30 +26,29 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   tokens,
   form,
 }: WithdrawSupplyInfoListProps<ChainId>) {
-  const { chainId, marketId, userAddress, withdrawAmount } = params
+  const { chainId, marketId, userAddress, withdrawAmount, isFull } = params
   const isOpen = isFormTouched(form, 'withdrawAmount')
 
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
+  const prevAmountSupplied = mapQuery(userBalances, (d) => d.vaultSharesConverted)
+
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
   const vaultShares = useWithdrawExpectedVaultShares(params, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
 
-  const prevAmountSupplied = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
-  const amountSupplied = mapQuery(
-    prevAmountSupplied,
-    (prevAmount) => withdrawAmount && decimal(new BigNumber(prevAmount).minus(withdrawAmount)),
-  )
-
   return (
     <SupplyActionInfoList
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevVaultShares}
-      vaultShares={q(vaultShares)}
+      vaultShares={isFull ? mapQuery(prevVaultShares, () => decimal(0)) : q(vaultShares)}
       prevAmountSupplied={q(prevAmountSupplied)}
-      amountSupplied={amountSupplied}
+      amountSupplied={mapQuery(
+        prevAmountSupplied,
+        (prevAmount) => withdrawAmount && decimal(new BigNumber(prevAmount).minus(withdrawAmount)),
+      )}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
       gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
