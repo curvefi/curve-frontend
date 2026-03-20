@@ -11,7 +11,7 @@ const _fetchUserSupplyBoost = async ({ marketId, userAddress }: UserMarketQuery)
   return boost ? +boost : null
 }
 
-export const { useQuery: useUserSupplyBoost, invalidate: invalidateUserSupplyBoost } = queryFactory({
+export const { useQuery: useUserSupplyBoost } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userBoost', 'v1'] as const,
   queryFn: _fetchUserSupplyBoost,
   category: 'llamalend.user',
