@@ -1,5 +1,6 @@
 import { oneOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
+import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 type Token = {
   symbol: string
@@ -21,7 +22,7 @@ const TOKENS: Token[] = [
   { chain: 'arbitrum', symbol: 'gmUSDC', address: '0x5f851F67D24419982EcD7b7765deFD64fBb50a97', usdPrice: null  },
   { chain: 'arbitrum', symbol: 'stXAI', address: '0xab5c23bdbE99d75A7Ae4756e7cCEfd0A97B37E78', usdPrice: 0.21829294913774286  },
   { chain: 'arbitrum', symbol: 'tBTC', address: '0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40', usdPrice: 97751.80258242389  },
-  { chain: 'ethereum', symbol: 'CRV', address: '0xD533a949740bb3306d119CC777fa900bA034cd52', usdPrice: null  },
+  { chain: 'ethereum', symbol: 'CRV', address: MAINNET_CRV_ADDRESS, usdPrice: null  },
   { chain: 'ethereum', symbol: 'ETHFI', address: '0xFe0c30065B384F05761f15d0CC899D4F9F9Cc0eB', usdPrice: 1.1707246089415464  },
   { chain: 'ethereum', symbol: 'RCH', address: '0x57B96D4aF698605563A4653D882635da59Bf11AF', usdPrice: null  },
   { chain: 'ethereum', symbol: 'USD0USD0++', address: '0x1d08E7adC263CfC70b1BaBe6dC5Bb339c16Eec52', usdPrice: 0.955776793088862  },

@@ -11,6 +11,7 @@ import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -171,7 +172,7 @@ const addresses = {
   DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
   USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
   WBTC: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-  CRV: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+  CRV: MAINNET_CRV_ADDRESS,
 } as const
 
 export const CustomRendering: Story = {
