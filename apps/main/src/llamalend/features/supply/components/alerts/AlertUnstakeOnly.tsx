@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
 export const AlertUnstakeOnly = () => (
-  <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
+  <Alert severity="info" variant="outlined">
     <AlertTitle>{t`Unstake only`}</AlertTitle>
     <Typography variant="bodySRegular" color="textSecondary">
       <Trans>
