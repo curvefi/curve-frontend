@@ -92,7 +92,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
-      prevPrices={mapQuery(useUserPrices(params), (prices) => prices as Decimal[])}
+      prevPrices={q(useUserPrices(params))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       prevRates={marketRates}
       rates={marketFutureRates}

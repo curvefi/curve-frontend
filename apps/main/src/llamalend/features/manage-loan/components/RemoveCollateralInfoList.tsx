@@ -91,7 +91,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useRemoveCollateralFutureLeverage(params, isOpen))}
-      prevPrices={mapQuery(useUserPrices(params), (prices) => prices as Decimal[])}
+      prevPrices={q(useUserPrices(params))}
       prices={q(useRemoveCollateralPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}

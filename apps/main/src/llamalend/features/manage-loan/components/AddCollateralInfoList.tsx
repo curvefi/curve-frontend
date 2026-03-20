@@ -90,7 +90,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
-      prevPrices={mapQuery(useUserPrices(params), (prices) => prices as Decimal[])}
+      prevPrices={q(useUserPrices(params))}
       prices={q(useAddCollateralPrices(params, isOpen))}
     />
   )

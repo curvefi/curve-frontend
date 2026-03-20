@@ -8,7 +8,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import type { QueryProp } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
@@ -21,8 +21,8 @@ export type LoanActionInfoListProps = {
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal>
   isFullRepay?: boolean
-  prices?: QueryProp<readonly Decimal[]>
-  prevPrices?: QueryProp<readonly Decimal[]>
+  prices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal>>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
   exchangeRate?: QueryProp<string | null>
