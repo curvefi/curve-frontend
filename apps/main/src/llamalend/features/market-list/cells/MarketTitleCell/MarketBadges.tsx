@@ -38,12 +38,6 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
           label={
             <Typography variant="bodyXsBold" component="span">
               {poolTypeNames[type]()}
-              {type == LlamaMarketType.Lend && (
-                <Typography variant="bodyXsRegular" color="textTertiary" component="span">
-                  {' '}
-                  {version}
-                </Typography>
-              )}
             </Typography>
           }
           data-testid={`pool-type-${type.toLowerCase()}`}

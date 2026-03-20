@@ -273,7 +273,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
-    version: createdAt > LLAMMALEND_V2_DATE ? 'v2' : 'v1', // todo: get version from backend
+    version: 'v1', // todo: get version from backend
     assets: {
       borrowed: {
         ...borrowedToken,
