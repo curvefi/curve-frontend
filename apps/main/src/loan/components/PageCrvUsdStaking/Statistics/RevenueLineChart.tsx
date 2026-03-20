@@ -2,10 +2,14 @@ import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/
 import { RevenueChartTooltip } from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
+import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
 import { EChartsLineChart, type LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
+
+const { Spacing } = SizesAndSpaces
 
 type Props = { data: ScrvUsdYieldWithAverages[]; height: number; visibleSeries?: YieldKeys[] }
 
@@ -36,15 +40,19 @@ export const RevenueLineChart = ({ data, height, visibleSeries }: Props) => {
   ]
 
   return (
-    <EChartsLineChart<ScrvUsdYieldWithAverages, YieldKeys, 'timestamp'>
-      data={data}
-      height={height}
-      xKey="timestamp"
-      series={series}
-      visibleSeries={visibleSeries}
-      xTickFormatter={(value) => formatDate(value)}
-      yTickFormatter={(value) => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 0 })}
-      renderTooltip={({ datum, visibleSeries }) => <RevenueChartTooltip datum={datum} visibleSeries={visibleSeries} />}
-    />
+    <Box paddingInline={Spacing.md}>
+      <EChartsLineChart<ScrvUsdYieldWithAverages, YieldKeys, 'timestamp'>
+        data={data}
+        height={height}
+        xKey="timestamp"
+        series={series}
+        visibleSeries={visibleSeries}
+        xTickFormatter={(value) => formatDate(value)}
+        yTickFormatter={(value) => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 1 })}
+        renderTooltip={({ datum, visibleSeries }) => (
+          <RevenueChartTooltip datum={datum} visibleSeries={visibleSeries} />
+        )}
+      />
+    </Box>
   )
 }
