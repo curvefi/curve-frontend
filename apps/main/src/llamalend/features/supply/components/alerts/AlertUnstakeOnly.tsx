@@ -8,7 +8,8 @@ export const AlertUnstakeOnly = () => (
     <AlertTitle>{t`Unstake only`}</AlertTitle>
     <Typography variant="bodySRegular" color="textSecondary">
       <Trans>
-        You are choosing to <b>unstake</b>, to recover your lent assets you will need to <b>withdraw</b> subsequently.
+        You are choosing to <strong>unstake</strong>, to recover your lent assets you will need to{' '}
+        <strong>withdraw</strong> subsequently.
       </Trans>
     </Typography>
   </Alert>
