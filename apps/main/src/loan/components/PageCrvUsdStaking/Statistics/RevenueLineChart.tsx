@@ -40,11 +40,10 @@ export const RevenueLineChart = ({ data, height, visibleSeries }: Props) => {
       data={data}
       height={height}
       xKey="timestamp"
-      yAxisDataKey="apyProjected"
       series={series}
       visibleSeries={visibleSeries}
       xTickFormatter={(value) => formatDate(value)}
-      yTickFormatter={(value) => formatNumber(value, { unit: 'percentage', abbreviate: false, decimals: 0 })}
+      yTickFormatter={(value) => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 0 })}
       renderTooltip={({ datum, visibleSeries }) => <RevenueChartTooltip datum={datum} visibleSeries={visibleSeries} />}
     />
   )
