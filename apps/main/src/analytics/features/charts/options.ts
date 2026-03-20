@@ -93,25 +93,31 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
   },
 })
 
-const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOption): SeriesOption => ({
-  symbol: 'circle',
-  symbolSize: 8,
-  showSymbol: false, // hidden by default, only shown on hover (emphasis below)
-  emphasis: {
-    scale: true,
-    disabled: false,
-    itemStyle: { color: '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // white fill only on hover dot
-  },
-  silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
-  lineStyle: {
-    color: palette.colors[i],
-    width: 2,
-    // The 2nd line chart should be dashed, hence 'type' is being set
-    ...(i === 1 && serie.type === 'line' && !('areaStyle' in serie) && { type: 10 }),
-  },
-  itemStyle: { color: palette.colors[i] ?? '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // tooltip marker color
-  ...('areaStyle' in serie && { areaStyle: { color: palette.colors[i], opacity: 1 } }),
-})
+const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOption): SeriesOption => {
+  // color index flip; looks better for two lines which is a common occurance
+  const isLine = serie.type === 'line' && !('areaStyle' in serie)
+  const color = palette.colors[isLine && i === 1 ? 2 : isLine && i === 2 ? 1 : i] ?? '#fff'
+
+  return {
+    symbol: 'circle',
+    symbolSize: 8,
+    showSymbol: false, // hidden by default, only shown on hover (emphasis below)
+    emphasis: {
+      scale: true,
+      disabled: false,
+      itemStyle: { color: '#fff', borderColor: color, borderWidth: 2 }, // white fill only on hover dot
+    },
+    silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
+    lineStyle: {
+      color,
+      width: 2,
+      // The 2nd line chart should be dashed, hence 'type' is being set
+      ...(i === 1 && serie.type === 'line' && !('areaStyle' in serie) && { type: 10 }),
+    },
+    itemStyle: { color, borderColor: color, borderWidth: 2 }, // tooltip marker color
+    ...('areaStyle' in serie && { areaStyle: { color, opacity: 1 } }),
+  }
+}
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */
 export const timeToCategory = (x: number) => new Date(x).toISOString().slice(0, 10)
