@@ -92,7 +92,10 @@ export const usePageHeader = ({
     SNAPSHOTS_QUERY_LIMIT,
   )
 
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
+    { chainId, marketId },
+    !isMarketMetadataLoading,
+  )
   const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
   const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketVaultOnChainRewards(
     { chainId, marketId },

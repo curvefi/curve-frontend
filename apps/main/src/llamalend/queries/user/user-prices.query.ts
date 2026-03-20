@@ -10,7 +10,7 @@ import { useLoanExists } from './user-loan-exists.query'
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
 
-const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = queryFactory({
+const { useQuery: useUserPricesQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<string[]> =>
@@ -21,8 +21,6 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
     loanExistsValidationGroup(params)
   }),
 })
-
-export { invalidateUserPrices }
 
 export const useUserPrices = (params: UserMarketParams) => {
   const { data: loanExists, isLoading: isLoanExistsLoading, error: loanExistsError } = useLoanExists(params)
