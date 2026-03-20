@@ -33,7 +33,7 @@ export const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
 export const useClaimEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: ClaimEstimateParams<ChainId>,
-  enabled?: boolean,
+  enabled = true,
 ) => {
   const { chainId } = query
   const {
@@ -58,7 +58,10 @@ export const useClaimEstimateGas = <ChainId extends IChainId>(
   } = useClaimRewardsEstimateQuery(query, enabled && hasClaimableRewards(claimableRewards))
 
   const totalEstimate = useMemo(
-    () => (crvEstimate || rewardsEstimate ? Number(crvEstimate ?? 0) + Number(rewardsEstimate ?? 0) : undefined),
+    () =>
+      crvEstimate == null && rewardsEstimate == null
+        ? undefined
+        : Number(crvEstimate ?? 0) + Number(rewardsEstimate ?? 0),
     [crvEstimate, rewardsEstimate],
   )
 
