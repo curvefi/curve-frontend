@@ -2,6 +2,7 @@ import { useConnection } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import {
   type TransactionContext,
@@ -40,14 +41,12 @@ export function useLlammaMutation<TVariables extends object>({
   return useTransactionMutation<TVariables, LlammaContext>({
     ...options,
     validationParams: { chainId, marketId, userAddress },
-    buildContext: (_variables, baseContext) => {
-      if (!llamaApi) throw new Error('Missing llamalend api')
-      if (!marketId) throw new Error('Missing llamma market id')
-      if (!userAddress) throw new Error('Missing userAddress')
-
-      const market = getLlamaMarket(marketId)
-      return { ...baseContext, llamaApi, market, userAddress }
-    },
+    buildContext: (_variables, baseContext) => ({
+      ...baseContext,
+      llamaApi: assert(llamaApi, 'Missing llamalend api'),
+      market: getLlamaMarket(assert(marketId, 'Missing llama market ID')),
+      userAddress: assert(userAddress, 'Missing userAddress'),
+    }),
     onSuccess: async (data, receipt, variables, context) => {
       const { market, wallet, userAddress } = context
       updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
