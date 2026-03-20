@@ -1,4 +1,3 @@
-import { styled } from 'styled-components'
 import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
@@ -13,8 +12,8 @@ export const DetailInfoExchangeRate = ({
   exchangeRates?: ExchangeRate[] | null
   loading: boolean
 }) => (
-  <StyledDetailInfo
-    isMultiLine={exchangeRates != null && exchangeRates.length > 1}
+  <DetailInfo
+    alignItems="start"
     label={
       <>
         {t`Exchange rate`} <Chip size="xs">{t`(incl. fees):`}</Chip>
@@ -47,9 +46,5 @@ export const DetailInfoExchangeRate = ({
     ) : (
       '-'
     )}
-  </StyledDetailInfo>
+  </DetailInfo>
 )
-
-const StyledDetailInfo = styled(DetailInfo)`
-  align-items: flex-start;
-`

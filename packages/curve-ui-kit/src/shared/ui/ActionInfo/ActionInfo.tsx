@@ -63,6 +63,8 @@ export type ActionInfoProps = {
   sx?: StackProps['sx']
   /** CSS align-items property */
   alignItems?: StackProps['alignItems']
+  /** CSS align-self property for label */
+  alignLabel?: TypographyProps['alignSelf']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -145,7 +147,7 @@ export const ActionInfo = ({
   value ??= prevValue ?? emptyValue
 
   return (
-    <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
+    <Stack direction="row" alignItems={alignItems} columnGap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography
         flexGrow={1}
         variant={labelSize[size]}
@@ -156,7 +158,7 @@ export const ActionInfo = ({
         {label}
       </Typography>
 
-      <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
+      <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
         {showPrevValue && (
           <Typography
             variant={prevValueSize[size]}
