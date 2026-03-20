@@ -16,10 +16,8 @@ export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
       'addCollateralFutureLeverage',
       { userCollateral },
     ] as const,
-  queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) => {
-    const market = getLlamaMarket(marketId)
-    return decimal(await market.addCollateralFutureLeverage(userCollateral, userAddress)) ?? null
-  },
+  queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>
+    decimal(await getLlamaMarket(marketId).addCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
   category: 'llamalend.addCollateral',
   validationSuite: leverageCollateralValidationSuite,
   dependencies: (params) => [userCurrentLeverageQueryKey(params)],

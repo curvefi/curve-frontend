@@ -1,5 +1,6 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@primitives/objects.utils'
@@ -7,7 +8,11 @@ import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { CRV_SYMBOL, getCrvAddress } from '@ui-kit/utils/address'
 
-export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMarketParams<ChainId>, enabled = true) => {
+export const useClaimableTokens = <ChainId extends LlamaChainId>(
+  params: UserMarketParams<ChainId>,
+  market: LlamaMarketTemplate | undefined,
+  enabled = true,
+) => {
   const { chainId } = params
 
   const {
@@ -21,7 +26,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
-  const crvAddress = getCrvAddress(chainId)
+  const crvAddress = useMemo(() => market?.getLlamalend().constants.ALIASES.crv as Address | undefined, [market])
 
   const tokenAddresses = useMemo(
     () => notFalsy(crvAddress, ...(claimableRewards?.map((r) => r.token) ?? [])),
@@ -35,7 +40,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
-      crvAddress && claimableCrv && { amount: claimableCrv, token: crvAddress, symbol: CRV_SYMBOL },
+      crvAddress && claimableCrv && crvAddress && { amount: claimableCrv, token: crvAddress, symbol: CRV_SYMBOL },
       ...(claimableRewards ?? []),
     )
     return tokens
@@ -44,7 +49,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
         ...item,
         ...(usdRates?.[item.token] != null && { notional: Number(item.amount) * usdRates[item.token] }),
       }))
-  }, [claimableCrv, claimableRewards, usdRates, crvAddress])
+  }, [crvAddress, claimableCrv, claimableRewards, usdRates, crvAddress])
 
   const totalNotionals = useMemo(() => {
     const notionals = notFalsy(...claimableTokens.map((item) => item.notional))

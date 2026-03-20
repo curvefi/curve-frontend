@@ -23,12 +23,15 @@ export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
 export type WithdrawMutation = {
   withdrawAmount: Decimal
+  isFull: boolean
+  userVaultShares: Decimal
 }
 
 type CalculatedWithdrawValues = {
   maxWithdrawAmount: Decimal | undefined
 }
-export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount'> & CalculatedWithdrawValues
+export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount' | 'userVaultShares'> &
+  CalculatedWithdrawValues
 
 export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & WithdrawMutation
 export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
@@ -173,6 +176,17 @@ const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount
   })
 }
 
+const validateUserVaultShares = (
+  shares: Decimal | undefined | null,
+  { sharesRequired = false }: { sharesRequired?: boolean } = {},
+) => {
+  skipWhen(!sharesRequired && shares == null, () => {
+    test('userVaultShares', 'Vault shares must be a positive number', () => {
+      enforce(shares).isNumeric().gt(0)
+    })
+  })
+}
+
 // Form validation suite (for real-time form validation)
 export const withdrawFormValidationSuite = createValidationSuite(
   ({ withdrawAmount = '0', maxWithdrawAmount }: WithdrawForm) => {
@@ -192,6 +206,7 @@ const withdrawValidationGroup = <IChainId extends number>({
 export const withdrawValidationSuite = createValidationSuite((params: WithdrawParams) => {
   userMarketValidationSuite(params)
   withdrawValidationGroup(params)
+  validateUserVaultShares(params.userVaultShares, { sharesRequired: !!params.isFull })
 })
 
 const validateStakeAmount = (
