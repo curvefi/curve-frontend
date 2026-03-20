@@ -1,6 +1,6 @@
 import { BandsChartToken, ChartDataPoint } from '@/llamalend/features/bands-chart/types'
 import { useTheme } from '@mui/material'
-import { useEChartsReactTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsReactTooltip'
+import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { TooltipContent } from '../TooltipContent'
 
 export const useBandsChartTooltip = (
@@ -9,7 +9,7 @@ export const useBandsChartTooltip = (
   borrowToken: BandsChartToken,
 ) => {
   const theme = useTheme()
-  return useEChartsReactTooltip(chartData, theme, (data) => (
+  return useEChartsTooltip(chartData, theme, (data) => (
     <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
   ))
 }

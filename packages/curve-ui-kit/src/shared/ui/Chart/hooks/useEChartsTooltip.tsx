@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useRef, type ReactNode } from 'react'
+import { flushSync } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 import { type Theme, ThemeProvider } from '@mui/material/styles'
 
-export function useEChartsReactTooltip<TData>(
-  data: TData[],
-  theme: Theme,
-  renderTooltip?: (datum: TData) => ReactNode,
-) {
+export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTooltip?: (datum: TData) => ReactNode) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const rootRef = useRef<Root | null>(null)
 
@@ -32,9 +29,9 @@ export function useEChartsReactTooltip<TData>(
       const datum = dataIndex != null ? data[dataIndex] : null
 
       if (datum && rootRef.current) {
-        rootRef.current.render(<ThemeProvider theme={theme}>{renderTooltip(datum)}</ThemeProvider>)
+        flushSync(() => rootRef.current!.render(<ThemeProvider theme={theme}>{renderTooltip(datum)}</ThemeProvider>))
       } else {
-        rootRef.current?.render(null)
+        flushSync(() => rootRef.current?.render(null))
       }
 
       return containerRef.current

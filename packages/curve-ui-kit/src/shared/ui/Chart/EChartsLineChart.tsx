@@ -1,8 +1,7 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo, type ReactNode } from 'react'
-import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { useEChartsReactTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsReactTooltip'
+import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
@@ -40,20 +39,21 @@ export const EChartsLineChart = <
   xKey,
   series,
   visibleSeries,
-  yAxisDataKey,
   xTickFormatter,
   yTickFormatter,
   renderTooltip,
+  yPaddingRatio = 0.2,
 }: {
   data: TData[]
   height?: number
   xKey: TXKey
   series: LineSeriesConfig<TSeriesKey>[]
   visibleSeries?: TSeriesKey[]
-  yAxisDataKey: TSeriesKey
-  xTickFormatter?: (value: TData[TXKey] | number | string) => string
-  yTickFormatter?: (value: number) => string
+  xTickFormatter?: (value: number | string) => string
+  yTickFormatter?: (value: number | string) => string
   renderTooltip?: (context: EChartsLineChartTooltipContext<TData, TSeriesKey>) => ReactNode
+  /** Sets the padding ratio for the y-axis, used to add space above and below the data points */
+  yPaddingRatio?: number
 }) => {
   const theme = useTheme()
   const {
@@ -67,17 +67,22 @@ export const EChartsLineChart = <
     [series, visibleSeries],
   )
 
+  // Derive y-axis bounds from all visible series so toggling legend items adjusts the range
   const { yMin, yMax } = useMemo(() => {
-    const values = data.map((item) => Number(item[yAxisDataKey])).filter(Number.isFinite)
+    const values = data.flatMap((item) => activeSeries.map((s) => Number(item[s.key])).filter(Number.isFinite))
     if (!values.length) return { yMin: 0, yMax: 0 }
 
-    const min = Math.min(...values)
-    const max = Math.max(...values)
-    const padding = min === max ? 1 : (max - min) * 0.2
+    let min = Infinity
+    let max = -Infinity
+    for (const v of values) {
+      if (v < min) min = v
+      if (v > max) max = v
+    }
+    const padding = min === max ? 1 : (max - min) * yPaddingRatio
     return { yMin: min - padding, yMax: max + padding }
-  }, [data, yAxisDataKey])
+  }, [data, activeSeries, yPaddingRatio])
 
-  const tooltipFormatter = useEChartsReactTooltip(
+  const tooltipFormatter = useEChartsTooltip(
     data,
     theme,
     renderTooltip ? (datum: TData) => renderTooltip({ datum, visibleSeries: activeSeries }) : undefined,
@@ -88,10 +93,10 @@ export const EChartsLineChart = <
       backgroundColor: 'transparent',
       animation: false,
       grid: {
-        left: 16,
-        top: 16,
-        right: 16,
-        bottom: 16,
+        left: 0,
+        top: Math.ceil((parseFloat(FontSize.xs.desktop) * 16) / 2), // prevent max label clipping
+        right: 0,
+        bottom: 0,
         containLabel: true,
       },
       xAxis: {
@@ -110,18 +115,20 @@ export const EChartsLineChart = <
         axisLabel: {
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
-          hideOverlap: false,
-          showMinLabel: false,
+          hideOverlap: true,
+          showMinLabel: true,
           showMaxLabel: false,
+          align: 'left',
           margin: 4,
           formatter: (value: string | number) => {
             if (!xTickFormatter) return String(value)
-            return xTickFormatter(value)
+            return xTickFormatter(value as number)
           },
         },
       },
       yAxis: {
         type: 'value',
+        position: 'right',
         min: yMin,
         max: yMax,
         axisLine: { show: false },
@@ -130,7 +137,7 @@ export const EChartsLineChart = <
           show: true,
           lineStyle: {
             color: gridLineColor,
-            width: 0.3,
+            width: 0.5,
             type: 'solid',
           },
         },
@@ -147,7 +154,7 @@ export const EChartsLineChart = <
         axisPointer: {
           type: 'line',
           lineStyle: {
-            width: 1,
+            width: 0.5,
             color: gridTextColor,
             opacity: 0.3,
           },
@@ -160,6 +167,7 @@ export const EChartsLineChart = <
       series: activeSeries.map((line) => ({
         name: line.label,
         type: 'line',
+        clip: true,
         data: data.map((item) => [item[xKey], Number(item[line.key])]),
         showSymbol: false,
         symbol: 'circle',
@@ -191,8 +199,6 @@ export const EChartsLineChart = <
   )
 
   return (
-    <Box sx={{ position: 'relative', width: '99%' }}>
-      <ReactECharts option={option} notMerge style={{ width: '100%', height }} opts={{ renderer: 'canvas' }} />
-    </Box>
+    <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} opts={{ renderer: 'canvas' }} />
   )
 }
