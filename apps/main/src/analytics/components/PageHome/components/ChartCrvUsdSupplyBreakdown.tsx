@@ -79,13 +79,13 @@ export function ChartCrvUsdSupplyBreakdown() {
     () => [
       {
         label: MINT_MARKETS_LABEL,
-        line: { lineStroke: palette.colors[0], dash: 'none' },
+        box: { fill: palette.colors[0] },
         toggled: mintMarketsVisible,
         onToggle: toggleMintMarketsVisible,
       },
       ...objectKeys(MARKET_LABELS).map((key, i) => ({
         label: MARKET_LABELS[key],
-        line: { lineStroke: palette.colors[i + 1], dash: 'none' },
+        box: { fill: palette.colors[i + 1] },
         toggled: visibility[key],
         onToggle: () => toggleVisibility(key),
       })),
