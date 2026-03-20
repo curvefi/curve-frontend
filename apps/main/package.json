@@ -26,8 +26,6 @@
     "@tanstack/react-router-devtools": "^1.166.9",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
-    "echarts": "^6.0.0",
-    "echarts-for-react": "^3.0.6",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.1.0",
@@ -42,6 +40,8 @@
   "peerDependencies": {
     "@curvefi/api": "*",
     "bignumber.js": "*",
+    "echarts": "*",
+    "echarts-for-react": "*",
     "ethers": "*",
     "immer": "*",
     "lodash": "*",

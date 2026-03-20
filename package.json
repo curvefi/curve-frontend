@@ -34,6 +34,8 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "bignumber.js": "*",
+    "echarts": "*",
+    "echarts-for-react": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "ethers": "*",
@@ -74,6 +76,8 @@
     "react-dom": "19.2.4",
     "styled-components": "6.3.11",
     "typescript": "5.9.3",
+    "echarts": "6.0.0",
+    "echarts-for-react": "3.0.6",
     "vite": "7.3.1",
     "vitest": "^4.0.15",
     "zustand": "5.0.12"
