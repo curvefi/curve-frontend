@@ -1,5 +1,6 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   ClaimableReward,
   useClaimableCrv,
@@ -16,7 +17,11 @@ export type ClaimableToken = ClaimableReward & {
   notional?: number
 }
 
-export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMarketParams<ChainId>, enabled = true) => {
+export const useClaimableTokens = <ChainId extends LlamaChainId>(
+  params: UserMarketParams<ChainId>,
+  market: LlamaMarketTemplate | undefined,
+  enabled = true,
+) => {
   const { chainId } = params
 
   const {
@@ -30,9 +35,11 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
+  const crvAddress = useMemo(() => market?.getLlamalend().constants.ALIASES.crv as Address | undefined, [market])
+
   const tokenAddresses = useMemo(
-    () => [CRV.address, ...(claimableRewards?.map((r) => r.token) ?? [])],
-    [claimableRewards],
+    () => [...notFalsy(crvAddress), ...(claimableRewards?.map((r) => r.token) ?? [])],
+    [crvAddress, claimableRewards],
   )
   const {
     data: usdRates,
@@ -42,7 +49,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
-      claimableCrv && { amount: claimableCrv, token: CRV.address as Address, symbol: CRV.symbol as string },
+      claimableCrv && crvAddress && { amount: claimableCrv, token: crvAddress, symbol: CRV.symbol as string },
       ...(claimableRewards ?? []),
     )
     return tokens
@@ -51,7 +58,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
         ...item,
         ...(usdRates?.[item.token] != null && { notional: Number(item.amount) * usdRates[item.token] }),
       }))
-  }, [claimableCrv, claimableRewards, usdRates])
+  }, [crvAddress, claimableCrv, claimableRewards, usdRates])
 
   const totalNotionals = useMemo(() => {
     const notionals = notFalsy(...claimableTokens.map((item) => item.notional))
