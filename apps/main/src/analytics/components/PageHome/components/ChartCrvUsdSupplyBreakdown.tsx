@@ -27,7 +27,7 @@ const MARKET_NAMES = {
   flashLenderDebt: 'FlashLender debt',
 } as const
 
-type Market = keyof typeof MARKET_NAMES
+type MarketName = keyof typeof MARKET_NAMES
 
 const MARKET_NAMES_SET = new Set<string>(Object.values(MARKET_NAMES))
 
@@ -36,7 +36,7 @@ const MARKET_LABELS = {
   lendingOperatorsDebt: t`Lending operators debt`,
   yieldBasisDebt: t`Yield basis debt`,
   flashLenderDebt: t`FlashLender debt`,
-} as const satisfies Record<Market, string>
+} as const satisfies Record<MarketName, string>
 
 const MINT_MARKETS_LABEL = t`Mint markets`
 
@@ -54,8 +54,8 @@ export function ChartCrvUsdSupplyBreakdown() {
 
   // Not using switch hook for the non mint markets as otherwise it's a lot of boilerplate
   const [mintMarketsVisible, , , toggleMintMarketsVisible] = useSwitch(true)
-  const [visibility, setVisibility] = useState<Record<Market, boolean>>(() => mapRecord(MARKET_NAMES, () => true))
-  const toggleVisibility = (key: Market) => setVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
+  const [visibility, setVisibility] = useState<Record<MarketName, boolean>>(() => mapRecord(MARKET_NAMES, () => true))
+  const toggleVisibility = (key: MarketName) => setVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
 
   const chartData = useMemo(
     () =>
