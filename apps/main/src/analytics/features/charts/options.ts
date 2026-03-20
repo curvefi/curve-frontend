@@ -103,10 +103,10 @@ const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOpti
     itemStyle: { color: '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // white fill only on hover dot
   },
   silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
-  // The 2nd line chart should be dashed, hence 'type' is being set
   lineStyle: {
     color: palette.colors[i],
     width: 2,
+    // The 2nd line chart should be dashed, hence 'type' is being set
     ...(i === 1 && serie.type === 'line' && !('areaStyle' in serie) && { type: 10 }),
   },
   itemStyle: { color: palette.colors[i] ?? '#fff', borderColor: palette.colors[i], borderWidth: 2 }, // tooltip marker color
