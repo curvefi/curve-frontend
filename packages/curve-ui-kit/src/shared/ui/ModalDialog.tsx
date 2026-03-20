@@ -12,6 +12,7 @@ import type { SxProps } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 const {
+  Spacing,
   Width: { modal: modalWidth },
   Height: { modal: modalHeight },
 } = SizesAndSpaces
@@ -22,9 +23,6 @@ export type ModalDialogProps = {
 
   /** Title of the modal dialog */
   title: string
-
-  /** Color of the title text */
-  titleColor?: string
 
   /** Whether the modal dialog is open */
   open: boolean
@@ -74,7 +72,6 @@ export const ModalDialog = ({
   onTransitionExited,
   title,
   titleAction,
-  titleColor = 'textSecondary',
   footer,
   compact,
   maxHeight = { mobile: modalHeight.sm, desktop: modalHeight.md },
@@ -109,10 +106,16 @@ export const ModalDialog = ({
         }
         avatar={titleAction}
         title={
-          <Typography variant="headingXsBold" color={titleColor}>
+          <Typography variant="headingXsBold" color="textSecondary">
             {title}
           </Typography>
         }
+        sx={{
+          paddingInline: Spacing.md,
+          paddingBlock: Spacing.sm,
+          alignItems: 'center',
+          '& .MuiCardHeader-action': { alignSelf: 'center' },
+        }}
       />
       <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {children}

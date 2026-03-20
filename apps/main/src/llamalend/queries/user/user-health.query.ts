@@ -12,11 +12,7 @@ type UserHealthQuery = UserMarketQuery & { isFull: boolean }
  * Query to get the user's health in a market.
  * Note this is NOT the health change when repaying debt, use `repayHealth` query for that.
  */
-export const {
-  useQuery: useUserHealth,
-  getQueryOptions: getUserHealthOptions,
-  invalidate: invalidateUserHealth,
-} = queryFactory({
+export const { useQuery: useUserHealth, getQueryOptions: getUserHealthOptions } = queryFactory({
   queryKey: ({ isFull, ...params }: UserHealthParams) =>
     [...rootKeys.userMarket(params), 'userHealth', { isFull }] as const,
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>

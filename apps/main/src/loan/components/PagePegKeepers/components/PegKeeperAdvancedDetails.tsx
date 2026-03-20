@@ -1,6 +1,5 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
@@ -30,59 +29,39 @@ export const PegKeeperAdvancedDetails = ({
   testId = 'pegkeeper',
 }: Props) => (
   <Stack>
-    <Typography
-      variant="headingXsBold"
-      sx={{
-        paddingBlockStart: Spacing.md,
-        paddingBlockEnd: Spacing.sm,
-        paddingInline: Spacing.md,
-        borderBottom: (t) => `1px solid ${t.design.Layer[3].Outline}`,
-      }}
-    >
-      {t`Advanced details`}
-    </Typography>
+    <ActionInfo
+      label={t`Pool`}
+      value={shortenAddress(poolAddress, { digits: 2 })}
+      link={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolId}/deposit`)}
+      copyValue={poolAddress}
+      testId={`${testId}-action-info-pool`}
+    />
 
-    <Stack
-      sx={{
-        paddingBlockStart: Spacing.xs,
-        paddingBlockEnd: Spacing.sm,
-        paddingInline: Spacing.md,
-      }}
-    >
-      <ActionInfo
-        label={t`Pool`}
-        value={shortenAddress(poolAddress, { digits: 2 })}
-        link={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolId}/deposit`)}
-        copyValue={poolAddress}
-        testId={`${testId}-action-info-pool`}
-      />
+    <ActionInfo
+      label={t`Contract`}
+      value={shortenAddress(address, { digits: 2 })}
+      link={`https://etherscan.io/address/${address}`}
+      copyValue={address}
+      testId={`${testId}-action-info-contract`}
+    />
 
-      <ActionInfo
-        label={t`Contract`}
-        value={shortenAddress(address, { digits: 2 })}
-        link={`https://etherscan.io/address/${address}`}
-        copyValue={address}
-        testId={`${testId}-action-info-contract`}
-      />
-
-      <ActionInfo
-        label={t`Est. rebalance profit`}
-        loading={estCallerProfit == null}
-        value={formatNumber(estCallerProfit, { decimals: 5 })}
-        valueRight={
-          <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
-            <InfoOutlinedIcon
-              sx={{
-                width: IconSize.md,
-                height: IconSize.md,
-                color: (t) => t.design.Text.TextColors.Primary,
-              }}
-            />
-          </Tooltip>
-        }
-        sx={{ paddingBlockStart: Spacing.md }}
-        testId={`${testId}-action-info-profit`}
-      />
-    </Stack>
+    <ActionInfo
+      label={t`Est. rebalance profit`}
+      loading={estCallerProfit == null}
+      value={formatNumber(estCallerProfit, { decimals: 5 })}
+      valueRight={
+        <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
+          <InfoOutlinedIcon
+            sx={{
+              width: IconSize.md,
+              height: IconSize.md,
+              color: (t) => t.design.Text.TextColors.Primary,
+            }}
+          />
+        </Tooltip>
+      }
+      sx={{ paddingBlockStart: Spacing.md }}
+      testId={`${testId}-action-info-profit`}
+    />
   </Stack>
 )

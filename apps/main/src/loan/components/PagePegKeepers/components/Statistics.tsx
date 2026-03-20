@@ -16,7 +16,7 @@ export const Statistics = () => {
 
   return (
     <Card>
-      <CardHeader title={t`Statistics`} />
+      <CardHeader size="small" title={t`Statistics`} />
 
       <CardContent>
         {isErrorDebt && (
