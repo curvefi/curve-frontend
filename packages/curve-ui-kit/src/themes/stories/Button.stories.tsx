@@ -1,6 +1,7 @@
 import { fn } from 'storybook/test'
 import Button from '@mui/material/Button'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
 
 const meta: Meta<typeof Button> = {
   title: 'UI Kit/Primitives/Button',
@@ -119,6 +120,15 @@ export const Disabled: Story = {
   args: {
     disabled: true,
     children: 'Disabled',
+  },
+}
+
+export const Icons: Story = {
+  args: {
+    children: 'Icons',
+    startIcon: <LAFIcon color="warning" />,
+    endIcon: <LAFIcon color="warning" />,
+    sx: { width: '200px' },
   },
 }
 
