@@ -136,7 +136,8 @@ export function useTransactionMutation<
   // Track our own error state because errors thrown in onMutate don't populate React Query's error.
   const [error, setError] = useState<Error | null>(null)
 
-  const getContext = (variables: TVariables) => {
+  /** Creates the context object, throwing an error if no wallet is connected */
+  const createContext = (variables: TVariables) => {
     const baseContext: TransactionContext = { wallet: assert(wallet, 'Missing provider') }
     return buildContext ? buildContext(variables, baseContext) : (baseContext as TContext)
   }
@@ -147,19 +148,19 @@ export function useTransactionMutation<
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
 
+      const context = createContext(variables) // Early validation - throwing here prevents logMutation/mutationFn from running
+
       assertValidity(validationSuite, { userAddress, ...validationParams, ...variables })
-
       logMutation(mutationKey, { variables })
-
       addBreadcrumb('Transaction mutation starting', 'mutation', { variables, userAddress, mutationKey })
 
       // Return context to make it available in all callbacks (except mutationFn, we have to reconstruct there)
-      return getContext(variables)
+      return context
     },
     mutationFn: async (variables: TVariables) => {
       // We need to reconstruct context here since mutationFn doesn't receive onMutate's return.
       // buildContext is called again, which is fine since it should be deterministic. No side-effect please though.
-      const context = getContext(variables)
+      const context = createContext(variables)
       const data = await withPendingToast(mutationFn(variables, context), pendingMessage(variables, context))
       throwIfError(data)
 
