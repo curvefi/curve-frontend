@@ -3,13 +3,15 @@ import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import type { Chain } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart, useMarketHistoricalRatesChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -37,6 +39,7 @@ export const MarketInformationComposite = ({
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const newBandsChartEnabled = useNewBandsChart()
+  const blockchainId = networks[rChainId].id as Chain
 
   return (
     <Stack gap={PAGE_SPACING}>
@@ -46,6 +49,9 @@ export const MarketInformationComposite = ({
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}
+
+      {useMarketHistoricalRatesChart() && <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} />}
+
       {market && (
         <Card>
           <CardHeader title={t`Advanced Details`} size="small" />
