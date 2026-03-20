@@ -62,7 +62,7 @@ export const LoanPresetSelector = ({
       ))}
     </ToggleButtonGroup>
     {preset && (
-      <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none', paddingBottom: Spacing.sm }}>
+      <Alert severity="info" variant="outlined" sx={{ paddingBottom: Spacing.sm }}>
         <AlertTitle>{PRESETS[preset].title}</AlertTitle>
         {PRESETS[preset].description}
       </Alert>
