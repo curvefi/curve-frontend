@@ -82,15 +82,27 @@ const LendManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+          <AddCollateralForm
+            networks={networks}
+            chainId={chainId}
+            market={market}
+            enabled={isLoaded}
+            onPricesUpdated={onPricesUpdated}
+          />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+          <RemoveCollateralForm
+            networks={networks}
+            chainId={chainId}
+            market={market}
+            enabled={isLoaded}
+            onPricesUpdated={onPricesUpdated}
+          />
         ),
       },
     ],

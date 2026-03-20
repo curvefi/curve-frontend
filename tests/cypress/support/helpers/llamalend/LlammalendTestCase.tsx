@@ -53,7 +53,7 @@ function LlammalendTest({ tab, ...props }: LoanFlowTestProps) {
   if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
   const Component = loanExists ? Components[tab!] : CreateLoanForm
-  return <Component market={market} networks={networks} {...props} />
+  return <Component market={market} networks={networks} enabled {...props} />
 }
 
 export type LlammalendTestCaseProps = LoanFlowTestProps & TenderlyWagmiConfigFromVNet

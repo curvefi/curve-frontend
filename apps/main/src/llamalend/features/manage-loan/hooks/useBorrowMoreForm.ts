@@ -97,7 +97,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
-  enabled?: boolean
+  enabled: boolean
   onSuccess?: NonNullable<OnBorrowedMore>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
