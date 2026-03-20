@@ -118,7 +118,7 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
 
 const validateSharesToAssets = (shares: Decimal | undefined | null) => {
   test('shares', 'Shares must be a positive number', () => {
-    enforce(shares).isNumeric().gt(0)
+    enforce(shares).isNumeric().gte(0)
   })
 }
 
