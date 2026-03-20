@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useWithdrawForm } from '../hooks/useWithdrawForm'
+import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 export type WithdrawFormProps<ChainId extends IChainId> = {
@@ -40,6 +41,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     txHash,
     formErrors,
     max,
+    maxStakedShares,
   } = useWithdrawForm({ market, network, enabled, onSuccess })
 
   return (
@@ -62,6 +64,10 @@ export const WithdrawForm = <ChainId extends IChainId>({
           tooltip: t`Vault shares value`,
         }}
       />
+
+      {max.data && maxStakedShares.data && Number(max.data) === 0 && Number(maxStakedShares.data) > 0 && (
+        <AlertUnstakeFirst />
+      )}
 
       <Button
         type="submit"

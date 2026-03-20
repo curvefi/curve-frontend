@@ -36,5 +36,5 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   )
   useEffect(() => updateForm(form, { isFull }), [form, isFull])
 
-  return maxWithdrawAmount
+  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.gauge) }
 }
