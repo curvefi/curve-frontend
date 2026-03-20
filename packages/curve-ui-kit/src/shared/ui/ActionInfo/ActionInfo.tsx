@@ -64,6 +64,8 @@ export type ActionInfoProps = {
   sx?: StackProps['sx']
   /** CSS align-items property */
   alignItems?: StackProps['alignItems']
+  /** CSS align-self property for label */
+  alignLabel?: TypographyProps['alignSelf']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -150,7 +152,7 @@ export const ActionInfo = ({
   return (
     <Stack
       direction="row"
-      alignItems="center"
+      alignItems={alignItems}
       columnGap={Spacing.sm}
       data-testid={testId}
       sx={applySxProps(sx, { minHeight: rowHeight[size] })}
@@ -165,7 +167,7 @@ export const ActionInfo = ({
         {label}
       </Typography>
 
-      <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
+      <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
         {showPrevValue && (
           <>
             <Typography
