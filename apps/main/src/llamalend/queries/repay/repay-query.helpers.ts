@@ -1,13 +1,13 @@
 import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import type { RepayQuery } from '../validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute, type RouteMutationMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 import { getUserState } from '../user/user-state.query'
+import type { RepayQuery } from '../validation/manage-loan.types'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'> & {
   slippage?: RepayQuery['slippage']

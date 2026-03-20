@@ -1,6 +1,6 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { getUserPositionImplementation, normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
