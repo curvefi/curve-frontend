@@ -23,16 +23,6 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
 import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
-function useChartPricesCallback(
-  params: CollateralParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean,
-) {
-  const { data: pricesData } = useRemoveCollateralPrices(params, enabled)
-  useEffect(() => onPricesUpdated(pricesData), [onPricesUpdated, pricesData])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated])
-}
-
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
   NetworkName extends LlamaNetworkId = LlamaNetworkId,
