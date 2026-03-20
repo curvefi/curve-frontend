@@ -11,6 +11,7 @@ import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
@@ -42,13 +43,23 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
     (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),
   )
 
+  const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
+  const additionalVaultShares = useDepositExpectedVaultShares(params, isOpen)
+  const vaultShares = {
+    data:
+      additionalVaultShares.data &&
+      prevVaultShares.data &&
+      decimal(new BigNumber(prevVaultShares.data).plus(additionalVaultShares.data)),
+    ...combineQueryState(prevVaultShares, additionalVaultShares),
+  }
+
   return (
     <SupplyActionInfoList
       isOpen={isOpen}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={mapQuery(userBalances, (d) => d.vaultShares)}
-      vaultShares={q(useDepositExpectedVaultShares(params, isOpen))}
+      prevVaultShares={prevVaultShares}
+      vaultShares={vaultShares}
       prevAmountSupplied={q(prevAmountSupplied)}
       amountSupplied={amountSupplied}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}

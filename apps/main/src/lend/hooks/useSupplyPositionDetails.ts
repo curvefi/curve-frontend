@@ -15,6 +15,7 @@ type UseSupplyPositionDetailsProps = {
   chainId: ChainId
   market: OneWayMarketTemplate | null | undefined
   marketId: string
+  userAddress: Address | undefined
 }
 
 const averageMultiplier = 30
@@ -24,6 +25,7 @@ export const useSupplyPositionDetails = ({
   chainId,
   market,
   marketId,
+  userAddress,
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
@@ -39,6 +41,7 @@ export const useSupplyPositionDetails = ({
   const { data: userSupplyBoost, isLoading: isUserSupplyBoostLoading } = useUserSupplyBoost({
     chainId,
     marketId,
+    userAddress,
   })
   const { data: onChainRewards, isLoading: isOnChainRewardsLoading } = useMarketVaultOnChainRewards({
     chainId,
