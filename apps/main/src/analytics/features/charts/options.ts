@@ -93,10 +93,24 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
   },
 })
 
+/** Returns the color explicitly set on a series (via itemStyle, lineStyle, or areaStyle), if any. */
+const getExplicitColor = (serie: SeriesOption): string | undefined => {
+  const s = serie as { itemStyle?: { color?: string }; lineStyle?: { color?: string }; areaStyle?: { color?: string } }
+  return s.itemStyle?.color ?? s.lineStyle?.color ?? s.areaStyle?.color
+}
+
+/** Pins a color to a stacked area series so it stays stable when other series are toggled on/off. */
+export const areaColor = (color: string) => ({
+  areaStyle: { color },
+  lineStyle: { color },
+  itemStyle: { color, borderColor: color },
+})
+
 const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOption): SeriesOption => {
+  // Use explicit color if the series provides one, otherwise pick from the palette by index.
   // color index flip; looks better for two lines which is a common occurance
   const isLine = serie.type === 'line' && !('areaStyle' in serie)
-  const color = palette.colors[isLine && i === 1 ? 2 : isLine && i === 2 ? 1 : i] ?? '#fff'
+  const color = getExplicitColor(serie) ?? palette.colors[isLine && i === 1 ? 2 : isLine && i === 2 ? 1 : i] ?? '#fff'
 
   return {
     symbol: 'circle',

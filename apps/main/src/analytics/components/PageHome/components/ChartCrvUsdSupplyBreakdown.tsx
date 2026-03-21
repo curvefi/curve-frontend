@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import {
+  areaColor,
   ButtonExport,
   ButtonFullscreen,
   ChartFooter,
@@ -33,8 +34,8 @@ const MARKET_NAMES_SET = new Set<string>(Object.values(MARKET_NAMES))
 
 const MARKET_LABELS = {
   keepersDebt: t`Keepers debt`,
-  lendingOperatorsDebt: t`Lending operators debt`,
-  yieldBasisDebt: t`Yield basis debt`,
+  lendingOperatorsDebt: t`LendingOperators debt`,
+  yieldBasisDebt: t`YieldBasis debt`,
   flashLenderDebt: t`FlashLender debt`,
 } as const satisfies Record<MarketName, string>
 
@@ -51,6 +52,14 @@ export function ChartCrvUsdSupplyBreakdown() {
 
   const theme = useTheme()
   const palette = createPalette({ theme })
+
+  const seriesColors = useMemo(
+    () => ({
+      mintMarkets: palette.colors[0],
+      ...Object.fromEntries(objectKeys(MARKET_NAMES).map((key, i) => [key, palette.colors[i + 1]])),
+    }),
+    [palette.colors],
+  ) as Record<'mintMarkets' | MarketName, string>
 
   // Not using switch hook for the non mint markets as otherwise it's a lot of boilerplate
   const [mintMarketsVisible, , , toggleMintMarketsVisible] = useSwitch(true)
@@ -79,18 +88,18 @@ export function ChartCrvUsdSupplyBreakdown() {
     () => [
       {
         label: MINT_MARKETS_LABEL,
-        box: { fill: palette.colors[0] },
+        box: { fill: seriesColors.mintMarkets },
         toggled: mintMarketsVisible,
         onToggle: toggleMintMarketsVisible,
       },
-      ...objectKeys(MARKET_LABELS).map((key, i) => ({
+      ...objectKeys(MARKET_LABELS).map((key) => ({
         label: MARKET_LABELS[key],
-        box: { fill: palette.colors[i + 1] },
+        box: { fill: seriesColors[key] },
         toggled: visibility[key],
         onToggle: () => toggleVisibility(key),
       })),
     ],
-    [palette.colors, mintMarketsVisible, toggleMintMarketsVisible, visibility],
+    [seriesColors, mintMarketsVisible, toggleMintMarketsVisible, visibility],
   )
 
   const option = useMemo(
@@ -106,7 +115,7 @@ export function ChartCrvUsdSupplyBreakdown() {
               data: chartData.map((x) => x.mintMarkets),
               type: 'line',
               stack: 'supply',
-              areaStyle: {},
+              ...areaColor(seriesColors.mintMarkets),
             },
             ...recordEntries(MARKET_LABELS).map(
               ([key, label]) =>
@@ -115,14 +124,14 @@ export function ChartCrvUsdSupplyBreakdown() {
                   data: chartData.map((x) => x[key]),
                   type: 'line' as const,
                   stack: 'supply',
-                  areaStyle: {},
+                  ...areaColor(seriesColors[key]),
                 },
             ),
           ),
         },
         palette,
       }),
-    [chartData, palette, mintMarketsVisible, visibility],
+    [chartData, palette, seriesColors, mintMarketsVisible, visibility],
   )
 
   return (
@@ -149,7 +158,7 @@ export function ChartCrvUsdSupplyBreakdown() {
     >
       <ChartFooter
         legendSets={legendSets}
-        description={t`Total crvUSD in circulation broken down by source. "Mint markets" aggregates all standard lending markets. The remaining areas show protocol-specific debt: Keepers debt stabilizes the peg, while Lending operators, Yield basis, and FlashLender debt reflect other protocol-level minting.`}
+        description={t`Total crvUSD in circulation broken down by source. "Mint markets" aggregates all standard lending markets. The remaining areas show protocol-specific debt: Keepers debt stabilizes the peg, while LendingOperators, YieldBasis, and FlashLender debt reflect other protocol-level minting.`}
       />
     </EChartsCard>
   )
