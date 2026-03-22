@@ -20,13 +20,11 @@ export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
 }
 
 const parseDashType = (dash?: string): 'solid' | number[] => {
-  if (!dash || dash === 'none') return 'solid'
   const segments = dash
-    .split(' ')
+    ?.split(' ')
     .map((segment) => Number(segment))
     .filter((segment) => Number.isFinite(segment) && segment > 0)
-
-  return segments.length > 0 ? segments : 'solid'
+  return segments?.length ? segments : 'solid'
 }
 
 export const EChartsLineChart = <
@@ -90,7 +88,6 @@ export const EChartsLineChart = <
 
   const option: EChartsOption = useMemo(
     () => ({
-      backgroundColor: 'transparent',
       animation: false,
       grid: {
         left: 0,
@@ -101,7 +98,6 @@ export const EChartsLineChart = <
       },
       xAxis: {
         type: 'time',
-        boundaryGap: false,
         axisLine: { show: false },
         axisTick: { show: false },
         splitLine: {
@@ -167,15 +163,12 @@ export const EChartsLineChart = <
       series: activeSeries.map((line) => ({
         name: line.label,
         type: 'line',
-        clip: true,
         data: data.map((item) => [item[xKey], Number(item[line.key])]),
         showSymbol: false,
         symbol: 'circle',
         symbolSize: 4,
-        connectNulls: false,
         itemStyle: {
           color: line.color,
-          opacity: 1,
         },
         lineStyle: {
           color: line.color,
@@ -198,7 +191,5 @@ export const EChartsLineChart = <
     ],
   )
 
-  return (
-    <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} opts={{ renderer: 'canvas' }} />
-  )
+  return <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} />
 }
