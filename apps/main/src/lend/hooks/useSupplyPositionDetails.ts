@@ -58,7 +58,7 @@ export const useSupplyPositionDetails = ({
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
     contractAddress: market?.addresses?.controller as Address,
-    agg: 'day',
+    aggregate: 'day',
     limit: AVERAGE_MULTIPLIER,
   })
 

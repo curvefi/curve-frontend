@@ -20,10 +20,11 @@ export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
     return []
   }
 
-  const enriched = addMovingAverages(data, {
-    getValue: (item) => item.apyProjected,
-    getTimestamp: (item) => item.timestamp.getTime(),
-  })
+  const enriched = addMovingAverages(
+    data,
+    (item) => item.apyProjected,
+    (item) => item.timestamp.getTime(),
+  )
 
   return enriched.map(({ movingAverage, totalAverage, ...item }) => ({
     ...item,

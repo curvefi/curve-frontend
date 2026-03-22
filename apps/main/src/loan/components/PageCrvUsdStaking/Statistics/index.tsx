@@ -27,6 +27,7 @@ import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
 const { Spacing, MaxWidth, Height } = SizesAndSpaces
+const EMPTY_YIELD_DATA: never[] = []
 
 const chartLabels: Record<StatisticsChart, string> = {
   savingsRate: t`Savings Rate`,
@@ -76,10 +77,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
       dash,
     },
     toggled: visibleSeries.includes(key),
-    onToggle: () =>
-      setVisibleSeries((prev) =>
-        prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-      ),
+    onToggle: () => setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
   }))
 
   return (
@@ -115,7 +113,11 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
                   error={scrvUsdYieldError}
                   errorMessage={t`Unable to fetch savings rate data.`}
                 >
-                  <RevenueLineChart height={Height.chart} data={yieldData ?? []} visibleSeries={visibleSeries} />
+                  <RevenueLineChart
+                    height={Height.chart}
+                    data={yieldData ?? EMPTY_YIELD_DATA}
+                    visibleSeries={visibleSeries}
+                  />
                 </ChartStateWrapper>
                 <ChartFooter
                   legendSets={legendSets}
