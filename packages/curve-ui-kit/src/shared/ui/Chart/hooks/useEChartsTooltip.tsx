@@ -6,6 +6,11 @@ import { type Theme, ThemeProvider } from '@mui/material/styles'
 export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTooltip?: (datum: TData) => ReactNode) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const rootRef = useRef<Root | null>(null)
+  const renderTooltipRef = useRef(renderTooltip)
+
+  useEffect(() => {
+    renderTooltipRef.current = renderTooltip
+  })
 
   useEffect(
     () => () => {
@@ -18,7 +23,7 @@ export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTool
 
   return useCallback(
     (params: unknown) => {
-      if (!renderTooltip) return ''
+      if (!renderTooltipRef.current) return ''
 
       if (!containerRef.current) {
         containerRef.current = document.createElement('div')
@@ -29,13 +34,15 @@ export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTool
       const datum = dataIndex != null ? data[dataIndex] : null
 
       if (datum && rootRef.current) {
-        flushSync(() => rootRef.current!.render(<ThemeProvider theme={theme}>{renderTooltip(datum)}</ThemeProvider>))
+        flushSync(() =>
+          rootRef.current!.render(<ThemeProvider theme={theme}>{renderTooltipRef.current!(datum)}</ThemeProvider>),
+        )
       } else {
         flushSync(() => rootRef.current?.render(null))
       }
 
       return containerRef.current
     },
-    [data, renderTooltip, theme],
+    [data, theme],
   )
 }

@@ -1,5 +1,5 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -75,6 +75,14 @@ export const EChartsLineChart = <
 
   const gridLineColor = Color.Neutral[300]
   const gridTextColor = Text.TextColors.Tertiary
+
+  const xTickFormatterRef = useRef(xTickFormatter)
+  const yTickFormatterRef = useRef(yTickFormatter)
+  useEffect(() => {
+    xTickFormatterRef.current = xTickFormatter
+    yTickFormatterRef.current = yTickFormatter
+  })
+
   const activeSeries = useMemo(
     () => (visibleSeries ? series.filter((item) => visibleSeries.includes(item.key)) : series),
     [series, visibleSeries],
@@ -122,8 +130,8 @@ export const EChartsLineChart = <
           align: 'left',
           margin: 4,
           formatter: (value: string | number) => {
-            if (!xTickFormatter) return String(value)
-            return xTickFormatter(value as number)
+            if (!xTickFormatterRef.current) return String(value)
+            return xTickFormatterRef.current(value as number)
           },
         },
       },
@@ -147,7 +155,7 @@ export const EChartsLineChart = <
           fontSize: FontSize.xs.desktop,
           showMinLabel: false,
           showMaxLabel: true,
-          formatter: (value: number) => (yTickFormatter ? yTickFormatter(value) : `${value}`),
+          formatter: (value: number) => (yTickFormatterRef.current ? yTickFormatterRef.current(value) : `${value}`),
         },
       },
       tooltip: {
@@ -182,18 +190,7 @@ export const EChartsLineChart = <
         },
       })),
     }),
-    [
-      activeSeries,
-      data,
-      gridLineColor,
-      gridTextColor,
-      tooltipFormatter,
-      xKey,
-      xTickFormatter,
-      yMax,
-      yMin,
-      yTickFormatter,
-    ],
+    [activeSeries, data, gridLineColor, gridTextColor, tooltipFormatter, xKey, yMax, yMin],
   )
 
   return <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} />
