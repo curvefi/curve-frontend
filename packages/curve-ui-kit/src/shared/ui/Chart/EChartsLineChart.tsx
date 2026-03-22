@@ -19,6 +19,21 @@ export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
+/** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
+const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
+  data: TData[],
+  activeSeries: LineSeriesConfig<TSeriesKey>[],
+  paddingRatio: number,
+): { yMin: number; yMax: number } => {
+  const values = data.flatMap((item) => activeSeries.map((s) => Number(item[s.key])).filter(Number.isFinite))
+  if (!values.length) return { yMin: 0, yMax: 0 }
+
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const padding = min === max ? 1 : (max - min) * paddingRatio
+  return { yMin: min - padding, yMax: max + padding }
+}
+
 const parseDashType = (dash?: string): 'solid' | number[] => {
   const segments = dash
     ?.split(' ')
@@ -65,20 +80,10 @@ export const EChartsLineChart = <
     [series, visibleSeries],
   )
 
-  // Derive y-axis bounds from all visible series so toggling legend items adjusts the range
-  const { yMin, yMax } = useMemo(() => {
-    const values = data.flatMap((item) => activeSeries.map((s) => Number(item[s.key])).filter(Number.isFinite))
-    if (!values.length) return { yMin: 0, yMax: 0 }
-
-    let min = Infinity
-    let max = -Infinity
-    for (const v of values) {
-      if (v < min) min = v
-      if (v > max) max = v
-    }
-    const padding = min === max ? 1 : (max - min) * yPaddingRatio
-    return { yMin: min - padding, yMax: max + padding }
-  }, [data, activeSeries, yPaddingRatio])
+  const { yMin, yMax } = useMemo(
+    () => getYAxisBounds(data, activeSeries, yPaddingRatio),
+    [data, activeSeries, yPaddingRatio],
+  )
 
   const tooltipFormatter = useEChartsTooltip(
     data,
