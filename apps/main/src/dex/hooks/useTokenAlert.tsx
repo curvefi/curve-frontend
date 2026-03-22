@@ -175,6 +175,48 @@ export const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert 
           </div>
         ),
       },
+      '0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110': {
+        alertType: 'danger',
+        address: '0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110',
+        message: (
+          <div>
+            <Trans>
+              The Resolv protocol has experienced an exploit.{' '}
+              <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
+      '0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055': {
+        alertType: 'danger',
+        address: '0x1202f5c7b4b9e47a1a484e8b270be34dbbc75055',
+        message: (
+          <div>
+            <Trans>
+              The Resolv protocol has experienced an exploit.{' '}
+              <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
+      '0x4956b52ae2ff65d74ca2d61207523288e4528f96': {
+        alertType: 'danger',
+        address: '0x4956b52ae2ff65d74ca2d61207523288e4528f96',
+        message: (
+          <div>
+            <Trans>
+              The Resolv protocol has experienced an exploit.{' '}
+              <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
