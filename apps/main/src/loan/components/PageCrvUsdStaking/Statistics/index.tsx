@@ -68,10 +68,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
       dash,
     },
     toggled: visibleSeries.includes(key),
-    onToggle: () =>
-      setVisibleSeries((prev) =>
-        prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-      ),
+    onToggle: () => setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
   }))
 
   return (
