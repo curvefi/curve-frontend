@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
+import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
@@ -56,7 +57,7 @@ export const ChartWrapper = ({
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   const isError = chartStatus === 'ERROR'
-  const errorMessage = `Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`
+  const errorMessage = t`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`
   const error = useMemo(() => (isError ? new Error(errorMessage) : null), [isError, errorMessage]) // todo: pass correct error from query instead of creating new error with message
 
   return (
