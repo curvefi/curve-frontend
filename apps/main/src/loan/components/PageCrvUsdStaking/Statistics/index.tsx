@@ -8,6 +8,7 @@ import { useStore } from '@/loan/store/useStore'
 import { Stack, Card, CardHeader } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
+import { recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import {
@@ -68,16 +69,16 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
     proj_apy_total_avg: Color.Tertiary[400],
   } as const satisfies Record<YieldKeys, string>
 
-  const legendSets: LegendItem[] = Object.entries(priceLineLabels).map(([key, { label, dash }]) => ({
+  const legendSets: LegendItem[] = recordEntries(priceLineLabels).map(([key, { label, dash }]) => ({
     label,
     line: {
-      lineStroke: priceLineColors[key as YieldKeys],
+      lineStroke: priceLineColors[key],
       dash,
     },
-    toggled: visibleSeries.includes(key as YieldKeys),
+    toggled: visibleSeries.includes(key),
     onToggle: () =>
       setVisibleSeries((prev) =>
-        prev.includes(key as YieldKeys) ? prev.filter((k) => k !== key) : [...prev, key as YieldKeys],
+        prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
       ),
   }))
 

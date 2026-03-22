@@ -1,5 +1,5 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -19,14 +19,27 @@ export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
+/** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
+const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
+  data: TData[],
+  activeSeries: LineSeriesConfig<TSeriesKey>[],
+  paddingRatio: number,
+): { yMin: number; yMax: number } => {
+  const values = data.flatMap((item) => activeSeries.map((s) => Number(item[s.key])).filter(Number.isFinite))
+  if (!values.length) return { yMin: 0, yMax: 0 }
+
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const padding = min === max ? 1 : (max - min) * paddingRatio
+  return { yMin: min - padding, yMax: max + padding }
+}
+
 const parseDashType = (dash?: string): 'solid' | number[] => {
-  if (!dash || dash === 'none') return 'solid'
   const segments = dash
-    .split(' ')
+    ?.split(' ')
     .map((segment) => Number(segment))
     .filter((segment) => Number.isFinite(segment) && segment > 0)
-
-  return segments.length > 0 ? segments : 'solid'
+  return segments?.length ? segments : 'solid'
 }
 
 export const EChartsLineChart = <
@@ -62,25 +75,23 @@ export const EChartsLineChart = <
 
   const gridLineColor = Color.Neutral[300]
   const gridTextColor = Text.TextColors.Tertiary
+
+  const xTickFormatterRef = useRef(xTickFormatter)
+  const yTickFormatterRef = useRef(yTickFormatter)
+  useEffect(() => {
+    xTickFormatterRef.current = xTickFormatter
+    yTickFormatterRef.current = yTickFormatter
+  })
+
   const activeSeries = useMemo(
     () => (visibleSeries ? series.filter((item) => visibleSeries.includes(item.key)) : series),
     [series, visibleSeries],
   )
 
-  // Derive y-axis bounds from all visible series so toggling legend items adjusts the range
-  const { yMin, yMax } = useMemo(() => {
-    const values = data.flatMap((item) => activeSeries.map((s) => Number(item[s.key])).filter(Number.isFinite))
-    if (!values.length) return { yMin: 0, yMax: 0 }
-
-    let min = Infinity
-    let max = -Infinity
-    for (const v of values) {
-      if (v < min) min = v
-      if (v > max) max = v
-    }
-    const padding = min === max ? 1 : (max - min) * yPaddingRatio
-    return { yMin: min - padding, yMax: max + padding }
-  }, [data, activeSeries, yPaddingRatio])
+  const { yMin, yMax } = useMemo(
+    () => getYAxisBounds(data, activeSeries, yPaddingRatio),
+    [data, activeSeries, yPaddingRatio],
+  )
 
   const tooltipFormatter = useEChartsTooltip(
     data,
@@ -90,7 +101,6 @@ export const EChartsLineChart = <
 
   const option: EChartsOption = useMemo(
     () => ({
-      backgroundColor: 'transparent',
       animation: false,
       grid: {
         left: 0,
@@ -101,7 +111,6 @@ export const EChartsLineChart = <
       },
       xAxis: {
         type: 'time',
-        boundaryGap: false,
         axisLine: { show: false },
         axisTick: { show: false },
         splitLine: {
@@ -121,8 +130,8 @@ export const EChartsLineChart = <
           align: 'left',
           margin: 4,
           formatter: (value: string | number) => {
-            if (!xTickFormatter) return String(value)
-            return xTickFormatter(value as number)
+            if (!xTickFormatterRef.current) return String(value)
+            return xTickFormatterRef.current(value as number)
           },
         },
       },
@@ -146,7 +155,7 @@ export const EChartsLineChart = <
           fontSize: FontSize.xs.desktop,
           showMinLabel: false,
           showMaxLabel: true,
-          formatter: (value: number) => (yTickFormatter ? yTickFormatter(value) : `${value}`),
+          formatter: (value: number) => (yTickFormatterRef.current ? yTickFormatterRef.current(value) : `${value}`),
         },
       },
       tooltip: {
@@ -167,15 +176,12 @@ export const EChartsLineChart = <
       series: activeSeries.map((line) => ({
         name: line.label,
         type: 'line',
-        clip: true,
         data: data.map((item) => [item[xKey], Number(item[line.key])]),
         showSymbol: false,
         symbol: 'circle',
         symbolSize: 4,
-        connectNulls: false,
         itemStyle: {
           color: line.color,
-          opacity: 1,
         },
         lineStyle: {
           color: line.color,
@@ -184,21 +190,8 @@ export const EChartsLineChart = <
         },
       })),
     }),
-    [
-      activeSeries,
-      data,
-      gridLineColor,
-      gridTextColor,
-      tooltipFormatter,
-      xKey,
-      xTickFormatter,
-      yMax,
-      yMin,
-      yTickFormatter,
-    ],
+    [activeSeries, data, gridLineColor, gridTextColor, tooltipFormatter, xKey, yMax, yMin],
   )
 
-  return (
-    <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} opts={{ renderer: 'canvas' }} />
-  )
+  return <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} />
 }
