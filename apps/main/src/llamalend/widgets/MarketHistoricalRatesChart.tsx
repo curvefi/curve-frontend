@@ -70,10 +70,11 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
       .filter((item) => Number.isFinite(item.timestamp) && Number.isFinite(item.borrowApr))
       .sort((a, b) => a.timestamp - b.timestamp)
 
-    return addMovingAverages(sorted, {
-      getValue: (d) => d.borrowApr,
-      getTimestamp: (d) => d.timestamp,
-    }).map(({ movingAverage, totalAverage, ...rest }) => ({
+    return addMovingAverages(
+      sorted,
+      (d) => d.borrowApr,
+      (d) => d.timestamp,
+    ).map(({ movingAverage, totalAverage, ...rest }) => ({
       ...rest,
       borrowApr7dAvg: movingAverage,
       borrowAprTotalAvg: totalAverage,
