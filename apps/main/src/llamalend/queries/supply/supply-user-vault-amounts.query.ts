@@ -1,8 +1,6 @@
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory, rootKeys, UserMarketQuery } from '@ui-kit/lib/model'
-import { FieldsOf } from '@ui-kit/lib/validation/types'
-import { useUserBalances } from '../user/user-balances.query'
+import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import {
   requireVault,
   SharesToAssetsParams,
@@ -27,25 +25,3 @@ export const { useQuery: useSharesToAssetsAmount } = queryFactory({
   category: 'llamalend.supply',
   validationSuite: userSupplyVaultSharesValidationSuite,
 })
-
-/**
- * Get the user staked vault share balance (gauge) and convert it to underlying asset amounts.
- */
-export const useUserStakedVaultSharesToAssetsAmount = (query: FieldsOf<UserMarketQuery>, enabled?: boolean) => {
-  const {
-    data: userVaultShareBalances,
-    isLoading: userVaultShareBalancesLoading,
-    error: userVaultShareBalancesError,
-  } = useUserBalances(query, enabled)
-  const {
-    data,
-    isLoading: sharesToAssetsLoading,
-    error: sharesToAssetsError,
-  } = useSharesToAssetsAmount({ ...query, shares: userVaultShareBalances?.gauge }, enabled)
-
-  return {
-    data,
-    isLoading: [userVaultShareBalancesLoading, sharesToAssetsLoading].some(Boolean),
-    error: [userVaultShareBalancesError, sharesToAssetsError].find(Boolean) ?? null,
-  }
-}
