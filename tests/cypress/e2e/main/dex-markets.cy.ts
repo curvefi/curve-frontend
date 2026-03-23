@@ -3,15 +3,12 @@ import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { getHiddenCount, withFilterChips } from '@cy/support/helpers/data-table.helpers'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { assert } from '@primitives/objects.utils'
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
   if (['', '-', '—'].includes(value)) return 0
-  const match = /(\d+\.?\d*)([kmbt]?)/i.exec(value)
-  if (!match) {
-    throw new Error(`Cannot match ${value} as compact USD number`)
-  }
-  const [, numStr, unit] = match
+  const [, numStr, unit] = assert(/(\d+\.?\d*)([kmbt]?)/i.exec(value), `Cannot match ${value} as compact USD number`)
   const units = ['', 'k', 'm', 'b', 't']
   const num = +numStr
   const unitIndex = units.indexOf(unit.toLowerCase())

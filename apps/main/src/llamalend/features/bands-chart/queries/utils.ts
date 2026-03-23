@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
@@ -24,7 +25,7 @@ export async function fetchChartBandBalancesData(
 
   const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(ns).process(async (n) => {
     const { collateral, borrowed } = bandsBalances[n]
-    const [p_up, p_down] = await market.calcBandPrices(+n)
+    const [p_up, p_down] = await getPricesImplementation(market).calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
     const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toString()
     const collateralUsd = new BN(collateral).multipliedBy(sqrt) // this only works when borrowed tokens value = 1 usd (might not work in LLv2)

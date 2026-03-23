@@ -1,11 +1,5 @@
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
-
-export function assert<T>(value: T | null | undefined | 0 | false | '', message: string | (() => string)) {
-  if (!value) {
-    throw new Error(typeof message === 'function' ? message() : message)
-  }
-  return value
-}
+import { assert } from '@primitives/objects.utils'
 
 /**
  * List of all hardcoded chains IDs. Does not include Lite chains.

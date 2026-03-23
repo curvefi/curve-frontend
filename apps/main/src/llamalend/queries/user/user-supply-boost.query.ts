@@ -6,8 +6,7 @@ import { requireVault } from '../validation/supply.validation'
 
 const _fetchUserSupplyBoost = async ({ marketId, userAddress }: UserMarketQuery): Promise<number | null> => {
   const market = requireVault(marketId)
-  const boost = await market.userBoost(userAddress)
-
+  const boost = await market.userPosition.userBoost(userAddress)
   return boost ? +boost : null
 }
 

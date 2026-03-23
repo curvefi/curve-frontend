@@ -1,6 +1,8 @@
 import { useConnection } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import {
   type TransactionContext,
@@ -14,6 +16,7 @@ import type { LlamaMarketTemplate } from '../llamalend.types'
 type LlammaContext = TransactionContext & {
   llamaApi: NonNullable<ReturnType<typeof useCurve>['llamaApi']>
   market: LlamaMarketTemplate
+  userAddress: Address
 }
 
 /**
@@ -38,16 +41,16 @@ export function useLlammaMutation<TVariables extends object>({
   return useTransactionMutation<TVariables, LlammaContext>({
     ...options,
     validationParams: { chainId, marketId, userAddress },
-    buildContext: (_variables, baseContext) => {
-      if (!llamaApi) throw new Error('Missing llamalend api')
-      if (!marketId) throw new Error('Missing llamma market id')
-
-      const market = getLlamaMarket(marketId)
-      return { ...baseContext, llamaApi, market }
-    },
+    buildContext: (_variables, baseContext) => ({
+      ...baseContext,
+      llamaApi: assert(llamaApi, 'Missing llamalend api'),
+      market: getLlamaMarket(assert(marketId, 'Missing llama market ID')),
+      userAddress: assert(userAddress, 'Missing userAddress'),
+    }),
     onSuccess: async (data, receipt, variables, context) => {
-      updateUserEventsApi(context.wallet, { id: networkId }, context.market, receipt.transactionHash)
-      await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
+      const { market, wallet, userAddress } = context
+      updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
+      await invalidateAllUserMarketDetails({ chainId, marketId: market.id, userAddress })
       await onSuccess?.(data, receipt, variables, context)
     },
   })

@@ -38,12 +38,7 @@ export const {
     userAddress,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
         return (

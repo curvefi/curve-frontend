@@ -1,5 +1,5 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -18,7 +18,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {
-    const market = getLlamaMarket(marketId)
+    const market = getLoanImplementation(marketId)
     const isApproved = await market.addCollateralIsApproved(userCollateral)
 
     if (isApproved) {

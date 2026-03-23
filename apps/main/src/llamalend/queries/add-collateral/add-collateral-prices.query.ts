@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
@@ -9,7 +9,7 @@ export const { useQuery: useAddCollateralPrices, invalidate: invalidateAddCollat
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralPrices', { userCollateral }] as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
-    (await getLlamaMarket(marketId).addCollateralPrices(userCollateral)) as Range<Decimal>,
+    (await getLoanImplementation(marketId).addCollateralPrices(userCollateral)) as Range<Decimal>,
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })
