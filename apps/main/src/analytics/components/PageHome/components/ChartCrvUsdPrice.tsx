@@ -59,6 +59,7 @@ export function ChartCrvUsdPrice() {
   const option = useMemo(
     () =>
       createChartOptions({
+        legendSets,
         options: {
           tooltip: createTooltip(formatUsd),
           xAxis: { data: chartData.map((x) => x.time).map(timeToCategory) },
@@ -83,7 +84,7 @@ export function ChartCrvUsdPrice() {
         },
         palette,
       }),
-    [chartData, palette],
+    [legendSets, chartData, palette],
   )
 
   return (

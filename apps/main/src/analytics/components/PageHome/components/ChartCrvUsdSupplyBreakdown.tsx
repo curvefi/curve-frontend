@@ -12,7 +12,7 @@ import {
 import { DAYS, type Period } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { useTheme } from '@mui/material/styles'
-import { mapRecord, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
+import { mapRecord, objectKeys, recordEntries } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -94,33 +94,31 @@ export function ChartCrvUsdSupplyBreakdown() {
   const option = useMemo(
     () =>
       createChartOptions({
+        legendSets,
         options: {
           tooltip: createTooltip(formatUsd),
           xAxis: { data: chartData.map((x) => x.time).map(timeToCategory) },
           yAxis: { axisLabel: { formatter: (v: number) => formatUsd(v) } },
-          series: notFalsy(
-            mintMarketsVisible && {
+          series: [
+            {
               name: MINT_MARKETS_LABEL,
               data: chartData.map((x) => x.mintMarkets),
               type: 'line',
               stack: 'supply',
               areaStyle: {},
             },
-            ...recordEntries(MARKET_LABELS).map(
-              ([key, label]) =>
-                visibility[key] && {
-                  name: label,
-                  data: chartData.map((x) => x[key]),
-                  type: 'line' as const,
-                  stack: 'supply',
-                  areaStyle: {},
-                },
-            ),
-          ),
+            ...recordEntries(MARKET_LABELS).map(([key, label]) => ({
+              name: label,
+              data: chartData.map((x) => x[key]),
+              type: 'line' as const,
+              stack: 'supply',
+              areaStyle: {},
+            })),
+          ],
         },
         palette,
       }),
-    [chartData, palette, mintMarketsVisible, visibility],
+    [chartData, legendSets, palette],
   )
 
   return (
