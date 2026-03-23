@@ -59,7 +59,8 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
   const chartData = useMemo<BorrowAprChartPoint[]>(() => {
     const sorted = snapshots
       .map((snapshot) => ({
-        timestamp: snapshot.timestamp.getTime(),
+        // timestamp is typed as Date but may be a string after JSON serialization (e.g. React Query cache)
+        timestamp: new Date(snapshot.timestamp).getTime(),
         borrowApr: Number(snapshot.borrowApr),
       }))
       .filter((item) => Number.isFinite(item.timestamp) && Number.isFinite(item.borrowApr))
