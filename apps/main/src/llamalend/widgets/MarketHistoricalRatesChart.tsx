@@ -21,7 +21,7 @@ import {
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Height } = SizesAndSpaces
 
 export type BorrowAprChartPoint = {
   timestamp: number
@@ -42,8 +42,6 @@ const SERIES_CONFIG: { key: BorrowAprSeriesKey; label: string; dash: string }[] 
   { key: 'borrowApr7dAvg', label: t`7-day MA APR`, dash: '2 2' },
   { key: 'borrowAprTotalAvg', label: t`Average APR`, dash: '4 4' },
 ]
-
-const ChartHeight = 172
 
 export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHistoricalRatesChartProps) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
@@ -119,14 +117,14 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
       <CardHeader title={t`Historical Interest Rate`} size="small" />
       <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
         <ChartStateWrapper
-          height={ChartHeight}
+          height={Height.shortChart}
           isLoading={isLoading || !market}
           error={error}
           errorMessage={t`Unable to fetch historical rates data.`}
         >
           <EChartsLineChart<BorrowAprChartPoint, BorrowAprSeriesKey, 'timestamp'>
             data={chartData}
-            height={ChartHeight}
+            height={Height.shortChart}
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}
