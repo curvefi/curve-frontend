@@ -16,7 +16,6 @@ import {
   type LegendItem,
   addMovingAverages,
   EChartsLineChart,
-  type EChartsLineChartTooltipContext,
   type LineSeriesConfig,
 } from '@ui-kit/shared/ui/Chart'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -46,8 +45,6 @@ const SERIES_CONFIG: { key: BorrowAprSeriesKey; label: string; dash: string }[] 
 
 const ChartHeight = 172
 
-type BorrowAprTooltipContext = EChartsLineChartTooltipContext<BorrowAprChartPoint, BorrowAprSeriesKey>
-
 export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHistoricalRatesChartProps) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<BorrowAprSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
@@ -64,7 +61,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
   const chartData = useMemo<BorrowAprChartPoint[]>(() => {
     const sorted = snapshots
       .map((snapshot) => ({
-        timestamp: new Date(snapshot.timestamp).getTime(),
+        timestamp: snapshot.timestamp.getTime(),
         borrowApr: Number(snapshot.borrowApr),
       }))
       .filter((item) => Number.isFinite(item.timestamp) && Number.isFinite(item.borrowApr))
@@ -114,7 +111,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
   )
 
   const handleToggleChange = (_: MouseEvent<HTMLElement>, option: TimeOption | null) => {
-    if (option) setTimeOption(option)
+    if (option) setTimeOption(option) // MUI passes null when button is already selected and we don't want to allow a state where nothing is selected
   }
 
   return (
@@ -136,9 +133,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
             xTickFormatter={(value: BorrowAprChartPoint['timestamp'] | number | string) => formatDate(value)}
             yTickFormatter={(value) => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 1 })}
             yPaddingRatio={0.05}
-            renderTooltip={({ datum, visibleSeries }: BorrowAprTooltipContext) => (
-              <HistoricalRatesTooltip datum={datum} visibleSeries={visibleSeries} />
-            )}
+            renderTooltip={HistoricalRatesTooltip}
           />
         </ChartStateWrapper>
         <ChartFooter

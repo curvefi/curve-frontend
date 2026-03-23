@@ -45,8 +45,8 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     blockchainId: chain,
     contractAddress: controllerAddress,
     aggregate: 'day' as const,
-    limit: DAYS_BACK,
-  } // fetch last 7 days for 7 day average calcs
+    limit: DAYS_BACK, // fetch last 7 days for 7 day average calcs
+  }
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
