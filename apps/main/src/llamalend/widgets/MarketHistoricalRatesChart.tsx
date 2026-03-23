@@ -32,11 +32,11 @@ type RateMode = 'borrow' | 'supply'
 export type RateChartPoint = {
   timestamp: number
   rate: number
-  rate7dAvg: number
-  rateTotalAvg: number
+  movingAverage: number
+  totalAverage: number
 }
 
-type RateSeriesKey = 'rate' | 'rate7dAvg' | 'rateTotalAvg'
+type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 
 type MarketHistoricalRatesChartProps = {
   market: LlamaMarketTemplate | undefined | null
@@ -45,14 +45,14 @@ type MarketHistoricalRatesChartProps = {
 
 const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[] = [
   { key: 'rate', label: t`Borrow APR`, dash: 'none' },
-  { key: 'rate7dAvg', label: t`7-day MA APR`, dash: '2 2' },
-  { key: 'rateTotalAvg', label: t`Average APR`, dash: '4 4' },
+  { key: 'movingAverage', label: t`7-day MA APR`, dash: '2 2' },
+  { key: 'totalAverage', label: t`Average APR`, dash: '4 4' },
 ]
 
 const SUPPLY_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[] = [
   { key: 'rate', label: t`Supply APY`, dash: 'none' },
-  { key: 'rate7dAvg', label: t`7-day MA APY`, dash: '2 2' },
-  { key: 'rateTotalAvg', label: t`Average APY`, dash: '4 4' },
+  { key: 'movingAverage', label: t`7-day MA APY`, dash: '2 2' },
+  { key: 'totalAverage', label: t`Average APY`, dash: '4 4' },
 ]
 
 export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHistoricalRatesChartProps) => {
@@ -86,18 +86,14 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
       sorted,
       (d) => d.rate,
       (d) => d.timestamp,
-    ).map(({ movingAverage, totalAverage, ...rest }) => ({
-      ...rest,
-      rate7dAvg: movingAverage,
-      rateTotalAvg: totalAverage,
-    }))
+    )
   }, [snapshots, rateMode])
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
     () => ({
       rate: Color.Primary[500],
-      rate7dAvg: Color.Secondary[500],
-      rateTotalAvg: Color.Tertiary[400],
+      movingAverage: Color.Secondary[500],
+      totalAverage: Color.Tertiary[400],
     }),
     [Color.Primary, Color.Secondary, Color.Tertiary],
   )
