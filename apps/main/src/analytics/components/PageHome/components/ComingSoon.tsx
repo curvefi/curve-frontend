@@ -15,10 +15,11 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing, MaxWidth, IconSize } = SizesAndSpaces
 
 export const ComingSoon = () => (
-  <Card>
+  <Card component={Stack} height="100%">
     <CardHeader title={t`Coming soon`} size="small" />
-    <CardContent size="small">
+    <CardContent component={Stack} flexGrow={1} size="small">
       <Stack
+        flexGrow={1}
         gap={Spacing.sm}
         alignItems="center"
         justifyContent="center"

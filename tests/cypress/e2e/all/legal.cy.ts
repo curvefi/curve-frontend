@@ -1,20 +1,12 @@
-import { oneOf } from '@cy/support/generators'
 import { oneDisclaimersSubTabs, oneLegalPageTab } from '@cy/support/helpers/tabs'
 import { clickTab } from '@cy/support/helpers/tabs'
-import {
-  API_LOAD_TIMEOUT,
-  LOAD_TIMEOUT,
-  oneAppPath,
-  oneDesktopViewport,
-  oneTabletViewport,
-  oneViewport,
-} from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, oneAppPath, oneTabletOrDesktopViewport, oneViewport } from '@cy/support/ui'
 
 describe('Legal', () => {
   describe('Footer Link', () => {
-    const viewport = oneOf(oneDesktopViewport, oneTabletViewport)()
-    it(`it should contain footer legal link for ${viewport.join('x')}`, () => {
-      cy.viewport(...viewport)
+    const [width, height] = oneTabletOrDesktopViewport()
+    it(`it should contain footer legal link for ${width}x${height}`, () => {
+      cy.viewport(width, height)
       cy.visit(`/${oneAppPath() || 'dex'}/`)
 
       //Navigate to legal route from footer link
