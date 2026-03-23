@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market'
@@ -11,7 +10,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalSum } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
@@ -48,15 +47,13 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
       prevVaultShares={mapQuery(userBalances, (d) => d.stakedShares)}
       vaultShares={mapQuery(
         userBalances,
-        (d) => d.stakedShares && stakeAmount && decimal(new BigNumber(d.stakedShares).plus(stakeAmount)),
+        (d) => d.stakedShares && stakeAmount && decimalSum(d.stakedShares, stakeAmount),
       )}
       prevAmountSupplied={mapQuery(userBalances, (d) => d.stakedSharesAmount)}
       amountSupplied={mapQuery(
         userBalances,
         (d) =>
-          d.stakedSharesAmount &&
-          amountStakedAssets.data &&
-          decimal(new BigNumber(d.stakedSharesAmount).plus(amountStakedAssets.data)),
+          d.stakedSharesAmount && amountStakedAssets.data && decimalSum(d.stakedSharesAmount, amountStakedAssets.data),
       )}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       gas={q(useStakeEstimateGas(networks, params, isOpen))}
