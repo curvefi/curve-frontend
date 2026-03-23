@@ -7,7 +7,7 @@ export const useTitleMapper = (): TitleMapper => ({
   isInMarket: { title: '' },
   name: { title: t`Markets` },
   available: { title: t`Available` },
-  cap: { title: t`Supplied` },
+  totalAssets: { title: t`Supplied` },
   utilization: { title: t`Utilization` },
   rateBorrow: { title: t`Borrow APY` },
   rateLend: { title: t`Lend Total APR` },

@@ -50,7 +50,7 @@ export const ChartBandBalances = ({
   const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
   const statsCapAndAvailable = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
 
-  const { cap, available } = statsCapAndAvailable ?? {}
+  const { totalAssets, available } = statsCapAndAvailable ?? {}
 
   const isNGroupeds = useMemo(() => data?.filter((d) => d.isNGrouped), [data])
 
@@ -58,14 +58,12 @@ export const ChartBandBalances = ({
   const chartHeight = 290
   let barWidth = 0
 
-  const isChartNotAvailable = typeof cap !== 'undefined' && +cap === +available && data?.length === 0
+  const isChartNotAvailable = totalAssets != null && +totalAssets === +available && data?.length === 0
 
-  const showInAccurateChartAlert = useMemo(() => {
-    if (typeof cap !== 'undefined' && +cap > 0 && data && data.length > 0) {
-      return data?.every((d) => +d.borrowed + +d.collateral === 0)
-    }
-    return false
-  }, [cap, data])
+  const showInAccurateChartAlert = useMemo(
+    () => +totalAssets > 0 && !!data?.length && data?.every((d) => +d.borrowed + +d.collateral === 0),
+    [totalAssets, data],
+  )
 
   return (
     <>

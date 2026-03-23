@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
@@ -15,7 +15,7 @@ const { useQuery: useUserPricesQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
-    (await getLlamaMarket(marketId).userPrices(userAddress)) as Range<Decimal>,
+    (await getUserPositionImplementation(marketId).userPrices(userAddress)) as Range<Decimal>,
   category: 'llamalend.user',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
     marketIdValidationSuite(params)

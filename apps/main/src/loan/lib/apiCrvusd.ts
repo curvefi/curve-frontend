@@ -161,14 +161,14 @@ const detailInfo = {
       llamma.stats.totalDebt(),
       llamma.stats.totalCollateral(),
       llamma.stats.totalStablecoin(),
-      llamma.stats.capAndAvailable(),
+      llamma.stats.capAndAvailable().then(({ cap: totalAssets, available }) => ({ totalAssets, available })),
     ])
     const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
     const totalCollateral = fulfilledValue(totalCollateralResult) ?? '0'
     const totalStablecoin = fulfilledValue(totalStablecoinResult) ?? '0'
-    const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { cap: '0', available: '0' }
+    const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { totalAssets: '0', available: '0' }
 
     return {
       oraclePriceBand,
