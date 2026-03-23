@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
@@ -16,7 +16,7 @@ export const { useQuery: useUserHealth, getQueryOptions: getUserHealthOptions } 
   queryKey: ({ isFull, ...params }: UserHealthParams) =>
     [...rootKeys.userMarket(params), 'userHealth', { isFull }] as const,
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>
-    (await getLlamaMarket(marketId).userHealth(isFull, userAddress)) as Decimal,
+    (await getUserPositionImplementation(marketId).userHealth(isFull, userAddress)) as Decimal,
   category: 'llamalend.user',
   validationSuite: createValidationSuite(({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
     userMarketValidationSuite({ userAddress, marketId, chainId })

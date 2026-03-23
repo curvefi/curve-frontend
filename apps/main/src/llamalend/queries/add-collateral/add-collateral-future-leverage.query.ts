@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils/decimal'
 import { userCurrentLeverageQueryKey } from '../user/user-current-leverage.query'
@@ -17,7 +17,7 @@ export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>
-    decimal(await getLlamaMarket(marketId).addCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
+    decimal(await getLoanImplementation(marketId).addCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
   category: 'llamalend.addCollateral',
   validationSuite: leverageCollateralValidationSuite,
   dependencies: (params) => [userCurrentLeverageQueryKey(params)],

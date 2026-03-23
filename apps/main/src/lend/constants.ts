@@ -16,7 +16,7 @@ export enum TITLE {
   isInMarket = 'isInMarket',
   name = 'name',
   available = 'available',
-  cap = 'cap',
+  totalAssets = 'totalAssets',
   utilization = 'utilization',
   rateBorrow = 'rateBorrow',
   rateLend = 'rateLend',

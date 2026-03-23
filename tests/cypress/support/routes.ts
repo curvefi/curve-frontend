@@ -1,6 +1,7 @@
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
 import { recordValues } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import {
   CRVUSD_ROUTES,
@@ -100,9 +101,8 @@ const ROUTE_TEST_IDS = {
 export const getRouteTestId = (route: AppRoute) => {
   const app = getRouteApp(route)
   const appRoutes = ROUTE_TEST_IDS[app]
-  const afterNetwork = route.replace(/^\w+\/ethereum/, '') // extract part after /{app}/{network}
-  if (!afterNetwork) throw new Error(`Could not extract route after network from ${route}`)
+  // extract part after /{app}/{network}
+  const afterNetwork = assert(route.replace(/^\w+\/ethereum/, ''), `No route after network from ${route}`)
   const [, testId] = Object.entries(appRoutes).find(([route]) => afterNetwork.startsWith(route)) ?? []
-  if (!testId) throw new Error(`No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
-  return testId
+  return assert(testId, `No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
 }

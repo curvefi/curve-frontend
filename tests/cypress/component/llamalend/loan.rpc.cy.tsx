@@ -117,7 +117,7 @@ testCases.forEach(
 
       it(`borrows more`, () => {
         cy.mount(<LoanTestWrapper tab="borrow-more" />)
-        writeBorrowMoreForm({ debt: borrowMore })
+        writeBorrowMoreForm({ debt: borrowMore }) // todo: implement add collateral in some markets
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt: borrow,
           expectedFutureDebt: debtAfterBorrowMore,

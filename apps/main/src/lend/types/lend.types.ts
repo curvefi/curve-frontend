@@ -120,7 +120,7 @@ export type MarketStatBands = {
   error: string
 }
 export type MarketsStatsBandsMapper = { [owmId: string]: MarketStatBands }
-export type MarketStatCapAndAvailable = { cap: string; available: string; error: string }
+export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
 export type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
 export type MarketMaxLeverage = { maxLeverage: string; error: string }
 export type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }

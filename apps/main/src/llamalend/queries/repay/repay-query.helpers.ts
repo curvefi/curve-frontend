@@ -1,5 +1,6 @@
 import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -28,11 +29,12 @@ export function getRepayImplementation(
   { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const market = getLlamaMarket(marketId)
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
     (v) => !!+v,
   )
-  if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
+  if (!hasUserCollateral && !hasStateCollateral)
+    return ['unleveraged', getLoanImplementation(market), [userBorrowed]] as const
   if (market instanceof MintMarketTemplate) {
     if (hasV2Leverage(market))
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const

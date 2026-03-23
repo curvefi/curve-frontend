@@ -59,7 +59,7 @@ export type LoanDetails = {
   totalCollateral: string
   totalStablecoin: string
   priceInfo: LoanPriceInfo
-  capAndAvailable: { cap: string; available: string }
+  capAndAvailable: { totalAssets: string; available: string }
 }
 export type BandsBalancesData = {
   collateral: string

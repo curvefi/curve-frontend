@@ -1,14 +1,13 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getUserPositionImplementation, normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
-import type { BandsBalances } from '../types'
-import { sortBands, fetchChartBandBalancesData } from './utils'
+import { fetchChartBandBalancesData, sortBands } from './utils'
 import { liquidationBandValidationGroup } from './validation'
 
 const isMarket = false
@@ -36,23 +35,8 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userAddress, liquidationBand }: MarketUserBandsBalancesQuery) => {
     const market = getLlamaMarket(marketId)
-
-    if (market instanceof LendMarketTemplate) {
-      const userBandsBalances = await market.userBandsBalances(userAddress)
-
-      return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
-    } else {
-      const userBandsBalances = await market.userBandsBalances(userAddress)
-
-      const formattedUserBandsBalances: BandsBalances = Object.fromEntries(
-        Object.entries(userBandsBalances).map(([key, value]) => [
-          key,
-          { borrowed: value.stablecoin, collateral: value.collateral },
-        ]),
-      )
-
-      return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)
-    }
+    const userBandsBalances = normalizeBands(await getUserPositionImplementation(market).userBandsBalances(userAddress))
+    return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
   },
   category: 'llamalend.user',
   validationSuite: marketUserBandsBalancesValidationSuite,

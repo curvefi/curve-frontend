@@ -48,4 +48,4 @@ export const oneDate = ({
 }: {
   minDate?: Date
   maxDate?: Date
-}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))
+} = {}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))

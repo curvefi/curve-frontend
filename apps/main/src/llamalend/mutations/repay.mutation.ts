@@ -3,6 +3,7 @@ import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
@@ -40,7 +41,7 @@ const approveRepay = async (
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId }: RepayMutation,
 ) => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
-    return (await market.fullRepayApprove()) as Hex[]
+    return (await getLoanImplementation(market).fullRepayApprove()) as Hex[]
   }
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
@@ -61,7 +62,7 @@ const repay = async (
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
-    return (await market.fullRepay()) as Hex
+    return (await getLoanImplementation(market).fullRepay()) as Hex
   }
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
