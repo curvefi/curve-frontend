@@ -148,11 +148,12 @@ export function useTransactionMutation<
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
 
-      const context = createContext(variables) // Early validation - throwing here prevents logMutation/mutationFn from running
+      const params = { userAddress, ...validationParams, ...variables, mutationKey }
+      assertValidity(validationSuite, params)
+      const context = createContext(variables) // throws before logging, in case of a missing wallet
 
-      assertValidity(validationSuite, { userAddress, ...validationParams, ...variables })
-      logMutation(mutationKey, { variables })
-      addBreadcrumb('Transaction mutation starting', 'mutation', { variables, userAddress, mutationKey })
+      logMutation(mutationKey, params)
+      addBreadcrumb('Transaction mutation starting', 'mutation', params)
 
       // Return context to make it available in all callbacks (except mutationFn, we have to reconstruct there)
       return context

@@ -29,7 +29,7 @@ export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRe
 
 export const notFalsy = <T>(...items: (T | Falsy)[]): T[] => items.filter(Boolean) as T[]
 
-export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
+export function assert<T>(value: T | Falsy, message: string) {
   if (!value) {
     throw new Error(message)
   }
