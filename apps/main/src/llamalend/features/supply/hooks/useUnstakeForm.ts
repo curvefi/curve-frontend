@@ -4,7 +4,6 @@ import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type UnstakeOptions, useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
-import { useUserBalances } from '@/llamalend/queries/user'
 import {
   unstakeFormValidationSuite,
   UnstakeParams,
@@ -18,6 +17,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   unstakeAmount: undefined,
@@ -35,6 +35,7 @@ const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Addr
 export const useUnstakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
+  enabled,
   onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
@@ -49,8 +50,8 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const vaultToken = getVaultToken(market)
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
-  const maxUserUnstake = mapQuery(userBalances, (d) => d.gauge)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
+  const maxUserUnstake = mapQuery(userBalances, (d) => d.stakedShares)
 
   const form = useForm<UnstakeForm>({
     ...formDefaultOptions,
