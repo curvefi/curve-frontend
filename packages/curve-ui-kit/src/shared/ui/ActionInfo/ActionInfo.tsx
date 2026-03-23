@@ -19,7 +19,7 @@ import { WithWrapper } from '../WithWrapper'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export type ActionInfoSize = 'small' | 'medium' | 'large'
+export type ActionInfoSize = 'small' | 'medium'
 
 export type ActionInfoProps = {
   /** Label displayed on the left side */
@@ -71,7 +71,6 @@ const DEFAULT_SIZE: ActionInfoSize = 'medium'
 const labelSize = {
   small: 'bodyXsRegular',
   medium: 'bodyMRegular',
-  large: 'bodyMRegular',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
 const prevValueSize = labelSize
@@ -79,19 +78,16 @@ const prevValueSize = labelSize
 const valueSize = {
   small: 'bodyXsBold',
   medium: 'bodyMBold',
-  large: 'bodyMBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
 const iconButtonSize = {
   small: 'extraExtraSmall',
   medium: 'extraSmall',
-  large: 'extraSmall',
 } satisfies Record<ActionInfoSize, IconButtonProps['size']>
 
 const rowHeight: Record<ActionInfoSize, string> = {
   small: ButtonSize.xxs,
   medium: ButtonSize.xs,
-  large: ButtonSize.xs,
 }
 
 const isSet = (v: ReactNode) => v || v === 0
