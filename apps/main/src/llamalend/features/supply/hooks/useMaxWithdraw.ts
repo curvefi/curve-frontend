@@ -15,9 +15,12 @@ const getIsWithdrawFull = (withdrawAmount: Decimal | undefined, maxUserWithdrawA
 export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   {
     params,
+    withdrawAmount,
     form,
   }: {
     params: WithdrawParams<ChainId>
+    // live form withdraw amount (not debounced)
+    withdrawAmount: Decimal | undefined
     form: UseFormReturn<WithdrawForm>
   },
   enabled?: boolean,
@@ -25,8 +28,9 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = mapQuery(userBalances, (d) => d.depositedSharesAmount)
   const isFull = useMemo(
-    () => getIsWithdrawFull(params.withdrawAmount ?? undefined, maxWithdrawAmount.data),
-    [maxWithdrawAmount.data, params.withdrawAmount],
+    // Use the live form amount here because params are debounced and can leave isFull stale during a rapid max + submit.
+    () => getIsWithdrawFull(withdrawAmount, maxWithdrawAmount.data),
+    [maxWithdrawAmount.data, withdrawAmount],
   )
 
   useEffect(() => updateForm(form, { maxWithdrawAmount: maxWithdrawAmount.data }), [form, maxWithdrawAmount.data])
