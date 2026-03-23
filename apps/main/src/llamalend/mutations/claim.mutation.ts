@@ -3,6 +3,7 @@ import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { claimValidationSuite, requireVault } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
@@ -40,12 +41,8 @@ export const useClaimMutation = ({
       const shouldClaimCrv = Number(claimableCrv) > 0
       const shouldClaimRewards = hasClaimableRewards(claimableRewards)
 
-      if (!shouldClaimCrv && !shouldClaimRewards) {
-        throw new Error('No claimable rewards found')
-      }
-
       const crvHash = shouldClaimCrv ? ((await lendMarket.vault.claimCrv()) as Hex) : undefined
-      if (!shouldClaimRewards) return { hash: crvHash! }
+      if (!shouldClaimRewards) return { hash: assert(crvHash, 'No claimable rewards found') }
 
       const rewardsHash = (await lendMarket.vault.claimRewards()) as Hex
       // TODO: allow multiple tx hashes in `TransactionResult`

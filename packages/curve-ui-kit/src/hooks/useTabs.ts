@@ -1,12 +1,13 @@
 import { useState } from 'react'
+import { assert } from '@primitives/objects.utils'
 import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
 /** Finds a tab by key, throwing if not found. */
-export function findTab<T extends { value: string }>(tabs: T[], key: string | undefined): T {
-  const found = tabs.find(({ value }) => value === key)
-  if (!found) throw new Error(`No tab found for key "${key}" in [${tabs.map((t) => t.value).join(', ')}]`)
-  return found
-}
+export const findTab = <T extends { value: string }>(tabs: T[], key: string | undefined): T =>
+  assert(
+    tabs.find(({ value }) => value === key),
+    `No tab found for key "${key}" in [${tabs.map((t) => t.value).join(', ')}]`,
+  )
 
 /**
  * Generic tab state management hook.

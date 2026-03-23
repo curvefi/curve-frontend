@@ -3,6 +3,7 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { assert } from '@primitives/objects.utils'
 import { CellContext } from '@tanstack/react-table'
 import { TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -40,8 +41,7 @@ export const RateCell = ({
   getValue,
   column: { id },
 }: CellContext<LlamaMarket, number | null>) => {
-  const rateType = RateTypes[id as keyof typeof RateTypes]
-  if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
+  const rateType = assert(RateTypes[id as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
   const rate = getValue()
   return (

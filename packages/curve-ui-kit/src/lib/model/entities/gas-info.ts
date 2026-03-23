@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
+import { assert } from '@primitives/objects.utils'
 import { type BaseConfig, formatNumber } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
@@ -44,13 +45,11 @@ const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
   if (llamaApi?.chainId === chainId) return llamaApi
 }
 
-const getProvider = () => {
-  const { provider } = useWallet.getState()
-  if (!provider) {
-    throw new Error('Provider not available, make sure the wallet is connected before calling this query')
-  }
-  return provider
-}
+const getProvider = () =>
+  assert(
+    useWallet.getState().provider,
+    'Provider not available, make sure the wallet is connected before calling this query',
+  )
 
 /**
  * We're dealing with a query here that's not read-only and has side effects.
