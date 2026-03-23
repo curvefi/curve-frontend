@@ -1,21 +1,16 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
+import type { Address } from 'viem'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  ClaimableReward,
-  useClaimableCrv,
-  useClaimableRewards,
-} from '@/llamalend/queries/supply/supply-claimable-rewards.query'
+import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { CRV } from '@ui-kit/utils/address'
+import { MAINNET_CRV } from '@ui-kit/utils'
 
-export type ClaimableToken = ClaimableReward & {
-  notional?: number
-}
+const getCrvAddress = (market: LlamaMarketTemplate) =>
+  market?.getLlamalend().constants.ALIASES.crv as Address | undefined
 
 export const useClaimableTokens = <ChainId extends LlamaChainId>(
   params: UserMarketParams<ChainId>,
@@ -35,11 +30,11 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
-  const crvAddress = useMemo(() => market?.getLlamalend().constants.ALIASES.crv as Address | undefined, [market])
+  const crvAddress = useMemo(() => market && getCrvAddress(market), [market])
 
   const tokenAddresses = useMemo(
-    () => [...notFalsy(crvAddress), ...(claimableRewards?.map((r) => r.token) ?? [])],
-    [crvAddress, claimableRewards],
+    () => notFalsy(crvAddress, ...(claimableRewards?.map((r) => r.token) ?? [])),
+    [claimableRewards, crvAddress],
   )
   const {
     data: usdRates,
@@ -49,7 +44,9 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
-      claimableCrv && crvAddress && { amount: claimableCrv, token: crvAddress, symbol: CRV.symbol as string },
+      crvAddress &&
+        claimableCrv &&
+        crvAddress && { amount: claimableCrv, token: crvAddress, symbol: MAINNET_CRV.symbol },
       ...(claimableRewards ?? []),
     )
     return tokens
