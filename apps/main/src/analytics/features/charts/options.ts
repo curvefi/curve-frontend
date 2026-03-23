@@ -1,6 +1,7 @@
 import type { EChartsOption, SeriesOption } from 'echarts'
 import type { Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
+import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 
 /** Creates a color palette (and font settings) derived from the MUI theme for use in ECharts options. */
 export const createPalette = ({ theme }: { theme: Theme }) => ({
@@ -49,23 +50,23 @@ export const createTooltip = (formatter: (v: number) => string) => ({
       .join(''),
 })
 
-/**
- * Creates ECharts options merged with opinionated defaults for the Analytics app.
- *
- * @param options - Chart-specific ECharts options to merge with defaults
- * @param palette - Palette object containing colors
- * @returns Merged EChartsOption ready to pass to ReactECharts
- */
-export function createChartOptions({ options, palette }: { options: EChartsOption; palette: ChartPalette }) {
-  const withSerieDefaults = {
+/** Creates ECharts options merged with opinionated defaults for the Analytics app. */
+export const createChartOptions = ({
+  legendSets,
+  options,
+  palette,
+}: {
+  legendSets: LegendItem[]
+  options: EChartsOption
+  palette: ChartPalette
+}) =>
+  deepMerge(createDefaults(palette), {
     ...options,
-    series: toArray(options.series).map((serie, i) =>
-      // Need the casting for deepMerge to stop complaining. No time to fix type constraints right now.
-      deepMerge(createSerieDefaults(palette, i, serie) as Record<string, unknown>, serie as Record<string, unknown>),
-    ),
-  }
-  return deepMerge(createDefaults(palette), withSerieDefaults)
-}
+    series: toArray(options.series)
+      .map((serie, index) => ({ serie, toggled: legendSets[index].toggled, color: palette.colors[index] }))
+      .filter(({ toggled }) => toggled !== false)
+      .map(({ serie, color }) => deepMerge(createSerieDefaults(serie, color), serie)),
+  })
 
 const createDefaults = (palette: ChartPalette): EChartsOption => ({
   animation: false, // this often looks weird due to shifting timescales
@@ -93,31 +94,20 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
   },
 })
 
-const createSerieDefaults = (palette: ChartPalette, i: number, serie: SeriesOption): SeriesOption => {
-  // color index flip; looks better for two lines which is a common occurance
-  const isLine = serie.type === 'line' && !('areaStyle' in serie)
-  const color = palette.colors[isLine && i === 1 ? 2 : isLine && i === 2 ? 1 : i] ?? '#fff'
-
-  return {
-    symbol: 'circle',
-    symbolSize: 8,
-    showSymbol: false, // hidden by default, only shown on hover (emphasis below)
-    emphasis: {
-      scale: true,
-      disabled: false,
-      itemStyle: { color: '#fff', borderColor: color, borderWidth: 2 }, // white fill only on hover dot
-    },
-    silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
-    lineStyle: {
-      color,
-      width: 2,
-      // The 2nd line chart should be dashed, hence 'type' is being set
-      ...(i === 1 && serie.type === 'line' && !('areaStyle' in serie) && { type: 10 }),
-    },
-    itemStyle: { color, borderColor: color, borderWidth: 2 }, // tooltip marker color
-    ...('areaStyle' in serie && { areaStyle: { color, opacity: 1 } }),
-  }
-}
+const createSerieDefaults = (serie: SeriesOption, color: string): SeriesOption => ({
+  symbol: 'circle',
+  symbolSize: 8,
+  showSymbol: false, // hidden by default, only shown on hover (emphasis below)
+  emphasis: {
+    scale: true,
+    disabled: false,
+    itemStyle: { color: '#fff', borderColor: color, borderWidth: 2 }, // white fill only on hover dot
+  },
+  silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
+  lineStyle: { color, width: 2 },
+  itemStyle: { color, borderColor: color, borderWidth: 2 }, // tooltip marker color
+  ...('areaStyle' in serie && { areaStyle: { color, opacity: 1 } }),
+})
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */
 export const timeToCategory = (x: number) => new Date(x).toISOString().slice(0, 10)
@@ -146,7 +136,7 @@ export const timeToCategory = (x: number) => new Date(x).toISOString().slice(0, 
  * // Result: { a: 1, b: { c: 4, d: 3 }, e: 5 }
  * ```
  */
-function deepMerge<T extends Record<string, unknown>>(target: T, source: Partial<T>): T {
+function deepMerge<T>(target: T, source: Partial<T>): T {
   const result: T = { ...target }
 
   for (const key in source) {
