@@ -141,7 +141,7 @@ export const RepayForm = <ChainId extends IChainId>({
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
           routes={routes}
-          showPrices
+          showFuturePrices
         />
       }
     >

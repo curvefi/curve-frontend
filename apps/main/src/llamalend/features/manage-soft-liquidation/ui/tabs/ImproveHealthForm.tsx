@@ -76,7 +76,7 @@ export const ImproveHealthForm = ({
           onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
-          showPrices={false} // liquidation prices do not change when in liquidation protection
+          showFuturePrices={false} // liquidation prices do not change when in liquidation protection
           routes={routes}
         />
       }
