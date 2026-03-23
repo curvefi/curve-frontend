@@ -14,5 +14,6 @@ export const createMockMintMarket = (overrides: object) =>
     leverageV2: { hasLeverage: () => false },
     oraclePrice: cy.stub().resolves(oneDecimal(1, 1.2, 3)),
     oraclePriceBand: cy.stub().resolves(oneDecimal(10, 20, 30)),
+    clearCache: cy.stub(),
     ...overrides,
   }) as MintMarketTemplate

@@ -18,17 +18,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-function useChartPricesCallback(
-  params: CollateralParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean,
-) {
-  const { data: pricesData } = useAddCollateralPrices(params, enabled)
-  useEffect(() => onPricesUpdated(pricesData), [onPricesUpdated, pricesData])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated])
-}
+import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
@@ -86,7 +76,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const { formState } = form
   useCallbackAfterFormUpdate(form, action.reset)
-  useChartPricesCallback(params, onPricesUpdated, enabled)
+  useCallbackSync(useAddCollateralPrices(params, enabled), onPricesUpdated)
 
   useEffect(() => {
     updateForm(form, { maxCollateral: maxCollateral.data })

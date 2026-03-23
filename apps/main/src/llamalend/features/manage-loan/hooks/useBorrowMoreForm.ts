@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -18,7 +18,6 @@ import { invalidateOrRefetchBorrowMoreRouteQueries } from '@/llamalend/queries/b
 import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
-  type BorrowMoreParams,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -29,7 +28,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId>({
@@ -78,16 +77,6 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
 
-const useChartPricesCallback = (
-  params: BorrowMoreParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean | undefined,
-) => {
-  const { data } = useBorrowMorePrices(params, enabled)
-  useEffect(() => onPricesUpdated(data), [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
-}
-
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
   network,
@@ -133,7 +122,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  useChartPricesCallback(params, onPricesUpdated, enabled)
+  useCallbackSync(useBorrowMorePrices(params, enabled), onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetBorrow)
 
   const { formState } = form

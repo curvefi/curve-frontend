@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
@@ -11,7 +11,6 @@ import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-availabl
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
-import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -24,7 +23,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { AllowUndefined, Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
+import {
+  filterFormErrors,
+  updateForm,
+  useCallbackAfterFormUpdate,
+  useCallbackSync,
+} from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -73,16 +77,6 @@ const useRepayParams = <ChainId>({
       ],
     ),
   )
-
-const useChartPricesCallback = (
-  params: RepayIsFullParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean | undefined,
-) => {
-  const { data } = useRepayPrices(params, enabled)
-  useEffect(() => onPricesUpdated(data), [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
-}
 
 const formOptions = {
   ...formDefaultOptions,
@@ -144,7 +138,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  useChartPricesCallback(params, onPricesUpdated, enabled)
+  useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetRepay) // reset mutation state on form change
 
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)

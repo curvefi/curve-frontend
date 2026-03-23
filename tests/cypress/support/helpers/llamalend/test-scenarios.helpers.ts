@@ -125,7 +125,15 @@ export const createCreateLoanScenario = ({
 /** Default collateral address used in createMockMintMarket */
 const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as Address
 
-export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+export const createBorrowMoreScenario = ({
+  chainId,
+  approved,
+  collateral = '0' as const,
+}: {
+  chainId: number
+  approved: boolean
+  collateral?: string
+}) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
   const expectedCurrentDebt = oneDecimal(10, 200, 2)
@@ -164,20 +172,20 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
 
   return {
     borrow,
-    collateral: '0' as const,
+    collateral,
     userBorrowed: '0' as const,
     expectedCurrentDebt,
     expectedFutureDebt,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
-      health: ['0', borrow] as const,
-      maxRecv: ['0'] as const,
-      isApproved: ['0'] as const,
-      estimateGasApprove: ['0'] as const,
-      approve: ['0'] as const,
-      estimateGas: ['0', borrow] as const,
-      submit: ['0', borrow] as const,
+      health: [collateral, borrow] as const,
+      maxRecv: [collateral] as const,
+      isApproved: [collateral] as const,
+      estimateGasApprove: [collateral] as const,
+      approve: [collateral] as const,
+      estimateGas: [collateral, borrow] as const,
+      submit: [collateral, borrow] as const,
     },
     stubs,
   }

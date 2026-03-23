@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
-import { IconProps } from '@mui/material/Icon'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
@@ -10,13 +9,15 @@ import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { applySxProps } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium' | 'large'
 
@@ -63,8 +64,6 @@ export type ActionInfoProps = {
   sx?: StackProps['sx']
   /** CSS align-items property */
   alignItems?: StackProps['alignItems']
-  /** CSS align-self property for label */
-  alignLabel?: TypographyProps['alignSelf']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -83,16 +82,16 @@ const valueSize = {
   large: 'bodyMBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
+const iconButtonSize = {
   small: 'extraExtraSmall',
   medium: 'extraSmall',
   large: 'extraSmall',
-}
+} satisfies Record<ActionInfoSize, IconButtonProps['size']>
 
-const iconSize: Record<ActionInfoSize, IconProps['fontSize']> = {
-  small: 'small',
-  medium: 'medium',
-  large: 'medium',
+const rowHeight: Record<ActionInfoSize, string> = {
+  small: ButtonSize.xxs,
+  medium: ButtonSize.xs,
+  large: ButtonSize.xs,
 }
 
 const isSet = (v: ReactNode) => v || v === 0
@@ -146,8 +145,16 @@ export const ActionInfo = ({
   const showPrevValue = isSet(value) && isSet(prevValue)
   value ??= prevValue ?? emptyValue
 
+  const buttonSize = iconButtonSize[size]
+  const iconSize = IconButtonIconSize[buttonSize]
   return (
-    <Stack direction="row" alignItems={alignItems} columnGap={Spacing.sm} data-testid={testId} sx={sx}>
+    <Stack
+      direction="row"
+      alignItems={alignItems}
+      columnGap={Spacing.sm}
+      data-testid={testId}
+      sx={applySxProps(sx, { minHeight: rowHeight[size] })}
+    >
       <Typography
         flexGrow={1}
         variant={labelSize[size]}
@@ -160,24 +167,17 @@ export const ActionInfo = ({
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
         {showPrevValue && (
-          <Typography
-            variant={prevValueSize[size]}
-            color={prevValueColor ?? 'textTertiary'}
-            data-testid={`${testId}-previous-value`}
-            data-value={`${prevValue}`}
-          >
-            {prevValue}
-          </Typography>
-        )}
-
-        {showPrevValue && (
-          <ArrowForwardIcon
-            sx={{
-              width: IconSize.sm,
-              height: IconSize.sm,
-              color: (t) => t.palette.text.tertiary,
-            }}
-          />
+          <>
+            <Typography
+              variant={prevValueSize[size]}
+              color={prevValueColor ?? 'textTertiary'}
+              data-testid={`${testId}-previous-value`}
+              data-value={`${prevValue}`}
+            >
+              {prevValue}
+            </Typography>
+            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, width: iconSize, height: iconSize }} />
+          </>
         )}
 
         <Tooltip title={valueTooltip} placement="top">
@@ -208,20 +208,13 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && !loading && (
-          <ErrorIconButton
-            message={errorMessage}
-            error={error}
-            buttonSize={iconButtonSize[size]}
-            iconSize={iconSize[size]}
-          />
-        )}
+        {error && <ErrorIconButton message={errorMessage} error={error} size={buttonSize} />}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}
             label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
             confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
-            size={iconButtonSize[size]}
+            size={buttonSize}
           />
         )}
 
@@ -231,7 +224,7 @@ export const ActionInfo = ({
             href={link}
             target="_blank"
             rel="noopener"
-            size={iconButtonSize[size]}
+            size={buttonSize}
           >
             <CallMade />
           </IconButton>
