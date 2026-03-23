@@ -39,7 +39,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
           approved,
         })
         const onSuccess = cy.spy().as('onSuccess')
-        const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks })
@@ -47,13 +46,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ImproveHealthForm
-              market={market}
-              networks={networks}
-              chainId={chainId}
-              onSuccess={onSuccess}
-              onPricesUpdated={onPricesUpdated}
-            />
+            <ImproveHealthForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} />
           </MockLoanTestWrapper>,
         )
 
