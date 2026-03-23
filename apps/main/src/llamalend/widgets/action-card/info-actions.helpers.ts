@@ -33,7 +33,7 @@ export const combineActionInfoState = (...queries: (QueryProp<unknown> | undefin
 }
 
 // Returns whether an action info should stay visible when its value differs from the reference value.
-export const shouldForDifferentValue = (
+export const isQueryValueNotEqual = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
 ) =>

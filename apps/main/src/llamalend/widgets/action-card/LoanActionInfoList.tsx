@@ -18,9 +18,8 @@ import {
   combineActionInfoState,
   formatAmount,
   formatLeverage,
-  shouldForDifferentValue,
+  isQueryValueNotEqual,
 } from './info-actions.helpers'
-import { combineQueryState } from '@ui-kit/lib'
 
 export type LoanActionInfoListProps = {
   isOpen?: boolean
@@ -100,8 +99,8 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
-  const shouldShowprevNetBorrowApr = shouldForDifferentValue(prevNetBorrowApr, prevRates?.data?.borrowApr)
-  const shouldShowNetBorrowApr = shouldForDifferentValue(netBorrowApr, rates?.data?.borrowApr)
+  const shouldShowprevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
+  const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
 
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
