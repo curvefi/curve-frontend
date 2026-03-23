@@ -61,10 +61,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     ),
   )
 
-  const { maxWithdrawAmount: max, maxStakedShares } = useMaxWithdrawTokenValues(
-    { params, withdrawAmount: values.withdrawAmount, form },
-    enabled,
-  )
+  const { maxWithdrawAmount: max, maxStakedShares } = useMaxWithdrawTokenValues({ params, form }, enabled)
 
   const {
     onSubmit,
