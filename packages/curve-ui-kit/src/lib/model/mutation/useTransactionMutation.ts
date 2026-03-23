@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormattedTransactionReceipt } from 'viem'
 import { useConfig } from 'wagmi'
 import { type Hex } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'
@@ -135,22 +136,24 @@ export function useTransactionMutation<
   // Track our own error state because errors thrown in onMutate don't populate React Query's error.
   const [error, setError] = useState<Error | null>(null)
 
+  /** Creates the context object, throwing an error if no wallet is connected */
+  const createContext = (variables: TVariables) => {
+    const baseContext: TransactionContext = { wallet: assert(wallet, 'Missing provider') }
+    return buildContext ? buildContext(variables, baseContext) : (baseContext as TContext)
+  }
+
   // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
   const { mutate, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
 
-      // Early validation - throwing here prevents mutationFn from running
-      if (!wallet) throw new Error('Missing provider')
+      const params = { userAddress, ...validationParams, ...variables, mutationKey }
+      assertValidity(validationSuite, params)
+      const context = createContext(variables) // throws before logging, in case of a missing wallet
 
-      assertValidity(validationSuite, { userAddress, ...validationParams, ...variables })
-
-      logMutation(mutationKey, { variables })
-      const baseContext = { wallet } as TransactionContext
-      const context = buildContext ? buildContext(variables, baseContext) : (baseContext as TContext)
-
-      addBreadcrumb('Transaction mutation starting', 'mutation', { variables, userAddress, mutationKey })
+      logMutation(mutationKey, params)
+      addBreadcrumb('Transaction mutation starting', 'mutation', params)
 
       // Return context to make it available in all callbacks (except mutationFn, we have to reconstruct there)
       return context
@@ -158,9 +161,7 @@ export function useTransactionMutation<
     mutationFn: async (variables: TVariables) => {
       // We need to reconstruct context here since mutationFn doesn't receive onMutate's return.
       // buildContext is called again, which is fine since it should be deterministic. No side-effect please though.
-      const baseContext = { wallet: wallet! } as TransactionContext
-      const context = buildContext ? buildContext(variables, baseContext) : (baseContext as TContext)
-
+      const context = createContext(variables)
       const data = await withPendingToast(mutationFn(variables, context), pendingMessage(variables, context))
       throwIfError(data)
 

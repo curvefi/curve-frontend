@@ -182,7 +182,7 @@ export const createLoanRepaySlice = (
 
       let userState: UserLoanState
       try {
-        userState = { ...(await market.userState()), error: '' }
+        userState = { ...(await market.userPosition.userState()), error: '' }
       } catch (error) {
         userState = { collateral: '', borrowed: '', debt: '', N: '', error }
       }

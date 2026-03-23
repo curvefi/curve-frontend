@@ -35,7 +35,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
-  const crvAddress = useMemo(() => market?.llamalend.constants.ALIASES.crv as Address | undefined, [market])
+  const crvAddress = useMemo(() => market?.getLlamalend().constants.ALIASES.crv as Address | undefined, [market])
 
   const tokenAddresses = useMemo(
     () => [...notFalsy(crvAddress), ...(claimableRewards?.map((r) => r.token) ?? [])],

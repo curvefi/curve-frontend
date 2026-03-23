@@ -1,4 +1,3 @@
-import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
@@ -82,7 +81,7 @@ const oneLendingPool = (
       rebasing_yield_apr: null,
     },
     extra_reward_apr: [],
-    created_at: oneDate({ maxDate: MARKET_CUTOFF_DATE }).toISOString(),
+    created_at: oneDate().toISOString(),
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }

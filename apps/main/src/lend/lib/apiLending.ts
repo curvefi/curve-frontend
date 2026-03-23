@@ -106,11 +106,11 @@ const market = {
       .handleError((errorObj, market) => {
         console.error(errorObj)
         const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { cap: '', available: '', error }
+        results[market.id] = { totalAssets: '', available: '', error }
       })
       .process(async (market) => {
-        const resp = await market.stats.capAndAvailable(useMultiCall, USE_API)
-        results[market.id] = { ...resp, error: '' }
+        const { totalAssets, available } = await market.stats.capAndAvailable(useMultiCall, USE_API)
+        results[market.id] = { totalAssets, available, error: '' }
       })
 
     return results
@@ -127,10 +127,10 @@ const market = {
       })
       .process(async (market) => {
         const [oraclePrice, oraclePriceBand, price, basePrice] = await Promise.all([
-          market.oraclePrice(),
-          market.oraclePriceBand(),
-          market.price(),
-          market.basePrice(),
+          market.prices.oraclePrice(),
+          market.prices.oraclePriceBand(),
+          market.prices.price(),
+          market.prices.basePrice(),
         ])
 
         results[market.id] = {
@@ -249,21 +249,21 @@ const user = {
 
         const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage] =
           await Promise.all([
-            market.userState(),
-            market.userHealth(),
-            market.userHealth(false),
-            market.userRange(),
-            market.userBands(),
-            market.userPrices(),
-            market.userBandsBalances(),
-            market.oraclePriceBand(),
-            market.currentLeverage(signerAddress),
+            market.userPosition.userState(),
+            market.userPosition.userHealth(),
+            market.userPosition.userHealth(false),
+            market.userPosition.userRange(),
+            market.userPosition.userBands(),
+            market.userPosition.userPrices(),
+            market.userPosition.userBandsBalances(),
+            market.prices.oraclePriceBand(),
+            market.userPosition.currentLeverage(signerAddress),
           ])
 
         // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
         let loss: UserLoss | undefined
         try {
-          loss = await market.userLoss()
+          loss = await market.userPosition.userLoss()
         } catch (error) {
           console.error('Failed to fetch user loss:', error)
         }
@@ -288,7 +288,7 @@ const user = {
             healthNotFull,
             bands: reversedUserBands,
             bandsBalances: parsedBandsBalances,
-            bandsPct: range ? await market.calcRangePct(range) : '0',
+            bandsPct: range ? await market.prices.calcRangePct(range) : '0',
             isCloseToLiquidation,
             range,
             prices,
@@ -363,7 +363,7 @@ const loanCreate = {
         const maxRecvLeverageResp = await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, n)
         resp.maxRecv = maxRecvLeverageResp.maxDebt
       } else {
-        resp.maxRecv = await market.createLoanMaxRecv(userCollateral, n)
+        resp.maxRecv = await market.loan.createLoanMaxRecv(userCollateral, n)
       }
       return resp
     } catch (error) {
@@ -385,11 +385,11 @@ const loanCreate = {
     const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
-        market.createLoanHealth(userCollateral, debt, n, undefined),
-        market.createLoanHealth(userCollateral, debt, n, false),
+        market.loan.createLoanHealth(userCollateral, debt, n, undefined),
+        market.loan.createLoanHealth(userCollateral, debt, n, false),
         market.stats.futureRates(0, debt),
-        market.createLoanBands(userCollateral, debt, n),
-        market.createLoanPrices(userCollateral, debt, n),
+        market.loan.createLoanBands(userCollateral, debt, n),
+        market.loan.createLoanPrices(userCollateral, debt, n),
       ])
 
       const bands = fulfilledValue(bandsResp) ?? [0, 0]
@@ -528,9 +528,9 @@ const loanCreate = {
       }
     } else {
       const [maxRecvsResults, loanBandsResults, loanPricesResults] = await Promise.allSettled([
-        market.createLoanMaxRecvAllRanges(userCollateral),
-        market.createLoanBandsAllRanges(userCollateral, debt),
-        market.createLoanPricesAllRanges(userCollateral, debt),
+        market.loan.createLoanMaxRecvAllRanges(userCollateral),
+        market.loan.createLoanBandsAllRanges(userCollateral, debt),
+        market.loan.createLoanPricesAllRanges(userCollateral, debt),
       ])
 
       const maxRecvs = fulfilledValue(maxRecvsResults) ?? null
@@ -582,14 +582,14 @@ const loanCreate = {
     try {
       resp.isApproved = isLeverage
         ? await market.leverage.createLoanIsApproved(userCollateral, userBorrowed)
-        : await market.createLoanIsApproved(userCollateral)
+        : await market.loan.createLoanIsApproved(userCollateral)
       resp.estimatedGas = resp.isApproved
         ? isLeverage
           ? await market.leverage.estimateGas.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
-          : await market.estimateGas.createLoan(userCollateral, debt, n)
+          : await market.loan.estimateGas.createLoan(userCollateral, debt, n)
         : isLeverage
           ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-          : await market.estimateGas.createLoanApprove(userCollateral)
+          : await market.loan.estimateGas.createLoanApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -611,7 +611,7 @@ const loanCreate = {
     const fn = async () =>
       isLeverage
         ? await market.leverage.createLoanApprove(userCollateral, userBorrowed)
-        : await market.createLoanApprove(userCollateral)
+        : await market.loan.createLoanApprove(userCollateral)
     return await approve(activeKey, fn, provider)
   },
   create: async (
@@ -632,7 +632,7 @@ const loanCreate = {
     const fn = async () =>
       isLeverage
         ? await market.leverage.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
-        : await market.createLoan(userCollateral, debt, n)
+        : await market.loan.createLoan(userCollateral, debt, n)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -644,7 +644,7 @@ const loanBorrowMore = {
     const resp = { activeKey, maxRecv: '', error: '' }
 
     try {
-      const maxRecv = await market.borrowMoreMaxRecv(userCollateral)
+      const maxRecv = await market.loan.borrowMoreMaxRecv(userCollateral)
       resp.maxRecv = +maxRecv < 0 ? '0' : maxRecv
       return resp
     } catch (error) {
@@ -692,11 +692,11 @@ const loanBorrowMore = {
 
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
-        signerAddress ? market.borrowMoreHealth(userCollateral, debt, true) : '',
-        signerAddress ? market.borrowMoreHealth(userCollateral, debt, false) : '',
+        signerAddress ? market.loan.borrowMoreHealth(userCollateral, debt, true) : '',
+        signerAddress ? market.loan.borrowMoreHealth(userCollateral, debt, false) : '',
         market.stats.futureRates(0, debt),
-        market.borrowMoreBands(userCollateral, debt),
-        market.borrowMorePrices(userCollateral, debt),
+        market.loan.borrowMoreBands(userCollateral, debt),
+        market.loan.borrowMorePrices(userCollateral, debt),
       ])
 
       const bands = fulfilledValue(bandsResp) ?? [0, 0]
@@ -795,14 +795,14 @@ const loanBorrowMore = {
     try {
       resp.isApproved = isLeverage
         ? await market.leverage.borrowMoreIsApproved(userCollateral, userBorrowed)
-        : await market.borrowMoreIsApproved(userCollateral)
+        : await market.loan.borrowMoreIsApproved(userCollateral)
       resp.estimatedGas = resp.isApproved
         ? isLeverage
           ? await market.leverage.estimateGas.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
-          : await market.estimateGas.borrowMore(userCollateral, debt)
+          : await market.loan.estimateGas.borrowMore(userCollateral, debt)
         : isLeverage
           ? await market.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
-          : await market.estimateGas.borrowMoreApprove(userCollateral)
+          : await market.loan.estimateGas.borrowMoreApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -828,7 +828,7 @@ const loanBorrowMore = {
     const fn = async () =>
       isLeverage
         ? await market.leverage.borrowMoreApprove(userCollateral, userBorrowed)
-        : await market.borrowMoreApprove(userCollateral)
+        : await market.loan.borrowMoreApprove(userCollateral)
     return await approve(activeKey, fn, provider)
   },
   borrowMore: async (
@@ -848,7 +848,7 @@ const loanBorrowMore = {
     const fn = async () =>
       isLeverage
         ? await market.leverage.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
-        : await market.borrowMore(userCollateral, debt)
+        : await market.loan.borrowMore(userCollateral, debt)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -888,11 +888,11 @@ const loanRepay = {
 
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
-        signerAddress && !isFullRepay ? market.repayHealth(userBorrowed, true) : '',
-        signerAddress && !isFullRepay ? market.repayHealth(userBorrowed, false) : '',
+        signerAddress && !isFullRepay ? market.loan.repayHealth(userBorrowed, true) : '',
+        signerAddress && !isFullRepay ? market.loan.repayHealth(userBorrowed, false) : '',
         market.stats.futureRates(0, `-${isFullRepay ? userStateDebt : userBorrowed}`),
-        isFullRepay ? ([0, 0] as [number, number]) : market.repayBands(userBorrowed),
-        isFullRepay ? ['', ''] : market.repayPrices(userBorrowed),
+        isFullRepay ? ([0, 0] as [number, number]) : market.loan.repayBands(userBorrowed),
+        isFullRepay ? ['', ''] : market.loan.repayPrices(userBorrowed),
       ])
 
       const bands = fulfilledValue(bandsResp) ?? [0, 0]
@@ -1038,19 +1038,19 @@ const loanRepay = {
       resp.isApproved = isLeverage
         ? await market.leverage.repayIsApproved(userCollateral, userBorrowed)
         : isFullRepay
-          ? await market.fullRepayIsApproved()
-          : await market.repayIsApproved(userBorrowed)
+          ? await market.loan.fullRepayIsApproved()
+          : await market.loan.repayIsApproved(userBorrowed)
       resp.estimatedGas = isLeverage
         ? resp.isApproved
           ? await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
           : await market.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
         : resp.isApproved
           ? isFullRepay
-            ? await market.estimateGas.fullRepay()
-            : await market.estimateGas.repay(userBorrowed)
+            ? await market.loan.estimateGas.fullRepay()
+            : await market.loan.estimateGas.repay(userBorrowed)
           : isFullRepay
-            ? await market.estimateGas.fullRepayApprove()
-            : await market.estimateGas.repayApprove(userBorrowed)
+            ? await market.loan.estimateGas.fullRepayApprove()
+            : await market.loan.estimateGas.repayApprove(userBorrowed)
       return resp
     } catch (error) {
       console.error(error)
@@ -1076,8 +1076,8 @@ const loanRepay = {
       isLeverage
         ? await market.leverage.repayApprove(userCollateral, userBorrowed)
         : isFullRepay
-          ? await market.fullRepayApprove()
-          : await market.repayApprove(userBorrowed)
+          ? await market.loan.fullRepayApprove()
+          : await market.loan.repayApprove(userBorrowed)
     return await approve(activeKey, fn, provider)
   },
   repay: async (
@@ -1099,8 +1099,8 @@ const loanRepay = {
       isLeverage
         ? await market.leverage.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
         : isFullRepay
-          ? await market.fullRepay()
-          : await market.repay(userBorrowed)
+          ? await market.loan.fullRepay()
+          : await market.loan.repay(userBorrowed)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -1115,7 +1115,7 @@ const loanSelfLiquidation = {
     }
 
     try {
-      resp.tokensToLiquidate = await market.tokensToLiquidate()
+      resp.tokensToLiquidate = await market.loan.tokensToLiquidate()
     } catch (error) {
       console.error(error)
       resp.error = getErrorMessage(error, 'error-api')
@@ -1136,10 +1136,10 @@ const loanSelfLiquidation = {
     const resp = { isApproved: false, estimatedGas: null as EstimatedGas, error: '', warning: '' }
 
     try {
-      resp.isApproved = await market.selfLiquidateIsApproved()
+      resp.isApproved = await market.loan.selfLiquidateIsApproved()
       resp.estimatedGas = resp.isApproved
-        ? await market.estimateGas.selfLiquidate(+maxSlippage)
-        : await market.estimateGas.selfLiquidateApprove()
+        ? await market.loan.estimateGas.selfLiquidate(+maxSlippage)
+        : await market.loan.estimateGas.selfLiquidateApprove()
       return resp
     } catch (err) {
       console.error(err)
@@ -1149,12 +1149,12 @@ const loanSelfLiquidation = {
   },
   approve: async (provider: Provider, market: OneWayMarketTemplate) => {
     log('approve')
-    const fn = async () => await market.selfLiquidateApprove()
+    const fn = async () => await market.loan.selfLiquidateApprove()
     return await approve('', fn, provider)
   },
   selfLiquidate: async (provider: Provider, market: OneWayMarketTemplate, slippage: string) => {
     log('selfLiquidate', slippage)
-    const fn = async () => await market.selfLiquidate(+slippage)
+    const fn = async () => await market.loan.selfLiquidate(+slippage)
     return await submit('', fn, provider)
   },
 }
@@ -1171,10 +1171,10 @@ const loanCollateralAdd = {
     const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
-        signerAddress ? market.addCollateralHealth(collateral, true, address) : '',
-        signerAddress ? market.addCollateralHealth(collateral, false, address) : '',
-        market.addCollateralBands(collateral),
-        market.addCollateralPrices(collateral),
+        signerAddress ? market.loan.addCollateralHealth(collateral, true, address) : '',
+        signerAddress ? market.loan.addCollateralHealth(collateral, false, address) : '',
+        market.loan.addCollateralBands(collateral),
+        market.loan.addCollateralPrices(collateral),
       ])
 
       resp.resp = {
@@ -1196,10 +1196,10 @@ const loanCollateralAdd = {
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
-      resp.isApproved = await market.addCollateralIsApproved(collateral)
+      resp.isApproved = await market.loan.addCollateralIsApproved(collateral)
       resp.estimatedGas = resp.isApproved
-        ? await market.estimateGas.addCollateral(collateral)
-        : await market.estimateGas.addCollateralApprove(collateral)
+        ? await market.loan.estimateGas.addCollateral(collateral)
+        : await market.loan.estimateGas.addCollateralApprove(collateral)
       return resp
     } catch (err) {
       console.error(err)
@@ -1213,7 +1213,7 @@ const loanCollateralAdd = {
   },
   approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, userCollateral: string) => {
     log('approve', userCollateral)
-    const fn = async () => await market.addCollateralApprove(userCollateral)
+    const fn = async () => await market.loan.addCollateralApprove(userCollateral)
     return await approve(activeKey, fn, provider)
   },
   addCollateral: async (
@@ -1223,7 +1223,7 @@ const loanCollateralAdd = {
     userCollateral: string,
   ) => {
     log('addCollateral', userCollateral)
-    const fn = async () => await market.addCollateral(userCollateral)
+    const fn = async () => await market.loan.addCollateral(userCollateral)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -1234,7 +1234,7 @@ const loanCollateralRemove = {
     const resp = { maxRemovable: '', error: '' }
 
     try {
-      const maxRemovable = await market.maxRemovable()
+      const maxRemovable = await market.loan.maxRemovable()
       resp.maxRemovable = +maxRemovable <= 0 ? '0' : maxRemovable
       return resp
     } catch (error) {
@@ -1254,10 +1254,10 @@ const loanCollateralRemove = {
     const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
-        signerAddress ? market.removeCollateralHealth(collateral, true, address) : '',
-        signerAddress ? market.removeCollateralHealth(collateral, false, address) : '',
-        market.removeCollateralBands(collateral),
-        market.removeCollateralPrices(collateral),
+        signerAddress ? market.loan.removeCollateralHealth(collateral, true, address) : '',
+        signerAddress ? market.loan.removeCollateralHealth(collateral, false, address) : '',
+        market.loan.removeCollateralBands(collateral),
+        market.loan.removeCollateralPrices(collateral),
       ])
 
       resp.resp = {
@@ -1279,7 +1279,7 @@ const loanCollateralRemove = {
     const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
-      resp.estimatedGas = await market.removeCollateralEstimateGas(collateral)
+      resp.estimatedGas = await market.loan.estimateGas.removeCollateral(collateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -1298,7 +1298,7 @@ const loanCollateralRemove = {
     userCollateral: string,
   ) => {
     log('removeCollateral', userCollateral)
-    const fn = async () => await market.removeCollateral(userCollateral)
+    const fn = async () => await market.loan.removeCollateral(userCollateral)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -1770,7 +1770,7 @@ export async function fetchChartBandBalancesData(
   // TODO: handle errors
   const { results } = await PromisePool.for(ns).process(async (n) => {
     const { collateral, borrowed } = bandsBalances[n]
-    const [p_up, p_down] = await market.calcBandPrices(+n)
+    const [p_up, p_down] = await market.prices.calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
     const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toString()
     const collateralUsd = new BN(collateral).multipliedBy(sqrt)

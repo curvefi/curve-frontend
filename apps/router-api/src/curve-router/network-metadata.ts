@@ -1,4 +1,5 @@
 import { NETWORK_CONSTANTS } from '@curvefi/api/lib/constants/network_constants.js'
+import { assert } from '@primitives/objects.utils'
 import type { CurveJS } from './curvejs'
 
 /**
@@ -14,9 +15,10 @@ function resolveEnv(id: string, fallback?: string, env: NodeJS.ProcessEnv = proc
     .replace(/[^a-zA-Z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '')
     .toUpperCase()}`
-  const url = env[envKey]?.trim() ?? fallback
-  if (!url?.length) throw new Error(`Missing RPC URL for chain ${id}. Add it to environment variable: "${envKey}"`)
-  return url
+  return assert(
+    env[envKey]?.trim() ?? fallback,
+    `Missing RPC URL for chain ${id}. Add it to environment variable: "${envKey}"`,
+  )
 }
 
 /**
@@ -34,10 +36,9 @@ export async function resolveRpc(
     return { id, url: resolveEnv(id) }
   }
   const liteNetworks = await curve.getCurveLiteNetworks() // note: this is already memoized inside curvejs
-  const network = liteNetworks.find((n) => n.chainId === chainId)
-  if (network) {
-    return { id: network.id, url: resolveEnv(network.id, network.rpcUrl) }
-  }
-
-  throw new Error(`Unsupported Curve network for chain ${chainId}`)
+  const { id, rpcUrl } = assert(
+    liteNetworks.find((n) => n.chainId === chainId),
+    `Unsupported chain ${chainId}`,
+  )
+  return { id, url: resolveEnv(id, rpcUrl) }
 }
