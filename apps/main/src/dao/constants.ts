@@ -26,4 +26,3 @@ export const TOP_HOLDERS: Record<string, { address: string; title: string }> = {
 }
 
 export const CONTRACT_VECRV = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2'
-export const CONTRACT_CRV = '0xD533a949740bb3306d119CC777fa900bA034cd52'

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { ExtraIncentiveItem } from '@/llamalend/widgets/tooltips/RewardTooltipItems'
 import { notFalsy } from '@primitives/objects.utils'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
-import { CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
+import { MAINNET_CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
 
 export const useMarketExtraIncentives = (
   type: MarketRateType,
@@ -17,7 +17,7 @@ export const useMarketExtraIncentives = (
             minApr && {
               title: 'CRV',
               percentage: minApr,
-              address: CRV_ADDRESS,
+              address: MAINNET_CRV_ADDRESS,
               blockchainId: 'ethereum',
               isBoost: false,
             },
@@ -26,7 +26,7 @@ export const useMarketExtraIncentives = (
               userBoost > 1 && {
                 title: `Your boost (${defaultNumberFormatter(userBoost)}x)`,
                 percentage: minApr * userBoost - minApr,
-                address: CRV_ADDRESS,
+                address: MAINNET_CRV_ADDRESS,
                 blockchainId: 'ethereum',
                 isBoost: true,
               },

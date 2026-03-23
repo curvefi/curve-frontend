@@ -1,7 +1,6 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { CONTRACT_CRV } from '@/dao/constants'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useStore } from '@/dao/store/useStore'
 import { Box } from '@ui/Box'
@@ -9,7 +8,7 @@ import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
 export const CrvStats = () => {
@@ -18,7 +17,7 @@ export const CrvStats = () => {
   const { curveApi: { chainId } = {} } = useCurve()
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: CONTRACT_CRV })
+  const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
 
   // protect against trying to load data on non-mainnet networks
   const notMainnet = chainId !== Chain.Ethereum
