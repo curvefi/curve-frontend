@@ -27,6 +27,7 @@ export const TIME_FRAMES = {
 const MINUTE_MS = 60 * 1000
 const HOUR_MS = 60 * MINUTE_MS
 
+/** Selectable time range options (in ms) for chart x-axis timeframes and candle sizes. */
 export const TIME_OPTION_MS = {
   '15m': 15 * MINUTE_MS,
   '30m': 30 * MINUTE_MS,
