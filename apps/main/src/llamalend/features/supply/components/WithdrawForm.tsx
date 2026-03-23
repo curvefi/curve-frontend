@@ -42,6 +42,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     formErrors,
     max,
     maxStakedShares,
+    isFull,
   } = useWithdrawForm({ market, network, enabled, onSuccess })
 
   return (
@@ -75,7 +76,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         data-testid={`${TEST_ID_PREFIX}-submit-button`}
       >
-        {isPending ? t`Processing...` : t`Withdraw`}
+        {isPending ? t`Processing...` : t`Withdraw ${isFull.data ? 'All' : ''}`}
       </Button>
 
       <FormAlerts

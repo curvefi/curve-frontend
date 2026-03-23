@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
@@ -47,21 +48,20 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   })
 
   const values = watchForm(form)
-  const params = useDebouncedValue(
-    useMemo(
-      (): WithdrawParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        withdrawAmount: values.withdrawAmount,
-        isFull: values.isFull,
-        userVaultShares: values.userVaultShares,
-      }),
-      [chainId, marketId, userAddress, values.isFull, values.userVaultShares, values.withdrawAmount],
-    ),
+  const liveParams = useMemo(
+    (): WithdrawParams<ChainId> => ({
+      chainId,
+      marketId,
+      userAddress,
+      withdrawAmount: values.withdrawAmount,
+      isFull: values.isFull,
+      userVaultShares: values.userVaultShares,
+    }),
+    [chainId, marketId, userAddress, values.isFull, values.userVaultShares, values.withdrawAmount],
   )
+  const params = useDebouncedValue(liveParams)
 
-  const { maxWithdrawAmount: max, maxStakedShares } = useMaxWithdrawTokenValues({ params, form }, enabled)
+  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form }, enabled)
 
   const {
     onSubmit,
@@ -90,7 +90,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || !isEqual(params, liveParams) || isFull.isLoading,
     borrowToken,
     isWithdrawn,
     withdrawError,
@@ -98,5 +98,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     max,
     maxStakedShares,
     formErrors: useFormErrors(formState),
+    isFull,
   }
 }

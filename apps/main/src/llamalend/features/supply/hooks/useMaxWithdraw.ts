@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { WithdrawForm } from '@/llamalend/queries/validation/supply.validation'
@@ -24,9 +24,8 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
 ) {
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = mapQuery(userBalances, (d) => d.depositedSharesAmount)
-  const isFull = useMemo(
-    () => getIsWithdrawFull(params.withdrawAmount ?? undefined, maxWithdrawAmount.data),
-    [maxWithdrawAmount.data, params.withdrawAmount],
+  const isFull = mapQuery(maxWithdrawAmount, (maxAmountQuery) =>
+    getIsWithdrawFull(params.withdrawAmount ?? undefined, maxAmountQuery),
   )
 
   useEffect(() => updateForm(form, { maxWithdrawAmount: maxWithdrawAmount.data }), [form, maxWithdrawAmount.data])
@@ -34,7 +33,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
     () => updateForm(form, { userVaultShares: userBalances.data.depositedShares }),
     [form, userBalances.data.depositedShares],
   )
-  useEffect(() => updateForm(form, { isFull }), [form, isFull])
+  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
 
-  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.stakedShares) }
+  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.stakedShares), isFull }
 }
