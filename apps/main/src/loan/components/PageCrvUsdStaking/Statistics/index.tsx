@@ -11,9 +11,13 @@ import { useTheme } from '@mui/material/styles'
 import { recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
-import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
-import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
+import {
+  ChartHeader,
+  type ChartSelections,
+  type LegendItem,
+  ChartFooter,
+  ChartStateWrapper,
+} from '@ui-kit/shared/ui/Chart'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain } from '@ui-kit/utils'
@@ -23,6 +27,7 @@ import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
 const { Spacing, MaxWidth, Height } = SizesAndSpaces
+const EMPTY_YIELD_DATA: never[] = []
 
 const chartLabels: Record<StatisticsChart, string> = {
   savingsRate: t`Savings Rate`,
@@ -46,8 +51,12 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
   const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
   const setRevenueChartTimeOption = useStore((state) => state.scrvusd.setRevenueChartTimeOption)
 
-  const { data: yieldData } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
-  const { data: revenueData } = useScrvUsdRevenue({})
+  const {
+    data: yieldData,
+    isLoading: isScrvUsdYieldLoading,
+    error: scrvUsdYieldError,
+  } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
+  const { data: revenueData, isLoading: isRevenueLoading, error: revenueError } = useScrvUsdRevenue({})
 
   const {
     design: { Color },
@@ -97,8 +106,19 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
             />
 
             {selectedStatisticsChart === 'savingsRate' && (
-              <Stack>
-                <RevenueLineChart height={Height.chart} data={yieldData ?? []} visibleSeries={visibleSeries} />
+              <Stack gap={Spacing.md}>
+                <ChartStateWrapper
+                  height={Height.chart}
+                  isLoading={isScrvUsdYieldLoading}
+                  error={scrvUsdYieldError}
+                  errorMessage={t`Unable to fetch savings rate data.`}
+                >
+                  <RevenueLineChart
+                    height={Height.chart}
+                    data={yieldData ?? EMPTY_YIELD_DATA}
+                    visibleSeries={visibleSeries}
+                  />
+                </ChartStateWrapper>
                 <ChartFooter
                   legendSets={legendSets}
                   toggleOptions={timeOptions}
@@ -109,7 +129,14 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
             )}
 
             {selectedStatisticsChart === 'distributions' && (
-              <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+              <ChartStateWrapper
+                height={Height.chart}
+                isLoading={isRevenueLoading}
+                error={revenueError}
+                errorMessage={t`Unable to fetch distributions data.`}
+              >
+                <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+              </ChartStateWrapper>
             )}
 
             <AdvancedDetails network={networks[Chain.Ethereum]} />

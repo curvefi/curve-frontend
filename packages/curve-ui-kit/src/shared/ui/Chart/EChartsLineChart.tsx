@@ -160,6 +160,7 @@ export const EChartsLineChart = <
       },
       tooltip: {
         trigger: 'axis',
+        appendToBody: true,
         axisPointer: {
           type: 'line',
           lineStyle: {
