@@ -3,10 +3,12 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Height } = SizesAndSpaces
 
 type UseOhlcChartStateArgs = {
   rChainId: ChainId
@@ -80,7 +82,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
     chartStatus,
-    chartHeight: DEFAULT_CHART_HEIGHT,
+    chartHeight: Height.chart,
     ohlcData: chartOhlcData,
     selectChartList,
     selectedChartKey,

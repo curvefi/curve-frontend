@@ -1,18 +1,21 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { Box, Skeleton } from '@mui/material'
-import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
+import { Box, Skeleton, useTheme } from '@mui/material'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
-import { useBandsChartTooltip } from './hooks/useBandsChartTooltip'
 import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
+import { TooltipContent } from './TooltipContent'
+
+const { Height } = SizesAndSpaces
 
 type BandsChartProps = {
   collateralToken: BandsChartToken
@@ -42,7 +45,7 @@ const BandsChartComponent = ({
   isLoading,
   userBandsBalances,
   oraclePrice,
-  height = DEFAULT_CHART_HEIGHT,
+  height = Height.chart,
 }: BandsChartProps) => {
   const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
@@ -50,7 +53,10 @@ const BandsChartComponent = ({
   const derived = useDerivedChartData(chartData)
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
-  const tooltipFormatter = useBandsChartTooltip(chartData, collateralToken, borrowToken)
+  const theme = useTheme()
+  const tooltipFormatter = useEChartsTooltip(chartData, theme, (data) => (
+    <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
+  ))
   const option: EChartsOption = useMemo(
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],

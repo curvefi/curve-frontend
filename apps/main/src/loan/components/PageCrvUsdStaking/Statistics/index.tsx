@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
@@ -7,6 +8,7 @@ import { useStore } from '@/loan/store/useStore'
 import { Stack, Card, CardHeader } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
+import { recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
@@ -20,7 +22,7 @@ import { RevenueDistributionsBarChart } from './DistributionsBarChart'
 import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing, MaxWidth, Height } = SizesAndSpaces
 
 const chartLabels: Record<StatisticsChart, string> = {
   savingsRate: t`Savings Rate`,
@@ -51,18 +53,22 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
     design: { Color },
   } = useTheme()
 
+  const [visibleSeries, setVisibleSeries] = useState<YieldKeys[]>(Object.keys(priceLineLabels) as YieldKeys[])
+
   const priceLineColors = {
     apyProjected: Color.Primary[500],
     proj_apy_7d_avg: Color.Secondary[500],
     proj_apy_total_avg: Color.Tertiary[400],
   } as const satisfies Record<YieldKeys, string>
 
-  const legendSets: LegendItem[] = Object.entries(priceLineLabels).map(([key, { label, dash }]) => ({
+  const legendSets: LegendItem[] = recordEntries(priceLineLabels).map(([key, { label, dash }]) => ({
     label,
     line: {
-      lineStroke: priceLineColors[key as YieldKeys],
+      lineStroke: priceLineColors[key],
       dash,
     },
+    toggled: visibleSeries.includes(key),
+    onToggle: () => setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
   }))
 
   return (
@@ -92,7 +98,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
 
             {selectedStatisticsChart === 'savingsRate' && (
               <Stack>
-                <RevenueLineChart data={yieldData ?? []} />
+                <RevenueLineChart height={Height.chart} data={yieldData ?? []} visibleSeries={visibleSeries} />
                 <ChartFooter
                   legendSets={legendSets}
                   toggleOptions={timeOptions}
@@ -102,7 +108,9 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
               </Stack>
             )}
 
-            {selectedStatisticsChart === 'distributions' && <RevenueDistributionsBarChart data={revenueData ?? null} />}
+            {selectedStatisticsChart === 'distributions' && (
+              <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+            )}
 
             <AdvancedDetails network={networks[Chain.Ethereum]} />
           </Stack>

@@ -163,6 +163,7 @@ export const SizesAndSpaces = {
   Height: {
     modal: MappedModalHeight,
     row: Sizing[700],
+    chart: 420, // lightweight charts require height in number format
   },
   MinHeight: {
     tableNoResults: { sm: '15vh', lg: '35vh' },
