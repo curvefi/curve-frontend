@@ -5,7 +5,6 @@ import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type StakeOptions, useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
-import { useUserBalances } from '@/llamalend/queries/user'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -15,6 +14,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyStakeForm = (): StakeForm => ({
   stakeAmount: undefined,
@@ -47,8 +47,8 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const vaultToken = getVaultToken(market)
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
-  const maxUserStake = mapQuery(userBalances, (d) => d.vaultShares)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
+  const maxUserStake = mapQuery(userBalances, (d) => d.depositedShares)
 
   const form = useForm<StakeForm>({
     ...formDefaultOptions,
