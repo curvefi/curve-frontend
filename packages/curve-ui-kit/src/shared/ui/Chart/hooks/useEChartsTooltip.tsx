@@ -38,15 +38,13 @@ export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTool
       }
 
       const { dataIndex } = (toArray(params)[0] ?? {}) as { dataIndex?: number }
-      const datum = dataIndex != null ? data[dataIndex] : null
+      const datum = data[dataIndex ?? -1]
 
-      if (datum && rootRef.current) {
-        flushSync(() =>
-          rootRef.current!.render(<ThemeProvider theme={theme}>{renderTooltipRef.current!(datum)}</ThemeProvider>),
-        )
-      } else {
-        flushSync(() => rootRef.current?.render(null))
-      }
+      flushSync(() =>
+        rootRef.current?.render(
+          datum && <ThemeProvider theme={theme}>{renderTooltipRef.current!(datum)}</ThemeProvider>,
+        ),
+      )
 
       return containerRef.current
     },
