@@ -7,7 +7,7 @@ import { shortenAddress } from '@ui-kit/utils'
 import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
 
-const SIZES = ['small', 'medium', 'large'] as ActionInfoSize[]
+const SIZES: ActionInfoSize[] = ['small', 'medium']
 
 const meta: Meta<typeof ActionInfo> = {
   title: 'UI Kit/Widgets/ActionInfo',

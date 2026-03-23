@@ -17,7 +17,7 @@ import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium'
 
@@ -172,7 +172,9 @@ export const ActionInfo = ({
             >
               {prevValue}
             </Typography>
-            <ArrowForwardIcon sx={{ color: (t) => t.palette.text.tertiary, width: iconSize, height: iconSize }} />
+            <ArrowForwardIcon
+              sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
+            />
           </>
         )}
 
