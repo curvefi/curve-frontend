@@ -1,4 +1,3 @@
-import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
@@ -7,9 +6,9 @@ import {
   submitCollateralForm,
   touchCollateralForm,
 } from '@cy/support/helpers/llamalend/collateral.helpers'
-import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
+import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/test-markets'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,7 +20,13 @@ describe('Collateral forms', () => {
   const _testCases = recordValues(LOAN_TEST_MARKETS)
     .flat()
     .filter((market) => !market.hasLeverage)
-  const testCases = [LOAN_TEST_MARKETS.Mint[0]]
+  const testCases = [
+    {
+      ...LOAN_TEST_MARKETS.Mint[1],
+      controllerAddress: '0xec0820efafc41d8943ee8de495fc9ba8495b15cf' as const,
+      collateralDecimals: 18,
+    },
+  ]
 
   testCases.forEach(
     ({ borrow, chainId, collateral, collateralAddress, controllerAddress, collateralDecimals, id, label }) => {
@@ -59,7 +64,7 @@ describe('Collateral forms', () => {
           setupTenderlyLoan({
             vnet: getVirtualNetwork(),
             userAddress: address,
-            collateralAddress: collateralAddress as Address,
+            collateralAddress,
             controllerAddress,
             collateral,
             collateralDecimals,

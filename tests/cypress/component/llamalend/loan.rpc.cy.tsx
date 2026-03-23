@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
+import { ethAddress } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
@@ -86,7 +87,9 @@ testCases.forEach(
         const vnet = getVirtualNetwork()
         adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
         fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
-        fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
+        if (tokenAddress != ethAddress) {
+          fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
+        }
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
       })
 
