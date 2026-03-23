@@ -44,6 +44,7 @@ allViewports().forEach(([width, height, viewport]) => {
           <ComponentTestWrapper>
             <LoanActionInfoList
               isOpen
+              prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
               health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
               exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
               gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}

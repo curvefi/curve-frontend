@@ -12,7 +12,7 @@ import {
 import { DAYS, type Period } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { useTheme } from '@mui/material/styles'
-import { mapRecord, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
+import { mapRecord, objectKeys, recordEntries } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -24,7 +24,6 @@ const MARKET_NAMES = {
   keepersDebt: 'Keepers debt',
   lendingOperatorsDebt: 'Lending operators debt',
   yieldBasisDebt: 'Yield Basis debt',
-  flashLenderDebt: 'FlashLender debt',
 } as const
 
 type MarketName = keyof typeof MARKET_NAMES
@@ -35,7 +34,6 @@ const MARKET_LABELS = {
   keepersDebt: t`Keepers debt`,
   lendingOperatorsDebt: t`Lending operators debt`,
   yieldBasisDebt: t`Yield basis debt`,
-  flashLenderDebt: t`FlashLender debt`,
 } as const satisfies Record<MarketName, string>
 
 const MINT_MARKETS_LABEL = t`Mint markets`
@@ -96,33 +94,31 @@ export function ChartCrvUsdSupplyBreakdown() {
   const option = useMemo(
     () =>
       createChartOptions({
+        legendSets,
         options: {
           tooltip: createTooltip(formatUsd),
           xAxis: { data: chartData.map((x) => x.time).map(timeToCategory) },
           yAxis: { axisLabel: { formatter: (v: number) => formatUsd(v) } },
-          series: notFalsy(
-            mintMarketsVisible && {
+          series: [
+            {
               name: MINT_MARKETS_LABEL,
               data: chartData.map((x) => x.mintMarkets),
               type: 'line',
               stack: 'supply',
               areaStyle: {},
             },
-            ...recordEntries(MARKET_LABELS).map(
-              ([key, label]) =>
-                visibility[key] && {
-                  name: label,
-                  data: chartData.map((x) => x[key]),
-                  type: 'line' as const,
-                  stack: 'supply',
-                  areaStyle: {},
-                },
-            ),
-          ),
+            ...recordEntries(MARKET_LABELS).map(([key, label]) => ({
+              name: label,
+              data: chartData.map((x) => x[key]),
+              type: 'line' as const,
+              stack: 'supply',
+              areaStyle: {},
+            })),
+          ],
         },
         palette,
       }),
-    [chartData, palette, mintMarketsVisible, visibility],
+    [chartData, legendSets, palette],
   )
 
   return (

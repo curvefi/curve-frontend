@@ -13,7 +13,13 @@ import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
+import {
+  ACTION_INFO_GROUP_SX,
+  combineActionInfoState,
+  formatAmount,
+  formatLeverage,
+  isQueryValueNotEqual,
+} from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen?: boolean
@@ -93,6 +99,8 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
+  const shouldShowprevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
+  const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
 
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
@@ -119,7 +127,7 @@ export const LoanActionInfoList = ({
               testId="borrow-apr"
             />
           )}
-          {(netBorrowApr || prevNetBorrowApr) && (
+          {(shouldShowNetBorrowApr || shouldShowprevNetBorrowApr) && (
             <ActionInfo
               label={t`Net borrow APR`}
               value={netBorrowApr?.data && formatPercent(netBorrowApr.data)}
