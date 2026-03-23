@@ -24,7 +24,6 @@ const MARKET_NAMES = {
   keepersDebt: 'Keepers debt',
   lendingOperatorsDebt: 'Lending operators debt',
   yieldBasisDebt: 'Yield Basis debt',
-  flashLenderDebt: 'FlashLender debt',
 } as const
 
 type MarketName = keyof typeof MARKET_NAMES
@@ -35,7 +34,6 @@ const MARKET_LABELS = {
   keepersDebt: t`Keepers debt`,
   lendingOperatorsDebt: t`Lending operators debt`,
   yieldBasisDebt: t`Yield basis debt`,
-  flashLenderDebt: t`FlashLender debt`,
 } as const satisfies Record<MarketName, string>
 
 const MINT_MARKETS_LABEL = t`Mint markets`
