@@ -63,8 +63,6 @@ export type ActionInfoProps = {
   sx?: StackProps['sx']
   /** CSS align-items property */
   alignItems?: StackProps['alignItems']
-  /** CSS align-self property for label */
-  alignLabel?: TypographyProps['alignSelf']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
