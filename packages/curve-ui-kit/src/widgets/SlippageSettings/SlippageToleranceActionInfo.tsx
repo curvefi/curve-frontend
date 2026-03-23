@@ -21,7 +21,7 @@ export const SlippageToleranceActionInfoPure = ({
     value={formatPercent(maxSlippage)}
     valueRight={
       <SlippageSettings
-        buttonSize="extraSmall"
+        buttonSize="extraExtraSmall"
         buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
         maxSlippage={`${maxSlippage}`}
         onSave={onSave}

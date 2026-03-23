@@ -1,57 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
-import type { RouteResponse } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
+import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
-
-const zeroAddress = '0x0000000000000000000000000000000000000000'
-
-const mockRoutes: RouteResponse[] = [
-  {
-    id: 'curve',
-    router: 'curve',
-    amountIn: ['69424100000000000000'],
-    amountOut: ['69424100000000000000'],
-    priceImpact: 0.01,
-    createdAt: 0,
-    warnings: [],
-    route: [
-      { name: 'Curve', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: 'curve', action: 'swap', chainId: 1 },
-    ],
-    tx: { to: '0x0000000000000000000000000000000000000001', data: '0x', from: zeroAddress, value: '0' },
-  },
-  {
-    id: 'enso',
-    router: 'enso',
-    amountIn: ['69424100000000000000'],
-    amountOut: ['67743200000000000000'],
-    priceImpact: 0.1,
-    createdAt: 0,
-    warnings: [],
-    route: [
-      { name: 'Enso', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: 'enso', action: 'swap', chainId: 1 },
-    ],
-    tx: { to: '0x0000000000000000000000000000000000000002', data: '0x', from: zeroAddress, value: '0' },
-  },
-  {
-    id: 'odos',
-    router: 'odos',
-    amountIn: ['69424100000000000000'],
-    amountOut: ['67014200000000000000'],
-    priceImpact: 0.001,
-    createdAt: 0,
-    warnings: [],
-    route: [
-      { name: 'Odos', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: 'odos', action: 'swap', chainId: 1 },
-    ],
-    tx: { to: '0x0000000000000000000000000000000000000003', data: '0x', from: zeroAddress, value: '0' },
-  },
-]
 
 const meta: Meta<typeof RouteProvidersAccordion> = {
   title: 'UI Kit/Widgets/RouteProvidersAccordion',

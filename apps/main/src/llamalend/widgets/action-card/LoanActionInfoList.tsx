@@ -25,7 +25,7 @@ export type LoanActionInfoListProps = {
   prevPrices?: QueryProp<Range<Decimal>>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
-  exchangeRate?: QueryProp<string | null>
+  exchangeRate?: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
   prevNetBorrowApr?: QueryProp<Decimal | null>
