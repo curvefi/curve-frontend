@@ -173,15 +173,6 @@ export const ActionInfo = ({
               {prevValue}
             </Typography>
             <ArrowForwardIcon
-              data-testid="next-value-arrow"
-              data-icon={JSON.stringify({
-                iconSize,
-                'IconButtonIconSize[buttonSize]': IconButtonIconSize[buttonSize],
-                size,
-                buttonSize,
-                'iconButtonSize[size]': iconButtonSize[size],
-                DEFAULT_SIZE,
-              })}
               sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
             />
           </>
