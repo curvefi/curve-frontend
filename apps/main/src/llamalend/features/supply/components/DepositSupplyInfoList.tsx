@@ -5,7 +5,6 @@ import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
-import { useUserBalances } from '@/llamalend/queries/user'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -14,6 +13,7 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 export type DepositSupplyInfoListProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
@@ -32,13 +32,11 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'depositAmount')
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
-  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
-  const prevAmountSupplied = mapQuery(userBalances, (d) => d.vaultSharesConverted)
 
-  const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const additionalVaultShares = useDepositExpectedVaultShares(params, isOpen)
 
   return (
@@ -46,18 +44,18 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={prevVaultShares}
+      prevVaultShares={mapQuery(userBalances, (d) => d.totalShares)}
       vaultShares={{
         data:
+          userBalances.data.totalShares &&
           additionalVaultShares.data &&
-          prevVaultShares.data &&
-          decimal(new BigNumber(prevVaultShares.data).plus(additionalVaultShares.data)),
-        ...combineQueryState(prevVaultShares, additionalVaultShares),
+          decimal(new BigNumber(userBalances.data.totalShares).plus(additionalVaultShares.data)),
+        ...combineQueryState(userBalances, additionalVaultShares),
       }}
-      prevAmountSupplied={q(prevAmountSupplied)}
+      prevAmountSupplied={mapQuery(userBalances, (d) => d.totalSharesAmount)}
       amountSupplied={mapQuery(
-        prevAmountSupplied,
-        (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),
+        userBalances,
+        (d) => depositAmount && d.totalSharesAmount && decimal(new BigNumber(d.totalSharesAmount).plus(depositAmount)),
       )}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}

@@ -1,11 +1,5 @@
-import BigNumber from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import type { Query } from '@ui-kit/types/util'
-import { mapQuery } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
-import { useUserBalances } from '../user/user-balances.query'
 import {
   DepositParams,
   DepositQuery,
@@ -39,26 +33,3 @@ export const { useQuery: useWithdrawRemovableVaultShares } = queryFactory({
   category: 'llamalend.supply',
   validationSuite: withdrawValidationSuite,
 })
-
-/**
- * Queries the expected vault shares remaining after withdrawing a specific amount.
- * Calculates: current vault shares - removable vault shares
- */
-export function useWithdrawExpectedVaultShares<ChainId extends number>(
-  params: WithdrawParams<ChainId>,
-  enabled: boolean,
-): Query<Decimal> {
-  const { chainId, marketId, userAddress } = params
-  const userBalances = useUserBalances({ chainId, marketId, userAddress }, enabled)
-  const removableVaultShares = useWithdrawRemovableVaultShares(params, enabled)
-
-  const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
-
-  return {
-    data:
-      prevVaultShares.data &&
-      removableVaultShares.data &&
-      decimal(new BigNumber(prevVaultShares.data).minus(removableVaultShares.data)),
-    ...combineQueryState(prevVaultShares, removableVaultShares),
-  }
-}

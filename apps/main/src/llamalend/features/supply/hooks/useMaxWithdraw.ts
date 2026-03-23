@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { useUserBalances } from '@/llamalend/queries/user'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { WithdrawForm } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from './useVaultUserBalances'
 
 const getIsWithdrawFull = (withdrawAmount: Decimal | undefined, maxUserWithdrawAmount: Decimal | undefined) =>
   withdrawAmount && maxUserWithdrawAmount && new BigNumber(withdrawAmount).gte(new BigNumber(maxUserWithdrawAmount))
@@ -15,26 +15,30 @@ const getIsWithdrawFull = (withdrawAmount: Decimal | undefined, maxUserWithdrawA
 export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   {
     params,
+    withdrawAmount,
     form,
   }: {
     params: WithdrawParams<ChainId>
+    // live form withdraw amount (not debounced)
+    withdrawAmount: Decimal | undefined
     form: UseFormReturn<WithdrawForm>
   },
   enabled?: boolean,
 ) {
-  const userBalances = useUserBalances(params, enabled)
-  const maxWithdrawAmount = mapQuery(userBalances, (d) => d.vaultSharesConverted)
+  const userBalances = useVaultUserBalances(params, enabled)
+  const maxWithdrawAmount = mapQuery(userBalances, (d) => d.depositedSharesAmount)
   const isFull = useMemo(
-    () => getIsWithdrawFull(params.withdrawAmount ?? undefined, maxWithdrawAmount.data),
-    [maxWithdrawAmount.data, params.withdrawAmount],
+    // Use the live form amount here because params are debounced and can leave isFull stale during a rapid max + submit.
+    () => getIsWithdrawFull(withdrawAmount, maxWithdrawAmount.data),
+    [maxWithdrawAmount.data, withdrawAmount],
   )
 
   useEffect(() => updateForm(form, { maxWithdrawAmount: maxWithdrawAmount.data }), [form, maxWithdrawAmount.data])
   useEffect(
-    () => updateForm(form, { userVaultShares: userBalances.data?.vaultShares }),
-    [form, userBalances.data?.vaultShares],
+    () => updateForm(form, { userVaultShares: userBalances.data.depositedShares }),
+    [form, userBalances.data.depositedShares],
   )
   useEffect(() => updateForm(form, { isFull }), [form, isFull])
 
-  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.gauge) }
+  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.stakedShares) }
 }

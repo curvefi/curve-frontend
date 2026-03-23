@@ -4,11 +4,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
-import {
-  useSharesToAssetsAmount,
-  useUserStakedVaultSharesToAssetsAmount,
-} from '@/llamalend/queries/supply/supply-user-vault-amounts'
-import { useUserBalances } from '@/llamalend/queries/user'
+import { useSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts.query'
 import type { StakeForm, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -17,6 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 export type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeParams<ChainId>
@@ -35,23 +32,11 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'stakeAmount')
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
-  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
 
-  const prevStakedShares = mapQuery(userBalances, (d) => d.gauge)
-  const stakedShares = mapQuery(
-    prevStakedShares,
-    (prevAmount) => stakeAmount && decimal(new BigNumber(prevAmount).plus(stakeAmount)),
-  )
-
-  const prevAmountStaked = useUserStakedVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const amountStakedAssets = useSharesToAssetsAmount({ ...params, shares: stakeAmount }, isOpen)
-
-  const amountStaked = mapQuery(
-    prevAmountStaked,
-    (prevAmount) => amountStakedAssets.data && decimal(new BigNumber(prevAmount).plus(amountStakedAssets.data)),
-  )
 
   return (
     <SupplyActionInfoList
@@ -60,10 +45,19 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={prevStakedShares}
-      vaultShares={stakedShares}
-      prevAmountSupplied={q(prevAmountStaked)}
-      amountSupplied={amountStaked}
+      prevVaultShares={mapQuery(userBalances, (d) => d.stakedShares)}
+      vaultShares={mapQuery(
+        userBalances,
+        (d) => d.stakedShares && stakeAmount && decimal(new BigNumber(d.stakedShares).plus(stakeAmount)),
+      )}
+      prevAmountSupplied={mapQuery(userBalances, (d) => d.stakedSharesAmount)}
+      amountSupplied={mapQuery(
+        userBalances,
+        (d) =>
+          d.stakedSharesAmount &&
+          amountStakedAssets.data &&
+          decimal(new BigNumber(d.stakedSharesAmount).plus(amountStakedAssets.data)),
+      )}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       gas={q(useStakeEstimateGas(networks, params, isOpen))}
     />
