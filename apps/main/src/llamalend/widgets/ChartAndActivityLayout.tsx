@@ -50,7 +50,7 @@ export type ChartAndActivityLayoutProps = {
     userBandsBalances: ParsedBandsBalances[]
     oraclePrice: string | undefined
     isLoading: boolean
-    isError: boolean
+    error: Error | null
     collateralToken: Token | undefined
     borrowToken: Token | undefined
   }
@@ -109,7 +109,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               {showBands && (
                 <BandsChart
                   isLoading={bands.isLoading}
-                  isError={bands.isError}
+                  error={bands.error}
                   collateralToken={bands.collateralToken}
                   borrowToken={bands.borrowToken}
                   chartData={bands.chartData}
