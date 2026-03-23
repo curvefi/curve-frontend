@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
@@ -10,7 +9,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
@@ -46,18 +45,16 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
           userBalances.data.totalShares &&
           removableVaultShares.data &&
           userBalances.data.depositedShares &&
-          decimal(
-            new BigNumber(userBalances.data.totalShares).minus(
-              isFull ? userBalances.data.depositedShares : removableVaultShares.data,
-            ),
+          decimalMinus(
+            userBalances.data.totalShares,
+            isFull ? userBalances.data.depositedShares : removableVaultShares.data,
           ),
         ...combineQueryState(userBalances, removableVaultShares),
       }}
       prevAmountSupplied={mapQuery(userBalances, (d) => d.totalSharesAmount)}
       amountSupplied={mapQuery(
         userBalances,
-        (d) =>
-          d.totalSharesAmount && withdrawAmount && decimal(new BigNumber(d.totalSharesAmount).minus(withdrawAmount)),
+        (d) => d.totalSharesAmount && withdrawAmount && decimalMinus(d.totalSharesAmount, withdrawAmount),
       )}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}

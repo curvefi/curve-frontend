@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market'
@@ -10,7 +9,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
@@ -44,7 +43,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       prevVaultShares={mapQuery(userBalances, (d) => d.stakedShares)}
       vaultShares={mapQuery(
         userBalances,
-        (d) => d.stakedShares && unstakeAmount && decimal(new BigNumber(d.stakedShares).minus(unstakeAmount)),
+        (d) => d.stakedShares && unstakeAmount && decimalMinus(d.stakedShares, unstakeAmount),
       )}
       prevAmountSupplied={mapQuery(userBalances, (d) => d.stakedSharesAmount)}
       amountSupplied={mapQuery(
@@ -52,7 +51,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
         (d) =>
           d.stakedSharesAmount &&
           amountUnstakedAssets.data &&
-          decimal(new BigNumber(d.stakedSharesAmount).minus(amountUnstakedAssets.data)),
+          decimalMinus(d.stakedSharesAmount, amountUnstakedAssets.data),
       )}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
