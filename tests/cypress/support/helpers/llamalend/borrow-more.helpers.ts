@@ -8,8 +8,13 @@ const getBorrowMoreInput = (field: BorrowMoreField) =>
   cy.get(`[data-testid="borrow-more-input-${field}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
 const getDebtInput = () => getBorrowMoreInput('debt')
+const getCollateralInput = () => getBorrowMoreInput('collateral')
 
-export function writeBorrowMoreForm({ debt }: { debt: Decimal }) {
+export function writeBorrowMoreForm({ debt, userCollateral }: { debt: Decimal; userCollateral?: Decimal }) {
+  if (userCollateral) {
+    getCollateralInput().clear()
+    getCollateralInput().type(userCollateral)
+  }
   getDebtInput().clear()
   getDebtInput().type(debt)
   getDebtInput().blur() // make sure field is touched to open the action info list
