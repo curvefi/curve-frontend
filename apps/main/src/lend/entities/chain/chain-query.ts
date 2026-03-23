@@ -7,8 +7,7 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'lendMarkets.getMarketList'] as const,
   queryFn: async (): Promise<string[]> => {
     const api = requireLib('llamaApi')
-    const versions = ['v1', 'v2'] as const
-    await Promise.allSettled(versions.map((version) => api.lendMarkets.fetchMarkets({ useApi: USE_API, version })))
+    await api.lendMarkets.fetchMarkets({ useApi: USE_API, version: 'v1' })
     return api.lendMarkets.getMarketList()
   },
   validationSuite: llamaApiValidationSuite,
