@@ -32,11 +32,12 @@ export const createLoanFormValidationGroup = (
     debtRequired,
     isMaxDebtRequired,
     isLeverageRequired,
-  }: { debtRequired: boolean; isMaxDebtRequired: boolean; isLeverageRequired: boolean },
+    collateralRequired,
+  }: { debtRequired: boolean; isMaxDebtRequired: boolean; isLeverageRequired: boolean; collateralRequired: boolean },
 ) =>
   group('createLoanFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
-    validateUserCollateral(userCollateral)
+    validateUserCollateral(userCollateral, { required: collateralRequired })
     validateDebt(debt, debtRequired)
     validateSlippage({ slippage })
     validateRange(range)
@@ -48,10 +49,12 @@ export const createLoanFormValidationGroup = (
 export const createLoanQueryValidationSuite = ({
   debtRequired,
   isMaxDebtRequired = debtRequired,
+  collateralRequired = false,
   isLeverageRequired = false,
   skipMarketValidation = false,
 }: {
   debtRequired: boolean
+  collateralRequired?: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
@@ -74,7 +77,7 @@ export const createLoanQueryValidationSuite = ({
       })
       createLoanFormValidationGroup(
         { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
-        { debtRequired, isMaxDebtRequired, isLeverageRequired },
+        { debtRequired, isMaxDebtRequired, isLeverageRequired, collateralRequired },
       )
       skipWhen(!marketId, () => {
         if (!marketId) return

@@ -76,7 +76,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
   }: BorrowMoreForm) => {
     const debtRequired = true
     const leverageRequired = false
-    validateUserCollateral(userCollateral)
+    validateUserCollateral(userCollateral, { required: false })
     validateMaxCollateral(userCollateral, maxCollateral)
     validateUserBorrowed(userBorrowed)
     validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed })
@@ -115,7 +115,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   llamaApiValidationGroup({ chainId })
   marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
-  validateUserCollateral(userCollateral)
+  validateUserCollateral(userCollateral, { required: false })
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)

@@ -1,5 +1,5 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { oneViewport } from '@cy/support/ui'
+import { allViewports } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
 import { q } from '@ui-kit/types/util'
 import { RouteProviderIcons } from '@ui-kit/widgets/RouteProvider'
@@ -57,43 +57,48 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
   )
 }
 
-describe('RouteProviderCard', () => {
-  const [width, height, breakpoint] = oneViewport()
-  beforeEach(() => {
-    cy.viewport(width, height)
-  })
-
-  it('renders with the expected card height', () => {
-    mountRouteProviderCard()
-    cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
-      const { height } = $card.getBoundingClientRect()
-      expect(height).to.equal(breakpoint === 'mobile' ? 48 : 50)
+allViewports().forEach(([width, height, breakpoint]) => {
+  describe(`RouteProviderCard (${breakpoint})`, () => {
+    beforeEach(() => {
+      cy.viewport(width, height)
     })
-  })
 
-  it('updates background color on hover for selected card', () => {
-    mountRouteProviderCard({ isSelected: true })
-    cy.get('[data-testid="route-provider-card"]').should(
-      'have.css',
-      'background-color',
-      hexToRgb(design.Layer.TypeAction.Selected),
-    )
-    cy.get('[data-testid="route-provider-card"]').invoke('addClass', 'cypress-hover')
-    cy.get('[data-testid="route-provider-card"]').should(
-      'have.css',
-      'background-color',
-      hexToRgb(design.Layer.TypeAction.Hover),
-    )
-  })
+    it('renders with the expected card height', () => {
+      mountRouteProviderCard()
+      cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
+        const { height } = $card.getBoundingClientRect()
+        expect(height).to.equal(breakpoint === 'mobile' ? 46 : 48)
+      })
+    })
 
-  it('updates background color on hover for unselected card', () => {
-    mountRouteProviderCard({ isSelected: false })
-    cy.get('[data-testid="route-provider-card"]').should('have.css', 'background-color', hexToRgb(design.Layer[1].Fill))
-    cy.get('[data-testid="route-provider-card"]').invoke('addClass', 'cypress-hover')
-    cy.get('[data-testid="route-provider-card"]').should(
-      'have.css',
-      'background-color',
-      hexToRgb(design.Layer.TypeAction.Hover),
-    )
+    it('updates background color on hover for selected card', () => {
+      mountRouteProviderCard({ isSelected: true })
+      cy.get('[data-testid="route-provider-card"]').should(
+        'have.css',
+        'background-color',
+        hexToRgb(design.Layer.TypeAction.Selected),
+      )
+      cy.get('[data-testid="route-provider-card"]').invoke('addClass', 'cypress-hover')
+      cy.get('[data-testid="route-provider-card"]').should(
+        'have.css',
+        'background-color',
+        hexToRgb(design.Layer.TypeAction.Hover),
+      )
+    })
+
+    it('updates background color on hover for unselected card', () => {
+      mountRouteProviderCard({ isSelected: false })
+      cy.get('[data-testid="route-provider-card"]').should(
+        'have.css',
+        'background-color',
+        hexToRgb(design.Layer[1].Fill),
+      )
+      cy.get('[data-testid="route-provider-card"]').invoke('addClass', 'cypress-hover')
+      cy.get('[data-testid="route-provider-card"]').should(
+        'have.css',
+        'background-color',
+        hexToRgb(design.Layer.TypeAction.Hover),
+      )
+    })
   })
 })
