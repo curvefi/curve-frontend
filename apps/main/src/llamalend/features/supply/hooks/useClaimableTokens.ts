@@ -9,7 +9,8 @@ import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { MAINNET_CRV } from '@ui-kit/utils'
 
-const getCrvAddress = (market: LlamaMarketTemplate) => market?.llamalend.constants.ALIASES.crv as Address | undefined
+const getCrvAddress = (market: LlamaMarketTemplate) =>
+  market?.getLlamalend().constants.ALIASES.crv as Address | undefined
 
 export const useClaimableTokens = <ChainId extends LlamaChainId>(
   params: UserMarketParams<ChainId>,
