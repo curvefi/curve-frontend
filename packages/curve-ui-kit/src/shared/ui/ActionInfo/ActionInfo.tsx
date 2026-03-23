@@ -17,7 +17,7 @@ import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium'
 
@@ -142,7 +142,7 @@ export const ActionInfo = ({
   value ??= prevValue ?? emptyValue
 
   const buttonSize = iconButtonSize[size]
-  const iconSize = IconSize[IconButtonIconSize[buttonSize]]
+  const iconSize = IconButtonIconSize[buttonSize]
   return (
     <Stack
       direction="row"
