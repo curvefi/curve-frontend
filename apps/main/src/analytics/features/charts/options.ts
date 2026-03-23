@@ -1,7 +1,17 @@
 import type { EChartsOption, SeriesOption } from 'echarts'
 import type { Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
+import { mapRecord } from '@primitives/objects.utils'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
+import type { DeepPartial } from '@ui-kit/types/util'
+
+/** Recursively merges objects, with source properties taking precedence over the target. */
+const deepMerge = <T>(target: T, source: DeepPartial<T>): T => ({
+  ...target,
+  ...mapRecord(source, (key, value) =>
+    Array.isArray(value) ? [...value] : typeof value === 'object' ? deepMerge(target[key as keyof T], value) : value,
+  ),
+})
 
 /** Creates a color palette (and font settings) derived from the MUI theme for use in ECharts options. */
 export const createPalette = ({ theme }: { theme: Theme }) => ({
@@ -111,46 +121,3 @@ const createSerieDefaults = (serie: SeriesOption, color: string): SeriesOption =
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */
 export const timeToCategory = (x: number) => new Date(x).toISOString().slice(0, 10)
-
-/**
- * Recursively merges two objects, with source properties taking precedence over target.
- *
- * This is a custom implementation to replace Lodash's _.merge() as part of our effort
- * to reduce dependencies and remove Lodash from the codebase.
- *
- * This utility performs a deep merge of nested objects and arrays:
- * - Arrays are shallow copied from source to target
- * - Nested objects are recursively merged
- * - Primitive values from source override target values
- *
- * @template T - The type of the target object (extends Record<string, unknown>)
- * @param target - The base object to merge into
- * @param source - The source object whose properties will override target properties
- * @returns A new object with properties from both target and source, with source taking precedence
- *
- * @example
- * ```ts
- * const target = { a: 1, b: { c: 2, d: 3 } }
- * const source = { b: { c: 4 }, e: 5 }
- * const result = deepMerge(target, source)
- * // Result: { a: 1, b: { c: 4, d: 3 }, e: 5 }
- * ```
- */
-function deepMerge<T>(target: T, source: Partial<T>): T {
-  const result: T = { ...target }
-
-  for (const key in source) {
-    if (Array.isArray(source[key])) {
-      result[key] = [...(source[key] as unknown[])] as T[Extract<keyof T, string>]
-    } else if (typeof source[key] === 'object' && source[key] !== null) {
-      result[key] = deepMerge(
-        result[key] as Record<string, unknown>,
-        source[key] as Record<string, unknown>,
-      ) as T[Extract<keyof T, string>]
-    } else {
-      result[key] = source[key] as T[Extract<keyof T, string>]
-    }
-  }
-
-  return result
-}
