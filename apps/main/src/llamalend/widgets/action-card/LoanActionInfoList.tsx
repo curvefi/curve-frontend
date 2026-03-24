@@ -25,7 +25,7 @@ export type LoanActionInfoListProps = {
   isOpen?: boolean
   isApproved?: QueryProp<boolean>
   health?: QueryProp<Decimal | null>
-  prevHealth?: QueryProp<Decimal>
+  prevHealth?: QueryProp<Decimal | null>
   isFullRepay?: boolean
   prices?: QueryProp<Range<Decimal>>
   prevPrices?: QueryProp<Range<Decimal>>
@@ -141,8 +141,10 @@ export const LoanActionInfoList = ({
         <Stack>
           <ActionInfo
             label={t`Health`}
-            value={isFullRepay ? '∞' : health?.data && formatNumber(health.data, { abbreviate: false })}
-            prevValue={prevHealth?.data && formatNumber(prevHealth.data, { abbreviate: false })}
+            value={health?.data && !isFullRepay ? formatNumber(health.data, { abbreviate: false }) : '∞'}
+            {...(prevHealth && {
+              prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: false }) : '∞',
+            })}
             emptyValue="∞"
             {...combineActionInfoState(health, prevHealth)}
             valueColor={getHealthValueColor({

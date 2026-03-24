@@ -1,3 +1,4 @@
+import type { CallExceptionError } from 'ethers'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
@@ -14,7 +15,7 @@ export const ErrorIconButton = ({
 }) => (
   <CopyIconButton
     copyText={message || error.toString()}
-    label={t`Copy error to clipboard`}
+    label={`${(error as Error).message || (error as CallExceptionError).reason || error.toString() || 'Unknown error'} (${t`Click to copy error to clipboard`})`}
     confirmationText={t`Error copied to clipboard`}
     size={size}
     data-error={error.toString()}
