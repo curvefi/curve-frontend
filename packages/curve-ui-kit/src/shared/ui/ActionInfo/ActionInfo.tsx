@@ -90,8 +90,6 @@ const rowHeight: Record<ActionInfoSize, string> = {
   medium: ButtonSize.xs,
 }
 
-const isSet = (v: ReactNode) => v || v === 0
-
 type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor'>
 
 const ValueTypography = ({
@@ -122,7 +120,6 @@ export const ActionInfo = ({
   prevValue,
   prevValueColor,
   value,
-  emptyValue = '-',
   valueColor,
   valueLeft,
   valueRight,
@@ -138,9 +135,6 @@ export const ActionInfo = ({
   sx,
 }: ActionInfoProps) => {
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
-  const showPrevValue = isSet(value) && isSet(prevValue)
-  value ??= prevValue ?? emptyValue
-
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
   return (
@@ -162,7 +156,7 @@ export const ActionInfo = ({
       </Typography>
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
-        {showPrevValue && (
+        {prevValue != null && (
           <>
             <Typography
               variant={prevValueSize[size]}
@@ -198,7 +192,7 @@ export const ActionInfo = ({
                 : { width: '2ch', height: '1rem' })}
             >
               <ValueTypography size={size} error={error} valueColor={valueColor}>
-                {typeof loading === 'string' ? loading : error ? '' : value}
+                {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
               </ValueTypography>
             </WithSkeleton>
 
