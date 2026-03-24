@@ -1,9 +1,6 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import {
-  ChartTooltipShell,
-  ChartTooltipSeriesGroup,
-} from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
+import { ChartTooltipShell, ChartTooltipSeriesGroup } from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { Stack, Typography } from '@mui/material'
 import { formatDate, formatNumber } from '@ui/utils'
