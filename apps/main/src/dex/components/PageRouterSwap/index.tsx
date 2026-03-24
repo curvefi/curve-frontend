@@ -424,7 +424,7 @@ export const QuickSwap = ({
     )
     setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams])
+  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
