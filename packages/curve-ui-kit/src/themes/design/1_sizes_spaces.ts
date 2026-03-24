@@ -154,6 +154,7 @@ export const SizesAndSpaces = {
     emptyStateCard: '27.5rem', // 440px
     section: '59.5rem', // 952px
     tooltip: '27.5rem', // 440px
+    chartTooltip: { mobile: '16.4rem', tablet: '20.5rem' }, // 264px/328px
     sliderInput: {
       sm: '5rem', // 80px
       md: '6.25rem', // 100px

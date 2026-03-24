@@ -1,4 +1,3 @@
-import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
 import { Paper, Stack, Typography } from '@mui/material'
@@ -9,7 +8,7 @@ import { LegendLine } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 const lineLabels: Record<YieldKeys, string> = {
   apyProjected: t`APY`,
@@ -52,7 +51,7 @@ export const RevenueChartTooltip = ({ datum, visibleSeries }: RevenueChartToolti
       sx={{
         backgroundColor: (theme) => theme.design.Layer[3].Fill,
         padding: Spacing.md,
-        width: { mobile: TOOLTIP_MAX_WIDTH_MOBILE, tablet: TOOLTIP_MAX_WIDTH },
+        width: MaxWidth.chartTooltip,
       }}
       elevation={2}
     >

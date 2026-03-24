@@ -1,13 +1,12 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { Paper, Stack, Typography } from '@mui/material'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 type Epoch = ScrvUsdRevenue['epochs'][number]
 
@@ -28,7 +27,7 @@ export const DistributionsChartTooltip = ({ active, payload }: TooltipProps<Valu
       sx={{
         backgroundColor: (theme) => theme.design.Layer[3].Fill,
         padding: Spacing.md,
-        width: { mobile: TOOLTIP_MAX_WIDTH_MOBILE, tablet: TOOLTIP_MAX_WIDTH },
+        width: MaxWidth.chartTooltip,
       }}
       elevation={2}
     >
