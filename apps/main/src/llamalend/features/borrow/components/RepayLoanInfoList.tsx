@@ -13,7 +13,7 @@ import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimat
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices, useUserState } from '@/llamalend/queries/user'
+import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -81,6 +81,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   routes,
   form,
   prices,
+  prevPrices,
 }: {
   market: LlamaMarketTemplate | undefined
   params: RepayParams<ChainId>
@@ -93,6 +94,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayForm>
   prices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal>>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
@@ -102,7 +104,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const prevLeverageValue = useUserCurrentLeverage(params, isOpen && !!hasLeverage)
   const leverageEnabled = isLeveragedPosition(prevLeverageValue.data)
   const futureLeverageQuery = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
-  const prevPrices = q(useUserPrices(params))
 
   const debtDelta = {
     data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
@@ -151,7 +152,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       debt={q(debt)}
       prevDebt={prevDebt}
       prevPrices={prevPrices}
-      prices={prices ?? prevPrices}
+      prices={prices}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       prevLoanToValue={q(
         useLoanToValueFromUserState(

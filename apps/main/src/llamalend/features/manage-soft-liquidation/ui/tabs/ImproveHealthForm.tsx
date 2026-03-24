@@ -4,6 +4,7 @@ import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayFor
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -22,6 +23,12 @@ import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
 
+/**
+ * Form to repay debt to increase health in soft liquidation. Similar to RepayForm, but with some differences:
+ * - No token selection, since only the borrow token can be repaid to increase health
+ * - No price impact or swap info, since no swap is involved in improving health
+ * - Different info list component that focuses on health improvement details rather than general repay details
+ */
 export const ImproveHealthForm = ({
   market,
   networks,
@@ -61,6 +68,7 @@ export const ImproveHealthForm = ({
     onPricesUpdated: noop, // liquidation prices do not change when in liquidation protection
   })
 
+  const userPrices = q(useUserPrices(params)) // when in soft liquidation, repay doesn't change liquidation prices
   return (
     <Form
       {...form}
@@ -76,8 +84,9 @@ export const ImproveHealthForm = ({
           onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
-          showFuturePrices
           routes={routes}
+          prices={userPrices}
+          prevPrices={userPrices}
         />
       }
     >

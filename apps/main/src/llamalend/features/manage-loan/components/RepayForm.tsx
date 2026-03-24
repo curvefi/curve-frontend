@@ -7,6 +7,7 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -143,6 +144,7 @@ export const RepayForm = <ChainId extends IChainId>({
           swapRequired={swapRequired}
           routes={routes}
           prices={q(useRepayPrices(params))}
+          prevPrices={q(useUserPrices(params))}
         />
       }
     >
