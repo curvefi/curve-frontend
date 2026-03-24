@@ -3,6 +3,7 @@ import type { WithdrawOptions } from '@/llamalend/mutations/withdraw.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -76,7 +77,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         data-testid={`${TEST_ID_PREFIX}-submit-button`}
       >
-        {isPending ? t`Processing...` : t`Withdraw ${isFull.data ? 'All' : ''}`}
+        {isPending ? t`Processing...` : notFalsy(t`Withdraw`, isFull.data && t`All`).join(' ')}
       </Button>
 
       <FormAlerts
