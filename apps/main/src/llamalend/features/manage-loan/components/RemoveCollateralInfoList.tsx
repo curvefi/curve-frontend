@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
@@ -27,6 +29,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   networks,
   leverageEnabled,
   form,
+  market,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
@@ -35,9 +38,13 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   leverageEnabled: boolean
   form: UseFormReturn<CollateralForm>
+  market: LlamaMarketTemplate | undefined
 }) {
   const isOpen = isFormTouched(form, 'userCollateral')
   const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
+
+  const marketRates = q(useMarketRates(params, isOpen))
+  const { netBorrowApr } = useNetBorrowApr({ market, params, marketRates }, isOpen)
 
   const expectedCollateral = mapQuery(
     prevCollateral,
@@ -86,6 +93,11 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         ),
       )}
       prevDebt={prevDebt}
+      debt={mapQuery(prevDebt, (value) => (value != null ? { value, tokenSymbol: borrowToken?.symbol } : null))}
+      prevRates={marketRates}
+      rates={marketRates}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      netBorrowApr={netBorrowApr && q(netBorrowApr)}
       prevCollateral={prevCollateral}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
