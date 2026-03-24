@@ -62,6 +62,13 @@ export const useDepositMutation = ({
       t`Depositing... ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Deposit successful! ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
+    tokenBalancesToInvalidate: (_mutation, { market }) => {
+      const lendMarket = requireVault(market)
+      return {
+        tokenAddresses: [lendMarket.borrowed_token.address, lendMarket.addresses.vault] as Address[],
+        config,
+      }
+    },
     onSuccess,
     onReset,
   })
