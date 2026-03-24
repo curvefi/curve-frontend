@@ -13,6 +13,7 @@ import {
   ChartStateWrapper,
   ChartFooter,
   type LegendItem,
+  addMovingAverages,
   EChartsLineChart,
   type LineSeriesConfig,
   SelectTimeOption,
@@ -25,12 +26,16 @@ const { Spacing, Height } = SizesAndSpaces
 export type CrvUsdPriceChartPoint = {
   timestamp: number
   price: number
+  movingAverage: number
+  totalAverage: number
 }
 
-type PriceSeriesKey = 'price'
+type PriceSeriesKey = 'price' | 'movingAverage' | 'totalAverage'
 
 const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash: string }[] = [
   { key: 'price', label: t`crvUSD Price`, dash: 'none' },
+  { key: 'movingAverage', label: t`7-day MA Price`, dash: '2 2' },
+  { key: 'totalAverage', label: t`Average Price`, dash: '4 4' },
 ]
 
 export const CrvUsdPriceChart = () => {
@@ -46,7 +51,7 @@ export const CrvUsdPriceChart = () => {
 
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
     const seen = new Set<number>()
-    return priceHistory
+    const sorted = priceHistory
       .map((item) => ({
         timestamp: new Date(item.timestamp).getTime(),
         price: item.price,
@@ -58,13 +63,21 @@ export const CrvUsdPriceChart = () => {
         return true
       })
       .sort((a, b) => a.timestamp - b.timestamp)
+
+    return addMovingAverages(
+      sorted,
+      (d) => d.price,
+      (d) => d.timestamp,
+    )
   }, [priceHistory])
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
     () => ({
       price: Color.Primary[500],
+      movingAverage: Color.Secondary[500],
+      totalAverage: Color.Tertiary[400],
     }),
-    [Color.Primary],
+    [Color.Primary, Color.Secondary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<PriceSeriesKey>[] = useMemo(
