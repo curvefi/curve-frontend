@@ -1,5 +1,11 @@
+import { isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
+
+export type DebouncedValueOptions<T> = {
+  defaultValue?: T
+  debounceMs?: number
+}
 
 /**
  * A hook that debounces a function call and calls a callback when the debouncing period has elapsed.
@@ -88,7 +94,7 @@ export function useDebounce<T>({
  */
 export function useDebouncedValue<T>(
   givenValue: T,
-  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: { defaultValue?: T; debounceMs?: number } = {},
+  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: DebouncedValueOptions<T> = {},
 ) {
   const [value, setValue] = useState<T>(defaultValue)
   useEffect(() => {
@@ -96,6 +102,14 @@ export function useDebouncedValue<T>(
     return () => clearTimeout(timer)
   }, [debounceMs, givenValue])
   return value
+}
+
+/** A wrapper around useDebouncedValue that also reports whether the value is still settling. */
+export function useFormDebounce<T>(givenValue: T, options?: DebouncedValueOptions<T>) {
+  const debouncedValue = useDebouncedValue(givenValue, options)
+  const isDebouncing = !isEqual(debouncedValue, givenValue)
+
+  return [debouncedValue, isDebouncing] as const
 }
 
 /**

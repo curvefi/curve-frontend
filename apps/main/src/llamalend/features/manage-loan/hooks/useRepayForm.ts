@@ -18,7 +18,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { AllowUndefined, Range } from '@ui-kit/types/util'
@@ -49,7 +49,7 @@ const useRepayParams = <ChainId>({
   marketId: string | undefined
   userAddress: Address | undefined
 }) =>
-  useDebouncedValue(
+  useFormDebounce(
     useMemo(
       () => ({
         chainId,
@@ -121,7 +121,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const form = useForm<RepayForm>(formOptions)
 
   const values = watchForm(form)
-  const params = useRepayParams({ chainId, marketId, userAddress, ...values })
+  const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
     onSubmit,
@@ -151,7 +151,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,

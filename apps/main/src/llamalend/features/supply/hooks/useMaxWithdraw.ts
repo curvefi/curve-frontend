@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { WithdrawForm } from '@/llamalend/queries/validation/supply.validation'
@@ -15,22 +15,17 @@ const getIsWithdrawFull = (withdrawAmount: Decimal | undefined, maxUserWithdrawA
 export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   {
     params,
-    withdrawAmount,
     form,
   }: {
     params: WithdrawParams<ChainId>
-    // live form withdraw amount (not debounced)
-    withdrawAmount: Decimal | undefined
     form: UseFormReturn<WithdrawForm>
   },
   enabled?: boolean,
 ) {
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = mapQuery(userBalances, (d) => d.depositedSharesAmount)
-  const isFull = useMemo(
-    // Use the live form amount here because params are debounced and can leave isFull stale during a rapid max + submit.
-    () => getIsWithdrawFull(withdrawAmount, maxWithdrawAmount.data),
-    [maxWithdrawAmount.data, withdrawAmount],
+  const isFull = mapQuery(maxWithdrawAmount, (maxAmountQuery) =>
+    getIsWithdrawFull(params.withdrawAmount ?? undefined, maxAmountQuery),
   )
 
   useEffect(() => updateForm(form, { maxWithdrawAmount: maxWithdrawAmount.data }), [form, maxWithdrawAmount.data])
@@ -38,7 +33,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
     () => updateForm(form, { userVaultShares: userBalances.data.depositedShares }),
     [form, userBalances.data.depositedShares],
   )
-  useEffect(() => updateForm(form, { isFull }), [form, isFull])
+  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
 
-  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.stakedShares) }
+  return { maxWithdrawAmount, maxStakedShares: mapQuery(userBalances, (d) => d.stakedShares), isFull }
 }

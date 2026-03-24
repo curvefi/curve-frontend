@@ -14,7 +14,7 @@ import {
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
@@ -53,7 +53,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): CollateralParams<ChainId> => ({
         chainId,
@@ -88,7 +88,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,

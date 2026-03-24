@@ -9,7 +9,7 @@ import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamale
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
@@ -58,7 +58,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): StakeParams<ChainId> => ({
         chainId,
@@ -93,7 +93,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     isStaked,
