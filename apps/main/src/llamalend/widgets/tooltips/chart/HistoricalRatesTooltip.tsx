@@ -1,4 +1,4 @@
-import type { BorrowAprChartPoint } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import type { RateChartPoint } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { Paper, Stack, Typography } from '@mui/material'
 import { formatDate } from '@ui/utils'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
@@ -11,11 +11,11 @@ const { Spacing } = SizesAndSpaces
 const TOOLTIP_MAX_WIDTH = '20.5rem'
 const TOOLTIP_MAX_WIDTH_MOBILE = '16.4rem' // 80% of TOOLTIP_MAX_WIDTH
 
-type BorrowAprSeriesKey = keyof Omit<BorrowAprChartPoint, 'timestamp'>
+type RateSeriesKey = keyof Omit<RateChartPoint, 'timestamp'>
 
 type HistoricalRatesTooltipProps = {
-  datum: BorrowAprChartPoint
-  visibleSeries: LineSeriesConfig<BorrowAprSeriesKey>[]
+  datum: RateChartPoint
+  visibleSeries: LineSeriesConfig<RateSeriesKey>[]
 }
 
 export const HistoricalRatesTooltip = ({ datum, visibleSeries }: HistoricalRatesTooltipProps) => (

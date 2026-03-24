@@ -12,7 +12,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
@@ -47,7 +47,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   })
 
   const values = watchForm(form)
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): WithdrawParams<ChainId> => ({
         chainId,
@@ -61,10 +61,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     ),
   )
 
-  const { maxWithdrawAmount: max, maxStakedShares } = useMaxWithdrawTokenValues(
-    { params, withdrawAmount: values.withdrawAmount, form },
-    enabled,
-  )
+  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form }, enabled)
 
   const {
     onSubmit,
@@ -93,7 +90,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     borrowToken,
     isWithdrawn,
     withdrawError,
@@ -101,5 +98,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     max,
     maxStakedShares,
     formErrors: useFormErrors(formState),
+    isFull,
   }
 }

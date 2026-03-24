@@ -11,7 +11,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { type Range } from '@ui-kit/types/util'
@@ -61,7 +61,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   })
 
   const values = watchForm(form)
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({
         chainId,
@@ -117,7 +117,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues,
     borrowToken,
