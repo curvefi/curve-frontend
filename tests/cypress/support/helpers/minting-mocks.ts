@@ -4,6 +4,6 @@ export const mockMintMarkets = () =>
   })
 
 export const mockMintSnapshots = ({ limit = 7 }: { limit?: number } = {}) =>
-  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots?*limit=${limit}`, {
+  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots?agg=day*limit=${limit}`, {
     fixture: 'minting-snapshots.json',
   })
