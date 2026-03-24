@@ -45,7 +45,7 @@ export const MarketInformationComposite = ({
         </Stack>
       )}
       {useMarketHistoricalRatesChart() && (
-        <MarketHistoricalRatesChart market={market} blockchainId={BlockchainIds[Chain.Ethereum]} />
+        <MarketHistoricalRatesChart market={market} blockchainId={BlockchainIds[Chain.Ethereum]} rateMode="borrow" />
       )}
       {market && (
         <Card>

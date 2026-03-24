@@ -1,15 +1,12 @@
-import { type MouseEvent, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import { Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
@@ -27,7 +24,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
-type RateMode = 'borrow' | 'supply'
+export type RateMode = 'borrow' | 'supply'
 
 export type RateChartPoint = {
   timestamp: number
@@ -41,6 +38,7 @@ type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 type MarketHistoricalRatesChartProps = {
   market: LlamaMarketTemplate | undefined | null
   blockchainId: Chain | undefined
+  rateMode: RateMode
 }
 
 const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[] = [
@@ -55,11 +53,10 @@ const SUPPLY_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[
   { key: 'totalAverage', label: t`Average APY`, dash: '4 4' },
 ]
 
-export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHistoricalRatesChartProps) => {
+export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: MarketHistoricalRatesChartProps) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
-  const [rateMode, setRateMode] = useState<RateMode>('borrow')
-  const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(BORROW_SERIES_CONFIG.map(({ key }) => key))
-  const isLendMarket = market instanceof LendMarketTemplate
+  const activeSeriesConfig = rateMode === 'borrow' ? BORROW_SERIES_CONFIG : SUPPLY_SERIES_CONFIG
+  const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(activeSeriesConfig.map(({ key }) => key))
   const {
     design: { Color },
   } = useTheme()
@@ -69,8 +66,6 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
     isLoading,
     error,
   } = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), { kind: 'timeRange', timeOption })
-
-  const activeSeriesConfig = rateMode === 'borrow' ? BORROW_SERIES_CONFIG : SUPPLY_SERIES_CONFIG
 
   const chartData = useMemo<RateChartPoint[]>(() => {
     const sorted = snapshots
@@ -121,34 +116,18 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId }: MarketHisto
     [seriesColors, visibleSeries, activeSeriesConfig],
   )
 
-  const handleRateModeChange = (_: MouseEvent<HTMLElement>, mode: RateMode | null) => {
-    if (mode) setRateMode(mode)
-  }
-
   return (
     <Card>
       <CardHeader
         title={rateMode === 'borrow' ? t`Historical Borrow Rate` : t`Historical Supply Rate`}
         size="small"
         action={
-          <Stack direction="row" gap={Spacing.xs} alignItems="center">
-            {isLendMarket && (
-              <ToggleButtonGroup exclusive value={rateMode} onChange={handleRateModeChange}>
-                <ToggleButton value="borrow" size="extraSmall">
-                  {t`Borrow`}
-                </ToggleButton>
-                <ToggleButton value="supply" size="extraSmall">
-                  {t`Supply`}
-                </ToggleButton>
-              </ToggleButtonGroup>
-            )}
-            <SelectTimeOption
-              options={timeOptions}
-              activeOption={timeOption}
-              setActiveOption={setTimeOption}
-              isLoading={isLoading || !market}
-            />
-          </Stack>
+          <SelectTimeOption
+            options={timeOptions}
+            activeOption={timeOption}
+            setActiveOption={setTimeOption}
+            isLoading={isLoading || !market}
+          />
         }
       />
       <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
