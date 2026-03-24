@@ -8675,6 +8675,8 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     bignumber.js: "npm:*"
+    echarts: "npm:*"
+    echarts-for-react: "npm:*"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     ethers: "npm:*"
@@ -8732,6 +8734,8 @@ __metadata:
     vitest: "npm:*"
     wagmi: "npm:^3.4.1"
   peerDependencies:
+    echarts: "*"
+    echarts-for-react: "*"
     ethers: "*"
     immer: "*"
     react: "*"
@@ -9262,7 +9266,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"echarts-for-react@npm:^3.0.6":
+"echarts-for-react@npm:3.0.6":
   version: 3.0.6
   resolution: "echarts-for-react@npm:3.0.6"
   dependencies:
@@ -9275,7 +9279,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"echarts@npm:^6.0.0":
+"echarts@npm:6.0.0":
   version: 6.0.0
   resolution: "echarts@npm:6.0.0"
   dependencies:
@@ -12464,8 +12468,6 @@ __metadata:
     "@vitejs/plugin-react": "npm:*"
     babel-plugin-styled-components: "npm:^2.1.4"
     curve-ui-kit: "npm:*"
-    echarts: "npm:^6.0.0"
-    echarts-for-react: "npm:^3.0.6"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     external-rewards: "npm:*"
@@ -12486,6 +12488,8 @@ __metadata:
   peerDependencies:
     "@curvefi/api": "*"
     bignumber.js: "*"
+    echarts: "*"
+    echarts-for-react: "*"
     ethers: "*"
     immer: "*"
     lodash: "*"

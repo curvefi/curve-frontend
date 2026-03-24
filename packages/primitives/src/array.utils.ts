@@ -28,3 +28,21 @@ export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number,
  */
 export const toArray = <T>(x: T | readonly T[] | null | undefined): readonly T[] =>
   Array.isArray(x) ? x : x == null ? [] : [x as T]
+
+/**
+ * Computes a moving average over a sorted numeric time-series using a sliding window.
+ * Data must be sorted by timestamp ascending.
+ */
+export function movingAverage(values: number[], timestamps: number[], windowMs: number): number[] {
+  let windowStart = 0
+  let windowSum = 0
+
+  return values.map((value, i) => {
+    windowSum += value
+    while (timestamps[windowStart] < timestamps[i] - windowMs) {
+      windowSum -= values[windowStart]
+      windowStart++
+    }
+    return windowSum / (i - windowStart + 1)
+  })
+}

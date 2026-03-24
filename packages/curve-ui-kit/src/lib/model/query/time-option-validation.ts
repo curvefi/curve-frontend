@@ -4,6 +4,9 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 export const timeOptions = ['1M', '6M', '1Y'] as const
 export type TimeOption = (typeof timeOptions)[number]
 
+/** Discriminated union for snapshot query range: either a UI time range or a fixed row count */
+export type SnapshotRange = { kind: 'timeRange'; timeOption: TimeOption } | { kind: 'limit'; limit: number }
+
 type TimeOptionParams = { timeOption: TimeOption }
 
 export const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
