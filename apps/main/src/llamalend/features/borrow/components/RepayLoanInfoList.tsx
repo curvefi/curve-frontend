@@ -153,6 +153,19 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       prevPrices={q(useUserPrices(params))}
       {...(showFuturePrices && { prices: q(prices) })}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
+      prevLoanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            expectedBorrowed: prevDebt.data,
+          },
+          isOpen,
+        ),
+      )}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
