@@ -1,6 +1,6 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type FieldsOf } from '@ui-kit/lib'
+import { combineQueryState, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -23,13 +23,8 @@ const { useQuery: useUserPricesQuery } = queryFactory({
   }),
 })
 
-export const useUserPrices = (params: UserMarketParams) => {
-  const { data: loanExists, isLoading: isLoanExistsLoading, error: loanExistsError } = useLoanExists(params)
-  const queryResult = useUserPricesQuery({ ...params, loanExists })
-
-  return {
-    ...q(queryResult),
-    isLoading: isLoanExistsLoading || queryResult.isLoading,
-    error: loanExistsError || queryResult.error,
-  }
+export const useUserPrices = (params: UserMarketParams, enabled?: boolean) => {
+  const loan = useLoanExists(params, enabled)
+  const prices = useUserPricesQuery({ ...params, loanExists: loan.data }, enabled)
+  return { ...q(prices), ...combineQueryState(loan, prices) }
 }

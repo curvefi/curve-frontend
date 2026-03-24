@@ -446,7 +446,7 @@ export const createApprovedEstimateGasHook =
     useApproveEstimate,
     useActionEstimate,
   }: ApprovedEstimateGasHookConfig<Query, Estimate>) =>
-  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled?: boolean) => {
+  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
     const { data: isApproved, isLoading: isApprovedLoading, error: isApprovedError } = useIsApproved(query, enabled)
     const {
       data: approveEstimate,

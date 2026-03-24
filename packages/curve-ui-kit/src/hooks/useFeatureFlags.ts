@@ -42,3 +42,6 @@ export const isLLv2Enabled = isAlpha
 
 /** New market page layout with forms on the right  */
 export const useRightFormTabsLayout = useBetaChannel
+
+/** New market historical rates chart */
+export const useMarketHistoricalRatesChart = useBetaChannel
