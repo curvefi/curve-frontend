@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import {
   type WithdrawForm,
@@ -29,6 +30,8 @@ export const useWithdrawMutation = ({
   onReset,
   userAddress,
 }: WithdrawOptions) => {
+  const config = useConfig()
+
   const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<WithdrawMutation>({
     network,
     marketId,
@@ -46,6 +49,13 @@ export const useWithdrawMutation = ({
       t`Withdrawing... ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Withdraw successful! ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
+    tokenBalancesToInvalidate: (_variables, { market }) => {
+      const lendMarket = requireVault(market)
+      return {
+        tokenAddresses: [lendMarket.borrowed_token.address, lendMarket.addresses.vault] as Address[],
+        config,
+      }
+    },
     onSuccess,
     onReset,
   })

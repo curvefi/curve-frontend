@@ -62,6 +62,13 @@ export const useStakeMutation = ({
       t`Staking... ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Stake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
+    tokenBalancesToInvalidate: (_variables, { market }) => {
+      const lendMarket = requireVault(market)
+      return {
+        tokenAddresses: [lendMarket.addresses.vault] as Address[],
+        config,
+      }
+    },
     onSuccess,
     onReset,
   })
