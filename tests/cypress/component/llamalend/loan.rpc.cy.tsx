@@ -147,7 +147,10 @@ testCases.forEach(
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
         })
-        submitImproveHealthForm().then(expectCallbacks)
+        submitImproveHealthForm().then(() => {
+          expect(onSuccess).to.be.calledOnce
+          expect(onPricesUpdated).not.to.be.called // no prices updates while in soft liquidation
+        })
         touchImproveHealthForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
@@ -167,6 +170,7 @@ testCases.forEach(
           // unfortunately cannot cause soft liquidation in the tests yet
           cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
           expect(onSuccess).to.not.be.called
+          expect(onPricesUpdated).not.to.be.called
         })
       })
     })
