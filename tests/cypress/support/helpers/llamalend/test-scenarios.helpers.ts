@@ -261,6 +261,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     estimateGasRepay: createStub(oneInt(120_000, 240_000)),
     estimateGasRepayApprove: estimateGasRepayApproveStub,
     estimateGasSelfLiquidate: createStub(oneInt(150_000, 280_000)),
+    estimateGasSelfLiquidateApprove: createStub(oneInt(20_000, 150_000)),
     repayHealth: createStub(oneDecimal(30, 98, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
     repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
@@ -269,6 +270,16 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub(selfLiquidateApproveStub),
     selfLiquidateApprove: selfLiquidateApproveStub,
     selfLiquidate: createStub(TEST_TX_HASH),
+    walletBalances: createStub({
+      // Ensure wallet stablecoin balance is always enough to close the position
+      // canClose requires: borrowed >= (debt - stablecoin) * 1.0001
+      stablecoin: decimal(new BigNumber(debt).minus(stateBorrowed).times(1.0001).plus(1).decimalPlaces(2))!,
+      collateral: oneDecimal(0.02, 0.5, 3),
+    }),
+    loanExists: createStub(true),
+    userState: createStub({ collateral, stablecoin: stateBorrowed, debt }),
+    userHealth: createStub(oneDecimal(20, 70, 2)),
+    userPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
   } as const
 
   const market = createMockMintMarket({
@@ -276,25 +287,21 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     estimateGas: {
       repay: stubs.estimateGasRepay,
       selfLiquidate: stubs.estimateGasSelfLiquidate,
-      ...(!approved && { repayApprove: stubs.estimateGasRepayApprove }),
+      repayApprove: stubs.estimateGasRepayApprove,
+      selfLiquidateApprove: stubs.estimateGasSelfLiquidateApprove,
     },
-    wallet: {
-      balances: createStub({
-        // Ensure wallet stablecoin balance is always enough to close the position
-        // canClose requires: borrowed >= (debt - stablecoin) * 1.0001
-        stablecoin: decimal(new BigNumber(debt).minus(stateBorrowed).times(1.0001).plus(1).decimalPlaces(2))!,
-        collateral: oneDecimal(0.02, 0.5, 3),
-      }),
-    },
-    userState: createStub({ collateral, stablecoin: stateBorrowed, debt }),
-    userHealth: createStub(oneDecimal(20, 70, 2)),
+    wallet: { balances: stubs.walletBalances },
+    loanExists: stubs.loanExists,
+    userState: stubs.userState,
+    userHealth: stubs.userHealth,
+    userPrices: stubs.userPrices,
     repayHealth: stubs.repayHealth,
     repayPrices: stubs.repayPrices,
     repayIsApproved: stubs.repayIsApproved,
-    ...(!approved && { repayApprove: stubs.repayApprove }),
+    repayApprove: stubs.repayApprove,
     repay: stubs.repay,
     selfLiquidateIsApproved: stubs.selfLiquidateIsApproved,
-    ...(!approved && { selfLiquidateApprove: stubs.selfLiquidateApprove }),
+    selfLiquidateApprove: stubs.selfLiquidateApprove,
     selfLiquidate: stubs.selfLiquidate,
   })
 
