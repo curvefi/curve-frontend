@@ -1,13 +1,13 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { Box, Skeleton, useTheme } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { t } from '@ui-kit/lib/i18n'
+import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart/ChartStateWrapper'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { getChartOptions } from './chartOptions'
-import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
@@ -21,7 +21,7 @@ type BandsChartProps = {
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken
   chartData: ChartDataPoint[]
-  isError: boolean
+  error: Error | null
   isLoading: boolean
   userBandsBalances: ParsedBandsBalances[]
   oraclePrice?: string
@@ -41,7 +41,7 @@ const BandsChartComponent = ({
   collateralToken,
   borrowToken,
   chartData,
-  isError,
+  error,
   isLoading,
   userBandsBalances,
   oraclePrice,
@@ -90,28 +90,6 @@ const BandsChartComponent = ({
     instance?.resize()
   }, [containerDimensions, height])
 
-  if (!chartData?.length) {
-    return (
-      <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-            overflow: 'hidden',
-          }}
-        >
-          {isLoading ? (
-            <Skeleton variant="rectangular" sx={{ width: '100%', height: '100%' }} />
-          ) : (
-            <EmptyState isError={isError} />
-          )}
-        </Box>
-      </Box>
-    )
-  }
-
   return (
     <Box
       ref={containerRef}
@@ -124,7 +102,12 @@ const BandsChartComponent = ({
         minWidth: 0,
       }}
     >
-      <ErrorBoundary title="Chart Error" inline subtitle="Something went wrong when rendering the bands chart.">
+      <ChartStateWrapper
+        height={height}
+        isLoading={isLoading || !chartData?.length}
+        error={error}
+        errorMessage={t`Failed to load bands chart data`}
+      >
         <ReactECharts
           ref={chartRef}
           option={finalOption}
@@ -135,7 +118,7 @@ const BandsChartComponent = ({
           lazyUpdate={true}
           autoResize={true}
         />
-      </ErrorBoundary>
+      </ChartStateWrapper>
     </Box>
   )
 }

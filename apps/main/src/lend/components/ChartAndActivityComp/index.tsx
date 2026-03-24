@@ -44,7 +44,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     userBandsBalances,
     oraclePrice,
     isLoading: isBandsLoading,
-    isError: isBandsError,
+    error: bandsError,
   } = useBandsData({
     chainId: rChainId,
     marketId: rOwmId,
@@ -73,7 +73,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
         userBandsBalances: userBandsBalances ?? [],
         oraclePrice,
         isLoading: isBandsLoading,
-        isError: isBandsError,
+        error: bandsError,
         collateralToken,
         borrowToken,
       }}
