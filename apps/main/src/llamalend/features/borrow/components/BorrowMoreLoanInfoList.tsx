@@ -15,11 +15,7 @@ import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more
 import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
-import {
-  type BorrowMoreForm,
-  type BorrowMoreParams,
-  borrowMoreValidationSuite,
-} from '@/llamalend/queries/validation/borrow-more.validation'
+import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -89,19 +85,12 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     ...combineQueryState(prevCollateral, expectedCollateralQuery),
   }
 
-  const health = q(useBorrowMoreHealth(params, isOpen && !!debt))
-  console.log('health', health, {
-    errors: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false })(params).getErrors(),
-    params,
-    isOpen,
-    debt,
-  })
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
-      health={health}
+      health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       prevPrices={q(useUserPrices(params))}
       prices={q(useBorrowMorePrices(params, isOpen))}

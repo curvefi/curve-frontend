@@ -101,10 +101,6 @@ export const LoanActionInfoList = ({
   const exchangeRateValue = decimal(exchangeRate?.data)
   const shouldShowprevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
   const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
-  console.log({
-    loanToValue,
-    prevLoanToValue,
-  })
 
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo

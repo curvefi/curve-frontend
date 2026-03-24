@@ -134,7 +134,6 @@ export const ActionInfo = ({
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
   return (
@@ -200,7 +199,7 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && <ErrorIconButton message={errorMessage} error={error} size={buttonSize} />}
+        {error && <ErrorIconButton error={error} size={buttonSize} />}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}
