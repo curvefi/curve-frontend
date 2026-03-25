@@ -10482,9 +10482,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^5.8.2":
-  version: 5.8.2
-  resolution: "fastify@npm:5.8.2"
+"fastify@npm:^5.8.3":
+  version: 5.8.4
+  resolution: "fastify@npm:5.8.4"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -10501,7 +10501,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/f6ee45032d8467c590b665a5d1d4c90b45c8cc51d427d29ff0c42759fa2ab88168bd9a473675bd163991bc84565e4d6ebdb8b914a6ecea5df59844fd1dfc7553
+  checksum: 10c0/560ef35d59f96d9900c6e96946736215873ed8aa7a493f61f9489c1bdbddf8f714c735886c00e21077fe9a0ea96539b8b5d6755e8877c464b0b04b6afde9c5ab
   languageName: node
   linkType: hard
 
@@ -14350,7 +14350,7 @@ __metadata:
     "@types/node": "npm:*"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    fastify: "npm:^5.8.2"
+    fastify: "npm:^5.8.3"
     tsx: "npm:4.21.0"
     typescript: "npm:*"
     vitest: "npm:*"
