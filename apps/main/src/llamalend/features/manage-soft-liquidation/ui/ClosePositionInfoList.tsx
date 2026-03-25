@@ -38,6 +38,7 @@ export function ClosePositionInfoList({
       debt={mapQuery(prevDebt, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
       prevDebt={prevDebt}
       prevCollateral={prevCollateral}
+      borrowSymbol={borrowToken?.symbol}
       isApproved={q(
         useCloseLoanIsApproved({
           chainId,
