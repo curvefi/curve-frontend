@@ -104,9 +104,14 @@ export const validateDepositAmount = (
   amount: Decimal | undefined | null,
   { depositRequired = false }: { depositRequired?: boolean } = {},
 ) => {
-  skipWhen(!depositRequired && !amount, () => {
+  skipWhen(!depositRequired, () => {
+    test('depositAmount', 'Deposit amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('depositAmount', 'Deposit amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -121,7 +126,7 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
 
 const validateSharesToAssets = (shares: Decimal | undefined | null) => {
   test('shares', 'Shares must be a positive number', () => {
-    enforce(shares).isNumeric().gte(0)
+    enforce(shares).isDecimal().gte(0)
   })
 }
 
@@ -161,9 +166,14 @@ const validateWithdrawAmount = (
   amount: Decimal | undefined | null,
   { withdrawRequired = false }: { withdrawRequired?: boolean } = {},
 ) => {
-  skipWhen(!withdrawRequired && !amount, () => {
+  skipWhen(!withdrawRequired, () => {
+    test('withdrawAmount', 'Withdraw amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('withdrawAmount', 'Withdraw amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -180,9 +190,14 @@ const validateUserVaultShares = (
   shares: Decimal | undefined | null,
   { sharesRequired = false }: { sharesRequired?: boolean } = {},
 ) => {
-  skipWhen(!sharesRequired && shares == null, () => {
+  skipWhen(!sharesRequired, () => {
+    test('userVaultShares', 'Vault shares is required', () => {
+      enforce(shares).isNotEmpty()
+    })
+  })
+  skipWhen(shares == null, () => {
     test('userVaultShares', 'Vault shares must be a positive number', () => {
-      enforce(shares).isNumeric().gt(0)
+      enforce(shares).isDecimal().gt(0)
     })
   })
 }
@@ -213,9 +228,14 @@ const validateStakeAmount = (
   amount: Decimal | undefined | null,
   { stakeRequired = false }: { stakeRequired?: boolean } = {},
 ) => {
-  skipWhen(!stakeRequired && !amount, () => {
+  skipWhen(!stakeRequired, () => {
+    test('stakeAmount', 'Stake amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('stakeAmount', 'Stake amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -247,9 +267,14 @@ const validateUnstakeAmount = (
   amount: Decimal | undefined | null,
   { unstakeRequired = false }: { unstakeRequired?: boolean } = {},
 ) => {
-  skipWhen(!unstakeRequired && !amount, () => {
+  skipWhen(!unstakeRequired, () => {
+    test('unstakeAmount', 'Unstake amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('unstakeAmount', 'Unstake amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
