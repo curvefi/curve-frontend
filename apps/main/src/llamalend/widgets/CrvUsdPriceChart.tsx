@@ -48,7 +48,10 @@ export const CrvUsdPriceChart = () => {
 
   const days = Math.round(TIME_OPTION_MS[timeOption] / TIME_FRAMES.DAY_MS)
 
-  const { data: priceHistory = [], isLoading, error } = useCrvUsdPriceHistory({ days })
+  const { data: priceHistory = [], isLoading, isPlaceholderData, error } = useCrvUsdPriceHistory({ days })
+  // keepPreviousData is enabled on this query for analytics, so isLoading stays false when switching time options.
+  // Check isPlaceholderData to show the loader while fresh data is being fetched.
+  const showLoading = isLoading || isPlaceholderData
 
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
     const sorted = uniqBy(
@@ -110,14 +113,14 @@ export const CrvUsdPriceChart = () => {
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}
-            isLoading={isLoading}
+            isLoading={showLoading}
           />
         }
       />
       <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
         <ChartStateWrapper
           height={Height.shortChart}
-          isLoading={isLoading}
+          isLoading={showLoading}
           error={error}
           errorMessage={t`Unable to fetch historical crvUSD peg data.`}
         >
