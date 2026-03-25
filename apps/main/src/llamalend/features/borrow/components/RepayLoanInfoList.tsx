@@ -100,7 +100,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const expectedBorrowed = useRepayExpectedBorrowed(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   const prevLeverageValue = useUserCurrentLeverage(params, isOpen && !!hasLeverage)
-  const leverageEnabled = isLeveragedPosition(prevLeverageValue.data)
+  const leverageEnabled = prevLeverageValue.data && isLeveragedPosition(prevLeverageValue.data)
   const futureLeverageQuery = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
   const prices = useRepayPrices(params, isOpen && showFuturePrices)
 

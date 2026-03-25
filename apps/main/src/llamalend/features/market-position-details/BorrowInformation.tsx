@@ -113,7 +113,7 @@ export const BorrowInformation = ({
           clickable: true,
         }}
       />
-      {isLeveragedPosition(leverage?.value) && (
+      {leverage?.value != null && isLeveragedPosition(leverage.value) && (
         <Metric
           size="small"
           label={t`Leverage`}

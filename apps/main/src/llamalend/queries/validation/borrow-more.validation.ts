@@ -26,7 +26,7 @@ export type BorrowMoreMutation = {
   userBorrowed: Decimal
   debt: Decimal
   slippage: Decimal
-  leverageEnabled: boolean
+  leverageEnabled: boolean | undefined // undefined until we know if the position is leveraged
   routeId: string | undefined
 }
 

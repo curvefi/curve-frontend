@@ -5,6 +5,7 @@ import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
+import { useIsLeveragedPosition } from '@/llamalend/queries/user/user-current-leverage.query'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
@@ -26,6 +27,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
 ) {
   const { chainId, userAddress, marketId } = params
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const isLeverage = useIsLeveragedPosition(params) ?? undefined
 
   const maxUserCollateral = useTokenBalance({
     chainId,
@@ -46,6 +48,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
   useEffect(() => updateForm(form, { maxBorrowed }), [form, maxBorrowed])
   useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
+  useEffect(() => updateForm(form, { leverageEnabled: isLeverage.data ?? undefined }), [form, isLeverage.data])
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },

@@ -1,7 +1,10 @@
+import { useConnection } from 'wagmi'
+import { isLeveragedPosition } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { leverageUserMarketValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import { queryFactory } from '@ui-kit/lib/model/query/factory'
-import { rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import { type MarketParams, rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils/decimal'
 
 /**
@@ -12,7 +15,13 @@ export const { useQuery: useUserCurrentLeverage, queryKey: userCurrentLeverageQu
   queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) =>
     [...rootKeys.userMarket({ chainId, userAddress, marketId }), 'currentLeverage'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
-    decimal(await getUserPositionImplementation(marketId).currentLeverage(userAddress)) ?? null,
+    decimal(await getUserPositionImplementation(marketId).currentLeverage(userAddress))!,
   category: 'llamalend.user',
   validationSuite: leverageUserMarketValidationSuite,
 })
+
+export function useIsLeveragedPosition(params: MarketParams) {
+  const { address: userAddress } = useConnection()
+  const currentLeverage = useUserCurrentLeverage({ ...params, userAddress })
+  return mapQuery(currentLeverage, (data) => isLeveragedPosition(data))
+}

@@ -58,7 +58,7 @@ export const hasDeleverage = (market: LlamaMarketTemplate) =>
   hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 /** check if an open position is a leveraged position, using the leverage value */
-export const isLeveragedPosition = (leverage: Amount | undefined | null) => leverage != null && Number(leverage) !== 1
+export const isLeveragedPosition = (leverage: Amount) => Number(leverage) !== 1
 
 export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)

@@ -73,9 +73,15 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxBorrowed: undefined,
   maxDebt: undefined,
   routeId: undefined,
-  leverageEnabled: false,
+  leverageEnabled: undefined,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
+
+/** Checks if we need a route for borrowing more */
+const isRouteRequired = (market: LlamaMarketTemplate | undefined, leverageEnabled: boolean | undefined) => {
+  const [implementation] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
+  return !!implementation && isRouterRequired(implementation)
+}
 
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
@@ -104,9 +110,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
-  const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
-  const routeRequired = !!implementation && isRouterRequired(implementation)
-
   const {
     onSubmit,
     isPending: isBorrowing,
@@ -147,7 +150,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),
       ...pick(params, 'slippage', 'routeId'),
-      enabled: routeRequired,
+      enabled: isRouteRequired(market, values.leverageEnabled),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
         await invalidateOrRefetchBorrowMoreRouteQueries(route, { ...params, routeId: route?.id })
