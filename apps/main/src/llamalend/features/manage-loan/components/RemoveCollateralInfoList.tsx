@@ -92,7 +92,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
           isOpen && !!userCollateral,
         ),
       )}
-      debt={mapQuery(prevDebt, (value) => (value == null ? null : { value, tokenSymbol: borrowToken?.symbol }))}
+      prevDebt={prevDebt}
       prevRates={marketRates}
       rates={marketRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
