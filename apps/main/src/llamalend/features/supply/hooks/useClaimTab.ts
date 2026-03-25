@@ -31,7 +31,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   )
 
   const { claimableTokens, totalNotionals, isClaimablesLoading, claimablesError, usdRateLoading, usdRateError } =
-    useClaimableTokens(params, enabled)
+    useClaimableTokens(params, market, enabled)
 
   const tableData = useMemo(
     () => claimableTokens.map((token) => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),

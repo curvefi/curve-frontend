@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
@@ -108,7 +109,7 @@ testCases.forEach(
 
       it(`borrows more`, () => {
         cy.mount(<LoanTestWrapper tab="borrow-more" />)
-        writeBorrowMoreForm({ debt: borrowMore })
+        writeBorrowMoreForm({ debt: borrowMore }) // todo: implement add collateral in some markets
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt: borrow,
           expectedFutureDebt: debtAfterBorrowMore,
@@ -138,7 +139,7 @@ testCases.forEach(
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
         })
-        submitImproveHealthForm().then(() => expect(onPricesUpdated).to.be.called)
+        submitImproveHealthForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
         touchImproveHealthForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
@@ -154,10 +155,11 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
-        submitClosePositionForm('error', 'Transaction failed').then(() =>
+        submitClosePositionForm('error', 'Transaction failed').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
-          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode'),
-        )
+          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
+          expect(onPricesUpdated).not.to.be.called
+        })
       })
     })
   },

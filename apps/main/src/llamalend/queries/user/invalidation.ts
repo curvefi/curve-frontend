@@ -1,48 +1,17 @@
-import { invalidateAllBandsChartQueries } from '@/llamalend/features/bands-chart/queries/invalidation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UserMarketParams } from '@ui-kit/lib/model'
-import { invalidateAddCollateralFutureLeverage } from '../add-collateral/add-collateral-future-leverage.query'
-import { invalidateMarketCapAndAvailable, invalidateMarketRates, invalidateMarketTotalCollateral } from '../market'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { rootKeys, type UserMarketQuery } from '@ui-kit/lib/model'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
-import { invalidateRemoveCollateralFutureLeverage } from '../remove-collateral/remove-collateral-future-leverage.query'
-import { invalidateUserBalances } from './user-balances.query'
-import { invalidateUserBands } from './user-bands.query'
-import { invalidateUserCurrentLeverage } from './user-current-leverage.query'
-import { invalidateUserHealth } from './user-health.query'
-import { invalidateLoanExists } from './user-loan-exists.query'
-import { invalidateUserPrices } from './user-prices.query'
-import { invalidateUserState } from './user-state.query'
 
 /**
- * Helper function to invalidate all user-position queries for a market.
- * Keeps user-position data in sync after transactions.
+ * Invalidates all market and user-position queries after a mutation. Uses rootKeys.market as a prefix
+ * to cover all queries for the market at once; cross-chain market-list queries have separate key roots.
  */
-export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
+export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketQuery<IChainId>) =>
   Promise.all([
-    invalidateLoanExists({ marketId, userAddress, chainId }),
-    invalidateUserState({ marketId, userAddress, chainId }),
-    invalidateUserHealth({ marketId, userAddress, chainId, isFull: true }),
-    invalidateUserHealth({ marketId, userAddress, chainId, isFull: false }),
-    invalidateUserBalances({ marketId, userAddress, chainId }),
-    invalidateUserBands({ marketId, userAddress, chainId }),
-    invalidateUserCurrentLeverage({ marketId, userAddress, chainId }),
-    invalidateUserPrices({ marketId, userAddress, chainId, loanExists: true }),
-    invalidateAddCollateralFutureLeverage({ marketId, userAddress, chainId }),
-    invalidateRemoveCollateralFutureLeverage({ marketId, userAddress, chainId }),
-  ])
-
-/**
- * Helper function to easily invalidate the entire user state of a market.
- * Useful when their loan states has changed and the entire UI needs an update.
- */
-export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
-  Promise.all([
-    invalidateAllUserPositionQueries({ marketId, userAddress, chainId }),
-    invalidateAllBandsChartQueries({ marketId, userAddress, chainId }),
-    invalidateMarketRates({ marketId, chainId }),
-    invalidateMarketTotalCollateral({ marketId, chainId }),
-    invalidateMarketCapAndAvailable({ marketId, chainId }),
+    // we invalidate all market queries, not just for the user, as a user action changes the whole market
+    queryClient.invalidateQueries({ queryKey: rootKeys.market({ chainId, marketId }) }),
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),
     invalidateAllUserLendingSupplies(userAddress),

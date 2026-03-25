@@ -80,7 +80,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           label={t`Supply rate`}
           value={userTotalCurrentSupplyApr ?? totalMinBoost}
           loading={supplyRateLoading}
-          valueOptions={{ unit: 'percentage', color: 'warning' }}
+          valueOptions={{ unit: 'percentage' }}
           notional={
             totalMaxBoost
               ? t`max Boost ${formatNumber(totalMaxBoost, { unit: 'percentage', abbreviate: false })}`

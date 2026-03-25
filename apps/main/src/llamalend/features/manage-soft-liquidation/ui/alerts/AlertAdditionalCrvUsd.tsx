@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol: debtToken = t`debt tokens`, balance }: Props) => (
-  <Alert severity="error" variant="outlined" sx={{ boxShadow: 'none' }}>
+  <Alert severity="error" variant="outlined">
     <AlertTitle>{t`Additional crvUSD required`}</AlertTitle>
 
     <Stack gap={Spacing.sm}>

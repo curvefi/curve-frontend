@@ -50,7 +50,8 @@ export const {
         return await impl.repayIsFull(...args, userAddress)
       case 'deleverage':
         return await impl.isFullRepayment(...args, userAddress)
-      case 'unleveraged':
+      case 'unleveragedLend':
+      case 'unleveragedMint':
         // For unleveraged markets, full repayment is when userBorrowed >= userDebt
         return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }

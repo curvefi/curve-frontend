@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
@@ -11,7 +11,6 @@ import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-availabl
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
-import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -19,12 +18,12 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { AllowUndefined, Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, updateForm } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -45,7 +44,7 @@ const useRepayParams = <ChainId>({
   marketId: string | undefined
   userAddress: Address | undefined
 }) =>
-  useDebouncedValue(
+  useFormDebounce(
     useMemo(
       () => ({
         chainId,
@@ -73,16 +72,6 @@ const useRepayParams = <ChainId>({
       ],
     ),
   )
-
-const useChartPricesCallback = (
-  params: RepayIsFullParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean | undefined,
-) => {
-  const { data } = useRepayPrices(params, enabled)
-  useEffect(() => onPricesUpdated(data), [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
-}
 
 const formOptions = {
   ...formDefaultOptions,
@@ -125,7 +114,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const form = useForm<RepayForm>(formOptions)
 
   const values = watchForm(form)
-  const params = useRepayParams({ chainId, marketId, userAddress, ...values })
+  const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
     onSubmit,
@@ -141,7 +130,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  useChartPricesCallback(params, onPricesUpdated, enabled)
+  useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
 
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
@@ -153,7 +142,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,

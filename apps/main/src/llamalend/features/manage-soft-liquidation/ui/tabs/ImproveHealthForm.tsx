@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayForm'
 import { hasLeverage } from '@/llamalend/llama.utils'
@@ -6,13 +7,12 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { q, type Range } from '@ui-kit/types/util'
+import { q } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -26,13 +26,11 @@ export const ImproveHealthForm = ({
   networks,
   chainId,
   enabled,
-  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -56,7 +54,7 @@ export const ImproveHealthForm = ({
     market,
     network,
     enabled,
-    onPricesUpdated,
+    onPricesUpdated: noop, // liquidation prices do not change when in liquidation protection
   })
 
   return (
@@ -74,6 +72,7 @@ export const ImproveHealthForm = ({
           onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
+          showFuturePrices={false} // liquidation prices do not change when in liquidation protection
           routes={routes}
         />
       }

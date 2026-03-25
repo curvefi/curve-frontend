@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
+import type { Query } from '@ui-kit/types/util'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
@@ -43,6 +44,14 @@ export const filterFormErrors = <TFieldValues extends FieldValues>(formState: Fo
 
 export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   useMemo(() => filterFormErrors(formState), [formState])
+
+/**
+ * Syncs `data` to `callback` whenever it changes, and clears it (calls with `undefined`) on unmount.
+ */
+export function useCallbackSync<T>({ data }: Query<T>, callback: (data: T | undefined) => void): void {
+  useEffect(() => callback(data), [callback, data]) // keep the parent in sync
+  useEffect(() => () => callback(undefined), [callback]) // clear stale data on unmount
+}
 
 /** Checks if any of the given fields are touched in the form. */
 export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: Path<T>[]) =>

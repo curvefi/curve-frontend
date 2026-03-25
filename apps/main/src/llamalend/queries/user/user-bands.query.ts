@@ -1,5 +1,5 @@
-import { getLlamaMarket, reverseBands } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { reverseBands } from '@/llamalend/llama.utils'
+import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 
@@ -7,13 +7,10 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
  * Query to get the user's band positions in a market.
  * Returns reversed bands [high, low] for UI display.
  */
-export const { useQuery: useUserBands, invalidate: invalidateUserBands } = queryFactory({
+export const { useQuery: useUserBands } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userBands'] as const,
-  queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
-    const market = getLlamaMarket(marketId)
-    const bands = market instanceof LendMarketTemplate ? await market.userBands() : await market.userBands(userAddress)
-    return reverseBands(bands)
-  },
+  queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
+    reverseBands(await getUserPositionImplementation(marketId).userBands(userAddress)),
   category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,
 })

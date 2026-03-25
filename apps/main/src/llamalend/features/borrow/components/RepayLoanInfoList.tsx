@@ -14,7 +14,7 @@ import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.qu
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices, useUserState } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -80,6 +80,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   swapRequired,
   routes,
   form,
+  showFuturePrices,
 }: {
   market: LlamaMarketTemplate | undefined
   params: RepayParams<ChainId>
@@ -91,6 +92,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   swapRequired: boolean
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayForm>
+  showFuturePrices: boolean
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
@@ -100,6 +102,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const prevLeverageValue = useUserCurrentLeverage(params, isOpen && !!hasLeverage)
   const leverageEnabled = isLeveragedPosition(prevLeverageValue.data)
   const futureLeverageQuery = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
+  const prices = useRepayPrices(params, isOpen && showFuturePrices)
+
   const debtDelta = {
     data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
     ...combineQueryState(prevDebt, debt),
@@ -125,12 +129,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   )
 
   const leverageValue = isFull ? { data: decimal(0), isLoading: false, error: null } : futureLeverageQuery
-
-  const prevLeverageTotalCollateral = {
-    data: prevCollateral.data,
-    ...combineQueryState(prevCollateral, prevLeverageValue),
-  }
-
   const leverageTotalCollateral = {
     data: isFull
       ? decimal(0)
@@ -152,8 +150,22 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       debt={q(debt)}
       prevDebt={prevDebt}
-      prices={q(useRepayPrices(params, isOpen))}
+      prevPrices={q(useUserPrices(params))}
+      {...(showFuturePrices && { prices: q(prices) })}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
+      prevLoanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            expectedBorrowed: prevDebt.data,
+          },
+          isOpen,
+        ),
+      )}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -184,7 +196,10 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
               data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
               ...combineQueryState(leverageTotalCollateral, leverageValue),
             },
-            prevLeverageTotalCollateral,
+            prevLeverageTotalCollateral: {
+              data: prevCollateral.data,
+              ...combineQueryState(prevCollateral, prevLeverageValue),
+            },
             leverageTotalCollateral,
           }
         : {

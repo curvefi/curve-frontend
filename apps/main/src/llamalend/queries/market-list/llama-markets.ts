@@ -1,7 +1,7 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
-import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
+import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -11,6 +11,7 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -45,6 +46,7 @@ export type LlamaMarket = {
   controllerAddress: Address
   vaultAddress: Address | null
   assets: Assets
+  version: 'v1' | 'v2'
   maxLtv: number
   utilizationPercent: number
   liquidityUsd: number
@@ -271,6 +273,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
+    version: 'v1', // todo: get version from backend
     assets: {
       borrowed: {
         ...borrowedToken,
@@ -375,6 +378,7 @@ const convertMintMarket = (
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
+    version: 'v1',
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,
@@ -527,7 +531,8 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   ),
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
-                    createdAt <= MARKET_CUTOFF_DATE.getTime() && (!deprecatedMessage || userHasPositions),
+                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || isLLv2Enabled()) &&
+                    (!deprecatedMessage || userHasPositions),
                 ),
               }
             : undefined

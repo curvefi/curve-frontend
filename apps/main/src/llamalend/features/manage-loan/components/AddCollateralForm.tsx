@@ -4,8 +4,9 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { q } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
@@ -15,11 +16,14 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
+  onPricesUpdated,
+  enabled,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
+  enabled: boolean
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
 
@@ -37,7 +41,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     borrowToken,
     txHash,
     maxCollateral,
-  } = useAddCollateralForm({ market, network })
+  } = useAddCollateralForm({ market, network, onPricesUpdated, enabled })
 
   return (
     <Form

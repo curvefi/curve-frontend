@@ -9,14 +9,12 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'capAndAvailable', 'v1'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLlamaMarket(marketId)
-    const capAndAvailable =
-      market instanceof LendMarketTemplate
-        ? await market.stats.capAndAvailable(IS_GETTER, USE_API)
-        : await market.stats.capAndAvailable()
-    return {
-      cap: decimal(capAndAvailable.cap),
-      available: decimal(capAndAvailable.available),
+    if (market instanceof LendMarketTemplate) {
+      const { available, totalAssets } = await market.stats.capAndAvailable(IS_GETTER, USE_API)
+      return { totalAssets: decimal(totalAssets), available: decimal(available) }
     }
+    const { available, cap } = await market.stats.capAndAvailable()
+    return { totalAssets: decimal(cap), available: decimal(available) }
   },
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,

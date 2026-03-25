@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayIsFullParams, type RepayIsFullQuery } from '../validation/manage-loan.types'
@@ -42,7 +42,7 @@ export const {
     routeId,
   }: RepayIsFullQuery): Promise<boolean> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
-    if (useFullRepay) return await getLlamaMarket(marketId).fullRepayIsApproved(userAddress)
+    if (useFullRepay) return await getLoanImplementation(marketId).fullRepayIsApproved(userAddress)
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
@@ -52,7 +52,9 @@ export const {
         return await impl.repayIsApproved(userCollateral, userBorrowed)
       case 'deleverage':
         return true // deleverage query doesn't need approval because it only uses the user stateCollateral
-      case 'unleveraged':
+      case 'unleveragedMint':
+        return await impl.repayIsApproved(userBorrowed)
+      case 'unleveragedLend':
         return await impl.repayIsApproved(userBorrowed)
     }
   },

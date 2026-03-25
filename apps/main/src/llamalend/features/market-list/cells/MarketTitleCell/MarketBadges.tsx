@@ -35,7 +35,11 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
         <Chip
           size="extraSmall"
           color="default"
-          label={poolTypeNames[type]()}
+          label={
+            <Typography variant="bodyXsBold" component="span">
+              {poolTypeNames[type]()}
+            </Typography>
+          }
           data-testid={`pool-type-${type.toLowerCase()}`}
         />
       </Tooltip>

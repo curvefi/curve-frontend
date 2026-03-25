@@ -38,7 +38,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
           chainId,
           approved,
         })
-        const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks })
@@ -46,12 +45,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ImproveHealthForm
-              market={market}
-              networks={networks}
-              chainId={chainId}
-              onPricesUpdated={onPricesUpdated}
-            />
+            <ImproveHealthForm market={market} networks={networks} chainId={chainId} />
           </MockLoanTestWrapper>,
         )
 
@@ -67,6 +61,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
           expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
           expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
           if (approved) {
+            expect(stubs.estimateGasRepayApprove).to.not.have.been.called
             expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           } else {
             expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
@@ -78,8 +73,10 @@ describe('Soft Liquidation Forms (mocked)', () => {
         submitImproveHealthForm().then(() => {
           expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           if (approved) {
+            expect(stubs.estimateGasRepayApprove).to.not.have.been.called
             expect(stubs.repayApprove).to.not.have.been.called
           } else {
+            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
             expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
           }
           expect(stubs.repay).to.have.been.calledWithExactly(...expected.improveHealth.submit)
@@ -107,13 +104,14 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.then(() => {
           expect(stubs.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
-          expect(stubs.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
         })
 
         submitClosePositionForm().then(() => {
           if (approved) {
+            expect(stubs.estimateGasSelfLiquidateApprove).to.not.have.been.called
             expect(stubs.selfLiquidateApprove).to.not.have.been.called
           } else {
+            expect(stubs.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
             expect(stubs.selfLiquidateApprove).to.have.been.calledWithExactly(...expected.closePosition.approve)
           }
           expect(stubs.selfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.submit)

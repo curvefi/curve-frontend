@@ -120,7 +120,7 @@ export type MarketStatBands = {
   error: string
 }
 export type MarketsStatsBandsMapper = { [owmId: string]: MarketStatBands }
-export type MarketStatCapAndAvailable = { cap: string; available: string; error: string }
+export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
 export type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
 export type MarketMaxLeverage = { maxLeverage: string; error: string }
 export type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }
@@ -189,7 +189,7 @@ export type UserLoanDetails = {
     loss?: UserLoss
     prices: string[]
     range: number | null
-    state: { collateral: string; borrowed: string; debt: string; N: string }
+    state: { collateral: string; borrowed: string; debt: string; N: string; isSoftLiquidation: boolean }
     status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
   } | null

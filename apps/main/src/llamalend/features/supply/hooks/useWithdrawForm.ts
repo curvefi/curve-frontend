@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
+import { useMaxWithdrawTokenValues } from '@/llamalend/features/supply/hooks/useMaxWithdraw'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
-import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import {
   withdrawFormValidationSuite,
   WithdrawParams,
@@ -12,18 +12,21 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   withdrawAmount: undefined,
   maxWithdrawAmount: undefined,
+  userVaultShares: undefined,
+  isFull: false,
 })
 
 export const useWithdrawForm = <ChainId extends LlamaChainId>({
   market,
   network,
+  enabled,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
@@ -35,8 +38,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const maxUserWithdraw = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress })
-
   const form = useForm<WithdrawForm>({
     ...formDefaultOptions,
     resolver: vestResolver(withdrawFormValidationSuite),
@@ -44,18 +45,21 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   })
 
   const values = watchForm(form)
-
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): WithdrawParams<ChainId> => ({
         chainId,
         marketId,
         userAddress,
         withdrawAmount: values.withdrawAmount,
+        isFull: values.isFull,
+        userVaultShares: values.userVaultShares,
       }),
-      [chainId, marketId, userAddress, values.withdrawAmount],
+      [chainId, marketId, userAddress, values.isFull, values.userVaultShares, values.withdrawAmount],
     ),
   )
+
+  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form }, enabled)
 
   const {
     onSubmit,
@@ -67,23 +71,22 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
 
   const { formState } = form
 
-  useEffect(() => {
-    updateForm(form, { maxWithdrawAmount: maxUserWithdraw.data })
-  }, [form, maxUserWithdraw.data])
-
   const isPending = formState.isSubmitting || isWithdrawing
+
   return {
     form,
     values,
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     borrowToken,
     isWithdrawn,
     withdrawError,
     txHash: data?.hash,
-    max: maxUserWithdraw,
+    max,
+    maxStakedShares,
     formErrors: useFormErrors(formState),
+    isFull,
   }
 }

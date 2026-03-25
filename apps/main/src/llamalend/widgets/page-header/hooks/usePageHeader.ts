@@ -24,8 +24,8 @@ export type AvailableLiquidity = {
   loading: boolean
 }
 
-const AVERAGE_RATE_LABEL = `${LAST_MONTH}D`
-const SNAPSHOTS_QUERY_LIMIT = LAST_MONTH
+const AVERAGE_MULTIPLIER = LAST_MONTH
+const AVERAGE_RATE_LABEL = `${AVERAGE_MULTIPLIER}D`
 
 function buildSupplyRate({
   marketRates,
@@ -89,10 +89,13 @@ export const usePageHeader = ({
     market ?? undefined,
     blockchainId,
     Boolean(blockchainId && market),
-    SNAPSHOTS_QUERY_LIMIT,
+    { kind: 'limit', limit: AVERAGE_MULTIPLIER },
   )
 
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
+    { chainId, marketId },
+    !isMarketMetadataLoading,
+  )
   const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
   const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketVaultOnChainRewards(
     { chainId, marketId },
@@ -139,7 +142,7 @@ export const usePageHeader = ({
 
   const availableLiquidity: AvailableLiquidity = {
     value: toNumberOrNull(capAndAvailable?.available),
-    max: toNumberOrNull(capAndAvailable?.cap),
+    max: toNumberOrNull(capAndAvailable?.totalAssets),
     loading: isCapAndAvailableLoading || isMarketMetadataLoading,
   }
 

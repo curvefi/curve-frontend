@@ -1,4 +1,5 @@
 import { MarketInfoLayout, AdvancedDetails } from '@/llamalend/features/market-advanced-information'
+import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { BandsComp } from '@/loan/components/BandsComp'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -7,11 +8,12 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart, useMarketHistoricalRatesChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
+import { BlockchainIds, Chain } from '@ui-kit/utils/network'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { networks } from '../networks'
 
@@ -41,6 +43,9 @@ export const MarketInformationComposite = ({
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
+      )}
+      {useMarketHistoricalRatesChart() && (
+        <MarketHistoricalRatesChart market={market} blockchainId={BlockchainIds[Chain.Ethereum]} rateMode="borrow" />
       )}
       {market && (
         <Card>

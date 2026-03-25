@@ -1,22 +1,13 @@
+import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import { formatNumber } from '@ui-kit/utils'
 import type { TimeOption } from './types'
 
-const seconds: Record<TimeOption, number> = {
-  '15m': 15 * 60,
-  '30m': 30 * 60,
-  '1h': 60 * 60,
-  '4h': 4 * 60 * 60,
-  '6h': 6 * 60 * 60,
-  '12h': 12 * 60 * 60,
-  '1d': 24 * 60 * 60,
-  '7d': 7 * 24 * 60 * 60,
-  '14d': 14 * 24 * 60 * 60,
-} as const
+const toSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
 
-export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - seconds[timeOption]
+export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - toSeconds(timeOption)
 
 export const getThreeHundredResultsAgo = (timeOption: TimeOption, timestamp: number) =>
-  Math.floor(timestamp - 299 * seconds[timeOption])
+  Math.floor(timestamp - 299 * toSeconds(timeOption))
 
 export const convertToLocaleTimestamp = (unixTimestamp: number) => {
   const offsetInSeconds = new Date().getTimezoneOffset() * 60

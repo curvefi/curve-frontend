@@ -1,14 +1,14 @@
 import { noop } from 'lodash'
 import { useCallback } from 'react'
-import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { claimValidationSuite, requireVault } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { waitForTransaction } from '@ui-kit/utils'
 import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
+import { hasClaimableRewards } from '../queries/supply/supply-query.helpers'
 
 type ClaimMutation = Record<string, never>
 
@@ -21,7 +21,6 @@ export type ClaimOptions = {
 const noFormFieldOptions = { isDirty: undefined, onReset: noop }
 
 export const useClaimMutation = ({ network: _network, network: { chainId }, marketId, userAddress }: ClaimOptions) => {
-  const config = useConfig()
   const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<ClaimMutation>({
     network: _network,
     marketId,
@@ -29,19 +28,20 @@ export const useClaimMutation = ({ network: _network, network: { chainId }, mark
     mutationFn: async (_, { market }) => {
       const lendMarket = requireVault(market)
 
-      const [crvHash] =
-        // wait for CRV to be claimed, before claiming rewards
-        (await waitForTransaction({
-          isSatisfied: async () => !Number(await fetchClaimableCrv({ marketId, userAddress }, { staleTime: 0 })),
-          onExecute: async () => (await lendMarket.vault.claimCrv()) as Hex,
-          config,
-        })) ?? []
+      // Fetch rewards on submit to avoid stale data
+      const [claimableCrv, claimableRewards] = await Promise.all([
+        fetchClaimableCrv({ marketId, userAddress }, { staleTime: 0 }),
+        fetchClaimableRewards({ marketId, userAddress }, { staleTime: 0 }),
+      ])
+      const shouldClaimCrv = Number(claimableCrv) > 0
+      const shouldClaimRewards = hasClaimableRewards(claimableRewards)
 
-      // Fetch rewards on submit to avoid stale data and keep behavior aligned with CRV claiming.
-      const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
-      if (claimableRewards.length === 0) return { hash: crvHash! }
+      const crvHash = shouldClaimCrv ? ((await lendMarket.vault.claimCrv()) as Hex) : undefined
+      if (!shouldClaimRewards) return { hash: assert(crvHash, 'No claimable rewards found') }
+
       const rewardsHash = (await lendMarket.vault.claimRewards()) as Hex
-      return { hash: crvHash ?? rewardsHash }
+      // TODO: allow multiple tx hashes in `TransactionResult`
+      return { hash: rewardsHash }
     },
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,

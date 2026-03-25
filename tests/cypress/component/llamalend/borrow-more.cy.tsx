@@ -3,6 +3,7 @@ import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/Borr
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { oneDecimal } from '@cy/support/generators'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -11,24 +12,49 @@ import {
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
+
 const testCases = [
-  { approved: true, title: 'fills and submits (already approved)' },
-  { approved: false, title: 'fills, approves, and submits' },
+  {
+    approved: true,
+    title: 'fills and submits (already approved)',
+    withCollateral: false,
+    buttonText: 'Borrow More',
+  },
+  {
+    approved: false,
+    title: 'fills, approves, and submits',
+    withCollateral: false,
+    buttonText: 'Approve & Borrow More',
+  },
+  {
+    approved: true,
+    title: 'fills with collateral and submits',
+    withCollateral: true,
+    buttonText: 'Add & Borrow More',
+  },
+  {
+    approved: false,
+    title: 'fills with collateral, approves and submits',
+    withCollateral: true,
+    buttonText: 'Add, Approve & Borrow More',
+  },
 ]
 
 describe('BorrowMoreForm (mocked)', () => {
-  afterEach(() => {
-    resetLlamaTestContext()
-  })
+  beforeEach(() => mockMintSnapshots({ limit: 1 }))
 
-  testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
+  afterEach(() => resetLlamaTestContext())
+
+  testCases.forEach(({ approved, title, withCollateral, buttonText }) => {
     it(title, () => {
+      const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
       const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
-        createBorrowMoreScenario({ chainId, approved })
+        createBorrowMoreScenario({ chainId, approved, collateral: userCollateral })
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
@@ -36,16 +62,23 @@ describe('BorrowMoreForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <BorrowMoreForm market={market} networks={networks} chainId={chainId} onPricesUpdated={onPricesUpdated} />
+          <BorrowMoreForm
+            market={market}
+            networks={networks}
+            chainId={chainId}
+            onPricesUpdated={onPricesUpdated}
+            enabled
+          />
         </MockLoanTestWrapper>,
       )
 
-      writeBorrowMoreForm({ debt: borrow })
+      writeBorrowMoreForm({ debt: borrow, userCollateral })
       checkBorrowMoreDetailsLoaded({
         expectedCurrentDebt,
         expectedFutureDebt,
         leverageEnabled: false,
       })
+      cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
       cy.then(() => {
         expect(stubs.parameters).to.have.been.calledWithExactly()

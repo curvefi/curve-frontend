@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import {
-  WithdrawForm,
+  type WithdrawForm,
   WithdrawMutation,
   withdrawValidationSuite,
   requireVault,
@@ -31,9 +31,13 @@ export const useWithdrawMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'withdraw'] as const,
-    mutationFn: async (variables, { market }) => {
+    mutationFn: async ({ userVaultShares, withdrawAmount, isFull }, { market }) => {
       const lendMarket = requireVault(market)
-      return { hash: (await lendMarket.vault.withdraw(variables.withdrawAmount)) as Hex }
+      return {
+        hash: isFull
+          ? ((await lendMarket.vault.redeem(userVaultShares)) as Hex)
+          : ((await lendMarket.vault.withdraw(withdrawAmount)) as Hex),
+      }
     },
     validationSuite: withdrawValidationSuite,
     pendingMessage: (mutation, { market }) =>
@@ -43,7 +47,15 @@ export const useWithdrawMutation = ({
     ...props,
   })
 
-  const onSubmit = useCallback(async (form: WithdrawForm) => mutate(form as WithdrawMutation), [mutate])
+  const onSubmit = useCallback(
+    async ({ withdrawAmount = '0', userVaultShares = '0', ...form }: WithdrawForm) =>
+      mutate({
+        ...form,
+        userVaultShares,
+        withdrawAmount,
+      } as WithdrawMutation),
+    [mutate],
+  )
 
   return { onSubmit, mutate, error, data, isPending, isSuccess }
 }

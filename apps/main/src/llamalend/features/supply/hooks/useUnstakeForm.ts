@@ -4,7 +4,6 @@ import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
-import { useUserBalances } from '@/llamalend/queries/user'
 import {
   unstakeFormValidationSuite,
   UnstakeParams,
@@ -13,11 +12,12 @@ import {
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   unstakeAmount: undefined,
@@ -35,6 +35,7 @@ const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Addr
 export const useUnstakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
+  enabled,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
@@ -47,8 +48,8 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const vaultToken = getVaultToken(market)
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
-  const maxUserUnstake = mapQuery(userBalances, (d) => d.gauge)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
+  const maxUserUnstake = mapQuery(userBalances, (d) => d.stakedShares)
 
   const form = useForm<UnstakeForm>({
     ...formDefaultOptions,
@@ -58,7 +59,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): UnstakeParams<ChainId> => ({
         chainId,
@@ -97,7 +98,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     isUnstaked,

@@ -3,16 +3,23 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import type { QueryProp } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
+import {
+  ACTION_INFO_GROUP_SX,
+  combineActionInfoState,
+  formatAmount,
+  formatLeverage,
+  isQueryValueNotEqual,
+} from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen?: boolean
@@ -20,11 +27,11 @@ export type LoanActionInfoListProps = {
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal>
   isFullRepay?: boolean
-  prices?: QueryProp<readonly Decimal[]>
-  prevPrices?: QueryProp<readonly Decimal[]>
+  prices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal>>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
-  exchangeRate?: QueryProp<string | null>
+  exchangeRate?: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
   prevNetBorrowApr?: QueryProp<Decimal | null>
@@ -92,6 +99,8 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
+  const shouldShowprevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
+  const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
 
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
@@ -118,7 +127,7 @@ export const LoanActionInfoList = ({
               testId="borrow-apr"
             />
           )}
-          {(netBorrowApr || prevNetBorrowApr) && (
+          {(shouldShowNetBorrowApr || shouldShowprevNetBorrowApr) && (
             <ActionInfo
               label={t`Net borrow APR`}
               value={netBorrowApr?.data && formatPercent(netBorrowApr.data)}
@@ -164,9 +173,10 @@ export const LoanActionInfoList = ({
               label={t`Liquidation zone`}
               value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
-              valueRight={debt?.data?.tokenSymbol}
+              valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               {...combineActionInfoState(prices, prevPrices)}
               size="small"
+              alignItems="start"
               testId="borrow-price-range"
             />
           )}

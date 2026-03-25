@@ -2,6 +2,7 @@ import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } f
 import { mkdir, readdir, rmdir, unlink } from 'fs/promises'
 import { dirname, join } from 'path'
 import { join as joinPath } from 'path'
+import { assert } from '@primitives/objects.utils'
 
 const { BRANCH, WORKFLOW, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
@@ -119,10 +120,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
 
   const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
   const workflow = WORKFLOW?.trim() || 'ci.yaml'
-  const runId = findLatestRunId(branch, workflow)
-  if (!runId) {
-    throw new Error(`No workflow runs found for branch '${branch}' using workflow '${workflow}'.`)
-  }
+  const runId = assert(findLatestRunId(branch, workflow), `No ${workflow} runs for branch '${branch}'`)
 
   const safeBranch = branch.replace(/\//g, '-')
   const path = joinPath(DEST_DIR, safeBranch, runId)

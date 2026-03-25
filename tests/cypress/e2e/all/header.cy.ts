@@ -29,14 +29,14 @@ const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
 
 describe('Header', () => {
-  let viewport: readonly [number, number]
+  let width: number, height: number
 
   describe('Desktop', () => {
     let route: AppRoute
 
     beforeEach(() => {
-      viewport = oneDesktopViewport()
-      cy.viewport(...viewport)
+      ;[width, height] = oneDesktopViewport()
+      cy.viewport(width, height)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
       cy.visitWithoutTestConnector(route)
@@ -66,12 +66,12 @@ describe('Header', () => {
         const scrollWidth = win.innerWidth - win.document.documentElement.clientWidth
         const expectedFooterWidth = Math.min(
           expectedFooterMaxWidth,
-          viewport[0] - expectedFooterXMargin.desktop - scrollWidth,
+          width - expectedFooterXMargin.desktop - scrollWidth,
         )
 
         cy.get(`header`)
           .invoke('outerWidth')
-          .should('equal', viewport[0] - scrollWidth)
+          .should('equal', width - scrollWidth)
         cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
       })
     })
@@ -113,8 +113,8 @@ describe('Header', () => {
     let route: AppRoute
 
     beforeEach(() => {
-      viewport = oneMobileOrTabletViewport()
-      cy.viewport(...viewport)
+      ;[width, height] = oneMobileOrTabletViewport()
+      cy.viewport(width, height)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
       cy.visitWithoutTestConnector(route)
@@ -122,16 +122,16 @@ describe('Header', () => {
     })
 
     it(`should have the right size`, () => {
-      const breakpoint = viewport[0] < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
+      const breakpoint = width < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
       const expectedHeaderHeight = expectedMobileNavHeight + (isLendMarketDetailRoute(route) ? expectedSubNavHeight : 0)
       const expectedFooterWidth = Math.max(
         expectedFooterMinWidth,
-        viewport[0] - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
+        width - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
       )
       cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height')
       cy.get(`header`)
         .invoke('outerWidth')
-        .should('equal', viewport[0] - SCROLL_WIDTH, 'Header width')
+        .should('equal', width - SCROLL_WIDTH, 'Header width')
       cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth, 'Footer width')
       cy.get(`[data-testid='menu-toggle']`).click()
       cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height changed')
@@ -199,9 +199,8 @@ describe('Header', () => {
 
   describe('Phishing Warning Banner', () => {
     function visitWithDismissedBanner(dismissedDate?: number) {
-      const [width, height] = oneViewport()
-      viewport = [width, height]
-      cy.viewport(...viewport)
+      ;[width, height] = oneViewport()
+      cy.viewport(width, height)
       const route = oneAppRoute()
       cy.visitWithoutTestConnector(route, {
         onBeforeLoad: (win) => {

@@ -31,14 +31,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
-  fromWallet?: boolean
+  enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
@@ -67,7 +65,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const fromBorrowed = fromWallet && isLeverageEnabled
+  const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
+
   const onLeverageToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
       updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
@@ -92,23 +91,17 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack
-        gap={Spacing.xs}
-        // add an ugly outline so devs know they are seeing something else than users would see
-        sx={{ ...(isDevelopment && { outline: (t) => '1px dotted ' + t.design.Layer.Feedback.Warning }) }}
-      >
-        {fromWallet && (
-          <LoanFormTokenInput
-            label={t`Add from wallet`}
-            token={collateralToken}
-            blockchainId={network.id}
-            name="userCollateral"
-            form={form}
-            max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
-            testId="borrow-more-input-collateral"
-            network={network}
-          />
-        )}
+      <Stack gap={Spacing.xs}>
+        <LoanFormTokenInput
+          label={t`Collateral to add`}
+          token={collateralToken}
+          blockchainId={network.id}
+          name="userCollateral"
+          form={form}
+          max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
+          testId="borrow-more-input-collateral"
+          network={network}
+        />
         {fromBorrowed && (
           <LoanFormTokenInput
             label={t`Add borrowed from wallet`}
@@ -174,7 +167,13 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           dirtyFields: form.formState.dirtyFields,
         })}
       >
-        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow More`)}
+        {isPending
+          ? t`Processing...`
+          : joinButtonText(
+              Number(values.userCollateral) && t`Add`,
+              isApproved?.data === false && t`Approve`,
+              t`Borrow More`,
+            )}
       </Button>
 
       <FormAlerts
@@ -184,8 +183,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         formErrors={formErrors}
         network={network}
         handledErrors={notFalsy(
-          fromWallet && 'userCollateral',
-          fromWallet && max.userCollateral.field,
+          'userCollateral',
+          max.userCollateral.field,
           fromBorrowed && 'userBorrowed',
           fromBorrowed && max.userBorrowed.field,
           'debt',

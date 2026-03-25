@@ -15,7 +15,7 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.Gnosis]: ['https://rpc.gnosischain.com'],
   [ChainId.Kava]: ['https://evm.kava.io'],
   [ChainId.Optimism]: ['https://mainnet.optimism.io'],
-  [ChainId.Polygon]: ['https://polygon-rpc.com'],
+  [ChainId.Polygon]: ['https://polygon.drpc.org'],
   [ChainId.Moonbeam]: ['https://moonbeam.public.blastapi.io'],
   [ChainId.Mantle]: ['https://rpc.mantle.xyz'],
   [ChainId.Sonic]: ['https://rpc.soniclabs.com'],

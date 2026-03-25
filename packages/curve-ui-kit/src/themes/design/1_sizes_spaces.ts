@@ -50,7 +50,7 @@ const MappedFontSize = {
 } as const
 
 const MappedButtonSize = {
-  xxs: Sizing[150], // 14px
+  xxs: Sizing[200], // 16px
   xs: Sizing[300], // 24px
   sm: Sizing[500], // 40px
   md: Sizing[600], // 48px
@@ -122,6 +122,7 @@ const MappedModalHeight = {
   md: '80dvh',
 }
 const MappedColumnWidth = { sm: 125, md: 200, lg: 350 }
+
 export const SizesAndSpaces = {
   Spacing: MappedSpacing,
   Sizing: MappedSizing,
@@ -162,6 +163,8 @@ export const SizesAndSpaces = {
   Height: {
     modal: MappedModalHeight,
     row: Sizing[700],
+    chart: 420, // lightweight charts require height in number format
+    shortChart: 210,
   },
   MinHeight: {
     tableNoResults: { sm: '15vh', lg: '35vh' },
