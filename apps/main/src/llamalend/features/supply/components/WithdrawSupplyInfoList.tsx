@@ -31,7 +31,10 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'withdrawAmount')
 
   const marketRates = useMarketRates(params, isOpen)
-  const marketFutureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
+  const marketFutureRates = useMarketSupplyFutureRates(
+    { chainId, marketId, reserves: withdrawAmount && decimalMinus('0', withdrawAmount) },
+    isOpen,
+  )
 
   const { expectedNetSupplyApy, netSupplyApy } = useNetSupplyApy(
     { params, marketRates: q(marketRates), expectedMarketRates: q(marketFutureRates) },

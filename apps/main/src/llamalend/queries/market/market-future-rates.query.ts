@@ -1,6 +1,5 @@
 import { enforce, group, test } from 'vest'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { validateDepositAmount } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -52,6 +51,10 @@ export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
-    group('supplyFormValidationGroup', () => validateDepositAmount(reserves, { depositRequired: true }))
+    group('supplyFormValidationGroup', () =>
+      test('reserves', `Reserves must be a non-zero number`, () => {
+        enforce(reserves).isNumeric().notEquals(0)
+      }),
+    )
   }),
 })
