@@ -1,4 +1,4 @@
-import type { FieldError, UseFormReturn } from 'react-hook-form'
+import type { UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
@@ -19,8 +19,6 @@ import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoL
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
-
-const toQueryError = (error: FieldError | undefined) => (error?.message ? new Error(error.message) : null)
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   market,
