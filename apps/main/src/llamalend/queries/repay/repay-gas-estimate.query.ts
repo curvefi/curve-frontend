@@ -62,7 +62,9 @@ const {
         return await impl.estimateGas.repay(...args, +slippage)
       case 'deleverage':
         throw new Error('estimateGas.repay is not supported for deleverage repay')
-      case 'unleveraged':
+      case 'unleveragedLend':
+        return await impl.estimateGas.repay(...args)
+      case 'unleveragedMint':
         return await impl.estimateGas.repay(...args)
     }
   },
@@ -116,7 +118,9 @@ const {
         return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
       case 'deleverage':
         throw new Error('estimateGas.repayApprove is not supported for deleverage repay')
-      case 'unleveraged':
+      case 'unleveragedMint':
+        return await impl.estimateGas.repayApprove(userBorrowed)
+      case 'unleveragedLend':
         return await impl.estimateGas.repayApprove(userBorrowed)
     }
   },
