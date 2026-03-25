@@ -24,8 +24,8 @@ export const computeDecimalTotalRate = (rate?: Decimal, rebasingYield?: number |
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 
-export const getSnapshotBorrowRate = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
-export const getSnapshotCollateralRebasingYieldRate = <
+export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
+export const getSnapshotCollateralRebasingYieldApr = <
   TSnapshot extends { collateralToken: { rebasingYieldApr: number | null | undefined } },
 >(
   snapshot: TSnapshot,

@@ -4,8 +4,8 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   LAST_WEEK,
   getBorrowRateMetrics,
-  getSnapshotBorrowRate,
-  getSnapshotCollateralRebasingYieldRate,
+  getSnapshotBorrowApr,
+  getSnapshotCollateralRebasingYieldApr,
 } from '@/llamalend/rates.utils'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -72,8 +72,8 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
             getBorrowRateMetrics({
               borrowRate: rates.borrowApr,
               snapshots: snapshots ?? undefined,
-              getBorrowRate: getSnapshotBorrowRate,
-              getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+              getBorrowRate: getSnapshotBorrowApr,
+              getRebasingYield: getSnapshotCollateralRebasingYieldApr,
               daysBack: DAYS_BACK,
             } as Parameters<typeof getBorrowRateMetrics>[0]),
           [MarketRateType.Supply]: () => null,

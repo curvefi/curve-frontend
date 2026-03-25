@@ -6,8 +6,8 @@ import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
-  getSnapshotBorrowRate,
-  getSnapshotCollateralRebasingYieldRate,
+  getSnapshotBorrowApr,
+  getSnapshotCollateralRebasingYieldApr,
   getSupplyRateMetrics,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
@@ -114,8 +114,8 @@ export const usePageHeader = ({
   const metrics = getBorrowRateMetrics({
     borrowRate: toNumberOrNull(marketRates?.borrowApr),
     snapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+    getBorrowRate: getSnapshotBorrowApr,
+    getRebasingYield: getSnapshotCollateralRebasingYieldApr,
   })
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),
