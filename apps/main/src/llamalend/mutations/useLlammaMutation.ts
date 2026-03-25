@@ -2,7 +2,7 @@ import { useConfig, useConnection } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
-import { assert, notFalsy } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { invalidateTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import {
@@ -57,16 +57,14 @@ export function useLlammaMutation<TVariables extends object>({
       const tokenAddresses = mutationTokenAddresses?.(variables, context) ?? []
       updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
 
-      await Promise.all(
-        notFalsy(
-          invalidateAllUserMarketDetails({ chainId, marketId: market.id, userAddress }),
-          invalidateTokenBalances(config, {
-            chainId,
-            userAddress,
-            tokenAddresses,
-          }),
-        ),
-      )
+      await Promise.all([
+        invalidateAllUserMarketDetails({ chainId, marketId: market.id, userAddress }),
+        invalidateTokenBalances(config, {
+          chainId,
+          userAddress,
+          tokenAddresses,
+        }),
+      ])
 
       await onSuccess?.(data, receipt, variables, context)
     },
