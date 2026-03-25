@@ -40,8 +40,6 @@ export type ActionInfoProps = {
   prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
-  /** Placeholder when no value or previous value is provided */
-  emptyValue?: ReactNode
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Value to be copied (will display a copy button). */
@@ -117,9 +115,9 @@ const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps 
 export const ActionInfo = ({
   label,
   labelColor,
-  prevValue,
+  prevValue: givenPrevValue,
   prevValueColor,
-  value,
+  value: givenValue,
   valueColor,
   valueLeft,
   valueRight,
@@ -136,6 +134,8 @@ export const ActionInfo = ({
 }: ActionInfoProps) => {
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
+  const value = givenValue ?? givenPrevValue
+  const prevValue = value === givenPrevValue ? null : givenPrevValue
   return (
     <Stack
       direction="row"

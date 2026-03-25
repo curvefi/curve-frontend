@@ -145,7 +145,6 @@ export const LoanActionInfoList = ({
             {...(prevHealth && {
               prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: false }) : '∞',
             })}
-            emptyValue="∞"
             {...combineActionInfoState(health, prevHealth)}
             valueColor={getHealthValueColor({
               health: health?.data,
