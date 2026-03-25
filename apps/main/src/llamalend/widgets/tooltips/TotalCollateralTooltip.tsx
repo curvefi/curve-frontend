@@ -1,3 +1,4 @@
+import { UnavailableNotation, formatMetricValue, formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipItem,
   TooltipItems,
@@ -6,7 +7,7 @@ import {
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
-import { formatPercent, formatNumber, formatUsd } from '@ui-kit/utils'
+import { formatUsd } from '@ui-kit/utils'
 
 type TotalCollateralTooltipProps = {
   collateralSymbol: string | null | undefined
@@ -16,22 +17,6 @@ type TotalCollateralTooltipProps = {
   combinedCollateralUsdValue: number | null
   collateralUsdRate: number | null
   borrowedUsdRate: number | null
-}
-
-const UnavailableNotation = '-'
-
-const formatMetricValue = (value: number | null) => {
-  if (value === 0) return '0'
-  if (value) return formatNumber(value, { abbreviate: true })
-  return UnavailableNotation
-}
-
-const formatPercentage = (value: number | null, totalValue: number | null, usdRate: number | null) => {
-  if (value === 0) return '0%'
-  if (value && totalValue && usdRate) {
-    return formatPercent(((value * usdRate) / totalValue) * 100)
-  }
-  return null
 }
 
 export const TotalCollateralTooltip = ({
