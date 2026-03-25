@@ -46,6 +46,8 @@ export const useWithdrawMutation = ({
       t`Withdrawing... ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Withdraw successful! ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
+    mutationTokenAddresses: (_variables, { market }) =>
+      [requireVault(market).borrowed_token.address, requireVault(market).addresses.vault] as Address[],
     onSuccess,
     onReset,
   })
