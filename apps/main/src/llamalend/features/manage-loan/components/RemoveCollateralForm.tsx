@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import type { Range } from '@ui-kit/types/util'
+import { type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -41,6 +41,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     action,
     values,
     maxRemovable,
+    positionCollateral,
     formErrors,
     collateralToken,
     borrowToken,
@@ -72,6 +73,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           form={form}
           testId="remove-collateral-input"
           network={network}
+          positionBalance={{ position: positionCollateral, tooltip: t`Collateral in position` }}
           message={
             <Balance
               prefix={t`Max removable:`}
