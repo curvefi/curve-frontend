@@ -50,8 +50,10 @@ export const {
       case 'V1':
       case 'V2':
         return decimal(await impl.repayFutureLeverage(...args, userAddress)) ?? null
-      case 'unleveraged':
+      case 'unleveragedMint':
         return decimal(await impl.repayFutureLeverage(...args, userAddress)) ?? null
+      case 'unleveragedLend':
+        return decimal(await impl.repayFutureLeverage(userBorrowed, userAddress)) ?? null
       case 'deleverage':
         throw new Error('Future leverage is not available for deleverage repay')
     }
