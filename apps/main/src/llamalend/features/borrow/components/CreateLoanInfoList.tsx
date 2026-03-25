@@ -88,17 +88,9 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prevLoanToValue={constQ('0')}
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
-      collateral={q({
-        data: { value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol },
-        isLoading: !collateralToken,
-        error: toQueryError(form.formState.errors.userCollateral),
-      })}
+      collateral={constQ({ value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol })}
       prevCollateral={constQ('0')}
-      debt={q({
-        data: { value: debt ?? null, tokenSymbol: borrowToken?.symbol },
-        isLoading: !borrowToken,
-        error: toQueryError(form.formState.errors.debt),
-      })}
+      debt={constQ({ value: debt ?? null, tokenSymbol: borrowToken?.symbol })}
       prevDebt={constQ('0')}
       {...(leverageEnabled && {
         routes,

@@ -117,9 +117,9 @@ const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps 
 export const ActionInfo = ({
   label,
   labelColor,
-  prevValue,
+  prevValue: givenPrevValue,
   prevValueColor,
-  value,
+  value: givenValue,
   valueColor,
   valueLeft,
   valueRight,
@@ -136,6 +136,8 @@ export const ActionInfo = ({
 }: ActionInfoProps) => {
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
+  const value = givenValue ?? givenPrevValue
+  const prevValue = value === givenPrevValue ? null : givenPrevValue
   return (
     <Stack
       direction="row"
