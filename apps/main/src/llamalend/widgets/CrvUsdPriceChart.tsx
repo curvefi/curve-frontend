@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { Stack } from '@mui/material'
@@ -50,19 +51,15 @@ export const CrvUsdPriceChart = () => {
   const { data: priceHistory = [], isLoading, error } = useCrvUsdPriceHistory({ days })
 
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
-    const seen = new Set<number>()
-    const sorted = priceHistory
-      .map((item) => ({
-        timestamp: new Date(item.timestamp).getTime(),
-        price: item.price,
-      }))
-      .filter((item) => {
-        if (!Number.isFinite(item.timestamp) || !Number.isFinite(item.price)) return false
-        if (seen.has(item.timestamp)) return false
-        seen.add(item.timestamp)
-        return true
-      })
-      .sort((a, b) => a.timestamp - b.timestamp)
+    const sorted = uniqBy(
+      priceHistory
+        .map((item) => ({
+          timestamp: new Date(item.timestamp).getTime(),
+          price: item.price,
+        }))
+        .filter((item) => Number.isFinite(item.timestamp) && Number.isFinite(item.price)),
+      'timestamp',
+    ).sort((a, b) => a.timestamp - b.timestamp)
 
     return addMovingAverages(
       sorted,

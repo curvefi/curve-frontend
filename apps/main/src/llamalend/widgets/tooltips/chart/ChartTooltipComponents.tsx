@@ -25,7 +25,7 @@ export const ChartTooltipSeriesGroup = ({ children }: { children: ReactNode }) =
     sx={{
       marginTop: Spacing.sm,
       padding: Spacing.sm,
-      gap: 1,
+      gap: Spacing.xs,
       backgroundColor: (theme) => theme.design.Layer[2].Fill,
     }}
   >
