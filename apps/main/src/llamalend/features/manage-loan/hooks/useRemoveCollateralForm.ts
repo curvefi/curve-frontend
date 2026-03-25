@@ -9,6 +9,7 @@ import {
 } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   type CollateralForm,
@@ -18,9 +19,9 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { type Range } from '@ui-kit/types/util'
+import { mapQuery, type Range } from '@ui-kit/types/util'
 import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useRemoveCollateralForm = <
@@ -58,7 +59,7 @@ export const useRemoveCollateralForm = <
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): CollateralParams<ChainId> => ({
         chainId,
@@ -94,10 +95,11 @@ export const useRemoveCollateralForm = <
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,
+    positionCollateral: mapQuery(useUserState(params, enabled), (d) => d.collateral),
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,

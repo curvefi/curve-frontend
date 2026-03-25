@@ -104,20 +104,19 @@ export const EChartsLineChart = <
       animation: false,
       grid: {
         left: 0,
-        top: Math.ceil((parseFloat(FontSize.xs.desktop) * 16) / 2), // prevent max label clipping
+        top: 0,
         right: 0,
         bottom: 0,
-        containLabel: true,
       },
       xAxis: {
         type: 'time',
         axisLine: { show: false },
-        axisTick: { show: false },
+        axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
         splitLine: {
           show: true,
           lineStyle: {
             color: gridLineColor,
-            width: 0.3,
+            width: 0.5,
             type: 'solid',
           },
         },
@@ -128,7 +127,6 @@ export const EChartsLineChart = <
           showMinLabel: true,
           showMaxLabel: false,
           align: 'left',
-          margin: 4,
           formatter: (value: string | number) => {
             if (!xTickFormatterRef.current) return String(value)
             return xTickFormatterRef.current(value as number)
@@ -141,7 +139,7 @@ export const EChartsLineChart = <
         min: yMin,
         max: yMax,
         axisLine: { show: false },
-        axisTick: { show: false },
+        axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
         splitLine: {
           show: true,
           lineStyle: {
@@ -154,7 +152,7 @@ export const EChartsLineChart = <
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
           showMinLabel: false,
-          showMaxLabel: true,
+          showMaxLabel: false,
           formatter: (value: number) => (yTickFormatterRef.current ? yTickFormatterRef.current(value) : `${value}`),
         },
       },

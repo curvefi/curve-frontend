@@ -52,7 +52,9 @@ const approveRepay = async (
       return (await impl.repayApprove(userCollateral, userBorrowed)) as Hex[]
     case 'deleverage':
       return [] // no approve needed, paying from state
-    case 'unleveraged':
+    case 'unleveragedMint':
+      return (await impl.repayApprove(userBorrowed)) as Hex[]
+    case 'unleveragedLend':
       return (await impl.repayApprove(userBorrowed)) as Hex[]
   }
 }
@@ -79,8 +81,10 @@ const repay = async (
       return (await impl.repay(stateCollateral, userCollateral, userBorrowed, +slippage)) as Hex
     case 'deleverage':
       return (await impl.repay(stateCollateral, +slippage)) as Hex
-    case 'unleveraged':
+    case 'unleveragedMint':
       return (await impl.repay(userBorrowed)) as Hex
+    case 'unleveragedLend':
+      return (await impl.repay({ debt: userBorrowed })) as Hex
   }
 }
 

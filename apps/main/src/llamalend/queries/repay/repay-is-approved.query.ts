@@ -52,7 +52,9 @@ export const {
         return await impl.repayIsApproved(userCollateral, userBorrowed)
       case 'deleverage':
         return true // deleverage query doesn't need approval because it only uses the user stateCollateral
-      case 'unleveraged':
+      case 'unleveragedMint':
+        return await impl.repayIsApproved(userBorrowed)
+      case 'unleveragedLend':
         return await impl.repayIsApproved(userBorrowed)
     }
   },
