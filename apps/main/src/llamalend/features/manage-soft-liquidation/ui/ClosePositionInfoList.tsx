@@ -29,14 +29,6 @@ export function ClosePositionInfoList({
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
   const marketId = market?.id
   const params = { chainId, marketId, userAddress, slippage }
-
-  // ignore prices health and ltv for closing loan, for now.
-  const { prevPrices, prevHealth, prevLoanToValue, ...prevState } = usePrevLoanState({
-    params,
-    collateralToken,
-    borrowToken,
-  })
-
   return (
     <LoanActionInfoList
       isOpen
@@ -46,7 +38,11 @@ export function ClosePositionInfoList({
       debt={constQ({ value: '0', tokenSymbol: borrowToken?.symbol })}
       collateral={constQ({ value: '0', tokenSymbol: collateralToken?.symbol })}
       isApproved={q(useCloseLoanIsApproved(params))}
-      {...prevState}
+      {...usePrevLoanState({
+        params,
+        collateralToken,
+        borrowToken,
+      })}
     />
   )
 }
