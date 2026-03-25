@@ -4,7 +4,6 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { useMarketFutureRates } from '@/llamalend/queries/market'
-import { useUserPrices } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -70,7 +69,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       health={q(useCreateLoanHealth(params, isOpen))}
       prevHealth={constQ(null)}
       prices={q(useCreateLoanPrices(params, isOpen))}
-      prevPrices={q(useUserPrices(params))}
       rates={marketFutureRates}
       prevRates={marketRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
