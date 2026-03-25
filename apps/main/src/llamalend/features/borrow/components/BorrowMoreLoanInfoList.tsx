@@ -128,7 +128,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             },
             prevCollateral,
           })}
-      {...useBorrowRates({ params, market, futureDebt }, isOpen)}
+      {...useBorrowRates({ params, market, debt: futureDebt }, isOpen)}
       {...prevLoanState}
     />
   )

@@ -1,44 +1,46 @@
-import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UserMarketParams } from '@ui-kit/lib/model'
-import { q } from '@ui-kit/types/util'
+import { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
+import { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import type { MarketParams } from '@ui-kit/lib/model'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { q, Query } from '@ui-kit/types/util'
+import { BlockchainIds, decimal, decimalMinus } from '@ui-kit/utils'
 
 /**
- * Shared hook for the borrow rate fields passed to LoanActionInfoList.
- * Encapsulates the identical logic across RemoveCollateral, AddCollateral, Repay, and BorrowMore.
- *
- * When `futureDebt` is provided (debt-changing operations like Repay and BorrowMore), also queries future rates.
- * When absent (collateral-only operations like Add/Remove), `rates` and `netBorrowApr` equal their "prev" counterparts.
+ * Combines the given markets rates and snapshotsQuery to calculate net borrow APR.
  */
+const toNetBorrowApr = (
+  rates: Query<{ borrowApr?: Decimal }>,
+  snapshotsQuery: Query<CrvUsdSnapshot[] | LendingSnapshot[]>,
+) =>
+  q({
+    data:
+      rates.data?.borrowApr &&
+      decimalMinus(rates.data.borrowApr, decimal(snapshotsQuery.data?.at(-1)?.collateralToken?.rebasingYieldApr)),
+    ...combineQueryState(rates, snapshotsQuery),
+  })
+
+/** Returns previous/current borrow rates and net borrow APR for LoanActionInfoList. */
 export function useBorrowRates<ChainId extends IChainId>(
   {
-    params,
-    futureDebt,
+    params: { chainId, marketId },
+    debt,
     market,
   }: {
-    params: UserMarketParams<ChainId>
+    params: MarketParams<ChainId>
     market: LlamaMarketTemplate | undefined
-    futureDebt?: Decimal
+    debt?: Decimal
   },
-  enabled: boolean,
+  enabled = true,
 ) {
-  const marketRates = q(useMarketRates(params, enabled))
-  const futureRates = q(
-    useMarketFutureRates(
-      { chainId: params.chainId, marketId: params.marketId, debt: futureDebt },
-      enabled && !!futureDebt,
-    ),
-  )
-  const marketFutureRates = futureDebt && futureRates
-  const { netBorrowApr, futureBorrowApr } = useNetBorrowApr({ market, params, marketRates, marketFutureRates }, enabled)
-
-  return {
-    prevRates: marketRates,
-    rates: marketFutureRates ?? marketRates,
-    prevNetBorrowApr: netBorrowApr && q(netBorrowApr),
-    netBorrowApr: (futureBorrowApr ?? netBorrowApr) && q((futureBorrowApr ?? netBorrowApr)!),
-  }
+  const prevRates = q(useMarketRates({ chainId, marketId }, enabled))
+  const rates = q(useMarketFutureRates({ chainId, marketId, debt }, enabled)) // query is disabled if debt is not passed
+  const snapshotsQuery = useLlamaSnapshot(market, chainId && BlockchainIds[chainId], enabled)
+  const prevNetBorrowApr = toNetBorrowApr(prevRates, snapshotsQuery)
+  const netBorrowApr = toNetBorrowApr(rates, snapshotsQuery)
+  return { prevRates, rates, prevNetBorrowApr, netBorrowApr }
 }

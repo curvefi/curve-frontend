@@ -2,8 +2,6 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
-import { useMarketRates } from '@/llamalend/queries/market'
-import { useMarketFutureRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -16,8 +14,8 @@ import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-lo
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
 import { calculateLeverageCollateral } from '../../../widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
+import { useBorrowRates } from '../../../widgets/action-card/useBorrowRates'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
@@ -49,17 +47,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
     calculateLeverageCollateral(data.totalCollateral, data.leverage),
   )
   const priceImpact = useCreateLoanPriceImpact(params, isOpen)
-
-  const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
-    {
-      market,
-      params,
-      marketRates: q(useMarketRates(params, isOpen)),
-      marketFutureRates: q(useMarketFutureRates(params, isOpen)),
-    },
-    isOpen,
-  )
-
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -67,10 +54,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       health={q(useCreateLoanHealth(params, isOpen))}
       prevHealth={constQ(null)}
       prices={q(useCreateLoanPrices(params, isOpen))}
-      rates={marketFutureRates}
-      prevRates={marketRates}
-      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
-      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
       loanToValue={q(
@@ -104,6 +87,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,
       })}
+      {...useBorrowRates({ params, market, debt }, isOpen)}
     />
   )
 }

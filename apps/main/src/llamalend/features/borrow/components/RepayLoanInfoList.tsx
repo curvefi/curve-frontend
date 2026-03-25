@@ -164,7 +164,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         onSlippageChange,
         priceImpact: q(priceImpact),
       })}
-      {...useBorrowRates({ params, market, futureDebt: decimalMinus(debt.data?.value, prevDebt.data) }, isOpen)}
+      {...useBorrowRates({ params, market, debt: decimalMinus(debt.data?.value, prevDebt.data) }, isOpen)}
       {...prevLoanState}
     />
   )
