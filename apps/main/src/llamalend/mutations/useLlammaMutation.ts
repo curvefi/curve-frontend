@@ -1,4 +1,4 @@
-import { useConnection } from 'wagmi'
+import { useConfig, useConnection } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
@@ -10,7 +10,6 @@ import {
   useTransactionMutation,
   type TransactionMutationOptions,
 } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import type { Config } from '@wagmi/core'
 import { getLlamaMarket, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
 
@@ -30,7 +29,7 @@ export function useLlammaMutation<TVariables extends object>({
   network: { chainId, id: networkId },
   marketId,
   onSuccess,
-  tokenBalancesToInvalidate,
+  mutationTokenAddresses,
   ...options
 }: TransactionMutationOptions<TVariables, LlammaContext> & {
   /** The llamma market id */
@@ -38,13 +37,11 @@ export function useLlammaMutation<TVariables extends object>({
   /** The current network config */
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   /** Token balances affected by the mutation that should be refetched after success */
-  tokenBalancesToInvalidate?: (
-    variables: TVariables,
-    context: LlammaContext,
-  ) => { tokenAddresses: Address[] | undefined; config: Config }
+  mutationTokenAddresses?: (variables: TVariables, context: LlammaContext) => Address[] | undefined
 }) {
   const { llamaApi } = useCurve()
   const { address: userAddress } = useConnection()
+  const config = useConfig()
 
   return useTransactionMutation<TVariables, LlammaContext>({
     ...options,
@@ -57,19 +54,17 @@ export function useLlammaMutation<TVariables extends object>({
     }),
     onSuccess: async (data, receipt, variables, context) => {
       const { market, wallet, userAddress } = context
-      const { config, tokenAddresses } = tokenBalancesToInvalidate?.(variables, context) ?? {}
+      const tokenAddresses = mutationTokenAddresses?.(variables, context) ?? []
       updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
 
       await Promise.all(
         notFalsy(
           invalidateAllUserMarketDetails({ chainId, marketId: market.id, userAddress }),
-          config &&
-            tokenAddresses &&
-            invalidateTokenBalances(config, {
-              chainId,
-              userAddress,
-              tokenAddresses,
-            }),
+          invalidateTokenBalances(config, {
+            chainId,
+            userAddress,
+            tokenAddresses,
+          }),
         ),
       )
 

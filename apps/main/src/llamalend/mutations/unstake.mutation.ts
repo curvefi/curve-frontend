@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import {
   UnstakeForm,
@@ -30,8 +29,6 @@ export const useUnstakeMutation = ({
   onReset,
   userAddress,
 }: UnstakeOptions) => {
-  const config = useConfig()
-
   const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<UnstakeMutation>({
     network,
     marketId,
@@ -45,13 +42,7 @@ export const useUnstakeMutation = ({
       t`Unstaking... ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Unstake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
-    tokenBalancesToInvalidate: (_variables, { market }) => {
-      const lendMarket = requireVault(market)
-      return {
-        tokenAddresses: [lendMarket.addresses.vault] as Address[],
-        config,
-      }
-    },
+    mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     onSuccess,
     onReset,
   })
