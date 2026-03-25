@@ -108,7 +108,7 @@ export const LoanActionInfoList = ({
       value={debt?.data?.value && formatNumber(debt.data.value, { abbreviate: false })}
       prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
       {...combineActionInfoState(debt, prevDebt)}
-      valueRight={debt?.data?.tokenSymbol}
+      valueRight={borrowSymbol}
       size="small"
       testId="borrow-debt"
     />
@@ -190,7 +190,7 @@ export const LoanActionInfoList = ({
               }
               prevValue={prevCollateral?.data && formatNumber(prevCollateral.data, { abbreviate: false })}
               {...combineActionInfoState(collateral, prevCollateral)}
-              valueRight={collateral?.data?.tokenSymbol ?? collateralSymbol}
+              valueRight={collateralSymbol}
               size="small"
               testId="borrow-collateral"
             />

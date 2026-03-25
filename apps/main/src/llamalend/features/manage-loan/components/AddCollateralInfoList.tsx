@@ -90,11 +90,9 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         ),
       )}
       prevDebt={prevDebt}
-      debt={mapQuery(prevDebt, (value) => (value != null ? { value, tokenSymbol: borrowToken?.symbol } : null))}
       prevRates={marketRates}
       rates={marketRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
-      netBorrowApr={netBorrowApr && q(netBorrowApr)}
       prevCollateral={prevCollateral}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
