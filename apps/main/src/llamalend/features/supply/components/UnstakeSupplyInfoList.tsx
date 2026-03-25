@@ -1,4 +1,5 @@
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetSupplyApy } from '@/llamalend/features/supply/hooks/useNetSupplyApy'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
@@ -30,6 +31,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'unstakeAmount')
 
   const marketRates = useMarketRates(params, isOpen)
+  const { netSupplyApy } = useNetSupplyApy({ params, marketRates: q(marketRates) }, isOpen)
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const amountUnstakedAssets = useSharesToAssetsAmount({ ...params, shares: unstakeAmount }, isOpen)
@@ -54,6 +56,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
           decimalMinus(d.stakedSharesAmount, amountUnstakedAssets.data),
       )}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
+      netSupplyApy={netSupplyApy && q(netSupplyApy)}
       gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
     />
   )

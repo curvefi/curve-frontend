@@ -1,4 +1,5 @@
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetSupplyApy } from '@/llamalend/features/supply/hooks/useNetSupplyApy'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
@@ -33,7 +34,12 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
-  const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
+  const marketFutureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
+
+  const { netSupplyApy, expectedNetSupplyApy } = useNetSupplyApy(
+    { params, marketRates: q(marketRates), expectedMarketRates: q(marketFutureRates) },
+    isOpen,
+  )
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const additionalVaultShares = useDepositExpectedVaultShares(params, isOpen)
@@ -57,7 +63,9 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
         (d) => depositAmount && d.totalSharesAmount && decimalSum(d.totalSharesAmount, depositAmount),
       )}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(marketFutureRates, (d) => d.lendApy)}
+      prevNetSupplyApy={netSupplyApy && q(netSupplyApy)}
+      netSupplyApy={expectedNetSupplyApy && q(expectedNetSupplyApy)}
       gas={q(useDepositEstimateGas(networks, params, isOpen))}
     />
   )

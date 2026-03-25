@@ -1,4 +1,5 @@
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetSupplyApy } from '@/llamalend/features/supply/hooks/useNetSupplyApy'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useWithdrawRemovableVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
@@ -30,7 +31,12 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'withdrawAmount')
 
   const marketRates = useMarketRates(params, isOpen)
-  const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
+  const marketFutureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
+
+  const { expectedNetSupplyApy, netSupplyApy } = useNetSupplyApy(
+    { params, marketRates: q(marketRates), expectedMarketRates: q(marketFutureRates) },
+    isOpen,
+  )
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const removableVaultShares = useWithdrawRemovableVaultShares(params, isOpen)
@@ -57,7 +63,9 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
         (d) => d.totalSharesAmount && withdrawAmount && decimalMinus(d.totalSharesAmount, withdrawAmount),
       )}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(marketFutureRates, (d) => d.lendApy)}
+      prevNetSupplyApy={netSupplyApy && q(netSupplyApy)}
+      netSupplyApy={expectedNetSupplyApy && q(expectedNetSupplyApy)}
       gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
     />
   )

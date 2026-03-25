@@ -27,6 +27,7 @@ export type SupplyActionInfoListProps = {
   prevSupplyApy?: QueryProp<Decimal | null>
   /** Net supply APY (accounting for rewards, etc.) */
   netSupplyApy?: QueryProp<Decimal | null>
+  prevNetSupplyApy?: QueryProp<Decimal | null>
   /** Estimated gas cost for the transaction */
   gas: QueryProp<TxGasInfo | null>
 }
@@ -48,6 +49,7 @@ export const SupplyActionInfoList = ({
   supplyApy,
   prevSupplyApy,
   netSupplyApy,
+  prevNetSupplyApy,
   gas,
 }: SupplyActionInfoListProps) => (
   <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
@@ -55,7 +57,7 @@ export const SupplyActionInfoList = ({
       <Stack>
         {(supplyApy || prevSupplyApy) && (
           <ActionInfo
-            label="Supply APY"
+            label={t`Supply APY`}
             value={supplyApy?.data && formatPercent(supplyApy.data)}
             prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
             {...combineActionInfoState(supplyApy, prevSupplyApy)}
@@ -63,11 +65,12 @@ export const SupplyActionInfoList = ({
             testId="supply-apy"
           />
         )}
-        {netSupplyApy && (
+        {(netSupplyApy || prevNetSupplyApy) && (
           <ActionInfo
-            label={t`Net Supply APY`}
-            value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
-            {...combineActionInfoState(netSupplyApy)}
+            label={t`Net supply APY`}
+            value={netSupplyApy?.data && formatPercent(netSupplyApy.data)}
+            prevValue={prevNetSupplyApy?.data && formatPercent(prevNetSupplyApy.data)}
+            {...combineActionInfoState(netSupplyApy, prevNetSupplyApy)}
             size="small"
             testId="supply-net-apy"
           />
