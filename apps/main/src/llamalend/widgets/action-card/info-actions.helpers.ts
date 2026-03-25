@@ -3,7 +3,7 @@ import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { QueryProp } from '@ui-kit/types/util'
+import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -43,3 +43,9 @@ export const isQueryValueNotEqual = (
     value?.error ||
     // Otherwise, show it only when both values exist and they are numerically different
     (comparedValue != null && value?.data != null && !new BigNumber(value.data).isEqualTo(comparedValue)))
+
+/**
+ * Maps a prevDebt query to the `debt` prop shape for operations where debt does not change (i.e. add/remove collateral)
+ */
+export const debtFromPrevDebt = (prevDebt: QueryProp<Decimal | null>, tokenSymbol: string | undefined) =>
+  mapQuery(prevDebt, (value) => value && { value, tokenSymbol })

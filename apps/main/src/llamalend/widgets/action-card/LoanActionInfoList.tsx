@@ -22,7 +22,7 @@ import {
 } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
-  isOpen?: boolean
+  isOpen: boolean
   isApproved?: QueryProp<boolean>
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal>
