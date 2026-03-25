@@ -68,7 +68,6 @@ export const ImproveHealthForm = ({
     onPricesUpdated: noop, // liquidation prices do not change when in liquidation protection
   })
 
-  const userPrices = q(useUserPrices(params)) // when in soft liquidation, repay doesn't change liquidation prices
   return (
     <Form
       {...form}
@@ -85,8 +84,7 @@ export const ImproveHealthForm = ({
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
           routes={routes}
-          prices={userPrices}
-          prevPrices={userPrices}
+          prevPrices={q(useUserPrices(params))} // when in soft liquidation, repay doesn't change liquidation prices
         />
       }
     >
