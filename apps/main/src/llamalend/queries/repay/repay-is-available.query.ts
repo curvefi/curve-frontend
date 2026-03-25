@@ -48,7 +48,8 @@ export const {
         return await impl.repayIsAvailable(...args, userAddress)
       case 'deleverage':
         return await impl.isAvailable(...args, userAddress)
-      case 'unleveraged':
+      case 'unleveragedMint':
+      case 'unleveragedLend':
         // For unleveraged markets, repayment is available when user has debt
         return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
