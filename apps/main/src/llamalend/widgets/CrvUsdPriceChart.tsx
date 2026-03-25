@@ -134,7 +134,7 @@ export const CrvUsdPriceChart = () => {
             yTickFormatter={(value) =>
               formatNumber(+value, { unit: 'dollar', abbreviate: false, decimals: 4, minimumFractionDigits: 4 })
             }
-            yPaddingRatio={0.05}
+            yPaddingRatio={0.25}
             renderTooltip={CrvUsdPriceTooltip}
           />
         </ChartStateWrapper>
