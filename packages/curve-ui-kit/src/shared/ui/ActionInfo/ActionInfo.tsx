@@ -40,8 +40,6 @@ export type ActionInfoProps = {
   prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
-  /** Placeholder when no value or previous value is provided */
-  emptyValue?: ReactNode
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Value to be copied (will display a copy button). */
