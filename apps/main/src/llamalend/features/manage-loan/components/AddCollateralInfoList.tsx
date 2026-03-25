@@ -1,12 +1,14 @@
 import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices } from '@/llamalend/queries/user'
 import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -27,6 +29,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   networks,
   leverageEnabled,
   form,
+  market,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
@@ -35,9 +38,13 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   leverageEnabled: boolean
   form: UseFormReturn<CollateralForm>
+  market: LlamaMarketTemplate | undefined
 }) {
   const isOpen = isFormTouched(form, 'userCollateral')
   const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
+
+  const marketRates = q(useMarketRates(params, isOpen))
+  const { netBorrowApr } = useNetBorrowApr({ market, params, marketRates }, isOpen)
 
   const expectedCollateral = mapQuery(
     prevCollateral,
@@ -83,6 +90,9 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         ),
       )}
       prevDebt={prevDebt}
+      prevRates={marketRates}
+      rates={marketRates}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       prevCollateral={prevCollateral}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}

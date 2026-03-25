@@ -189,7 +189,7 @@ export type UserLoanDetails = {
     loss?: UserLoss
     prices: string[]
     range: number | null
-    state: { collateral: string; borrowed: string; debt: string; N: string }
+    state: { collateral: string; borrowed: string; debt: string; N: string; isSoftLiquidation: boolean }
     status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
   } | null

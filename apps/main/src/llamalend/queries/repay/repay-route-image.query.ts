@@ -34,7 +34,8 @@ export const {
       case 'zapV2':
         return null // todo: get image from api
       case 'deleverage':
-      case 'unleveraged':
+      case 'unleveragedLend':
+      case 'unleveragedMint':
         throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')
     }
   },
