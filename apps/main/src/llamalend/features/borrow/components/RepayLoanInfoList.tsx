@@ -22,7 +22,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { mapQuery, q, type Query, type QueryProp, Range } from '@ui-kit/types/util'
+import { mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
@@ -80,7 +80,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form,
   prices,
   prevPrices,
-  showFuturePrices = true,
 }: {
   market: LlamaMarketTemplate | undefined
   params: RepayParams<ChainId>
@@ -94,7 +93,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayForm>
   prices?: QueryProp<Range<Decimal>>
   prevPrices?: QueryProp<Range<Decimal>>
-  showFuturePrices?: boolean
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
@@ -121,7 +119,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
-      prices={showFuturePrices ? prices : undefined}
+      prices={prices}
       isFullRepay={isFull}
       debt={q(debt)}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
