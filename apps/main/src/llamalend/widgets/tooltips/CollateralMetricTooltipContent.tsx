@@ -29,9 +29,10 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
     collateralValue?.borrow?.usdRate,
   )
 
-  const totalValueFormatted = collateralValue?.totalValue
-    ? formatUsd(collateralValue.totalValue, { abbreviate: false })
-    : UnavailableNotation
+  const totalValueFormatted =
+    collateralValue?.totalValue != null
+      ? formatUsd(collateralValue.totalValue, { abbreviate: false })
+      : UnavailableNotation
 
   return (
     <TooltipWrapper>
@@ -42,11 +43,11 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}
+            {`${collateralValueFormatted} ${collateralValue?.collateral?.symbol}`}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}
+            {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol}`}
             {crvUSDPercentage && ` (${crvUSDPercentage})`}
           </TooltipItem>
         </TooltipItems>

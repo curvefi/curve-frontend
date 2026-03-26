@@ -1,6 +1,7 @@
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
+import type { TotalCollateralData } from '@/llamalend/widgets/tooltips'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -46,7 +47,7 @@ export const useAdvancedDetailsData = ({
       collateralUsdRate: collateralUsdRate ?? null,
       borrowedUsdRate: borrowedUsdRate ?? null,
       loading: !market || totalCollateralLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
-    },
+    } satisfies TotalCollateralData & { loading: boolean },
     maxLeverage: {
       value: maxLeverageData,
       loading: !market || maxLeverageLoading,

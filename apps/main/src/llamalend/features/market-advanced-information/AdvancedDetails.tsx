@@ -95,15 +95,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         valueTooltip={{
           title: t`Total Collateral`,
           body: (
-            <TotalCollateralTooltip
-              collateralSymbol={collateral?.collateralSymbol}
-              totalCollateral={collateral?.totalCollateral ?? null}
-              borrowedSymbol={collateral?.borrowedSymbol}
-              totalBorrowed={collateral?.totalBorrowed ?? null}
-              combinedCollateralUsdValue={collateral?.combinedCollateralUsdValue ?? null}
-              collateralUsdRate={collateral?.collateralUsdRate ?? null}
-              borrowedUsdRate={collateral?.borrowedUsdRate ?? null}
-            />
+            <TotalCollateralTooltip {...collateral} />
           ),
           ...TooltipOptions,
         }}
