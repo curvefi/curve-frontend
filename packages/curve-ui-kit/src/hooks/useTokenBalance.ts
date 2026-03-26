@@ -68,6 +68,26 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         })
         .then((results) => convertBalance(parseERC20Results(results)))
 
+/** Invalidate a specific token balance query  */
+export const invalidateTokenBalance = (config: Config, query: TokenBalanceQuery) => {
+  const { queryKey } = isNative(query)
+    ? getNativeBalanceQueryOptions(config, query)
+    : readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) })
+
+  return queryClient.invalidateQueries({ queryKey, exact: true })
+}
+
+/** Invalidate a set of token balances for the same user and chain. */
+export const invalidateTokenBalances = async (
+  config: Config,
+  { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
+) =>
+  await Promise.all(
+    uniqAddresses(tokenAddresses).map((tokenAddress) =>
+      invalidateTokenBalance(config, { chainId, userAddress, tokenAddress }),
+    ),
+  )
+
 /**
  * Query freshness configuration for singular token balance queries.
  *

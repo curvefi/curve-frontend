@@ -54,7 +54,9 @@ export const {
         return (await impl.repayPrices(...args)) as Range<Decimal>
       case 'deleverage':
         return (await impl.repayPrices(...args)) as Range<Decimal>
-      case 'unleveraged':
+      case 'unleveragedMint':
+        return (await impl.repayPrices(...args)) as Range<Decimal>
+      case 'unleveragedLend':
         return (await impl.repayPrices(...args)) as Range<Decimal>
     }
   },

@@ -220,8 +220,7 @@ export const createLoanBorrowMore = (
 
         if (!state) return
 
-        const isInSoftLiquidationMode = +state.borrowed > 0
-        if (isInSoftLiquidationMode) {
+        if (state.isSoftLiquidation) {
           sliceState.setStateByKey('formStatus', { ...cFormStatus, error: 'error-liquidation-mode' })
         }
       }

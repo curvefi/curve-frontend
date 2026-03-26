@@ -62,7 +62,8 @@ export const {
         return Number(await impl.repayPriceImpact(stateCollateral, userCollateral))
       case 'deleverage':
         return Number(await impl.priceImpact(userCollateral))
-      case 'unleveraged':
+      case 'unleveragedLend':
+      case 'unleveragedMint':
         return 0 // there is no price impact, user repays debt directly
     }
   },

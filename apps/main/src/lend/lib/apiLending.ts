@@ -888,11 +888,11 @@ const loanRepay = {
 
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
-        signerAddress && !isFullRepay ? market.loan.repayHealth(userBorrowed, true) : '',
-        signerAddress && !isFullRepay ? market.loan.repayHealth(userBorrowed, false) : '',
+        signerAddress && !isFullRepay ? market.loan.repayHealth({ debt: userBorrowed, full: true }) : '',
+        signerAddress && !isFullRepay ? market.loan.repayHealth({ debt: userBorrowed, full: false }) : '',
         market.stats.futureRates(0, `-${isFullRepay ? userStateDebt : userBorrowed}`),
-        isFullRepay ? ([0, 0] as [number, number]) : market.loan.repayBands(userBorrowed),
-        isFullRepay ? ['', ''] : market.loan.repayPrices(userBorrowed),
+        isFullRepay ? ([0, 0] as [number, number]) : market.loan.repayBands({ debt: userBorrowed }),
+        isFullRepay ? ['', ''] : market.loan.repayPrices({ debt: userBorrowed }),
       ])
 
       const bands = fulfilledValue(bandsResp) ?? [0, 0]
@@ -1047,7 +1047,7 @@ const loanRepay = {
         : resp.isApproved
           ? isFullRepay
             ? await market.loan.estimateGas.fullRepay()
-            : await market.loan.estimateGas.repay(userBorrowed)
+            : await market.loan.estimateGas.repay({ debt: userBorrowed })
           : isFullRepay
             ? await market.loan.estimateGas.fullRepayApprove()
             : await market.loan.estimateGas.repayApprove(userBorrowed)
@@ -1100,7 +1100,7 @@ const loanRepay = {
         ? await market.leverage.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
         : isFullRepay
           ? await market.loan.fullRepay()
-          : await market.loan.repay(userBorrowed)
+          : await market.loan.repay({ debt: userBorrowed })
     return await submit(activeKey, fn, provider)
   },
 }
