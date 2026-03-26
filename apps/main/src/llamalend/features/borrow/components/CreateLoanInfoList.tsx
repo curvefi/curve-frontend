@@ -56,22 +56,13 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prices={q(useCreateLoanPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
-      loanToValue={q(
-        useLoanToValue(
-          {
-            params,
-            collateralToken,
-            borrowToken,
-          },
-          isOpen,
-        ),
-      )}
+      loanToValue={q(useLoanToValue({ params, collateralToken, borrowToken }, isOpen))}
       prevLoanToValue={constQ('0')}
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
-      collateral={constQ({ value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol })}
+      collateral={constQ(userCollateral)}
       prevCollateral={constQ('0')}
-      debt={constQ({ value: debt ?? null, tokenSymbol: borrowToken?.symbol })}
+      debt={constQ(debt)}
       prevDebt={constQ('0')}
       {...(leverageEnabled && {
         routes,
@@ -87,7 +78,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,
       })}
-      {...useBorrowRates({ params, market, debt }, isOpen)}
+      {...useBorrowRates({ params, market, debtDelta: debt }, isOpen)}
     />
   )
 }

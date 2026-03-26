@@ -10,13 +10,11 @@ import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-c
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { debtFromPrevDebt } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
@@ -48,7 +46,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       gas={q(useAddCollateralEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
-      debt={debtFromPrevDebt(prevDebt, borrowToken?.symbol)}
+      debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -65,12 +63,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       )}
       collateral={mapQuery(
         prevCollateral,
-        (stateCollateral) =>
-          stateCollateral &&
-          userCollateral && {
-            value: decimal(new BigNumber(stateCollateral).plus(userCollateral)) as Decimal,
-            tokenSymbol: collateralToken?.symbol,
-          },
+        (stateCollateral) => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
       )}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}

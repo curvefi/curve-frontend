@@ -10,7 +10,6 @@ import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { debtFromPrevDebt } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
@@ -44,25 +43,12 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
 
-  const expectedCollateral = mapQuery(
-    prevCollateral,
-    (stateCollateral) =>
-      stateCollateral &&
-      userCollateral && {
-        value: decimal(
-          // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
-          BigNumber.max(0, new BigNumber(stateCollateral).minus(new BigNumber(userCollateral))),
-        ) as Decimal,
-        tokenSymbol: collateralToken?.symbol,
-      },
-  )
-
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       gas={q(useRemoveCollateralEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
-      debt={debtFromPrevDebt(prevDebt, borrowToken?.symbol)}
+      debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -77,7 +63,15 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
           isOpen && !!userCollateral,
         ),
       )}
-      collateral={expectedCollateral}
+      collateral={mapQuery(
+        prevCollateral,
+        (stateCollateral) =>
+          userCollateral &&
+          decimal(
+            // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
+            BigNumber.max(0, new BigNumber(stateCollateral).minus(new BigNumber(userCollateral))),
+          ),
+      )}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useRemoveCollateralFutureLeverage(params, isOpen))}

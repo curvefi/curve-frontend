@@ -98,7 +98,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const swapRequired = selectedToken !== borrowToken
+  const leverageEnabled = selectedToken !== borrowToken
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
   const {
@@ -141,7 +141,7 @@ export const RepayForm = <ChainId extends IChainId>({
           networks={networks}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           hasLeverage={market && hasLeverage(market)}
-          swapRequired={swapRequired}
+          leverageEnabled={leverageEnabled}
           routes={routes}
           prices={q(useRepayPrices(params))}
           prevPrices={q(useUserPrices(params))}
@@ -188,7 +188,7 @@ export const RepayForm = <ChainId extends IChainId>({
           )
         }
       />
-      <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
+      <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && leverageEnabled))} />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`

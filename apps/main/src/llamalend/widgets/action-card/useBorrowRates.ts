@@ -7,40 +7,41 @@ import { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { MarketParams } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { q, Query } from '@ui-kit/types/util'
+import { q, Query, type QueryProp } from '@ui-kit/types/util'
 import { BlockchainIds, decimal, decimalMinus } from '@ui-kit/utils'
 
 /**
  * Combines the given markets rates and snapshotsQuery to calculate net borrow APR.
  */
-const toNetBorrowApr = (
-  rates: Query<{ borrowApr?: Decimal }>,
+const addNetApr = <T extends { borrowApr?: Decimal }>(
+  rates: Query<T>,
   snapshotsQuery: Query<CrvUsdSnapshot[] | LendingSnapshot[]>,
-) =>
-  q({
-    data:
-      rates.data?.borrowApr &&
-      decimalMinus(rates.data.borrowApr, decimal(snapshotsQuery.data?.at(-1)?.collateralToken?.rebasingYieldApr)),
+) => {
+  const rebasingYieldApr = decimal(snapshotsQuery.data?.at(-1)?.collateralToken?.rebasingYieldApr)
+  const borrowApr = rates.data?.borrowApr
+  const borrowNetApr = q({
+    data: borrowApr && decimalMinus(borrowApr, rebasingYieldApr),
     ...combineQueryState(rates, snapshotsQuery),
   })
+  return [q(rates), borrowNetApr] satisfies [QueryProp<T>, QueryProp<Decimal | null>]
+}
 
 /** Returns previous/current borrow rates and net borrow APR for LoanActionInfoList. */
 export function useBorrowRates<ChainId extends IChainId>(
   {
     params: { chainId, marketId },
-    debt,
+    debtDelta,
     market,
   }: {
     params: MarketParams<ChainId>
     market: LlamaMarketTemplate | undefined
-    debt?: Decimal
+    debtDelta?: Decimal | null
   },
-  enabled = true,
+  enabled: boolean,
 ) {
-  const prevRates = q(useMarketRates({ chainId, marketId }, enabled))
-  const rates = q(useMarketFutureRates({ chainId, marketId, debt }, enabled)) // query is disabled if debt is not passed
-  const snapshotsQuery = useLlamaSnapshot(market, chainId && BlockchainIds[chainId], enabled)
-  const prevNetBorrowApr = toNetBorrowApr(prevRates, snapshotsQuery)
-  const netBorrowApr = toNetBorrowApr(rates, snapshotsQuery)
+  const snapshots = useLlamaSnapshot(market, chainId && BlockchainIds[chainId], enabled)
+  // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
+  const [rates, netBorrowApr] = addNetApr(useMarketFutureRates({ chainId, marketId, debtDelta }, enabled), snapshots)
+  const [prevRates, prevNetBorrowApr] = addNetApr(useMarketRates({ chainId, marketId }, enabled), snapshots)
   return { prevRates, rates, prevNetBorrowApr, netBorrowApr }
 }

@@ -82,7 +82,7 @@ export const ImproveHealthForm = ({
           networks={networks}
           onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
-          swapRequired={false}
+          leverageEnabled={false}
           routes={routes}
           prevPrices={q(useUserPrices(params))} // when in soft liquidation, repay doesn't change liquidation prices
         />

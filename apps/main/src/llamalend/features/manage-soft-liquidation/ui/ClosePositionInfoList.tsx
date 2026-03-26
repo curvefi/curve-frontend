@@ -27,22 +27,17 @@ export function ClosePositionInfoList({
 }: ClosePositionInfoListProps) {
   const { address: userAddress } = useConnection()
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const marketId = market?.id
-  const params = { chainId, marketId, userAddress, slippage }
+  const params = { chainId, marketId: market?.id, userAddress, slippage }
   return (
     <LoanActionInfoList
       isOpen
       slippage={slippage}
       onSlippageChange={onSlippageChange}
       gas={q(useCloseEstimateGas(networks, params))}
-      debt={constQ({ value: '0', tokenSymbol: borrowToken?.symbol })}
-      collateral={constQ({ value: '0', tokenSymbol: collateralToken?.symbol })}
+      debt={constQ('0')}
+      collateral={constQ('0')}
       isApproved={q(useCloseLoanIsApproved(params))}
-      {...usePrevLoanState({
-        params,
-        collateralToken,
-        borrowToken,
-      })}
+      {...usePrevLoanState({ params, collateralToken, borrowToken })}
     />
   )
 }
