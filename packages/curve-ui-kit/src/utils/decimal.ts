@@ -27,7 +27,8 @@ export const decimalMin = (...data: Decimal[]): Decimal | undefined =>
 /**
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
  */
-export const decimalMax = (...data: Decimal[]): Decimal | undefined => BigNumber.max(...data)!.toFixed() as Decimal
+export const decimalMax = (...data: Decimal[]) =>
+  data.length ? (BigNumber.max(...data)!.toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
   data.filter((d) => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')

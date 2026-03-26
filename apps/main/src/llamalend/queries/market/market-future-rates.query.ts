@@ -37,7 +37,7 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
   validationSuite: createValidationSuite(({ chainId, marketId, debtDelta }: BorrowFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
     group('borrowFormValidationGroup', () => {
-      test('debt', `Debt delta must be a non-zero number`, () => {
+      test('debtDelta', `Debt delta must be a non-zero number`, () => {
         enforce(debtDelta).isNumeric().notEquals(0)
       })
     })

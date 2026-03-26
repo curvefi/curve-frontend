@@ -10,7 +10,7 @@ import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimat
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -21,7 +21,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
+import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
@@ -33,30 +33,27 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
 function useRepayRemainingDebt<ChainId extends IChainId>(
   {
     params,
-    swapRequired,
+    leverageEnabled,
+    prevDebt,
   }: {
     params: RepayParams<ChainId>
-    swapRequired: boolean
+    leverageEnabled: boolean
+    prevDebt: Query<Decimal | null>
   },
   { isFull, userBorrowed }: Pick<RepayForm, 'userBorrowed' | 'isFull'>,
   enabled: boolean,
-): Query<Decimal | null> {
-  const userStateQuery = useUserState(params, enabled)
-  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && swapRequired)
-  return isFull
-    ? { data: '0', isLoading: false, error: null }
-    : swapRequired
+) {
+  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && leverageEnabled)
+  const prev = prevDebt.data
+  const debt: QueryProp<Decimal | null> = isFull
+    ? constQ('0')
+    : leverageEnabled
       ? {
-          data:
-            userStateQuery.data &&
-            expectedBorrowedQuery.data &&
-            remainingDebt(userStateQuery.data.debt, expectedBorrowedQuery.data.totalBorrowed),
-          ...combineQueryState(userStateQuery, expectedBorrowedQuery),
+          data: prev && expectedBorrowedQuery.data && remainingDebt(prev, expectedBorrowedQuery.data.totalBorrowed),
+          ...combineQueryState(prevDebt, expectedBorrowedQuery),
         }
-      : {
-          data: userStateQuery.data && remainingDebt(userStateQuery.data.debt, userBorrowed ?? '0'),
-          ...combineQueryState(userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])),
-        }
+      : mapQuery(prevDebt, () => prev && remainingDebt(prev, userBorrowed ?? '0'))
+  return { debt, debtDelta: debt.data && prev && decimalMinus(debt.data, prev) }
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
@@ -89,7 +86,12 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
-  const debt = useRepayRemainingDebt({ params, swapRequired: leverageEnabled }, { isFull, userBorrowed }, isOpen)
+  const { debt, debtDelta } = useRepayRemainingDebt(
+    { params, leverageEnabled, prevDebt },
+    { isFull, userBorrowed },
+    isOpen,
+  )
+  const leverageValue = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -115,10 +117,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       )}
       {...useLeverageInfoFields({
         leverageEnabled,
-        leverageValue: isFull
-          ? { data: decimal(0), isLoading: false, error: null }
-          : useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        leverageValue: isFull ? constQ('1') : leverageValue,
+        prevLeverageValue: useUserCurrentLeverage(params, isOpen && !!hasLeverage),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, (prev) =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
@@ -131,7 +131,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         priceImpact: useRepayPriceImpact(params, isOpen && leverageEnabled),
         collateralDelta: userCollateral,
       })}
-      {...useBorrowRates({ params, market, debtDelta: debt.data && decimalMinus(debt.data, prevDebt.data) }, isOpen)}
+      {...useBorrowRates({ params, market, debtDelta }, isOpen)}
       {...prevLoanState}
     />
   )
