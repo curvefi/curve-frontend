@@ -91,7 +91,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
     { isFull, userBorrowed },
     isOpen,
   )
-  const leverageValue = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -117,7 +117,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       )}
       {...useLeverageInfoFields({
         leverageEnabled,
-        leverageValue: isFull ? constQ('0') : leverageValue,
+        leverageValue: useRepayFutureLeverage(params, isOpen),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen && !!hasLeverage),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, (prev) =>

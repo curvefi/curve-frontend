@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { isLeveragedPosition } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalSum } from '@ui-kit/utils'
 
 export type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean
@@ -18,8 +18,9 @@ export type LeverageInfoFieldsOptions = {
   routes: MarketRoutes | undefined
   slippage: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
-  collateralDelta: Decimal | undefined
+  collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
+
 export const useLeverageInfoFields = ({
   leverageEnabled,
   routes,
@@ -33,34 +34,33 @@ export const useLeverageInfoFields = ({
   leverageTotalCollateral,
   expected,
 }: LeverageInfoFieldsOptions) =>
-  leverageEnabled
-    ? {
-        leverageEnabled,
-        leverageValue: q(leverageValue),
-        prevLeverageValue: q(prevLeverageValue),
-        prevLeverageCollateral: {
-          data: calculateLeverageCollateral(prevCollateral.data, prevLeverageValue.data),
-          ...combineQueryState(prevCollateral, prevLeverageValue),
-        },
-        leverageCollateral: {
-          data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
-          ...combineQueryState(leverageTotalCollateral, leverageValue),
-        },
-        prevLeverageTotalCollateral: prevCollateral,
-        leverageTotalCollateral,
-        exchangeRate: mapQuery(expected, (data) => data.avgPrice ?? null),
-        routes,
-        slippage,
-        onSlippageChange,
-        priceImpact: q(priceImpact),
-      }
-    : ({
-        prevCollateral,
-        collateral: {
-          data:
-            collateralDelta &&
-            prevCollateral.data &&
-            decimal(new BigNumber(prevCollateral.data).plus(collateralDelta))!,
-          ...combineQueryState(prevCollateral, expected),
-        },
-      } satisfies Partial<LoanActionInfoListProps>)
+  ({
+    // we show the leverage info even when the leverage is disabled for the current action
+    ...(leverageEnabled || isLeveragedPosition(prevLeverageValue.data)
+      ? {
+          leverageEnabled: true,
+          leverageValue: q(leverageValue),
+          prevLeverageValue: q(prevLeverageValue),
+          prevLeverageCollateral: {
+            data: calculateLeverageCollateral(prevCollateral.data, prevLeverageValue.data),
+            ...combineQueryState(prevCollateral, prevLeverageValue),
+          },
+          leverageCollateral: {
+            data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
+            ...combineQueryState(leverageTotalCollateral, leverageValue),
+          },
+          prevLeverageTotalCollateral: prevCollateral,
+          leverageTotalCollateral,
+          ...(leverageEnabled && {
+            exchangeRate: mapQuery(expected, (data) => data.avgPrice ?? null),
+            routes,
+            slippage,
+            onSlippageChange,
+            priceImpact: q(priceImpact),
+          }),
+        }
+      : {
+          prevCollateral,
+          collateral: mapQuery(prevCollateral, (prev) => prev && collateralDelta && decimalSum(prev, collateralDelta)!),
+        }),
+  }) satisfies Partial<LoanActionInfoListProps>
