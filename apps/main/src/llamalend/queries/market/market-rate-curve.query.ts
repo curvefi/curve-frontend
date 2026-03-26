@@ -10,7 +10,8 @@ type QueryParams = FieldsOf<Query>
 export const { useQuery: useRateCurve } = queryFactory({
   queryKey: ({ contractAddress, blockchainId }: QueryParams) =>
     [...rootKeys.contract({ contractAddress, blockchainId }), 'rateCurve', 'v1'] as const,
-  queryFn: ({ blockchainId, contractAddress }: Query): Promise<RateCurve> => getRateCurve(blockchainId, contractAddress),
+  queryFn: ({ blockchainId, contractAddress }: Query): Promise<RateCurve> =>
+    getRateCurve(blockchainId, contractAddress),
   validationSuite: contractValidationSuite,
   category: 'global.snapshots',
 })
