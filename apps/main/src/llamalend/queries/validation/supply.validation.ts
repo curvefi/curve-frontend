@@ -125,8 +125,13 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
 }
 
 const validateSharesToAssets = (shares: Decimal | undefined | null) => {
-  test('shares', 'Shares must be a positive number', () => {
-    enforce(shares).isDecimal().gte(0)
+  test('shares', 'Shares are required', () => {
+    enforce(shares).isNotEmpty()
+  })
+  skipWhen(!shares, () => {
+    test('shares', 'Shares must be a non-negative number', () => {
+      enforce(shares).isDecimal().gte(0)
+    })
   })
 }
 
@@ -191,7 +196,7 @@ const validateUserVaultShares = (
   { sharesRequired = false }: { sharesRequired?: boolean } = {},
 ) => {
   skipWhen(!sharesRequired, () => {
-    test('userVaultShares', 'Vault shares is required', () => {
+    test('userVaultShares', 'Vault shares are required', () => {
       enforce(shares).isNotEmpty()
     })
   })
