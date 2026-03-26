@@ -1,4 +1,5 @@
 import { MarketInfoLayout, AdvancedDetails } from '@/llamalend/features/market-advanced-information'
+import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { BandsComp } from '@/loan/components/BandsComp'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
@@ -45,7 +46,10 @@ export const MarketInformationComposite = ({
         </Stack>
       )}
       {useMarketHistoricalRatesChart() && (
-        <MarketHistoricalRatesChart market={market} blockchainId={BlockchainIds[Chain.Ethereum]} rateMode="borrow" />
+        <>
+          <MarketHistoricalRatesChart market={market} blockchainId={BlockchainIds[Chain.Ethereum]} rateMode="borrow" />
+          <CrvUsdPriceChart />
+        </>
       )}
       {market && (
         <Card>

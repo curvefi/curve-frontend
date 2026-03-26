@@ -1,4 +1,4 @@
-import type { RateChartPoint } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import type { CrvUsdPriceChartPoint } from '@/llamalend/widgets/CrvUsdPriceChart'
 import {
   ChartTooltipSeriesGroup,
   ChartTooltipSeriesRow,
@@ -8,14 +8,14 @@ import { formatDate } from '@ui/utils'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatNumber } from '@ui-kit/utils'
 
-type RateSeriesKey = keyof Omit<RateChartPoint, 'timestamp'>
+type PriceSeriesKey = keyof Omit<CrvUsdPriceChartPoint, 'timestamp'>
 
-type HistoricalRatesTooltipProps = {
-  datum: RateChartPoint
-  visibleSeries: LineSeriesConfig<RateSeriesKey>[]
+type CrvUsdPriceTooltipProps = {
+  datum: CrvUsdPriceChartPoint
+  visibleSeries: LineSeriesConfig<PriceSeriesKey>[]
 }
 
-export const HistoricalRatesTooltip = ({ datum, visibleSeries }: HistoricalRatesTooltipProps) => (
+export const CrvUsdPriceTooltip = ({ datum, visibleSeries }: CrvUsdPriceTooltipProps) => (
   <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
     <ChartTooltipSeriesGroup>
       {visibleSeries.map((activeSeries) => (
@@ -24,7 +24,12 @@ export const HistoricalRatesTooltip = ({ datum, visibleSeries }: HistoricalRates
           label={activeSeries.label}
           lineColor={activeSeries.color}
           dash={activeSeries.dash}
-          value={formatNumber(datum[activeSeries.key], { unit: 'percentage', abbreviate: false })}
+          value={formatNumber(datum[activeSeries.key], {
+            unit: 'dollar',
+            abbreviate: false,
+            decimals: 4,
+            minimumFractionDigits: 4,
+          })}
         />
       ))}
     </ChartTooltipSeriesGroup>
