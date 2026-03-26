@@ -56,29 +56,16 @@ export const MarketRateCurveChart = ({
   } = useRateCurve({ blockchainId, contractAddress: controllerAddress }, Boolean(blockchainId && controllerAddress))
 
   const chartData = useMemo<RateCurveChartPoint[]>(
-    () =>
-      sortBy(
-        (rateCurve?.rates ?? [])
-          .map((row) => ({
-            utilization: Number(row.utilization),
-            borrowApy: Number(row.borrowApy),
-            supplyApy: Number(row.supplyApy),
-          }))
-          .filter(
-            (row) =>
-              Number.isFinite(row.utilization) && Number.isFinite(row.borrowApy) && Number.isFinite(row.supplyApy),
-          ),
-        'utilization',
-      ),
+    () => sortBy(rateCurve?.rates ?? [], 'utilization'),
     [rateCurve?.rates],
   )
 
   const markLines = useMemo(
     () =>
-      Number.isFinite(rateCurve?.currentUtilization)
+      rateCurve?.currentUtilization != null
         ? [
             {
-              value: Number(rateCurve?.currentUtilization),
+              value: rateCurve?.currentUtilization,
               label: formatPercent(rateCurve?.currentUtilization),
               color: Color.Primary[500],
               dash: '2 2',
