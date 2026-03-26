@@ -3,7 +3,7 @@ import type { Address } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from './mock-loan-test-data'
-import { createMockMintMarket } from './mock-market.helpers'
+import { createMockLendMarket, createMockMintMarket } from './mock-market.helpers'
 import { seedErc20BalanceForAddresses } from './query-cache.helpers'
 
 /** Seed token balances for both collateral and borrow (crvUSD) tokens so useReadContracts doesn't make real RPC calls */
@@ -17,6 +17,29 @@ const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
   seedErc20BalanceForAddresses({
     chainId,
     tokenAddress: CRVUSD_ADDRESS as Address,
+    addresses: [TEST_ADDRESS],
+    rawBalance: 10n ** 22n,
+  })
+}
+
+const seedSupplyMarketBalances = ({
+  chainId,
+  borrowedTokenAddress,
+  vaultAddress,
+}: {
+  chainId: number
+  borrowedTokenAddress: Address
+  vaultAddress: Address
+}) => {
+  seedErc20BalanceForAddresses({
+    chainId,
+    tokenAddress: borrowedTokenAddress,
+    addresses: [TEST_ADDRESS],
+    rawBalance: 10n ** 22n,
+  })
+  seedErc20BalanceForAddresses({
+    chainId,
+    tokenAddress: vaultAddress,
     addresses: [TEST_ADDRESS],
     rawBalance: 10n ** 22n,
   })
@@ -59,6 +82,10 @@ const oneAprPair = () => ({
 const debtAfterAdd = (baseDebt: string, delta: string) => decimal(new BigNumber(baseDebt).plus(delta).decimalPlaces(2))!
 const debtAfterSub = (baseDebt: string, delta: string) =>
   decimal(new BigNumber(baseDebt).minus(delta).decimalPlaces(2))!
+
+const sumDecimal = (a: string, b: string) => decimal(new BigNumber(a).plus(b).decimalPlaces(2))!
+const subDecimal = (a: string, b: string) => decimal(new BigNumber(a).minus(b).decimalPlaces(2))!
+const normalizeDecimalString = (value: string) => new BigNumber(value).toFixed()
 
 export const createCreateLoanScenario = ({
   chainId,
@@ -330,5 +357,440 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
       },
     },
     stubs,
+  }
+}
+
+const SUPPLY_MARKET_ID = 'one-way-market-7'
+const SUPPLY_MARKET_ADDRESSES = {
+  controller: '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907' as Address,
+  vault: '0x1111111111111111111111111111111111111111' as Address,
+  gauge: '0x2222222222222222222222222222222222222222' as Address,
+  borrowed: CRVUSD_ADDRESS as Address,
+  collateral: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497' as Address,
+} as const
+
+const createSupplyRates = (lendApy: string) => ({
+  borrowApr: '0.0825',
+  borrowApy: '0.0841',
+  lendApr: lendApy,
+  lendApy,
+})
+
+const createIdentityConvertToAssetsStub = () =>
+  cy.stub().callsFake(async (shares: string) => shares) as TestStub<readonly [string], string>
+
+const createBaseSupplyMarket = ({
+  chainId,
+  walletBalances,
+  vaultOverrides,
+  currentApy,
+  futureApy,
+}: {
+  chainId: number
+  walletBalances: { collateral: string; borrowed: string; vaultShares: string; gauge: string }
+  vaultOverrides: object
+  currentApy: string
+  futureApy: string
+}) => {
+  const statsRates = createStub(createSupplyRates(currentApy))
+  const statsFutureRates = createStub(createSupplyRates(futureApy))
+  const walletBalancesStub = createStub(walletBalances)
+  const convertToAssets = createIdentityConvertToAssetsStub()
+
+  seedSupplyMarketBalances({
+    chainId,
+    borrowedTokenAddress: SUPPLY_MARKET_ADDRESSES.borrowed,
+    vaultAddress: SUPPLY_MARKET_ADDRESSES.vault,
+  })
+
+  const market = createMockLendMarket({
+    id: SUPPLY_MARKET_ID,
+    collateral_token: {
+      symbol: 'sUSDe',
+      address: SUPPLY_MARKET_ADDRESSES.collateral,
+      decimals: 18,
+    },
+    borrowed_token: {
+      symbol: 'crvUSD',
+      address: SUPPLY_MARKET_ADDRESSES.borrowed,
+      decimals: 18,
+    },
+    addresses: SUPPLY_MARKET_ADDRESSES,
+    stats: {
+      rates: statsRates,
+      futureRates: statsFutureRates,
+    },
+    wallet: {
+      balances: walletBalancesStub,
+    },
+    vault: {
+      ...createMockLendMarket({}).vault,
+      convertToAssets,
+      ...vaultOverrides,
+    },
+  })
+
+  return {
+    market,
+    sharedStubs: {
+      statsRates,
+      statsFutureRates,
+      walletBalances: walletBalancesStub,
+      convertToAssets,
+    },
+  }
+}
+
+export const createDepositScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+  const input = { amount: '12.50' as const }
+  const normalizedAmount = normalizeDecimalString(input.amount)
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '100.00',
+    gauge: '25.00',
+  } as const
+  const currentApy = '0.0456'
+  const futureApy = '0.0412'
+  const depositApprove = createStub([TEST_TX_HASH])
+  const depositIsApproved = approved ? createStub(true) : createIsApprovedStub(depositApprove)
+  const previewDeposit = createStub(input.amount)
+  const estimateGasDeposit = createStub(`${150_000}`)
+  const estimateGasDepositApprove = createStub(`${95_000}`)
+  const deposit = createStub(TEST_TX_HASH)
+
+  const { market, sharedStubs } = createBaseSupplyMarket({
+    chainId,
+    walletBalances: balances,
+    currentApy,
+    futureApy,
+    vaultOverrides: {
+      previewDeposit,
+      depositIsApproved,
+      depositApprove,
+      deposit,
+      estimateGas: {
+        ...createMockLendMarket({}).vault.estimateGas,
+        deposit: estimateGasDeposit,
+        depositApprove: estimateGasDepositApprove,
+      },
+    },
+  })
+
+  return {
+    input,
+    market,
+    llamaApi: createMockLlamaApi(chainId, market),
+    expected: {
+      walletBalances: [] as const,
+      marketRates: [false, false] as const,
+      futureRates: [normalizedAmount, '0'] as const,
+      previewDeposit: [normalizedAmount] as const,
+      isApproved: [normalizedAmount] as const,
+      estimateGas: [normalizedAmount] as const,
+      estimateGasApprove: [normalizedAmount] as const,
+      approve: [normalizedAmount] as const,
+      submit: [normalizedAmount] as const,
+      actionInfo: {
+        supplyApy: futureApy,
+        prevSupplyApy: currentApy,
+        vaultShares: sumDecimal(sumDecimal(balances.vaultShares, balances.gauge), input.amount),
+        prevVaultShares: sumDecimal(balances.vaultShares, balances.gauge),
+        amountSupplied: sumDecimal(sumDecimal(balances.vaultShares, balances.gauge), input.amount),
+        prevAmountSupplied: sumDecimal(balances.vaultShares, balances.gauge),
+        symbol: 'crvUSD',
+      },
+    },
+    stubs: {
+      ...sharedStubs,
+      previewDeposit,
+      depositIsApproved,
+      depositApprove,
+      estimateGasDeposit,
+      estimateGasDepositApprove,
+      deposit,
+    },
+  }
+}
+
+export const createStakeScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+  const input = { amount: '15.00' as const }
+  const normalizedAmount = normalizeDecimalString(input.amount)
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '80.00',
+    gauge: '20.00',
+  } as const
+  const currentApy = '0.0375'
+  const futureApy = currentApy
+  const stakeApprove = createStub([TEST_TX_HASH])
+  const stakeIsApproved = approved ? createStub(true) : createIsApprovedStub(stakeApprove)
+  const estimateGasStake = createStub(`${132_000}`)
+  const estimateGasStakeApprove = createStub(`${91_000}`)
+  const stake = createStub(TEST_TX_HASH)
+
+  const { market, sharedStubs } = createBaseSupplyMarket({
+    chainId,
+    walletBalances: balances,
+    currentApy,
+    futureApy,
+    vaultOverrides: {
+      stakeIsApproved,
+      stakeApprove,
+      stake,
+      estimateGas: {
+        ...createMockLendMarket({}).vault.estimateGas,
+        stake: estimateGasStake,
+        stakeApprove: estimateGasStakeApprove,
+      },
+    },
+  })
+
+  return {
+    input,
+    market,
+    llamaApi: createMockLlamaApi(chainId, market),
+    expected: {
+      walletBalances: [] as const,
+      marketRates: [false, false] as const,
+      isApproved: [normalizedAmount] as const,
+      estimateGas: [normalizedAmount] as const,
+      estimateGasApprove: [normalizedAmount] as const,
+      approve: [normalizedAmount] as const,
+      submit: [normalizedAmount] as const,
+      actionInfo: {
+        supplyApy: currentApy,
+        vaultShares: sumDecimal(balances.gauge, input.amount),
+        prevVaultShares: balances.gauge,
+        amountSupplied: sumDecimal(balances.gauge, input.amount),
+        prevAmountSupplied: balances.gauge,
+        symbol: 'crvUSD',
+      },
+    },
+    stubs: {
+      ...sharedStubs,
+      stakeIsApproved,
+      stakeApprove,
+      estimateGasStake,
+      estimateGasStakeApprove,
+      stake,
+    },
+  }
+}
+
+export const createWithdrawScenario = ({
+  chainId,
+  isFull,
+  depositedShares = '90.00',
+  stakedShares = '10.00',
+}: {
+  chainId: number
+  isFull: boolean
+  depositedShares?: string
+  stakedShares?: string
+}) => {
+  const input = {
+    amount: (isFull ? depositedShares : '22.50') as string,
+    isFull,
+  }
+  const normalizedAmount = normalizeDecimalString(input.amount)
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: depositedShares,
+    gauge: stakedShares,
+  } as const
+  const currentApy = '0.0510'
+  const futureApy = isFull ? '0.0540' : '0.0531'
+  const previewWithdraw = createStub(input.amount)
+  const estimateGasWithdraw = createStub(`${142_000}`)
+  const estimateGasRedeem = createStub(`${149_000}`)
+  const withdraw = createStub(TEST_TX_HASH)
+  const redeem = createStub(TEST_TX_HASH)
+
+  const { market, sharedStubs } = createBaseSupplyMarket({
+    chainId,
+    walletBalances: balances,
+    currentApy,
+    futureApy,
+    vaultOverrides: {
+      previewWithdraw,
+      withdraw,
+      redeem,
+      estimateGas: {
+        ...createMockLendMarket({}).vault.estimateGas,
+        withdraw: estimateGasWithdraw,
+        redeem: estimateGasRedeem,
+      },
+    },
+  })
+
+  return {
+    input,
+    market,
+    llamaApi: createMockLlamaApi(chainId, market),
+    expected: {
+      walletBalances: [] as const,
+      marketRates: [false, false] as const,
+      futureRates: [normalizedAmount, '0'] as const,
+      previewWithdraw: [normalizedAmount] as const,
+      estimateGas: isFull ? ([depositedShares] as const) : ([normalizedAmount] as const),
+      submit: isFull ? ([depositedShares] as const) : ([normalizedAmount] as const),
+      actionInfo: {
+        supplyApy: futureApy,
+        prevSupplyApy: currentApy,
+        vaultShares: subDecimal(sumDecimal(depositedShares, stakedShares), isFull ? depositedShares : input.amount),
+        prevVaultShares: sumDecimal(depositedShares, stakedShares),
+        amountSupplied: subDecimal(sumDecimal(depositedShares, stakedShares), input.amount),
+        prevAmountSupplied: sumDecimal(depositedShares, stakedShares),
+        symbol: 'crvUSD',
+      },
+    },
+    stubs: {
+      ...sharedStubs,
+      previewWithdraw,
+      estimateGasWithdraw,
+      estimateGasRedeem,
+      withdraw,
+      redeem,
+    },
+  }
+}
+
+export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
+  const input = { amount: '12.50' as const }
+  const normalizedAmount = normalizeDecimalString(input.amount)
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '0',
+    gauge: '40.00',
+  } as const
+  const currentApy = '0.0440'
+  const futureApy = currentApy
+  const estimateGasUnstake = createStub(`${121_000}`)
+  const unstake = createStub(TEST_TX_HASH)
+
+  const { market, sharedStubs } = createBaseSupplyMarket({
+    chainId,
+    walletBalances: balances,
+    currentApy,
+    futureApy,
+    vaultOverrides: {
+      unstake,
+      estimateGas: {
+        ...createMockLendMarket({}).vault.estimateGas,
+        unstake: estimateGasUnstake,
+      },
+    },
+  })
+
+  return {
+    input,
+    market,
+    llamaApi: createMockLlamaApi(chainId, market),
+    expected: {
+      walletBalances: [] as const,
+      marketRates: [false, false] as const,
+      estimateGas: [normalizedAmount] as const,
+      submit: [normalizedAmount] as const,
+      actionInfo: {
+        supplyApy: currentApy,
+        vaultShares: subDecimal(balances.gauge, input.amount),
+        prevVaultShares: balances.gauge,
+        amountSupplied: subDecimal(balances.gauge, input.amount),
+        prevAmountSupplied: balances.gauge,
+        symbol: 'crvUSD',
+      },
+      alert: {
+        title: 'Unstake only',
+        description: 'recover your lent assets',
+      },
+    },
+    stubs: {
+      ...sharedStubs,
+      estimateGasUnstake,
+      unstake,
+    },
+  }
+}
+
+export const createClaimScenario = ({
+  chainId,
+  claimableCrv = '5.00',
+  claimableRewards = [{ amount: '2.50', symbol: 'CVX', token: oneAddress() as Address }],
+}: {
+  chainId: number
+  claimableCrv?: string
+  claimableRewards?: { amount: string; symbol: string; token: Address }[]
+}) => {
+  const input = {
+    claimableCrv,
+    claimableRewards,
+  }
+  const claimCrv = createStub(TEST_TX_HASH)
+  const claimRewards = createStub(TEST_TX_HASH)
+  const claimableCrvStub = createStub(claimableCrv)
+  const claimableRewardsStub = createStub(claimableRewards)
+  const estimateGasClaimCrv = createStub(`${77_000}`)
+  const estimateGasClaimRewards = createStub(`${99_000}`)
+
+  const { market, sharedStubs } = createBaseSupplyMarket({
+    chainId,
+    walletBalances: {
+      collateral: '0',
+      borrowed: '0',
+      vaultShares: '0',
+      gauge: '0',
+    },
+    currentApy: '0.0400',
+    futureApy: '0.0400',
+    vaultOverrides: {
+      claimableCrv: claimableCrvStub,
+      claimableRewards: claimableRewardsStub,
+      claimCrv,
+      claimRewards,
+      estimateGas: {
+        ...createMockLendMarket({}).vault.estimateGas,
+        claimCrv: estimateGasClaimCrv,
+        claimRewards: estimateGasClaimRewards,
+      },
+    },
+  })
+
+  return {
+    input,
+    market,
+    llamaApi: createMockLlamaApi(chainId, market),
+    expected: {
+      claimableCrv: [TEST_ADDRESS] as const,
+      claimableRewards: [TEST_ADDRESS] as const,
+      estimateGasCrv: [] as const,
+      estimateGasRewards: [] as const,
+      shouldClaimCrv: Number(claimableCrv) > 0,
+      shouldClaimRewards: claimableRewards.some(({ amount }) => Number(amount) > 0),
+      buttonDisabled: Number(claimableCrv) <= 0 && claimableRewards.every(({ amount }) => Number(amount) <= 0),
+      table: {
+        rows: [
+          ...(Number(claimableCrv) > 0
+            ? [{ amount: claimableCrv, symbol: 'CRV', notional: Number(claimableCrv) }]
+            : []),
+          ...claimableRewards.map(({ amount, symbol }) => ({ amount, symbol, notional: Number(amount) })),
+        ],
+        totalNotional:
+          (Number(claimableCrv) > 0 ? Number(claimableCrv) : 0) +
+          claimableRewards.reduce((sum, { amount }) => sum + Number(amount), 0),
+      },
+    },
+    stubs: {
+      ...sharedStubs,
+      claimableCrv: claimableCrvStub,
+      claimableRewards: claimableRewardsStub,
+      estimateGasClaimCrv,
+      estimateGasClaimRewards,
+      claimCrv,
+      claimRewards,
+    },
   }
 }
