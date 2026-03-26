@@ -19,6 +19,8 @@ export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
+export type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: string }
+
 /** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
 const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
   data: TData[],
@@ -55,6 +57,8 @@ export const EChartsLineChart = <
   xTickFormatter,
   yTickFormatter,
   renderTooltip,
+  xAxisType,
+  markLines,
   yPaddingRatio = 0.2,
 }: {
   data: TData[]
@@ -65,6 +69,8 @@ export const EChartsLineChart = <
   xTickFormatter?: (value: number | string) => string
   yTickFormatter?: (value: number | string) => string
   renderTooltip?: (context: EChartsLineChartTooltipContext<TData, TSeriesKey>) => ReactNode
+  xAxisType?: 'time' | 'value'
+  markLines?: EChartsLineMarkLine[]
   /** Sets the padding ratio for the y-axis, used to add space above and below the data points */
   yPaddingRatio?: number
 }) => {
@@ -106,10 +112,10 @@ export const EChartsLineChart = <
         left: 0,
         top: 0,
         right: 0,
-        bottom: 0,
+        bottom: markLines?.some((ml) => ml.label) ? 24 : 0,
       },
       xAxis: {
-        type: 'time',
+        type: xAxisType ?? 'time',
         axisLine: { show: false },
         axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
         splitLine: {
@@ -172,7 +178,7 @@ export const EChartsLineChart = <
         borderWidth: 0,
         padding: 0,
       },
-      series: activeSeries.map((line) => ({
+      series: activeSeries.map((line, index) => ({
         name: line.label,
         type: 'line',
         data: data.map((item) => [item[xKey], Number(item[line.key])]),
@@ -187,9 +193,42 @@ export const EChartsLineChart = <
           width: line.strokeWidth ?? 2,
           type: parseDashType(line.dash),
         },
+        ...(index === 0 &&
+          markLines?.length && {
+            markLine: {
+              silent: true,
+              symbol: ['none', 'none'],
+              lineStyle: {
+                width: 1,
+              },
+              data: markLines
+                .filter((markLine) => Number.isFinite(markLine.value))
+                .map((markLine) => ({
+                  xAxis: markLine.value,
+                  ...(markLine.label && {
+                    label: {
+                      show: true,
+                      formatter: markLine.label,
+                      position: 'start' as const,
+                      color: '#fff',
+                      fontSize: FontSize.xs.desktop,
+                      backgroundColor: markLine.color,
+                      padding: [2, 4],
+                      offset: [0, 0],
+                    },
+                  }),
+                  ...((markLine.color || markLine.dash) && {
+                    lineStyle: {
+                      ...(markLine.color && { color: markLine.color }),
+                      ...(markLine.dash && { type: parseDashType(markLine.dash) }),
+                    },
+                  }),
+                })),
+            },
+          }),
       })),
     }),
-    [activeSeries, data, gridLineColor, gridTextColor, tooltipFormatter, xKey, yMax, yMin],
+    [activeSeries, data, gridLineColor, gridTextColor, markLines, tooltipFormatter, xAxisType, xKey, yMax, yMin],
   )
 
   return <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} />

@@ -4,6 +4,7 @@ import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import type { Chain } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -54,6 +55,7 @@ export const MarketInformationComposite = ({
         <>
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="supply" />
+          <MarketRateCurveChart market={market} blockchainId={blockchainId} />
         </>
       )}
 
