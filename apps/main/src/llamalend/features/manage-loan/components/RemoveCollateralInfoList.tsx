@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -17,7 +16,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalMax, decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function RemoveCollateralInfoList<ChainId extends IChainId>({
@@ -65,12 +64,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
       )}
       collateral={mapQuery(
         prevCollateral,
-        (stateCollateral) =>
-          userCollateral &&
-          decimal(
-            // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
-            BigNumber.max(0, new BigNumber(stateCollateral).minus(new BigNumber(userCollateral))),
-          ),
+        (stateCollateral) => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
       )}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}

@@ -89,12 +89,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
-
   const debt = useRepayRemainingDebt({ params, swapRequired: leverageEnabled }, { isFull, userBorrowed }, isOpen)
-
-  const futureLeverageQuery = useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull)
-  const leverageValue = isFull ? { data: decimal(0), isLoading: false, error: null } : futureLeverageQuery
-
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -120,7 +115,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       )}
       {...useLeverageInfoFields({
         leverageEnabled,
-        leverageValue,
+        leverageValue: isFull
+          ? { data: decimal(0), isLoading: false, error: null }
+          : useRepayFutureLeverage(params, isOpen && leverageEnabled && !isFull),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, (prev) =>

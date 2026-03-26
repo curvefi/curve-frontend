@@ -25,9 +25,8 @@ export function ClosePositionInfoList({
   values: { slippage },
   onSlippageChange,
 }: ClosePositionInfoListProps) {
-  const { address: userAddress } = useConnection()
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const params = { chainId, marketId: market?.id, userAddress, slippage }
+  const params = { chainId, marketId: market?.id, userAddress: useConnection().address, slippage }
   return (
     <LoanActionInfoList
       isOpen

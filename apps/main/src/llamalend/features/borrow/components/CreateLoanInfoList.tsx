@@ -2,6 +2,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/useLeverageInfoFields'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -12,7 +13,6 @@ import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/cr
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
-import { calculateLeverageCollateral } from '../../../widgets/action-card/info-actions.helpers'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '../../../widgets/action-card/useBorrowRates'
 import { useLoanToValue } from '../hooks/useLoanToValue'
@@ -41,12 +41,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
 }) => {
   const isOpen = isFormTouched(form, 'userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
-  const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
-  const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
-  const leverageCollateral = mapQuery(expectedCollateral, (data) =>
-    calculateLeverageCollateral(data.totalCollateral, data.leverage),
-  )
-  const priceImpact = useCreateLoanPriceImpact(params, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -64,19 +58,18 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prevCollateral={constQ('0')}
       debt={constQ(debt)}
       prevDebt={constQ('0')}
-      {...(leverageEnabled && {
+      {...useLeverageInfoFields({
+        leverageEnabled,
         routes,
-        leverageValue,
-        prevLeverageValue: constQ('0'),
-        leverageCollateral,
-        prevLeverageCollateral: constQ('0'),
-        leverageTotalCollateral,
-        prevLeverageTotalCollateral: constQ('0'),
-        exchangeRate: mapQuery(expectedCollateral, (data) => data?.avgPrice ?? null),
-        priceImpact: q(priceImpact),
+        collateralDelta: userCollateral,
         slippage,
         onSlippageChange,
-        collateralSymbol: collateralToken?.symbol,
+        priceImpact: q(useCreateLoanPriceImpact(params, isOpen)),
+        leverageValue: mapQuery(expectedCollateral, (data) => data.leverage),
+        prevLeverageValue: constQ('0'),
+        prevCollateral: constQ('0'),
+        leverageTotalCollateral: mapQuery(expectedCollateral, (data) => data.totalCollateral),
+        expected: expectedCollateral,
       })}
       {...useBorrowRates({ params, market, debtDelta: debt }, isOpen)}
     />

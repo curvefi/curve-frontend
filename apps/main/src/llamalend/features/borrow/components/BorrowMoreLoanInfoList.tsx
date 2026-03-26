@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
@@ -22,7 +20,7 @@ import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalSum } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
@@ -69,23 +67,19 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             collateralToken,
             borrowToken,
             collateralDelta,
-            expectedBorrowed: useMemo(
-              () => debt && prevDebt.data && decimal(new BigNumber(prevDebt.data).plus(debt).toString()),
-              [debt, prevDebt.data],
-            ),
+            expectedBorrowed: prevDebt.data && decimalSum(prevDebt.data, debt),
           },
           isOpen,
         ),
       )}
-      debt={mapQuery(prevDebt, (stateDebt) => debt && decimal(new BigNumber(stateDebt).plus(debt))!)}
+      debt={mapQuery(prevDebt, (stateDebt) => decimalSum(stateDebt, debt))}
       {...useLeverageInfoFields({
         leverageEnabled,
         leverageValue: useBorrowMoreFutureLeverage(params, isOpen && leverageEnabled),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: {
-          data:
-            totalCollateral && prevCollateral.data && decimal(new BigNumber(prevCollateral.data).plus(totalCollateral)),
+          data: totalCollateral && prevCollateral.data && decimalSum(prevCollateral.data, totalCollateral),
           ...combineQueryState(prevCollateral, expectedCollateralQuery),
         },
         expected: expectedCollateralQuery,
