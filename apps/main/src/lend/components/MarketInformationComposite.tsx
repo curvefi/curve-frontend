@@ -55,7 +55,7 @@ export const MarketInformationComposite = ({
         <>
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="supply" />
-          <MarketRateCurveChart market={market} blockchainId={blockchainId} />
+          <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
         </>
       )}
 

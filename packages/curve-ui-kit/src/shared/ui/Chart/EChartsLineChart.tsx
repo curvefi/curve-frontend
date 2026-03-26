@@ -168,9 +168,8 @@ export const EChartsLineChart = <
         axisPointer: {
           type: 'line',
           lineStyle: {
-            width: 0.5,
+            width: 1,
             color: gridTextColor,
-            opacity: 0.3,
           },
         },
         formatter: tooltipFormatter,
