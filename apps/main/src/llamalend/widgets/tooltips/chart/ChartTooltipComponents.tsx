@@ -8,6 +8,9 @@ const { Spacing, MaxWidth } = SizesAndSpaces
 export const ChartTooltipShell = ({ title, children }: { title: ReactNode; children: ReactNode }) => (
   <Paper
     sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: Spacing.sm,
       backgroundColor: (theme) => theme.design.Layer[3].Fill,
       padding: Spacing.md,
       width: MaxWidth.chartTooltip,
@@ -23,7 +26,6 @@ export const ChartTooltipSeriesGroup = ({ children }: { children: ReactNode }) =
   <Stack
     direction="column"
     sx={{
-      marginTop: Spacing.sm,
       padding: Spacing.sm,
       gap: Spacing.xs,
       backgroundColor: (theme) => theme.design.Layer[2].Fill,
@@ -45,7 +47,7 @@ export const ChartTooltipSeriesRow = ({
   dash?: string
 }) => (
   <Stack direction="row" justifyContent="space-between" alignItems="center">
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack direction="row" spacing={Spacing.xs} alignItems="center">
       <LegendLine color={lineColor} dash={dash} />
       <Typography variant="bodySRegular">{label}</Typography>
     </Stack>

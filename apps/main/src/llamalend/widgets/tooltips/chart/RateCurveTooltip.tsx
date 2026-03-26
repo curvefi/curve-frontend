@@ -4,6 +4,7 @@ import {
   ChartTooltipSeriesRow,
   ChartTooltipShell,
 } from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatPercent } from '@ui-kit/utils'
@@ -28,5 +29,8 @@ export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps
         />
       ))}
     </ChartTooltipSeriesGroup>
+    <Typography variant="bodyXsRegular" fontStyle="italic" sx={{ whiteSpace: 'normal' }}>
+      {t`Higher utilization can reduce immediately withdrawable liquidity.`}
+    </Typography>
   </ChartTooltipShell>
 )
