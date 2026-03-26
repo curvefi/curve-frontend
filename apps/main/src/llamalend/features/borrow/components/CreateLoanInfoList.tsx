@@ -54,7 +54,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prevLoanToValue={constQ('0')}
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
-      collateral={constQ(userCollateral)}
       prevCollateral={constQ('0')}
       debt={constQ(debt)}
       prevDebt={constQ('0')}

@@ -117,7 +117,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       )}
       {...useLeverageInfoFields({
         leverageEnabled,
-        leverageValue: isFull ? constQ('1') : leverageValue,
+        leverageValue: isFull ? constQ('0') : leverageValue,
         prevLeverageValue: useUserCurrentLeverage(params, isOpen && !!hasLeverage),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, (prev) =>
