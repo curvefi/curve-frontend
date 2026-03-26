@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -15,7 +15,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
   depositAmount: undefined,
@@ -50,6 +50,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     resolver: vestResolver(depositFormValidationSuite),
     defaultValues: emptyDepositForm(),
   })
+  const skipNextResetDeposit = useRef(false)
 
   const depositAmount = watchField(form, 'depositAmount')
 
@@ -72,11 +73,34 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     error: depositError,
     data,
     reset: resetDeposit,
-  } = useDepositMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
+  } = useDepositMutation({
+    marketId,
+    network,
+    onSuccess,
+    onReset: () => {
+      skipNextResetDeposit.current = true
+      form.reset()
+    },
+    userAddress,
+  })
 
   const { formState } = form
 
-  useCallbackAfterFormUpdate(form, resetDeposit)
+  useEffect(
+    () =>
+      form.subscribe({
+        formState: { values: true },
+        callback: () => {
+          // Ignore the submit-driven form reset and dependent field updates until the user starts editing again.
+          if (skipNextResetDeposit.current && !form.getValues('depositAmount')) {
+            return
+          }
+          skipNextResetDeposit.current = false
+          resetDeposit()
+        },
+      }),
+    [form, resetDeposit],
+  )
 
   useEffect(() => {
     updateForm(form, { maxDepositAmount: maxUserDeposit.data })
