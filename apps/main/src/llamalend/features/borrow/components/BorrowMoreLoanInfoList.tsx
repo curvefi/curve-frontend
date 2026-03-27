@@ -122,7 +122,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             collateralDelta,
             expectedBorrowed: totalDebt,
           },
-          isOpen && !!totalDebt,
+          isOpen,
         ),
       )}
       prevDebt={prevDebt}

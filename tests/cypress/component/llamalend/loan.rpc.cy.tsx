@@ -165,7 +165,7 @@ testCases.forEach(
         })
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
-        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
+        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol, hasLtv: false })
         submitClosePositionForm('error', 'Transaction failed').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
           cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
