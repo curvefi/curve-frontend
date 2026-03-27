@@ -12,14 +12,20 @@ export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REG
 export const getActionValue = (name: string, field?: 'previous') =>
   getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
-export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
+export type DebtCheck = { current: Decimal; future: Decimal; symbol: string; hasLtv?: boolean }
 /**
  * Checks the current and future debt values, and that the symbol is displayed correctly.
  */
-export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
+export const checkDebt = ({ current, future, symbol, hasLtv = true }: DebtCheck) => {
   getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
   cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT).contains(symbol)
   getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
+  if (hasLtv) {
+    getActionValue('borrow-ltv').should('include', '%')
+    getActionValue('borrow-ltv', 'previous').should('include', '%')
+  } else {
+    getActionInfo('borrow-ltv').should('not.exist')
+  }
 }
 
 /**

@@ -27,7 +27,9 @@ import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
-const resolver = vestResolver(createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
+const resolver = vestResolver(
+  createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true, collateralRequired: true }),
+)
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
