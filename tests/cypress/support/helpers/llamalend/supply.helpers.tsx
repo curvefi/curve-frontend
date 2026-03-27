@@ -54,6 +54,7 @@ export const checkSupplyActionInfoValues = ({
   amountSupplied,
   prevAmountSupplied,
   symbol,
+  checkEstimatedTxCost = true,
 }: {
   supplyApy?: string
   prevSupplyApy?: string
@@ -62,6 +63,7 @@ export const checkSupplyActionInfoValues = ({
   amountSupplied?: string
   prevAmountSupplied?: string
   symbol?: string
+  checkEstimatedTxCost?: boolean
 }) => {
   cy.get('[data-testid="supply-action-info-list"]').should('be.visible')
 
@@ -93,7 +95,9 @@ export const checkSupplyActionInfoValues = ({
     cy.get('[data-testid="supply-amount-value"]').contains(symbol)
   }
 
-  getActionValue('estimated-tx-cost').should('include', '$')
+  if (checkEstimatedTxCost) {
+    getActionValue('estimated-tx-cost').should('include', '$')
+  }
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
@@ -162,6 +166,51 @@ export function writeWithdrawForm({ amount }: { amount: Decimal }) {
 }
 
 /**
+ * Fill in the stake form with the specified amount.
+ */
+export function writeStakeForm({ amount }: { amount: Decimal }) {
+  writeSupplyInput({ type: 'stake', amount })
+  blurSupplyInput('stake')
+}
+
+/**
+ * Check all stake detail values are loaded and valid.
+ * The action info list is expected to be opened before calling this function.
+ */
+export function checkStakeDetailsLoaded({
+  vaultShares,
+  prevVaultShares,
+  amountSupplied,
+  prevAmountSupplied,
+  expectedButtonText = 'Stake',
+  symbol = 'crvUSD',
+  checkEstimatedTxCost = true,
+}: {
+  vaultShares: Decimal
+  prevVaultShares: Decimal
+  amountSupplied?: Decimal
+  prevAmountSupplied?: Decimal
+  expectedButtonText?: string
+  symbol?: string
+  checkEstimatedTxCost?: boolean
+}) {
+  checkSupplyActionInfoValues({
+    vaultShares,
+    prevVaultShares,
+    amountSupplied,
+    prevAmountSupplied,
+    symbol,
+    checkEstimatedTxCost,
+  })
+  cy.get('[data-testid="supply-stake-submit-button"]').should('have.text', expectedButtonText)
+}
+
+/**
+ * Touch the stake form to refresh state after submission.
+ */
+export const touchStakeForm = () => touchSupplyInput('stake')
+
+/**
  * Check all withdraw detail values are loaded and valid.
  * The action info list is expected to be opened before calling this function.
  */
@@ -191,6 +240,51 @@ export const selectMaxWithdraw = () => {
  * Touch the withdraw form to refresh state after submission.
  */
 export const touchWithdrawForm = () => touchSupplyInput('withdraw')
+
+/**
+ * Fill in the unstake form with the specified amount.
+ */
+export function writeUnstakeForm({ amount }: { amount: Decimal }) {
+  writeSupplyInput({ type: 'unstake', amount })
+  blurSupplyInput('unstake')
+}
+
+/**
+ * Check all unstake detail values are loaded and valid.
+ * The action info list is expected to be opened before calling this function.
+ */
+export function checkUnstakeDetailsLoaded({
+  vaultShares,
+  prevVaultShares,
+  amountSupplied,
+  prevAmountSupplied,
+  expectedButtonText = 'Unstake',
+  symbol = 'crvUSD',
+  checkEstimatedTxCost = true,
+}: {
+  vaultShares: Decimal
+  prevVaultShares: Decimal
+  amountSupplied?: Decimal
+  prevAmountSupplied?: Decimal
+  expectedButtonText?: string
+  symbol?: string
+  checkEstimatedTxCost?: boolean
+}) {
+  checkSupplyActionInfoValues({
+    vaultShares,
+    prevVaultShares,
+    amountSupplied,
+    prevAmountSupplied,
+    symbol,
+    checkEstimatedTxCost,
+  })
+  cy.get('[data-testid="supply-unstake-submit-button"]').should('have.text', expectedButtonText)
+}
+
+/**
+ * Touch the unstake form to refresh state after submission.
+ */
+export const touchUnstakeForm = () => touchSupplyInput('unstake')
 
 /**
  * Check that supply callbacks were called (onSuccess, onPricesUpdated).

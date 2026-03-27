@@ -5,18 +5,32 @@ import {
   type LlamalendSupplyTestCaseProps,
 } from '@cy/support/helpers/llamalend/LlamalendSupplyTestCase'
 import { SUPPLY_TEST_MARKETS } from '@cy/support/helpers/llamalend/supply-rpc.helpers'
-import { fundUserForSupplySetup } from '@cy/support/helpers/llamalend/supply-setup.helpers'
 import {
+  fundUserForSupplySetup,
+  setupTenderlySupplyStake,
+  waitForErc20Balance,
+} from '@cy/support/helpers/llamalend/supply-setup.helpers'
+import {
+  captureWalletBalance,
   checkCurrentSuppliedAmount,
   checkDepositDetailsLoaded,
+  checkStakeDetailsLoaded,
+  checkUnstakeDetailsLoaded,
   checkWithdrawDetailsLoaded,
+  expectWalletBalanceDelta,
   expectSupplyCallbacks,
   selectMaxWithdraw,
   submitDepositForm,
+  submitStakeForm,
+  submitUnstakeForm,
   submitWithdrawForm,
   touchDepositForm,
+  touchStakeForm,
+  touchUnstakeForm,
   touchWithdrawForm,
   writeDepositForm,
+  writeStakeForm,
+  writeUnstakeForm,
   writeWithdrawForm,
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
@@ -24,12 +38,24 @@ import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
 SUPPLY_TEST_MARKETS.forEach(
-  ({ id, label, chainId, borrowedTokenAddress, deposit, partialWithdraw, borrowedTokenDecimals }) => {
+  ({
+    id,
+    label,
+    chainId,
+    borrowedTokenAddress,
+    vaultAddress,
+    gaugeAddress,
+    deposit,
+    partialWithdraw,
+    borrowedTokenDecimals,
+  }) => {
     describe(label, () => {
       skipTestsAfterFailure()
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
+      const unstakePrivateKey = generatePrivateKey()
+      const { address: unstakeAddress } = privateKeyToAccount(unstakePrivateKey)
       const getVirtualNetwork = createVirtualTestnet((uuid) => ({
         slug: `supply-integration-${uuid}`,
         display_name: `SupplyIntegration (${uuid})`,
@@ -41,14 +67,21 @@ SUPPLY_TEST_MARKETS.forEach(
 
       let onSuccess: ReturnType<typeof cy.stub>
 
-      const SupplyTestWrapper = ({ tab }: Pick<LlamalendSupplyTestCaseProps, 'tab'>) => (
+      const SupplyTestWrapper = ({
+        tab,
+        privateKey: currentPrivateKey = privateKey,
+        userAddress = address,
+      }: Pick<LlamalendSupplyTestCaseProps, 'tab'> & {
+        privateKey?: typeof privateKey
+        userAddress?: typeof address
+      }) => (
         <LlamalendSupplyTestCase
           tab={tab}
           vnet={getVirtualNetwork()}
-          privateKey={privateKey}
+          privateKey={currentPrivateKey}
           chainId={chainId}
           marketId={id}
-          userAddress={address}
+          userAddress={userAddress}
           onSuccess={onSuccess}
         />
       )
@@ -99,6 +132,116 @@ SUPPLY_TEST_MARKETS.forEach(
         submitWithdrawForm().then(() => expectSupplyCallbacks({ onSuccess }))
         touchWithdrawForm()
         checkCurrentSuppliedAmount('0')
+      })
+
+      it('deposits into the vault again', () => {
+        cy.mount(<SupplyTestWrapper />)
+        writeDepositForm({ amount: deposit })
+        checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
+        submitDepositForm().then(() => expectSupplyCallbacks({ onSuccess }))
+        touchDepositForm()
+        checkCurrentSuppliedAmount(suppliedAfterDeposit)
+      })
+
+      it('stakes into the gauge', () => {
+        cy.mount(<SupplyTestWrapper tab="stake" />)
+        captureWalletBalance('stake').then((balanceBefore) => {
+          const stakeAmount = balanceBefore as Decimal
+          const expectedStakeDelta = new BigNumber(stakeAmount).negated().toFixed() as Decimal
+
+          expect(new BigNumber(stakeAmount).gt(0)).to.equal(true)
+
+          writeStakeForm({ amount: stakeAmount })
+          checkStakeDetailsLoaded({
+            vaultShares: stakeAmount,
+            prevVaultShares: '0',
+            amountSupplied: suppliedAfterDeposit,
+            prevAmountSupplied: '0',
+            expectedButtonText: 'Approve & Stake',
+            checkEstimatedTxCost: false,
+          })
+          submitStakeForm().then(() => expectSupplyCallbacks({ onSuccess }))
+          touchStakeForm()
+          checkStakeDetailsLoaded({
+            vaultShares: stakeAmount,
+            prevVaultShares: stakeAmount,
+            amountSupplied: suppliedAfterDeposit,
+            prevAmountSupplied: suppliedAfterDeposit,
+            checkEstimatedTxCost: false,
+          })
+          expectWalletBalanceDelta({
+            type: 'stake',
+            balanceBefore: stakeAmount,
+            expectedDelta: expectedStakeDelta,
+          })
+        })
+      })
+
+      it('unstakes from the gauge', () => {
+        setupTenderlySupplyStake({
+          vnet: getVirtualNetwork(),
+          userAddress: unstakeAddress,
+          borrowedTokenAddress,
+          borrowedTokenDecimals,
+          vaultAddress,
+          gaugeAddress,
+          deposit,
+        })
+
+        cy.wrap(null).then(() =>
+          waitForErc20Balance({
+            vnet: getVirtualNetwork(),
+            userAddress: unstakeAddress,
+            tokenAddress: gaugeAddress,
+            predicate: (balance) => balance > 0n,
+            description: gaugeAddress,
+          }),
+        )
+        cy.mount(<SupplyTestWrapper tab="stake" privateKey={unstakePrivateKey} userAddress={unstakeAddress} />)
+        captureWalletBalance('stake').then((vaultBalanceBefore) => {
+          cy.mount(<SupplyTestWrapper tab="unstake" privateKey={unstakePrivateKey} userAddress={unstakeAddress} />)
+          captureWalletBalance('unstake')
+            .should((balanceBefore) => {
+              expect(new BigNumber(balanceBefore as string).gt(0)).to.equal(true)
+            })
+            .then((balanceBefore) => {
+              const unstakeAmount = balanceBefore as Decimal
+
+              writeUnstakeForm({ amount: unstakeAmount })
+              checkUnstakeDetailsLoaded({
+                vaultShares: '0',
+                prevVaultShares: unstakeAmount,
+                amountSupplied: '0',
+                prevAmountSupplied: suppliedAfterDeposit,
+                checkEstimatedTxCost: false,
+              })
+              submitUnstakeForm().then(() => expectSupplyCallbacks({ onSuccess }))
+              cy.wrap(null).then(() =>
+                waitForErc20Balance({
+                  vnet: getVirtualNetwork(),
+                  userAddress: unstakeAddress,
+                  tokenAddress: gaugeAddress,
+                  predicate: (balance) => balance === 0n,
+                  description: gaugeAddress,
+                }),
+              )
+              touchUnstakeForm()
+              checkUnstakeDetailsLoaded({
+                vaultShares: '0',
+                prevVaultShares: '0',
+                amountSupplied: '0',
+                prevAmountSupplied: '0',
+                checkEstimatedTxCost: false,
+              })
+
+              cy.mount(<SupplyTestWrapper tab="stake" privateKey={unstakePrivateKey} userAddress={unstakeAddress} />)
+              expectWalletBalanceDelta({
+                type: 'stake',
+                balanceBefore: vaultBalanceBefore as Decimal,
+                expectedDelta: unstakeAmount,
+              })
+            })
+        })
       })
     })
   },
