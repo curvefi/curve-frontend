@@ -1,4 +1,4 @@
-import type { FieldError, UseFormReturn } from 'react-hook-form'
+import type { UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
@@ -7,7 +7,7 @@ import { useMarketFutureRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { constQ, mapQuery, q } from '@ui-kit/types/util'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -19,8 +19,6 @@ import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoL
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
-
-const toQueryError = (error: FieldError | undefined) => (error?.message ? new Error(error.message) : null)
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   market,
@@ -67,9 +65,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params, isOpen))}
+      prevHealth={constQ(null)}
       prices={q(useCreateLoanPrices(params, isOpen))}
-      prevRates={marketRates}
       rates={marketFutureRates}
+      prevRates={marketRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       collateralSymbol={collateralToken?.symbol}
@@ -84,23 +83,21 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
           isOpen,
         ),
       )}
+      prevLoanToValue={constQ('0')}
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
-      collateral={q({
-        data: { value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol },
-        isLoading: !collateralToken,
-        error: toQueryError(form.formState.errors.userCollateral),
-      })}
-      debt={q({
-        data: { value: debt ?? null, tokenSymbol: borrowToken?.symbol },
-        isLoading: !borrowToken,
-        error: toQueryError(form.formState.errors.debt),
-      })}
+      collateral={constQ({ value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol })}
+      prevCollateral={constQ('0')}
+      debt={constQ({ value: debt ?? null, tokenSymbol: borrowToken?.symbol })}
+      prevDebt={constQ('0')}
       {...(leverageEnabled && {
         routes,
         leverageValue,
+        prevLeverageValue: constQ('0'),
         leverageCollateral,
+        prevLeverageCollateral: constQ('0'),
         leverageTotalCollateral,
+        prevLeverageTotalCollateral: constQ('0'),
         exchangeRate: mapQuery(expectedCollateral, (data) => data?.avgPrice ?? null),
         priceImpact: q(priceImpact),
         slippage,
