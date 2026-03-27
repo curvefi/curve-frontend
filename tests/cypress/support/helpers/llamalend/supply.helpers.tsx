@@ -1,34 +1,11 @@
-import { type ReactElement } from 'react'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
 import { getActionValue } from './action-info.helpers'
-import { createMockLlamaApi } from './mock-loan-test-data'
-import { MockLoanTestWrapper } from './MockLoanTestWrapper'
-import { setGasInfo, setLlamaApi } from './test-context.helpers'
 
 export type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
-export type SupplyActionType = SupplyFormType | 'claim'
 
 const getSupplyInput = (type: SupplyFormType) => cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`)
-
-export const mountSupplyComponent = <ChainId extends LlamaChainId>({
-  chainId,
-  networks,
-  llamaApi,
-  children,
-}: {
-  chainId: ChainId
-  networks: NetworkDict<ChainId>
-  llamaApi: ReturnType<typeof createMockLlamaApi>
-  children: ReactElement
-}) => {
-  setLlamaApi(llamaApi)
-  setGasInfo({ chainId, networks })
-  cy.mount(<MockLoanTestWrapper llamaApi={llamaApi}>{children}</MockLoanTestWrapper>)
-}
 
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
@@ -40,8 +17,22 @@ export const blurSupplyInput = (type: SupplyFormType) => {
   cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
 }
 
-export const submitSupplyAction = (type: SupplyActionType) =>
-  cy.get(`[data-testid="supply-${type}-submit-button"]`, LOAD_TIMEOUT).click()
+const submitSupplyForm = (testId: string, successMessage: string) => {
+  cy.get(`[data-testid="${testId}"]`, LOAD_TIMEOUT).click()
+  return cy
+    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
+    .contains(successMessage, TRANSACTION_LOAD_TIMEOUT)
+}
+
+export const submitDepositForm = () => submitSupplyForm('supply-deposit-submit-button', 'Deposit successful!')
+
+export const submitStakeForm = () => submitSupplyForm('supply-stake-submit-button', 'Stake successful!')
+
+export const submitWithdrawForm = () => submitSupplyForm('supply-withdraw-submit-button', 'Withdraw successful!')
+
+export const submitUnstakeForm = () => submitSupplyForm('supply-unstake-submit-button', 'Unstake successful!')
+
+export const submitClaimForm = () => submitSupplyForm('supply-claim-submit-button', 'Claimed rewards!')
 
 export const checkSupplyActionInfoValues = ({
   supplyApy,

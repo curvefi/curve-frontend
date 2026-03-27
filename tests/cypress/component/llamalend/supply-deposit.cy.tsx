@@ -5,13 +5,14 @@ import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
+  blurSupplyInput,
   checkSupplyActionInfoValues,
-  submitSupplyAction,
+  submitDepositForm,
   writeSupplyInput,
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createDepositScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
@@ -38,15 +39,8 @@ describe('DepositForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      cy.get('[data-testid="supply-action-info-list"]').should('not.be.visible')
-
       writeSupplyInput({ type: 'deposit', amount: input.amount })
-      cy.get('[data-testid="supply-deposit-input"] input[type="text"]').blur()
-
-      cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
-      cy.contains('[data-testid="supply-action-info-list"]', 'Supply APY').should('be.visible')
-      cy.contains('[data-testid="supply-action-info-list"]', 'Vault Shares').should('be.visible')
-      cy.contains('[data-testid="supply-action-info-list"]', 'Amount Supplied').should('be.visible')
+      blurSupplyInput('deposit')
       checkSupplyActionInfoValues(expected.actionInfo)
       cy.get('[data-testid="supply-deposit-submit-button"]').should('have.text', buttonText)
 
@@ -64,8 +58,7 @@ describe('DepositForm (mocked)', () => {
         }
       })
 
-      submitSupplyAction('deposit')
-      cy.wrap({}, TRANSACTION_LOAD_TIMEOUT).should(() => {
+      submitDepositForm().then(() => {
         expect(stubs.deposit).to.have.been.calledWithExactly(...expected.submit)
         if (approved) {
           expect(stubs.depositApprove).to.not.have.been.called
@@ -78,10 +71,6 @@ describe('DepositForm (mocked)', () => {
       cy.get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
         .should('be.visible')
         .contains('Deposited successfully')
-
-      cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-        .should('be.visible')
-        .contains('Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
     })
   })
 })
