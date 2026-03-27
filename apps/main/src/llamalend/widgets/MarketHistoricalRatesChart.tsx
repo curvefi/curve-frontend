@@ -73,7 +73,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
       snapshots.map((snapshot) => ({
         // timestamp is typed as Date but may be a string after JSON serialization (e.g. React Query cache)
         timestamp: new Date(snapshot.timestamp).getTime(),
-        rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy : 0),
+        rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
       })),
       (item) => item.timestamp,
     )
