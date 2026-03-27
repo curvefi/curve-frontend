@@ -1,3 +1,4 @@
+import { UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipWrapper,
   TooltipDescription,
@@ -7,8 +8,6 @@ import {
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
 import type { Shares, SupplyAsset } from '../SupplyPositionDetails'
-
-const UnavailableNotation = '-'
 
 const isAvailable = (value: number | null | undefined): value is number => value != null
 
