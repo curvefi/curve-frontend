@@ -1,5 +1,5 @@
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { isLeveragedPosition } from '@/llamalend/llama.utils'
+import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -36,7 +36,7 @@ export const useLeverageInfoFields = ({
 }: LeverageInfoFieldsOptions) =>
   ({
     // we show the leverage info even when the leverage is disabled for the current action
-    ...(leverageEnabled || isLeveragedPosition(prevLeverageValue.data)
+    ...(leverageEnabled || isPositionLeveraged(prevLeverageValue.data)
       ? {
           leverageEnabled: true,
           leverageValue: q(leverageValue),

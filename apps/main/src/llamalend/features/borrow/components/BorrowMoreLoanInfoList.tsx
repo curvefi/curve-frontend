@@ -75,7 +75,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       debt={mapQuery(prevDebt, (stateDebt) => decimalSum(stateDebt, debt))}
       {...useLeverageInfoFields({
         leverageEnabled,
-        leverageValue: useBorrowMoreFutureLeverage(params, isOpen && leverageEnabled),
+        leverageValue: useBorrowMoreFutureLeverage(params, isOpen),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: {
@@ -86,7 +86,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         routes,
         slippage,
         onSlippageChange,
-        priceImpact: useBorrowMorePriceImpact(params, isOpen && leverageEnabled),
+        priceImpact: useBorrowMorePriceImpact(params, isOpen),
         collateralDelta,
       })}
       {...useBorrowRates({ params, market, debtDelta: debt }, isOpen)}

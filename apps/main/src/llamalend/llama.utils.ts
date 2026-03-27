@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -57,8 +58,15 @@ export const hasV1Deleverage = (market: LlamaMarketTemplate) =>
 export const hasDeleverage = (market: LlamaMarketTemplate) =>
   hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
-/** check if an open position is a leveraged position, using the leverage value */
-export const isLeveragedPosition = (leverage: Amount | undefined | null) => leverage != null && Number(leverage) !== 1
+/**
+ * Check if an open position is a leveraged position, using the leverage value.
+ * prevLeverage is 0 when the position didn't exist before, future leverage is 0 on full repayment.
+ * (prev)Leverage is >0 and <1 when the position has been leveraged in the past or went through soft liquidation.
+ * (prev)Leverage is 1 when the position is not leveraged at all (simple borrowing, no leverage).
+ * (prev)Leverage is > 1 when the position is leveraged.
+ **/
+export const isPositionLeveraged = (leverage: Amount | undefined | null) =>
+  leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
 export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)
