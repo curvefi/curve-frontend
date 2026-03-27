@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-const getActionInfo = (name: string, field?: 'previous') =>
+export const getActionInfo = (name: string, field?: 'previous') =>
   cy.get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
 
 export const DECIMAL_REGEX = /(\d(\.\d+)?)/

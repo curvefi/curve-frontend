@@ -146,6 +146,7 @@ testCases.forEach(
         writeImproveHealthForm({ amount: improveHealth })
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
+          isPriceChanged: false,
         })
         submitImproveHealthForm().then(() => {
           expect(onSuccess).to.be.calledOnce
