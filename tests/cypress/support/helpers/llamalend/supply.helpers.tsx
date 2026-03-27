@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
@@ -10,6 +11,9 @@ const getSupplyInput = (type: SupplyFormType) =>
 
 export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] [data-testid="balance-value"]`, LOAD_TIMEOUT)
+
+export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>
+  getSupplyInputBalanceValue(type).invoke(LOAD_TIMEOUT, 'attr', 'data-value')
 
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
@@ -109,4 +113,132 @@ export const checkSupplyAlert = ({
     cy.contains(title)
     if (description) cy.contains(description)
   })
+}
+
+/**
+ * Fill in the deposit form with the specified amount.
+ */
+export function writeDepositForm({ amount }: { amount: Decimal }) {
+  writeSupplyInput({ type: 'deposit', amount })
+  blurSupplyInput('deposit')
+}
+
+/**
+ * Check all deposit detail values are loaded and valid.
+ * The action info list is expected to be opened before calling this function.
+ */
+export function checkDepositDetailsLoaded({
+  amountSupplied,
+  prevAmountSupplied,
+  symbol = 'crvUSD',
+}: {
+  amountSupplied: Decimal
+  prevAmountSupplied: Decimal
+  symbol?: string
+}) {
+  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol })
+}
+
+/**
+ * Touch the deposit form to refresh state after submission.
+ */
+export const touchDepositForm = () => touchSupplyInput('deposit')
+
+/**
+ * Check the current supplied amount after a deposit.
+ */
+export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
+  const expected = formatNumber(expectedAmount, { abbreviate: false })
+  getActionValue('supply-amount').should('equal', expected)
+  getActionValue('supply-amount', 'previous').should('equal', expected)
+}
+
+/**
+ * Fill in the withdraw form with the specified amount.
+ */
+export function writeWithdrawForm({ amount }: { amount: Decimal }) {
+  writeSupplyInput({ type: 'withdraw', amount })
+  blurSupplyInput('withdraw')
+}
+
+/**
+ * Check all withdraw detail values are loaded and valid.
+ * The action info list is expected to be opened before calling this function.
+ */
+export function checkWithdrawDetailsLoaded({
+  amountSupplied,
+  prevAmountSupplied,
+  expectedButtonText = 'Withdraw',
+  symbol = 'crvUSD',
+}: {
+  amountSupplied: Decimal
+  prevAmountSupplied: Decimal
+  expectedButtonText?: string
+  symbol?: string
+}) {
+  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol })
+  cy.get('[data-testid="supply-withdraw-submit-button"]').should('have.text', expectedButtonText)
+}
+
+/**
+ * Select max withdraw by clicking the Max chip.
+ */
+export const selectMaxWithdraw = () => {
+  cy.get('[data-testid="input-chip-Max"]', LOAD_TIMEOUT).click({ force: true })
+}
+
+/**
+ * Touch the withdraw form to refresh state after submission.
+ */
+export const touchWithdrawForm = () => touchSupplyInput('withdraw')
+
+/**
+ * Check that supply callbacks were called (onSuccess, onPricesUpdated).
+ */
+export const expectSupplyCallbacks = ({
+  onSuccess,
+  onPricesUpdated,
+  expectPricesUpdated = true,
+}: {
+  onSuccess: ReturnType<typeof cy.stub>
+  onPricesUpdated?: ReturnType<typeof cy.stub>
+  expectPricesUpdated?: boolean
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  expect(onSuccess).to.be.calledOnce
+  if (onPricesUpdated && expectPricesUpdated) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    expect(onPricesUpdated).to.be.called
+  }
+}
+
+/**
+ * Capture wallet balance before an operation for later comparison.
+ * Returns a chainable that yields the balance value.
+ */
+export const captureWalletBalance = (type: SupplyFormType) =>
+  getSupplyInputBalanceValueAttr(type).should('not.be.empty')
+
+/**
+ * Verify wallet balance changed by the expected delta after an operation.
+ */
+export const expectWalletBalanceDelta = ({
+  balanceBefore,
+  expectedDelta,
+  tolerance = '0.0001',
+  type,
+}: {
+  balanceBefore: Decimal
+  expectedDelta: Decimal
+  tolerance?: Decimal
+  type: SupplyFormType
+}) => {
+  getSupplyInputBalanceValueAttr(type)
+    .should('not.be.empty')
+    .then((balanceAfter) => {
+      const actualDelta = new BigNumber(balanceAfter as string).minus(balanceBefore)
+      const expectedDeltaBn = new BigNumber(expectedDelta)
+      const toleranceBn = new BigNumber(tolerance)
+      expect(actualDelta.minus(expectedDeltaBn).abs().lte(toleranceBn)).to.equal(true)
+    })
 }
