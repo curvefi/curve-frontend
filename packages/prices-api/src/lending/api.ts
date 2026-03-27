@@ -62,3 +62,12 @@ export async function getUserMarketCollateralEvents(
 
   return Parsers.parseUserCollateralEvents(resp)
 }
+
+export async function getRateCurve(chain: Chain, controller: string, options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetRateCurveResponse>(
+    `${host}/v1/lending/markets/${chain}/${controller}/rate_curve`,
+  )
+
+  return Parsers.parseRateCurve(resp)
+}

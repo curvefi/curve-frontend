@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { MarketTypeSuffix } from '@/llamalend/constants'
-import { formatCollateralNotional } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, getUtilizationPercent } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   MaxLeverageTooltip,
@@ -36,18 +36,15 @@ type AvailableLiquidityValues = {
 }
 
 const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityValues) => {
-  if (available == null || totalAssets == null) return {}
+  const utilization = getUtilizationPercent(available, totalAssets)
+  if (utilization == null || available == null || totalAssets == null) return {}
 
   const availableBN = new BigNumber(available)
   const capBN = new BigNumber(totalAssets)
-  if (capBN.isZero()) return {}
-
-  const usedLiquidity = capBN.minus(availableBN)
-  const utilization = usedLiquidity.div(capBN).times(100).toNumber()
 
   return {
     utilization,
-    utilizationBreakdown: `${formatLiquidity(usedLiquidity.toNumber())}/${formatLiquidity(capBN.toNumber())}`,
+    utilizationBreakdown: `${formatLiquidity(capBN.minus(availableBN).toNumber())}/${formatLiquidity(capBN.toNumber())}`,
   }
 }
 
@@ -94,7 +91,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         }
         valueTooltip={{
           title: t`Total Collateral`,
-          body: <TotalCollateralTooltip />,
+          body: <TotalCollateralTooltip {...collateral} />,
           ...TooltipOptions,
         }}
       />

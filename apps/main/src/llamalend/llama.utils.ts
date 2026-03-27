@@ -275,3 +275,11 @@ export const getBorrowRateTooltipTitle = ({
   rebasingYieldApr,
 }: Pick<MarketNetBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
   totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) ? t`Net borrow APR` : t`Borrow APR`
+
+/** Compute utilization percentage from available liquidity and total assets. */
+export const getUtilizationPercent = (available: Decimal | undefined, totalAssets: Decimal | undefined) => {
+  if (available == null || totalAssets == null) return undefined
+  const total = +totalAssets
+  if (total === 0) return undefined
+  return ((total - +available) / total) * 100
+}
