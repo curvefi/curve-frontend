@@ -6,7 +6,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { oneAddress } from '@cy/support/generators'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { checkClaimTableState, submitClaimForm } from '@cy/support/helpers/llamalend/supply.helpers'
+import { checkClaimTableState, submitClaimForm } from '@cy/support/helpers/llamalend/supply-claim.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'

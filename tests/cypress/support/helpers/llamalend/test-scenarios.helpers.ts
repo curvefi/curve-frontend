@@ -3,7 +3,13 @@ import type { Address } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from './mock-loan-test-data'
-import { createMockLendMarket, createMockMintMarket } from './mock-market.helpers'
+import {
+  createMockLendMarket,
+  createMockLendVault,
+  createMockMintMarket,
+  type MockLendEstimateGas,
+  type MockLendVault,
+} from './mock-market.helpers'
 import { seedErc20BalanceForAddresses } from './query-cache.helpers'
 
 /** Seed token balances for both collateral and borrow (crvUSD) tokens so useReadContracts doesn't make real RPC calls */
@@ -387,8 +393,15 @@ const createBaseSupplyMarket = ({
   futureApy,
 }: {
   chainId: number
-  walletBalances: { collateral: string; borrowed: string; vaultShares: string; gauge: string }
-  vaultOverrides: object
+  walletBalances: {
+    collateral: string
+    borrowed: string
+    vaultShares: string
+    gauge: string
+  }
+  vaultOverrides: Partial<Omit<MockLendVault, 'estimateGas'>> & {
+    estimateGas?: Partial<MockLendEstimateGas>
+  }
   currentApy: string
   futureApy: string
 }) => {
@@ -396,6 +409,8 @@ const createBaseSupplyMarket = ({
   const statsFutureRates = createStub(createSupplyRates(futureApy))
   const walletBalancesStub = createStub(walletBalances)
   const convertToAssets = createIdentityConvertToAssetsStub()
+  const defaultVault = createMockLendVault()
+  const { estimateGas: estimateGasOverrides, ...otherVaultOverrides } = vaultOverrides
 
   seedSupplyMarketBalances({
     chainId,
@@ -424,9 +439,13 @@ const createBaseSupplyMarket = ({
       balances: walletBalancesStub,
     },
     vault: {
-      ...createMockLendMarket({}).vault,
+      ...defaultVault,
+      ...otherVaultOverrides,
       convertToAssets,
-      ...vaultOverrides,
+      estimateGas: {
+        ...defaultVault.estimateGas,
+        ...estimateGasOverrides,
+      },
     },
   })
 
@@ -470,7 +489,6 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
       depositApprove,
       deposit,
       estimateGas: {
-        ...createMockLendMarket({}).vault.estimateGas,
         deposit: estimateGasDeposit,
         depositApprove: estimateGasDepositApprove,
       },
@@ -540,7 +558,6 @@ export const createStakeScenario = ({ chainId, approved }: { chainId: number; ap
       stakeApprove,
       stake,
       estimateGas: {
-        ...createMockLendMarket({}).vault.estimateGas,
         stake: estimateGasStake,
         stakeApprove: estimateGasStakeApprove,
       },
@@ -619,7 +636,6 @@ export const createWithdrawScenario = ({
       withdraw,
       redeem,
       estimateGas: {
-        ...createMockLendMarket({}).vault.estimateGas,
         withdraw: estimateGasWithdraw,
         redeem: estimateGasRedeem,
       },
@@ -680,7 +696,6 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     vaultOverrides: {
       unstake,
       estimateGas: {
-        ...createMockLendMarket({}).vault.estimateGas,
         unstake: estimateGasUnstake,
       },
     },
@@ -725,10 +740,6 @@ export const createClaimScenario = ({
   claimableCrv?: string
   claimableRewards?: { amount: string; symbol: string; token: Address }[]
 }) => {
-  const input = {
-    claimableCrv,
-    claimableRewards,
-  }
   const claimCrv = createStub(TEST_TX_HASH)
   const claimRewards = createStub(TEST_TX_HASH)
   const claimableCrvStub = createStub(claimableCrv)
@@ -752,7 +763,6 @@ export const createClaimScenario = ({
       claimCrv,
       claimRewards,
       estimateGas: {
-        ...createMockLendMarket({}).vault.estimateGas,
         claimCrv: estimateGasClaimCrv,
         claimRewards: estimateGasClaimRewards,
       },
@@ -760,14 +770,11 @@ export const createClaimScenario = ({
   })
 
   return {
-    input,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
       claimableCrv: [TEST_ADDRESS] as const,
       claimableRewards: [TEST_ADDRESS] as const,
-      estimateGasCrv: [] as const,
-      estimateGasRewards: [] as const,
       shouldClaimCrv: Number(claimableCrv) > 0,
       shouldClaimRewards: claimableRewards.some(({ amount }) => Number(amount) > 0),
       buttonDisabled: Number(claimableCrv) <= 0 && claimableRewards.every(({ amount }) => Number(amount) <= 0),

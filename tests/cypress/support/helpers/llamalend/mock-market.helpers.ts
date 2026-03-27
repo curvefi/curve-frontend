@@ -4,6 +4,9 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockMethod = (...args: any[]) => Promise<any>
+
 export const createMockMintMarket = (overrides: object) =>
   Object.assign(Object.create(MintMarketTemplate.prototype), {
     id: 'wsteth',
@@ -18,6 +21,100 @@ export const createMockMintMarket = (overrides: object) =>
     oraclePriceBand: cy.stub().resolves(oneDecimal(10, 20, 30)),
     ...overrides,
   }) as MintMarketTemplate
+
+const createMockLendRates = () => ({
+  borrowApr: '0.1',
+  borrowApy: '0.1',
+  lendApr: '0.04',
+  lendApy: '0.04',
+})
+
+export type MockLendStats = {
+  rates: MockMethod
+  futureRates: MockMethod
+}
+
+export const createMockLendStats = (): MockLendStats => ({
+  rates: cy.stub().resolves(createMockLendRates()),
+  futureRates: cy.stub().resolves(createMockLendRates()),
+})
+
+export type MockLendWallet = {
+  balances: MockMethod
+}
+
+export const createMockLendWallet = (): MockLendWallet => ({
+  balances: cy.stub().resolves({
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '0',
+    gauge: '0',
+  }),
+})
+
+export type MockLendEstimateGas = {
+  depositApprove: MockMethod
+  deposit: MockMethod
+  stakeApprove: MockMethod
+  stake: MockMethod
+  withdraw: MockMethod
+  redeem: MockMethod
+  unstake: MockMethod
+  claimCrv: MockMethod
+  claimRewards: MockMethod
+}
+
+export const createMockLendEstimateGas = (): MockLendEstimateGas => ({
+  depositApprove: cy.stub().resolves('120000'),
+  deposit: cy.stub().resolves('120000'),
+  stakeApprove: cy.stub().resolves('120000'),
+  stake: cy.stub().resolves('120000'),
+  withdraw: cy.stub().resolves('120000'),
+  redeem: cy.stub().resolves('120000'),
+  unstake: cy.stub().resolves('120000'),
+  claimCrv: cy.stub().resolves('120000'),
+  claimRewards: cy.stub().resolves('120000'),
+})
+
+export type MockLendVault = {
+  estimateGas: MockLendEstimateGas
+  convertToAssets: MockMethod
+  previewDeposit: MockMethod
+  previewWithdraw: MockMethod
+  depositIsApproved: MockMethod
+  depositApprove: MockMethod
+  deposit: MockMethod
+  stakeIsApproved: MockMethod
+  stakeApprove: MockMethod
+  stake: MockMethod
+  withdraw: MockMethod
+  redeem: MockMethod
+  unstake: MockMethod
+  claimableCrv: MockMethod
+  claimableRewards: MockMethod
+  claimCrv: MockMethod
+  claimRewards: MockMethod
+}
+
+export const createMockLendVault = (): MockLendVault => ({
+  estimateGas: createMockLendEstimateGas(),
+  convertToAssets: cy.stub().callsFake(async (shares: string) => shares),
+  previewDeposit: cy.stub().resolves('0'),
+  previewWithdraw: cy.stub().resolves('0'),
+  depositIsApproved: cy.stub().resolves(true),
+  depositApprove: cy.stub().resolves([]),
+  deposit: cy.stub().resolves(zeroAddress),
+  stakeIsApproved: cy.stub().resolves(true),
+  stakeApprove: cy.stub().resolves([]),
+  stake: cy.stub().resolves(zeroAddress),
+  withdraw: cy.stub().resolves(zeroAddress),
+  redeem: cy.stub().resolves(zeroAddress),
+  unstake: cy.stub().resolves(zeroAddress),
+  claimableCrv: cy.stub().resolves('0'),
+  claimableRewards: cy.stub().resolves([]),
+  claimCrv: cy.stub().resolves(zeroAddress),
+  claimRewards: cy.stub().resolves(zeroAddress),
+})
 
 export const createMockLendMarket = (overrides: object) =>
   Object.assign(Object.create(LendMarketTemplate.prototype), {
@@ -46,56 +143,8 @@ export const createMockLendMarket = (overrides: object) =>
     },
     leverage: { hasLeverage: () => false },
     leverageZapV2: { hasLeverage: () => false },
-    stats: {
-      rates: cy.stub().resolves({
-        borrowApr: '0.1',
-        borrowApy: '0.1',
-        lendApr: '0.04',
-        lendApy: '0.04',
-      }),
-      futureRates: cy.stub().resolves({
-        borrowApr: '0.1',
-        borrowApy: '0.1',
-        lendApr: '0.04',
-        lendApy: '0.04',
-      }),
-    },
-    wallet: {
-      balances: cy.stub().resolves({
-        collateral: '0',
-        borrowed: '0',
-        vaultShares: '0',
-        gauge: '0',
-      }),
-    },
-    vault: {
-      estimateGas: {
-        depositApprove: cy.stub().resolves('120000'),
-        deposit: cy.stub().resolves('120000'),
-        stakeApprove: cy.stub().resolves('120000'),
-        stake: cy.stub().resolves('120000'),
-        withdraw: cy.stub().resolves('120000'),
-        redeem: cy.stub().resolves('120000'),
-        unstake: cy.stub().resolves('120000'),
-        claimCrv: cy.stub().resolves('120000'),
-        claimRewards: cy.stub().resolves('120000'),
-      },
-      convertToAssets: cy.stub().callsFake(async (shares: string) => shares),
-      previewDeposit: cy.stub().resolves('0'),
-      previewWithdraw: cy.stub().resolves('0'),
-      depositIsApproved: cy.stub().resolves(true),
-      depositApprove: cy.stub().resolves([]),
-      deposit: cy.stub().resolves(zeroAddress),
-      stakeIsApproved: cy.stub().resolves(true),
-      stakeApprove: cy.stub().resolves([]),
-      stake: cy.stub().resolves(zeroAddress),
-      withdraw: cy.stub().resolves(zeroAddress),
-      redeem: cy.stub().resolves(zeroAddress),
-      unstake: cy.stub().resolves(zeroAddress),
-      claimableCrv: cy.stub().resolves('0'),
-      claimableRewards: cy.stub().resolves([]),
-      claimCrv: cy.stub().resolves(zeroAddress),
-      claimRewards: cy.stub().resolves(zeroAddress),
-    },
+    stats: createMockLendStats(),
+    wallet: createMockLendWallet(),
+    vault: createMockLendVault(),
     ...overrides,
   }) as LendMarketTemplate

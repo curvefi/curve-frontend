@@ -52,8 +52,8 @@ describe('WithdrawForm (mocked)', () => {
 
       submitWithdrawForm().then(() => {
         if (isFull) {
-          expect(stubs.estimateGasRedeem).to.have.been.called
-          expect(stubs.redeem).to.have.been.called
+          expect(stubs.estimateGasRedeem).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.redeem).to.have.been.calledWithExactly(...expected.submit)
           expect(stubs.withdraw).to.not.have.been.called
         } else {
           expect(stubs.estimateGasWithdraw).to.have.been.calledWithExactly(...expected.estimateGas)
