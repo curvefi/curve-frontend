@@ -5,7 +5,11 @@ import { getActionValue } from './action-info.helpers'
 
 export type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 
-const getSupplyInput = (type: SupplyFormType) => cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`)
+const getSupplyInput = (type: SupplyFormType) =>
+  cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
+
+export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
+  cy.get(`[data-testid="supply-${type}-input"] [data-testid="balance-value"]`, LOAD_TIMEOUT)
 
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
@@ -15,6 +19,12 @@ export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amoun
 export const blurSupplyInput = (type: SupplyFormType) => {
   getSupplyInput(type).blur()
   cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
+}
+
+export const touchSupplyInput = (type: SupplyFormType) => {
+  getSupplyInput(type).should('have.value', '')
+  getSupplyInput(type).type('0')
+  blurSupplyInput(type)
 }
 
 const submitSupplyForm = (testId: string, successMessage: string) => {
