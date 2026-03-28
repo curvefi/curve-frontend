@@ -6,12 +6,15 @@ import {
 } from '@cy/support/helpers/llamalend/LlamalendSupplyTestCase'
 import { SUPPLY_TEST_MARKETS } from '@cy/support/helpers/llamalend/supply-rpc.helpers'
 import {
+  checkpointTenderlySupplyRewards,
   fundUserForSupplySetup,
+  setupTenderlySupplyClaimRewards,
   setupTenderlySupplyStake,
   waitForErc20Balance,
 } from '@cy/support/helpers/llamalend/supply-setup.helpers'
 import {
   captureWalletBalance,
+  checkClaimDetailsLoaded,
   checkCurrentSuppliedAmount,
   checkDepositDetailsLoaded,
   checkStakeDetailsLoaded,
@@ -20,10 +23,12 @@ import {
   expectWalletBalanceDelta,
   expectSupplyCallbacks,
   selectMaxWithdraw,
+  submitClaimForm,
   submitDepositForm,
   submitStakeForm,
   submitUnstakeForm,
   submitWithdrawForm,
+  touchClaimForm,
   touchDepositForm,
   touchStakeForm,
   touchUnstakeForm,
@@ -34,6 +39,7 @@ import {
   writeWithdrawForm,
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
@@ -56,11 +62,36 @@ SUPPLY_TEST_MARKETS.forEach(
       const { address } = privateKeyToAccount(privateKey)
       const unstakePrivateKey = generatePrivateKey()
       const { address: unstakeAddress } = privateKeyToAccount(unstakePrivateKey)
+      const claimPrivateKey = generatePrivateKey()
+      const { address: claimAddress } = privateKeyToAccount(claimPrivateKey)
       const getVirtualNetwork = createVirtualTestnet((uuid) => ({
         slug: `supply-integration-${uuid}`,
         display_name: `SupplyIntegration (${uuid})`,
         fork_config: { block_number: 'latest' },
       }))
+      const rewardAccrualSeconds = 7 * 24 * 60 * 60
+      const legacyMarketRewardAmount = '1000' as Decimal
+      const advanceVirtualNetworkClock = (seconds: number) => {
+        const { adminRpcUrl } = getRpcUrls(getVirtualNetwork())
+
+        return cy
+          .request({
+            method: 'POST',
+            url: adminRpcUrl,
+            body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
+          })
+          .then((response) => {
+            expect(response.body.error).to.equal(undefined)
+            return cy.request({
+              method: 'POST',
+              url: adminRpcUrl,
+              body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
+            })
+          })
+          .then((response) => {
+            expect(response.body.error).to.equal(undefined)
+          })
+      }
 
       const suppliedAfterDeposit = deposit
       const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
@@ -242,6 +273,55 @@ SUPPLY_TEST_MARKETS.forEach(
               })
             })
         })
+      })
+
+      it('claims rewards', () => {
+        setupTenderlySupplyStake({
+          vnet: getVirtualNetwork(),
+          userAddress: claimAddress,
+          borrowedTokenAddress,
+          borrowedTokenDecimals,
+          vaultAddress,
+          gaugeAddress,
+          deposit,
+        })
+
+        cy.wrap(null).then(() =>
+          waitForErc20Balance({
+            vnet: getVirtualNetwork(),
+            userAddress: claimAddress,
+            tokenAddress: gaugeAddress,
+            predicate: (balance) => balance > 0n,
+            description: gaugeAddress,
+          }),
+        )
+        if (id === 'one-way-market-7') {
+          // This legacy gauge no longer accrues claimables on the latest fork, so seed a
+          // deterministic reward schedule on Tenderly and advance time before opening the claim tab.
+          setupTenderlySupplyClaimRewards({
+            vnet: getVirtualNetwork(),
+            gaugeAddress,
+            rewardTokenAddress: borrowedTokenAddress,
+            rewardTokenDecimals: borrowedTokenDecimals,
+            rewardAmount: legacyMarketRewardAmount,
+            rewardEpochSeconds: rewardAccrualSeconds,
+          })
+        }
+        cy.wrap(null).then(() => advanceVirtualNetworkClock(rewardAccrualSeconds))
+        if (id !== 'one-way-market-7') {
+          cy.wrap(null).then(() =>
+            checkpointTenderlySupplyRewards({
+              vnet: getVirtualNetwork(),
+              userAddress: claimAddress,
+              gaugeAddress,
+            }),
+          )
+        }
+        cy.mount(<SupplyTestWrapper tab="claim" privateKey={claimPrivateKey} userAddress={claimAddress} />)
+        checkClaimDetailsLoaded(id === 'one-way-market-7' ? { expectedSymbols: ['crvUSD'] } : undefined)
+        submitClaimForm().then(() => expectSupplyCallbacks({ onSuccess }))
+        touchClaimForm()
+        checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
       })
     })
   },

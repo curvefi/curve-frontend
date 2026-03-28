@@ -5,6 +5,7 @@ import { formatNumber, formatPercent } from '@ui-kit/utils'
 import { getActionValue } from './action-info.helpers'
 
 export type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
+const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
 
 const getSupplyInput = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
@@ -45,6 +46,8 @@ export const submitStakeForm = () => submitSupplyForm('supply-stake-submit-butto
 export const submitWithdrawForm = () => submitSupplyForm('supply-withdraw-submit-button', 'Withdraw successful!')
 
 export const submitUnstakeForm = () => submitSupplyForm('supply-unstake-submit-button', 'Unstake successful!')
+
+export const submitClaimForm = () => submitSupplyForm('supply-claim-submit-button', 'Claimed rewards!')
 
 export const checkSupplyActionInfoValues = ({
   supplyApy,
@@ -285,6 +288,63 @@ export function checkUnstakeDetailsLoaded({
  * Touch the unstake form to refresh state after submission.
  */
 export const touchUnstakeForm = () => touchSupplyInput('unstake')
+
+/**
+ * The claim tab has no editable inputs, so "touching" it means waiting for the
+ * post-claim refetch to settle into the empty state.
+ */
+export const touchClaimForm = () => {
+  cy.get('[data-testid="supply-claim-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
+}
+
+/**
+ * Check all claim detail values are loaded and valid.
+ */
+export function checkClaimDetailsLoaded({
+  hasRewards = true,
+  expectedSymbols,
+  checkEstimatedTxCost = hasRewards,
+}: {
+  hasRewards?: boolean
+  expectedSymbols?: string[]
+  checkEstimatedTxCost?: boolean
+} = {}) {
+  cy.get('[data-testid="supply-claim-submit-button"]', LOAD_TIMEOUT).should(
+    hasRewards ? 'not.be.disabled' : 'be.disabled',
+  )
+  cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
+
+  if (checkEstimatedTxCost) {
+    getActionValue('estimated-tx-cost').should('include', '$')
+  }
+  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+
+  if (!hasRewards) {
+    cy.contains('No rewards').should('be.visible')
+    cy.contains('There are currently no rewards to claim').should('be.visible')
+    return
+  }
+
+  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
+  cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should(($rows) => {
+    expect($rows.length).to.be.greaterThan(0)
+  })
+  cy.get('[data-testid="data-table-cell-token"]').each(($row) => {
+    const match = $row.text().replaceAll(',', '').match(CLAIMABLE_AMOUNT_REGEX)
+    expect(match?.[1]).to.not.equal(undefined)
+    expect(new BigNumber(match![1]).gt(0)).to.equal(true)
+  })
+  cy.get('[data-testid="data-table-cell-notional"]').should(($rows) => {
+    expect($rows.length).to.be.greaterThan(0)
+  })
+  cy.get('[data-testid="data-table-cell-token"]').then(($rows) => {
+    if ($rows.length > 1) cy.contains('Rewards value').should('be.visible')
+  })
+
+  expectedSymbols?.forEach((symbol) => {
+    cy.get('[data-testid="data-table-cell-token"]').contains(symbol)
+  })
+}
 
 /**
  * Check that supply callbacks were called (onSuccess, onPricesUpdated).
