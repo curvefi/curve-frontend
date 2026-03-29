@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
@@ -62,6 +62,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
   const newBandsChartEnabled = useNewBandsChart()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
+  const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
+
+  const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
+    setCandlePriceRange({ min, max })
+  }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
 
@@ -104,7 +109,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                   sx={{ alignSelf: 'center' }}
                 />
               ) : (
-                <ChartWrapper {...chart.ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
+                <ChartWrapper
+                  {...chart.ohlcChartProps}
+                  betaBackgroundColor={theme.design.Layer[1].Fill}
+                  onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
+                />
               )}
               {showBands && (
                 <BandsChart
@@ -115,6 +124,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                   chartData={bands.chartData}
                   userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
                   oraclePrice={bands.oraclePrice}
+                  priceRange={candlePriceRange}
                 />
               )}
             </Stack>

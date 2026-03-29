@@ -1,4 +1,6 @@
 export { ChartWrapper } from './ChartWrapper'
+export { PRICE_SCALE_MARGINS } from './constants'
+export type { OhlcChartProps } from './ChartWrapper'
 export { useLlammaChartSelections } from './hooks/useLlammaChartSelections'
 export { useChartTimeSettings } from './hooks/useChartTimeSettings'
 export { useLiquidationRange } from './hooks/useLiquidationRange'

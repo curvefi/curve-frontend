@@ -11,7 +11,6 @@ import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
-import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 import { TooltipContent } from './TooltipContent'
 
@@ -26,6 +25,7 @@ type BandsChartProps = {
   userBandsBalances: ParsedBandsBalances[]
   oraclePrice?: string
   height?: number
+  priceRange?: { min: number; max: number }
 }
 
 /**
@@ -46,12 +46,12 @@ const BandsChartComponent = ({
   userBandsBalances,
   oraclePrice,
   height = Height.chart,
+  priceRange,
 }: BandsChartProps) => {
   const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const derived = useDerivedChartData(chartData)
-  const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const theme = useTheme()
   const tooltipFormatter = useEChartsTooltip(chartData, theme, (data) => (
@@ -61,12 +61,7 @@ const BandsChartComponent = ({
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
   )
-  const { option: finalOption, onDataZoom } = useBandsChartZoom({
-    option,
-    chartDataLength: chartData.length,
-    initialZoomIndices,
-    userBandsBalances,
-  })
+  const finalOption = useBandsChartZoom({ option, priceRange })
 
   // Ensure the chart resizes on window resize and on initial mount (e.g., after layout/visibility changes)
   useEffect(() => {
@@ -113,7 +108,6 @@ const BandsChartComponent = ({
           option={finalOption}
           style={{ width: '100%', height: '100%' }}
           opts={{ renderer: 'canvas' }}
-          onEvents={{ datazoom: onDataZoom }}
           notMerge={true}
           lazyUpdate={true}
           autoResize={true}

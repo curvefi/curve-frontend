@@ -126,10 +126,8 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (!chartData.length) return {}
 
-  const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 0, bottom: 8 }
-  const gridRight = 16 + dataZoomWidth
-  const labelXOffset = 16 - (gridRight - dataZoomWidth)
+  const gridPadding = { left: 0, top: 0, right: 0, bottom: 8 }
+  const labelXOffset = 0
 
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)
@@ -156,7 +154,7 @@ export const getChartOptions = (
     animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
     grid: {
       left: gridPadding.left,
-      right: gridRight,
+      right: gridPadding.right,
       top: gridPadding.top,
       bottom: gridPadding.bottom,
       containLabel: true,
@@ -335,44 +333,6 @@ export const getChartOptions = (
 
       return [marketSeries, userSeries, outlineSeries]
     })(),
-    dataZoom: [
-      {
-        type: 'slider',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        right: 10,
-        width: dataZoomWidth,
-        brushSelect: false,
-        showDataShadow: false,
-        borderColor: 'none',
-        backgroundColor: palette.zoomTrackBackgroundColor,
-        fillerColor: palette.zoomThumbColor,
-        handleSize: '100%',
-        handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
-        showDetail: false,
-        labelFormatter: (value: number | string) => formatNumberWithOptions(Number(value)),
-        dataBackground: {
-          lineStyle: {
-            color: palette.gridColor,
-            opacity: 0.5,
-          },
-          areaStyle: {
-            color: palette.gridColor,
-            opacity: 0.2,
-          },
-        },
-        // Prevent filtering of markLines when zooming
-        filterMode: 'none',
-      },
-      {
-        type: 'inside',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        zoomOnMouseWheel: 'shift',
-        moveOnMouseWheel: true,
-        // Prevent filtering of markLines when zooming
-        filterMode: 'none',
-      },
-    ],
+    dataZoom: [],
   }
 }

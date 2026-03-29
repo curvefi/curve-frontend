@@ -3,6 +3,7 @@ import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
+import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import type { ChartColors } from './hooks/useChartPalette'
@@ -92,6 +93,7 @@ type Props = {
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   latestOraclePrice?: string
+  onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
 export const CandleChart = ({
@@ -110,8 +112,9 @@ export const CandleChart = ({
   liqRangeCurrentVisible,
   liqRangeNewVisible,
   latestOraclePrice,
+  onVisiblePriceRangeChange,
 }: Props) => {
-  const chartContainerRef = useRef(null)
+  const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi>(null)
 
   const newRangeSeriesRef = useRef<LiquidationRangeSeriesApi | null>(null)
@@ -201,6 +204,10 @@ export const CandleChart = ({
     ],
   )
 
+  // Keep onVisiblePriceRangeChange in a ref so handlers always call the latest version
+  const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
+  onVisiblePriceRangeChangeRef.current = onVisiblePriceRangeChange
+
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
@@ -217,7 +224,7 @@ export const CandleChart = ({
 
   // Memoized visible range change handler
   const handleVisibleLogicalRangeChange = useCallback(() => {
-    if (fetchingMoreRef.current || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
+    if (!chartRef.current || !candlestickSeriesRef.current) {
       return
     }
 
@@ -228,10 +235,25 @@ export const CandleChart = ({
       return
     }
 
-    const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
-    if (barsInfo && barsInfo.barsBefore < 50) {
-      void debouncedFetchMoreChartData.current()
-      setLastTimescale(timeScale.getVisibleRange())
+    // Fetch more data when scrolled near the left edge
+    if (!fetchingMoreRef.current && !refetchingCapped) {
+      const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+      if (barsInfo && barsInfo.barsBefore < 50) {
+        void debouncedFetchMoreChartData.current()
+        setLastTimescale(timeScale.getVisibleRange())
+      }
+    }
+
+    // Emit the actual visible price range to external consumers (e.g. BandsChart).
+    // Use RAF so the price scale has finished auto-scaling before we read it.
+    if (onVisiblePriceRangeChangeRef.current) {
+      const chart = chartRef.current
+      requestAnimationFrame(() => {
+        const priceRange = chart.priceScale('right').getVisibleRange()
+        if (priceRange) {
+          onVisiblePriceRangeChangeRef.current?.(priceRange.from, priceRange.to)
+        }
+      })
     }
   }, [refetchingCapped])
 
@@ -273,10 +295,7 @@ export const CandleChart = ({
         autoScale: true,
         alignLabels: true,
         borderVisible: false,
-        scaleMargins: {
-          top: 0.1,
-          bottom: 0.1,
-        },
+        scaleMargins: PRICE_SCALE_MARGINS,
       },
     })
     chartRef.current.timeScale()
@@ -590,10 +609,44 @@ export const CandleChart = ({
     const timeScale = chartRef.current.timeScale()
     timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
 
+    // Emit the current price range immediately so the bands chart is synced on mount/re-mount
+    const chart = chartRef.current
+    requestAnimationFrame(() => {
+      const priceRange = chart.priceScale('right').getVisibleRange()
+      if (priceRange) {
+        onVisiblePriceRangeChangeRef.current?.(priceRange.from, priceRange.to)
+      }
+    })
+
     return () => {
       timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
     }
   }, [handleVisibleLogicalRangeChange])
+
+  // Detect y-axis drag and wheel zoom.
+  // IPriceScaleApi has no subscribe method, so we use DOM events on the chart container.
+  useEffect(() => {
+    const container = chartContainerRef.current
+    if (!container) return
+
+    const emitPriceRange = () => {
+      requestAnimationFrame(() => {
+        if (!chartRef.current) return
+        const priceRange = chartRef.current.priceScale('right').getVisibleRange()
+        if (priceRange) {
+          onVisiblePriceRangeChangeRef.current?.(priceRange.from, priceRange.to)
+        }
+      })
+    }
+
+    container.addEventListener('pointerup', emitPriceRange)
+    container.addEventListener('wheel', emitPriceRange, { passive: true })
+
+    return () => {
+      container.removeEventListener('pointerup', emitPriceRange)
+      container.removeEventListener('wheel', emitPriceRange)
+    }
+  }, [])
 
   // Update liquidation range data when it changes
   useEffect(() => {
