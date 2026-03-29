@@ -61,7 +61,7 @@ const BandsChartComponent = ({
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
   )
-  const finalOption = useBandsChartZoom({ option, priceRange })
+  const finalOption = useBandsChartZoom({ option, priceRange, chartData, derived })
 
   // Ensure the chart resizes on window resize and on initial mount (e.g., after layout/visibility changes)
   useEffect(() => {
