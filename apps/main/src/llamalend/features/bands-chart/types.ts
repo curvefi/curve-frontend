@@ -22,14 +22,10 @@ export type ChartDataPoint = {
 }
 
 export type BandsChartPalette = {
-  backgroundColor: string
-  textColor: string
-  textColorInverted: string
   gridColor: string
   scaleLabelsColor: string
   marketBandColor: string
   userBandColor: string
-  borderColor: string
   userRangeHighlightColor: string
   userRangeTopLabelBackgroundColor: string
   userRangeTopLabelTextColor: string

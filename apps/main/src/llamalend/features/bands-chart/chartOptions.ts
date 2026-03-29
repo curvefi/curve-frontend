@@ -127,7 +127,6 @@ export const getChartOptions = (
   if (!chartData.length) return {}
 
   const gridPadding = { left: 0, top: 0, right: 0, bottom: 8 }
-  const labelXOffset = 0
 
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)
@@ -144,7 +143,7 @@ export const getChartOptions = (
     : []
 
   // Generate all mark lines (user range + oracle price) using coord format
-  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
+  const markLines = generateMarkLines(userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
     backgroundColor: 'transparent',
@@ -296,7 +295,7 @@ export const getChartOptions = (
                       position: 'start',
                       align: 'left',
                       verticalAlign: 'middle',
-                      offset: [-labelXOffset, 0],
+
                       ...createLabelStyle(line.lineStyle, palette),
                     },
                   },
@@ -333,6 +332,5 @@ export const getChartOptions = (
 
       return [marketSeries, userSeries, outlineSeries]
     })(),
-    dataZoom: [],
   }
 }

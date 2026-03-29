@@ -1,5 +1,5 @@
 import { formatNumberWithOptions } from './bands-chart.utils'
-import { ChartDataPoint, BandsChartPalette, UserBandsPriceRange } from './types'
+import { BandsChartPalette, UserBandsPriceRange } from './types'
 
 /**
  * MarkLine data structure for ECharts coord format
@@ -64,7 +64,6 @@ const createUserRangeMarkLines = (
 }
 
 const createOraclePriceMarkLine = (
-  _chartData: ChartDataPoint[],
   oraclePrice: string | undefined,
   xStart: number,
   xEnd: number,
@@ -78,7 +77,6 @@ const createOraclePriceMarkLine = (
 }
 
 export const generateMarkLines = (
-  chartData: ChartDataPoint[],
   userBandsPriceRange: UserBandsPriceRange,
   oraclePrice: string | undefined,
   xStart: number,
@@ -86,7 +84,7 @@ export const generateMarkLines = (
   palette: BandsChartPalette,
 ): MarkLine[] => [
   ...createUserRangeMarkLines(userBandsPriceRange, xStart, xEnd, palette),
-  ...createOraclePriceMarkLine(chartData, oraclePrice, xStart, xEnd, palette),
+  ...createOraclePriceMarkLine(oraclePrice, xStart, xEnd, palette),
 ]
 
 /**
