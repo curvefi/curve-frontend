@@ -191,7 +191,7 @@ export const createBorrowMoreScenario = ({
   const market = createMockMintMarket({
     stats: { parameters: stubs.parameters },
     estimateGas: { borrowMore: stubs.estimateGasBorrowMore, borrowMoreApprove: stubs.estimateGasBorrowMoreApprove },
-    userState: createStub({ collateral: '0', stablecoin: '0', debt: expectedCurrentDebt }),
+    userState: createStub({ collateral: '1', stablecoin: '0', debt: expectedCurrentDebt }),
     userHealth: createStub(oneDecimal(20, 80, 2)),
     borrowMoreHealth: stubs.borrowMoreHealth,
     borrowMoreMaxRecv: stubs.borrowMoreMaxRecv,

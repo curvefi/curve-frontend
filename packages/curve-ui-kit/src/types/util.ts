@@ -46,9 +46,7 @@ export type AllowUndefined<T> = { [P in keyof T]: T[P] | undefined }
 export type Query<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'error'>
 
 /** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
-export type QueryProp<T> = Query<T> & {
-  readonly __brand: 'QueryProp'
-}
+export type QueryProp<T> = Query<T> & { readonly __brand: 'QueryProp' }
 
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
@@ -70,3 +68,5 @@ export const mapQuery = <TSource, TResult>(
     data: data == null ? undefined : (selector(data) ?? undefined),
     error,
   })
+
+export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
