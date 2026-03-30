@@ -30,4 +30,5 @@ export const submitClosePositionForm = (expected: 'success' | 'error' = 'success
   submitLoanForm({
     form: 'close-position',
     message: { success: 'Position closed successfully!', error: 'Transaction failed' }[expected],
+    expected,
   })

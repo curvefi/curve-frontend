@@ -163,7 +163,7 @@ export function submitLoanForm({
   cy.get(`[data-testid="${form}-submit-button"]`, LOAD_TIMEOUT).click()
   cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
   if (expected !== 'success') {
-    return cy.get('[data-testid="loan-form-errors"]').should('be.visible')
+    return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
   }
   if (!checkMessage) {
     return cy.get('[data-testid="loan-form-errors"]').should('not.exist')

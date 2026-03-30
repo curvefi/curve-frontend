@@ -16,7 +16,7 @@ type ClosePositionOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
+  isDirty: boolean | undefined
   userAddress: Address | undefined
 }
 

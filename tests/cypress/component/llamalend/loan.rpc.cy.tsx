@@ -179,7 +179,7 @@ testCases.forEach(
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol, hasLtv: false })
         submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
-          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
+          cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
           expect(onPricesUpdated).not.to.be.called
         })
       })
