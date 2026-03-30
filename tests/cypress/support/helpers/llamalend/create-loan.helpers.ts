@@ -48,15 +48,15 @@ export const LOAN_TEST_MARKETS = {
   ],
   [LlamaMarketType.Lend]: [
     {
-      id: 'one-way-market-7',
-      label: 'sUSDe-crvUSD Old Lend Market',
-      collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
-      controllerAddress: '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+      id: 'one-way-market-3',
+      label: 'CRV-crvUSD Old Lend Market',
+      collateralAddress: '0xd533a949740bb3306d119cc777fa900ba034cd52', // CRV
+      controllerAddress: '0xeda215b7666936ded834f76f3fbc6f323295110a',
       collateral: '100',
-      borrow: '90',
-      borrowMore: '5',
-      repay: '50',
-      improveHealth: '30',
+      borrow: '3',
+      borrowMore: '1',
+      repay: '2',
+      improveHealth: '0.9',
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
       hasLeverage: false,
