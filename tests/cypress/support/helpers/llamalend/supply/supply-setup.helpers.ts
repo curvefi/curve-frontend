@@ -297,6 +297,8 @@ export const checkpointTenderlySupplyRewards = ({
   userAddress: Address
   gaugeAddress: Address
 }) =>
+  // Some gauges expose freshly accrued rewards only after a user checkpoint updates
+  // internal reward accounting for that address.
   loadTenderlyAccount().then(async (tenderlyAccount) => {
     await sendVnetTransaction({
       tenderly: { ...tenderlyAccount, vnetId: vnet.id },

@@ -1,5 +1,6 @@
 import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { oneOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
@@ -24,25 +25,10 @@ const DEFAULT_TOKEN_DECIMALS = 18
 const DEFAULT_DEPOSIT = '12.5' as Decimal
 const DEFAULT_PARTIAL_WITHDRAW = '2.5' as Decimal
 
-/**
- * Old lend markets: earlier Ethereum one-way market deployments (legacy).
- * Older contract instances and can show legacy behavior in tests (for example rewards).
- */
-export const OLD_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
-  {
-    id: 'one-way-market-7',
-    label: 'sUSDe-crvUSD Old Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x52096539ed1391CB50C6b9e4Fd18aFd2438ED23b' as Address,
-    gaugeAddress: '0x82195f78c313540e0363736b8320a256a019f7dd' as Address,
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-  },
+const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   {
     id: 'one-way-market-11',
-    label: 'sUSDe v2-crvUSD Old Lend Market',
+    label: 'sUSDe v2-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0x4a7999c55d3a93dAf72EA112985e57c2E3b9e95D' as Address,
@@ -53,7 +39,7 @@ export const OLD_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   },
   {
     id: 'one-way-market-12',
-    label: 'WETH-crvUSD Old Lend Market',
+    label: 'WETH-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0x8fb1c7AEDcbBc1222325C39dd5c1D2d23420CAe3' as Address,
@@ -62,17 +48,9 @@ export const OLD_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
   },
-] as const
-
-/**
- * New lend markets: later Ethereum one-way market deployments (current cohort).
- * Contract family is the same as old markets, but these are newer deployed instances
- * with newer market rollout parameters and more recent gauge integrations.
- */
-export const NEW_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   {
     id: 'one-way-market-41',
-    label: 'sreUSD-crvUSD New Lend Market',
+    label: 'sreUSD-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0xC32B0Cf36e06c790A568667A17DE80cba95A5Aad' as Address,
@@ -83,7 +61,7 @@ export const NEW_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   },
   {
     id: 'one-way-market-43',
-    label: 'zkBTC-crvUSD New Lend Market',
+    label: 'zkBTC-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0x01853B37bfEaF7C1557F7996aA778A0858870c70' as Address,
@@ -94,7 +72,7 @@ export const NEW_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   },
   {
     id: 'one-way-market-44',
-    label: 'UNIT0-crvUSD New Lend Market',
+    label: 'UNIT0-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0x878fC567D55fFc9c3f4ef45296b1b129bca06fe0' as Address,
@@ -105,13 +83,9 @@ export const NEW_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   },
 ] as const
 
-/** Get one old and one new lend market. */
-export const getSupplyRpcTestMarkets = (): readonly SupplyRpcTestMarket[] => [
-  OLD_LEND_SUPPLY_TEST_MARKETS[0],
-  NEW_LEND_SUPPLY_TEST_MARKETS[0],
-]
+export const supplyTestMarkets = () => [oneOf(...SUPPLY_TEST_MARKETS)]
 
-export type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
+type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 type SupplyActionType = SupplyFormType | 'claim'
 
 const getSupplyInput = (type: SupplyFormType) =>
@@ -129,7 +103,7 @@ export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amoun
   blurSupplyInput(type)
 }
 
-export const blurSupplyInput = (type: SupplyFormType) => {
+const blurSupplyInput = (type: SupplyFormType) => {
   getSupplyInput(type).blur()
   cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
 }

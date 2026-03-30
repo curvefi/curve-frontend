@@ -1,28 +1,28 @@
 import BigNumber from 'bignumber.js'
+import type { Address } from 'viem'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatUsd } from '@ui-kit/utils'
 import { getActionValue } from '../action-info.helpers'
+import { checkpointTenderlySupplyRewards } from './supply-setup.helpers'
 import { submitSupplyForm } from './supply.helpers'
 
 const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
 
-export const submitClaimForm = () => submitSupplyForm('claim', 'Claimed rewards!')
+const submitClaimForm = () => submitSupplyForm('claim', 'Claimed rewards!')
 
 export const submitClaimAndSettle = ({ waitForEmptyState = false }: { waitForEmptyState?: boolean } = {}) =>
   submitClaimForm().then(() => {
     if (waitForEmptyState) touchClaimForm()
   })
 
-export const advanceVirtualNetworkClock = ({
-  vnet,
-  seconds,
-}: {
-  vnet: CreateVirtualTestnetResponse
-  seconds: number
-}) => {
+/**
+ * Move the Tenderly vnet clock forward and mine one block so elapsed-time based
+ * reward accrual can be reflected in the next reads.
+ */
+const advanceVirtualNetworkClock = ({ vnet, seconds }: { vnet: CreateVirtualTestnetResponse; seconds: number }) => {
   const { adminRpcUrl } = getRpcUrls(vnet)
 
   return cy
@@ -44,11 +44,28 @@ export const advanceVirtualNetworkClock = ({
     })
 }
 
+export const prepareClaimRewards = ({
+  vnet,
+  userAddress,
+  gaugeAddress,
+  rewardAccrualSeconds = 7 * 24 * 60 * 60,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  gaugeAddress: Address
+  rewardAccrualSeconds?: number
+}) => {
+  // Time travel to accrue rewards for the staked position.
+  advanceVirtualNetworkClock({ vnet, seconds: rewardAccrualSeconds })
+  // Trigger gauge accounting refresh
+  return checkpointTenderlySupplyRewards({ vnet, userAddress, gaugeAddress })
+}
+
 /**
  * The claim tab has no editable inputs, so "touching" it means waiting for the
  * post-claim refetch to settle into the empty state.
  */
-export const touchClaimForm = () => {
+const touchClaimForm = () => {
   cy.get('[data-testid="supply-claim-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
 }
 
