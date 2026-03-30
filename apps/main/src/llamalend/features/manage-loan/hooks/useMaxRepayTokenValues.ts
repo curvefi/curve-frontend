@@ -44,11 +44,17 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     mapQuery(userState, (d) => d.debt),
   )
 
-  useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
-  useEffect(() => updateForm(form, { maxBorrowed: maxBorrowed.data }), [form, maxBorrowed.data])
-  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
   useEffect(
-    () => updateForm(form, { maxStateCollateral: userState.data?.collateral }),
+    () => updateForm(form, { maxCollateral: maxUserCollateral.data }, { automated: true }),
+    [form, maxUserCollateral.data],
+  )
+  useEffect(() => updateForm(form, { maxBorrowed: maxBorrowed.data }, { automated: true }), [form, maxBorrowed.data])
+  useEffect(
+    () => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data }, { automated: true })),
+    [form, isFull.data],
+  )
+  useEffect(
+    () => updateForm(form, { maxStateCollateral: userState.data?.collateral }, { automated: true }),
     [form, userState.data?.collateral],
   )
 

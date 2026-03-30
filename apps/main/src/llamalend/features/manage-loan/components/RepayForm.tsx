@@ -117,7 +117,7 @@ export const RepayForm = <ChainId extends IChainId>({
     () => () => {
       // Reset when selectedField changes and the field is dirty (unmounting the field)
       if (selectedField in form.formState.dirtyFields) {
-        updateForm(form, { [selectedField]: undefined })
+        updateForm(form, { [selectedField]: undefined }, { automated: true })
       }
     },
     [form, selectedField],

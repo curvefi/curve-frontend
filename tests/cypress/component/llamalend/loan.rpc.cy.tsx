@@ -123,7 +123,8 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        submitCreateLoanForm().then(() => expect(onPricesUpdated).to.be.called)
+        // we need to pass checkMessage=false because the form is unmounted as soon as the transaction is submitted
+        submitCreateLoanForm({ checkMessage: false }).then(() => expect(onPricesUpdated).to.be.called)
         waitUntilLendMarketUpdated(id, borrow, marketType)
       })
 
@@ -176,7 +177,7 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol, hasLtv: false })
-        submitClosePositionForm('error', 'Transaction failed').then(() => {
+        submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
           cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
           expect(onPricesUpdated).not.to.be.called

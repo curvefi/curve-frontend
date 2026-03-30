@@ -77,7 +77,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   } = useStakeMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
 
   useEffect(() => {
-    updateForm(form, { maxStakeAmount: maxUserStake.data })
+    updateForm(form, { maxStakeAmount: maxUserStake.data }, { automated: true })
   }, [form, maxUserStake.data])
 
   const { formState } = form

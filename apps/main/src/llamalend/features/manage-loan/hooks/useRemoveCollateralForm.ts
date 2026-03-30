@@ -80,7 +80,7 @@ export const useRemoveCollateralForm = <
   useCallbackSync(useRemoveCollateralPrices(params, enabled), onPricesUpdated)
 
   useEffect(() => {
-    updateForm(form, { maxCollateral: maxRemovable.data })
+    updateForm(form, { maxCollateral: maxRemovable.data }, { automated: true })
   }, [form, maxRemovable.data])
 
   const isPending = formState.isSubmitting || action.isPending

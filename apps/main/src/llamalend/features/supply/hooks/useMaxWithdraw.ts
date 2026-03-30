@@ -28,9 +28,12 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
     getIsWithdrawFull(params.withdrawAmount ?? undefined, maxAmountQuery),
   )
 
-  useEffect(() => updateForm(form, { maxWithdrawAmount: maxWithdrawAmount.data }), [form, maxWithdrawAmount.data])
   useEffect(
-    () => updateForm(form, { userVaultShares: userBalances.data.depositedShares }),
+    () => updateForm(form, { maxWithdrawAmount: maxWithdrawAmount.data }, { automated: true }),
+    [form, maxWithdrawAmount.data],
+  )
+  useEffect(
+    () => updateForm(form, { userVaultShares: userBalances.data.depositedShares }, { automated: true }),
     [form, userBalances.data.depositedShares],
   )
   useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])

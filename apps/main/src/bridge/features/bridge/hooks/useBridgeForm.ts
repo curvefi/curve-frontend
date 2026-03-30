@@ -92,14 +92,14 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   )
 
   useEffect(() => {
-    updateForm(form, { walletBalance: walletBalance.balance })
+    updateForm(form, { walletBalance: walletBalance.balance }, { automated: true })
   }, [form, walletBalance.balance])
 
   // Fetch bridge capacity for form validation
   const { data: capacity, isLoading: capacityLoading } = useBridgeCapacity({ chainId })
 
   useEffect(() => {
-    updateForm(form, { min: capacity?.min, max: capacity?.max })
+    updateForm(form, { min: capacity?.min, max: capacity?.max }, { automated: true })
   }, [form, capacity?.max, capacity?.min])
 
   // Approve mutation (High chane it'll get merged into the bridge mutation later on as it deviates from the usual approve/execute flow with a single button click)
@@ -144,7 +144,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
 
   useEffect(() => {
     const network = supportedNetworks.find((network) => network.chainId === chainId)
-    updateForm(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId })
+    updateForm(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId }, { automated: true })
   }, [form, supportedNetworks, chainId])
 
   // Form errors

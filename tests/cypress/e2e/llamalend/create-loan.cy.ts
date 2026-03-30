@@ -26,7 +26,7 @@ describe.skip('Create loan', () => {
       checkLoanDetailsLoaded({ leverageEnabled })
       checkLoanRangeSlider({ leverageEnabled })
       // e2e tests run with a 'fake' account so the transaction fails
-      submitCreateLoanForm('error', 'Transaction failed').then(() =>
+      submitCreateLoanForm({ expected: 'error' }).then(() =>
         cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
       )
     })

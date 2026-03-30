@@ -49,14 +49,14 @@ export function useMaxTokenValues(
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
       const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      updateForm(form, { debt, maxDebt })
+      updateForm(form, { debt, maxDebt }, { automated: true })
       pendingRatioRef.current = null
     } else {
-      updateForm(form, { maxDebt })
+      updateForm(form, { maxDebt }, { automated: true })
     }
   }, [form, maxDebt])
 
-  useEffect(() => updateForm(form, { maxCollateral }), [form, maxCollateral])
+  useEffect(() => updateForm(form, { maxCollateral }, { automated: true }), [form, maxCollateral])
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(

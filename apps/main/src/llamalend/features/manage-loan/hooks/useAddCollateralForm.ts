@@ -76,7 +76,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useAddCollateralPrices(params, enabled), onPricesUpdated)
 
   useEffect(() => {
-    updateForm(form, { maxCollateral: maxCollateral.data })
+    updateForm(form, { maxCollateral: maxCollateral.data }, { automated: true })
   }, [form, maxCollateral.data])
 
   const isPending = formState.isSubmitting || action.isPending

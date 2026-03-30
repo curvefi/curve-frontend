@@ -17,6 +17,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 export function updateForm<TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
   updates: FormUpdates<TFieldValues>,
+  { automated = false }: { automated?: boolean } = {},
 ): void {
   const changes = recordEntries(updates).filter(([field, value]) => form.getValues(field) !== value)
   if (!changes.length) return // no changes, skip revalidation
@@ -24,8 +25,8 @@ export function updateForm<TFieldValues extends FieldValues>(
     // eslint-disable-next-line no-restricted-syntax
     form.setValue(field as Path<TFieldValues>, value, {
       shouldValidate: false, // we revalidate just below.
-      shouldDirty: true,
-      shouldTouch: true,
+      shouldDirty: !automated,
+      shouldTouch: !automated,
     }),
   )
   // eslint-disable-next-line no-restricted-syntax

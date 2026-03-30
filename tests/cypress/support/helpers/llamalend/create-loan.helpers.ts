@@ -149,12 +149,39 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   checkLoanDetailsLoaded({ leverageEnabled })
 }
 
+export function submitLoanForm({
+  form,
+  message,
+  expected = 'success',
+  checkMessage = true,
+}: {
+  form: string
+  message: string
+  expected?: AlertColor
+  checkMessage?: boolean
+}) {
+  cy.get(`[data-testid="${form}-submit-button"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
+  if (expected !== 'success') {
+    return cy.get('[data-testid="loan-form-errors"]').should('be.visible')
+  }
+  if (!checkMessage) {
+    return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  }
+  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  return cy.get('[data-testid="loan-form-success-alert"]').should('be.visible')
+}
+
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export function submitCreateLoanForm(expected: AlertColor = 'success', message = 'Loan created') {
-  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
-    .contains(message, TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitCreateLoanForm = ({
+  expected = 'success',
+  checkMessage,
+}: { expected?: 'success' | 'error'; checkMessage?: boolean } = {}) =>
+  submitLoanForm({
+    form: 'create-loan',
+    message: { error: 'Transaction failed', success: 'Loan created' }[expected],
+    expected,
+    checkMessage,
+  })

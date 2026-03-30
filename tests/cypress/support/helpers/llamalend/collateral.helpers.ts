@@ -1,4 +1,5 @@
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui-kit/utils'
 import { getActionValue, touchInput } from './action-info.helpers'
@@ -6,13 +7,10 @@ import { getActionValue, touchInput } from './action-info.helpers'
 export const getCollateralInput = (testId: 'add-collateral-input' | 'remove-collateral-input') =>
   cy.get(`[data-testid="${testId}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
-export const submitCollateralForm = (buttonTestId: string, message: string) =>
-  cy
-    .get(`[data-testid="${buttonTestId}"]`, LOAD_TIMEOUT)
-    .click()
-    .then(() => {
-      cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
-    })
+export const submitCollateralAddForm = () => submitLoanForm({ form: 'add-collateral', message: 'Collateral added' })
+
+export const submitCollateralRemoveForm = () =>
+  submitLoanForm({ form: 'remove-collateral', message: 'Collateral removed' })
 
 export const touchCollateralForm = (testId: 'add-collateral-input' | 'remove-collateral-input') =>
   touchInput(() => getCollateralInput(testId))

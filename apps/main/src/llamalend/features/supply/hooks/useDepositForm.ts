@@ -80,7 +80,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   const { formState } = form
 
   useEffect(() => {
-    updateForm(form, { maxDepositAmount: maxUserDeposit.data })
+    updateForm(form, { maxDepositAmount: maxUserDeposit.data }, { automated: true })
   }, [form, maxUserDeposit.data])
 
   const isPending = formState.isSubmitting || isDepositing

@@ -40,7 +40,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
 
   // Sync userBalance from query into form for validation
-  useEffect(() => updateForm(form, { userBalance }), [userBalance, form])
+  useEffect(() => updateForm(form, { userBalance }, { automated: true }), [userBalance, form])
 
   if (isPendingRewardDistributors) {
     return <BlockSkeleton height={440} />

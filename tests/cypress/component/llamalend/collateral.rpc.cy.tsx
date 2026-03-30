@@ -4,7 +4,8 @@ import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helper
 import {
   checkCurrentCollateral,
   getCollateralInput,
-  submitCollateralForm,
+  submitCollateralAddForm,
+  submitCollateralRemoveForm,
   touchCollateralForm,
 } from '@cy/support/helpers/llamalend/collateral.helpers'
 import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.helpers'
@@ -81,9 +82,7 @@ describe('Collateral forms', () => {
           )
           getActionValue('borrow-collateral').should('equal', formatNumber(collateralAfterAdd, { abbreviate: false }))
 
-          submitCollateralForm('add-collateral-submit-button', 'Collateral added').then(
-            () => expect(onSuccess).to.be.calledOnce,
-          )
+          submitCollateralAddForm().then(() => expect(onSuccess).to.be.calledOnce)
 
           touchCollateralForm('add-collateral-input')
           checkCurrentCollateral(collateralAfterAdd)
@@ -102,9 +101,7 @@ describe('Collateral forms', () => {
             formatNumber(collateralAfterRemove, { abbreviate: false }),
           )
 
-          submitCollateralForm('remove-collateral-submit-button', 'Collateral removed').then(
-            () => expect(onSuccess).to.be.calledOnce,
-          )
+          submitCollateralRemoveForm().then(() => expect(onSuccess).to.be.calledOnce)
 
           touchCollateralForm('remove-collateral-input')
           checkCurrentCollateral(collateralAfterRemove)

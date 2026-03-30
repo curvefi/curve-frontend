@@ -88,7 +88,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const { formState } = form
 
   useEffect(() => {
-    updateForm(form, { maxUnstakeAmount: maxUserUnstake.data })
+    updateForm(form, { maxUnstakeAmount: maxUserUnstake.data }, { automated: true })
   }, [form, maxUserUnstake.data])
 
   const isPending = formState.isSubmitting || isUnstaking
