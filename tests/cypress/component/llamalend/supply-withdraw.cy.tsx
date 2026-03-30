@@ -7,9 +7,8 @@ import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestW
 import {
   checkSupplyActionInfoValues,
   checkSupplySubmitButtonText,
-  submitWithdrawForm,
-  writeWithdrawForm,
-} from '@cy/support/helpers/llamalend/supply.helpers'
+} from '@cy/support/helpers/llamalend/supply/supply.helpers'
+import { submitWithdrawForm, writeWithdrawForm } from '@cy/support/helpers/llamalend/supply/withdraw.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createWithdrawScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Chain } from '@ui-kit/utils'

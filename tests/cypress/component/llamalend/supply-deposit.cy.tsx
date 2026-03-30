@@ -4,12 +4,11 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { submitDepositForm, writeDepositForm } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
 import {
   checkSupplyActionInfoValues,
   checkSupplySubmitButtonText,
-  submitDepositForm,
-  writeDepositForm,
-} from '@cy/support/helpers/llamalend/supply.helpers'
+} from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createDepositScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Chain } from '@ui-kit/utils'

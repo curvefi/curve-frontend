@@ -5,8 +5,11 @@ import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneAddress } from '@cy/support/generators'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { checkClaimTableState, submitClaimForm } from '@cy/support/helpers/llamalend/supply-claim.helpers'
-import { checkSupplyActionInfoValues } from '@cy/support/helpers/llamalend/supply.helpers'
+import {
+  checkClaimDetailsLoaded,
+  checkClaimTableState,
+  submitClaimForm,
+} from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Chain } from '@ui-kit/utils'
@@ -67,7 +70,7 @@ describe('ClaimTab (mocked)', () => {
 
       if (expected.buttonDisabled) return
 
-      checkSupplyActionInfoValues({ checkEstimatedTxCost: true })
+      checkClaimDetailsLoaded({ checkEstimatedTxCost: true })
 
       submitClaimForm().then(() => {
         if (expected.shouldClaimCrv) {
