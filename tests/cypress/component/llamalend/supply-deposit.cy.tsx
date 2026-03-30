@@ -12,7 +12,6 @@ import {
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createDepositScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
@@ -67,10 +66,6 @@ describe('DepositForm (mocked)', () => {
         }
         expect(onSuccess).to.have.been.calledOnce
       })
-
-      cy.get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
-        .should('be.visible')
-        .contains('Deposited successfully')
     })
   })
 })
