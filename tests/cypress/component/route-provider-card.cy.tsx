@@ -1,7 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { allViewports } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
-import { q } from '@ui-kit/types/util'
+import { constQ } from '@ui-kit/types/util'
 import { RouteProviderIcons } from '@ui-kit/widgets/RouteProvider'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
@@ -42,11 +42,7 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
             value: '0',
           },
         }}
-        tokenOut={{
-          symbol: 'crvUSD',
-          decimals: 18,
-          usdRate: q({ data: 1, isLoading: false, error: null }),
-        }}
+        tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) }}
         isSelected={isSelected}
         bestOutputAmount="69.4241"
         providerLabel="Curve"
