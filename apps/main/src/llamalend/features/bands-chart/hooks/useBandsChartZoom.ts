@@ -17,11 +17,12 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
   useMemo(() => {
     if (!priceRange) return option
 
-    // getVisibleRange() returns content range excluding scale margins — expand by the same
-    // fractions so price levels align visually with the candle chart.
+    // getVisibleRange() returns the content range (excl. margins). The full axis span is
+    // content_span / (1 - top - bottom); each margin then adds margin * fullSpan to the axis.
     const span = priceRange.max - priceRange.min
-    const yMin = priceRange.min - PRICE_SCALE_MARGINS.bottom * span
-    const yMax = priceRange.max + PRICE_SCALE_MARGINS.top * span
+    const fullSpan = span / (1 - PRICE_SCALE_MARGINS.top - PRICE_SCALE_MARGINS.bottom)
+    const yMin = priceRange.min - PRICE_SCALE_MARGINS.bottom * fullSpan
+    const yMax = priceRange.max + PRICE_SCALE_MARGINS.top * fullSpan
 
     const visibleMax = chartData.reduce(
       (max, d, i) =>
