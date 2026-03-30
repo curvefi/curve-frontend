@@ -126,7 +126,7 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (!chartData.length) return {}
 
-  const gridPadding = { left: 0, top: 0, right: 0, bottom: 8 }
+  const gridPadding = { left: 0, top: 0, right: 4, bottom: 8 }
 
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)

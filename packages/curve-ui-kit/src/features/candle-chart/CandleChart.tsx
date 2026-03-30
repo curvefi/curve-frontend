@@ -208,6 +208,19 @@ export const CandleChart = ({
   const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
   onVisiblePriceRangeChangeRef.current = onVisiblePriceRangeChange
 
+  // Emit the current price scale range to external consumers (e.g. BandsChart).
+  // Must be called after any operation that causes the price scale to rescale
+  // (liquidation range data updates, y-axis drag, wheel zoom, etc.).
+  const emitPriceRange = useCallback(() => {
+    requestAnimationFrame(() => {
+      if (!chartRef.current) return
+      const priceRange = chartRef.current.priceScale('right').getVisibleRange()
+      if (priceRange) {
+        onVisiblePriceRangeChangeRef.current?.(priceRange.from, priceRange.to)
+      }
+    })
+  }, [])
+
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
@@ -610,34 +623,18 @@ export const CandleChart = ({
     timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
 
     // Emit the current price range immediately so the bands chart is synced on mount/re-mount
-    const chart = chartRef.current
-    requestAnimationFrame(() => {
-      const priceRange = chart.priceScale('right').getVisibleRange()
-      if (priceRange) {
-        onVisiblePriceRangeChangeRef.current?.(priceRange.from, priceRange.to)
-      }
-    })
+    emitPriceRange()
 
     return () => {
       timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
     }
-  }, [handleVisibleLogicalRangeChange])
+  }, [handleVisibleLogicalRangeChange, emitPriceRange])
 
   // Detect y-axis drag and wheel zoom.
   // IPriceScaleApi has no subscribe method, so we use DOM events on the chart container.
   useEffect(() => {
     const container = chartContainerRef.current
     if (!container) return
-
-    const emitPriceRange = () => {
-      requestAnimationFrame(() => {
-        if (!chartRef.current) return
-        const priceRange = chartRef.current.priceScale('right').getVisibleRange()
-        if (priceRange) {
-          onVisiblePriceRangeChangeRef.current?.(priceRange.from, priceRange.to)
-        }
-      })
-    }
 
     container.addEventListener('pointerup', emitPriceRange)
     container.addEventListener('wheel', emitPriceRange, { passive: true })
@@ -646,7 +643,7 @@ export const CandleChart = ({
       container.removeEventListener('pointerup', emitPriceRange)
       container.removeEventListener('wheel', emitPriceRange)
     }
-  }, [])
+  }, [emitPriceRange])
 
   // Update liquidation range data when it changes
   useEffect(() => {
@@ -697,7 +694,10 @@ export const CandleChart = ({
       const normalized = historicalRanges[index] ? normalizeLiquidationRangePoints(historicalRanges[index]) : []
       series.setData(normalized)
     })
-  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
+
+    // Liquidation range data can expand the price scale — re-emit so the bands chart stays in sync.
+    emitPriceRange()
+  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible, emitPriceRange])
 
   // Update liquidation range series colors and price line styling
   useEffect(() => {
