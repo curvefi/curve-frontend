@@ -325,8 +325,13 @@ export const createLightDesign = (
       Positive: Greens[400],
       Negative: Reds[600],
       Line1: Color.Primary[500],
-      Line2: Yellows[600],
-      Line3: Color.Secondary[500],
+      Line2: Color.Secondary[500],
+      Line3: Yellows[600],
+      Line4: Violets[500],
+      Line5: Oranges[500],
+      Line6: Blues[300],
+      Line7: Greens[300],
+      Line8: Reds[700],
     },
   } as const
 
@@ -775,8 +780,13 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Positive: Greens[300],
       Negative: Reds[500],
       Line1: Color.Primary[500],
-      Line2: Yellows[600],
-      Line3: Color.Secondary[500],
+      Line2: Color.Secondary[500],
+      Line3: Yellows[500],
+      Line4: Blues[400],
+      Line5: Oranges[500],
+      Line6: Blues[300],
+      Line7: Greens[300],
+      Line8: Reds[200],
     },
   } as const
 
@@ -1186,8 +1196,13 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Positive: Greens[400],
       Negative: Reds[600],
       Line1: Color.Primary[500],
-      Line2: Yellows[600],
-      Line3: Color.Secondary[500],
+      Line2: Color.Secondary[500],
+      Line3: Yellows[600],
+      Line4: Violets[600],
+      Line5: Oranges[500],
+      Line6: Blues[300],
+      Line7: Greens[300],
+      Line8: Reds[700],
     },
   } as const
 

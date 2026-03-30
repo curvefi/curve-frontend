@@ -99,22 +99,19 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
       <Grid container spacing={Spacing.md}>
         <Grid size={12}>
           <CardHeader
-            title={
-              <Stack direction="row" gap={2} justifyContent="space-between">
-                {t`Market Details`}
-                <Stack direction="row">
-                  <CopyIconButton
-                    label={t`Copy market address`}
-                    copyText={controllerAddress}
-                    confirmationText={t`Market address copied`}
-                    data-testid={`copy-market-address-${controllerAddress}`}
-                  />
-                  <FavoriteMarketButton address={favoriteKey} />
-                </Stack>
+            title={t`Market Details`}
+            action={
+              <Stack direction="row" gap={Spacing.sm}>
+                <CopyIconButton
+                  label={t`Copy market address`}
+                  copyText={controllerAddress}
+                  confirmationText={t`Market address copied`}
+                  data-testid={`copy-market-address-${controllerAddress}`}
+                />
+                <FavoriteMarketButton address={favoriteKey} />
               </Stack>
             }
-            sx={{ paddingInline: 0 }}
-          ></CardHeader>
+          />
         </Grid>
         <RateItem market={market} type={MarketRateType.Borrow} />
         <RateItem market={market} type={MarketRateType.Supply} />

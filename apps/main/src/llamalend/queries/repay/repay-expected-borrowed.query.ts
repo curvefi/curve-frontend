@@ -64,7 +64,8 @@ export const {
         const { stablecoins, routeIdx } = await impl.repayStablecoins(...args)
         return { totalBorrowed: stablecoins[routeIdx] as Decimal }
       }
-      case 'unleveraged':
+      case 'unleveragedMint':
+      case 'unleveragedLend':
         return {
           totalBorrowed: decimal(getUserDebtFromQueryCache({ chainId, marketId, userAddress }) - +userBorrowed)!,
         }

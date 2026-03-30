@@ -1,28 +1,21 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type FieldsOf } from '@ui-kit/lib'
+import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
+import type { Decimal } from '@primitives/decimal.utils'
+import { combineQueryState, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { q } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
 
-const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = queryFactory({
+const { useQuery: useUserPricesQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
-  queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<string[]> => {
-    const market = getLlamaMarket(marketId)
-
-    if (market instanceof LendMarketTemplate) {
-      return await market.userPrices()
-    } else {
-      return await market.userPrices(userAddress)
-    }
-  },
+  queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
+    (await getUserPositionImplementation(marketId).userPrices(userAddress)) as Range<Decimal>,
   category: 'llamalend.user',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
     marketIdValidationSuite(params)
@@ -30,15 +23,8 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
   }),
 })
 
-export { invalidateUserPrices }
-
-export const useUserPrices = (params: UserMarketParams) => {
-  const { data: loanExists, isLoading: isLoanExistsLoading, error: loanExistsError } = useLoanExists(params)
-  const queryResult = useUserPricesQuery({ ...params, loanExists })
-
-  return {
-    ...q(queryResult),
-    isLoading: isLoanExistsLoading || queryResult.isLoading,
-    error: loanExistsError || queryResult.error,
-  }
+export const useUserPrices = (params: UserMarketParams, enabled?: boolean) => {
+  const loan = useLoanExists(params, enabled)
+  const prices = useUserPricesQuery({ ...params, loanExists: loan.data }, enabled)
+  return { ...q(prices), ...combineQueryState(loan, prices) }
 }

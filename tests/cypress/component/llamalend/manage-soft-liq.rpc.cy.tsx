@@ -28,15 +28,7 @@ describe('Manage soft liquidation', () => {
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
     if (!market) return <Skeleton />
     const Component = { 'improve-health': ImproveHealthForm, 'close-position': ClosePositionForm }[tab]
-    return (
-      <Component
-        market={market}
-        networks={softLiqNetworks}
-        chainId={chainId}
-        enabled={isHydrated}
-        onPricesUpdated={cy.stub()}
-      />
-    )
+    return <Component market={market} networks={softLiqNetworks} chainId={chainId} enabled={isHydrated} />
   }
 
   const TestComponentWrapper = ({ children }: { children: ReactNode }) => (

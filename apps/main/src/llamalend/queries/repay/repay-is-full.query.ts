@@ -4,6 +4,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
+/** Returns whether the planned repay fully closes the loan, whether repayment comes from debt token, wallet collateral, or position collateral. */
 export const {
   useQuery: useRepayIsFull,
   invalidate: invalidateRepayIsFull,
@@ -49,7 +50,8 @@ export const {
         return await impl.repayIsFull(...args, userAddress)
       case 'deleverage':
         return await impl.isFullRepayment(...args, userAddress)
-      case 'unleveraged':
+      case 'unleveragedLend':
+      case 'unleveragedMint':
         // For unleveraged markets, full repayment is when userBorrowed >= userDebt
         return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }

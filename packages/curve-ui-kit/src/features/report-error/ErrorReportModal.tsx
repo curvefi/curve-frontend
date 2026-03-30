@@ -44,7 +44,6 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
       open={isOpen}
       onClose={onClose}
       title={t`Submit error report`}
-      titleColor="textSecondary"
       compact
       footer={
         <Button

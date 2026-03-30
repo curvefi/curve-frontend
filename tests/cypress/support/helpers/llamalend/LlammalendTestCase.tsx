@@ -46,14 +46,15 @@ type LoanFlowTestProps = {
 } & UserMarketQuery<LlamaChainId>
 
 function LlammalendTest({ tab, ...props }: LoanFlowTestProps) {
-  const { data: loanExists } = useLoanExists(props)
-  const marketId = useCurve().isHydrated && props.marketId
+  const { isHydrated } = useCurve()
+  const { data: loanExists } = useLoanExists(props, isHydrated)
+  const marketId = isHydrated && props.marketId
   const market = useMemo(() => marketId && getLlamaMarket(marketId), [marketId])
 
   if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
   const Component = loanExists ? Components[tab!] : CreateLoanForm
-  return <Component market={market} networks={networks} {...props} />
+  return <Component market={market} networks={networks} enabled {...props} />
 }
 
 export type LlammalendTestCaseProps = LoanFlowTestProps & TenderlyWagmiConfigFromVNet

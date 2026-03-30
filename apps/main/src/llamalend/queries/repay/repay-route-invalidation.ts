@@ -1,6 +1,7 @@
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RouteResponse } from '@primitives/router.utils'
 import { invalidateRepayExpectedBorrowed, refetchRepayExpectedBorrowed } from './repay-expected-borrowed.query'
+import { invalidateRepayFutureLeverage, refetchRepayFutureLeverage } from './repay-future-leverage.query'
 import { invalidateRepayEstimateGasQueries, refetchRepayEstimateGasQueries } from './repay-gas-estimate.query'
 import { invalidateRepayHealth, refetchRepayHealth } from './repay-health.query'
 import { invalidateRepayIsApproved, refetchRepayIsApproved } from './repay-is-approved.query'
@@ -20,6 +21,7 @@ const refetch = [
   refetchRepayPriceImpact,
   refetchRepayPrices,
   refetchRepayRouteImage,
+  refetchRepayFutureLeverage,
 ]
 const invalidate = [
   invalidateRepayExpectedBorrowed,
@@ -31,6 +33,7 @@ const invalidate = [
   invalidateRepayPriceImpact,
   invalidateRepayPrices,
   invalidateRepayRouteImage,
+  invalidateRepayFutureLeverage,
 ]
 export const invalidateOrRefetchRepayRouteQueries = async (
   route: RouteResponse | undefined,

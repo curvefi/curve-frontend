@@ -3,7 +3,7 @@ import type { IFastBridgeNetwork } from '@curvefi/api/lib/bridge'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { NetworkDef } from '@ui/utils'
-import { q } from '@ui-kit/types/util'
+import { constQ } from '@ui-kit/types/util'
 import { Chain, decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { BridgeActionInfos } from './BridgeActionInfos'
@@ -33,11 +33,11 @@ const SupportedNetworks: IFastBridgeNetwork[] = [
 ]
 
 // Mock networks for chain selection
-const BridgeNetworks = [
-  { chainId: Chain.Arbitrum, id: 'arbitrum', name: 'Arbitrum' },
-  { chainId: Chain.Optimism, id: 'optimism', name: 'Optimism' },
-  { chainId: Chain.Fraxtal, id: 'fraxtal', name: 'Fraxtal' },
-] as NetworkDef[]
+const BridgeNetworks: NetworkDef[] = [
+  { chainId: Chain.Arbitrum, id: 'arbitrum', name: 'Arbitrum', symbol: 'ETH' } as NetworkDef,
+  { chainId: Chain.Optimism, id: 'optimism', name: 'Optimism', symbol: 'ETH' } as NetworkDef,
+  { chainId: Chain.Fraxtal, id: 'fraxtal', name: 'Fraxtal', symbol: 'FRAX' } as NetworkDef,
+]
 
 const BridgeForm = (props: BridgeFormContentParams) => {
   const [fromChainId, setFromChainId] = useState(SupportedNetworks[0].chainId)
@@ -75,9 +75,10 @@ const BridgeForm = (props: BridgeFormContentParams) => {
       footer={
         <>
           <BridgeActionInfos
-            bridgeCost={q({ data: 0.69, isLoading: false, error: null })}
-            gas={q({ data: { estGasCostUsd: 0.12 }, isLoading: false, error: null })}
+            bridgeCost={constQ(0.69)}
+            gas={constQ({ estGasCostUsd: 0.12 })}
             isApproved={isApproved}
+            nativeTokenSymbol={BridgeNetworks.find((n) => n.chainId === fromChainId)!.symbol}
           />
           <BridgeInfoAlert />
         </>

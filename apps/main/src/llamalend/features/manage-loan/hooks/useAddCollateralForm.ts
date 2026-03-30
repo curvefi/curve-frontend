@@ -5,6 +5,7 @@ import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
+import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   addCollateralFormValidationSuite,
@@ -12,19 +13,25 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import type { Decimal } from '@primitives/decimal.utils'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { type Range } from '@ui-kit/types/util'
+import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
   onSuccess,
+  onPricesUpdated,
+  enabled,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  enabled: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -46,7 +53,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): CollateralParams<ChainId> => ({
         chainId,
@@ -69,6 +76,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const { formState } = form
   useCallbackAfterFormUpdate(form, action.reset)
+  useCallbackSync(useAddCollateralPrices(params, enabled), onPricesUpdated)
 
   useEffect(() => {
     updateForm(form, { maxCollateral: maxCollateral.data })
@@ -80,7 +88,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,

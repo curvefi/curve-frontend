@@ -1,28 +1,28 @@
 import { BigNumber } from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
-import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { getUserHealthOptions, useUserState } from '@/llamalend/queries/user'
-import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
+import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/useLeverageInfoFields'
+import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { combineQueriesMeta, combineQueryState } from '@ui-kit/lib/queries/combine'
-import { mapQuery, q, type Query } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
+import { decimal, decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -33,36 +33,33 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
 function useRepayRemainingDebt<ChainId extends IChainId>(
   {
     params,
-    borrowToken,
     swapRequired,
+    prevDebt,
   }: {
     params: RepayParams<ChainId>
     swapRequired: boolean
-    borrowToken: Token | undefined
+    prevDebt: Query<Decimal | null>
   },
   { isFull, userBorrowed }: Pick<RepayForm, 'userBorrowed' | 'isFull'>,
   enabled: boolean,
-): Query<{ value: Decimal; tokenSymbol: string | undefined } | null> {
-  const userStateQuery = useUserState(params, enabled)
-  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && swapRequired)
-  const tokenSymbol = borrowToken?.symbol
-  return isFull && userBorrowed // when userBorrowed isn't set, the isFull query is disabled
-    ? { data: { value: '0', tokenSymbol }, isLoading: false, error: null }
+) {
+  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled)
+  const prev = prevDebt.data
+  const debt: QueryProp<Decimal | null> = isFull
+    ? constQ('0')
     : swapRequired
-      ? mapQuery(expectedBorrowedQuery, (d) => ({ value: d.totalBorrowed, tokenSymbol }))
-      : {
-          data: userStateQuery.data && {
-            value: remainingDebt(userStateQuery.data.debt, userBorrowed ?? '0'),
-            tokenSymbol,
-          },
-          ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),
+      ? {
+          data: prev && expectedBorrowedQuery.data && remainingDebt(prev, expectedBorrowedQuery.data.totalBorrowed),
+          ...combineQueryState(prevDebt, expectedBorrowedQuery),
         }
+      : mapQuery(prevDebt, () => prev && remainingDebt(prev, userBorrowed ?? '0'))
+  return { debt, debtDelta: debt.data && prev && decimalMinus(debt.data, prev) }
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
   market,
   params,
-  values: { slippage, userCollateral, userBorrowed, isFull },
+  values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
@@ -70,6 +67,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   swapRequired,
   routes,
   form,
+  prices,
+  prevPrices,
 }: {
   market: LlamaMarketTemplate | undefined
   params: RepayParams<ChainId>
@@ -81,32 +80,15 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   swapRequired: boolean
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayForm>
+  prices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal>>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
-  const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
-  const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
-  const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
-  const debtDelta = q({
-    data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
-    ...combineQueryState(prevDebt, debt),
-  })
-
-  const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
-    {
-      market,
-      params,
-      marketRates: q(useMarketRates(params, isOpen)),
-      marketFutureRates: q(
-        useMarketFutureRates(
-          {
-            chainId: params.chainId,
-            marketId: params.marketId,
-            debt: debtDelta.data,
-          },
-          isOpen && !!debtDelta.data,
-        ),
-      ),
-    },
+  const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
+  const { prevCollateral, prevDebt } = prevLoanState
+  const { debt, debtDelta } = useRepayRemainingDebt(
+    { params, swapRequired, prevDebt },
+    { isFull, userBorrowed },
     isOpen,
   )
 
@@ -116,17 +98,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
-      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
+      prices={prices}
       isFullRepay={isFull}
-      prevRates={marketRates}
-      rates={marketFutureRates}
-      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
-      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       debt={q(debt)}
-      prevDebt={prevDebt}
-      prevCollateral={prevCollateral}
-      prices={q(useRepayPrices(params, isOpen))}
-      // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -136,22 +110,29 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
             collateralToken,
             borrowToken,
             collateralDelta: userCollateral && `${-+userCollateral}`,
-            expectedBorrowed: debt?.data?.value,
+            expectedBorrowed: debt?.data,
           },
           isOpen,
         ),
       )}
-      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
-      collateralSymbol={collateralToken?.symbol}
-      routes={routes}
-      borrowSymbol={borrowToken?.symbol}
-      {...(hasLeverage &&
-        swapRequired && {
-          leverageEnabled: swapRequired,
-          slippage,
-          onSlippageChange,
-          priceImpact: q(priceImpact),
-        })}
+      {...useLeverageInfoFields({
+        leverageEnabled: swapRequired, // in llamalend.js we need to use the leverage implementations to do any swap
+        leverageValue: useRepayFutureLeverage(params, isOpen),
+        prevLeverageValue: useUserCurrentLeverage(params, isOpen && !!hasLeverage),
+        prevCollateral,
+        leverageTotalCollateral: mapQuery(prevCollateral, (prev) =>
+          isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
+        ),
+        expected: useRepayExpectedBorrowed(params, isOpen),
+        routes,
+        // routeImage: useRepayRouteImage(params, isOpen),
+        slippage,
+        onSlippageChange,
+        priceImpact: useRepayPriceImpact(params, isOpen),
+        collateralDelta: userCollateral,
+      })}
+      {...useBorrowRates({ params, market, debtDelta }, isOpen)}
+      {...prevLoanState}
     />
   )
 }

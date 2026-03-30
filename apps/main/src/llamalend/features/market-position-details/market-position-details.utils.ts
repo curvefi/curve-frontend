@@ -27,7 +27,7 @@ export const getHealthValueColor = ({
   prevHealth,
 }: {
   health: Decimal | null | undefined
-  prevHealth?: Decimal
+  prevHealth?: Decimal | null
   isFullRepay?: boolean
   theme: Theme
   colorBackground?: boolean

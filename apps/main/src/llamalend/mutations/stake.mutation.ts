@@ -48,7 +48,8 @@ export const useStakeMutation = ({
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
-        isApproved: async () => await fetchStakeIsApproved({ chainId, marketId, ...variables }, { staleTime: 0 }),
+        isApproved: async () =>
+          await fetchStakeIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
         onApprove: async () => await approveStake(lendMarket, variables),
         message: t`Approved stake`,
         config,
@@ -61,6 +62,7 @@ export const useStakeMutation = ({
       t`Staking... ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Stake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
+    mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     onSuccess,
     onReset,
   })

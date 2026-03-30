@@ -3,11 +3,11 @@ import { getLlamaMarket, hasGauge, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
-import { assert } from '@ui-kit/utils'
 
 export type DepositMutation = {
   depositAmount: Decimal
@@ -23,12 +23,15 @@ export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
 export type WithdrawMutation = {
   withdrawAmount: Decimal
+  isFull: boolean
+  userVaultShares: Decimal
 }
 
 type CalculatedWithdrawValues = {
   maxWithdrawAmount: Decimal | undefined
 }
-export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount'> & CalculatedWithdrawValues
+export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount' | 'userVaultShares'> &
+  CalculatedWithdrawValues
 
 export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & WithdrawMutation
 export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
@@ -101,9 +104,14 @@ export const validateDepositAmount = (
   amount: Decimal | undefined | null,
   { depositRequired = false }: { depositRequired?: boolean } = {},
 ) => {
-  skipWhen(!depositRequired && !amount, () => {
+  skipWhen(!depositRequired, () => {
+    test('depositAmount', 'Deposit amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('depositAmount', 'Deposit amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -117,8 +125,13 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
 }
 
 const validateSharesToAssets = (shares: Decimal | undefined | null) => {
-  test('shares', 'Shares must be a positive number', () => {
-    enforce(shares).isNumeric().gt(0)
+  test('shares', 'Shares are required', () => {
+    enforce(shares).isNotEmpty()
+  })
+  skipWhen(!shares, () => {
+    test('shares', 'Shares must be a non-negative number', () => {
+      enforce(shares).isDecimal().gte(0)
+    })
   })
 }
 
@@ -158,9 +171,14 @@ const validateWithdrawAmount = (
   amount: Decimal | undefined | null,
   { withdrawRequired = false }: { withdrawRequired?: boolean } = {},
 ) => {
-  skipWhen(!withdrawRequired && !amount, () => {
+  skipWhen(!withdrawRequired, () => {
+    test('withdrawAmount', 'Withdraw amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('withdrawAmount', 'Withdraw amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -169,6 +187,22 @@ const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount
   skipWhen(amount == null || maxAmount == null, () => {
     test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
       enforce(amount).lte(maxAmount)
+    })
+  })
+}
+
+const validateUserVaultShares = (
+  shares: Decimal | undefined | null,
+  { sharesRequired = false }: { sharesRequired?: boolean } = {},
+) => {
+  skipWhen(!sharesRequired, () => {
+    test('userVaultShares', 'Vault shares are required', () => {
+      enforce(shares).isNotEmpty()
+    })
+  })
+  skipWhen(shares == null, () => {
+    test('userVaultShares', 'Vault shares must be a positive number', () => {
+      enforce(shares).isDecimal().gt(0)
     })
   })
 }
@@ -192,15 +226,21 @@ const withdrawValidationGroup = <IChainId extends number>({
 export const withdrawValidationSuite = createValidationSuite((params: WithdrawParams) => {
   userMarketValidationSuite(params)
   withdrawValidationGroup(params)
+  validateUserVaultShares(params.userVaultShares, { sharesRequired: !!params.isFull })
 })
 
 const validateStakeAmount = (
   amount: Decimal | undefined | null,
   { stakeRequired = false }: { stakeRequired?: boolean } = {},
 ) => {
-  skipWhen(!stakeRequired && !amount, () => {
+  skipWhen(!stakeRequired, () => {
+    test('stakeAmount', 'Stake amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('stakeAmount', 'Stake amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -232,9 +272,14 @@ const validateUnstakeAmount = (
   amount: Decimal | undefined | null,
   { unstakeRequired = false }: { unstakeRequired?: boolean } = {},
 ) => {
-  skipWhen(!unstakeRequired && !amount, () => {
+  skipWhen(!unstakeRequired, () => {
+    test('unstakeAmount', 'Unstake amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('unstakeAmount', 'Unstake amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }

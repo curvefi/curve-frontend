@@ -38,12 +38,7 @@ export const {
     userAddress,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
         return (
@@ -61,8 +56,10 @@ export const {
         return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isFull)) as Decimal
       case 'deleverage':
         return (await impl.repayHealth(userCollateral, isFull)) as Decimal
-      case 'unleveraged':
+      case 'unleveragedMint':
         return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
+      case 'unleveragedLend':
+        return (await impl.repayHealth({ debt: userBorrowed, full: isFull })) as Decimal
     }
   },
   category: 'llamalend.repay',

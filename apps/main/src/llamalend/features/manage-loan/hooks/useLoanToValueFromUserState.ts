@@ -17,7 +17,7 @@ type Params<ChainId extends IChainId> = {
    * */
   collateralDelta?: Decimal | null
   /** Expected new borrowed amount after the loan is updated. */
-  expectedBorrowed: Decimal | undefined
+  expectedBorrowed: Decimal | null | undefined
 }
 
 /**
@@ -29,8 +29,9 @@ type Params<ChainId extends IChainId> = {
  */
 export const useLoanToValueFromUserState = <ChainId extends IChainId>(
   { chainId, marketId, userAddress, collateralToken, borrowToken, collateralDelta, expectedBorrowed }: Params<ChainId>,
-  enabled: boolean,
+  enabled = true,
 ) => {
+  enabled &&= !!expectedBorrowed
   const {
     data: userState,
     isLoading: isUserLoading,
@@ -56,12 +57,7 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
 
   return {
     data:
-      !enabled ||
-      debt == null ||
-      collateral == null ||
-      !collateralUsdRate ||
-      borrowUsdRate == null ||
-      collateral.isZero()
+      debt == null || collateral == null || !collateralUsdRate || borrowUsdRate == null || collateral.isZero()
         ? null
         : (debt.times(borrowUsdRate).div(collateral).div(collateralUsdRate).times(100).toFixed() as Decimal),
     isLoading: enabled && (isUserLoading || isCollateralUsdRateLoading || isBorrowUsdRateLoading),

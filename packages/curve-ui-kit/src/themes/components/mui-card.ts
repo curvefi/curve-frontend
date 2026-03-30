@@ -1,10 +1,9 @@
 import type { Components } from '@mui/material/styles'
-import { DesignSystem } from '@ui-kit/themes/design'
 
-export const defineMuiCard = (design: DesignSystem): Components['MuiCard'] => ({
+export const defineMuiCard = (): Components['MuiCard'] => ({
   styleOverrides: {
     root: {
-      backgroundColor: design.Layer[1].Fill,
+      backgroundColor: 'transparent', // We want the paper elevation only on the card content, not the header. Mui adds a bgColor by default.
       boxShadow: 'none',
     },
   },

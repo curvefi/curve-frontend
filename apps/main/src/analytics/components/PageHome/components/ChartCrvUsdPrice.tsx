@@ -14,12 +14,12 @@ import {
 import { llama } from '@/analytics/llamadash'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
+import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { formatNumber, formatUsd } from '@ui-kit/utils'
-import { useCrvUsdPrice } from '../queries/useCrvUsdPrice.query'
 
 const PRICE_LABEL = t`Price`
 const PERIODS = ['7d', '1m', '3m', '6m'] as const satisfies Period[]
@@ -33,7 +33,7 @@ export function ChartCrvUsdPrice() {
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('6m')
   const [fullscreen, , closeFullscreen, toggleFullscreen] = useSwitch(false)
 
-  const { data, isFetching: loading } = useCrvUsdPrice({ days: DAYS[period] })
+  const { data, isFetching: loading } = useCrvUsdPriceHistory({ days: DAYS[period] })
 
   const theme = useTheme()
   const palette = createPalette({ theme })
@@ -59,6 +59,7 @@ export function ChartCrvUsdPrice() {
   const option = useMemo(
     () =>
       createChartOptions({
+        legendSets,
         options: {
           tooltip: createTooltip(formatUsd),
           xAxis: { data: chartData.map((x) => x.time).map(timeToCategory) },
@@ -83,7 +84,7 @@ export function ChartCrvUsdPrice() {
         },
         palette,
       }),
-    [chartData, palette],
+    [legendSets, chartData, palette],
   )
 
   return (
@@ -99,8 +100,9 @@ export function ChartCrvUsdPrice() {
           <ButtonExport
             filename="crvusd_price"
             data={{ price: chartData.map((x) => ({ time: x.time, value: x.price })) }}
+            fullscreen={fullscreen}
           />
-          <ButtonFullscreen onToggle={toggleFullscreen} />
+          <ButtonFullscreen onToggle={toggleFullscreen} fullscreen={fullscreen} />
         </>
       }
     >

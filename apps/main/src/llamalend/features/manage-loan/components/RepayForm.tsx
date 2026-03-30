@@ -6,6 +6,8 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -141,6 +143,8 @@ export const RepayForm = <ChainId extends IChainId>({
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
           routes={routes}
+          prices={q(useRepayPrices(params))}
+          prevPrices={q(useUserPrices(params))}
         />
       }
     >
@@ -157,7 +161,6 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -179,7 +182,6 @@ export const RepayForm = <ChainId extends IChainId>({
               onClick={() =>
                 updateForm(form, {
                   [selectedField]: max[selectedField].data,
-                  isFull: selectedField === 'userBorrowed',
                 })
               }
             />

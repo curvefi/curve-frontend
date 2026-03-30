@@ -1,17 +1,14 @@
-import CloseIcon from '@mui/icons-material/Close'
 import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
-import Dialog from '@mui/material/Dialog'
-import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { showReleaseChannelSnackbar } from '@ui-kit/features/user-profile/settings/settings.util'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
+
+const { Spacing } = SizesAndSpaces
 
 const Text = {
   [ReleaseChannel.Beta]: [
@@ -41,43 +38,35 @@ export const ReleaseChannelDialog = ({
 }) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const title = t`${releaseChannel === channel ? 'Disable' : 'Enable'} ${channel} Features`
+
   return (
-    <Dialog open={open} onClose={onClose}>
-      <Card sx={{ width: SizesAndSpaces.Width.modal.md, maxWidth: '100vw', display: 'flex', flexDirection: 'column' }}>
-        <CardHeader
-          action={
-            <IconButton onClick={onClose} size="extraSmall">
-              <CloseIcon />
-            </IconButton>
-          }
-          title={
-            <Typography variant="headingXsBold" color="textSecondary">
-              {title}
-            </Typography>
-          }
-        />
-        <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {Text[channel]?.map((p, i) => (
-            <Typography color="textSecondary" key={i}>
-              {p}
-            </Typography>
-          ))}
-        </CardContent>
-        <CardActions>
-          <Button
-            color={releaseChannel === channel ? 'secondary' : 'primary'}
-            onClick={() => {
-              const newChannel = releaseChannel === channel ? ReleaseChannel.Stable : channel
-              setReleaseChannel(newChannel)
-              showReleaseChannelSnackbar({ channel, isEnabled: newChannel === channel })
-              onClose()
-            }}
-            sx={{ width: '100%' }}
-          >
-            {title}
-          </Button>
-        </CardActions>
-      </Card>
-    </Dialog>
+    <ModalDialog
+      compact
+      open={open}
+      onClose={onClose}
+      title={title}
+      footer={
+        <Button
+          color={releaseChannel === channel ? 'secondary' : 'primary'}
+          onClick={() => {
+            const newChannel = releaseChannel === channel ? ReleaseChannel.Stable : channel
+            setReleaseChannel(newChannel)
+            showReleaseChannelSnackbar({ channel, isEnabled: newChannel === channel })
+            onClose()
+          }}
+          sx={{ width: '100%' }}
+        >
+          {title}
+        </Button>
+      }
+    >
+      <Stack gap={Spacing.md}>
+        {Text[channel]?.map((p, i) => (
+          <Typography color="textSecondary" key={i}>
+            {p}
+          </Typography>
+        ))}
+      </Stack>
+    </ModalDialog>
   )
 }

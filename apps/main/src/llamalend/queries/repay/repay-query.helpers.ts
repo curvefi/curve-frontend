@@ -1,6 +1,7 @@
 import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute, type RouteMutationMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
@@ -11,6 +12,10 @@ type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'user
   slippage?: RepayQuery['slippage']
 }
 export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+
+/** Returns true when repayment closes the loan using only debt tokens from the wallet. */
+export const isFullRepayFromDebtToken = (isFull: boolean, stateCollateral: Decimal, userCollateral: Decimal) =>
+  isFull && !+stateCollateral && !+userCollateral
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -23,17 +28,19 @@ export function getRepayImplementation(
   { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const market = getLlamaMarket(marketId)
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
     (v) => !!+v,
   )
-  if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
   if (market instanceof MintMarketTemplate) {
+    if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
     if (hasV2Leverage(market))
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
     if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
   } else {
+    if (!hasUserCollateral && !hasStateCollateral)
+      return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
     if (hasZapV2(market))
       return [
         'zapV2',

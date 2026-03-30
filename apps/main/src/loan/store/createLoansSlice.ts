@@ -70,15 +70,12 @@ export const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
         .handleError((error, market) => {
           log(`Unable to get details ${market.id}, ${error}`)
         })
-        .process(async (market) => Promise.all([networks[chainId].api.detailInfo.loanPartialInfo(market)]))
+        .process(async (market) => await networks[chainId].api.detailInfo.loanPartialInfo(market))
 
       // mapper
       const loansDetailsMapper = lodash.cloneDeep(get()[sliceKey].detailsMapper ?? {})
 
-      for (const idx in results) {
-        const [{ collateralId, ...rest }] = results[idx]
-        loansDetailsMapper[collateralId] = rest
-      }
+      results.forEach(({ collateralId, ...rest }) => (loansDetailsMapper[collateralId] = rest))
 
       get()[sliceKey].setStateByKey('detailsMapper', loansDetailsMapper)
     },

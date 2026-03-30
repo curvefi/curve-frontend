@@ -28,6 +28,7 @@ export function checkLoanDetailsLoaded({
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-ltv', 'previous').should('include', '%')
   if (expectGasError) {
     getActionInfoError('estimated-tx-cost').should('be.visible')
   } else {

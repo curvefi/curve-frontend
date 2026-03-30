@@ -120,9 +120,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
   const workflow = WORKFLOW?.trim() || 'ci.yaml'
   const runId = findLatestRunId(branch, workflow)
-  if (!runId) {
-    throw new Error(`No workflow runs found for branch '${branch}' using workflow '${workflow}'.`)
-  }
+  if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)
 
   const safeBranch = branch.replace(/\//g, '-')
   const path = joinPath(DEST_DIR, safeBranch, runId)

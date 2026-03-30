@@ -2,6 +2,7 @@ import { type ReactNode, useId } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -9,12 +10,25 @@ import { applySxProps, SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-type Size = 'small' | 'medium'
+type Size = 'extraSmall' | 'small' | 'medium'
 
 const titleVariants = {
+  extraSmall: 'bodyXsRegular',
   small: 'headingXsBold',
   medium: 'headingSBold',
 } as const satisfies Record<Size, TypographyVariantKey>
+
+const headerPaddingBlock = {
+  extraSmall: 0,
+  small: Spacing.sm,
+  medium: Spacing.sm,
+} as const satisfies Record<Size, number | Responsive>
+
+const headerIconSize = {
+  extraSmall: IconSize.sm.mobile,
+  small: IconSize.md.mobile,
+  medium: IconSize.md.mobile,
+} as const satisfies Record<Size, string>
 
 const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
@@ -103,7 +117,7 @@ export const Accordion = ({
         aria-expanded={isOpen}
         aria-controls={id}
         sx={{
-          paddingBlock: Spacing.sm,
+          paddingBlock: headerPaddingBlock[size],
           paddingInline: ghost ? 0 : Spacing.sm,
           ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
           transition: `background-color ${TransitionFunction}`,
@@ -134,8 +148,8 @@ export const Accordion = ({
               justifyContent="center"
               alignItems="center"
               sx={{
-                width: IconSize.md,
-                height: IconSize.md,
+                width: headerIconSize[size],
+                height: headerIconSize[size],
               }}
             >
               {icon}
@@ -165,8 +179,8 @@ export const Accordion = ({
 
           <ExpandMoreIcon
             sx={{
-              width: IconSize.md,
-              height: IconSize.md,
+              width: headerIconSize[size],
+              height: headerIconSize[size],
               transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
               // Create a transition that mimics the collapse transition
               transition: (t) =>

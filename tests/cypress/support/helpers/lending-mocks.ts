@@ -1,4 +1,3 @@
-import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
@@ -82,7 +81,7 @@ const oneLendingPool = (
       rebasing_yield_apr: null,
     },
     extra_reward_apr: [],
-    created_at: oneDate({ maxDate: MARKET_CUTOFF_DATE }).toISOString(),
+    created_at: oneDate().toISOString(),
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }
@@ -132,7 +131,7 @@ export const mockLendingVaults = (chains: Record<Chain, GetMarketsResponse>) =>
 
 const HOUR = 60 * 60 * 1000
 export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?fetch_on_chain=true&limit=7', {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=day&fetch_on_chain=true&limit=7', {
     body: {
       chain,
       data: range(84).map((i) => ({

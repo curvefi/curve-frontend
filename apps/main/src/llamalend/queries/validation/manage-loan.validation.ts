@@ -45,9 +45,10 @@ export const validateRepayCollateralField = (
   field: 'stateCollateral' | 'userCollateral',
   value: Decimal | null | undefined,
 ): void => {
-  test(field, `Collateral amount must be a non-negative number`, () => {
-    if (value == null) return
-    enforce(value).isNumeric().gte(0)
+  skipWhen(value == null, () => {
+    test(field, `Collateral amount must be a non-negative number`, () => {
+      enforce(value).isDecimal().gte(0)
+    })
   })
 }
 
@@ -64,7 +65,7 @@ const validateMaxStateCollateral = (
 export const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): void => {
   skipWhen(userBorrowed == null, () =>
     test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
-      enforce(userBorrowed).isNumeric().gte(0)
+      enforce(userBorrowed).isDecimal().gte(0)
     }),
   )
 }
@@ -79,7 +80,7 @@ const validateRepayHasValue = (
     'Enter an amount to repay',
     () => {
       enforce(stateCollateral ?? userCollateral ?? userBorrowed)
-        .isNumeric()
+        .isDecimal()
         .greaterThan(0)
     },
   )
@@ -114,7 +115,7 @@ export const collateralValidationGroup = ({
   group('chainValidation', () => {
     marketIdValidationSuite({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
-    validateUserCollateral(userCollateral)
+    validateUserCollateral(userCollateral, { required: true })
     validateMaxCollateral(userCollateral, maxCollateral)
   })
 
@@ -138,12 +139,12 @@ export const leverageUserMarketValidationSuite = createValidationSuite(
 )
 
 export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
-  validateUserCollateral(params.userCollateral)
+  validateUserCollateral(params.userCollateral, { required: true })
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 
 export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
-  validateUserCollateral(params.userCollateral)
+  validateUserCollateral(params.userCollateral, { required: true })
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
