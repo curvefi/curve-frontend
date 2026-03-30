@@ -19,7 +19,7 @@ export const useBandsChartPalette = (): BandsChartPalette => {
       userRangeTopLabelBackgroundColor: theme.design.Chart.Candles.Negative,
       userRangeTopLabelTextColor: theme.design.Text.TextColors.FilledFeedback.Alert.Primary,
       userRangeBottomLabelBackgroundColor: theme.design.Chart.Lines.Line2,
-      userRangeBottomLabelTextColor: theme.design.Text.TextColors.FilledFeedback.Warning.Primary,
+      userRangeBottomLabelTextColor: theme.design.Text.TextColors.FilledFeedback.Alert.Primary,
       oraclePriceLineColor: theme.design.Color.Primary[500],
       liquidationBandOutlineColor: theme.design.Color.Tertiary[600],
     }),

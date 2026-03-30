@@ -41,7 +41,6 @@ const createCustomRectSeries = (
 ) => ({
   name,
   type: 'custom' as const,
-  animation: true,
   animationDuration: Duration.Transition,
   animationDurationUpdate: Duration.Transition,
   animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
@@ -51,16 +50,12 @@ const createCustomRectSeries = (
   clip: true, // Clip rectangles to grid area to prevent overflow over axis labels
   emphasis: {
     focus: 'self',
-    itemStyle: {
-      opacity: 1,
-    },
   },
   renderItem: (
     _params: unknown,
     api: {
       value: (index: number) => number
       coord: (point: number[]) => number[]
-      style: (opts: Record<string, unknown>) => Record<string, unknown>
     },
   ) => {
     const startX = api.value(1)
@@ -102,11 +97,11 @@ const createCustomRectSeries = (
     return {
       type: 'rect',
       shape: { x: left, y: paddedTop, width, height: paddedHeight },
-      style: api.style({
+      style: {
         fill: color,
         stroke: isSoftLiquidationBand && enableSoftLiquidationOutline ? softLiquidationBandOutlineColor : 'transparent',
         lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 2 : 0,
-      }),
+      },
     }
   },
   ...(markArea && { markArea }),
@@ -146,11 +141,8 @@ export const getChartOptions = (
   const markLines = generateMarkLines(userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
-    backgroundColor: 'transparent',
-    animation: true,
     animationDuration: Duration.Transition,
     animationDurationUpdate: Duration.Transition,
-    animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
     grid: {
       left: gridPadding.left,
       right: gridPadding.right,
@@ -164,7 +156,6 @@ export const getChartOptions = (
         type: 'shadow',
         axis: 'y',
         snap: true,
-        triggerTooltip: true,
         shadowStyle: {
           opacity: 0.1,
         },
@@ -176,7 +167,6 @@ export const getChartOptions = (
       // ECharts sets white-space: nowrap on the tooltip container by default; override to allow wrapping
       extraCssText:
         'white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: none !important; width: max-content !important;',
-      confine: false,
       // Only show tooltip when there's actual data at the hovered position
       triggerOn: 'mousemove',
     },
@@ -189,7 +179,6 @@ export const getChartOptions = (
       axisLabel: {
         color: palette.scaleLabelsColor,
         hideOverlap: true,
-        interval: 'auto',
         overflow: 'break',
         showMinLabel: true,
         showMaxLabel: false,
@@ -200,13 +189,11 @@ export const getChartOptions = (
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'solid',
           width: 0.5,
         },
       },
     },
     yAxis: {
-      type: 'value',
       position: 'right',
       axisLine: { show: false },
       axisTick: { show: false },
@@ -232,10 +219,8 @@ export const getChartOptions = (
         formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
-        show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'solid',
           width: 0.5,
         },
       },
@@ -283,7 +268,6 @@ export const getChartOptions = (
               animation: false,
               animationDuration: 0,
               animationDurationUpdate: 0,
-              silent: false,
               symbol: 'none',
               data: markLines.map((line) => {
                 const [startPoint, endPoint] = line
