@@ -3,7 +3,14 @@ import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
-import { getSupplyRateMetrics, sumRates, toNumberOrNull, LAST_MONTH } from '@/llamalend/rates.utils'
+import {
+  getSupplyApyMetrics,
+  toNumberOrNull,
+  LAST_MONTH,
+  sumOnChainExtraIncentivesApr,
+  getSupplyApyAverageMetrics,
+  getLatestSnapshotValue,
+} from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -62,23 +69,17 @@ export const useSupplyPositionDetails = ({
     limit: AVERAGE_MULTIPLIER,
   })
 
-  const supplyMetrics = getSupplyRateMetrics({
-    supplyApy: toNumberOrNull(marketRates?.lendApy),
-    snapshots: lendingSnapshots,
-    onChainCrvRates: onChainRewards?.crvRates,
-    onChainRewardsApr: onChainRewards?.rewardsApr,
-    daysBack: AVERAGE_MULTIPLIER,
-  })
+  const rebasingYield = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
 
-  const userCurrentCRVApr = (supplyMetrics.supplyAprCrvMinBoost ?? 0) * (userSupplyBoost ?? 1)
-  const userTotalCurrentSupplyApr = supplyMetrics.supplyApy
-    ? sumRates(
-        supplyMetrics.supplyApy,
-        supplyMetrics.rebasingYield,
-        supplyMetrics.extraIncentivesTotalApr,
-        userCurrentCRVApr,
-      )
-    : null
+  const supplyMetrics = getSupplyApyMetrics({
+    supplyApy: toNumberOrNull(marketRates?.lendApy),
+    rebasingYieldApy: rebasingYield,
+    crvMinBoostApr: onChainRewards?.crvRates?.[0],
+    crvMaxBoostApr: onChainRewards?.crvRates?.[1],
+    extraIncentivesApr: sumOnChainExtraIncentivesApr(onChainRewards?.rewardsApr),
+    userSupplyBoost,
+  })
+  const supplyAverageMetrics = getSupplyApyAverageMetrics({ snapshots: lendingSnapshots, daysBack: AVERAGE_MULTIPLIER })
 
   const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null
   const depositedAmount =
@@ -89,9 +90,10 @@ export const useSupplyPositionDetails = ({
   return {
     userSupplyRate: {
       ...supplyMetrics,
+      ...supplyAverageMetrics,
       averageRateLabel: AVERAGE_RATE_LABEL,
-      userCurrentCRVApr,
-      userTotalCurrentSupplyApr,
+      userCurrentCRVApr: supplyMetrics.userBoostApr,
+      userTotalCurrentSupplyApr: supplyMetrics.totalUserBoost,
       extraIncentives: onChainRewards?.rewardsApr
         ? onChainRewards.rewardsApr.map((r) => ({
             title: r.symbol,

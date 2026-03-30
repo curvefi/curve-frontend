@@ -35,7 +35,6 @@ export function ClosePositionInfoList({
       gas={q(useCloseEstimateGas(networks, params))}
       debt={constQ('0')}
       collateral={constQ('0')}
-      borrowSymbol={borrowToken?.symbol}
       isApproved={q(useCloseLoanIsApproved(params))}
       {...usePrevLoanState({ params, collateralToken, borrowToken })}
     />
