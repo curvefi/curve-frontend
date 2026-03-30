@@ -219,51 +219,6 @@ export const waitForErc20Balance = async ({
   throw new Error(`Balance for ${userAddress} on ${description} did not match the expected predicate`)
 }
 
-export const setupTenderlySupplyDeposit = ({
-  vnet,
-  userAddress,
-  borrowedTokenAddress,
-  borrowedTokenDecimals,
-  vaultAddress,
-  deposit,
-  borrowedFundingMultiplier = 2n,
-}: {
-  vnet: CreateVirtualTestnetResponse
-  userAddress: Address
-  borrowedTokenAddress: Address
-  borrowedTokenDecimals: number
-  vaultAddress: Address
-  deposit: Decimal
-  borrowedFundingMultiplier?: bigint
-}) => {
-  const depositWei = parseUnits(deposit, borrowedTokenDecimals)
-
-  fundUserForSupplySetup({
-    vnet,
-    userAddress,
-    borrowedTokenAddress,
-    borrowedAmountWei: depositWei * borrowedFundingMultiplier,
-  })
-
-  loadTenderlyAccount().then(async (tenderlyAccount) => {
-    await approveTokenForSpender({
-      vnet,
-      userAddress,
-      tokenAddress: borrowedTokenAddress,
-      spenderAddress: vaultAddress,
-      tokenAmountWei: depositWei,
-      tenderlyAccount,
-    })
-    await depositIntoVault({
-      vnet,
-      userAddress,
-      vaultAddress,
-      depositAmountWei: depositWei,
-      tenderlyAccount,
-    })
-  })
-}
-
 export const setupTenderlySupplyStake = ({
   vnet,
   userAddress,
@@ -292,7 +247,7 @@ export const setupTenderlySupplyStake = ({
     borrowedAmountWei: depositWei * borrowedFundingMultiplier,
   })
 
-  loadTenderlyAccount().then(async (tenderlyAccount) => {
+  return loadTenderlyAccount().then(async (tenderlyAccount) => {
     await approveTokenForSpender({
       vnet,
       userAddress,

@@ -4,7 +4,11 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { submitStakeForm, writeStakeForm } from '@cy/support/helpers/llamalend/supply/stake.helpers'
+import {
+  readStakeAvailableAmount,
+  submitStakeForm,
+  writeStakeForm,
+} from '@cy/support/helpers/llamalend/supply/stake.helpers'
 import {
   checkSupplyActionInfoValues,
   checkSupplySubmitButtonText,
@@ -37,6 +41,7 @@ describe('StakeForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
+      readStakeAvailableAmount()
       writeStakeForm({ amount: input.amount })
       checkSupplyActionInfoValues(expected.actionInfo)
       checkSupplySubmitButtonText('stake', buttonText)

@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
+import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatUsd } from '@ui-kit/utils'
@@ -8,6 +10,39 @@ import { submitSupplyForm } from './supply.helpers'
 const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
 
 export const submitClaimForm = () => submitSupplyForm('claim', 'Claimed rewards!')
+
+export const submitClaimAndSettle = ({ waitForEmptyState = false }: { waitForEmptyState?: boolean } = {}) =>
+  submitClaimForm().then(() => {
+    if (waitForEmptyState) touchClaimForm()
+  })
+
+export const advanceVirtualNetworkClock = ({
+  vnet,
+  seconds,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  seconds: number
+}) => {
+  const { adminRpcUrl } = getRpcUrls(vnet)
+
+  return cy
+    .request({
+      method: 'POST',
+      url: adminRpcUrl,
+      body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
+    })
+    .then((response) => {
+      expect(response.body.error).to.equal(undefined)
+      return cy.request({
+        method: 'POST',
+        url: adminRpcUrl,
+        body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
+      })
+    })
+    .then((response) => {
+      expect(response.body.error).to.equal(undefined)
+    })
+}
 
 /**
  * The claim tab has no editable inputs, so "touching" it means waiting for the

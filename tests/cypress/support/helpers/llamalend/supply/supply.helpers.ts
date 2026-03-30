@@ -1,35 +1,115 @@
-import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils'
 import { getActionValue } from '../action-info.helpers'
 
-export const SUPPLY_TEST_MARKETS = [
+type SupplyRpcTestMarket = {
+  id: string
+  label: string
+  chainId: LlamaChainId
+  borrowedTokenAddress: Address
+  vaultAddress: Address
+  gaugeAddress: Address
+  deposit: Decimal
+  partialWithdraw: Decimal
+  borrowedTokenDecimals: number
+}
+
+const DEFAULT_CHAIN_ID = Chain.Ethereum as LlamaChainId
+const DEFAULT_BORROWED_TOKEN_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as Address
+const DEFAULT_TOKEN_DECIMALS = 18
+const DEFAULT_DEPOSIT = '12.5' as Decimal
+const DEFAULT_PARTIAL_WITHDRAW = '2.5' as Decimal
+
+/**
+ * Old lend markets: earlier Ethereum one-way market deployments (legacy).
+ * Older contract instances and can show legacy behavior in tests (for example rewards).
+ */
+export const OLD_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   {
     id: 'one-way-market-7',
     label: 'sUSDe-crvUSD Old Lend Market',
-    chainId: Chain.Ethereum,
-    borrowedTokenAddress: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as Address,
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0x52096539ed1391CB50C6b9e4Fd18aFd2438ED23b' as Address,
     gaugeAddress: '0x82195f78c313540e0363736b8320a256a019f7dd' as Address,
-    deposit: '12.5' as Decimal,
-    partialWithdraw: '2.5' as Decimal,
-    borrowedTokenDecimals: 18,
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
   },
+  {
+    id: 'one-way-market-11',
+    label: 'sUSDe v2-crvUSD Old Lend Market',
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
+    vaultAddress: '0x4a7999c55d3a93dAf72EA112985e57c2E3b9e95D' as Address,
+    gaugeAddress: '0xae1680ef5efc2486e73d8d5d0f8a8db77da5774e' as Address,
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+  },
+  {
+    id: 'one-way-market-12',
+    label: 'WETH-crvUSD Old Lend Market',
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
+    vaultAddress: '0x8fb1c7AEDcbBc1222325C39dd5c1D2d23420CAe3' as Address,
+    gaugeAddress: '0xf3f6d6d412a77b680ec3a5e35ebb11bbec319739' as Address,
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+  },
+] as const
+
+/**
+ * New lend markets: later Ethereum one-way market deployments (current cohort).
+ * Contract family is the same as old markets, but these are newer deployed instances
+ * with newer market rollout parameters and more recent gauge integrations.
+ */
+export const NEW_LEND_SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   {
     id: 'one-way-market-41',
     label: 'sreUSD-crvUSD New Lend Market',
-    chainId: Chain.Ethereum,
-    borrowedTokenAddress: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as Address,
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
     vaultAddress: '0xC32B0Cf36e06c790A568667A17DE80cba95A5Aad' as Address,
     gaugeAddress: '0x29e9975561fad3a7988ca96361ab5c5317cb32af' as Address,
-    deposit: '12.5' as Decimal,
-    partialWithdraw: '2.5' as Decimal,
-    borrowedTokenDecimals: 18,
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+  },
+  {
+    id: 'one-way-market-43',
+    label: 'zkBTC-crvUSD New Lend Market',
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
+    vaultAddress: '0x01853B37bfEaF7C1557F7996aA778A0858870c70' as Address,
+    gaugeAddress: '0x169b6d105e05732ef9e0cd1d279dd81283d90aff' as Address,
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+  },
+  {
+    id: 'one-way-market-44',
+    label: 'UNIT0-crvUSD New Lend Market',
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
+    vaultAddress: '0x878fC567D55fFc9c3f4ef45296b1b129bca06fe0' as Address,
+    gaugeAddress: '0x173c8b67823a4f7d80cb4d2b4ef375c2137d70cd' as Address,
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
   },
 ] as const
+
+/** Get one old and one new lend market. */
+export const getSupplyRpcTestMarkets = (): readonly SupplyRpcTestMarket[] => [
+  OLD_LEND_SUPPLY_TEST_MARKETS[0],
+  NEW_LEND_SUPPLY_TEST_MARKETS[0],
+]
 
 export type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 type SupplyActionType = SupplyFormType | 'claim'
@@ -153,52 +233,20 @@ export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
 }
 
 /**
- * Check that supply callbacks were called (onSuccess, onPricesUpdated).
+ * Check the current staked vault shares and supplied amount after a stake/unstake action.
  */
-export const expectSupplyCallbacks = ({
-  onSuccess,
-  onPricesUpdated,
-  expectPricesUpdated = true,
+export function checkCurrentStakedAmount({
+  expectedVaultShares,
+  expectedAmountSupplied,
 }: {
-  onSuccess: ReturnType<typeof cy.stub>
-  onPricesUpdated?: ReturnType<typeof cy.stub>
-  expectPricesUpdated?: boolean
-}) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  expect(onSuccess).to.be.calledOnce
-  if (onPricesUpdated && expectPricesUpdated) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    expect(onPricesUpdated).to.be.called
-  }
-}
+  expectedVaultShares: Decimal
+  expectedAmountSupplied: Decimal
+}) {
+  const expectedShares = formatNumber(expectedVaultShares, { abbreviate: true })
+  const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
 
-/**
- * Capture wallet balance before an operation for later comparison.
- * Returns a chainable that yields the balance value.
- */
-export const captureWalletBalance = (type: SupplyFormType) =>
-  getSupplyInputBalanceValueAttr(type).should('not.be.empty')
-
-/**
- * Verify wallet balance changed by the expected delta after an operation.
- */
-export const expectWalletBalanceDelta = ({
-  balanceBefore,
-  expectedDelta,
-  tolerance = '0.0001',
-  type,
-}: {
-  balanceBefore: Decimal
-  expectedDelta: Decimal
-  tolerance?: Decimal
-  type: SupplyFormType
-}) => {
-  getSupplyInputBalanceValueAttr(type)
-    .should('not.be.empty')
-    .then((balanceAfter) => {
-      const actualDelta = new BigNumber(balanceAfter as string).minus(balanceBefore)
-      const expectedDeltaBn = new BigNumber(expectedDelta)
-      const toleranceBn = new BigNumber(tolerance)
-      expect(actualDelta.minus(expectedDeltaBn).abs().lte(toleranceBn)).to.equal(true)
-    })
+  getActionValue('supply-vault-shares').should('equal', expectedShares)
+  getActionValue('supply-vault-shares', 'previous').should('equal', expectedShares)
+  getActionValue('supply-amount').should('equal', expectedAmount)
+  getActionValue('supply-amount', 'previous').should('equal', expectedAmount)
 }

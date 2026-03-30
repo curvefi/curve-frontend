@@ -9,7 +9,11 @@ import {
   checkSupplyAlert,
   checkSupplySubmitButtonText,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
-import { submitUnstakeForm, writeUnstakeForm } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
+import {
+  readUnstakeAvailableAmount,
+  submitUnstakeForm,
+  writeUnstakeForm,
+} from '@cy/support/helpers/llamalend/supply/unstake.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createUnstakeScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Chain } from '@ui-kit/utils'
@@ -34,6 +38,7 @@ describe('UnstakeForm (mocked)', () => {
     )
 
     checkSupplyAlert(expected.alert)
+    readUnstakeAvailableAmount()
     writeUnstakeForm({ amount: input.amount })
     checkSupplyActionInfoValues(expected.actionInfo)
     checkSupplySubmitButtonText('unstake', 'Unstake')

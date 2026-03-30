@@ -8,7 +8,7 @@ import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestW
 import {
   checkClaimDetailsLoaded,
   checkClaimTableState,
-  submitClaimForm,
+  submitClaimAndSettle,
 } from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
@@ -72,7 +72,7 @@ describe('ClaimTab (mocked)', () => {
 
       checkClaimDetailsLoaded({ checkEstimatedTxCost: true })
 
-      submitClaimForm().then(() => {
+      submitClaimAndSettle().then(() => {
         if (expected.shouldClaimCrv) {
           expect(stubs.claimCrv).to.have.been.calledWithExactly()
         } else {

@@ -1,5 +1,7 @@
+import BigNumber from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
+  getSupplyInputBalanceValueAttr,
   checkSupplyActionInfoValues,
   checkSupplySubmitButtonText,
   submitSupplyForm,
@@ -8,6 +10,13 @@ import {
 } from './supply.helpers'
 
 export const submitStakeForm = () => submitSupplyForm('stake', 'Stake successful!')
+
+export const readStakeAvailableAmount = () =>
+  getSupplyInputBalanceValueAttr('stake')
+    .should((balanceValue) => {
+      expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
+    })
+    .then((balanceValue) => (balanceValue || '0') as Decimal)
 
 /**
  * Fill in the stake form with the specified amount.
