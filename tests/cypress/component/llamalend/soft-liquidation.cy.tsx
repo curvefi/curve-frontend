@@ -52,6 +52,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         writeImproveHealthForm({ amount: borrow })
         checkRepayDetailsLoaded({
           debt: { current: debt, future: debtAfterImprove, symbol: 'crvUSD' },
+          isPriceChanged: false,
         })
         cy.get('[data-testid="improve-health-submit-button"]').should('not.be.disabled')
 

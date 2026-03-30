@@ -54,6 +54,7 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
       t`Staking... ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Stake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
+    mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     ...props,
   })
 

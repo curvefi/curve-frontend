@@ -32,6 +32,7 @@ export function checkBorrowMoreDetailsLoaded({
   leverageEnabled: boolean
 }) {
   getActionValue('borrow-apr').should('include', '%')
+  getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
   getActionValue('estimated-tx-cost').should('include', '$')
   checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })

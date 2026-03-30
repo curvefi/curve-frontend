@@ -63,6 +63,8 @@ export const useDepositMutation = ({
       t`Depositing... ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Deposit successful! ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
+    mutationTokenAddresses: (_mutation, { market }) =>
+      [requireVault(market).borrowed_token.address, requireVault(market).addresses.vault] as Address[],
     onSuccess,
     ...props,
   })

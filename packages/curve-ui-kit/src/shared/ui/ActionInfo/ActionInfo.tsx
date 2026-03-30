@@ -40,8 +40,6 @@ export type ActionInfoProps = {
   prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
-  /** Placeholder when no value or previous value is provided */
-  emptyValue?: ReactNode
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Value to be copied (will display a copy button). */
@@ -90,8 +88,6 @@ const rowHeight: Record<ActionInfoSize, string> = {
   medium: ButtonSize.xs,
 }
 
-const isSet = (v: ReactNode) => v || v === 0
-
 type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor'>
 
 const ValueTypography = ({
@@ -119,10 +115,9 @@ const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps 
 export const ActionInfo = ({
   label,
   labelColor,
-  prevValue,
+  prevValue: givenPrevValue,
   prevValueColor,
-  value,
-  emptyValue = '-',
+  value: givenValue,
   valueColor,
   valueLeft,
   valueRight,
@@ -137,12 +132,10 @@ export const ActionInfo = ({
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
-  const showPrevValue = isSet(value) && isSet(prevValue)
-  value ??= prevValue ?? emptyValue
-
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
+  const value = givenValue ?? givenPrevValue
+  const prevValue = value === givenPrevValue ? null : givenPrevValue
   return (
     <Stack
       direction="row"
@@ -162,20 +155,18 @@ export const ActionInfo = ({
       </Typography>
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
-        {showPrevValue && (
-          <>
-            <Typography
-              variant={prevValueSize[size]}
-              color={prevValueColor ?? 'textTertiary'}
-              data-testid={`${testId}-previous-value`}
-              data-value={`${prevValue}`}
-            >
-              {prevValue}
-            </Typography>
-            <ArrowForwardIcon
-              sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
-            />
-          </>
+        <Typography
+          variant={prevValueSize[size]}
+          color={prevValueColor ?? 'textTertiary'}
+          data-testid={`${testId}-previous-value`}
+          data-value={`${givenPrevValue}`}
+        >
+          {prevValue}
+        </Typography>
+        {prevValue != null && (
+          <ArrowForwardIcon
+            sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
+          />
         )}
 
         <Tooltip title={valueTooltip} placement="top">
@@ -185,7 +176,7 @@ export const ActionInfo = ({
             alignItems={alignItems}
             gap={Spacing.xxs}
             data-testid={`${testId}-value`}
-            data-value={`${value}`}
+            data-value={`${givenValue}`}
             className="ActionInfo-value"
           >
             <ValueDecorator value={valueLeft} size={size} error={error} valueColor={valueColor} />
@@ -198,7 +189,7 @@ export const ActionInfo = ({
                 : { width: '2ch', height: '1rem' })}
             >
               <ValueTypography size={size} error={error} valueColor={valueColor}>
-                {typeof loading === 'string' ? loading : error ? '' : value}
+                {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
               </ValueTypography>
             </WithSkeleton>
 
@@ -206,7 +197,7 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && <ErrorIconButton message={errorMessage} error={error} size={buttonSize} />}
+        {error && <ErrorIconButton error={error} size={buttonSize} />}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}

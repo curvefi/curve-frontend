@@ -40,6 +40,7 @@ export const useUnstakeMutation = ({
       t`Unstaking... ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Unstake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
+    mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     ...props,
   })
 
