@@ -47,7 +47,17 @@ import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
 supplyTestMarkets().forEach(
-  ({ id, label, chainId, borrowedTokenAddress, gaugeAddress, deposit, partialWithdraw, borrowedTokenDecimals }) => {
+  ({
+    id,
+    label,
+    chainId,
+    borrowedTokenAddress,
+    gaugeAddress,
+    deposit,
+    partialWithdraw,
+    borrowedTokenDecimals,
+    hasClaimableRewards = true,
+  }) => {
     describe(label, () => {
       skipTestsAfterFailure()
 
@@ -166,6 +176,10 @@ supplyTestMarkets().forEach(
         })
 
         cy.mount(<SupplyTestWrapper tab="claim" />)
+        if (!hasClaimableRewards) {
+          checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
+          return
+        }
         checkClaimDetailsLoaded()
         submitClaimAndSettle({ waitForEmptyState: true }).then(expectCallbacks)
         checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
