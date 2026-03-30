@@ -6,7 +6,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
@@ -56,7 +56,7 @@ export function useMaxTokenValues(
     }
   }, [form, maxDebt])
 
-  useEffect(() => updateForm(form, { maxCollateral }, { automated: true }), [form, maxCollateral])
+  useFormSync(form, { maxCollateral })
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(

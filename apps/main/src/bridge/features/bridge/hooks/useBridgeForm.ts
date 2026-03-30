@@ -1,5 +1,5 @@
 import { noop } from 'lodash'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -11,7 +11,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -91,16 +91,12 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     [crvUsdBalance, crvUsdBalanceLoading],
   )
 
-  useEffect(() => {
-    updateForm(form, { walletBalance: walletBalance.balance }, { automated: true })
-  }, [form, walletBalance.balance])
+  useFormSync(form, { walletBalance: walletBalance.balance })
 
   // Fetch bridge capacity for form validation
   const { data: capacity, isLoading: capacityLoading } = useBridgeCapacity({ chainId })
 
-  useEffect(() => {
-    updateForm(form, { min: capacity?.min, max: capacity?.max }, { automated: true })
-  }, [form, capacity?.max, capacity?.min])
+  useFormSync(form, { min: capacity?.min, max: capacity?.max })
 
   // Approve mutation (High chane it'll get merged into the bridge mutation later on as it deviates from the usual approve/execute flow with a single button click)
   const isApproved = useBridgeIsApproved(params)
@@ -142,10 +138,8 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     [networks, bridgeNetworks],
   )
 
-  useEffect(() => {
-    const network = supportedNetworks.find((network) => network.chainId === chainId)
-    updateForm(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId }, { automated: true })
-  }, [form, supportedNetworks, chainId])
+  const network = supportedNetworks.find((network) => network.chainId === chainId)
+  useFormSync(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId })
 
   // Form errors
   const { formState } = form

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -15,7 +15,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
   depositAmount: undefined,
@@ -79,9 +79,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
 
   const { formState } = form
 
-  useEffect(() => {
-    updateForm(form, { maxDepositAmount: maxUserDeposit.data }, { automated: true })
-  }, [form, maxUserDeposit.data])
+  useFormSync(form, { maxDepositAmount: maxUserDeposit.data })
 
   const isPending = formState.isSubmitting || isDepositing
   return {

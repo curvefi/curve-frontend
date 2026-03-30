@@ -33,6 +33,16 @@ export function updateForm<TFieldValues extends FieldValues>(
   form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
 }
 
+/**
+ * Syncs the form with the given values. IMPORTANT: This only works if you always pass the same keys in the same order!
+ */
+export const useFormSync = <TFieldValues extends FieldValues>(
+  form: UseFormReturn<TFieldValues>,
+  values: FormUpdates<TFieldValues>,
+) =>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => updateForm(form, values, { automated: true }), [Object.values(values), form])
+
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(
     ...(recordEntries(formState.errors) as [keyof TFieldValues | 'root', Error | undefined][])

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
@@ -16,7 +16,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
@@ -87,9 +87,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
 
   const { formState } = form
 
-  useEffect(() => {
-    updateForm(form, { maxUnstakeAmount: maxUserUnstake.data }, { automated: true })
-  }, [form, maxUserUnstake.data])
+  useFormSync(form, { maxUnstakeAmount: maxUserUnstake.data })
 
   const isPending = formState.isSubmitting || isUnstaking
   return {

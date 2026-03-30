@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -19,7 +19,7 @@ import type { BaseConfig } from '@ui/utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -79,9 +79,7 @@ export const useRemoveCollateralForm = <
 
   useCallbackSync(useRemoveCollateralPrices(params, enabled), onPricesUpdated)
 
-  useEffect(() => {
-    updateForm(form, { maxCollateral: maxRemovable.data }, { automated: true })
-  }, [form, maxRemovable.data])
+  useFormSync(form, { maxCollateral: maxRemovable.data })
 
   const isPending = formState.isSubmitting || action.isPending
   return {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
@@ -13,7 +13,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyStakeForm = (): StakeForm => ({
@@ -76,9 +76,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     data,
   } = useStakeMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
 
-  useEffect(() => {
-    updateForm(form, { maxStakeAmount: maxUserStake.data }, { automated: true })
-  }, [form, maxUserStake.data])
+  useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking

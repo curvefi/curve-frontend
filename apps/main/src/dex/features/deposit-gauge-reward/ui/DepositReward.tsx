@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -19,7 +18,7 @@ import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model/form'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { address: signerAddress } = useConnection()
@@ -40,7 +39,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
 
   // Sync userBalance from query into form for validation
-  useEffect(() => updateForm(form, { userBalance }, { automated: true }), [userBalance, form])
+  useFormSync(form, { userBalance })
 
   if (isPendingRewardDistributors) {
     return <BlockSkeleton height={440} />
