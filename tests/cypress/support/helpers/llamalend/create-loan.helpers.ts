@@ -1,27 +1,38 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/test-markets'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
+import { Chain } from '@ui-kit/utils'
+import { DECIMAL_RANGE_REGEX, getActionInfoError, getActionValue } from './action-info.helpers'
 
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
 
-export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
-  oneOf(...LOAN_TEST_MARKETS[type])
+export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType), chainId?: Chain) =>
+  oneOf(...LOAN_TEST_MARKETS[type].filter((m) => !chainId || m.chainId == chainId))
 
 /**
  * Check all loan detail values are loaded and valid.
  * The action info list is expected to be opened before calling this function.
  */
-export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
+export function checkLoanDetailsLoaded({
+  leverageEnabled,
+  expectGasError,
+}: {
+  leverageEnabled: boolean
+  expectGasError?: boolean
+}) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
+  if (expectGasError) {
+    getActionInfoError('estimated-tx-cost').should('be.visible')
+  } else {
+    getActionValue('estimated-tx-cost').should('include', '$')
+  }
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -49,7 +60,7 @@ export function writeCreateLoanForm({
   borrow: Decimal
   leverageEnabled: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', API_LOAD_TIMEOUT).should('exist')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')

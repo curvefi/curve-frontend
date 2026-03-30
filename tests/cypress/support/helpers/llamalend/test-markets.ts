@@ -16,7 +16,7 @@ type TestMarket = {
   chainId: LlamaChainId
   path: string
   hasLeverage: boolean
-  canBorrowMax?: boolean
+  failureClass?: 'estimate-tx' | 'borrow-max' | 'too-much-debt' | 'no-init'
 }
 
 export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> = {
@@ -46,7 +46,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/crvusd/ethereum/markets/sfrxeth2',
       hasLeverage: false,
-      canBorrowMax: false,
+      failureClass: 'borrow-max',
     },
     {
       id: 'wbtc',
@@ -60,7 +60,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
-      canBorrowMax: false,
+      failureClass: 'borrow-max',
     },
     {
       id: 'eth',
@@ -74,6 +74,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/crvusd/ethereum/markets/eth',
       hasLeverage: false,
+      failureClass: 'estimate-tx', // cannot estimate for this market without ETH
     },
     {
       id: 'tbtc',
@@ -128,6 +129,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0x1e0165dbd2019441ab7927c018701f3138114d71',
       hasLeverage: false,
+      failureClass: 'borrow-max',
     },
     {
       id: 'one-way-market-1',
@@ -154,6 +156,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0x413fd2511bad510947a91f5c6c79ebd8138c29fc',
       hasLeverage: false,
+      failureClass: 'borrow-max',
     },
     {
       id: 'one-way-market-3',
@@ -167,6 +170,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0xeda215b7666936ded834f76f3fbc6f323295110a',
       hasLeverage: false,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-4',
@@ -206,6 +210,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0x09dbdeb3b301a4753589ac6df8a178c7716ce16b',
       hasLeverage: false,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-9',
@@ -297,6 +302,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0x8c2537f1a5b1b167a960a14b89f7860dd5f7cd68',
       hasLeverage: true,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-18',
@@ -310,6 +316,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0xac9add93364aea685be238db6c40bf53753f2cf1',
       hasLeverage: true,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-23',
@@ -336,6 +343,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0xf8c27436b277734aaa726a8fd5e6d7dade0296c5',
       hasLeverage: true,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-27',
@@ -388,6 +396,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0xc572297c5e995692b972c8eea1d12b56b6399e1e',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-32',
@@ -401,6 +410,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0x2da313f6dcee04ba46466e100c4656618e5d3ddd',
       hasLeverage: true,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-35',
@@ -414,6 +424,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Ethereum,
       path: '/lend/ethereum/markets/0x24174143ccf438f0a1f6dcf93b468c127123a96e',
       hasLeverage: true,
+      failureClass: 'too-much-debt',
     },
     {
       id: 'one-way-market-39',
@@ -453,6 +464,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0x376e6D52F38e0fCe8E94293ce911e2FdEd2d4A4f',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-13',
@@ -466,6 +478,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0x83B85f3b08B5EE58dE9EF9604e7Eec087FCCf130',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-11',
@@ -479,6 +492,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0xeCF99dE21c31eC75b4Fb97e980F9d084b1d8Da8f',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-10',
@@ -492,6 +506,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0xb9aDddCf4e01c2f64F8F2CD9a050DC35585ea053',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-9',
@@ -505,6 +520,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0xB5c6082d3307088C98dA8D79991501E113e6365d',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-4',
@@ -518,6 +534,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0x88f88e937Db48bBfe8E3091718576430704e47Ab',
       hasLeverage: false,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-1',
@@ -531,6 +548,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0x013be86e1cdb0f384dAF24Bd974FE75EdFfe6B68',
       hasLeverage: false,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-0',
@@ -544,6 +562,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Arbitrum,
       path: '/lend/arbitrum/markets/0xB5B6f0E69c283AA32425FA18220e64283B51F0A4',
       hasLeverage: false,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-4',
@@ -557,6 +576,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Fraxtal,
       path: '/lend/fraxtal/markets/0xBF55Bb9463bBbB6aD724061910a450939E248eA6',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-2',
@@ -570,6 +590,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Fraxtal,
       path: '/lend/fraxtal/markets/0xf0922934f16DbE5Df9f90F729b2023D5e1FC2F15',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-1',
@@ -583,6 +604,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Fraxtal,
       path: '/lend/fraxtal/markets/0xB4EbF87A474569d8eB7f7182B4beBD8aE79ae675',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
     {
       id: 'one-way-market-0',
@@ -596,6 +618,7 @@ export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> =
       chainId: Chain.Fraxtal,
       path: '/lend/fraxtal/markets/0xc68f91FfA2B27147F9AB153267018f5Fe4b6850F',
       hasLeverage: true,
+      failureClass: 'no-init',
     },
   ],
 } as const

@@ -1,3 +1,4 @@
+import { networks } from '@/lend/networks'
 import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
@@ -14,21 +15,26 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 // With other network conditions when the fee is fine, we get 'insufficient funds' since account is generated and has no funds.
 const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
 
-describe.skip('Create loan', () => {
-  const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
+recordValues(LlamaMarketType).map((marketType) =>
+  describe(`Create loan (${marketType})`, () => {
+    const testCases = [oneLoanTestMarket(marketType)]
+    // const testCases = LOAN_TEST_MARKETS[marketType].filter((m) => !m.failureClass)
 
-  testCases.forEach(({ collateral, borrow, path, label, hasLeverage, canBorrowMax = true }) => {
-    const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
+    beforeEach(() => cy.viewport(1024, 1024))
 
-    it(label, () => {
-      cy.visit(path)
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled })
-      checkLoanDetailsLoaded({ leverageEnabled })
-      checkLoanRangeSlider({ leverageEnabled, canBorrowMax })
-      // e2e tests run with a 'fake' account so the transaction fails
-      submitCreateLoanForm('error', 'Transaction failed').then(() =>
-        cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
-      )
+    testCases.forEach(({ chainId, collateral, borrow, path, label, hasLeverage, failureClass }) => {
+      const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
+
+      it(`${label} @ ${networks[chainId].name} ${failureClass ?? ''}`.trim(), () => {
+        cy.visit(path)
+        writeCreateLoanForm({ collateral, borrow, leverageEnabled })
+        checkLoanDetailsLoaded({ leverageEnabled, expectGasError: failureClass === 'estimate-tx' })
+        checkLoanRangeSlider({ leverageEnabled, canBorrowMax: failureClass !== 'borrow-max' })
+        // e2e tests run with a 'fake' account so the transaction fails
+        submitCreateLoanForm('error', 'Transaction failed').then(() =>
+          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
+        )
+      })
     })
-  })
-})
+  }),
+)
