@@ -4,12 +4,11 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneAddress } from '@cy/support/generators'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { checkClaimTableState, submitClaimForm } from '@cy/support/helpers/llamalend/supply-claim.helpers'
+import { checkSupplyActionInfoValues } from '@cy/support/helpers/llamalend/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
@@ -68,8 +67,7 @@ describe('ClaimTab (mocked)', () => {
 
       if (expected.buttonDisabled) return
 
-      cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
-      getActionValue('estimated-tx-cost').should('include', '$')
+      checkSupplyActionInfoValues({ checkEstimatedTxCost: true })
 
       submitClaimForm().then(() => {
         if (expected.shouldClaimCrv) {
@@ -83,10 +81,6 @@ describe('ClaimTab (mocked)', () => {
           expect(stubs.claimRewards).to.not.have.been.called
         }
       })
-
-      cy.get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
-        .should('be.visible')
-        .contains('Claimed successfully')
     })
   })
 })

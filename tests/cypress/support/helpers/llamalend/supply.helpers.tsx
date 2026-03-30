@@ -19,6 +19,7 @@ export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
   getSupplyInput(type).type(amount)
+  blurSupplyInput(type)
 }
 
 export const blurSupplyInput = (type: SupplyFormType) => {
@@ -48,6 +49,9 @@ export const submitWithdrawForm = () => submitSupplyForm('supply-withdraw-submit
 export const submitUnstakeForm = () => submitSupplyForm('supply-unstake-submit-button', 'Unstake successful!')
 
 export const submitClaimForm = () => submitSupplyForm('supply-claim-submit-button', 'Claimed rewards!')
+
+export const checkSupplySubmitButtonText = (type: SupplyFormType, buttonText: string) =>
+  cy.get(`[data-testid="supply-${type}-submit-button"]`, LOAD_TIMEOUT).should('have.text', buttonText)
 
 export const checkSupplyActionInfoValues = ({
   supplyApy,
@@ -127,7 +131,6 @@ export const checkSupplyAlert = ({
  */
 export function writeDepositForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'deposit', amount })
-  blurSupplyInput('deposit')
 }
 
 /**
@@ -165,7 +168,6 @@ export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
  */
 export function writeWithdrawForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'withdraw', amount })
-  blurSupplyInput('withdraw')
 }
 
 /**
@@ -173,7 +175,6 @@ export function writeWithdrawForm({ amount }: { amount: Decimal }) {
  */
 export function writeStakeForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'stake', amount })
-  blurSupplyInput('stake')
 }
 
 /**
@@ -249,7 +250,6 @@ export const touchWithdrawForm = () => touchSupplyInput('withdraw')
  */
 export function writeUnstakeForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'unstake', amount })
-  blurSupplyInput('unstake')
 }
 
 /**

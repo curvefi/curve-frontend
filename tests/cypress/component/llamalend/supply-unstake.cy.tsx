@@ -5,11 +5,11 @@ import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
-  blurSupplyInput,
   checkSupplyActionInfoValues,
   checkSupplyAlert,
+  checkSupplySubmitButtonText,
   submitUnstakeForm,
-  writeSupplyInput,
+  writeUnstakeForm,
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createUnstakeScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
@@ -35,10 +35,9 @@ describe('UnstakeForm (mocked)', () => {
     )
 
     checkSupplyAlert(expected.alert)
-    writeSupplyInput({ type: 'unstake', amount: input.amount })
-    blurSupplyInput('unstake')
+    writeUnstakeForm({ amount: input.amount })
     checkSupplyActionInfoValues(expected.actionInfo)
-    cy.get('[data-testid="supply-unstake-submit-button"]').should('have.text', 'Unstake')
+    checkSupplySubmitButtonText('unstake', 'Unstake')
 
     cy.then(() => {
       expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)

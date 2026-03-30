@@ -5,10 +5,10 @@ import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
-  blurSupplyInput,
   checkSupplyActionInfoValues,
+  checkSupplySubmitButtonText,
   submitWithdrawForm,
-  writeSupplyInput,
+  writeWithdrawForm,
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createWithdrawScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
@@ -38,10 +38,9 @@ describe('WithdrawForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      writeSupplyInput({ type: 'withdraw', amount: input.amount })
-      blurSupplyInput('withdraw')
+      writeWithdrawForm({ amount: input.amount })
       checkSupplyActionInfoValues(expected.actionInfo)
-      cy.get('[data-testid="supply-withdraw-submit-button"]').should('have.text', buttonText)
+      checkSupplySubmitButtonText('withdraw', buttonText)
 
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)

@@ -5,10 +5,10 @@ import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
-  blurSupplyInput,
   checkSupplyActionInfoValues,
+  checkSupplySubmitButtonText,
   submitDepositForm,
-  writeSupplyInput,
+  writeDepositForm,
 } from '@cy/support/helpers/llamalend/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createDepositScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
@@ -38,10 +38,9 @@ describe('DepositForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      writeSupplyInput({ type: 'deposit', amount: input.amount })
-      blurSupplyInput('deposit')
+      writeDepositForm({ amount: input.amount })
       checkSupplyActionInfoValues(expected.actionInfo)
-      cy.get('[data-testid="supply-deposit-submit-button"]').should('have.text', buttonText)
+      checkSupplySubmitButtonText('deposit', buttonText)
 
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
