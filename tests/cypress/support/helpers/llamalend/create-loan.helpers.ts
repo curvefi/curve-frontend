@@ -58,7 +58,7 @@ export const LOAN_TEST_MARKETS = {
       repay: '2',
       improveHealth: '0.9',
       chainId,
-      path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+      path: '/lend/ethereum/markets/0xeda215b7666936ded834f76f3fbc6f323295110a',
       hasLeverage: false,
       collateralDecimals,
     },
