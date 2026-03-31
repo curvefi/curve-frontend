@@ -17,7 +17,7 @@ type Params<ChainId extends IChainId> = {
    * */
   collateralDelta?: Decimal | null
   /** Expected new borrowed amount after the loan is updated. */
-  expectedBorrowed: Decimal | undefined
+  expectedBorrowed: Decimal | null | undefined
 }
 
 /**

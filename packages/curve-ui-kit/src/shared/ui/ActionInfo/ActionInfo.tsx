@@ -155,20 +155,18 @@ export const ActionInfo = ({
       </Typography>
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
+        <Typography
+          variant={prevValueSize[size]}
+          color={prevValueColor ?? 'textTertiary'}
+          data-testid={`${testId}-previous-value`}
+          data-value={`${givenPrevValue}`}
+        >
+          {prevValue}
+        </Typography>
         {prevValue != null && (
-          <>
-            <Typography
-              variant={prevValueSize[size]}
-              color={prevValueColor ?? 'textTertiary'}
-              data-testid={`${testId}-previous-value`}
-              data-value={`${prevValue}`}
-            >
-              {prevValue}
-            </Typography>
-            <ArrowForwardIcon
-              sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
-            />
-          </>
+          <ArrowForwardIcon
+            sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
+          />
         )}
 
         <Tooltip title={valueTooltip} placement="top">
@@ -178,7 +176,7 @@ export const ActionInfo = ({
             alignItems={alignItems}
             gap={Spacing.xxs}
             data-testid={`${testId}-value`}
-            data-value={`${value}`}
+            data-value={`${givenValue}`}
             className="ActionInfo-value"
           >
             <ValueDecorator value={valueLeft} size={size} error={error} valueColor={valueColor} />

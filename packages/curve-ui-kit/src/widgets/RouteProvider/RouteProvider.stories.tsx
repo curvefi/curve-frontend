@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { q } from '@ui-kit/types/util'
+import { constQ } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
@@ -15,11 +15,7 @@ const meta: Meta<typeof RouteProvidersAccordion> = {
   args: {
     data: mockRoutes,
     selectedRoute: mockRoutes[0],
-    tokenOut: {
-      symbol: 'crvUSD',
-      decimals: 18,
-      usdRate: q({ data: 1, isLoading: false, error: null }),
-    },
+    tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },
     isExpanded: false,
     isLoading: false,
     error: null,

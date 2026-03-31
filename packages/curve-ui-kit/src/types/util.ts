@@ -69,4 +69,5 @@ export const mapQuery = <TSource, TResult>(
     error,
   })
 
+/** Creates a QueryProp constant data, no loading or error state. */
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })

@@ -1,6 +1,7 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
-import type { RepayParams, RepayQuery } from '../validation/manage-loan.types'
+import type { RepayIsFullParams, RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
@@ -18,7 +19,8 @@ export const {
     userAddress,
     slippage,
     routeId,
-  }: RepayParams) =>
+    isFull,
+  }: RepayIsFullParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayFutureLeverage',
@@ -27,6 +29,7 @@ export const {
       { userBorrowed },
       { slippage },
       { routeId },
+      { isFull },
     ] as const,
   queryFn: async ({
     marketId,
@@ -36,7 +39,9 @@ export const {
     userBorrowed,
     slippage,
     routeId,
-  }: RepayQuery) => {
+    isFull,
+  }: RepayIsFullQuery) => {
+    if (isFull) return '0' satisfies Decimal
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,

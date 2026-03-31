@@ -22,7 +22,7 @@ import {
 } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
-  isOpen?: boolean
+  isOpen: boolean
   isApproved?: QueryProp<boolean>
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal | null>
@@ -38,9 +38,9 @@ export type LoanActionInfoListProps = {
   netBorrowApr?: QueryProp<Decimal | null>
   gas: QueryProp<TxGasInfo | null>
   prevDebt?: QueryProp<Decimal | null>
-  debt?: QueryProp<{ value: Decimal | null; tokenSymbol: string | undefined } | null>
+  debt?: QueryProp<Decimal | null>
   prevCollateral?: QueryProp<Decimal | null>
-  collateral?: QueryProp<{ value: Decimal | null; tokenSymbol: string | undefined } | null>
+  collateral?: QueryProp<Decimal | null>
   prevLeverageValue?: QueryProp<Decimal | null>
   leverageValue?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
@@ -99,13 +99,13 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
-  const shouldShowprevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
+  const shouldShowPrevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
   const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
 
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
       label={t`Debt`}
-      value={debt?.data?.value && formatNumber(debt.data.value, { abbreviate: false })}
+      value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
       prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
       {...combineActionInfoState(debt, prevDebt)}
       valueRight={borrowSymbol}
@@ -127,7 +127,7 @@ export const LoanActionInfoList = ({
               testId="borrow-apr"
             />
           )}
-          {(shouldShowNetBorrowApr || shouldShowprevNetBorrowApr) && (
+          {(shouldShowNetBorrowApr || shouldShowPrevNetBorrowApr) && (
             <ActionInfo
               label={t`Net borrow APR`}
               value={netBorrowApr?.data && formatPercent(netBorrowApr.data)}
@@ -186,9 +186,7 @@ export const LoanActionInfoList = ({
           {(collateral || prevCollateral) && (
             <ActionInfo
               label={t`Collateral`}
-              value={
-                isFullRepay ? 0 : collateral?.data?.value && formatNumber(collateral.data.value, { abbreviate: false })
-              }
+              value={isFullRepay ? 0 : collateral?.data && formatNumber(collateral.data, { abbreviate: false })}
               prevValue={prevCollateral?.data && formatNumber(prevCollateral.data, { abbreviate: false })}
               {...combineActionInfoState(collateral, prevCollateral)}
               valueRight={collateralSymbol}
