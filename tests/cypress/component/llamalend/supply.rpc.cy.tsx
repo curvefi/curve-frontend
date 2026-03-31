@@ -66,6 +66,7 @@ supplyTestMarkets().forEach(
       const getVirtualNetwork = createVirtualTestnet((uuid) => ({
         slug: `supply-integration-${uuid}`,
         display_name: `SupplyIntegration (${uuid})`,
+        chain_id: chainId,
         fork_config: { block_number: 'latest' },
       }))
 

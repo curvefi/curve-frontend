@@ -21,11 +21,11 @@ type SupplyRpcTestMarket = {
   hasClaimableRewards?: boolean
 }
 
-const DEFAULT_CHAIN_ID = Chain.Ethereum as LlamaChainId
-const DEFAULT_BORROWED_TOKEN_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as Address
+const DEFAULT_CHAIN_ID = Chain.Ethereum
+const DEFAULT_BORROWED_TOKEN_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
 const DEFAULT_TOKEN_DECIMALS = 18
-const DEFAULT_DEPOSIT = '12.5' as Decimal
-const DEFAULT_PARTIAL_WITHDRAW = '2.5' as Decimal
+const DEFAULT_DEPOSIT = '12.5'
+const DEFAULT_PARTIAL_WITHDRAW = '2.5'
 
 const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   {
@@ -33,53 +33,43 @@ const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     label: 'sUSDe v2-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x4a7999c55d3a93dAf72EA112985e57c2E3b9e95D' as Address,
-    gaugeAddress: '0xae1680ef5efc2486e73d8d5d0f8a8db77da5774e' as Address,
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-  },
-  {
-    id: 'one-way-market-12',
-    label: 'WETH-crvUSD Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x8fb1c7AEDcbBc1222325C39dd5c1D2d23420CAe3' as Address,
-    gaugeAddress: '0xf3f6d6d412a77b680ec3a5e35ebb11bbec319739' as Address,
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-  },
-  {
-    id: 'one-way-market-41',
-    label: 'sreUSD-crvUSD Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0xC32B0Cf36e06c790A568667A17DE80cba95A5Aad' as Address,
-    gaugeAddress: '0x29e9975561fad3a7988ca96361ab5c5317cb32af' as Address,
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-  },
-  {
-    id: 'one-way-market-43',
-    label: 'zkBTC-crvUSD Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x01853B37bfEaF7C1557F7996aA778A0858870c70' as Address,
-    gaugeAddress: '0x169b6d105e05732ef9e0cd1d279dd81283d90aff' as Address,
+    vaultAddress: '0x4a7999c55d3a93dAf72EA112985e57c2E3b9e95D',
+    gaugeAddress: '0xae1680ef5efc2486e73d8d5d0f8a8db77da5774e',
     deposit: DEFAULT_DEPOSIT,
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
     hasClaimableRewards: false,
   },
   {
-    id: 'one-way-market-44',
-    label: 'UNIT0-crvUSD Lend Market',
+    id: 'one-way-market-12',
+    label: 'WETH-crvUSD Lend Market',
     chainId: DEFAULT_CHAIN_ID,
     borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x878fC567D55fFc9c3f4ef45296b1b129bca06fe0' as Address,
-    gaugeAddress: '0x173c8b67823a4f7d80cb4d2b4ef375c2137d70cd' as Address,
+    vaultAddress: '0x8fb1c7AEDcbBc1222325C39dd5c1D2d23420CAe3',
+    gaugeAddress: '0xf3f6d6d412a77b680ec3a5e35ebb11bbec319739',
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+    hasClaimableRewards: false,
+  },
+  {
+    id: 'one-way-market-41',
+    label: 'sreUSD-crvUSD Lend Market',
+    chainId: DEFAULT_CHAIN_ID,
+    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
+    vaultAddress: '0xC32B0Cf36e06c790A568667A17DE80cba95A5Aad',
+    gaugeAddress: '0x29e9975561fad3a7988ca96361ab5c5317cb32af',
+    deposit: DEFAULT_DEPOSIT,
+    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
+    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+  },
+  {
+    id: 'one-way-market-9',
+    label: 'WETH-crvUSD Lend Market (Arbitrum)',
+    chainId: Chain.Arbitrum,
+    borrowedTokenAddress: '0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5',
+    vaultAddress: '0xd3ca9bec3e681b0f578fd87f20ebcf2b7e0bb739',
+    gaugeAddress: '0xbe543fc11b6eb4ae1a80cb4e06828f06dc3791da',
     deposit: DEFAULT_DEPOSIT,
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
