@@ -196,11 +196,6 @@ export function useTransactionMutation<
     },
   })
 
-  return {
-    mutate,
-    error: isDirty === false ? null : error,
-    isPending,
-    isSuccess: isDirty !== true && isSuccess,
-    ...data,
-  }
+  const success = isDirty !== true && isSuccess // hide success when forms get edited again
+  return { mutate, error, isPending, isSuccess: success, ...data }
 }

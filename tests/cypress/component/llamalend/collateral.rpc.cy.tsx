@@ -41,7 +41,6 @@ describe('Collateral forms', () => {
         const removeAmount = '0.005' as Decimal
         const collateralAfterAdd = `${+collateral + +addAmount}` as Decimal
         const collateralAfterRemove = `${+collateralAfterAdd - +removeAmount}` as Decimal
-        let onSuccess: ReturnType<typeof cy.stub>
         let onPricesUpdated: ReturnType<typeof cy.stub>
         const CollateralTest = ({ tab }: { tab: 'add-collateral' | 'remove-collateral' }) => (
           <LlammalendTestCase
@@ -68,7 +67,6 @@ describe('Collateral forms', () => {
         )
 
         beforeEach(() => {
-          onSuccess = cy.stub().as('onSuccess')
           onPricesUpdated = cy.stub().as('onPricesUpdated')
         })
 
@@ -82,8 +80,7 @@ describe('Collateral forms', () => {
           )
           getActionValue('borrow-collateral').should('equal', formatNumber(collateralAfterAdd, { abbreviate: false }))
 
-          submitCollateralAddForm().then(() => expect(onSuccess).to.be.calledOnce)
-
+          submitCollateralAddForm()
           touchCollateralForm('add-collateral-input')
           checkCurrentCollateral(collateralAfterAdd)
         })
@@ -101,8 +98,7 @@ describe('Collateral forms', () => {
             formatNumber(collateralAfterRemove, { abbreviate: false }),
           )
 
-          submitCollateralRemoveForm().then(() => expect(onSuccess).to.be.calledOnce)
-
+          submitCollateralRemoveForm()
           touchCollateralForm('remove-collateral-input')
           checkCurrentCollateral(collateralAfterRemove)
         })

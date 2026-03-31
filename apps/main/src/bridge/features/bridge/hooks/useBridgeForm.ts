@@ -108,7 +108,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   } = useBridgeApproveMutation({
     chainId,
     onApproved: async () => await invalidateBridgeIsApproved(params),
-    onReset: form.reset,
+    onReset: noop, // don't reset on approval, keep the values
     isDirty: form.formState.isDirty,
   })
 
@@ -119,12 +119,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     isSuccess: isBridged,
     error: bridgeError,
     data: bridgeData,
-  } = useBridgeMutation({
-    chainId,
-    onReset: form.reset,
-    isDirty: form.formState.isDirty,
-    onBridged: noop,
-  })
+  } = useBridgeMutation({ chainId, onReset: form.reset, isDirty: form.formState.isDirty })
 
   /**
    * Set fromChainId to the chainId passed to this form, which is the chain from the URL.

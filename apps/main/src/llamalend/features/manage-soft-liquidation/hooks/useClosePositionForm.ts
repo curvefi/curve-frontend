@@ -48,7 +48,7 @@ export function useClosePositionForm({
     network,
     marketId,
     onReset: form.reset,
-    isDirty: undefined, // not applicable, no fields in the form
+    isDirty: undefined, // not applicable, no fields in the form except slippage
     userAddress,
   })
 
