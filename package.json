@@ -23,7 +23,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "storybook": "yarn workspace curve-ui-kit run storybook",
-    "storybook:build": "yarn workspace curve-ui-kit run build:storybook"
+    "storybook:build": "yarn workspace curve-ui-kit run build:storybook",
+    "check-supply-chain": "node .github/check-supply-chain.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
