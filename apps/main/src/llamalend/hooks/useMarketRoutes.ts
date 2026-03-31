@@ -49,7 +49,7 @@ export function useMarketRoutes({
       userAddress,
       slippage,
     },
-    enabled,
+    enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
 
