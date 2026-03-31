@@ -69,6 +69,8 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "bignumber.js": "9.3.1",
+    "echarts": "6.0.0",
+    "echarts-for-react": "3.0.6",
     "eslint": "9.39.2",
     "ethers": "6.16.0",
     "immer": "11.1.4",
@@ -77,9 +79,8 @@
     "react-dom": "19.2.4",
     "styled-components": "6.3.11",
     "typescript": "5.9.3",
-    "echarts": "6.0.0",
-    "echarts-for-react": "3.0.6",
     "vite": "7.3.1",
+    "vite-plugin-svgr": "^4.5.0",
     "vitest": "^4.0.15",
     "zustand": "5.0.12"
   }
