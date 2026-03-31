@@ -24,14 +24,14 @@ export const computeDecimalTotalRate = (rate?: Decimal, rebasingYield?: number |
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 
-export const getSnapshotBorrowRate = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
-export const getSnapshotCollateralRebasingYieldRate = <
+export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
+export const getSnapshotCollateralRebasingYieldApr = <
   TSnapshot extends { collateralToken: { rebasingYieldApr: number | null | undefined } },
 >(
   snapshot: TSnapshot,
 ) => snapshot.collateralToken.rebasingYieldApr
 
-const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
+export const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
   snapshots: TSnapshot[] | undefined,
   getValue: (snapshot: TSnapshot) => TValue | null | undefined,
 ) => {
@@ -73,63 +73,85 @@ export const sumRates = (base: number | null | undefined, ...components: (number
 
 export const toNumberOrNull = (value: number | string | null | undefined) => (value == null ? null : Number(value))
 
+type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
+
+const sumSnapshotExtraIncentivesApr = (extraRewardApr: LendingSnapshot['extraRewardApr'] | undefined) =>
+  extraRewardApr?.reduce((acc, reward) => acc + reward.rate, 0) ?? 0
+
+export const sumOnChainExtraIncentivesApr = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
+  rewardsApr?.reduce((acc, reward) => acc + reward.apy, 0) ?? 0
+
 type SupplyRateMetricsParams = {
-  supplyApy: number | null
-  snapshots: LendingSnapshot[] | undefined
-  onChainCrvRates?: number[]
-  onChainRewardsApr?: { apy: number; symbol: string; tokenAddress: string }[]
-  daysBack?: number
+  supplyApy: number | null | undefined
+  crvMinBoostApr: number | null | undefined
+  crvMaxBoostApr: number | null | undefined
+  rebasingYieldApy: number | null | undefined
+  extraIncentivesApr: number | null | undefined
+  userSupplyBoost?: number | null | undefined
 }
 
 /**
  * Get the supply rate metrics for a given supply APY and lending snapshots, like average rate, total boosted rates.
  * Parallels `getBorrowRateMetrics` for the supply side.
  */
-export const getSupplyRateMetrics = ({
+export const getSupplyApyMetrics = ({
   supplyApy,
-  snapshots,
-  onChainCrvRates,
-  onChainRewardsApr,
-  daysBack = LAST_MONTH,
+  crvMinBoostApr,
+  crvMaxBoostApr,
+  rebasingYieldApy,
+  extraIncentivesApr,
+  userSupplyBoost,
 }: SupplyRateMetricsParams) => {
-  const averages = calculateAverageRates(snapshots, daysBack, {
-    lendApy: ({ lendApy }) => Number(lendApy) * 100,
-    rebasingYield: ({ borrowedToken }) => borrowedToken.rebasingYield,
-    aprCrvMinBoost: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
-    aprCrvMaxBoost: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
-    extraIncentivesApr: ({ extraRewardApr }) => extraRewardApr.reduce((acc, r) => acc + r.rate, 0),
-  })
+  crvMinBoostApr = crvMinBoostApr ?? 0
+  crvMaxBoostApr = crvMaxBoostApr ?? 0
+  rebasingYieldApy = rebasingYieldApy ?? null
+  extraIncentivesApr = extraIncentivesApr ?? 0
 
-  const supplyAprCrvMinBoost = onChainCrvRates?.[0] ?? snapshots?.[0]?.lendAprCrv0Boost ?? 0
-  const supplyAprCrvMaxBoost = onChainCrvRates?.[1] ?? snapshots?.[0]?.lendAprCrvMaxBoost ?? 0
-  const rebasingYield = snapshots?.at(-1)?.borrowedToken?.rebasingYield ?? null
-  const extraIncentivesTotalApr = onChainRewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
+  const userBoostApr = crvMinBoostApr * (userSupplyBoost ?? 1)
+  const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApr)
 
   return {
     supplyApy,
-    averageLendApy: averages?.lendApy ?? null,
-    supplyAprCrvMinBoost,
-    supplyAprCrvMaxBoost,
-    averageAprCrvMinBoost: averages?.aprCrvMinBoost ?? null,
-    averageAprCrvMaxBoost: averages?.aprCrvMaxBoost ?? null,
-    rebasingYield,
-    averageRebasingYield: averages?.rebasingYield ?? null,
-    extraIncentivesTotalApr,
+    supplyAprCrvMinBoost: crvMinBoostApr,
+    supplyAprCrvMaxBoost: crvMaxBoostApr,
+    userBoostApr,
+    rebasingYield: rebasingYieldApy,
+    extraIncentivesTotalApr: extraIncentivesApr,
+    totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApr),
+    totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApr),
+    totalUserBoost: sumRates(totalWithoutBoost, userBoostApr),
+  }
+}
+
+export const getSupplyApyAverageMetrics = ({
+  snapshots,
+  daysBack = LAST_MONTH,
+}: {
+  snapshots: LendingSnapshot[] | undefined
+  daysBack?: number
+}) => {
+  const averages = calculateAverageRates(snapshots, daysBack, {
+    supplyApy: ({ lendApy }) => Number(lendApy) * 100,
+    rebasingYieldApy: ({ borrowedToken }) => borrowedToken.rebasingYield,
+    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
+    crvMaxBoostApr: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
+    extraIncentivesApr: ({ extraRewardApr }) => sumSnapshotExtraIncentivesApr(extraRewardApr),
+  })
+
+  const averageTotalWithoutBoost = sumRates(
+    averages?.supplyApy,
+    averages?.rebasingYieldApy,
+    averages?.extraIncentivesApr,
+  )
+
+  return {
+    averageLendApy: averages?.supplyApy ?? null,
+    averageAprCrvMinBoost: averages?.crvMinBoostApr ?? null,
+    averageAprCrvMaxBoost: averages?.crvMaxBoostApr ?? null,
+    averageRebasingYield: averages?.rebasingYieldApy ?? null,
     averageExtraIncentivesApr: averages?.extraIncentivesApr ?? null,
-    totalMinBoost: sumRates(supplyApy, rebasingYield, extraIncentivesTotalApr, supplyAprCrvMinBoost),
-    totalMaxBoost: sumRates(supplyApy, rebasingYield, extraIncentivesTotalApr, supplyAprCrvMaxBoost),
-    totalAverageMinBoost: sumRates(
-      averages?.lendApy,
-      averages?.rebasingYield,
-      averages?.extraIncentivesApr,
-      averages?.aprCrvMinBoost,
-    ),
-    totalAverageMaxBoost: sumRates(
-      averages?.lendApy,
-      averages?.rebasingYield,
-      averages?.extraIncentivesApr,
-      averages?.aprCrvMaxBoost,
-    ),
+    totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostApr),
+    totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostApr),
   }
 }
 
