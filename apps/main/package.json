@@ -35,7 +35,7 @@
     "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "*",
-    "vite-plugin-vercel": "9.1.1"
+    "vite-plugin-vercel": "11.0.3"
   },
   "peerDependencies": {
     "@curvefi/api": "*",
