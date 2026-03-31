@@ -63,17 +63,6 @@ const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
   },
-  {
-    id: 'one-way-market-9',
-    label: 'WETH-crvUSD Lend Market (Arbitrum)',
-    chainId: Chain.Arbitrum,
-    borrowedTokenAddress: '0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5',
-    vaultAddress: '0xd3ca9bec3e681b0f578fd87f20ebcf2b7e0bb739',
-    gaugeAddress: '0xbe543fc11b6eb4ae1a80cb4e06828f06dc3791da',
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-  },
 ] as const
 
 export const supplyTestMarkets = () => [oneOf(...SUPPLY_TEST_MARKETS)]
