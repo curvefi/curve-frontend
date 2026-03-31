@@ -75,7 +75,7 @@
     "lodash": "4.17.23",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "styled-components": "6.3.11",
+    "styled-components": "6.3.12",
     "typescript": "5.9.3",
     "echarts": "6.0.0",
     "echarts-for-react": "3.0.6",
