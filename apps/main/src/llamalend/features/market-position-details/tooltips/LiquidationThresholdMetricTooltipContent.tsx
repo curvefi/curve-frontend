@@ -1,3 +1,4 @@
+import { UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipItem,
   TooltipItems,
@@ -13,8 +14,6 @@ type LiquidationThresholdTooltipContentProps = {
   rangeToLiquidation: number | undefined | null
   bandRange: BandRange | undefined | null
 }
-
-const UnavailableNotation = '-'
 
 export const LiquidationThresholdTooltipContent = ({
   liquidationRange,
