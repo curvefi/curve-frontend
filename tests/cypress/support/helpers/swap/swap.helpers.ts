@@ -31,7 +31,7 @@ export function checkSwapDetailsLoaded() {
  * For ERC20 tokens, clicks approve first if needed, then swap.
  * Returns a Cypress chainable that resolves when the transaction success message is shown.
  */
-export function submitSwap() {
+export function submitApprovedSwap() {
   cy.get('[data-testid="swap"]', TRANSACTION_LOAD_TIMEOUT).click()
   return cy.contains('Transaction complete', TRANSACTION_LOAD_TIMEOUT)
 }

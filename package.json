@@ -49,6 +49,7 @@
     "styled-components": "*",
     "typescript": "*",
     "vite": "*",
+    "vite-plugin-svgr": "*",
     "vitest": "*",
     "zustand": "*"
   },

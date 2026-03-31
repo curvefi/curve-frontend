@@ -1,5 +1,5 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { checkSwapDetailsLoaded, submitSwap, writeSwapForm } from '@cy/support/helpers/swap/swap.helpers'
+import { checkSwapDetailsLoaded, submitApprovedSwap, writeSwapForm } from '@cy/support/helpers/swap/swap.helpers'
 import { SwapTestCase } from '@cy/support/helpers/swap/SwapTestCase'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
@@ -44,6 +44,6 @@ describe('Router Swap (RPC)', () => {
     cy.mount(<TestWrapper />)
     writeSwapForm({ amount: SWAP_AMOUNT })
     checkSwapDetailsLoaded()
-    submitSwap()
+    submitApprovedSwap()
   })
 })
