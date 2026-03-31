@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process'
 
-const MAX_AGE_DAYS = 3
+const MAX_AGE_DAYS = 4
 const DAY_MS = 24 * 60 * 60 * 1000
 const MAX_AGE_MS = MAX_AGE_DAYS * DAY_MS
 const ALLOWED_SCOPES = ['@curvefi']
