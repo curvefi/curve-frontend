@@ -2,7 +2,7 @@ import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
-import { computeTotalRate } from '@/llamalend/rates.utils'
+import { computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { type PartialRecord, recordValues } from '@primitives/objects.utils'
@@ -268,6 +268,14 @@ const convertLendingVault = (
   const hasBorrowed = userBorrows.has(controller)
   const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
+  const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
+    supplyApy: lendApy,
+    crvMinBoostApr: lendCrvAprUnboosted,
+    crvMaxBoostApr: lendCrvAprBoosted,
+    rebasingYieldApy: borrowedToken?.rebasingYield,
+    extraIncentivesApr: totalExtraRewardApr,
+  })
+
   return {
     chain,
     controllerAddress: controller,
@@ -303,10 +311,8 @@ const convertLendingVault = (
       lendApy,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
-      lendTotalApyMinBoosted:
-        lendApy + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
-      lendTotalApyMaxBoosted:
-        lendApy + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
+      lendTotalApyMinBoosted: totalMinBoost,
+      lendTotalApyMaxBoosted: totalMaxBoost,
       borrowApy,
       borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
