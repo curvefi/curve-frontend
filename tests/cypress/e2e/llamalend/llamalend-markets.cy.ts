@@ -351,10 +351,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     function checkLineGraphColor(type: MarketRateType, color: string) {
       // the graphs are lazy loaded, so we need to scroll to them first before checking the color
-      if (breakpoint != 'mobile') {
-        // no need to scroll on mobile, the graph is already in view after collapsing the row
-        cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
-      }
+      cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
       cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
     }
 
