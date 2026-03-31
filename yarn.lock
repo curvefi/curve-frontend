@@ -8690,6 +8690,7 @@ __metadata:
     styled-components: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
+    vite-plugin-svgr: "npm:*"
     vitest: "npm:*"
     zustand: "npm:*"
   languageName: unknown
@@ -12483,7 +12484,7 @@ __metadata:
     ui: "npm:*"
     vest: "npm:^5.4.6"
     vite: "npm:*"
-    vite-plugin-svgr: "npm:^4.5.0"
+    vite-plugin-svgr: "npm:*"
     vite-plugin-vercel: "npm:9.1.1"
   peerDependencies:
     "@curvefi/api": "*"
@@ -15236,6 +15237,7 @@ __metadata:
     ethers: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
+    vite-plugin-svgr: "npm:*"
     vitest: "npm:*"
     wait-on: "npm:^9.0.4"
   languageName: unknown
