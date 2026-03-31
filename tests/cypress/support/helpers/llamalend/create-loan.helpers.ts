@@ -1,4 +1,6 @@
+import type { Address } from 'viem'
 import { LoanPreset } from '@/llamalend/constants'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type AlertColor } from '@mui/material/Alert'
@@ -12,7 +14,25 @@ const chainId = Chain.Ethereum
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
 const collateralDecimals = 18
 
-export const LOAN_TEST_MARKETS = {
+type TestMarket = {
+  id: string
+  label: string
+  collateralAddress: Address
+  controllerAddress: Address
+  borrowedTokenAddress: Address
+  collateral: Decimal
+  borrow: Decimal
+  borrowMore: Decimal
+  repay: Decimal
+  improveHealth: Decimal
+  chainId: IChainId
+  path: string
+  hasLeverage: boolean
+  collateralDecimals: number
+  vaultAddress?: Address
+}
+
+export const LOAN_TEST_MARKETS: Record<LlamaMarketType, TestMarket[]> = {
   [LlamaMarketType.Mint]: [
     // todo: fix buggy market that cannot borrow max: { id: 'wsteth', label: 'wstETH-crvUSD Old Mint Market', collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', collateral: '0.1', borrow: '10', borrowMore: '2', repay: '1', improveHealth: '1', chainId, path: '/crvusd/ethereum/markets/wsteth', hasLeverage: false },
     {
@@ -20,6 +40,7 @@ export const LOAN_TEST_MARKETS = {
       label: '2nd sfrxETH-crvUSD Old Mint Market',
       collateralAddress: '0xac3e018457b222d93114458476f3e3416abbe38f', // sfrxETH
       controllerAddress: '0xec0820efafc41d8943ee8de495fc9ba8495b15cf',
+      borrowedTokenAddress: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
       collateral: '0.1',
       borrow: '10',
       borrowMore: '2',
@@ -35,6 +56,7 @@ export const LOAN_TEST_MARKETS = {
       label: 'WBTC-crvUSD New Mint Market',
       collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
       controllerAddress: '0x4e59541306910ad6dc1dac0ac9dfb29bd9f15c67',
+      borrowedTokenAddress: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
       collateral: '1',
       borrow: '100',
       borrowMore: '10',
@@ -52,6 +74,7 @@ export const LOAN_TEST_MARKETS = {
       label: 'CRV-crvUSD Old Lend Market',
       collateralAddress: '0xd533a949740bb3306d119cc777fa900ba034cd52', // CRV
       controllerAddress: '0xeda215b7666936ded834f76f3fbc6f323295110a',
+      borrowedTokenAddress: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
       collateral: '100',
       borrow: '3',
       borrowMore: '1',
@@ -67,6 +90,8 @@ export const LOAN_TEST_MARKETS = {
       label: 'sreUSD-crvUSD New Lend Market',
       collateralAddress: '0x557ab1e003951a73c12d16f0fea8490e39c33c35', // sreUSD
       controllerAddress: '0x4f79fe450a2baf833e8f50340bd230f5a3ecafe9',
+      vaultAddress: '0xC32B0Cf36e06c790A568667A17DE80cba95A5Aad',
+      borrowedTokenAddress: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
       collateral: '1',
       borrow: '0.8',
       borrowMore: '0.02',
@@ -80,8 +105,10 @@ export const LOAN_TEST_MARKETS = {
   ],
 } as const
 
-export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
-  oneOf(...LOAN_TEST_MARKETS[type])
+export const oneLoanTestMarket = (
+  type: LlamaMarketType = oneValueOf(LlamaMarketType),
+  filter?: (market: TestMarket) => boolean,
+) => oneOf(...LOAN_TEST_MARKETS[type].filter(filter ?? (() => true)))
 
 /**
  * Check all loan detail values are loaded and valid.

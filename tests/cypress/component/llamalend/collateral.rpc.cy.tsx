@@ -7,24 +7,23 @@ import {
   submitCollateralForm,
   touchCollateralForm,
 } from '@cy/support/helpers/llamalend/collateral.helpers'
-import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { LOAN_TEST_MARKETS, oneLoanTestMarket } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { recordValues } from '@primitives/objects.utils'
+import { objectKeys } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-describe('Collateral forms', () => {
-  // todo: test more markets
-  const _testCases = recordValues(LOAN_TEST_MARKETS)
-    .flat()
-    .filter((market) => !market.hasLeverage)
-  const testCases = [LOAN_TEST_MARKETS.Mint[0]]
+const testCases = objectKeys(LOAN_TEST_MARKETS).map(
+  (type) => oneLoanTestMarket(type),
+  (market) => !market.hasLeverage,
+)
 
+describe('Collateral forms', () => {
   testCases.forEach(
-    ({ borrow, chainId, collateral, collateralAddress, controllerAddress, collateralDecimals, id, label }) => {
+    ({ borrow, chainId, collateral, collateralAddress, controllerAddress, collateralDecimals, id, label }) =>
       describe(label, () => {
         skipTestsAfterFailure() // the remove collateral test needs the collateral to be added first
 
@@ -110,7 +109,6 @@ describe('Collateral forms', () => {
           touchCollateralForm('remove-collateral-input')
           checkCurrentCollateral(collateralAfterRemove)
         })
-      })
-    },
+      }),
   )
 })
