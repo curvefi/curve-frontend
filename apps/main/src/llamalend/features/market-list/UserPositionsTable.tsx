@@ -6,6 +6,7 @@ import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
+import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
@@ -108,7 +109,16 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
   const { markets = [], userHasPositions } = result ?? {}
   const [tab, setTab, tabs] = useTabs(result)
 
-  const userData = useMemo(() => markets.filter((market) => market.userHasPositions?.[tab]), [markets, tab])
+  const userData = useMemo(
+    () =>
+      markets
+        .filter((market) => market.userHasPositions?.[tab])
+        .map((market) =>
+          // For supply positions, navigate to vault page instead of borrow page
+          tab === MarketRateType.Supply ? { ...market, url: `${market.url}${LEND_MARKET_ROUTES.PAGE_VAULT}` } : market,
+        ),
+    [markets, tab],
+  )
 
   const title = LOCAL_STORAGE_KEYS[tab]
 
