@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
 import { oneAddress } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -132,8 +131,8 @@ const createBaseSupplyMarket = ({
 }
 
 export const createDepositScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
-  const input = { amount: '12.50' as const }
-  const amount = BigNumber(input.amount)
+  const input = { amount: '12.5' as const }
+  const amount = input.amount
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -204,8 +203,8 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
 }
 
 export const createStakeScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
-  const input = { amount: '15.00' as const }
-  const amount = BigNumber(input.amount)
+  const input = { amount: '15' as const }
+  const amount = input.amount
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -272,8 +271,8 @@ export const createStakeScenario = ({ chainId, approved }: { chainId: number; ap
 export const createWithdrawScenario = ({
   chainId,
   isFull,
-  depositedShares = '90.00',
-  stakedShares = '10.00',
+  depositedShares = '90',
+  stakedShares = '10',
 }: {
   chainId: number
   isFull: boolean
@@ -281,10 +280,11 @@ export const createWithdrawScenario = ({
   stakedShares?: Decimal
 }) => {
   const input = {
-    amount: (isFull ? depositedShares : '22.50') as Decimal,
+    amount: (isFull ? depositedShares : '22.5') as Decimal,
     isFull,
   }
-  const amount = BigNumber(input.amount)
+  const amount = input.amount
+  const submitAmount = isFull ? depositedShares : amount
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -325,8 +325,8 @@ export const createWithdrawScenario = ({
       marketRates: [false, false] as const,
       futureRates: [amount, '0'] as const,
       previewWithdraw: [amount] as const,
-      estimateGas: isFull ? ([depositedShares] as const) : ([amount] as const),
-      submit: isFull ? ([depositedShares] as const) : ([amount] as const),
+      estimateGas: [submitAmount] as const,
+      submit: [submitAmount] as const,
       actionInfo: {
         supplyApy: futureApy,
         prevSupplyApy: currentApy,
@@ -349,8 +349,8 @@ export const createWithdrawScenario = ({
 }
 
 export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
-  const input = { amount: '12.50' as const }
-  const amount = BigNumber(input.amount)
+  const input = { amount: '12.5' as const }
+  const amount = input.amount
   const balances = {
     collateral: '0',
     borrowed: '0',
