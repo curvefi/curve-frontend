@@ -6,7 +6,7 @@ import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
+import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
@@ -14,7 +14,7 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
-import type { LlamaMarketsResult } from '../../queries/market-list/llama-markets'
+import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
@@ -95,6 +95,13 @@ const useTabs = (results: LlamaMarketsResult | undefined) => {
 const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
 
+const buildVaultUrl = (market: LlamaMarket) =>
+  getInternalUrl(
+    'lend',
+    market.chain,
+    `${LEND_ROUTES.PAGE_MARKETS}/${market.controllerAddress}${LEND_MARKET_ROUTES.PAGE_VAULT}`,
+  )
+
 export type UserPositionsTableProps = {
   onReload: () => void
   result: LlamaMarketsResult | undefined
@@ -115,7 +122,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
         .filter((market) => market.userHasPositions?.[tab])
         .map((market) =>
           // For supply positions, navigate to vault page instead of borrow page
-          tab === MarketRateType.Supply ? { ...market, url: `${market.url}${LEND_MARKET_ROUTES.PAGE_VAULT}` } : market,
+          tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market,
         ),
     [markets, tab],
   )
