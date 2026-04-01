@@ -16,7 +16,7 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 const isAlpha = () =>
   getReleaseChannel() === ReleaseChannel.Beta &&
   defaultReleaseChannel === ReleaseChannel.Beta &&
-  !localStorage.getItem('disableZapV2')
+  localStorage.getItem('disableZapV2') != 'true'
 // const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified create loan form */
