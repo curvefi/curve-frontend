@@ -4,7 +4,7 @@ import { useConnection } from 'wagmi'
 import { useMaxWithdrawTokenValues } from '@/llamalend/features/supply/hooks/useMaxWithdraw'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type WithdrawOptions, useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
+import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
 import {
   withdrawFormValidationSuite,
   WithdrawParams,
@@ -14,7 +14,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   withdrawAmount: undefined,
@@ -27,12 +27,10 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<WithdrawOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -69,18 +67,9 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     isSuccess: isWithdrawn,
     error: withdrawError,
     data,
-    reset: resetWithdraw,
-  } = useWithdrawMutation({
-    marketId,
-    network,
-    onSuccess,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useWithdrawMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
 
   const { formState } = form
-
-  useCallbackAfterFormUpdate(form, resetWithdraw)
 
   const isPending = formState.isSubmitting || isWithdrawing
 

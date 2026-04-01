@@ -1,6 +1,5 @@
 import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -19,16 +18,14 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  enabled,
-  onSuccess,
   onPricesUpdated,
+  enabled,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled: boolean
-  onSuccess?: NonNullable<RemoveCollateralOptions['onSuccess']>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  enabled: boolean
 }) => {
   const network = networks[chainId]
 
@@ -46,7 +43,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     collateralToken,
     borrowToken,
     txHash,
-  } = useRemoveCollateralForm({ market, network, enabled, onSuccess, onPricesUpdated })
+  } = useRemoveCollateralForm({ market, network, onPricesUpdated, enabled })
 
   return (
     <Form

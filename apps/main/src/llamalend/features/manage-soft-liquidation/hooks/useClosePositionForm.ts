@@ -9,7 +9,7 @@ import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { filterFormErrors, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useCanClose } from './useCanClose'
 import { useCollateralToRecover } from './useCollateralToRecover'
@@ -24,12 +24,10 @@ export function useClosePositionForm({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
   enabled?: boolean
-  onSuccess?: () => void
 }) {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -46,16 +44,13 @@ export function useClosePositionForm({
     isSuccess: isClosed,
     error: closeError,
     data,
-    reset: resetRepay,
   } = useClosePositionMutation({
     network,
     marketId,
-    onSuccess,
     onReset: form.reset,
+    isDirty: undefined, // not applicable, no fields in the form except slippage
     userAddress,
   })
-
-  useCallbackAfterFormUpdate(form, resetRepay) // reset mutation state on form change
 
   const userState = useUserState({ chainId, marketId, userAddress }, enabled)
   const collateralToRecover = useCollateralToRecover({ chainId, market })

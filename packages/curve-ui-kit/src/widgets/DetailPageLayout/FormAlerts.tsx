@@ -54,7 +54,7 @@ export const FormAlerts = <Field extends string>({
         </Alert>
       )}
       {unhandledErrors.length > 0 && (
-        <Alert variant="outlined" severity="warning" data-testid={'loan-form-errors'}>
+        <Alert variant="outlined" severity="warning" data-testid="loan-form-errors">
           <AlertTitle>{t`Please correct the errors`}</AlertTitle>
           {unhandledErrors.map(([field, message]) => (
             <Box key={[field, message].join(': ')}>{message}</Box>
@@ -66,7 +66,7 @@ export const FormAlerts = <Field extends string>({
           variant="outlined"
           severity="error"
           sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
-          data-testid={'loan-form-error'}
+          data-testid={'loan-alert-error'}
         >
           <AlertTitle>{t`An error occurred`}</AlertTitle>
           <Stack gap={Spacing.xs} width="100%">

@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { UnstakeOptions } from '@/llamalend/mutations/unstake.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -15,7 +14,6 @@ export type UnstakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<UnstakeOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-unstake'
@@ -25,7 +23,6 @@ export const UnstakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: UnstakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -42,7 +39,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
     txHash,
     formErrors,
     max,
-  } = useUnstakeForm({ market, network, enabled, onSuccess })
+  } = useUnstakeForm({ market, network, enabled })
 
   return (
     <Form

@@ -16,7 +16,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
@@ -102,8 +102,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isSuccess: isCreated,
     error: creationError,
     data,
-    reset: resetCreation,
-  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onSuccess, userAddress })
+  } = useCreateLoanMutation({
+    network,
+    marketId: market?.id,
+    onReset: form.reset,
+    isDirty: form.formState.isDirty,
+    onSuccess,
+    userAddress,
+  })
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
@@ -111,7 +117,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
-  useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
   const isPending = formState.isSubmitting || isCreating
   return {

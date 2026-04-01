@@ -1,6 +1,5 @@
 import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -17,7 +16,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  onSuccess,
   onPricesUpdated,
   enabled,
 }: {
@@ -25,7 +23,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled: boolean
-  onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
@@ -44,7 +41,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     borrowToken,
     txHash,
     maxCollateral,
-  } = useAddCollateralForm({ market, network, onSuccess, enabled, onPricesUpdated })
+  } = useAddCollateralForm({ market, network, onPricesUpdated, enabled })
 
   return (
     <Form
