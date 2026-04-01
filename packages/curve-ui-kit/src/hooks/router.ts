@@ -7,15 +7,19 @@ import {
 } from '@tanstack/react-router'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type NavigateOptions = { replace?: boolean; state?: any }
+type NavigateOptions = { replace?: boolean; resetScroll?: boolean; state?: any }
 
 /**
  * Use navigate function from tanstack router.
- * Returns a function that accepts a URL string and an options object with `replace` and `state` properties.
+ * Returns a function that accepts a URL string and an options object with `replace`, `resetScroll` and `state` properties.
+ * Scroll is reset on push navigation and preserved on replace navigation, unless `resetScroll` is explicitly set.
  */
 export function useNavigate() {
   const navigate = useTanstackNavigate()
-  return useCallback((to: string, options?: NavigateOptions): void => void navigate({ to, ...options }), [navigate])
+  return useCallback(
+    (to: string, options?: NavigateOptions): void => void navigate({ to, resetScroll: !options?.replace, ...options }),
+    [navigate],
+  )
 }
 
 /**
@@ -40,7 +44,7 @@ export const getSearchString = (update: SearchParamsUpdate, previous?: URLSearch
 }
 
 /**
- * Update URL search params through TanStack Router using replace navigation.
+ * Update URL search params through TanStack Router, preserving the current pathname.
  */
 export function useSearchNavigate(searchParams: URLSearchParams) {
   const navigate = useNavigate()
