@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { ClaimOptions } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -18,18 +17,11 @@ export type ClaimTabProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: ClaimOptions['onSuccess']
 }
 
 const TEST_ID_PREFIX = 'supply-claim'
 
-export const ClaimTab = <ChainId extends IChainId>({
-  market,
-  networks,
-  chainId,
-  enabled,
-  onSuccess,
-}: ClaimTabProps<ChainId>) => {
+export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, enabled }: ClaimTabProps<ChainId>) => {
   const network = networks[chainId]
 
   const {
@@ -52,7 +44,6 @@ export const ClaimTab = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onSuccess,
   })
   return (
     <>

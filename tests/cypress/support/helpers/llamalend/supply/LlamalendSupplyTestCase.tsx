@@ -34,7 +34,6 @@ type SupplyTab = keyof typeof Components
 
 type SupplyFlowTestProps = {
   tab?: SupplyTab
-  onSuccess: ReturnType<typeof cy.stub>
 } & UserMarketQuery<LlamaChainId>
 
 function LlamalendSupplyTest({ tab = 'deposit', ...props }: SupplyFlowTestProps) {

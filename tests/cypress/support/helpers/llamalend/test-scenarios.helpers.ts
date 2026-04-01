@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
-import { Decimal } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from './mock-loan-test-data'
 import {

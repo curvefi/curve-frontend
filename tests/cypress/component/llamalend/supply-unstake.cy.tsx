@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
@@ -26,14 +25,13 @@ describe('UnstakeForm (mocked)', () => {
 
   it('fills and submits', () => {
     const { input, market, llamaApi, expected, stubs } = createUnstakeScenario({ chainId })
-    const onSuccess = cy.spy().as('onSuccess')
 
     setLlamaApi(llamaApi)
     setGasInfo({ chainId, networks })
 
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi}>
-        <UnstakeForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} enabled />
+        <UnstakeForm market={market} networks={networks} chainId={chainId} enabled />
       </MockLoanTestWrapper>,
     )
 
@@ -51,7 +49,6 @@ describe('UnstakeForm (mocked)', () => {
 
     submitUnstakeForm().then(() => {
       expect(stubs.unstake).to.have.been.calledWithExactly(...expected.submit)
-      expect(onSuccess).to.have.been.calledOnce
     })
   })
 })

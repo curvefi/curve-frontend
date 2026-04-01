@@ -26,14 +26,13 @@ describe('WithdrawForm (mocked)', () => {
   testCases.forEach(({ isFull, title, buttonText }) => {
     it(title, () => {
       const { input, market, llamaApi, expected, stubs } = createWithdrawScenario({ chainId, isFull })
-      const onSuccess = cy.spy().as('onSuccess')
 
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <WithdrawForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} enabled />
+          <WithdrawForm market={market} networks={networks} chainId={chainId} enabled />
         </MockLoanTestWrapper>,
       )
 
@@ -59,7 +58,6 @@ describe('WithdrawForm (mocked)', () => {
           expect(stubs.withdraw).to.have.been.calledWithExactly(...expected.submit)
           expect(stubs.redeem).to.not.have.been.called
         }
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

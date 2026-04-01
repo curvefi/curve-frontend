@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
@@ -30,14 +29,13 @@ describe('StakeForm (mocked)', () => {
   testCases.forEach(({ approved, title, buttonText }) => {
     it(title, () => {
       const { input, market, llamaApi, expected, stubs } = createStakeScenario({ chainId, approved })
-      const onSuccess = cy.spy().as('onSuccess')
 
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <StakeForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} enabled />
+          <StakeForm market={market} networks={networks} chainId={chainId} enabled />
         </MockLoanTestWrapper>,
       )
 
@@ -62,7 +60,6 @@ describe('StakeForm (mocked)', () => {
         if (!approved) {
           expect(stubs.stakeApprove).to.have.been.calledWithExactly(...expected.approve)
         }
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

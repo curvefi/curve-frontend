@@ -26,14 +26,13 @@ describe('DepositForm (mocked)', () => {
   testCases.forEach(({ approved, title, buttonText }) => {
     it(title, () => {
       const { input, market, llamaApi, expected, stubs } = createDepositScenario({ chainId, approved })
-      const onSuccess = cy.spy().as('onSuccess')
 
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <DepositForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} enabled />
+          <DepositForm market={market} networks={networks} chainId={chainId} enabled />
         </MockLoanTestWrapper>,
       )
 
@@ -62,7 +61,6 @@ describe('DepositForm (mocked)', () => {
         } else {
           expect(stubs.depositApprove).to.have.been.calledWithExactly(...expected.approve)
         }
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

@@ -73,8 +73,6 @@ supplyTestMarkets().forEach(
       const suppliedAfterDeposit = deposit
       const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
 
-      let onSuccess: ReturnType<typeof cy.stub>
-
       const SupplyTestWrapper = ({ tab }: Pick<LlamalendSupplyTestCaseProps, 'tab'>) => (
         <LlamalendSupplyTestCase
           tab={tab}
@@ -83,13 +81,8 @@ supplyTestMarkets().forEach(
           chainId={chainId}
           marketId={id}
           userAddress={address}
-          onSuccess={onSuccess}
         />
       )
-
-      const expectCallbacks = () => {
-        expect(onSuccess).to.have.callCount(1)
-      }
 
       before(() => {
         fundUserForSupplySetup({
@@ -101,15 +94,11 @@ supplyTestMarkets().forEach(
         cy.log(`Funded some eth and crvUSD to ${address} in vnet ${getVirtualNetwork().slug}`)
       })
 
-      beforeEach(() => {
-        onSuccess = cy.stub().as('onSuccess')
-      })
-
       it('deposits into the vault', () => {
         cy.mount(<SupplyTestWrapper />)
         writeDepositForm({ amount: deposit })
         checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
-        submitDepositForm().then(expectCallbacks)
+        submitDepositForm()
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
       })
@@ -121,7 +110,7 @@ supplyTestMarkets().forEach(
           amountSupplied: suppliedAfterPartialWithdraw,
           prevAmountSupplied: suppliedAfterDeposit,
         })
-        submitWithdrawForm().then(expectCallbacks)
+        submitWithdrawForm()
         touchWithdrawForm()
         checkCurrentSuppliedAmount(suppliedAfterPartialWithdraw)
       })
@@ -134,7 +123,7 @@ supplyTestMarkets().forEach(
           prevAmountSupplied: suppliedAfterPartialWithdraw,
           expectedButtonText: 'Withdraw All',
         })
-        submitWithdrawForm().then(expectCallbacks)
+        submitWithdrawForm()
         touchWithdrawForm()
         checkCurrentSuppliedAmount('0')
       })
@@ -143,7 +132,7 @@ supplyTestMarkets().forEach(
         cy.mount(<SupplyTestWrapper />)
         writeDepositForm({ amount: deposit })
         checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
-        submitDepositForm().then(expectCallbacks)
+        submitDepositForm()
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
       })
@@ -160,7 +149,7 @@ supplyTestMarkets().forEach(
             expectedButtonText: 'Approve & Stake',
             checkEstimatedTxCost: false,
           })
-          submitStakeForm().then(expectCallbacks)
+          submitStakeForm()
           touchStakeForm()
           checkCurrentStakedAmount({
             expectedVaultShares: stakeAmount,
@@ -182,7 +171,7 @@ supplyTestMarkets().forEach(
           return
         }
         checkClaimDetailsLoaded()
-        submitClaimAndSettle({ waitForEmptyState: true }).then(expectCallbacks)
+        submitClaimAndSettle({ waitForEmptyState: true })
         checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
       })
 
@@ -197,7 +186,7 @@ supplyTestMarkets().forEach(
             prevAmountSupplied: suppliedAfterDeposit,
             checkEstimatedTxCost: false,
           })
-          submitUnstakeForm().then(expectCallbacks)
+          submitUnstakeForm()
           touchUnstakeForm()
           checkCurrentStakedAmount({
             expectedVaultShares: '0',
