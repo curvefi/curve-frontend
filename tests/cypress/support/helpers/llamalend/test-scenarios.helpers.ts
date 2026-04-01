@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
-import { CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS, decimal, decimalMinus, decimalSum } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from './mock-loan-test-data'
 import {
   createMockLendMarket,
@@ -23,7 +23,7 @@ const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
   })
   seedErc20BalanceForAddresses({
     chainId,
-    tokenAddress: CRVUSD_ADDRESS as Address,
+    tokenAddress: CRVUSD_ADDRESS,
     addresses: [TEST_ADDRESS],
     rawBalance: 10n ** 22n,
   })
@@ -85,14 +85,6 @@ const oneAprPair = () => ({
   rates: generateMarketRates(),
   future_rates: generateMarketRates(),
 })
-
-const debtAfterAdd = (baseDebt: string, delta: string) => decimal(new BigNumber(baseDebt).plus(delta).decimalPlaces(2))!
-const debtAfterSub = (baseDebt: string, delta: string) =>
-  decimal(new BigNumber(baseDebt).minus(delta).decimalPlaces(2))!
-
-const sumDecimal = (a: string, b: string) => decimal(new BigNumber(a).plus(b).decimalPlaces(2))!
-const subDecimal = (a: string, b: string) => decimal(new BigNumber(a).minus(b).decimalPlaces(2))!
-const normalizeDecimalString = (value: string) => new BigNumber(value).toFixed()
 
 export const createCreateLoanScenario = ({
   chainId,
@@ -157,7 +149,7 @@ export const createCreateLoanScenario = ({
 }
 
 /** Default collateral address used in createMockMintMarket */
-const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as Address
+const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as const
 
 export const createBorrowMoreScenario = ({
   chainId,
@@ -166,12 +158,12 @@ export const createBorrowMoreScenario = ({
 }: {
   chainId: number
   approved: boolean
-  collateral?: string
+  collateral?: Decimal
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
   const expectedCurrentDebt = oneDecimal(10, 200, 2)
-  const expectedFutureDebt = debtAfterAdd(expectedCurrentDebt, borrow)
+  const expectedFutureDebt = decimalSum(expectedCurrentDebt, borrow)
 
   const borrowMoreApprove = createStub(TEST_TX_HASH)
   const borrowMorePrices = createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)])
@@ -229,7 +221,7 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(0.5, 20, 2)
   const collateral = oneDecimal(0.05, 2, 3)
-  const currentDebt = debtAfterAdd(borrow, oneDecimal(0.5, 50, 2))
+  const currentDebt = decimalSum(borrow, oneDecimal(0.5, 50, 2))
   const repayApproveStub = createStub(TEST_TX_HASH)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
@@ -263,7 +255,7 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
     borrow,
     collateral,
     currentDebt,
-    futureDebt: debtAfterSub(currentDebt, borrow),
+    futureDebt: decimalMinus(currentDebt, borrow),
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
@@ -284,7 +276,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
   const borrow = oneDecimal(0.5, 20, 2)
   const collateral = oneDecimal(0.02, 0.6, 3)
   const stateBorrowed = oneDecimal(0.2, 8, 2)
-  const debt = debtAfterAdd(borrow, oneDecimal(0.5, 40, 2))
+  const debt = decimalSum(borrow, oneDecimal(0.5, 40, 2))
   const slippage = 0.1
   const repayApproveStub = createStub(TEST_TX_HASH)
   const selfLiquidateApproveStub = createStub(TEST_TX_HASH)
@@ -343,7 +335,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     borrow,
     collateral,
     debt,
-    debtAfterImprove: debtAfterSub(debt, borrow),
+    debtAfterImprove: decimalMinus(debt, borrow),
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
@@ -369,14 +361,14 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
 
 const SUPPLY_MARKET_ID = 'one-way-market-7'
 const SUPPLY_MARKET_ADDRESSES = {
-  controller: '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907' as Address,
-  vault: '0x1111111111111111111111111111111111111111' as Address,
-  gauge: '0x2222222222222222222222222222222222222222' as Address,
-  borrowed: CRVUSD_ADDRESS as Address,
-  collateral: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497' as Address,
+  controller: '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+  vault: '0x1111111111111111111111111111111111111111',
+  gauge: '0x2222222222222222222222222222222222222222',
+  borrowed: CRVUSD_ADDRESS,
+  collateral: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497',
 } as const
 
-const createSupplyRates = (lendApy: string) => ({
+const createSupplyRates = (lendApy: Decimal) => ({
   borrowApr: '0.0825',
   borrowApy: '0.0841',
   lendApr: lendApy,
@@ -384,7 +376,7 @@ const createSupplyRates = (lendApy: string) => ({
 })
 
 const createIdentityConvertToAssetsStub = () =>
-  cy.stub().callsFake(async (shares: string) => shares) as TestStub<readonly [string], string>
+  cy.stub().callsFake(async (shares: Decimal) => shares) as TestStub<readonly [string], string>
 
 const createBaseSupplyMarket = ({
   chainId,
@@ -395,16 +387,16 @@ const createBaseSupplyMarket = ({
 }: {
   chainId: number
   walletBalances: {
-    collateral: string
-    borrowed: string
-    vaultShares: string
-    gauge: string
+    collateral: Decimal
+    borrowed: Decimal
+    vaultShares: Decimal
+    gauge: Decimal
   }
   vaultOverrides: Partial<Omit<MockLendVault, 'estimateGas'>> & {
     estimateGas?: Partial<MockLendEstimateGas>
   }
-  currentApy: string
-  futureApy: string
+  currentApy: Decimal
+  futureApy: Decimal
 }) => {
   const statsRates = createStub(createSupplyRates(currentApy))
   const statsFutureRates = createStub(createSupplyRates(futureApy))
@@ -463,7 +455,7 @@ const createBaseSupplyMarket = ({
 
 export const createDepositScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
   const input = { amount: '12.50' as const }
-  const normalizedAmount = normalizeDecimalString(input.amount)
+  const amount = BigNumber(input.amount)
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -478,6 +470,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
   const estimateGasDeposit = createStub(`${150_000}`)
   const estimateGasDepositApprove = createStub(`${95_000}`)
   const deposit = createStub(TEST_TX_HASH)
+  const vaultShares = decimalSum(balances.vaultShares, balances.gauge)
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
@@ -503,20 +496,20 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      futureRates: [normalizedAmount, '0'] as const,
-      previewDeposit: [normalizedAmount] as const,
-      isApproved: [normalizedAmount] as const,
-      estimateGas: [normalizedAmount] as const,
-      estimateGasApprove: [normalizedAmount] as const,
-      approve: [normalizedAmount] as const,
-      submit: [normalizedAmount] as const,
+      futureRates: [amount, '0'] as const,
+      previewDeposit: [amount] as const,
+      isApproved: [amount] as const,
+      estimateGas: [amount] as const,
+      estimateGasApprove: [amount] as const,
+      approve: [amount] as const,
+      submit: [amount] as const,
       actionInfo: {
         supplyApy: futureApy,
         prevSupplyApy: currentApy,
-        vaultShares: sumDecimal(sumDecimal(balances.vaultShares, balances.gauge), input.amount),
-        prevVaultShares: sumDecimal(balances.vaultShares, balances.gauge),
-        amountSupplied: sumDecimal(sumDecimal(balances.vaultShares, balances.gauge), input.amount),
-        prevAmountSupplied: sumDecimal(balances.vaultShares, balances.gauge),
+        vaultShares: decimalSum(vaultShares, input.amount),
+        prevVaultShares: vaultShares,
+        amountSupplied: decimalSum(vaultShares, input.amount),
+        prevAmountSupplied: vaultShares,
         symbol: 'crvUSD',
       },
     },
@@ -534,7 +527,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
 
 export const createStakeScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
   const input = { amount: '15.00' as const }
-  const normalizedAmount = normalizeDecimalString(input.amount)
+  const amount = BigNumber(input.amount)
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -548,6 +541,7 @@ export const createStakeScenario = ({ chainId, approved }: { chainId: number; ap
   const estimateGasStake = createStub(`${132_000}`)
   const estimateGasStakeApprove = createStub(`${91_000}`)
   const stake = createStub(TEST_TX_HASH)
+  const vaultShares = decimalSum(balances.gauge, input.amount)
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
@@ -572,16 +566,16 @@ export const createStakeScenario = ({ chainId, approved }: { chainId: number; ap
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      isApproved: [normalizedAmount] as const,
-      estimateGas: [normalizedAmount] as const,
-      estimateGasApprove: [normalizedAmount] as const,
-      approve: [normalizedAmount] as const,
-      submit: [normalizedAmount] as const,
+      isApproved: [amount] as const,
+      estimateGas: [amount] as const,
+      estimateGasApprove: [amount] as const,
+      approve: [amount] as const,
+      submit: [amount] as const,
       actionInfo: {
         supplyApy: currentApy,
-        vaultShares: sumDecimal(balances.gauge, input.amount),
+        vaultShares,
         prevVaultShares: balances.gauge,
-        amountSupplied: sumDecimal(balances.gauge, input.amount),
+        amountSupplied: vaultShares,
         prevAmountSupplied: balances.gauge,
         symbol: 'crvUSD',
       },
@@ -605,14 +599,14 @@ export const createWithdrawScenario = ({
 }: {
   chainId: number
   isFull: boolean
-  depositedShares?: string
-  stakedShares?: string
+  depositedShares?: Decimal
+  stakedShares?: Decimal
 }) => {
   const input = {
     amount: (isFull ? depositedShares : '22.50') as Decimal,
     isFull,
   }
-  const normalizedAmount = normalizeDecimalString(input.amount)
+  const amount = BigNumber(input.amount)
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -626,6 +620,7 @@ export const createWithdrawScenario = ({
   const estimateGasRedeem = createStub(`${149_000}`)
   const withdraw = createStub(TEST_TX_HASH)
   const redeem = createStub(TEST_TX_HASH)
+  const vaultShares = decimalSum(depositedShares, stakedShares)
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
@@ -650,17 +645,17 @@ export const createWithdrawScenario = ({
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      futureRates: [normalizedAmount, '0'] as const,
-      previewWithdraw: [normalizedAmount] as const,
-      estimateGas: isFull ? ([depositedShares] as const) : ([normalizedAmount] as const),
-      submit: isFull ? ([depositedShares] as const) : ([normalizedAmount] as const),
+      futureRates: [amount, '0'] as const,
+      previewWithdraw: [amount] as const,
+      estimateGas: isFull ? ([depositedShares] as const) : ([amount] as const),
+      submit: isFull ? ([depositedShares] as const) : ([amount] as const),
       actionInfo: {
         supplyApy: futureApy,
         prevSupplyApy: currentApy,
-        vaultShares: subDecimal(sumDecimal(depositedShares, stakedShares), isFull ? depositedShares : input.amount),
-        prevVaultShares: sumDecimal(depositedShares, stakedShares),
-        amountSupplied: subDecimal(sumDecimal(depositedShares, stakedShares), input.amount),
-        prevAmountSupplied: sumDecimal(depositedShares, stakedShares),
+        vaultShares: decimalMinus(vaultShares, isFull ? depositedShares : input.amount),
+        prevVaultShares: vaultShares,
+        amountSupplied: decimalMinus(vaultShares, input.amount),
+        prevAmountSupplied: vaultShares,
         symbol: 'crvUSD',
       },
     },
@@ -677,7 +672,7 @@ export const createWithdrawScenario = ({
 
 export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const input = { amount: '12.50' as const }
-  const normalizedAmount = normalizeDecimalString(input.amount)
+  const amount = BigNumber(input.amount)
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -688,6 +683,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const futureApy = currentApy
   const estimateGasUnstake = createStub(`${121_000}`)
   const unstake = createStub(TEST_TX_HASH)
+  const vaultShares = decimalMinus(balances.gauge, input.amount)
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
@@ -709,13 +705,13 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      estimateGas: [normalizedAmount] as const,
-      submit: [normalizedAmount] as const,
+      estimateGas: [amount] as const,
+      submit: [amount] as const,
       actionInfo: {
         supplyApy: currentApy,
-        vaultShares: subDecimal(balances.gauge, input.amount),
+        vaultShares,
         prevVaultShares: balances.gauge,
-        amountSupplied: subDecimal(balances.gauge, input.amount),
+        amountSupplied: decimalMinus(balances.gauge, input.amount),
         prevAmountSupplied: balances.gauge,
         symbol: 'crvUSD',
       },
@@ -735,11 +731,11 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
 export const createClaimScenario = ({
   chainId,
   claimableCrv = '5.00',
-  claimableRewards = [{ amount: '2.50', symbol: 'CVX', token: oneAddress() as Address }],
+  claimableRewards = [{ amount: '2.50', symbol: 'CVX', token: oneAddress() }],
 }: {
   chainId: number
-  claimableCrv?: string
-  claimableRewards?: { amount: string; symbol: string; token: Address }[]
+  claimableCrv?: Decimal
+  claimableRewards?: { amount: Decimal; symbol: string; token: Address }[]
 }) => {
   const claimCrv = createStub(TEST_TX_HASH)
   const claimRewards = createStub(TEST_TX_HASH)

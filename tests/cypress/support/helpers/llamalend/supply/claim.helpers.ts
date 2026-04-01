@@ -1,21 +1,55 @@
 import BigNumber from 'bignumber.js'
-import type { Address } from 'viem'
+import { encodeFunctionData, parseAbi, type Address } from 'viem'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatUsd } from '@ui-kit/utils'
+import { loadTenderlyAccount } from '../../tenderly/account'
+import { sendVnetTransaction } from '../../tenderly/vnet-transaction'
 import { getActionValue } from '../action-info.helpers'
-import { checkpointTenderlySupplyRewards } from './supply-setup.helpers'
 import { submitSupplyForm } from './supply.helpers'
 
 const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
+const GAUGE_ABI = parseAbi([
+  'function deposit(uint256 _value)',
+  'function withdraw(uint256 _value)',
+  'function user_checkpoint(address _addr) returns (bool)',
+  'function manager() view returns (address)',
+  'function add_reward(address _reward_token, address _distributor)',
+  'function deposit_reward_token(address _reward_token, uint256 _amount, uint256 _epoch)',
+])
 
 const submitClaimForm = () => submitSupplyForm('claim', 'Claimed rewards!')
 
 export const submitClaimAndSettle = ({ waitForEmptyState = false }: { waitForEmptyState?: boolean } = {}) =>
   submitClaimForm().then(() => {
     if (waitForEmptyState) touchClaimForm()
+  })
+
+const checkpointTenderlySupplyRewards = ({
+  vnet,
+  userAddress,
+  gaugeAddress,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  gaugeAddress: Address
+}) =>
+  // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
+  loadTenderlyAccount().then(async (tenderlyAccount) => {
+    await sendVnetTransaction({
+      tenderly: { ...tenderlyAccount, vnetId: vnet.id },
+      tx: {
+        from: userAddress,
+        to: gaugeAddress,
+        data: encodeFunctionData({
+          abi: GAUGE_ABI,
+          functionName: 'user_checkpoint',
+          args: [userAddress],
+        }),
+      },
+    })
   })
 
 export const prepareClaimRewards = ({

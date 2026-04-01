@@ -16,7 +16,7 @@ type SupplyRpcTestMarket = {
   deposit: Decimal
   partialWithdraw: Decimal
   borrowedTokenDecimals: number
-  // Some gauges do not expose any claimables, so we skip the "claim" call
+  // gauge that exposes any claimables
   hasClaimableRewards?: boolean
 }
 
@@ -37,7 +37,6 @@ export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     deposit: DEFAULT_DEPOSIT,
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-    hasClaimableRewards: false,
   },
   {
     id: 'one-way-market-12',
@@ -49,7 +48,6 @@ export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     deposit: DEFAULT_DEPOSIT,
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-    hasClaimableRewards: false,
   },
   {
     id: 'one-way-market-41',
@@ -61,6 +59,7 @@ export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     deposit: DEFAULT_DEPOSIT,
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+    hasClaimableRewards: true,
   },
 ] as const
 

@@ -12,11 +12,16 @@ import {
 } from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
-const testCases = [
+const testCases: {
+  title: string
+  claimableCrv: Decimal
+  claimableRewards: { amount: Decimal; symbol: string }[]
+}[] = [
   { title: 'no rewards', claimableCrv: '0', claimableRewards: [] },
   { title: 'crv only', claimableCrv: '5.00', claimableRewards: [] },
   { title: 'rewards only', claimableCrv: '0', claimableRewards: [{ amount: '2.50', symbol: 'CVX' }] },

@@ -57,7 +57,7 @@ testCases.forEach(
     deposit,
     partialWithdraw,
     borrowedTokenDecimals,
-    hasClaimableRewards = true,
+    hasClaimableRewards = false,
   }) => {
     describe(label, () => {
       skipTestsAfterFailure()
