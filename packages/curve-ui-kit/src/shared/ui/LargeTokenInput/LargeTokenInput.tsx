@@ -299,9 +299,7 @@ export const LargeTokenInput = ({
                   opacity: { desktop: 0 },
                   transition: `opacity ${TransitionFunction}`,
                   // Show when parent stack is hovered
-                  [`#${componentId}:hover &`]: {
-                    opacity: 1,
-                  },
+                  [`#${componentId}:hover &`]: { opacity: 1 },
                 }}
               >
                 {chips.map((chip) => (

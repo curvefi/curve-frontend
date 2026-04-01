@@ -143,6 +143,7 @@ export const createComponents = (
     styleOverrides: {
       root: {
         backgroundColor: alpha(design.Text.TextColors.Primary, 0.13),
+        transform: 'none', // by default mui uses scale(1, 0.6) it looks super ugly
       },
     },
   },

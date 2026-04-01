@@ -39,5 +39,7 @@ export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): 
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
     .toFixed() as Decimal
 
+export const decimalNegate = (value: Decimal): Decimal => new BigNumber(value).negated().toFixed() as Decimal
+
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

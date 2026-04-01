@@ -171,7 +171,7 @@ export const LoanActionInfoList = ({
           )}
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
-              label={t`Liquidation zone`}
+              label={t`Liquidation range`}
               value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}

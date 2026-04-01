@@ -19,9 +19,7 @@ export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oracl
   ((oraclePrice - upperLiquidationPrice) / upperLiquidationPrice) * 100
 
 export const getHealthValueColor = ({
-  theme: {
-    design: { Text },
-  },
+  theme,
   isFullRepay,
   health,
   prevHealth,
@@ -32,25 +30,8 @@ export const getHealthValueColor = ({
   theme: Theme
   colorBackground?: boolean
 }) => {
-  const red = Text.TextColors.Feedback.Error
-  const orange = Text.TextColors.Feedback.Danger
-  const green = Text.TextColors.Feedback.Success
-  const neutral = Text.TextColors.Primary
-
-  if (health != null && prevHealth != null) {
-    if (Number(health) < Number(prevHealth)) {
-      return red
-    }
-    if (Number(health) > Number(prevHealth)) {
-      return green
-    }
-  }
-  const value = Number(health ?? prevHealth ?? 0)
-  if (isFullRepay) return neutral
-  if (value < HEALTH_THRESHOLDS.CRITICAL) return red
-  if (value < HEALTH_THRESHOLDS.RISKY) return orange
-  if (value < HEALTH_THRESHOLDS.GOOD) return neutral
-  return neutral
+  const value = health ?? prevHealth
+  return getHealthTrackColor({ health: value == null ? value : Number(value), isFullRepay, theme })
 }
 
 export const getHealthTrackColor = ({
@@ -59,9 +40,11 @@ export const getHealthTrackColor = ({
   theme: {
     design: { Layer },
   },
+  isFullRepay,
 }: {
   health: number | undefined | null
-  softLiquidation: boolean | undefined | null
+  softLiquidation?: boolean | undefined
+  isFullRepay?: boolean | undefined
   theme: Theme
 }) => {
   const red = Layer.Feedback.Error
@@ -69,6 +52,7 @@ export const getHealthTrackColor = ({
   const orange = Layer.Feedback.Danger
   const green = Layer.Feedback.Success
 
+  if (isFullRepay) return green
   if (health == null) {
     return softLiquidation ? Layer.Feedback.Warning : green
   }

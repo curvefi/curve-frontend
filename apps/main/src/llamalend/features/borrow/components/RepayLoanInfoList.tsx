@@ -22,7 +22,7 @@ import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
-import { decimal, decimalMinus } from '@ui-kit/utils'
+import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -109,7 +109,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            collateralDelta: userCollateral && `${-+userCollateral}`,
+            collateralDelta: userCollateral && decimalNegate(userCollateral),
             expectedBorrowed: debt?.data,
           },
           isOpen,

@@ -32,7 +32,7 @@ export const validateDebt = (debt: Decimal | undefined | null, required: boolean
     })
   })
   skipWhen(!debt, () => {
-    test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
+    test('debt', `Debt must be a positive number${required ? '' : ' or empty'}`, () => {
       enforce(debt).isDecimal().gt(0)
     })
   })

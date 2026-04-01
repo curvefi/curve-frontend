@@ -17,6 +17,7 @@ export const defineMuiTooltip = (
     enterTouchDelay: Duration.Tooltip.Enter,
     leaveDelay: Duration.Tooltip.Exit,
     leaveTouchDelay: Duration.Tooltip.Exit,
+    arrow: false,
   },
   styleOverrides: {
     arrow: {

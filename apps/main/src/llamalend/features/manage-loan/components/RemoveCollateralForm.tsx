@@ -1,4 +1,3 @@
-import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -7,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { type Range } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -57,7 +56,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          leverageEnabled={!!market && hasLeverageValue(market)}
           market={market}
         />
       }
@@ -72,6 +70,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           testId="remove-collateral-input"
           network={network}
           positionBalance={{ position: positionCollateral, tooltip: t`Collateral in position` }}
+          max={{ ...q(maxRemovable), fieldName: 'maxCollateral' }}
           message={
             <Balance
               prefix={t`Max removable:`}
