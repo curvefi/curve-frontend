@@ -13,7 +13,10 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  *  */
-const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+const isAlpha = () =>
+  getReleaseChannel() === ReleaseChannel.Beta &&
+  defaultReleaseChannel === ReleaseChannel.Beta &&
+  !localStorage.getItem('disableZapV2')
 // const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified create loan form */

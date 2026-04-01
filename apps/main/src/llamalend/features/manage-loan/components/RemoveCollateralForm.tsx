@@ -41,7 +41,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     formErrors,
     collateralToken,
     borrowToken,
-    txHash,
   } = useRemoveCollateralForm({ market, network, onPricesUpdated, enabled })
 
   return (
@@ -84,15 +83,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <FormAlerts
-        isSuccess={action.isSuccess}
-        error={action.error}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['userCollateral']}
-        successTitle={t`Collateral removed`}
-      />
+      <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
 
       <Button
         type="submit"

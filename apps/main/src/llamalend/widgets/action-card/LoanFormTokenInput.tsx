@@ -104,7 +104,7 @@ export const LoanFormTokenInput = <
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error =
-    (name in form.formState.touchedFields && errors[name]) || max?.error || balanceError || relatedMaxFieldError
+    (name in form.formState.touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
   const value = form.getValues(name)
   const errorMessage = error?.message
 

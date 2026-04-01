@@ -20,7 +20,6 @@ export type StakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -33,7 +32,7 @@ const stake = async (market: LendMarketTemplate, { stakeAmount }: StakeMutation)
 export const useStakeMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: StakeOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<StakeMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<StakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,
@@ -60,5 +59,5 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
 
   const onSubmit = useCallback(async (form: StakeForm) => mutate(form as StakeMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

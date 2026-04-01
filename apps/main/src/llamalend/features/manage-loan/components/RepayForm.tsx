@@ -75,9 +75,7 @@ export const RepayForm = <ChainId extends IChainId>({
     onSubmit,
     borrowToken,
     collateralToken,
-    isRepaid,
     repayError,
-    txHash,
     isApproved,
     routes,
     formErrors,
@@ -195,13 +193,9 @@ export const RepayForm = <ChainId extends IChainId>({
       </Button>
 
       <FormAlerts
-        isSuccess={isRepaid}
         error={repayError}
-        txHash={txHash}
         formErrors={formErrors}
-        network={network}
         handledErrors={notFalsy(selectedField, max[selectedField]?.field)}
-        successTitle={t`Loan repaid`}
       />
     </Form>
   )

@@ -43,8 +43,8 @@ export const getHealthTrackColor = ({
   isFullRepay,
 }: {
   health: number | undefined | null
-  softLiquidation?: boolean | undefined
-  isFullRepay?: boolean | undefined
+  softLiquidation?: boolean | null
+  isFullRepay?: boolean
   theme: Theme
 }) => {
   const red = Layer.Feedback.Error

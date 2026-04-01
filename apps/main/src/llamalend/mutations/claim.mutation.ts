@@ -18,10 +18,10 @@ export type ClaimOptions = {
   userAddress: Address | undefined
 }
 
-const noFormFieldOptions = { isDirty: undefined, onReset: noop }
+const noFormFieldOptions = { onReset: noop }
 
 export const useClaimMutation = ({ network: _network, network: { chainId }, marketId, userAddress }: ClaimOptions) => {
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<ClaimMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
     network: _network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claim'] as const,
@@ -51,5 +51,5 @@ export const useClaimMutation = ({ network: _network, network: { chainId }, mark
 
   const onSubmit = useCallback(() => mutate({}), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

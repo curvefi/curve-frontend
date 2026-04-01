@@ -31,7 +31,6 @@ export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -89,7 +88,7 @@ const repay = async (
 
 export const useRepayMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: RepayOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<RepayMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
@@ -119,5 +118,5 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
     [mutate],
   )
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

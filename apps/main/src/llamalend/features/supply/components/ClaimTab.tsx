@@ -30,12 +30,10 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     isDisabled,
     isLoading,
     isError,
-    isClaimed,
     claimableTokens,
     totalNotionals,
     usdRateLoading: isNotionalLoading,
     table,
-    txHash,
     claimError,
     claimablesError,
     usdRateError,
@@ -81,15 +79,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           {isPending ? t`Processing...` : t`Claim`}
         </Button>
 
-        <FormAlerts
-          isSuccess={isClaimed}
-          error={claimablesError ?? claimError ?? usdRateError}
-          txHash={txHash}
-          formErrors={[]}
-          network={network}
-          handledErrors={[]}
-          successTitle={t`Claimed successfully`}
-        />
+        <FormAlerts error={claimablesError ?? claimError ?? usdRateError} formErrors={[]} handledErrors={[]} />
       </FormContent>
     </>
   )

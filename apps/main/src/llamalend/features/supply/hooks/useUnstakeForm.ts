@@ -74,14 +74,11 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isUnstaking,
-    isSuccess: isUnstaked,
     error: unstakeError,
-    data,
   } = useUnstakeMutation({
     marketId,
     network,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     userAddress,
   })
 
@@ -99,9 +96,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || isPending || isDebouncing,
     vaultToken,
     borrowToken,
-    isUnstaked,
     unstakeError,
-    txHash: data?.hash,
     max: maxUserUnstake,
     formErrors: useFormErrors(formState),
   }

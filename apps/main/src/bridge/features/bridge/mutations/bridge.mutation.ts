@@ -17,11 +17,10 @@ type BridgeMutation = {
 export type BridgeOptions = {
   chainId: number
   onReset: () => void
-  isDirty: boolean
 }
 
 export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
-  const { mutate, error, data, isPending, isSuccess } = useTransactionMutation<BridgeMutation>({
+  const { mutate, error, isPending } = useTransactionMutation<BridgeMutation>({
     mutationKey: [...rootKeys.chain({ chainId }), 'bridge'] as const,
     mutationFn: async ({ amount }) => {
       const curve = requireLib('curveApi')
@@ -37,5 +36,5 @@ export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
 
   const onSubmit = useCallback(async (form: BridgeForm) => mutate(form as BridgeMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

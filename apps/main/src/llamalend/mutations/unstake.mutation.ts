@@ -16,7 +16,6 @@ export type UnstakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -27,7 +26,7 @@ export const useUnstakeMutation = ({
   userAddress,
   ...props
 }: UnstakeOptions) => {
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<UnstakeMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<UnstakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
@@ -46,5 +45,5 @@ export const useUnstakeMutation = ({
 
   const onSubmit = useCallback(async (form: UnstakeForm) => mutate(form as UnstakeMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

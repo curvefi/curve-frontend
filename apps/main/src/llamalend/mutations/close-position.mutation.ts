@@ -16,7 +16,6 @@ type ClosePositionOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean | undefined
   userAddress: Address | undefined
 }
 
@@ -37,7 +36,7 @@ export const useClosePositionMutation = ({
   ...props
 }: ClosePositionOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<CloseLoanMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<CloseLoanMutation>({
     network,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'close-position'] as const,
     marketId,
@@ -60,5 +59,5 @@ export const useClosePositionMutation = ({
 
   const onSubmit = useCallback(async ({ slippage }: CloseLoanParams) => mutate({ slippage: slippage! }), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }
