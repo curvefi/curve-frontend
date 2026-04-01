@@ -40,6 +40,8 @@ export const fundUserForSupplySetup = ({
     tokenAddress: borrowedTokenAddress,
     recipientAddresses: [userAddress],
   })
+
+  cy.log(`Funded eth and token ${borrowedTokenAddress} to ${userAddress} in vnet ${vnet.slug}`)
 }
 
 const approveTokenForSpender = ({

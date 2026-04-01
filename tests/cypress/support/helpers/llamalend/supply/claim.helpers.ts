@@ -32,16 +32,14 @@ const advanceVirtualNetworkClock = ({ vnet, seconds }: { vnet: CreateVirtualTest
       body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
     })
     .then((response) => {
-      expect(response.body.error).to.equal(undefined)
+      expect(response.isOkStatusCode).to.equal(true, response.body.error)
       return cy.request({
         method: 'POST',
         url: adminRpcUrl,
         body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
       })
     })
-    .then((response) => {
-      expect(response.body.error).to.equal(undefined)
-    })
+    .then((response) => expect(response.isOkStatusCode).to.equal(true, response.body.error))
 }
 
 export const prepareClaimRewards = ({

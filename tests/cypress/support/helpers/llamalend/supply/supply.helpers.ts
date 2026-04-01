@@ -1,6 +1,5 @@
 import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { oneOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
@@ -27,7 +26,7 @@ const DEFAULT_TOKEN_DECIMALS = 18
 const DEFAULT_DEPOSIT = '12.5'
 const DEFAULT_PARTIAL_WITHDRAW = '2.5'
 
-const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
+export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
   {
     id: 'one-way-market-11',
     label: 'sUSDe v2-crvUSD Lend Market',
@@ -64,8 +63,6 @@ const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
   },
 ] as const
-
-export const supplyTestMarkets = () => [oneOf(...SUPPLY_TEST_MARKETS)]
 
 type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 type SupplyActionType = SupplyFormType | 'claim'

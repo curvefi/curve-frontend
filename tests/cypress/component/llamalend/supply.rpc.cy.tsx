@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { oneOf } from '@cy/support/generators'
 import {
   checkClaimDetailsLoaded,
   prepareClaimRewards,
@@ -26,7 +27,7 @@ import { fundUserForSupplySetup } from '@cy/support/helpers/llamalend/supply/sup
 import {
   checkCurrentSuppliedAmount,
   checkCurrentStakedAmount,
-  supplyTestMarkets,
+  SUPPLY_TEST_MARKETS,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   checkUnstakeDetailsLoaded,
@@ -45,8 +46,11 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
+import { toWei } from '@ui-kit/utils'
 
-supplyTestMarkets().forEach(
+const testCases = [oneOf(...SUPPLY_TEST_MARKETS)]
+
+testCases.forEach(
   ({
     id,
     label,
@@ -89,9 +93,8 @@ supplyTestMarkets().forEach(
           vnet: getVirtualNetwork(),
           userAddress: address,
           borrowedTokenAddress,
-          borrowedAmountWei: 10n ** BigInt(borrowedTokenDecimals + 3),
+          borrowedAmountWei: BigInt(toWei('1000', borrowedTokenDecimals)),
         })
-        cy.log(`Funded some eth and crvUSD to ${address} in vnet ${getVirtualNetwork().slug}`)
       })
 
       it('deposits into the vault', () => {
