@@ -8,12 +8,12 @@ import {
   submitStakeForm,
   writeStakeForm,
 } from '@cy/support/helpers/llamalend/supply/stake.helpers'
+import { createStakeScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
   checkSupplyActionInfoValues,
   checkSupplySubmitButtonText,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createStakeScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>

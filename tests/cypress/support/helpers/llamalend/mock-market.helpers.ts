@@ -7,6 +7,7 @@ import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockMethod = (...args: any[]) => Promise<any>
 
+// Borrow-side tests rely on the MintMarketTemplate prototype and mint-specific methods.
 export const createMockMintMarket = (overrides: object) =>
   Object.assign(Object.create(MintMarketTemplate.prototype), {
     id: 'wsteth',
@@ -116,6 +117,7 @@ export const createMockLendVault = (): MockLendVault => ({
   claimRewards: cy.stub().resolves(zeroAddress),
 })
 
+// Supply-side tests rely on the LendMarketTemplate prototype plus vault/gauge APIs.
 export const createMockLendMarket = (overrides: object) =>
   Object.assign(Object.create(LendMarketTemplate.prototype), {
     id: 'one-way-market-7',

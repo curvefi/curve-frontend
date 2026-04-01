@@ -3,6 +3,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { createUnstakeScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
   checkSupplyActionInfoValues,
   checkSupplyAlert,
@@ -14,7 +15,6 @@ import {
   writeUnstakeForm,
 } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createUnstakeScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>

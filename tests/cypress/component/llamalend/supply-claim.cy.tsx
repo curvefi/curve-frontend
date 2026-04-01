@@ -10,8 +10,8 @@ import {
   checkClaimTableState,
   submitClaimAndSettle,
 } from '@cy/support/helpers/llamalend/supply/claim.helpers'
+import { createClaimScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createClaimScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@ui-kit/utils'
 
