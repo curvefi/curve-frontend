@@ -7,6 +7,7 @@ import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import type { ChartColors } from './hooks/useChartPalette'
+import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
@@ -204,42 +205,6 @@ export const CandleChart = ({
     ],
   )
 
-  // Keep onVisiblePriceRangeChange in a ref so handlers always call the latest version
-  const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
-  onVisiblePriceRangeChangeRef.current = onVisiblePriceRangeChange
-  const emitPriceRangeRafRef = useRef<number | null>(null)
-  const lastEmittedPriceRangeRef = useRef<{ min: number; max: number } | null>(null)
-
-  // Emit the current price scale range to external consumers (e.g. BandsChart).
-  // Deduplicate unchanged ranges to avoid redundant state updates upstream.
-  const emitPriceRangeNow = useCallback(() => {
-    if (!chartRef.current || !onVisiblePriceRangeChangeRef.current) return
-
-    const priceRange = chartRef.current.priceScale('right').getVisibleRange()
-    if (!priceRange) return
-
-    const min = priceRange.from
-    const max = priceRange.to
-    const previous = lastEmittedPriceRangeRef.current
-
-    if (previous && previous.min === min && previous.max === max) {
-      return
-    }
-
-    lastEmittedPriceRangeRef.current = { min, max }
-    onVisiblePriceRangeChangeRef.current(min, max)
-  }, [])
-
-  // Coalesce rapid range updates into one read per frame after chart autoscale settles.
-  const scheduleEmitPriceRange = useCallback(() => {
-    if (!onVisiblePriceRangeChangeRef.current || emitPriceRangeRafRef.current !== null) return
-
-    emitPriceRangeRafRef.current = requestAnimationFrame(() => {
-      emitPriceRangeRafRef.current = null
-      emitPriceRangeNow()
-    })
-  }, [emitPriceRangeNow])
-
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
@@ -276,8 +241,7 @@ export const CandleChart = ({
       }
     }
 
-    scheduleEmitPriceRange()
-  }, [refetchingCapped, scheduleEmitPriceRange])
+  }, [refetchingCapped])
 
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
@@ -624,57 +588,12 @@ export const CandleChart = ({
     })
   }, [memoizedColors.oraclePrice, oraclePriceVisible])
 
-  // Event subscription effect
-  useEffect(() => {
-    if (!chartRef.current) return
-
-    const timeScale = chartRef.current.timeScale()
-    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
-    timeScale.subscribeSizeChange(scheduleEmitPriceRange)
-
-    // Emit the current price range immediately so the bands chart is synced on mount/re-mount
-    scheduleEmitPriceRange()
-
-    return () => {
-      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
-      timeScale.unsubscribeSizeChange(scheduleEmitPriceRange)
-    }
-  }, [handleVisibleLogicalRangeChange, scheduleEmitPriceRange])
-
-  // If a new callback is attached (e.g. toggling bands back on), force an immediate re-emit.
-  useEffect(() => {
-    if (!onVisiblePriceRangeChange) return
-    lastEmittedPriceRangeRef.current = null
-    scheduleEmitPriceRange()
-  }, [onVisiblePriceRangeChange, scheduleEmitPriceRange])
-
-  // Cleanup pending RAF callbacks on unmount.
-  useEffect(
-    () => () => {
-      if (emitPriceRangeRafRef.current !== null) {
-        cancelAnimationFrame(emitPriceRangeRafRef.current)
-        emitPriceRangeRafRef.current = null
-      }
-    },
-    [],
-  )
-
-  // Detect y-axis drag and wheel zoom.
-  // IPriceScaleApi has no subscribe method, so we use DOM events on the chart container.
-  useEffect(() => {
-    const container = chartContainerRef.current
-    if (!container || !onVisiblePriceRangeChange) return
-
-    container.addEventListener('pointerup', scheduleEmitPriceRange)
-    container.addEventListener('wheel', scheduleEmitPriceRange, { passive: true })
-    container.addEventListener('touchend', scheduleEmitPriceRange, { passive: true })
-
-    return () => {
-      container.removeEventListener('pointerup', scheduleEmitPriceRange)
-      container.removeEventListener('wheel', scheduleEmitPriceRange)
-      container.removeEventListener('touchend', scheduleEmitPriceRange)
-    }
-  }, [onVisiblePriceRangeChange, scheduleEmitPriceRange])
+  const { scheduleEmitPriceRange } = useVisiblePriceRangeSync({
+    chartRef,
+    chartContainerRef,
+    onVisiblePriceRangeChange,
+    onVisibleLogicalRangeChange: handleVisibleLogicalRangeChange,
+  })
 
   // Listen to series data updates to catch autoscale changes caused by setData/update.
   useEffect(() => {
