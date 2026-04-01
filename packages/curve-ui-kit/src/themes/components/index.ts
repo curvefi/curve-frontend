@@ -139,14 +139,7 @@ export const createComponents = (
   MuiMenuItem: defineMuiMenuItem(design),
   MuiSelect: defineMuiSelect(design),
   MuiSlider: defineMuiSlider(design),
-  MuiSkeleton: {
-    styleOverrides: {
-      root: {
-        backgroundColor: alpha(design.Text.TextColors.Primary, 0.13),
-        transform: 'none', // by default mui uses scale(1, 0.6) it looks super ugly
-      },
-    },
-  },
+  MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
   MuiTableRow: {

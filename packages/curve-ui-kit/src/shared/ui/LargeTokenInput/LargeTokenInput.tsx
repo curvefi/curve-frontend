@@ -305,7 +305,11 @@ export const LargeTokenInput = ({
                 {chips.map((chip) => (
                   <Chip
                     key={`input-chip-${chip.label}`}
-                    label={<WithSkeleton loading={!!maxBalance?.isLoading}>{chip.label}</WithSkeleton>}
+                    label={
+                      <WithSkeleton loading={!!maxBalance?.isLoading}>
+                        <span>{chip.label}</span>
+                      </WithSkeleton>
+                    }
                     data-testid={!chipDisabled && `input-chip-${chip.label}`}
                     size="extraSmall"
                     color="default"
