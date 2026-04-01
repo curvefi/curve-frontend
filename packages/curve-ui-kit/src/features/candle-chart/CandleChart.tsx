@@ -6,6 +6,7 @@ import { styled } from 'styled-components'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
+import { useCandleTimeScaleSubscriptions } from './hooks/useCandleTimeScaleSubscriptions'
 import type { ChartColors } from './hooks/useChartPalette'
 import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
@@ -592,7 +593,12 @@ export const CandleChart = ({
     chartRef,
     chartContainerRef,
     onVisiblePriceRangeChange,
+  })
+  useCandleTimeScaleSubscriptions({
+    chartRef,
     onVisibleLogicalRangeChange: handleVisibleLogicalRangeChange,
+    onVisiblePriceRangeChange,
+    scheduleEmitPriceRange,
   })
 
   // Listen to series data updates to catch autoscale changes caused by setData/update.

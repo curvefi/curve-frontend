@@ -1,16 +1,18 @@
 import type { IChartApi } from 'lightweight-charts'
 import { useCallback, useEffect, useRef, type RefObject } from 'react'
 
+/**
+ * Keeps external consumers (e.g. BandsChart) synced with the candle chart's
+ * current visible y-range.
+ */
 export const useVisiblePriceRangeSync = ({
   chartRef,
   chartContainerRef,
   onVisiblePriceRangeChange,
-  onVisibleLogicalRangeChange,
 }: {
   chartRef: RefObject<IChartApi | null>
   chartContainerRef: RefObject<HTMLDivElement | null>
   onVisiblePriceRangeChange?: (min: number, max: number) => void
-  onVisibleLogicalRangeChange?: () => void
 }) => {
   const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
   const emitPriceRangeRafRef = useRef<number | null>(null)
@@ -21,6 +23,7 @@ export const useVisiblePriceRangeSync = ({
     onVisiblePriceRangeChangeRef.current = onVisiblePriceRangeChange
   }, [onVisiblePriceRangeChange])
 
+  // Read from the chart and emit only when min/max actually changed.
   const emitPriceRangeNow = useCallback(() => {
     if (!chartRef.current || !onVisiblePriceRangeChangeRef.current) return
 
@@ -39,6 +42,8 @@ export const useVisiblePriceRangeSync = ({
     onVisiblePriceRangeChangeRef.current(min, max)
   }, [chartRef])
 
+  // Batch rapid triggers into requestAnimationFrame and sample multiple frames so post-gesture
+  // autoscale settling is captured reliably.
   const scheduleEmitPriceRangeFrames = useCallback(
     (frames: number) => {
       if (!onVisiblePriceRangeChangeRef.current) return
@@ -69,29 +74,7 @@ export const useVisiblePriceRangeSync = ({
     scheduleEmitPriceRangeFrames(5)
   }, [scheduleEmitPriceRangeFrames])
 
-  const handleVisibleLogicalRangeChange = useCallback(() => {
-    onVisibleLogicalRangeChange?.()
-    scheduleEmitPriceRange()
-  }, [onVisibleLogicalRangeChange, scheduleEmitPriceRange])
-
-  useEffect(() => {
-    if (!chartRef.current) return
-
-    const timeScale = chartRef.current.timeScale()
-    if (onVisibleLogicalRangeChange) {
-      timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
-    }
-    timeScale.subscribeSizeChange(scheduleEmitPriceRange)
-    scheduleEmitPriceRange()
-
-    return () => {
-      if (onVisibleLogicalRangeChange) {
-        timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
-      }
-      timeScale.unsubscribeSizeChange(scheduleEmitPriceRange)
-    }
-  }, [chartRef, onVisibleLogicalRangeChange, handleVisibleLogicalRangeChange, scheduleEmitPriceRange])
-
+  // Emit immediately when a consumer is attached or re-attached.
   useEffect(() => {
     if (!onVisiblePriceRangeChange) return
     lastEmittedPriceRangeRef.current = null
