@@ -55,7 +55,6 @@ describe('BorrowMoreForm (mocked)', () => {
       const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
       const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
         createBorrowMoreScenario({ chainId, approved, collateral: userCollateral })
-      const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
@@ -67,7 +66,6 @@ describe('BorrowMoreForm (mocked)', () => {
             market={market}
             networks={networks}
             chainId={chainId}
-            onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
             enabled
           />
@@ -103,7 +101,6 @@ describe('BorrowMoreForm (mocked)', () => {
         } else {
           expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
         }
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

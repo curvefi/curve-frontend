@@ -8,7 +8,7 @@ import type { LlamaMarketTemplate } from 'main/src/llamalend/llamalend.types'
 
 export function useLlamaSnapshot(
   market: LlamaMarketTemplate | undefined | null,
-  blockchainId: Chain | undefined,
+  blockchainId: Chain | undefined | null,
   enabled: boolean,
   range: SnapshotRange = { kind: 'timeRange', timeOption: '1M' },
   aggregate: 'day' | 'week' = 'day',

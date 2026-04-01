@@ -15,8 +15,8 @@ import { waitForApproval } from '@ui-kit/utils'
 type ClosePositionOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: () => void
-  onReset?: () => void
+  onReset: () => void
+  isDirty: boolean | undefined
   userAddress: Address | undefined
 }
 
@@ -33,12 +33,11 @@ export const useClosePositionMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: ClosePositionOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<CloseLoanMutation>({
+  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<CloseLoanMutation>({
     network,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'close-position'] as const,
     marketId,
@@ -55,12 +54,11 @@ export const useClosePositionMutation = ({
     },
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,
-    onSuccess,
-    onReset,
     validationSuite: closeLoanValidationSuite,
+    ...props,
   })
 
   const onSubmit = useCallback(async ({ slippage }: CloseLoanParams) => mutate({ slippage: slippage! }), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess }
 }

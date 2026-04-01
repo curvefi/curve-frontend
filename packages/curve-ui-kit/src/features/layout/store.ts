@@ -46,7 +46,7 @@ const layoutStore = immer<LayoutState & LayoutActions>((set) => ({
     const isXSmDown = pageWidthClassName.startsWith('page-small-x')
     const isXXSm = pageWidthClassName === 'page-small-xx'
     set((state) => {
-      state.windowWidth = window.innerWidth
+      state.windowWidth = document.documentElement.clientWidth // excludes scrollbar width, unlike window.innerWidth
       state.pageWidth = pageWidthClassName
       state.isXSmDown = isXSmDown
       state.isSmUp = isSmUp || isMd || isLgUp

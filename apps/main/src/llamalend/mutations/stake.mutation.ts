@@ -13,15 +13,14 @@ import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 import { formatTokenAmounts } from '../llama.utils'
 
 export type StakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<StakeMutation>
   onReset: () => void
+  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -31,17 +30,10 @@ const approveStake = async (market: LendMarketTemplate, { stakeAmount = '0' }: S
 const stake = async (market: LendMarketTemplate, { stakeAmount }: StakeMutation): Promise<Hex> =>
   (await market.vault.stake(stakeAmount)) as Hex
 
-export const useStakeMutation = ({
-  network,
-  network: { chainId },
-  marketId,
-  onSuccess,
-  onReset,
-  userAddress,
-}: StakeOptions) => {
+export const useStakeMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: StakeOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<StakeMutation>({
+  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<StakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,
@@ -63,11 +55,10 @@ export const useStakeMutation = ({
     successMessage: (mutation, { market }) =>
       t`Stake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
     mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(async (form: StakeForm) => mutate(form as StakeMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess }
 }

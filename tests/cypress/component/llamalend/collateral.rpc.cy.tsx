@@ -4,7 +4,8 @@ import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helper
 import {
   checkCurrentCollateral,
   getCollateralInput,
-  submitCollateralForm,
+  submitCollateralAddForm,
+  submitCollateralRemoveForm,
   touchCollateralForm,
 } from '@cy/support/helpers/llamalend/collateral.helpers'
 import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.helpers'
@@ -40,7 +41,6 @@ describe('Collateral forms', () => {
         const removeAmount = '0.005' as Decimal
         const collateralAfterAdd = `${+collateral + +addAmount}` as Decimal
         const collateralAfterRemove = `${+collateralAfterAdd - +removeAmount}` as Decimal
-        let onSuccess: ReturnType<typeof cy.stub>
         let onPricesUpdated: ReturnType<typeof cy.stub>
         const CollateralTest = ({ tab }: { tab: 'add-collateral' | 'remove-collateral' }) => (
           <LlammalendTestCase
@@ -50,7 +50,6 @@ describe('Collateral forms', () => {
             chainId={chainId}
             marketId={id}
             userAddress={address}
-            onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
           />
         )
@@ -68,7 +67,6 @@ describe('Collateral forms', () => {
         )
 
         beforeEach(() => {
-          onSuccess = cy.stub().as('onSuccess')
           onPricesUpdated = cy.stub().as('onPricesUpdated')
         })
 
@@ -82,10 +80,7 @@ describe('Collateral forms', () => {
           )
           getActionValue('borrow-collateral').should('equal', formatNumber(collateralAfterAdd, { abbreviate: false }))
 
-          submitCollateralForm('add-collateral-submit-button', 'Collateral added').then(
-            () => expect(onSuccess).to.be.calledOnce,
-          )
-
+          submitCollateralAddForm()
           touchCollateralForm('add-collateral-input')
           checkCurrentCollateral(collateralAfterAdd)
         })
@@ -103,10 +98,7 @@ describe('Collateral forms', () => {
             formatNumber(collateralAfterRemove, { abbreviate: false }),
           )
 
-          submitCollateralForm('remove-collateral-submit-button', 'Collateral removed').then(
-            () => expect(onSuccess).to.be.calledOnce,
-          )
-
+          submitCollateralRemoveForm()
           touchCollateralForm('remove-collateral-input')
           checkCurrentCollateral(collateralAfterRemove)
         })

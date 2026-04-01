@@ -24,7 +24,8 @@ export const checkDebt = ({ current, future, symbol, hasLtv = true }: DebtCheck)
     getActionValue('borrow-ltv').should('include', '%')
     getActionValue('borrow-ltv', 'previous').should('include', '%')
   } else {
-    getActionInfo('borrow-ltv').should('not.exist')
+    getActionValue('borrow-ltv').should('eq', `${undefined}`)
+    getActionValue('borrow-ltv', 'previous').should('include', '%')
   }
 }
 
