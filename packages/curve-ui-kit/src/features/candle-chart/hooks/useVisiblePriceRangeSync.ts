@@ -109,21 +109,17 @@ export const useVisiblePriceRangeSync = ({
     }
 
     container.addEventListener('pointermove', handlePointerMove)
-    container.addEventListener('pointerup', scheduleEmitPriceRangeGesture)
     container.addEventListener('wheel', scheduleEmitPriceRangeGesture, { passive: true })
     container.addEventListener('touchend', scheduleEmitPriceRangeGesture, { passive: true })
     window.addEventListener('pointerup', handleWindowPointerUp)
     window.addEventListener('pointercancel', handleWindowPointerUp)
-    window.addEventListener('mouseup', handleWindowPointerUp)
 
     return () => {
       container.removeEventListener('pointermove', handlePointerMove)
-      container.removeEventListener('pointerup', scheduleEmitPriceRangeGesture)
       container.removeEventListener('wheel', scheduleEmitPriceRangeGesture)
       container.removeEventListener('touchend', scheduleEmitPriceRangeGesture)
       window.removeEventListener('pointerup', handleWindowPointerUp)
       window.removeEventListener('pointercancel', handleWindowPointerUp)
-      window.removeEventListener('mouseup', handleWindowPointerUp)
     }
   }, [chartContainerRef, onVisiblePriceRangeChange, scheduleEmitPriceRangeGesture])
 

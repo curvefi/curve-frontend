@@ -35,6 +35,9 @@ const TABS: TabOption<Tab>[] = [
 ]
 
 const EMPTY_ARRAY: never[] = []
+// Ignore tiny floating-point jitter from chart autoscale updates.
+// This keeps the layout from re-rendering when the visible range is effectively unchanged.
+const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
 
 export type ChartAndActivityLayoutProps = {
   chart: {
@@ -65,7 +68,17 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
-    setCandlePriceRange({ min, max })
+    setCandlePriceRange((previous) => {
+      if (
+        previous &&
+        Math.abs(previous.min - min) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE &&
+        Math.abs(previous.max - max) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
+      ) {
+        return previous
+      }
+
+      return { min, max }
+    })
   }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible

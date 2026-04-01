@@ -4,7 +4,7 @@ import { useEffect, type RefObject } from 'react'
 type Params = {
   chartRef: RefObject<IChartApi | null>
   onVisibleLogicalRangeChange: () => void
-  onVisiblePriceRangeChange?: (min: number, max: number) => void
+  enableVisiblePriceRangeSync: boolean
   scheduleEmitPriceRange: () => void
 }
 
@@ -16,7 +16,7 @@ type Params = {
 export const useCandleTimeScaleSubscriptions = ({
   chartRef,
   onVisibleLogicalRangeChange,
-  onVisiblePriceRangeChange,
+  enableVisiblePriceRangeSync,
   scheduleEmitPriceRange,
 }: Params) => {
   // Keep data-loading behavior tied to timeScale logical range changes.
@@ -34,7 +34,7 @@ export const useCandleTimeScaleSubscriptions = ({
   // Re-emit visible price range on timeScale size changes when an external
   // consumer is interested in y-range updates.
   useEffect(() => {
-    if (!chartRef.current || !onVisiblePriceRangeChange) return
+    if (!chartRef.current || !enableVisiblePriceRangeSync) return
 
     const timeScale = chartRef.current.timeScale()
     timeScale.subscribeSizeChange(scheduleEmitPriceRange)
@@ -43,5 +43,5 @@ export const useCandleTimeScaleSubscriptions = ({
     return () => {
       timeScale.unsubscribeSizeChange(scheduleEmitPriceRange)
     }
-  }, [chartRef, onVisiblePriceRangeChange, scheduleEmitPriceRange])
+  }, [chartRef, enableVisiblePriceRangeSync, scheduleEmitPriceRange])
 }

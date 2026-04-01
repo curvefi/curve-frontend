@@ -222,7 +222,7 @@ export const CandleChart = ({
 
   // Memoized visible range change handler
   const handleVisibleLogicalRangeChange = useCallback(() => {
-    if (!chartRef.current || !candlestickSeriesRef.current) {
+    if (fetchingMoreRef.current || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
       return
     }
 
@@ -233,15 +233,11 @@ export const CandleChart = ({
       return
     }
 
-    // Fetch more data when scrolled near the left edge
-    if (!fetchingMoreRef.current && !refetchingCapped) {
-      const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
-      if (barsInfo && barsInfo.barsBefore < 50) {
-        void debouncedFetchMoreChartData.current()
-        setLastTimescale(timeScale.getVisibleRange())
-      }
+    const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+    if (barsInfo && barsInfo.barsBefore < 50) {
+      void debouncedFetchMoreChartData.current()
+      setLastTimescale(timeScale.getVisibleRange())
     }
-
   }, [refetchingCapped])
 
   useEffect(() => {
@@ -597,7 +593,7 @@ export const CandleChart = ({
   useCandleTimeScaleSubscriptions({
     chartRef,
     onVisibleLogicalRangeChange: handleVisibleLogicalRangeChange,
-    onVisiblePriceRangeChange,
+    enableVisiblePriceRangeSync: !!onVisiblePriceRangeChange,
     scheduleEmitPriceRange,
   })
 
