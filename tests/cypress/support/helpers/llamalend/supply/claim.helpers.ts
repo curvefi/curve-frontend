@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
-import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
+import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -17,30 +17,6 @@ export const submitClaimAndSettle = ({ waitForEmptyState = false }: { waitForEmp
   submitClaimForm().then(() => {
     if (waitForEmptyState) touchClaimForm()
   })
-
-/**
- * Move the Tenderly vnet clock forward and mine one block so elapsed-time based
- * reward accrual can be reflected in the next reads.
- */
-const advanceVirtualNetworkClock = ({ vnet, seconds }: { vnet: CreateVirtualTestnetResponse; seconds: number }) => {
-  const { adminRpcUrl } = getRpcUrls(vnet)
-
-  return cy
-    .request({
-      method: 'POST',
-      url: adminRpcUrl,
-      body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
-    })
-    .then((response) => {
-      expect(response.isOkStatusCode).to.equal(true, response.body.error)
-      return cy.request({
-        method: 'POST',
-        url: adminRpcUrl,
-        body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
-      })
-    })
-    .then((response) => expect(response.isOkStatusCode).to.equal(true, response.body.error))
-}
 
 export const prepareClaimRewards = ({
   vnet,
