@@ -7,6 +7,11 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
+import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
+import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
+import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -28,7 +33,7 @@ const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const prefetch = () => prefetchMarkets({})
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
-const Components = {
+const LoanComponents = {
   'borrow-more': BorrowMoreForm,
   'add-collateral': AddCollateralForm,
   'remove-collateral': RemoveCollateralForm,
@@ -37,27 +42,52 @@ const Components = {
   close: ClosePositionForm,
 }
 
-type LoanTab = keyof typeof Components
+const SupplyComponents = {
+  claim: ClaimTab,
+  deposit: DepositForm,
+  stake: StakeForm,
+  unstake: UnstakeForm,
+  withdraw: WithdrawForm,
+}
 
-type LoanFlowTestProps = {
-  tab?: LoanTab
+type LoanTab = keyof typeof LoanComponents
+type SupplyTab = keyof typeof SupplyComponents
+
+type LlammalendTestProps = {
+  type: 'loan' | 'supply'
+  tab?: LoanTab | SupplyTab
   onSuccess?: ReturnType<typeof cy.stub>
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
 } & UserMarketQuery<LlamaChainId>
 
-function LlammalendTest({ tab, ...props }: LoanFlowTestProps) {
+function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTestProps) {
   const { isHydrated } = useCurve()
-  const { data: loanExists } = useLoanExists(props, isHydrated)
+  const isLoan = type === 'loan'
+  const { data: loanExists } = useLoanExists(props, isHydrated && isLoan)
   const marketId = isHydrated && props.marketId
   const market = useMemo(() => marketId && getLlamaMarket(marketId), [marketId])
 
   if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
-  const Component = loanExists ? Components[tab!] : CreateLoanForm
-  return <Component market={market} networks={networks} onSuccess={cy.stub()} enabled {...props} />
+  const Component = isLoan
+    ? loanExists
+      ? LoanComponents[tab as LoanTab]
+      : CreateLoanForm
+    : SupplyComponents[(tab ?? 'deposit') as SupplyTab]
+
+  return (
+    <Component
+      market={market}
+      networks={networks}
+      onPricesUpdated={onPricesUpdated!}
+      onSuccess={cy.stub()}
+      enabled
+      {...props}
+    />
+  )
 }
 
-export type LlammalendTestCaseProps = LoanFlowTestProps & TenderlyWagmiConfigFromVNet
+export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
 
 export const LlammalendTestCase = ({ vnet, privateKey, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>

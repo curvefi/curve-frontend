@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { oneOf } from '@cy/support/generators'
+import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import {
   checkClaimDetailsLoaded,
   prepareClaimRewards,
@@ -12,10 +13,6 @@ import {
   touchDepositForm,
   writeDepositForm,
 } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
-import {
-  LlamalendSupplyTestCase,
-  type LlamalendSupplyTestCaseProps,
-} from '@cy/support/helpers/llamalend/supply/LlamalendSupplyTestCase'
 import {
   checkStakeDetailsLoaded,
   readStakeAvailableAmount,
@@ -77,8 +74,9 @@ testCases.forEach(
       const suppliedAfterDeposit = deposit
       const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
 
-      const SupplyTestWrapper = ({ tab }: Pick<LlamalendSupplyTestCaseProps, 'tab'>) => (
-        <LlamalendSupplyTestCase
+      const SupplyTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
+        <LlammalendTestCase
+          type="supply"
           tab={tab}
           vnet={getVirtualNetwork()}
           privateKey={privateKey}

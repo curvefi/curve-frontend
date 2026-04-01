@@ -109,6 +109,7 @@ testCases.forEach(
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
         <LlammalendTestCase
+          type="loan"
           tab={tab}
           vnet={getVirtualNetwork()}
           privateKey={privateKey}
