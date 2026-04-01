@@ -27,7 +27,7 @@ export type LoanActionInfoListProps = {
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal | null>
   isFullRepay?: boolean
-  prices?: QueryProp<Range<Decimal>>
+  prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>

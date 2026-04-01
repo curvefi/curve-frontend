@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
-import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { RepayIsFullParams, RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
@@ -20,7 +20,8 @@ export const {
     userBorrowed = '0',
     userAddress,
     routeId,
-  }: RepayParams) =>
+    isFull,
+  }: RepayIsFullParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayPrices',
@@ -28,8 +29,18 @@ export const {
       { userCollateral },
       { userBorrowed },
       { routeId },
+      { isFull },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, routeId, userAddress }: RepayQuery) => {
+  queryFn: async ({
+    marketId,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    routeId,
+    userAddress,
+    isFull,
+  }: RepayIsFullQuery) => {
+    if (isFull) return null
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,

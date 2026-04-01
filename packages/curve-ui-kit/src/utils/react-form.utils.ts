@@ -59,8 +59,8 @@ export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormS
 /**
  * Syncs `data` to `callback` whenever it changes, and clears it (calls with `undefined`) on unmount.
  */
-export function useCallbackSync<T>({ data }: Query<T>, callback: (data: T | undefined) => void): void {
-  useEffect(() => callback(data), [callback, data]) // keep the parent in sync
+export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T | undefined) => void): void {
+  useEffect(() => callback(data ?? undefined), [callback, data]) // keep the parent in sync
   useEffect(() => () => callback(undefined), [callback]) // clear stale data on unmount
 }
 
