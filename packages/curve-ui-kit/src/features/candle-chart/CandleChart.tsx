@@ -677,7 +677,13 @@ export const CandleChart = ({
 
     // Liquidation range data can expand the price scale — re-emit so the bands chart stays in sync.
     scheduleEmitPriceRange()
-  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible, scheduleEmitPriceRange])
+  }, [
+    liquidationRange,
+    liquidationRange?.historical,
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    scheduleEmitPriceRange,
+  ])
 
   // Update liquidation range series colors and price line styling
   useEffect(() => {

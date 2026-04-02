@@ -17,7 +17,7 @@ export type ChartDataPoint = {
   userBandBorrowedAmount?: number
   userBandBorrowedValueUsd?: number
   userBandTotalCollateralValueUsd?: number
-  isLiquidationBand: string
+  isLiquidationBand: boolean
   isOraclePriceBand: boolean
 }
 
@@ -57,7 +57,7 @@ export type FetchedBandsBalances = {
   collateral: Decimal
   collateralUsd: number
   collateralBorrowedUsd: number
-  isLiquidationBand: string
+  isLiquidationBand: boolean
   n: number
   p_up: number
   p_down: number

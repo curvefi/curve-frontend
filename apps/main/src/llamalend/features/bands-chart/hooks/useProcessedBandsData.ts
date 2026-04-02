@@ -31,7 +31,9 @@ export const useProcessedBandsData = ({
       const borrowedAmount = Number(band.borrowed)
 
       const collateralValueUsd = hasCollateralRate ? collateralAmount * collateralUsdRate : band.collateralUsd
-      const borrowedValueUsd = hasBorrowedRate ? borrowedAmount * borrowedUsdRate : band.collateralBorrowedUsd
+      const borrowedValueUsd = hasBorrowedRate
+        ? borrowedAmount * borrowedUsdRate
+        : band.collateralBorrowedUsd - band.collateralUsd
 
       return { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd }
     }

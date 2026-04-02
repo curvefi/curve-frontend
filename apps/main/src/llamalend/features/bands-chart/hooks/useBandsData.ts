@@ -1,9 +1,12 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import {
+  getMissingOracleContextBandNumbers,
+  mergeMarketBandsWithOracleContext,
+  parseFetchedBandsBalances,
+} from '@/llamalend/features/bands-chart/hooks/bands-data.utils'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
-import { useMarketBandsBalances } from '@/llamalend/features/bands-chart/queries/market-bands-balances.query'
-import { useMarketUserBandsBalances } from '@/llamalend/features/bands-chart/queries/market-user-bands-balances.query'
-import { parseFetchedBandsBalances } from '@/llamalend/features/bands-chart/queries/utils'
+import { useMarketBandsBalances, useUserBandsBalances, useMarketOracleContextBands } from '@/llamalend/queries/bands'
 import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,7 +40,7 @@ export const useBandsData = ({
     chainId,
     marketId,
   })
-  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useMarketUserBandsBalances({
+  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useUserBandsBalances({
     chainId,
     marketId,
     userAddress,
@@ -56,12 +59,40 @@ export const useBandsData = ({
     chainId,
     marketId,
     liquidationBand,
-    oraclePriceBand,
   })
+  const missingOracleContextBandNumbers = useMemo(
+    () => getMissingOracleContextBandNumbers(marketBandsBalances, oraclePriceBand),
+    [marketBandsBalances, oraclePriceBand],
+  )
+  const missingBandsKey = useMemo(() => missingOracleContextBandNumbers.join(','), [missingOracleContextBandNumbers])
+  const shouldFetchOracleContextBands = missingOracleContextBandNumbers.length > 0
+  const {
+    data: fetchedOracleContextBands,
+    isLoading: isOracleContextBandsLoading,
+    error: oracleContextBandsError,
+  } = useMarketOracleContextBands(
+    {
+      chainId,
+      marketId,
+      oraclePriceBand,
+      liquidationBand,
+      missingBandsKey,
+    },
+    shouldFetchOracleContextBands,
+  )
+  const oracleContextBands = useMemo(
+    () => (shouldFetchOracleContextBands ? fetchedOracleContextBands : []),
+    [fetchedOracleContextBands, shouldFetchOracleContextBands],
+  )
   const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice({
     chainId,
     marketId,
   })
+
+  const marketBandsBalancesWithOracleContext = useMemo(
+    () => mergeMarketBandsWithOracleContext(marketBandsBalances, oracleContextBands),
+    [marketBandsBalances, oracleContextBands],
+  )
 
   const parsedUserBandsBalances = useMemo(
     () => parseFetchedBandsBalances(userBandsBalances, collateralUsdRate, borrowedUsdRate),
@@ -69,7 +100,7 @@ export const useBandsData = ({
   )
 
   const chartData = useProcessedBandsData({
-    marketBandsBalances,
+    marketBandsBalances: marketBandsBalancesWithOracleContext,
     userBandsBalances: parsedUserBandsBalances,
     oraclePriceBand,
     collateralUsdRate,
@@ -81,6 +112,7 @@ export const useBandsData = ({
     !api ||
     isLiquidationBandLoading ||
     isMarketBandsBalancesLoading ||
+    isOracleContextBandsLoading ||
     isMarketOraclePriceBandLoading ||
     isMarketOraclePriceLoading ||
     isLoanExistsLoading ||
@@ -88,7 +120,7 @@ export const useBandsData = ({
 
   return {
     isLoading,
-    error: marketBandsBalancesError,
+    error: marketBandsBalancesError ?? oracleContextBandsError,
     chartData,
     userBandsBalances: parsedUserBandsBalances,
     oraclePrice,
