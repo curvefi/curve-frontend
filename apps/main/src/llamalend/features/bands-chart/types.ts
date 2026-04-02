@@ -26,11 +26,9 @@ export type BandsChartPalette = {
   scaleLabelsColor: string
   marketBandColor: string
   userBandColor: string
-  userRangeHighlightColor: string
-  userRangeTopLabelBackgroundColor: string
-  userRangeTopLabelTextColor: string
-  userRangeBottomLabelBackgroundColor: string
-  userRangeBottomLabelTextColor: string
+  userRangeBackgroundColor: string
+  userRangeTopLineColor: string
+  userRangeBottomLineColor: string
   oraclePriceLineColor: string
   liquidationBandOutlineColor: string
 }

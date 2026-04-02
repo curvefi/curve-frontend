@@ -1,7 +1,7 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { formatNumberWithOptions } from './bands-chart.utils'
-import { generateMarkLines, createLabelStyle } from './markLines'
+import { generateMarkLines } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
 const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
@@ -197,7 +197,6 @@ export const getChartOptions = (
       position: 'right',
       axisLine: { show: false },
       axisTick: { show: false },
-      overflow: 'hide',
       axisPointer: {
         show: true,
         type: 'shadow',
@@ -211,12 +210,7 @@ export const getChartOptions = (
         },
       },
       axisLabel: {
-        color: palette.scaleLabelsColor,
-        hideOverlap: true,
-        overflow: 'break',
-        showMinLabel: false,
-        showMaxLabel: false,
-        formatter: (value: number) => formatNumberWithOptions(value),
+        show: false,
       },
       splitLine: {
         lineStyle: {
@@ -261,7 +255,7 @@ export const getChartOptions = (
         marketSeriesData,
         false,
         markAreas.length
-          ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
+          ? { silent: true, itemStyle: { color: palette.userRangeBackgroundColor }, data: markAreas }
           : undefined,
         markLines.length
           ? {
@@ -269,25 +263,10 @@ export const getChartOptions = (
               animationDuration: 0,
               animationDurationUpdate: 0,
               symbol: 'none',
+              label: { show: false },
               data: markLines.map((line) => {
                 const [startPoint, endPoint] = line
-                return [
-                  {
-                    ...startPoint,
-                    label: {
-                      ...startPoint.label,
-                      position: 'start',
-                      align: 'left',
-                      verticalAlign: 'middle',
-
-                      ...createLabelStyle(line.lineStyle, palette),
-                    },
-                  },
-                  {
-                    ...endPoint,
-                    lineStyle: line.lineStyle,
-                  },
-                ]
+                return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
               }),
             }
           : undefined,
