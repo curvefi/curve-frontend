@@ -66,14 +66,11 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isDepositing,
-    isSuccess: isDeposited,
     error: depositError,
-    data,
   } = useDepositMutation({
     marketId,
     network,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     userAddress,
   })
 
@@ -89,9 +86,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     onSubmit: form.handleSubmit(onSubmit),
     isDisabled: !formState.isValid || isPending || isDebouncing,
     borrowToken,
-    isDeposited,
     depositError,
-    txHash: data?.hash,
     max: maxUserDeposit,
     isApproved: useDepositIsApproved(params, enabled),
     formErrors: useFormErrors(formState),

@@ -39,7 +39,6 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
 export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) =>
   title || body ? (
     <MuiTooltip
-      arrow
       title={title && <TooltipContent title={title}>{body}</TooltipContent>}
       slotProps={lodash.merge(slotProps, {
         ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events

@@ -66,7 +66,6 @@ const {
     userCollateral = '0',
     userBorrowed = '0',
     debt = '0',
-    maxDebt,
     slippage,
     leverageEnabled,
     routeId,
@@ -77,7 +76,6 @@ const {
       { userCollateral },
       { userBorrowed },
       { debt },
-      { maxDebt },
       { slippage },
       { leverageEnabled },
       { routeId },
@@ -111,7 +109,7 @@ const {
     }
   },
   category: 'llamalend.borrowMore',
-  validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
+  validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: false }),
 })
 
 export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({

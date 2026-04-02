@@ -27,7 +27,6 @@ export type CreateLoanOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onSuccess: OnTransactionSuccess<CreateLoanMutation>
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -81,7 +80,7 @@ export const useCreateLoanMutation = ({
 }: CreateLoanOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<CreateLoanMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<CreateLoanMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
@@ -104,5 +103,5 @@ export const useCreateLoanMutation = ({
 
   const onSubmit = useCallback((data: CreateLoanForm) => mutate(data as CreateLoanMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess }
+  return { onSubmit, error, isPending }
 }

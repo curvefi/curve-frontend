@@ -99,14 +99,11 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isCreating,
-    isSuccess: isCreated,
     error: creationError,
-    data,
   } = useCreateLoanMutation({
     network,
     marketId: market?.id,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     onSuccess,
     userAddress,
   })
@@ -129,9 +126,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     maxTokenValues,
     borrowToken,
     collateralToken,
-    isCreated,
     creationError,
-    txHash: data?.hash,
     leverage: {
       data: expectedCollateral.data?.leverage,
       // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.

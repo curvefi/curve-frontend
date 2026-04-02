@@ -68,7 +68,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     marketId,
     network,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     userAddress,
   })
 
@@ -88,7 +87,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     action,
     collateralToken,
     borrowToken,
-    txHash: action.data?.hash,
     isApproved: useAddCollateralIsApproved(params),
     formErrors: useFormErrors(formState),
     maxCollateral,

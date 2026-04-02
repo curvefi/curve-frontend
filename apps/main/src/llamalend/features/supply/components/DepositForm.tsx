@@ -27,20 +27,8 @@ export const DepositForm = <ChainId extends IChainId>({
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    borrowToken,
-    isDeposited,
-    depositError,
-    txHash,
-    formErrors,
-    isApproved,
-    max,
-  } = useDepositForm({ market, network, enabled })
+  const { form, params, isPending, onSubmit, isDisabled, borrowToken, depositError, formErrors, isApproved, max } =
+    useDepositForm({ market, network, enabled })
 
   return (
     <Form
@@ -68,15 +56,7 @@ export const DepositForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
       </Button>
 
-      <FormAlerts
-        isSuccess={isDeposited}
-        error={depositError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['depositAmount']}
-        successTitle={t`Deposited successfully`}
-      />
+      <FormAlerts error={depositError} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )
 }

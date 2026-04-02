@@ -64,10 +64,8 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isWithdrawing,
-    isSuccess: isWithdrawn,
     error: withdrawError,
-    data,
-  } = useWithdrawMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
+  } = useWithdrawMutation({ marketId, network, onReset: form.reset, userAddress })
 
   const { formState } = form
 
@@ -81,9 +79,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     onSubmit: form.handleSubmit(onSubmit),
     isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     borrowToken,
-    isWithdrawn,
     withdrawError,
-    txHash: data?.hash,
     max,
     maxStakedShares,
     formErrors: useFormErrors(formState),

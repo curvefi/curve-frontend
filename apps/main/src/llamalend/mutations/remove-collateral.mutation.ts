@@ -15,7 +15,6 @@ export type RemoveCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -26,7 +25,7 @@ export const useRemoveCollateralMutation = ({
   userAddress,
   ...props
 }: RemoveCollateralOptions) => {
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<RemoveCollateralMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<RemoveCollateralMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'remove-collateral'] as const,
@@ -42,5 +41,5 @@ export const useRemoveCollateralMutation = ({
 
   const onSubmit = useCallback((form: CollateralForm) => mutate(form as RemoveCollateralMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess }
+  return { onSubmit, error, isPending }
 }

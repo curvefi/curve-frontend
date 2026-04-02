@@ -34,9 +34,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     onSubmit,
     isDisabled,
     borrowToken,
-    isWithdrawn,
     withdrawError,
-    txHash,
     formErrors,
     max,
     maxStakedShares,
@@ -77,15 +75,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(t`Withdraw`, isFull.data && t`All`).join(' ')}
       </Button>
 
-      <FormAlerts
-        isSuccess={isWithdrawn}
-        error={withdrawError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['withdrawAmount']}
-        successTitle={t`Withdrawn successfully`}
-      />
+      <FormAlerts error={withdrawError} formErrors={formErrors} handledErrors={['withdrawAmount']} />
     </Form>
   )
 }

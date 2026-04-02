@@ -71,7 +71,6 @@ export const useRemoveCollateralForm = <
     marketId,
     network,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     userAddress,
   })
   const { formState } = form
@@ -94,7 +93,6 @@ export const useRemoveCollateralForm = <
     positionCollateral: mapQuery(useUserState(params, enabled), (d) => d.collateral),
     collateralToken,
     borrowToken,
-    txHash: action.data?.hash,
     formErrors: useFormErrors(formState),
   }
 }

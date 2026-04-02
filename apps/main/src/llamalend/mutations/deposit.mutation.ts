@@ -22,7 +22,6 @@ export type DepositOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onSuccess?: OnTransactionSuccess<DepositMutation>
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -42,7 +41,7 @@ export const useDepositMutation = ({
 }: DepositOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<DepositMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<DepositMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,
@@ -71,5 +70,5 @@ export const useDepositMutation = ({
 
   const onSubmit = useCallback(async (form: DepositForm) => mutate(form as DepositMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

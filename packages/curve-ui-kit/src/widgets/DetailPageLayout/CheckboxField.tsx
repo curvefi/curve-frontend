@@ -30,10 +30,9 @@ export const CheckboxField = ({
   <Stack>
     <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
       <FormControlLabel
-        // without default margin, the checkbox overflows
-        sx={{ margin: 0 }}
+        sx={{ margin: 0 }} // with default margin, the checkbox overflows
         label={
-          <Typography variant="headingXsBold" sx={{ userSelect: 'none' }}>
+          <Typography variant="bodyMBold" sx={{ userSelect: 'none' }}>
             {label}
           </Typography>
         }
@@ -44,7 +43,7 @@ export const CheckboxField = ({
             disabled={disabled}
             checked={checked}
             onChange={onChange}
-            sx={{ padding: 0, paddingInlineEnd: Spacing.xs, alignSelf: 'start' }}
+            sx={{ padding: 0, paddingInlineEnd: Spacing.xs }}
           />
         }
       />

@@ -299,15 +299,17 @@ export const LargeTokenInput = ({
                   opacity: { desktop: 0 },
                   transition: `opacity ${TransitionFunction}`,
                   // Show when parent stack is hovered
-                  [`#${componentId}:hover &`]: {
-                    opacity: 1,
-                  },
+                  [`#${componentId}:hover &`]: { opacity: 1 },
                 }}
               >
                 {chips.map((chip) => (
                   <Chip
                     key={`input-chip-${chip.label}`}
-                    label={<WithSkeleton loading={!!maxBalance?.isLoading}>{chip.label}</WithSkeleton>}
+                    label={
+                      <WithSkeleton loading={!!maxBalance?.isLoading}>
+                        <span>{chip.label}</span>
+                      </WithSkeleton>
+                    }
                     data-testid={!chipDisabled && `input-chip-${chip.label}`}
                     size="extraSmall"
                     color="default"

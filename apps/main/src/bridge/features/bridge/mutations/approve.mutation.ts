@@ -17,11 +17,10 @@ export type BridgeApproveOptions = {
   chainId: number
   onApproved: OnTransactionSuccess<BridgeApproveMutation>
   onReset: () => void
-  isDirty: boolean
 }
 
 export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: BridgeApproveOptions) => {
-  const { mutate, error, data, isPending, isSuccess } = useTransactionMutation<BridgeApproveMutation>({
+  const { mutate, error, isPending } = useTransactionMutation<BridgeApproveMutation>({
     mutationKey: [...rootKeys.chain({ chainId }), 'bridge-approve'] as const,
     mutationFn: async ({ amount }) =>
       await requireLib('curveApi')
@@ -37,5 +36,5 @@ export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: Brid
 
   const onSubmit = useCallback(async (form: BridgeForm) => mutate(form as BridgeApproveMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }
