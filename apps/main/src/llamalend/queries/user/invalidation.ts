@@ -7,18 +7,12 @@ import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 
 /**
- * Invalidates all market and user-position queries after a mutation. Uses rootKeys.market as a prefix
- * to cover all queries for the market at once; cross-chain market-list queries have separate key roots.
+ * Invalidates all market and user-position queries after a mutation.
+ * Use rootKeys to cover all queries for the market at once, since a user action can change the whole market.
  */
 export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketQuery<IChainId>) => {
-  if (marketId) {
-    const llamaMarket = getLlamaMarket(marketId)
-    if (llamaMarket instanceof LendMarketTemplate) {
-      llamaMarket.userPosition.clearCache?.()
-    }
-  }
+  ;(getLlamaMarket(marketId) as LendMarketTemplate)?.userPosition?.clearCache?.()
   return Promise.all([
-    // we invalidate all market queries, not just for the user, as a user action changes the whole market
     queryClient.invalidateQueries({ queryKey: rootKeys.market({ chainId, marketId }) }),
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),
