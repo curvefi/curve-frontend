@@ -42,7 +42,7 @@ export const chains = [
 
 export type Chain = (typeof chains)[number]
 
-export const isChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
+export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
 
 export type PaginationMeta = {
   page: number

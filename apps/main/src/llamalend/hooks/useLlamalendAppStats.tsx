@@ -49,7 +49,7 @@ export function useLlamalendAppStats(
     chainId: number | undefined
     currentApp: AppName
   },
-  enabled: boolean = true,
+  enabled: boolean,
 ) {
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
