@@ -1,11 +1,13 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
+import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
-import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
+import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
 
 const {
   useQuery: useRepayLoanEstimateGas,
@@ -70,6 +72,7 @@ const {
   },
   category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
+  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 const {
@@ -126,6 +129,7 @@ const {
   },
   category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
+  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 export const useRepayEstimateGas = createApprovedEstimateGasHook({
