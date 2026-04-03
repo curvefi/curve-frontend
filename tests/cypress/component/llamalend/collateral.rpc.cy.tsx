@@ -44,6 +44,7 @@ describe('Collateral forms', () => {
         let onPricesUpdated: ReturnType<typeof cy.stub>
         const CollateralTest = ({ tab }: { tab: 'add-collateral' | 'remove-collateral' }) => (
           <LlammalendTestCase
+            type="loan"
             tab={tab}
             vnet={getVirtualNetwork()}
             privateKey={privateKey}
