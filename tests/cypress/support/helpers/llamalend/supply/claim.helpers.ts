@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { encodeFunctionData, parseAbi, type Address } from 'viem'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
@@ -24,7 +23,10 @@ const submitClaimForm = () => submitSupplyForm('claim', 'Claimed rewards!')
 
 export const submitClaimAndSettle = ({ waitForEmptyState = false }: { waitForEmptyState?: boolean } = {}) =>
   submitClaimForm().then(() => {
-    if (waitForEmptyState) touchClaimForm()
+    if (waitForEmptyState) {
+      cy.get('[data-testid="supply-claim-empty-state"]', LOAD_TIMEOUT).should('be.visible')
+      touchClaimForm()
+    }
   })
 
 const checkpointTenderlySupplyRewards = ({
@@ -106,20 +108,16 @@ export function checkClaimDetailsLoaded({
   }
 
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
-  cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should(($rows) => {
-    expect($rows.length).to.be.greaterThan(0)
-  })
+  cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should('have.length.at.least', 1)
   cy.get('[data-testid="data-table-cell-token"]').each(($row) => {
-    const match = $row.text().replaceAll(',', '').match(CLAIMABLE_AMOUNT_REGEX)
-    expect(match?.[1]).to.not.equal(undefined)
-    expect(new BigNumber(match![1]).gt(0)).to.equal(true)
+    const [, match] = $row.text().replaceAll(',', '').match(CLAIMABLE_AMOUNT_REGEX) ?? []
+    expect(match).to.not.equal(undefined)
+    expect(Number(match)).to.be.greaterThan(0)
   })
-  cy.get('[data-testid="data-table-cell-notional"]').should(($rows) => {
-    expect($rows.length).to.be.greaterThan(0)
-  })
-  cy.get('[data-testid="data-table-cell-token"]').then(($rows) => {
-    if ($rows.length > 1) cy.contains('Rewards value').should('be.visible')
-  })
+  cy.get('[data-testid="data-table-cell-notional"]').should('have.length.at.least', 1)
+  if (expectedSymbols && expectedSymbols.length > 1) {
+    cy.get('[data-testid="rewards-value"]').should('be.visible')
+  }
 
   expectedSymbols?.forEach((symbol) => {
     cy.get('[data-testid="data-table-cell-token"]').contains(symbol)
@@ -161,7 +159,7 @@ export const checkClaimTableState = ({
   })
 
   if (rows.length > 1 && totalNotional != null) {
-    cy.contains('Rewards value').should('be.visible')
+    cy.get('[data-testid="rewards-value"]').should('be.visible')
     cy.contains(formatUsd(totalNotional)).should('be.visible')
   }
 }

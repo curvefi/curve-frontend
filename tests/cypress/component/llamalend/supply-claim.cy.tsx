@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneAddress } from '@cy/support/generators'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
@@ -11,11 +8,15 @@ import {
   submitClaimAndSettle,
 } from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
-import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 import { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@ui-kit/utils'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
 const testCases: {
   title: string
@@ -44,11 +45,11 @@ describe('ClaimTab (mocked)', () => {
       })
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks })
+      setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <ClaimTab market={market} networks={networks} chainId={chainId} enabled />
+          <ClaimTab market={market} networks={llamaNetworks} chainId={chainId} enabled />
         </MockLoanTestWrapper>,
       )
 
@@ -73,9 +74,15 @@ describe('ClaimTab (mocked)', () => {
         }
       })
 
-      if (expected.buttonDisabled) return
+      if (expected.buttonDisabled) {
+        checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
+        return
+      }
 
-      checkClaimDetailsLoaded({ checkEstimatedTxCost: true })
+      checkClaimDetailsLoaded({
+        checkEstimatedTxCost: true,
+        expectedSymbols: expected.table.rows.map(({ symbol }) => symbol),
+      })
 
       submitClaimAndSettle().then(() => {
         if (expected.shouldClaimCrv) {

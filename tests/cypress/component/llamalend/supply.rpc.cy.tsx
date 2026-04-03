@@ -43,7 +43,6 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { toWei } from '@ui-kit/utils'
 
 const testCases = [oneOf(...SUPPLY_TEST_MARKETS)]
 
@@ -91,7 +90,8 @@ testCases.forEach(
           vnet: getVirtualNetwork(),
           userAddress: address,
           borrowedTokenAddress,
-          borrowedAmountWei: BigInt(toWei('1000', borrowedTokenDecimals)),
+          borrowedAmount: '1000',
+          borrowedTokenDecimals,
         })
       })
 

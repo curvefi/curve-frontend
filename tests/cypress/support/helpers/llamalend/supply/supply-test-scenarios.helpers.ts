@@ -133,6 +133,7 @@ const createBaseSupplyMarket = ({
 export const createDepositScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
   const input = { amount: '12.5' as const }
   const amount = input.amount
+  const amountArgs = [amount] as const
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -174,12 +175,12 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
       walletBalances: [] as const,
       marketRates: [false, false] as const,
       futureRates: [amount, '0'] as const,
-      previewDeposit: [amount] as const,
-      isApproved: [amount] as const,
-      estimateGas: [amount] as const,
-      estimateGasApprove: [amount] as const,
-      approve: [amount] as const,
-      submit: [amount] as const,
+      previewDeposit: amountArgs,
+      isApproved: amountArgs,
+      estimateGas: amountArgs,
+      estimateGasApprove: amountArgs,
+      approve: amountArgs,
+      submit: amountArgs,
       actionInfo: {
         supplyApy: futureApy,
         prevSupplyApy: currentApy,

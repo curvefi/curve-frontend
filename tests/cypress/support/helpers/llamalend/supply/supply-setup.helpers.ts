@@ -1,22 +1,27 @@
-import { parseEther, type Address } from 'viem'
+import { parseEther, parseUnits, type Address } from 'viem'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const fundUserForSupplySetup = ({
   vnet,
   userAddress,
   borrowedTokenAddress,
-  borrowedAmountWei,
-  ethAmountWei = parseEther('1'),
+  borrowedAmount,
+  borrowedTokenDecimals,
+  ethAmount = '1',
 }: {
   vnet: CreateVirtualTestnetResponse
   userAddress: Address
   borrowedTokenAddress: Address
-  borrowedAmountWei: bigint
-  ethAmountWei?: bigint
+  borrowedAmount: Decimal
+  borrowedTokenDecimals: number
+  ethAmount?: Decimal
 }) => {
   const { adminRpcUrl } = getRpcUrls(vnet)
+  const ethAmountWei = parseEther(ethAmount)
+  const borrowedAmountWei = parseUnits(borrowedAmount, borrowedTokenDecimals)
 
   fundEth({ adminRpcUrl, amountWei: `0x${ethAmountWei.toString(16)}`, recipientAddresses: [userAddress] })
   fundErc20({

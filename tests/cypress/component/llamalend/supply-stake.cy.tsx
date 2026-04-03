@@ -1,7 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   readStakeAvailableAmount,
@@ -13,10 +11,14 @@ import {
   checkSupplyActionInfoValues,
   checkSupplySubmitButtonText,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
-import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 import { Chain } from '@ui-kit/utils'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)', buttonText: 'Stake' },
@@ -31,11 +33,11 @@ describe('StakeForm (mocked)', () => {
       const { input, market, llamaApi, expected, stubs } = createStakeScenario({ chainId, approved })
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks })
+      setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <StakeForm market={market} networks={networks} chainId={chainId} enabled />
+          <StakeForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
         </MockLoanTestWrapper>,
       )
 
@@ -57,7 +59,9 @@ describe('StakeForm (mocked)', () => {
 
       submitStakeForm().then(() => {
         expect(stubs.stake).to.have.been.calledWithExactly(...expected.submit)
-        if (!approved) {
+        if (approved) {
+          expect(stubs.stakeApprove).to.not.have.been.called
+        } else {
           expect(stubs.stakeApprove).to.have.been.calledWithExactly(...expected.approve)
         }
       })

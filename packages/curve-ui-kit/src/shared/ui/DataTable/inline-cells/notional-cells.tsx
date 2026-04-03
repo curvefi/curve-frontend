@@ -47,7 +47,9 @@ export const TotalNotionalRow = ({
 }) => (
   <>
     <TableCell sx={sx}>
-      <Typography variant="tableCellMBold" color="textPrimary">{t`Rewards value`}</Typography>
+      <Typography variant="tableCellMBold" color="textPrimary" data-testid="rewards-value">
+        {t`Rewards value`}
+      </Typography>
     </TableCell>
     <TableCell sx={sx} align="right">
       <NotionalTypographyWithSkeleton notional={totalNotionals} isLoading={isNotionalLoading} />
