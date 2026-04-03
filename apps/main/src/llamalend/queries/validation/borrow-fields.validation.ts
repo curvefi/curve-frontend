@@ -1,6 +1,7 @@
 import { enforce, skipWhen, test } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -69,7 +70,10 @@ export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | n
   })
 }
 
-export const validateLeverageSupported = (marketId: string | null | undefined, leverageRequired: boolean) => {
+export const validateLeverageSupported = (
+  marketId: LlamaMarketTemplate | string | null | undefined,
+  leverageRequired: boolean,
+) => {
   skipWhen(!leverageRequired || !marketId, () => {
     test('marketId', 'Market does not support leverage', () => {
       const market = getLlamaMarket(marketId!)

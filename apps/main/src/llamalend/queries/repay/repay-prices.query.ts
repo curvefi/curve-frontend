@@ -1,10 +1,10 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
-import { RepayIsFullParams, RepayIsFullQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const {
@@ -21,7 +21,7 @@ export const {
     userAddress,
     routeId,
     isFull,
-  }: RepayIsFullParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayPrices',
@@ -39,7 +39,7 @@ export const {
     routeId,
     userAddress,
     isFull,
-  }: RepayIsFullQuery) => {
+  }: RepayQuery) => {
     if (isFull) return null
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,

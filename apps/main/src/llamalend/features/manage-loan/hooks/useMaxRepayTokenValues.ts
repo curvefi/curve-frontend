@@ -4,8 +4,7 @@ import { getTokens } from '@/llamalend/llama.utils'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
-import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
-import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
@@ -19,8 +18,8 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     params,
     form,
   }: Partial<ReturnType<typeof getTokens>> & {
-    params: RepayIsFullParams<ChainId>
-    form: UseFormReturn<RepayForm>
+    params: RepayParams
+    form: UseFormReturn<RepayFormData>
   },
   enabled?: boolean,
 ) {

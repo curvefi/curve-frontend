@@ -1,12 +1,12 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
+import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { type RepayIsFullQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
 
 const {
@@ -44,7 +44,7 @@ const {
     userAddress,
     slippage,
     routeId,
-  }: RepayIsFullQuery): Promise<TGas> => {
+  }: RepayQuery): Promise<TGas> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await getLoanImplementation(marketId).estimateGas.fullRepay(userAddress)
@@ -71,7 +71,7 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayFromCollateralIsFullValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
   dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
@@ -107,7 +107,7 @@ const {
     isFull,
     userAddress,
     routeId,
-  }: RepayIsFullQuery): Promise<TGas> => {
+  }: RepayQuery): Promise<TGas> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await getLoanImplementation(marketId).estimateGas.fullRepayApprove(userAddress)
@@ -128,7 +128,7 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayFromCollateralIsFullValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
   dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
