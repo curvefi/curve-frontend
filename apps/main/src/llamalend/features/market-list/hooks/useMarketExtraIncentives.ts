@@ -7,25 +7,25 @@ import { MAINNET_CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
 export const useMarketExtraIncentives = (
   type: MarketRateType,
   incentives: ExtraIncentive[],
-  minApr: number | null | undefined,
+  baseRate: number | null | undefined,
   userBoost?: number | null | undefined,
 ): ExtraIncentiveItem[] =>
   useMemo(
     () =>
       type === MarketRateType.Supply
         ? notFalsy(
-            minApr && {
+            baseRate && {
               title: 'CRV',
-              percentage: minApr,
+              percentage: baseRate,
               address: MAINNET_CRV_ADDRESS,
               blockchainId: 'ethereum',
               isBoost: false,
             },
             userBoost &&
-              minApr &&
+              baseRate &&
               userBoost > 1 && {
                 title: `Your boost (${defaultNumberFormatter(userBoost)}x)`,
-                percentage: minApr * userBoost - minApr,
+                percentage: baseRate * userBoost - baseRate,
                 address: MAINNET_CRV_ADDRESS,
                 blockchainId: 'ethereum',
                 isBoost: true,
@@ -33,5 +33,5 @@ export const useMarketExtraIncentives = (
             ...incentives.map((incentive) => incentive.percentage > 0 && { ...incentive, isBoost: false }),
           )
         : [],
-    [incentives, minApr, type, userBoost],
+    [baseRate, incentives, type, userBoost],
   )

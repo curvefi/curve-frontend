@@ -1,3 +1,4 @@
+import { COMPOUNDING_CATEGORY } from '@/llamalend/constants'
 import { useMarketExtraIncentives } from '@/llamalend/features/market-list/hooks/useMarketExtraIncentives'
 import {
   TooltipDescription,
@@ -13,111 +14,115 @@ import { formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketSupplyRateTooltipContentProps = {
-  supplyRate: number | null | undefined
-  averageRate: number | null | undefined
+  supplyApy: number | null | undefined
   periodLabel: string
   extraRewards: CampaignPoolRewards[]
   extraIncentives: ExtraIncentive[]
-  minBoostApr: number | null | undefined
-  maxBoostApr: number | null | undefined
-  userBoost?: number | null | undefined
-  userTotalCurrentSupplyApr?: number | null | undefined
-  totalSupplyRateMinBoost: number | null | undefined
-  totalSupplyRateMaxBoost: number | null | undefined
-  totalAverageSupplyRateMinBoost: number | null | undefined
-  totalAverageSupplyRateMaxBoost: number | null | undefined
-  rebasingYield: number | null | undefined
+  minBoostApy: number | null | undefined
+  maxBoostApy: number | null | undefined
+  totalApy: number | null | undefined
+  totalMaxBoostApy: number | null | undefined
+  totalAverageApy: number | null | undefined
+  totalAverageMaxBoostApy: number | null | undefined
+  rebasingYieldApy: number | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
 }
 
 export const MarketSupplyRateTooltipContent = ({
-  supplyRate,
-  averageRate,
+  supplyApy,
   periodLabel,
   extraRewards,
   extraIncentives,
-  minBoostApr,
-  maxBoostApr,
-  userBoost,
-  userTotalCurrentSupplyApr,
-  totalSupplyRateMinBoost,
-  totalSupplyRateMaxBoost,
-  totalAverageSupplyRateMinBoost,
-  totalAverageSupplyRateMaxBoost,
-  rebasingYield,
+  minBoostApy,
+  maxBoostApy,
+  totalApy,
+  totalMaxBoostApy,
+  totalAverageApy,
+  totalAverageMaxBoostApy,
+  rebasingYieldApy,
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const extraIncentivesFormatted = useMarketExtraIncentives(
-    MarketRateType.Supply,
-    extraIncentives,
-    minBoostApr,
-    userBoost,
-  )
+  const extraIncentivesFormatted = useMarketExtraIncentives(MarketRateType.Supply, extraIncentives, minBoostApy)
+  const showApyDescription = [
+    extraRewards.length > 0 || extraIncentivesFormatted.length > 0,
+    rebasingYieldApy != null,
+  ].some(Boolean)
+  const { adjective: compoundingAdjective } = COMPOUNDING_CATEGORY
 
   return (
     <TooltipWrapper>
-      <TooltipDescription text={t`The supply yield is the estimated earnings related to your share of the pool. `} />
-      <TooltipDescription text={t`It varies according to the market and the monetary policy.`} />
-      {!!rebasingYield && (
-        <TooltipDescription text={t`The collateral of this market is yield bearing and offer extra yield.`} />
-      )}
+      <TooltipDescription
+        text={t`The net supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`}
+      />
+
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Supply rate`}>{formatPercent(supplyRate)}</TooltipItem>
-          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {averageRate ? formatPercent(averageRate) : 'N/A'}
+          <TooltipItem title={t`Supply APY`} loading={isLoading}>
+            {formatPercent(supplyApy)}
           </TooltipItem>
         </TooltipItems>
-        {!!rebasingYield && rebasingSymbol && (
-          <TooltipItems secondary>
-            <TooltipItem variant="subItem" title={rebasingSymbol}>
-              {formatPercent(rebasingYield)}
-            </TooltipItem>
-          </TooltipItems>
-        )}
-        {extraRewards.length + extraIncentivesFormatted.length > 0 && (
+
+        {(extraRewards.length > 0 || extraIncentivesFormatted.length > 0) && (
           <TooltipItems secondary>
             <RewardsTooltipItems
-              title={t`Staking incentives`}
+              title={t`Lending incentives APY*`}
               tooltipType={'supply'}
               extraRewards={extraRewards}
               extraIncentives={extraIncentivesFormatted}
+              showZeroValue
             />
           </TooltipItems>
         )}
-        {(rebasingYield ||
-          extraRewards.length + extraIncentivesFormatted.length > 0 ||
-          !!userTotalCurrentSupplyApr ||
-          !!minBoostApr ||
-          !!maxBoostApr) && (
-          <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Total APR`}>
-              {formatPercent(userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost)}
+
+        {rebasingYieldApy != null && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Yield bearing APY*`} loading={isLoading}>
+              {formatPercent(rebasingYieldApy)}
             </TooltipItem>
-            <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-              {/* We don't have historical boost values to calculate an average boosted CRV apr for a user, so we have to use the average min boost value */}
-              {totalAverageSupplyRateMinBoost ? formatPercent(totalAverageSupplyRateMinBoost) : 'N/A'}
-            </TooltipItem>
+            {!!rebasingSymbol && (
+              <TooltipItem variant="subItem" title={rebasingSymbol}>
+                {formatPercent(rebasingYieldApy)}
+              </TooltipItem>
+            )}
           </TooltipItems>
         )}
-        {(maxBoostApr ?? 0) > 0 && (
+
+        <TooltipItems borderTop>
+          <TooltipItem variant="primary" title={t`Total APY`} loading={isLoading}>
+            {formatPercent(totalApy)}
+          </TooltipItem>
+          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+            {totalAverageApy == null ? 'N/A' : formatPercent(totalAverageApy)}
+          </TooltipItem>
+        </TooltipItems>
+
+        {maxBoostApy != null && (
           <TooltipItems secondary extraMargin>
-            <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatPercent(maxBoostApr)}</TooltipItem>
+            <TooltipItem title={t`Max veCRV Boost (2.5x)`} loading={isLoading}>
+              {formatPercent(maxBoostApy)}
+            </TooltipItem>
           </TooltipItems>
         )}
-        {(maxBoostApr ?? 0) > 0 && (
+
+        {maxBoostApy != null && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={`${t`Total max boosted APR`}`}>
-              {formatPercent(totalSupplyRateMaxBoost)}
+            <TooltipItem variant="primary" title={t`Total max veCRV APY`} loading={isLoading}>
+              {formatPercent(totalMaxBoostApy)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-              {totalAverageSupplyRateMaxBoost ? formatPercent(totalAverageSupplyRateMaxBoost) : 'N/A'}
+              {totalAverageMaxBoostApy == null ? 'N/A' : formatPercent(totalAverageMaxBoostApy)}
             </TooltipItem>
           </TooltipItems>
         )}
       </Stack>
+
+      {showApyDescription && (
+        <TooltipDescription
+          text={t`*Token incentive and yield bearing APY assume a ${compoundingAdjective} compounding rate.`}
+        />
+      )}
     </TooltipWrapper>
   )
 }

@@ -6,8 +6,8 @@ import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
   getSupplyApyMetrics,
   toNumberOrNull,
-  LAST_MONTH,
-  sumOnChainExtraIncentivesApr,
+  aprToApy,
+  sumOnChainExtraIncentivesApy,
   getSupplyApyAverageMetrics,
   getLatestSnapshotValue,
 } from '@/llamalend/rates.utils'
@@ -17,6 +17,7 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 
 type UseSupplyPositionDetailsProps = {
   chainId: ChainId
@@ -24,9 +25,6 @@ type UseSupplyPositionDetailsProps = {
   marketId: string
   userAddress: Address | undefined
 }
-
-const AVERAGE_MULTIPLIER = LAST_MONTH
-const AVERAGE_RATE_LABEL = `${AVERAGE_MULTIPLIER}D`
 
 export const useSupplyPositionDetails = ({
   chainId,
@@ -36,6 +34,11 @@ export const useSupplyPositionDetails = ({
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
+  const {
+    value: rateWindow,
+    aggregate: rateAggregate,
+    period: ratePeriod,
+  } = AVERAGE_CATEGORIES['llamalend.supplyRateTooltip']
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
@@ -65,8 +68,8 @@ export const useSupplyPositionDetails = ({
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
     contractAddress: market?.addresses?.controller as Address,
-    aggregate: 'day',
-    limit: AVERAGE_MULTIPLIER,
+    aggregate: rateAggregate,
+    limit: rateWindow,
   })
 
   const rebasingYield = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
@@ -76,10 +79,12 @@ export const useSupplyPositionDetails = ({
     rebasingYieldApy: rebasingYield,
     crvMinBoostApr: onChainRewards?.crvRates?.[0],
     crvMaxBoostApr: onChainRewards?.crvRates?.[1],
-    extraIncentivesApr: sumOnChainExtraIncentivesApr(onChainRewards?.rewardsApr),
-    userSupplyBoost,
+    extraIncentivesApy: sumOnChainExtraIncentivesApy(onChainRewards?.rewardsApr),
   })
-  const supplyAverageMetrics = getSupplyApyAverageMetrics({ snapshots: lendingSnapshots, daysBack: AVERAGE_MULTIPLIER })
+  const supplyAverageMetrics = getSupplyApyAverageMetrics({
+    snapshots: lendingSnapshots,
+    daysBack: rateWindow,
+  })
 
   const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null
   const depositedAmount =
@@ -91,13 +96,11 @@ export const useSupplyPositionDetails = ({
     userSupplyRate: {
       ...supplyMetrics,
       ...supplyAverageMetrics,
-      averageRateLabel: AVERAGE_RATE_LABEL,
-      userCurrentCRVApr: supplyMetrics.userBoostApr,
-      userTotalCurrentSupplyApr: supplyMetrics.totalUserBoost,
+      averageRateLabel: ratePeriod,
       extraIncentives: onChainRewards?.rewardsApr
         ? onChainRewards.rewardsApr.map((r) => ({
             title: r.symbol,
-            percentage: r.apy,
+            percentage: aprToApy(r.apy) ?? 0,
             blockchainId,
             address: r.tokenAddress,
           }))

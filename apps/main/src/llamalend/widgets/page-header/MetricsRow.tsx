@@ -46,35 +46,34 @@ export const MetricsRow = ({
       {supplyRate && (
         <Metric
           alignment={metricAlignment}
-          label={t`Supply rate`}
-          value={supplyRate?.totalMinBoost}
-          loading={supplyRate?.loading}
+          label={t`Net supply rate`}
+          value={supplyRate.totalMinBoost}
+          loading={supplyRate.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={
-            supplyRate?.averageLendApy
+            supplyRate.totalAverageMinBoost != null
               ? {
-                  value: supplyRate.averageLendApy,
+                  value: supplyRate.totalAverageMinBoost,
                   unit: { symbol: `% ${supplyRate.averageRateLabel} Avg`, position: 'suffix' },
                 }
               : undefined
           }
           valueTooltip={{
-            title: t`Supply Rate`,
+            title: t`Net supply rate`,
             body: (
               <MarketSupplyRateTooltipContent
-                supplyRate={supplyRate?.supplyApy}
-                averageRate={supplyRate?.averageLendApy}
-                minBoostApr={supplyRate?.supplyAprCrvMinBoost}
-                maxBoostApr={supplyRate?.supplyAprCrvMaxBoost}
-                totalSupplyRateMinBoost={supplyRate?.totalMinBoost}
-                totalSupplyRateMaxBoost={supplyRate?.totalMaxBoost}
-                totalAverageSupplyRateMinBoost={supplyRate?.totalAverageMinBoost}
-                totalAverageSupplyRateMaxBoost={supplyRate?.totalAverageMaxBoost}
-                rebasingYield={supplyRate?.rebasingYield}
-                isLoading={supplyRate?.loading}
-                periodLabel={supplyRate?.averageRateLabel}
-                extraRewards={supplyRate?.extraRewards ?? []}
-                extraIncentives={supplyRate?.extraIncentives ?? []}
+                supplyApy={supplyRate.supplyApy}
+                minBoostApy={supplyRate.supplyApyCrvMinBoost}
+                maxBoostApy={supplyRate.supplyApyCrvMaxBoost}
+                totalApy={supplyRate.totalMinBoost}
+                totalMaxBoostApy={supplyRate.totalMaxBoost}
+                totalAverageApy={supplyRate.totalAverageMinBoost}
+                totalAverageMaxBoostApy={supplyRate.totalAverageMaxBoost}
+                rebasingYieldApy={supplyRate.rebasingYield}
+                isLoading={supplyRate.loading}
+                periodLabel={supplyRate.averageRateLabel}
+                extraRewards={supplyRate.extraRewards ?? []}
+                extraIncentives={supplyRate.extraIncentives ?? []}
               />
             ),
             ...TooltipOptions,

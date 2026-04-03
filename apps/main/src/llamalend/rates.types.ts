@@ -17,10 +17,10 @@ export type SupplyRate = {
   supplyApy: number | null | undefined
   averageLendApy: number | null | undefined
   averageRateLabel: string
-  supplyAprCrvMinBoost: number | null | undefined
-  supplyAprCrvMaxBoost: number | null | undefined
-  averageAprCrvMinBoost: number | null | undefined
-  averageAprCrvMaxBoost: number | null | undefined
+  supplyApyCrvMinBoost: number | null | undefined
+  supplyApyCrvMaxBoost: number | null | undefined
+  averageApyCrvMinBoost: number | null | undefined
+  averageApyCrvMaxBoost: number | null | undefined
   rebasingYield: number | null | undefined
   averageRebasingYield: number | null | undefined
   totalMinBoost: number | null | undefined
@@ -28,8 +28,8 @@ export type SupplyRate = {
   totalAverageMinBoost: number | null | undefined
   totalAverageMaxBoost: number | null | undefined
   extraIncentives: ExtraIncentive[]
-  extraIncentivesTotalApr: number | null | undefined
-  averageExtraIncentivesApr: number | null | undefined
+  extraIncentivesTotalApy: number | null | undefined
+  averageExtraIncentivesApy: number | null | undefined
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }

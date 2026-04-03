@@ -10,10 +10,7 @@ import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
 
-type UserSupplyRate = SupplyRate & {
-  userCurrentCRVApr: number | undefined | null
-  userTotalCurrentSupplyApr: number | undefined | null
-}
+type UserSupplyRate = SupplyRate
 export type Shares = {
   value: number | undefined | null
   staked: number | undefined | null
@@ -46,13 +43,11 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
     totalAverageMaxBoost,
     totalAverageMinBoost,
     supplyApy,
-    averageLendApy,
     averageRateLabel,
     extraRewards,
     extraIncentives,
-    supplyAprCrvMinBoost,
-    supplyAprCrvMaxBoost,
-    userTotalCurrentSupplyApr,
+    supplyApyCrvMinBoost,
+    supplyApyCrvMaxBoost,
     loading: supplyRateLoading,
     rebasingYield,
   } = userSupplyRate
@@ -77,8 +72,8 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
       >
         <Metric
           size="medium"
-          label={t`Supply rate`}
-          value={userTotalCurrentSupplyApr ?? totalMinBoost}
+          label={t`Net supply rate`}
+          value={totalMinBoost}
           loading={supplyRateLoading}
           valueOptions={{ unit: 'percentage' }}
           notional={
@@ -87,23 +82,20 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
               : undefined
           }
           valueTooltip={{
-            title: t`Supply Rate`,
+            title: t`Net supply rate`,
             body: (
               <MarketSupplyRateTooltipContent
-                supplyRate={supplyApy}
-                averageRate={averageLendApy}
+                supplyApy={supplyApy}
                 periodLabel={averageRateLabel ?? ''}
                 extraRewards={extraRewards ?? []}
                 extraIncentives={extraIncentives ?? []}
-                minBoostApr={supplyAprCrvMinBoost}
-                maxBoostApr={supplyAprCrvMaxBoost}
-                userBoost={boostValue}
-                userTotalCurrentSupplyApr={userTotalCurrentSupplyApr}
-                totalSupplyRateMinBoost={totalMinBoost}
-                totalSupplyRateMaxBoost={totalMaxBoost}
-                totalAverageSupplyRateMinBoost={totalAverageMinBoost}
-                totalAverageSupplyRateMaxBoost={totalAverageMaxBoost}
-                rebasingYield={rebasingYield}
+                minBoostApy={supplyApyCrvMinBoost}
+                maxBoostApy={supplyApyCrvMaxBoost}
+                totalApy={totalMinBoost}
+                totalMaxBoostApy={totalMaxBoost}
+                totalAverageApy={totalAverageMinBoost}
+                totalAverageMaxBoostApy={totalAverageMaxBoost}
+                rebasingYieldApy={rebasingYield}
                 rebasingSymbol={supplyAssetSymbol}
                 isLoading={supplyRateLoading}
               />
