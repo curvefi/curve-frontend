@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createWithdrawScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
@@ -10,10 +7,14 @@ import {
   checkSupplySubmitButtonText,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import { submitWithdrawForm, writeWithdrawForm } from '@cy/support/helpers/llamalend/supply/withdraw.helpers'
-import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 import { Chain } from '@ui-kit/utils'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
 const testCases = [
   { isFull: false, title: 'fills and submits partial withdraw', buttonText: 'Withdraw' },
@@ -28,11 +29,11 @@ describe('WithdrawForm (mocked)', () => {
       const { input, market, llamaApi, expected, stubs } = createWithdrawScenario({ chainId, isFull })
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks })
+      setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <WithdrawForm market={market} networks={networks} chainId={chainId} enabled />
+          <WithdrawForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
         </MockLoanTestWrapper>,
       )
 

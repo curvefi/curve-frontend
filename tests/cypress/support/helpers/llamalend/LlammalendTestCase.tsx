@@ -13,11 +13,10 @@ import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import Box from '@mui/material/Box'
@@ -27,8 +26,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
-
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 
 const prefetch = () => prefetchMarkets({})
 
@@ -78,7 +75,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTest
   return (
     <Component
       market={market}
-      networks={networks}
+      networks={llamaNetworks}
       onPricesUpdated={onPricesUpdated!}
       onSuccess={cy.stub()}
       enabled
@@ -93,7 +90,7 @@ export const LlammalendTestCase = ({ vnet, privateKey, ...props }: LlammalendTes
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider
       app="llamalend"
-      network={networks[props.chainId]}
+      network={llamaNetworks[props.chainId]}
       onChainUnavailable={console.error}
       hydrate={{ llamalend: prefetch }}
     >

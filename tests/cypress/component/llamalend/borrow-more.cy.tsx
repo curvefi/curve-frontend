@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneDecimal } from '@cy/support/generators'
 import {
   checkBorrowMoreDetailsLoaded,
@@ -10,12 +7,16 @@ import {
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { Chain } from '@ui-kit/utils'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
 
 const testCases = [
@@ -58,13 +59,13 @@ describe('BorrowMoreForm (mocked)', () => {
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks })
+      setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
           <BorrowMoreForm
             market={market}
-            networks={networks}
+            networks={llamaNetworks}
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             enabled
