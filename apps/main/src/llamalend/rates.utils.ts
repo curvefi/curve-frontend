@@ -3,9 +3,8 @@ import { sumBy } from 'lodash'
 import { Decimal } from '@primitives/decimal.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
-import { decimal } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, decimal } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
-import { COMPOUNDING_CATEGORY } from './constants'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined
@@ -16,7 +15,7 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
 }
 
 const DAYS_PER_YEAR = 365
-const { value: compoundingWindow } = COMPOUNDING_CATEGORY
+
 /**
  * Converts an APR (Annual Percentage Rate) into APY (Annual Percentage Yield) using periodic compounding based on a given number
  * of days per compounding period. The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
@@ -24,7 +23,10 @@ const { value: compoundingWindow } = COMPOUNDING_CATEGORY
  * - Returns null if APR is null or undefined.
  * - Uses the configured category's day window as the compounding period.
  */
-export const aprToApy = (apr: number | null | undefined, compoundingDays = compoundingWindow): number | null => {
+export const aprToApy = (
+  apr: number | null | undefined,
+  compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].value,
+): number | null => {
   if (apr == null) return null
 
   const periods = DAYS_PER_YEAR / compoundingDays

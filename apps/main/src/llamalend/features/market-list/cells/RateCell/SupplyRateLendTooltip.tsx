@@ -15,7 +15,7 @@ const averageCategory = 'llamalend.marketList.rate'
 
 const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
   const { period } = AVERAGE_CATEGORIES[averageCategory]
-  const { minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(
+  const { minBoostedAprAverage, maxBoostedAprAverage, averageRate, isLoading } = useSnapshots(
     market,
     { type: rateType, category: averageCategory },
     isOpen, // important: only call this when the tooltip is open
@@ -33,6 +33,7 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
   return (
     <MarketSupplyRateTooltipContent
       supplyApy={lendApy}
+      averageSupplyApy={averageRate}
       periodLabel={period}
       extraRewards={poolRewards}
       extraIncentives={rates.incentives.map((incentive) => ({

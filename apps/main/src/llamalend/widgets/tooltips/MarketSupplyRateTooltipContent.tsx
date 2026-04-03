@@ -1,7 +1,7 @@
-import { COMPOUNDING_CATEGORY } from '@/llamalend/constants'
 import { useMarketExtraIncentives } from '@/llamalend/features/market-list/hooks/useMarketExtraIncentives'
 import {
   TooltipDescription,
+  TooltipFooter,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
@@ -10,11 +10,12 @@ import Stack from '@mui/material/Stack'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
-import { formatPercent } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | null | undefined
+  averageSupplyApy: number | null | undefined
   periodLabel: string
   extraRewards: CampaignPoolRewards[]
   extraIncentives: ExtraIncentive[]
@@ -31,6 +32,7 @@ export type MarketSupplyRateTooltipContentProps = {
 
 export const MarketSupplyRateTooltipContent = ({
   supplyApy,
+  averageSupplyApy,
   periodLabel,
   extraRewards,
   extraIncentives,
@@ -49,7 +51,8 @@ export const MarketSupplyRateTooltipContent = ({
     extraRewards.length > 0 || extraIncentivesFormatted.length > 0,
     rebasingYieldApy != null,
   ].some(Boolean)
-  const { adjective: compoundingAdjective } = COMPOUNDING_CATEGORY
+  const hasIncentives = !!(extraRewards.length || extraIncentivesFormatted.length)
+  const hasRebasingYield = rebasingYieldApy != null
 
   return (
     <TooltipWrapper>
@@ -62,9 +65,12 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItem title={t`Supply APY`} loading={isLoading}>
             {formatPercent(supplyApy)}
           </TooltipItem>
+          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+            {averageSupplyApy == null ? 'N/A' : formatPercent(averageSupplyApy)}
+          </TooltipItem>
         </TooltipItems>
 
-        {(extraRewards.length > 0 || extraIncentivesFormatted.length > 0) && (
+        {hasIncentives && (
           <TooltipItems secondary>
             <RewardsTooltipItems
               title={t`Lending incentives APY*`}
@@ -76,7 +82,7 @@ export const MarketSupplyRateTooltipContent = ({
           </TooltipItems>
         )}
 
-        {rebasingYieldApy != null && (
+        {hasRebasingYield && (
           <TooltipItems secondary>
             <TooltipItem title={t`Yield bearing APY*`} loading={isLoading}>
               {formatPercent(rebasingYieldApy)}
@@ -89,16 +95,18 @@ export const MarketSupplyRateTooltipContent = ({
           </TooltipItems>
         )}
 
-        <TooltipItems borderTop>
-          <TooltipItem variant="primary" title={t`Total APY`} loading={isLoading}>
-            {formatPercent(totalApy)}
-          </TooltipItem>
-          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {totalAverageApy == null ? 'N/A' : formatPercent(totalAverageApy)}
-          </TooltipItem>
-        </TooltipItems>
+        {totalAverageApy != null && (hasIncentives || hasRebasingYield) && (
+          <TooltipItems borderTop>
+            <TooltipItem variant="primary" title={t`Total APY`} loading={isLoading}>
+              {formatPercent(totalApy)}
+            </TooltipItem>
+            <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+              {totalAverageApy == null ? 'N/A' : formatPercent(totalAverageApy)}
+            </TooltipItem>
+          </TooltipItems>
+        )}
 
-        {maxBoostApy != null && (
+        {!!maxBoostApy && (
           <TooltipItems secondary extraMargin>
             <TooltipItem title={t`Max veCRV Boost (2.5x)`} loading={isLoading}>
               {formatPercent(maxBoostApy)}
@@ -106,7 +114,7 @@ export const MarketSupplyRateTooltipContent = ({
           </TooltipItems>
         )}
 
-        {maxBoostApy != null && (
+        {!!maxBoostApy && (
           <TooltipItems borderTop>
             <TooltipItem variant="primary" title={t`Total max veCRV APY`} loading={isLoading}>
               {formatPercent(totalMaxBoostApy)}
@@ -119,9 +127,9 @@ export const MarketSupplyRateTooltipContent = ({
       </Stack>
 
       {showApyDescription && (
-        <TooltipDescription
-          text={t`*Token incentive and yield bearing APY assume a ${compoundingAdjective} compounding rate.`}
-        />
+        <TooltipFooter>
+          {t`*Token incentive and yield bearing APY assume a ${AVERAGE_CATEGORIES['llamalend.compoundRate'].adjective} compounding rate.`}
+        </TooltipFooter>
       )}
     </TooltipWrapper>
   )

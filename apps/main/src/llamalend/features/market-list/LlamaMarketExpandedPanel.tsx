@@ -25,7 +25,6 @@ import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
 import { LlamaMarketColumnId } from './columns'
 
 const { Spacing } = SizesAndSpaces
-const { period } = AVERAGE_CATEGORIES['llamalend.marketList.rate']
 
 const ratesConfig: Record<
   MarketRateType,
@@ -145,7 +144,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         <Grid size={12} data-testid="llama-market-graph">
           <Stack direction="column" alignItems="center">
             <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
-              {t`${period} Rate Chart`}
+              {t`${AVERAGE_CATEGORIES['llamalend.marketList.chartRate'].period} Rate Chart`}
             </Typography>
 
             <LineGraphCell market={market} type={MarketRateType.Borrow} graphSize={graphSize} />

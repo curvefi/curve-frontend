@@ -1,6 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils/average-categories'
 import type { HealthMode } from './llamalend.types'
 
 /**
@@ -44,6 +43,3 @@ export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Lend]: t`(Lending Markets)`,
   [LlamaMarketType.Mint]: t`(Mint Markets)`,
 }
-
-/** Average category config for supply compounding rate  */
-export const COMPOUNDING_CATEGORY = AVERAGE_CATEGORIES['llamalend.supplyCompoundingRate']

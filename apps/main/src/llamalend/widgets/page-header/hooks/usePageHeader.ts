@@ -80,8 +80,8 @@ function buildSupplyRate({
   }
 }
 
-const BORROW_CATEGORY = 'llamalend.borrowRate'
-const SUPPLY_CATEGORY = 'llamalend.supplyRate'
+const BORROW_CATEGORY: AverageCategory = 'llamalend.market.borrowRate'
+const SUPPLY_CATEGORY: AverageCategory = 'llamalend.market.supplyRate'
 
 const { value: BORROW_LIMIT } = AVERAGE_CATEGORIES[BORROW_CATEGORY]
 

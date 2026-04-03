@@ -65,6 +65,7 @@ export const MetricsRow = ({
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyRate.supplyApy}
+                averageSupplyApy={supplyRate.averageLendApy}
                 minBoostApy={supplyRate.supplyApyCrvMinBoost}
                 maxBoostApy={supplyRate.supplyApyCrvMaxBoost}
                 totalApy={supplyRate.totalMinBoost}

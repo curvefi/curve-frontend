@@ -43,6 +43,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
     totalAverageMaxBoost,
     totalAverageMinBoost,
     supplyApy,
+    averageLendApy,
     averageCategory,
     extraRewards,
     extraIncentives,
@@ -87,6 +88,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyApy}
+                averageSupplyApy={averageLendApy}
                 periodLabel={averageRatePeriod}
                 extraRewards={extraRewards ?? []}
                 extraIncentives={extraIncentives ?? []}

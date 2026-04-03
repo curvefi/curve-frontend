@@ -26,7 +26,7 @@ type UseSupplyPositionDetailsProps = {
   userAddress: Address | undefined
 }
 
-const RATE_CATEGORY = 'llamalend.supplyRateTooltip'
+const RATE_CATEGORY = 'llamalend.position.supplyRate'
 
 export const useSupplyPositionDetails = ({
   chainId,
