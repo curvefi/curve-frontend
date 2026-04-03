@@ -71,10 +71,8 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isStaking,
-    isSuccess: isStaked,
     error: stakeError,
-    data,
-  } = useStakeMutation({ marketId, network, onReset: form.reset, isDirty: form.formState.isDirty, userAddress })
+  } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
 
   useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
@@ -89,9 +87,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || isPending || isDebouncing,
     vaultToken,
     borrowToken,
-    isStaked,
     stakeError,
-    txHash: data?.hash,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
     formErrors: useFormErrors(formState),

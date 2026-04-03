@@ -19,7 +19,6 @@ export type AddCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -38,7 +37,7 @@ export const useAddCollateralMutation = ({
 }: AddCollateralOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<AddCollateralMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<AddCollateralMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,
@@ -60,5 +59,5 @@ export const useAddCollateralMutation = ({
 
   const onSubmit = useCallback((form: CollateralForm) => mutate(form as AddCollateralMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess }
+  return { onSubmit, error, isPending }
 }

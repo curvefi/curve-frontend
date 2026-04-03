@@ -109,6 +109,7 @@ testCases.forEach(
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
         <LlammalendTestCase
+          type="loan"
           tab={tab}
           vnet={getVirtualNetwork()}
           privateKey={privateKey}
@@ -176,7 +177,7 @@ testCases.forEach(
         })
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
-        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol, hasLtv: false })
+        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
         submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
           cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')

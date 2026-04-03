@@ -16,7 +16,6 @@ export type WithdrawOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -27,7 +26,7 @@ export const useWithdrawMutation = ({
   userAddress,
   ...props
 }: WithdrawOptions) => {
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<WithdrawMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<WithdrawMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'withdraw'] as const,
@@ -59,5 +58,5 @@ export const useWithdrawMutation = ({
     [mutate],
   )
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

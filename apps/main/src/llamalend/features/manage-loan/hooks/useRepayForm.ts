@@ -119,14 +119,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isRepaying,
-    isSuccess: isRepaid,
     error: repayError,
-    data,
   } = useRepayMutation({
     network,
     marketId,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     userAddress,
   })
 
@@ -146,9 +143,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
-    isRepaid,
     repayError,
-    txHash: data?.hash,
     isApproved: useRepayIsApproved(params, enabled),
     routes: useMarketRoutes({
       chainId,

@@ -26,20 +26,8 @@ export const UnstakeForm = <ChainId extends IChainId>({
 }: UnstakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    vaultToken,
-    borrowToken,
-    isUnstaked,
-    unstakeError,
-    txHash,
-    formErrors,
-    max,
-  } = useUnstakeForm({ market, network, enabled })
+  const { form, params, isPending, onSubmit, isDisabled, vaultToken, borrowToken, unstakeError, formErrors, max } =
+    useUnstakeForm({ market, network, enabled })
 
   return (
     <Form
@@ -72,15 +60,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : t`Unstake`}
       </Button>
 
-      <FormAlerts
-        isSuccess={isUnstaked}
-        error={unstakeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['unstakeAmount']}
-        successTitle={t`Unstaked successfully`}
-      />
+      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAmount']} />
     </Form>
   )
 }

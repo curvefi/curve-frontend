@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
@@ -12,11 +9,15 @@ import {
   submitRepayForm,
   writeRepayLoanForm,
 } from '@cy/support/helpers/llamalend/repay-loan.helpers'
-import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
@@ -39,12 +40,12 @@ describe('RepayForm (mocked)', () => {
 
       void collateral
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks })
+      setGasInfo({ chainId, networks: llamaNetworks })
       seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <RepayForm market={market} networks={networks} chainId={chainId} onPricesUpdated={onPricesUpdated} />
+          <RepayForm market={market} networks={llamaNetworks} chainId={chainId} onPricesUpdated={onPricesUpdated} />
         </MockLoanTestWrapper>,
       )
 

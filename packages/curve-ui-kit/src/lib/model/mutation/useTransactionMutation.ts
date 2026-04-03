@@ -87,8 +87,6 @@ type TransactionMutationOptionsBase<
   ) => unknown | Promise<unknown>
   /** Callback executed to reset the form when mutation is finished successfully */
   onReset: () => void
-  /** Whether the form has been modified. Only use `undefined` if the form has no fields. */
-  isDirty: boolean | undefined
 }
 
 /**
@@ -130,7 +128,6 @@ export function useTransactionMutation<
   confirmingMessage,
   onSuccess,
   onReset,
-  isDirty,
 }: TransactionMutationOptionsBase<TVariables, TContext, TData>) {
   const { wallet } = useCurve()
   const userAddress = wallet?.address
@@ -146,7 +143,7 @@ export function useTransactionMutation<
   }
 
   // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
-  const { mutate, data, isPending, isSuccess } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
@@ -196,6 +193,5 @@ export function useTransactionMutation<
     },
   })
 
-  const success = isDirty !== true && isSuccess // hide success when forms get edited again
-  return { mutate, error, isPending, isSuccess: success, ...data }
+  return { mutate, error, isPending }
 }

@@ -44,13 +44,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     ...getTableOptions(tableData),
   })
 
-  const {
-    onSubmit,
-    isPending: isClaiming,
-    isSuccess: isClaimed,
-    error: claimError,
-    data,
-  } = useClaimMutation({ marketId, network, userAddress })
+  const { onSubmit, isPending: isClaiming, error: claimError } = useClaimMutation({ marketId, network, userAddress })
 
   return {
     params,
@@ -64,9 +58,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isError: !!claimablesError,
     table,
     onSubmit,
-    isClaimed,
     isPending: isClaiming,
     claimError,
-    txHash: data?.hash,
   }
 }

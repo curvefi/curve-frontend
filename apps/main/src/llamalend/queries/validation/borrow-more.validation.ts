@@ -48,17 +48,17 @@ const validateBorrowMoreFieldsForMarket = ({
   marketId,
   leverageEnabled,
   routeId,
-  debtRequired,
+  debt,
 }: {
   marketId: string | null | undefined
   leverageEnabled: boolean | null | undefined
   routeId: string | null | undefined
-  debtRequired: boolean
+  debt: Decimal | null | undefined
 }) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
     const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
-    validateRoute(routeId, debtRequired && !!leverageEnabled && isRouterRequired(type))
+    validateRoute(routeId, !!(debt && leverageEnabled && isRouterRequired(type)))
   })
 }
 
@@ -119,7 +119,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debtRequired })
+  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt })
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)

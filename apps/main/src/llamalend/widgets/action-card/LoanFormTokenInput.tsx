@@ -9,7 +9,7 @@ import type { PartialRecord } from '@primitives/objects.utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import type { ChipsPreset, LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
+import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { QueryProp } from '@ui-kit/types/util'
@@ -31,7 +31,6 @@ export const LoanFormTokenInput = <
   blockchainId,
   name,
   max,
-  maxType = 'max',
   form,
   testId,
   message,
@@ -49,7 +48,6 @@ export const LoanFormTokenInput = <
    * When present, it also carries an optional related max-field name whose errors should be reflected here.
    */
   max?: QueryProp<Decimal> & { fieldName?: TMaxFieldName }
-  maxType?: ChipsPreset
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
@@ -106,9 +104,10 @@ export const LoanFormTokenInput = <
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error =
-    (name in form.formState.touchedFields && errors[name]) || max?.error || balanceError || relatedMaxFieldError
+    (name in form.formState.touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
   const value = form.getValues(name)
   const errorMessage = error?.message
+
   const onBalance = useCallback(
     (v?: Decimal) => {
       updateForm(form, { [name]: v } as FormUpdates<TFieldValues>)
@@ -135,7 +134,7 @@ export const LoanFormTokenInput = <
       onBalance={onBalance}
       isError={!!error}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={max && { balance: max.data, chips: maxType, isLoading: max.isLoading }}
+      maxBalance={max && { balance: max.data, chips: 'range', isLoading: max.isLoading }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? (

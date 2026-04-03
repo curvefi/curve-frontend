@@ -42,9 +42,7 @@ export const ClosePositionForm = ({
     canClose: { data: canClose, error: canCloseError },
     isDisabled,
     isPending,
-    isClosed,
     closeError,
-    txHash,
     isApproved,
     onSubmit,
     formErrors,
@@ -114,13 +112,9 @@ export const ClosePositionForm = ({
       </Stack>
 
       <FormAlerts
-        network={network}
-        isSuccess={isClosed}
         error={closeError ?? debtTokenError ?? collateralToRecoverError ?? canCloseError ?? null}
-        txHash={txHash}
         formErrors={formErrors}
         handledErrors={[]}
-        successTitle={t`Position closed`}
       />
     </Form>
   )

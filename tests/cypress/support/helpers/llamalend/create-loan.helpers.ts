@@ -168,8 +168,7 @@ export function submitLoanForm({
   if (!checkMessage) {
     return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   }
-  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  return cy.get('[data-testid="loan-form-success-alert"]').should('be.visible')
+  return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
 /**

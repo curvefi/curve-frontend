@@ -46,13 +46,13 @@ export const useChartLegendToggles = ({
           onToggle: toggleLiqRangeCurrentVisible,
         },
         hasLiquidationRange && {
-          label: t`Liquidation zone`,
+          label: t`Liquidation range`,
           box: { fill: theme.design.Chart.LiquidationZone.Current },
           toggled: liqRangeCurrentVisible,
           onToggle: toggleLiqRangeCurrentVisible,
         },
         hasNewLiquidationRange && {
-          label: t`New liquidation zone`,
+          label: t`New liquidation range`,
           box: { fill: theme.design.Chart.LiquidationZone.Future },
           toggled: liqRangeNewVisible,
           onToggle: toggleLiqRangeNewVisible,

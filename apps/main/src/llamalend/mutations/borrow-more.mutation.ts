@@ -23,7 +23,6 @@ export type BorrowMoreOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
-  isDirty: boolean
   userAddress: Address | undefined
 }
 
@@ -75,7 +74,7 @@ export const useBorrowMoreMutation = ({
   ...props
 }: BorrowMoreOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess } = useLlammaMutation<BorrowMoreMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<BorrowMoreMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
@@ -97,5 +96,5 @@ export const useBorrowMoreMutation = ({
 
   const onSubmit = useCallback(async (form: BorrowMoreForm) => mutate(form as BorrowMoreMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess }
+  return { onSubmit, mutate, error, isPending }
 }

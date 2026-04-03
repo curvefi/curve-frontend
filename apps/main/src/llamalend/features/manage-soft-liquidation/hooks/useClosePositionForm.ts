@@ -41,14 +41,11 @@ export function useClosePositionForm({
   const {
     onSubmit,
     isPending: isClosing,
-    isSuccess: isClosed,
     error: closeError,
-    data,
   } = useClosePositionMutation({
     network,
     marketId,
     onReset: form.reset,
-    isDirty: undefined, // not applicable, no fields in the form except slippage
     userAddress,
   })
 
@@ -74,10 +71,8 @@ export function useClosePositionForm({
       isPending ||
       [userState, collateralToRecover, canClose].some((q) => q.isLoading || q.error) ||
       canClose.data?.canClose === false,
-    isClosed,
     closeError,
     formErrors: useMemo(() => filterFormErrors(formState), [formState]),
-    txHash: data?.hash,
     isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),
     onSubmit: form.handleSubmit(onSubmit),
   }

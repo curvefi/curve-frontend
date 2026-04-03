@@ -12,6 +12,7 @@ import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.typ
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
+import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/useLeverageInfoFields'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -25,7 +26,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
-  leverageEnabled,
   form,
   market,
 }: {
@@ -34,7 +34,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
-  leverageEnabled: boolean
   form: UseFormReturn<CollateralForm>
   market: LlamaMarketTemplate | undefined
 }) {
@@ -65,10 +64,15 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         prevCollateral,
         (stateCollateral) => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
       )}
-      leverageEnabled={leverageEnabled}
-      prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
-      leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
       prices={q(useAddCollateralPrices(params, isOpen))}
+      {...useLeverageInfoFields({
+        leverageEnabled: false,
+        leverageValue: useAddCollateralFutureLeverage(params, isOpen),
+        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        prevCollateral,
+        leverageTotalCollateral: prevCollateral,
+        collateralDelta: userCollateral,
+      })}
       {...prevLoanState}
       {...useBorrowRates({ params, market }, isOpen)}
     />
