@@ -114,7 +114,7 @@ export function queryFactory<
       },
       enabled:
         enabled &&
-        checkValidity(validationSuite, params) &&
+        checkValidity(validationSuite, params) && // todo: only validate fields that are actually in the query key
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
