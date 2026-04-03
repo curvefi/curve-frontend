@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
@@ -68,14 +69,14 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
   } = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), { kind: 'timeRange', timeOption })
 
   const chartData = useMemo<RateChartPoint[]>(() => {
-    const sorted = snapshots
-      .map((snapshot) => ({
+    const sorted = sortBy(
+      snapshots.map((snapshot) => ({
         // timestamp is typed as Date but may be a string after JSON serialization (e.g. React Query cache)
         timestamp: new Date(snapshot.timestamp).getTime(),
-        rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy : 0),
-      }))
-      .filter((item) => Number.isFinite(item.timestamp) && Number.isFinite(item.rate))
-      .sort((a, b) => a.timestamp - b.timestamp)
+        rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
+      })),
+      (item) => item.timestamp,
+    )
 
     return addMovingAverages(
       sorted,

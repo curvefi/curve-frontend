@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -10,7 +9,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   {
@@ -39,13 +38,11 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   })
 
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
-  const maxDebt = maxReceive.data?.maxDebt
-  const maxBorrowed = maxUserBorrowed.data
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled)
 
-  useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
-  useEffect(() => updateForm(form, { maxBorrowed }), [form, maxBorrowed])
-  useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
+  useFormSync(form, { maxCollateral: maxUserCollateral.data })
+  useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
+  useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },

@@ -1,12 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  type RemoveCollateralOptions,
-  useRemoveCollateralMutation,
-} from '@/llamalend/mutations/remove-collateral.mutation'
+import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import { useUserState } from '@/llamalend/queries/user'
@@ -22,7 +19,7 @@ import type { BaseConfig } from '@ui/utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -31,13 +28,11 @@ export const useRemoveCollateralForm = <
   market,
   network,
   enabled,
-  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
   enabled: boolean
-  onSuccess?: NonNullable<RemoveCollateralOptions['onSuccess']>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
@@ -75,19 +70,15 @@ export const useRemoveCollateralForm = <
   const { onSubmit, ...action } = useRemoveCollateralMutation({
     marketId,
     network,
-    onSuccess,
     onReset: form.reset,
     userAddress,
   })
   const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
 
-  useCallbackAfterFormUpdate(form, action.reset)
   useCallbackSync(useRemoveCollateralPrices(params, enabled), onPricesUpdated)
 
-  useEffect(() => {
-    updateForm(form, { maxCollateral: maxRemovable.data })
-  }, [form, maxRemovable.data])
+  useFormSync(form, { maxCollateral: maxRemovable.data })
 
   const isPending = formState.isSubmitting || action.isPending
   return {
@@ -102,7 +93,6 @@ export const useRemoveCollateralForm = <
     positionCollateral: mapQuery(useUserState(params, enabled), (d) => d.collateral),
     collateralToken,
     borrowToken,
-    txHash: action.data?.hash,
     formErrors: useFormErrors(formState),
   }
 }

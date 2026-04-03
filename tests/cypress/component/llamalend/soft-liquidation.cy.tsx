@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
@@ -15,11 +12,15 @@ import {
   submitImproveHealthForm,
   writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
-import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
@@ -38,21 +39,21 @@ describe('Soft Liquidation Forms (mocked)', () => {
           chainId,
           approved,
         })
-        const onSuccess = cy.spy().as('onSuccess')
 
         setLlamaApi(llamaApi)
-        setGasInfo({ chainId, networks })
+        setGasInfo({ chainId, networks: llamaNetworks })
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ImproveHealthForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} />
+            <ImproveHealthForm market={market} networks={llamaNetworks} chainId={chainId} />
           </MockLoanTestWrapper>,
         )
 
         writeImproveHealthForm({ amount: borrow })
         checkRepayDetailsLoaded({
           debt: { current: debt, future: debtAfterImprove, symbol: 'crvUSD' },
+          isPriceChanged: false,
         })
         cy.get('[data-testid="improve-health-submit-button"]').should('not.be.disabled')
 
@@ -81,7 +82,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
             expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
           }
           expect(stubs.repay).to.have.been.calledWithExactly(...expected.improveHealth.submit)
-          expect(onSuccess).to.have.been.calledOnce
         })
       })
     })
@@ -91,15 +91,14 @@ describe('Soft Liquidation Forms (mocked)', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
         const { debt, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({ chainId, approved })
-        const onSuccess = cy.spy().as('onSuccess')
 
         setLlamaApi(llamaApi)
-        setGasInfo({ chainId, networks })
+        setGasInfo({ chainId, networks: llamaNetworks })
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` as Decimal })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ClosePositionForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} />
+            <ClosePositionForm market={market} networks={llamaNetworks} chainId={chainId} />
           </MockLoanTestWrapper>,
         )
 
@@ -118,7 +117,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
             expect(stubs.selfLiquidateApprove).to.have.been.calledWithExactly(...expected.closePosition.approve)
           }
           expect(stubs.selfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.submit)
-          expect(onSuccess).to.have.been.calledOnce
         })
       })
     })

@@ -591,15 +591,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:2.0.11":
-  version: 2.0.11
-  resolution: "@curvefi/llamalend-api@npm:2.0.11"
+"@curvefi/llamalend-api@npm:2.0.13":
+  version: 2.0.13
+  resolution: "@curvefi/llamalend-api@npm:2.0.13"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/2fae03adc5448397d190de5caa6d2b0af3a756df6cdfee446156ae94495218338b7e00bbcb579e45172ea206f7c75acd7585393f3f639dc2c7e1de67262e39db
+  checksum: 10c0/f5a60a0eda1adb4964c32590540d4c2e4028c53e33cb8aaef0fcd19b6513a22f92beab9ee14784cb5df4e73815a71dc68451c11510c4c3d6010f6844497f1e0a
   languageName: node
   linkType: hard
 
@@ -7895,12 +7895,12 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.12
-  resolution: "brace-expansion@npm:1.1.12"
+  version: 1.1.13
+  resolution: "brace-expansion@npm:1.1.13"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10c0/975fecac2bb7758c062c20d0b3b6288c7cc895219ee25f0a64a9de662dbac981ff0b6e89909c3897c1f84fa353113a721923afdec5f8b2350255b097f12b1f73
+  checksum: 10c0/384c61bb329b6adfdcc0cbbdd108dc19fb5f3e84ae15a02a74f94c6c791b5a9b035aae73b2a51929a8a478e2f0f212a771eb6a8b5b514cccfb8d0c9f2ce8cbd8
   languageName: node
   linkType: hard
 
@@ -8690,6 +8690,7 @@ __metadata:
     styled-components: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
+    vite-plugin-svgr: "npm:*"
     vitest: "npm:*"
     zustand: "npm:*"
   languageName: unknown
@@ -10482,9 +10483,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^5.8.2":
-  version: 5.8.2
-  resolution: "fastify@npm:5.8.2"
+"fastify@npm:^5.8.3":
+  version: 5.8.4
+  resolution: "fastify@npm:5.8.4"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -10501,7 +10502,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/f6ee45032d8467c590b665a5d1d4c90b45c8cc51d427d29ff0c42759fa2ab88168bd9a473675bd163991bc84565e4d6ebdb8b914a6ecea5df59844fd1dfc7553
+  checksum: 10c0/560ef35d59f96d9900c6e96946736215873ed8aa7a493f61f9489c1bdbddf8f714c735886c00e21077fe9a0ea96539b8b5d6755e8877c464b0b04b6afde9c5ab
   languageName: node
   linkType: hard
 
@@ -12451,7 +12452,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:2.0.11"
+    "@curvefi/llamalend-api": "npm:2.0.13"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
@@ -12483,7 +12484,7 @@ __metadata:
     ui: "npm:*"
     vest: "npm:^5.4.6"
     vite: "npm:*"
-    vite-plugin-svgr: "npm:^4.5.0"
+    vite-plugin-svgr: "npm:*"
     vite-plugin-vercel: "npm:9.1.1"
   peerDependencies:
     "@curvefi/api": "*"
@@ -13441,9 +13442,9 @@ __metadata:
   linkType: hard
 
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "picomatch@npm:2.3.1"
-  checksum: 10c0/26c02b8d06f03206fc2ab8d16f19960f2ff9e81a658f831ecb656d8f17d9edc799e8364b1f4a7873e89d9702dff96204be0fa26fe4181f6843f040f819dac4be
+  version: 2.3.2
+  resolution: "picomatch@npm:2.3.2"
+  checksum: 10c0/a554d1709e59be97d1acb9eaedbbc700a5c03dbd4579807baed95100b00420bc729335440ef15004ae2378984e2487a7c1cebd743cfdb72b6fa9ab69223c0d61
   languageName: node
   linkType: hard
 
@@ -14350,7 +14351,7 @@ __metadata:
     "@types/node": "npm:*"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    fastify: "npm:^5.8.2"
+    fastify: "npm:^5.8.3"
     tsx: "npm:4.21.0"
     typescript: "npm:*"
     vitest: "npm:*"
@@ -15236,6 +15237,7 @@ __metadata:
     ethers: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
+    vite-plugin-svgr: "npm:*"
     vitest: "npm:*"
     wait-on: "npm:^9.0.4"
   languageName: unknown
@@ -16606,9 +16608,9 @@ __metadata:
   linkType: hard
 
 "yaml@npm:^1.10.0":
-  version: 1.10.2
-  resolution: "yaml@npm:1.10.2"
-  checksum: 10c0/5c28b9eb7adc46544f28d9a8d20c5b3cb1215a886609a2fd41f51628d8aaa5878ccd628b755dbcd29f6bb4921bd04ffbc6dcc370689bb96e594e2f9813d2605f
+  version: 1.10.3
+  resolution: "yaml@npm:1.10.3"
+  checksum: 10c0/c309ff85a0a569a981d71ab9cf0fef68672a16b9cdf40639d1c3b30034f6cd16ee428602bd6d64ecf006f8c8bee499023cac236538f79898aa99fb5db529a2ed
   languageName: node
   linkType: hard
 

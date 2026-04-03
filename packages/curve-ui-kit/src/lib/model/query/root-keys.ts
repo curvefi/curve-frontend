@@ -18,7 +18,7 @@ export type ChainParams<T = number> = FieldsOf<ChainQuery<T>>
 export type UserParams<T = Address> = FieldsOf<UserQuery<T>>
 export type ChainNameParams<T = Chain> = FieldsOf<ChainNameQuery<T>>
 
-export type MarketParams = FieldsOf<MarketQuery>
+export type MarketParams<TChain = number> = FieldsOf<MarketQuery<TChain>>
 export type UserMarketParams<TChain = number, TAddress = Address> = FieldsOf<UserMarketQuery<TChain, TAddress>>
 export type UserPoolParams<TChain = number, TAddress = Address> = FieldsOf<UserPoolQuery<TChain, TAddress>>
 export type ContractParams = FieldsOf<ContractQuery>

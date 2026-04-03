@@ -2,7 +2,6 @@ import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import {
   isLeverageBorrowMore,
@@ -32,14 +31,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled: boolean
-  onSuccess?: OnBorrowedMore
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
@@ -52,9 +49,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isDisabled,
     borrowToken,
     collateralToken,
-    isBorrowed,
     borrowError,
-    txHash,
     isApproved,
     formErrors,
     routes,
@@ -64,7 +59,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onSuccess,
     onPricesUpdated,
   })
 
@@ -181,11 +175,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       </Button>
 
       <FormAlerts
-        isSuccess={isBorrowed}
         error={borrowError}
-        txHash={txHash}
         formErrors={formErrors}
-        network={network}
         handledErrors={notFalsy(
           'userCollateral',
           max.userCollateral.field,
@@ -194,7 +185,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           'debt',
           max.debt.field,
         )}
-        successTitle={t`Borrowed more successfully`}
       />
     </Form>
   )

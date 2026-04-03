@@ -4,11 +4,11 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
-import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { constQ, q } from '@ui-kit/types/util'
 
 type ClosePositionInfoListProps = {
   market: LlamaMarketTemplate | undefined
@@ -25,26 +25,18 @@ export function ClosePositionInfoList({
   values: { slippage },
   onSlippageChange,
 }: ClosePositionInfoListProps) {
-  const { address: userAddress } = useConnection()
-  const { borrowToken } = market ? getTokens(market) : {}
-  const marketId = market?.id
-  const { prevDebt, prevCollateral } = usePrevUserState({ chainId, marketId, userAddress })
-
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const params = { chainId, marketId: market?.id, userAddress: useConnection().address, slippage }
   return (
     <LoanActionInfoList
+      isOpen
       slippage={slippage}
       onSlippageChange={onSlippageChange}
-      gas={q(useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage }))}
-      debt={mapQuery(prevDebt, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
-      prevDebt={prevDebt}
-      prevCollateral={prevCollateral}
-      isApproved={q(
-        useCloseLoanIsApproved({
-          chainId,
-          marketId,
-          userAddress,
-        }),
-      )}
+      gas={q(useCloseEstimateGas(networks, params))}
+      debt={constQ('0')}
+      collateral={constQ('0')}
+      isApproved={q(useCloseLoanIsApproved(params))}
+      {...usePrevLoanState({ params, collateralToken, borrowToken })}
     />
   )
 }

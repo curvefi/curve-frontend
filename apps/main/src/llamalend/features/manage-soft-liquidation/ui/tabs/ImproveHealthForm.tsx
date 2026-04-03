@@ -3,7 +3,7 @@ import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayL
 import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayForm'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -22,18 +22,22 @@ import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
 
+/**
+ * Form to repay debt to increase health in soft liquidation. Similar to RepayForm, but with some differences:
+ * - No token selection, since only the borrow token can be repaid to increase health
+ * - No price impact or swap info, since no swap is involved in improving health
+ * - Different info list component that focuses on health improvement details rather than general repay details
+ */
 export const ImproveHealthForm = ({
   market,
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onSuccess?: RepayOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const {
@@ -44,9 +48,7 @@ export const ImproveHealthForm = ({
     onSubmit,
     borrowToken,
     collateralToken,
-    isRepaid,
     repayError,
-    txHash,
     isApproved,
     formErrors,
     max: { userBorrowed: maxRepay },
@@ -57,7 +59,6 @@ export const ImproveHealthForm = ({
     market,
     network,
     enabled,
-    onSuccess,
     onPricesUpdated: noop, // liquidation prices do not change when in liquidation protection
   })
 
@@ -76,8 +77,8 @@ export const ImproveHealthForm = ({
           onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
-          showFuturePrices={false} // liquidation prices do not change when in liquidation protection
           routes={routes}
+          prevPrices={q(useUserPrices(params))} // when in soft liquidation, repay doesn't change liquidation prices
         />
       }
     >
@@ -118,15 +119,7 @@ export const ImproveHealthForm = ({
         <ButtonGetCrvUsd />
       </Stack>
 
-      <FormAlerts
-        isSuccess={isRepaid}
-        error={repayError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={notFalsy('userBorrowed', maxRepay.field)}
-        successTitle={t`Loan repaid`}
-      />
+      <FormAlerts error={repayError} formErrors={formErrors} handledErrors={notFalsy('userBorrowed', maxRepay.field)} />
     </Form>
   )
 }

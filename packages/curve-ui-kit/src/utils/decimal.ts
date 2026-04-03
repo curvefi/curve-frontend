@@ -27,22 +27,19 @@ export const decimalMin = (...data: Decimal[]): Decimal | undefined =>
 /**
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
  */
-export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
-  data.reduce<Decimal | undefined>(
-    (max, value) => (max == null ? value : new BigNumber(value).isGreaterThan(max) ? value : max),
-    undefined,
-  )
+export const decimalMax = (...data: Decimal[]) =>
+  data.length ? (BigNumber.max(...data)!.toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
   data.filter((d) => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
 
-export const decimalMinus = (...data: (Decimal | undefined)[]): Decimal =>
-  data
+export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): Decimal =>
+  rest
     .filter((d) => d != null)
-    .reduce(
-      (diff, value, index) => (index === 0 ? value : (new BigNumber(diff).minus(value).toFixed() as Decimal)),
-      '0',
-    )
+    .reduce((acc, value) => acc.minus(value), new BigNumber(first))
+    .toFixed() as Decimal
+
+export const decimalNegate = (value: Decimal): Decimal => new BigNumber(value).negated().toFixed() as Decimal
 
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

@@ -32,6 +32,7 @@
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
+    "vite-plugin-svgr": "*",
     "vitest": "*",
     "wait-on": "^9.0.4"
   }

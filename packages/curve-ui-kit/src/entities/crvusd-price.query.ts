@@ -6,7 +6,7 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 type CrvUsdPriceQuery = { days: number }
 type CrvUsdPriceParams = FieldsOf<CrvUsdPriceQuery>
 
-export const { useQuery: useCrvUsdPrice } = queryFactory({
+export const { useQuery: useCrvUsdPriceHistory } = queryFactory({
   category: 'analytics.chart',
   queryKey: ({ days }: CrvUsdPriceParams) => ['crvusd-price', { days }] as const,
   queryFn: ({ days }: CrvUsdPriceQuery) => getUsdPriceHistory('ethereum', CRVUSD_ADDRESS, days),
