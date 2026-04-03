@@ -29,7 +29,7 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
     limit,
   }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
-    return getSnapshots(blockchainId, contractAddress, {
+    return await getSnapshots(blockchainId, contractAddress, {
       agg: aggregate,
       fetch_on_chain: true,
       // Use limit for fixed row counts (e.g. 7-day averages), otherwise compute a date range

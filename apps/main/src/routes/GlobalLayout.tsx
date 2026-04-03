@@ -21,7 +21,6 @@ const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', 'llamalend']
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) => {
   const isLlamalendApp = LLAMALEND_APPS.includes(currentApp)
-  console.log({ isLlamalendApp, LLAMALEND_APPS, currentApp })
   const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId, currentApp }, isLlamalendApp)
   const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
   return isLlamalendApp ? llamalendStats : currentApp === 'dex' ? dexStats : []
