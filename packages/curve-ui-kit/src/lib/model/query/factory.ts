@@ -1,19 +1,20 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
+import { isEmpty } from '@primitives/objects.utils'
 import {
-  QueryFunctionContext,
-  queryOptions,
-  useQuery,
-  keepPreviousData,
   type DefaultError,
   type FetchQueryOptions,
+  keepPreviousData,
+  QueryFunctionContext,
   type QueryKey,
+  queryOptions,
+  useQuery,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
-import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
@@ -114,7 +115,7 @@ export function queryFactory<
       },
       enabled:
         enabled &&
-        checkValidity(validationSuite, params) && // todo: only validate fields that are actually in the query key
+        isEmpty(validate(validationSuite, params)) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
@@ -138,7 +139,10 @@ export function queryFactory<
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
-    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    useQuery: (params: TParams, condition?: boolean) => {
+      const result = useQuery(getQueryOptions(params, condition))
+      return Object.assign(result, { validation: validate(validationSuite, params) })
+    },
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   } as const
 }

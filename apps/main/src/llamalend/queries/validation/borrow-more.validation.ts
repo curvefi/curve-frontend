@@ -105,10 +105,12 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     leverageRequired = false,
     debtRequired = false,
     maxDebtRequired = debtRequired,
+    ignoreMaxDebt = !maxDebtRequired,
   }: {
     leverageRequired?: boolean
     debtRequired?: boolean
     maxDebtRequired?: boolean
+    ignoreMaxDebt?: boolean
   } = {},
 ) => {
   chainValidationGroup({ chainId })
@@ -118,7 +120,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserCollateral(userCollateral, { required: false })
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
-  validateMaxDebt(debt, maxDebt, maxDebtRequired)
+  if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, maxDebtRequired)
   validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt })
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, leverageRequired)
