@@ -100,7 +100,7 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
       })
       return { hash: await repay(market, variables) }
     },
-    validationSuite: repayValidationSuite({ leverageRequired: false }),
+    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
     ...props,

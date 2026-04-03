@@ -7,6 +7,7 @@ import {
   validateLeverageSupported,
   validateMaxBorrowed,
   validateMaxCollateral,
+  validateMaxStateCollateral,
   validateRoute,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
@@ -82,7 +83,11 @@ const repayValidationGroup = (
     maxCollateral,
     maxBorrowed,
   }: FieldsOf<RepayFormData>,
-  { leverageRequired, validateMax }: { leverageRequired: boolean; validateMax: boolean },
+  {
+    leverageRequired,
+    validateMax,
+    maxRequired = validateMax,
+  }: { leverageRequired: boolean; validateMax: boolean; maxRequired?: boolean },
 ) => {
   validateRepayCollateralField('userCollateral', userCollateral)
   validateRepayCollateralField('stateCollateral', stateCollateral)
@@ -94,32 +99,22 @@ const repayValidationGroup = (
   validateIsFull(isFull)
 
   skipWhen(!validateMax, () => {
-    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed })
-    validateMaxCollateral(userCollateral, maxCollateral)
-    validateMaxStateCollateral(stateCollateral, maxStateCollateral)
+    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed }, maxRequired)
+    validateMaxCollateral(userCollateral, maxCollateral, maxRequired)
+    validateMaxStateCollateral(stateCollateral, maxStateCollateral, maxRequired)
   })
 }
 
 export const repayValidationSuite = ({
   leverageRequired,
-  validateMax = true,
+  validateMax,
 }: {
   leverageRequired: boolean
-  validateMax?: boolean
+  validateMax: boolean
 }) =>
   createValidationSuite(({ chainId, marketId, userAddress, ...params }: RepayParams) => {
     userMarketValidationSuite({ chainId, marketId, userAddress })
     repayValidationGroup(marketId, params, { leverageRequired, validateMax })
-  })
-
-const validateMaxStateCollateral = (
-  stateCollateral: Decimal | null | undefined,
-  maxStateCollateral: Decimal | null | undefined,
-) =>
-  skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
-    test('maxStateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
-      enforce(stateCollateral).lte(maxStateCollateral)
-    })
   })
 
 export const repayFormValidationSuite = (market: LlamaMarketTemplate | undefined) =>

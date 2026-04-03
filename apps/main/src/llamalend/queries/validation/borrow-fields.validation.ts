@@ -108,7 +108,13 @@ export const validateMaxBorrowed = (
     label: string
     maxBorrowed: Decimal | undefined | null
   },
+  required: boolean,
 ) => {
+  skipWhen(!required || !userBorrowed, () => {
+    test('maxBorrowed', 'Maximum borrow must be calculated before it can be validated', () => {
+      enforce(maxBorrowed).isDecimal()
+    })
+  })
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
     test('userBorrowed', `The maximum ${label} is ${maxBorrowed}`, () => {
       enforce(userBorrowed).lessThanOrEquals(maxBorrowed)
@@ -119,10 +125,33 @@ export const validateMaxBorrowed = (
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
+  required: boolean,
 ) => {
-  skipWhen(userCollateral == null || maxCollateral == null, () => {
+  skipWhen(!required || !userCollateral, () => {
+    test('maxCollateral', 'Maximum collateral must be calculated before collateral can be validated', () => {
+      enforce(maxCollateral).isDecimal()
+    })
+  })
+  skipWhen(!userCollateral || !maxCollateral, () => {
     test('maxCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
       enforce(userCollateral).lessThanOrEquals(maxCollateral)
+    })
+  })
+}
+
+export const validateMaxStateCollateral = (
+  stateCollateral: Decimal | null | undefined,
+  maxStateCollateral: Decimal | null | undefined,
+  required: boolean,
+) => {
+  skipWhen(!required || !stateCollateral, () => {
+    test('maxStateCollateral', 'Maximum state collateral must be calculated before collateral can be validated', () => {
+      enforce(maxStateCollateral).isDecimal()
+    })
+  })
+  skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
+    test('maxStateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
+      enforce(stateCollateral).lte(maxStateCollateral)
     })
   })
 }

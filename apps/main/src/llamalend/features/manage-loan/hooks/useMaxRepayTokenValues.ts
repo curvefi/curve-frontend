@@ -5,13 +5,12 @@ import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expect
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
 import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 
-export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
+export function useMaxRepayTokenValues(
   {
     collateralToken,
     borrowToken,

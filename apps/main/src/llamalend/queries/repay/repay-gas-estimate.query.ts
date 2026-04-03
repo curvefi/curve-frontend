@@ -71,7 +71,7 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
   dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
@@ -128,7 +128,7 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
   dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
