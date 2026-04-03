@@ -5,10 +5,10 @@ import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/M
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, AverageCategory } from '@ui-kit/utils'
 import { RateTooltipProps } from './RateCell'
 
-const RATE_CATEGORY = 'llamalend.marketList.rate'
+const RATE_CATEGORY: AverageCategory = 'llamalend.marketList.rate'
 
 export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
   const [open, onOpen, onClose] = useSwitch(false)

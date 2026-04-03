@@ -41,10 +41,19 @@ export function calculateAverageRates<
   return result
 }
 
+type AverageType = {
+  /** Number of days included in the average window. */
+  window: number
+  /** Label for the period of the the averaging range. */
+  period: string
+  /** Adjective label for the averaging range. */
+  adjective: string
+}
+
 const { week, month } = {
-  week: { value: Weekly, aggregate: 'day', period: `${Weekly}D`, adjective: 'weekly' },
-  month: { value: Monthly, aggregate: 'day', period: `${Monthly}D`, adjective: 'monthly' },
-} satisfies Record<string, { value: number; aggregate: 'day' | 'week'; period: string; adjective: string }>
+  week: { window: Weekly, period: `${Weekly}D`, adjective: 'weekly' },
+  month: { window: Monthly, period: `${Monthly}D`, adjective: 'monthly' },
+} satisfies Record<string, AverageType>
 
 export const AVERAGES_TYPES = {
   week,

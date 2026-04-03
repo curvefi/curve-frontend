@@ -36,11 +36,10 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   const isLend = marketType == LlamaMarketType.Lend
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
-  const { value: rateWindow, aggregate: rateAggregate } = AVERAGE_CATEGORIES[category]
+  const { window: rateWindow } = AVERAGE_CATEGORIES[category]
   const params = {
     blockchainId: chain,
     contractAddress: controllerAddress,
-    aggregate: rateAggregate,
     limit: rateWindow,
   }
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)

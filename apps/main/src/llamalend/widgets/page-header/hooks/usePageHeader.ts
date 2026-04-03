@@ -28,6 +28,11 @@ export type AvailableLiquidity = {
   loading: boolean
 }
 
+const BORROW_CATEGORY: AverageCategory = 'llamalend.market.borrowRate'
+const SUPPLY_CATEGORY: AverageCategory = 'llamalend.market.supplyRate'
+
+const { window: BORROW_WINDOW } = AVERAGE_CATEGORIES[BORROW_CATEGORY]
+
 function buildSupplyRate({
   supplyApy,
   rebasingYieldApy,
@@ -49,7 +54,7 @@ function buildSupplyRate({
   loading: boolean
   category: AverageCategory
 }): SupplyRate {
-  const { value: daysBack } = AVERAGE_CATEGORIES[category]
+  const { window: daysBack } = AVERAGE_CATEGORIES[category]
   const supplyMetrics = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(supplyApy),
     rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
@@ -70,7 +75,7 @@ function buildSupplyRate({
       marketOnChainRewards?.rewardsApr && blockchainId
         ? marketOnChainRewards.rewardsApr.map((reward) => ({
             title: reward.symbol,
-            percentage: aprToApy(reward.apy) ?? 0,
+            percentage: aprToApy(reward.apy) as number,
             blockchainId,
             address: reward.tokenAddress,
           }))
@@ -79,11 +84,6 @@ function buildSupplyRate({
     loading,
   }
 }
-
-const BORROW_CATEGORY: AverageCategory = 'llamalend.market.borrowRate'
-const SUPPLY_CATEGORY: AverageCategory = 'llamalend.market.supplyRate'
-
-const { value: BORROW_LIMIT } = AVERAGE_CATEGORIES[BORROW_CATEGORY]
 
 export const usePageHeader = ({
   chainId,
@@ -106,7 +106,7 @@ export const usePageHeader = ({
     market ?? undefined,
     blockchainId,
     Boolean(blockchainId && market),
-    { kind: 'limit', limit: isLendMarket ? BORROW_LIMIT : AVERAGE_CATEGORIES[SUPPLY_CATEGORY].value },
+    { kind: 'limit', limit: isLendMarket ? BORROW_WINDOW : AVERAGE_CATEGORIES[SUPPLY_CATEGORY].window },
   )
 
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
@@ -133,7 +133,7 @@ export const usePageHeader = ({
     snapshots,
     getBorrowRate: getSnapshotBorrowApr,
     getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-    daysBack: BORROW_LIMIT,
+    daysBack: BORROW_WINDOW,
   })
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),

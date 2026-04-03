@@ -17,7 +17,7 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 type UseSupplyPositionDetailsProps = {
   chainId: ChainId
@@ -26,7 +26,7 @@ type UseSupplyPositionDetailsProps = {
   userAddress: Address | undefined
 }
 
-const RATE_CATEGORY = 'llamalend.position.supplyRate'
+const RATE_CATEGORY: AverageCategory = 'llamalend.position.supplyRate'
 
 export const useSupplyPositionDetails = ({
   chainId,
@@ -36,7 +36,7 @@ export const useSupplyPositionDetails = ({
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
-  const { value: rateWindow, aggregate: rateAggregate } = AVERAGE_CATEGORIES[RATE_CATEGORY]
+  const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
@@ -66,7 +66,6 @@ export const useSupplyPositionDetails = ({
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
     contractAddress: market?.addresses?.controller as Address,
-    aggregate: rateAggregate,
     limit: rateWindow,
   })
 
@@ -98,7 +97,7 @@ export const useSupplyPositionDetails = ({
       extraIncentives: onChainRewards?.rewardsApr
         ? onChainRewards.rewardsApr.map((r) => ({
             title: r.symbol,
-            percentage: aprToApy(r.apy) ?? 0,
+            percentage: aprToApy(r.apy) as number,
             blockchainId,
             address: r.tokenAddress,
           }))

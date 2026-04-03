@@ -25,7 +25,6 @@ type RewardsTooltipItemsProps = {
   extraRewards: CampaignPoolRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'loan' | 'supply'>
   extraIncentives: ExtraIncentiveItem[]
-  showZeroValue?: boolean
 }
 
 export const RewardsTooltipItems = ({
@@ -33,10 +32,9 @@ export const RewardsTooltipItems = ({
   extraRewards,
   extraIncentives,
   tooltipType,
-  showZeroValue = false,
 }: RewardsTooltipItemsProps) => {
   const totalExtraPercentage =
-    extraIncentives.length > 0 || (showZeroValue && extraRewards.length > 0)
+    extraIncentives.length > 0
       ? formatPercent(extraIncentives.reduce((sum, item) => sum + (item.percentage || 0), 0))
       : undefined
 

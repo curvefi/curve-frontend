@@ -14,7 +14,6 @@ const rateType = MarketRateType.Supply
 const averageCategory = 'llamalend.marketList.rate'
 
 const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
-  const { period } = AVERAGE_CATEGORIES[averageCategory]
   const { minBoostedAprAverage, maxBoostedAprAverage, averageRate, isLoading } = useSnapshots(
     market,
     { type: rateType, category: averageCategory },
@@ -34,11 +33,11 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
     <MarketSupplyRateTooltipContent
       supplyApy={lendApy}
       averageSupplyApy={averageRate}
-      periodLabel={period}
+      periodLabel={AVERAGE_CATEGORIES[averageCategory].period}
       extraRewards={poolRewards}
       extraIncentives={rates.incentives.map((incentive) => ({
         ...incentive,
-        percentage: aprToApy(incentive.percentage) ?? 0,
+        percentage: aprToApy(incentive.percentage) as number,
       }))}
       minBoostApy={aprToApy(lendCrvAprUnboosted)}
       maxBoostApy={aprToApy(lendCrvAprBoosted)}

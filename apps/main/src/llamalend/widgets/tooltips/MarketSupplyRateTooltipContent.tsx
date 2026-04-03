@@ -77,7 +77,6 @@ export const MarketSupplyRateTooltipContent = ({
               tooltipType={'supply'}
               extraRewards={extraRewards}
               extraIncentives={extraIncentivesFormatted}
-              showZeroValue
             />
           </TooltipItems>
         )}

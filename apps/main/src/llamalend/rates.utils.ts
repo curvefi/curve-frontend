@@ -1,6 +1,4 @@
-import { BigNumber } from 'bignumber.js'
 import { sumBy } from 'lodash'
-import { Decimal } from '@primitives/decimal.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { AVERAGE_CATEGORIES, decimal } from '@ui-kit/utils'
@@ -17,26 +15,20 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
 const DAYS_PER_YEAR = 365
 
 /**
- * Converts an APR (Annual Percentage Rate) into APY (Annual Percentage Yield) using periodic compounding based on a given number
- * of days per compounding period. The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
- * Notes:
- * - Returns null if APR is null or undefined.
- * - Uses the configured category's day window as the compounding period.
+ * Converts an APR into APY using periodic compounding based on a given number of days per compounding period.
+ * The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
  */
 export const aprToApy = (
-  apr: number | null | undefined,
-  compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].value,
+  aprPercentage: number | null | undefined,
+  compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].window,
 ): number | null => {
-  if (apr == null) return null
+  if (aprPercentage == null) return null
 
   const periods = DAYS_PER_YEAR / compoundingDays
-  const compoundedRate = 1 + apr / 100 / periods
+  const compoundedRate = 1 + aprPercentage / 100 / periods
 
   return (Math.pow(compoundedRate, periods) - 1) * 100
 }
-
-export const computeDecimalTotalRate = (rate?: Decimal, rebasingYield?: number | null) =>
-  rate && decimal(new BigNumber(rate).minus(rebasingYield ?? 0))
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 
@@ -84,7 +76,7 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
 }
 
 /** Sum a base rate with optional additional components, returning null if the base is null */
-export const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
+const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
   base == null ? null : components.reduce<number>((sum, c) => sum + (c ?? 0), base)
 
 export const toNumberOrNull = (value: number | string | null | undefined) => (value == null ? null : Number(value))
