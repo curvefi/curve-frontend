@@ -19,10 +19,10 @@ import { Amount } from '../../utils'
 
 /**
  * Format the precision of the balanced value based on the USD price.
- * The amount of decimals is determined by the USD price, so it's accurate to around $1.
+ * The decimals are determined by the USD price, so the result is accurate to around $0.1.
  */
 function formatPrecision(balancedValue: BigNumber, usdPrice: number) {
-  const decimals = Math.ceil(Math.log10(usdPrice))
+  const decimals = Math.max(0, Math.ceil(Math.log10(usdPrice) + 1))
   return balancedValue.toFormat(decimals, BigNumber.ROUND_HALF_DOWN, { groupSeparator: '', decimalSeparator: '.' })
 }
 
