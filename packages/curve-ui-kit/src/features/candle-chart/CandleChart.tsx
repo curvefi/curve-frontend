@@ -2,7 +2,7 @@ import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWh
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
-import { styled } from 'styled-components'
+import { Box } from '@mui/material'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
@@ -806,11 +806,7 @@ export const CandleChart = ({
     }
   }, [wrapperRef, isUnmounting])
 
-  return <Container ref={chartContainerRef} />
+  return (
+    <Box sx={{ position: 'absolute', width: '100%', fontVariantNumeric: 'tabular-nums' }} ref={chartContainerRef} />
+  )
 }
-
-const Container = styled.div`
-  position: absolute;
-  width: 100%;
-  font-variant-numeric: tabular-nums;
-`

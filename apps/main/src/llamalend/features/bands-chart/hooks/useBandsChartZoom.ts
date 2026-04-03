@@ -13,6 +13,8 @@ type Params = {
   derived: DerivedChartData
 }
 
+const CHART_PADDING_MULTIPLIER = 1.1
+
 export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Params): EChartsOption =>
   useMemo(() => {
     if (!priceRange) return option
@@ -29,7 +31,7 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
         d.p_up >= yMin && d.p_down <= yMax ? Math.max(max, derived.marketData[i] + derived.userData[i]) : max,
       0,
     )
-    const xMax = visibleMax > 0 ? visibleMax : undefined
+    const xMax = visibleMax > 0 ? visibleMax * CHART_PADDING_MULTIPLIER : undefined
 
     // ECharts won't render a mark line whose endpoint coord falls outside the axis domain.
     // Clamp the end coord x to xMax so lines remain visible after the axis is narrowed.

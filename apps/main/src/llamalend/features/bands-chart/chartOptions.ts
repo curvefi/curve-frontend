@@ -121,7 +121,8 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (!chartData.length) return {}
 
-  const gridPadding = { left: 0, top: 0, right: 4, bottom: 8 }
+  // bottom padding matches the lightweight-charts time scale spacing used by the adjacent candle chart
+  const gridPadding = { left: 0, top: 0, right: 4, bottom: 7 }
 
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)
@@ -180,9 +181,10 @@ export const getChartOptions = (
         color: palette.scaleLabelsColor,
         hideOverlap: true,
         overflow: 'break',
-        showMinLabel: true,
+        showMinLabel: false,
         showMaxLabel: false,
-        margin: 8,
+        // label margin matches the lightweight-charts time scale margin used by the adjacent candle chart
+        margin: 10,
         formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
@@ -192,6 +194,7 @@ export const getChartOptions = (
           width: 0.5,
         },
       },
+      splitNumber: 3,
     },
     yAxis: {
       position: 'right',
