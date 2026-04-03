@@ -14,6 +14,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { useUserMarketStats } from '../../queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
@@ -24,6 +25,7 @@ import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
 import { LlamaMarketColumnId } from './columns'
 
 const { Spacing } = SizesAndSpaces
+const { period } = AVERAGE_CATEGORIES['llamalend.marketList.rate']
 
 const ratesConfig: Record<
   MarketRateType,
@@ -143,7 +145,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         <Grid size={12} data-testid="llama-market-graph">
           <Stack direction="column" alignItems="center">
             <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
-              {t`7D Rate Chart`}
+              {t`${period} Rate Chart`}
             </Typography>
 
             <LineGraphCell market={market} type={MarketRateType.Borrow} graphSize={graphSize} />

@@ -20,7 +20,7 @@ import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 export type AvailableLiquidity = {
   value: number | null | undefined
@@ -36,8 +36,7 @@ function buildSupplyRate({
   campaigns,
   blockchainId,
   loading,
-  daysBack,
-  period,
+  category,
 }: {
   supplyApy?: number | string | null
   rebasingYieldApy?: number | string | null
@@ -48,9 +47,9 @@ function buildSupplyRate({
   campaigns: CampaignPoolRewards[]
   blockchainId: Chain | undefined
   loading: boolean
-  daysBack: number
-  period: string
+  category: AverageCategory
 }): SupplyRate {
+  const { value: daysBack } = AVERAGE_CATEGORIES[category]
   const supplyMetrics = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(supplyApy),
     rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
@@ -66,7 +65,7 @@ function buildSupplyRate({
   return {
     ...supplyMetrics,
     ...supplyAverageMetrics,
-    averageRateLabel: period,
+    averageCategory: category,
     extraIncentives:
       marketOnChainRewards?.rewardsApr && blockchainId
         ? marketOnChainRewards.rewardsApr.map((reward) => ({
@@ -80,6 +79,11 @@ function buildSupplyRate({
     loading,
   }
 }
+
+const BORROW_CATEGORY = 'llamalend.borrowRate'
+const SUPPLY_CATEGORY = 'llamalend.supplyRate'
+
+const { value: BORROW_LIMIT } = AVERAGE_CATEGORIES[BORROW_CATEGORY]
 
 export const usePageHeader = ({
   chainId,
@@ -97,14 +101,12 @@ export const usePageHeader = ({
   const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined
   const controllerAddress = (isLendMarket ? market.addresses.controller : market?.controller) as Address | undefined
   const marketType = isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
-  const { value: borrowLimit, period: borrowPeriod } = AVERAGE_CATEGORIES['llamalend.borrowRate']
-  const { value: supplyLimit, period: supplyPeriod } = AVERAGE_CATEGORIES['llamalend.supplyRate']
 
   const { data: snapshots, isLoading: isSnapshotsLoading } = useLlamaSnapshot(
     market ?? undefined,
     blockchainId,
     Boolean(blockchainId && market),
-    { kind: 'limit', limit: isLendMarket ? borrowLimit : supplyLimit },
+    { kind: 'limit', limit: isLendMarket ? BORROW_LIMIT : AVERAGE_CATEGORIES[SUPPLY_CATEGORY].value },
   )
 
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
@@ -131,12 +133,12 @@ export const usePageHeader = ({
     snapshots,
     getBorrowRate: getSnapshotBorrowApr,
     getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-    daysBack: borrowLimit,
+    daysBack: BORROW_LIMIT,
   })
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),
     averageRate: metrics.averageRate,
-    averageRateLabel: borrowPeriod,
+    averageCategory: BORROW_CATEGORY,
     rebasingYield: metrics.rebasingYield,
     averageRebasingYield: metrics.averageRebasingYield,
     totalBorrowRate: metrics.totalRate,
@@ -155,8 +157,7 @@ export const usePageHeader = ({
         campaigns: supplyCampaigns,
         blockchainId,
         loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
-        daysBack: supplyLimit,
-        period: supplyPeriod,
+        category: SUPPLY_CATEGORY,
       })
     : undefined
 

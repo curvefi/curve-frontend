@@ -5,7 +5,7 @@ import { CardHeader, Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, formatNumber } from '@ui-kit/utils'
 import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -43,7 +43,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
     totalAverageMaxBoost,
     totalAverageMinBoost,
     supplyApy,
-    averageRateLabel,
+    averageCategory,
     extraRewards,
     extraIncentives,
     supplyApyCrvMinBoost,
@@ -54,6 +54,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
   const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount } = supplyAsset
   const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
   const { value: boostValue, loading: boostLoading } = boost
+  const { period: averageRatePeriod } = AVERAGE_CATEGORIES[averageCategory]
 
   return (
     <Box>
@@ -86,7 +87,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyApy}
-                periodLabel={averageRateLabel ?? ''}
+                periodLabel={averageRatePeriod}
                 extraRewards={extraRewards ?? []}
                 extraIncentives={extraIncentives ?? []}
                 minBoostApy={supplyApyCrvMinBoost}

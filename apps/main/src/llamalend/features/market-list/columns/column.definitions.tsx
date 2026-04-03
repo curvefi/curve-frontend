@@ -4,6 +4,7 @@ import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
   BoostCell,
@@ -30,6 +31,7 @@ import {
 import { LlamaMarketColumnId } from './columns.enum'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
+const { period } = AVERAGE_CATEGORIES['llamalend.marketList.rate']
 
 const headers = {
   [LlamaMarketColumnId.Assets]: t`Collateral • Borrow`,
@@ -43,7 +45,7 @@ const headers = {
   [LlamaMarketColumnId.BorrowRate]: t`Borrow APR`,
   [LlamaMarketColumnId.NetBorrowRate]: t`Net borrow APR`,
   [LlamaMarketColumnId.LendRate]: t`Supply Yield`,
-  [LlamaMarketColumnId.BorrowChart]: t`7D borrow APR`,
+  [LlamaMarketColumnId.BorrowChart]: t`${period} borrow APR`,
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,

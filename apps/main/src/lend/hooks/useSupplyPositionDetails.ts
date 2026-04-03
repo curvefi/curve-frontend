@@ -26,6 +26,8 @@ type UseSupplyPositionDetailsProps = {
   userAddress: Address | undefined
 }
 
+const RATE_CATEGORY = 'llamalend.supplyRateTooltip'
+
 export const useSupplyPositionDetails = ({
   chainId,
   market,
@@ -34,11 +36,7 @@ export const useSupplyPositionDetails = ({
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
-  const {
-    value: rateWindow,
-    aggregate: rateAggregate,
-    period: ratePeriod,
-  } = AVERAGE_CATEGORIES['llamalend.supplyRateTooltip']
+  const { value: rateWindow, aggregate: rateAggregate } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
@@ -96,7 +94,7 @@ export const useSupplyPositionDetails = ({
     userSupplyRate: {
       ...supplyMetrics,
       ...supplyAverageMetrics,
-      averageRateLabel: ratePeriod,
+      averageCategory: RATE_CATEGORY,
       extraIncentives: onChainRewards?.rewardsApr
         ? onChainRewards.rewardsApr.map((r) => ({
             title: r.symbol,

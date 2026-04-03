@@ -8,6 +8,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import type { AvailableLiquidity } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
@@ -27,6 +28,7 @@ export const MetricsRow = ({
 }) => {
   const isMobile = useIsMobile()
   const metricAlignment = isMobile ? 'start' : 'end'
+  const supplyRatePeriod = supplyRate ? AVERAGE_CATEGORIES[supplyRate.averageCategory].period : null
 
   return (
     <Stack
@@ -54,7 +56,7 @@ export const MetricsRow = ({
             supplyRate.totalAverageMinBoost != null
               ? {
                   value: supplyRate.totalAverageMinBoost,
-                  unit: { symbol: `% ${supplyRate.averageRateLabel} Avg`, position: 'suffix' },
+                  unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
                 }
               : undefined
           }
@@ -71,7 +73,7 @@ export const MetricsRow = ({
                 totalAverageMaxBoostApy={supplyRate.totalAverageMaxBoost}
                 rebasingYieldApy={supplyRate.rebasingYield}
                 isLoading={supplyRate.loading}
-                periodLabel={supplyRate.averageRateLabel}
+                periodLabel={supplyRatePeriod as string}
                 extraRewards={supplyRate.extraRewards ?? []}
                 extraIncentives={supplyRate.extraIncentives ?? []}
               />

@@ -21,7 +21,6 @@ type UseSnapshotsResult<T> = {
   minBoostedAprAverage: number | null
   maxBoostedAprAverage: number | null
   error: unknown
-  period: string
 }
 
 const RateKeys = {
@@ -37,7 +36,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   const isLend = marketType == LlamaMarketType.Lend
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
-  const { value: rateWindow, aggregate: rateAggregate, period } = AVERAGE_CATEGORIES[category]
+  const { value: rateWindow, aggregate: rateAggregate } = AVERAGE_CATEGORIES[category]
   const params = {
     blockchainId: chain,
     contractAddress: controllerAddress,
@@ -103,6 +102,5 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     minBoostedAprAverage: supplyRateMetrics?.totalAverageMinBoost ?? null,
     maxBoostedAprAverage: supplyRateMetrics?.totalAverageMaxBoost ?? null,
     error,
-    period,
   } as UseSnapshotsResult<T>
 }

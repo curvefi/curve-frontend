@@ -6,15 +6,18 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { RateTooltipProps } from './RateCell'
 
 const rateType = MarketRateType.Supply
+const averageCategory = 'llamalend.marketList.rate'
 
 const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
-  const { period, minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(
+  const { period } = AVERAGE_CATEGORIES[averageCategory]
+  const { minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(
     market,
-    { type: rateType, category: 'llamalend.marketList.rate' },
+    { type: rateType, category: averageCategory },
     isOpen, // important: only call this when the tooltip is open
   ) // todo: `error` is ignored
   const {
