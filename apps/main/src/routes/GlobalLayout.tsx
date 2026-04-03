@@ -9,7 +9,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
+import { APP_LINK, AppMenuOption, type AppName, LlamalendApps } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -17,14 +17,11 @@ import { Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
-const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', 'llamalend']
-
-const useAppStats = (currentApp: AppName, network: NetworkDef) => {
-  const isLlamalendApp = LLAMALEND_APPS.includes(currentApp)
-  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId, currentApp }, isLlamalendApp)
-  const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
-  return isLlamalendApp ? llamalendStats : currentApp === 'dex' ? dexStats : []
-}
+const useAppStats = (currentApp: AppName, network: NetworkDef) =>
+  [
+    useLlamalendAppStats({ chainId: network?.chainId, currentApp }, LlamalendApps.includes(currentApp)),
+    useDexAppStats(network, currentApp === 'dex'),
+  ].flat()
 
 const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,

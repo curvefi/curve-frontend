@@ -9,7 +9,7 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { LEND_ROUTES, type AppName } from '@ui-kit/shared/routes'
+import { type AppName, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain, CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
@@ -53,41 +53,36 @@ export function useLlamalendAppStats(
 ) {
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
-  const params = useMatchRoute<{ page: string }>({
-    to: `$app/$network/$page`,
-  })
+  const { page } = useMatchRoute<{ page: string }>({ to: `$app/$network/$page` }) || {}
 
-  const shouldShowStats = isDesktop
-    ? // hide header stats on lend/crvusd market pages only
-      currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
-    : true
-  const statsEnabled = enabled && shouldShowStats
+  enabled &&= // hide header stats on lend/crvusd market pages only on desktop
+    !isDesktop || currentApp === LLAMALEND_APP || `/${page}` !== LEND_ROUTES.PAGE_MARKETS
 
-  const { data: marketData } = useLlamaMarkets(address, statsEnabled)
+  const { data: marketData } = useLlamaMarkets(address, enabled)
   const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
 
-  const { data: dailyVolume } = useAppStatsDailyVolume({}, statsEnabled && !!chainId)
-  const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, statsEnabled)
-  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, statsEnabled)
+  const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
+  const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)
+  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, enabled)
 
-  if (!statsEnabled) return []
-
-  return [
-    {
-      label: 'TVL',
-      value: (tvl && formatUsd(tvl)) || '-',
-    },
-    {
-      label: t`Daily volume`,
-      value: (dailyVolume && formatUsd(dailyVolume)) || '-',
-    },
-    {
-      label: t`Total crvUSD Supply`,
-      value: (crvusdTotalSupply && formatUsd(crvusdTotalSupply)) || '-',
-    },
-    {
-      label: 'crvUSD',
-      value: (crvusdPrice && formatNumber(crvusdPrice, { unit: 'dollar', decimals: 5, abbreviate: false })) || '-',
-    },
-  ]
+  return enabled
+    ? [
+        {
+          label: 'TVL',
+          value: (tvl && formatUsd(tvl)) || '-',
+        },
+        {
+          label: t`Daily volume`,
+          value: (dailyVolume && formatUsd(dailyVolume)) || '-',
+        },
+        {
+          label: t`Total crvUSD Supply`,
+          value: (crvusdTotalSupply && formatUsd(crvusdTotalSupply)) || '-',
+        },
+        {
+          label: 'crvUSD',
+          value: (crvusdPrice && formatNumber(crvusdPrice, { unit: 'dollar', decimals: 5, abbreviate: false })) || '-',
+        },
+      ]
+    : []
 }

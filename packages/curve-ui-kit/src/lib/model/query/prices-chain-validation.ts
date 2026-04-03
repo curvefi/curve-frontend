@@ -13,6 +13,6 @@ export const pricesApiChainNameValidationGroup = ({ blockchainId }: ChainNamePar
     })
   })
 
-export const pricesApiValidationSuite = createValidationSuite((params: ChainNameParams) => {
+export const pricesApiChainValidationSuite = createValidationSuite((params: ChainNameParams) => {
   pricesApiChainNameValidationGroup(params)
 })

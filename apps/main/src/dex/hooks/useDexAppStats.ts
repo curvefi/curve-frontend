@@ -5,30 +5,30 @@ import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
 import { FORMAT_OPTIONS, formatNumber, type NetworkDef } from '@ui/utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { useNetworkByChain } from '../entities/networks'
 
-export const useDexAppStats = (network: NetworkDef | undefined) => {
-  const { curveApi = {} } = useCurve()
-  const { data: tvlTotal } = useAppStatsTvl(curveApi)
-  const { data: volumeTotal } = useAppStatsVolume(curveApi)
-  return [
-    {
-      label: t`Total Deposits`,
-      value: formatNumber(tvlTotal, { currency: 'USD', notation: 'compact' }),
-    },
-    ...(network?.isLite // only show total deposits on curve-lite networks
-      ? []
-      : [
-          {
-            label: t`Daily Volume`,
-            value: formatNumber(volumeTotal?.totalVolume, { currency: 'USD', notation: 'compact' }),
-          },
-          { label: t`Crypto Volume Share`, value: formatNumber(volumeTotal?.cryptoShare, FORMAT_OPTIONS.PERCENT) },
-        ]),
-  ]
+export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean) => {
+  const { data: tvlTotal } = useAppStatsTvl({ chainId }, enabled)
+  const { data: volumeTotal } = useAppStatsVolume({ chainId }, enabled)
+  return enabled
+    ? [
+        {
+          label: t`Total Deposits`,
+          value: formatNumber(tvlTotal, { currency: 'USD', notation: 'compact' }),
+        },
+        ...(isLite // only show total deposits on curve-lite networks
+          ? []
+          : [
+              {
+                label: t`Daily Volume`,
+                value: formatNumber(volumeTotal?.totalVolume, { currency: 'USD', notation: 'compact' }),
+              },
+              { label: t`Crypto Volume Share`, value: formatNumber(volumeTotal?.cryptoShare, FORMAT_OPTIONS.PERCENT) },
+            ]),
+      ]
+    : []
 }
 
 const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
