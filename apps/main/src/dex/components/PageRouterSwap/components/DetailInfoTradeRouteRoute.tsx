@@ -85,7 +85,7 @@ const RouteTokenNames = styled.span`
 
 const RouteName = styled(Link)`
   display: inline-block;
-  max-width: 180px;
+  max-width: 110px;
   color: inherit;
   overflow: hidden;
   text-overflow: ellipsis;
