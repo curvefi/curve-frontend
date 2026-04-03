@@ -88,28 +88,31 @@ const rowHeight: Record<ActionInfoSize, string> = {
   medium: ButtonSize.xs,
 }
 
-type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor'>
+type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor' | 'testId' | 'value'>
 
 const ValueTypography = ({
   size = DEFAULT_SIZE,
   error,
   valueColor,
   children,
+  testId,
+  value,
 }: ValueDecoratorProps & { children: ReactNode }) => (
-  <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')} component="div">
+  <Typography
+    variant={valueSize[size]}
+    color={error ? 'error' : (valueColor ?? 'textPrimary')}
+    component="div"
+    data-testid={testId}
+    data-value={value}
+  >
     {children}
   </Typography>
 )
+
 /** Renders a value as a typography (same variant and color as the main value) if it's a string, otherwise renders the value directly */
-const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps & { value?: ReactNode }) => (
-  <WithWrapper
-    shouldWrap={typeof value === 'string'}
-    Wrapper={ValueTypography}
-    size={size}
-    error={error}
-    valueColor={valueColor}
-  >
-    {value}
+const ValueDecorator = (props: ValueDecoratorProps) => (
+  <WithWrapper shouldWrap={typeof props.value === 'string'} Wrapper={ValueTypography} {...props}>
+    {props.value}
   </WithWrapper>
 )
 export const ActionInfo = ({
@@ -150,52 +153,74 @@ export const ActionInfo = ({
         color={labelColor ?? 'textSecondary'}
         textAlign="start"
         component="div"
+        whiteSpace="nowrap"
       >
         {label}
       </Typography>
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
-        <Typography
-          variant={prevValueSize[size]}
-          color={prevValueColor ?? 'textTertiary'}
-          data-testid={`${testId}-previous-value`}
-          data-value={`${givenPrevValue}`}
-        >
-          {prevValue}
-        </Typography>
-        {prevValue != null && (
-          <ArrowForwardIcon
-            sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
-          />
-        )}
-
-        <Tooltip title={valueTooltip} placement="top">
-          {/** Additional stack to add some space between left (icon), value and right (icon) */}
-          <Stack
-            direction="row"
-            alignItems={alignItems}
-            gap={Spacing.xxs}
-            data-testid={`${testId}-value`}
-            data-value={`${givenValue}`}
-            className="ActionInfo-value"
-          >
-            <ValueDecorator value={valueLeft} size={size} error={error} valueColor={valueColor} />
-
-            <WithSkeleton
-              component="div"
-              loading={!!loading}
-              {...(Array.isArray(loading)
-                ? { width: loading[0], height: loading[1] }
-                : { width: '2ch', height: '1rem' })}
+        <Stack direction="row" gap={Spacing.xs} flexWrap="wrap" justifyContent="end">
+          <Stack direction="row" gap={Spacing.xs}>
+            <Typography
+              variant={prevValueSize[size]}
+              color={prevValueColor ?? 'textTertiary'}
+              data-testid={`${testId}-previous`}
+              data-value={`${givenPrevValue}`}
+              whiteSpace="nowrap"
             >
-              <ValueTypography size={size} error={error} valueColor={valueColor}>
-                {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
-              </ValueTypography>
-            </WithSkeleton>
+              {prevValue}
+            </Typography>
+            {prevValue != null && (
+              <ArrowForwardIcon
+                sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
+              />
+            )}
 
-            <ValueDecorator value={valueRight} size={size} error={error} valueColor={valueColor} />
+            <Tooltip title={valueTooltip} placement="top">
+              {/** Additional stack to add some space between left (icon), value and right (icon) */}
+              <Stack
+                direction="row"
+                alignItems={alignItems}
+                gap={Spacing.xxs}
+                className="ActionInfo-value"
+                whiteSpace="nowrap"
+              >
+                <ValueDecorator
+                  value={valueLeft}
+                  size={size}
+                  error={error}
+                  valueColor={valueColor}
+                  testId={`${testId}-left`}
+                />
+
+                <WithSkeleton
+                  component="div"
+                  loading={!!loading}
+                  {...(Array.isArray(loading)
+                    ? { width: loading[0], height: loading[1] }
+                    : { width: '2ch', height: '1rem' })}
+                >
+                  <ValueTypography
+                    size={size}
+                    error={error}
+                    valueColor={valueColor}
+                    testId={`${testId}-value`}
+                    value={value}
+                  >
+                    {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
+                  </ValueTypography>
+                </WithSkeleton>
+              </Stack>
+            </Tooltip>
           </Stack>
-        </Tooltip>
+          <ValueDecorator
+            value={valueRight}
+            size={size}
+            error={error}
+            valueColor={valueColor}
+            testId={`${testId}-right`}
+          />
+        </Stack>
 
         {error && <ErrorIconButton error={error} size={buttonSize} />}
         {copyValue && (

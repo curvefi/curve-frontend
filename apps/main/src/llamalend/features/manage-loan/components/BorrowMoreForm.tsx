@@ -49,9 +49,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isDisabled,
     borrowToken,
     collateralToken,
-    isBorrowed,
     borrowError,
-    txHash,
     isApproved,
     formErrors,
     routes,
@@ -177,11 +175,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       </Button>
 
       <FormAlerts
-        isSuccess={isBorrowed}
         error={borrowError}
-        txHash={txHash}
         formErrors={formErrors}
-        network={network}
         handledErrors={notFalsy(
           'userCollateral',
           max.userCollateral.field,
@@ -190,7 +185,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           'debt',
           max.debt.field,
         )}
-        successTitle={t`Borrowed more successfully`}
       />
     </Form>
   )

@@ -34,9 +34,7 @@ export const StakeForm = <ChainId extends IChainId>({
     isDisabled,
     vaultToken,
     borrowToken,
-    isStaked,
     stakeError,
-    txHash,
     formErrors,
     isApproved,
     max,
@@ -68,15 +66,7 @@ export const StakeForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
       </Button>
 
-      <FormAlerts
-        isSuccess={isStaked}
-        error={stakeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['stakeAmount']}
-        successTitle={t`Staked successfully`}
-      />
+      <FormAlerts error={stakeError} formErrors={formErrors} handledErrors={['stakeAmount']} />
     </Form>
   )
 }

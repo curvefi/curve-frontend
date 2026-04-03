@@ -31,7 +31,7 @@ export const LiquidationRangeSlider = ({
             <Typography variant="bodyXsRegular" color="textTertiary">{t`Max LTV`}</Typography>
           </Grid>
           <Grid size={6} sx={{ textAlign: 'right' }}>
-            <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
+            <Typography variant="bodyXsRegular" color="textTertiary">{t`Conservative`}</Typography>
           </Grid>
         </Grid>
       </Grid>

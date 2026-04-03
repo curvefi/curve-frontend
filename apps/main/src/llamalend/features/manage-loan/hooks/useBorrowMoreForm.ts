@@ -108,14 +108,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isBorrowing,
-    isSuccess: isBorrowed,
     error: borrowError,
-    data,
   } = useBorrowMoreMutation({
     network,
     marketId,
     onReset: form.reset,
-    isDirty: form.formState.isDirty,
     userAddress,
   })
 
@@ -132,9 +129,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || isPending || isDebouncing,
     borrowToken,
     collateralToken,
-    isBorrowed,
     borrowError,
-    txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({

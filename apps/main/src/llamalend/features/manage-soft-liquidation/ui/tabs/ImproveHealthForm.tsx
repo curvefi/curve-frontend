@@ -48,9 +48,7 @@ export const ImproveHealthForm = ({
     onSubmit,
     borrowToken,
     collateralToken,
-    isRepaid,
     repayError,
-    txHash,
     isApproved,
     formErrors,
     max: { userBorrowed: maxRepay },
@@ -121,15 +119,7 @@ export const ImproveHealthForm = ({
         <ButtonGetCrvUsd />
       </Stack>
 
-      <FormAlerts
-        isSuccess={isRepaid}
-        error={repayError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={notFalsy('userBorrowed', maxRepay.field)}
-        successTitle={t`Loan repaid`}
-      />
+      <FormAlerts error={repayError} formErrors={formErrors} handledErrors={notFalsy('userBorrowed', maxRepay.field)} />
     </Form>
   )
 }
