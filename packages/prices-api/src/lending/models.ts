@@ -92,11 +92,19 @@ export type UserCollateralEvents = {
   events: UserCollateralEvent[]
 }
 
-export type RateCurvePoint = { utilization: number; borrowApy: number; supplyApy: number }
+export type RateCurvePoint = {
+  utilization: number
+  borrowApy: number
+  supplyApy: number
+  borrowApr: number
+  supplyApr: number
+}
 
 export type RateCurve = {
   rates: RateCurvePoint[]
-  currentUtilization: number
-  currentBorrowApy: number
-  currentSupplyApy: number
+  currentUtilization: number | null
+  currentBorrowApy: number | null
+  currentSupplyApy: number | null
+  currentBorrowApr: number | null
+  currentSupplyApr: number | null
 }
