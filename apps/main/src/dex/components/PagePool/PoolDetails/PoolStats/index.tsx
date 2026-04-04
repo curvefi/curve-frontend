@@ -87,7 +87,7 @@ const GridContainer = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: 25.6875rem 10rem auto auto;
   @media (min-width: 75rem) {
-    grid-template-columns: 1fr 18.75rem;
+    grid-template-columns: 1fr 24rem;
     grid-template-rows: 25.6875rem 10rem 1fr;
   }
 `
