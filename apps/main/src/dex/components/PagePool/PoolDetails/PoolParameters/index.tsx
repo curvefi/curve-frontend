@@ -370,7 +370,7 @@ const GridContainer = styled(Box)`
   grid-template-columns: 1fr;
   min-height: 14.6875rem;
   @media (min-width: 75rem) {
-    grid-template-columns: 1fr 0.7fr;
+    grid-template-columns: 1fr 24rem;
   }
 `
 
