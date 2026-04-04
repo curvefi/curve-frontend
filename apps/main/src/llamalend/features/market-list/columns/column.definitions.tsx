@@ -44,7 +44,7 @@ const headers = {
   [LlamaMarketColumnId.BorrowRate]: t`Borrow APR`,
   [LlamaMarketColumnId.NetBorrowRate]: t`Net borrow APR`,
   [LlamaMarketColumnId.LendRate]: t`Supply Yield`,
-  [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.chartRate'].period} borrow APR`,
+  [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} borrow APR`,
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,

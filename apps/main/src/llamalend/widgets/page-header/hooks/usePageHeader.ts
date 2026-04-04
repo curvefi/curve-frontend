@@ -28,10 +28,9 @@ export type AvailableLiquidity = {
   loading: boolean
 }
 
-const BORROW_CATEGORY: AverageCategory = 'llamalend.market.borrowRate'
-const SUPPLY_CATEGORY: AverageCategory = 'llamalend.market.supplyRate'
+const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
-const { window: BORROW_WINDOW } = AVERAGE_CATEGORIES[BORROW_CATEGORY]
+const { window: BORROW_WINDOW } = AVERAGE_CATEGORIES[RATE_CATEGORY]
 
 function buildSupplyRate({
   supplyApy,
@@ -106,7 +105,7 @@ export const usePageHeader = ({
     market ?? undefined,
     blockchainId,
     Boolean(blockchainId && market),
-    { kind: 'limit', limit: isLendMarket ? BORROW_WINDOW : AVERAGE_CATEGORIES[SUPPLY_CATEGORY].window },
+    { kind: 'limit', limit: isLendMarket ? BORROW_WINDOW : AVERAGE_CATEGORIES[RATE_CATEGORY].window },
   )
 
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
@@ -138,7 +137,7 @@ export const usePageHeader = ({
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),
     averageRate: metrics.averageRate,
-    averageCategory: BORROW_CATEGORY,
+    averageCategory: RATE_CATEGORY,
     rebasingYield: metrics.rebasingYield,
     averageRebasingYield: metrics.averageRebasingYield,
     totalBorrowRate: metrics.totalRate,
@@ -157,7 +156,7 @@ export const usePageHeader = ({
         campaigns: supplyCampaigns,
         blockchainId,
         loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
-        category: SUPPLY_CATEGORY,
+        category: RATE_CATEGORY,
       })
     : undefined
 

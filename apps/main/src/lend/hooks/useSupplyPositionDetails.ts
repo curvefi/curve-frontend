@@ -26,7 +26,7 @@ type UseSupplyPositionDetailsProps = {
   userAddress: Address | undefined
 }
 
-const RATE_CATEGORY: AverageCategory = 'llamalend.position.supplyRate'
+const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
 export const useSupplyPositionDetails = ({
   chainId,

@@ -26,7 +26,7 @@ const lendMarket = {
 const borrowRate: BorrowRate = {
   rate: 2.082,
   averageRate: 2.075,
-  averageCategory: 'llamalend.market.borrowRate',
+  averageCategory: 'llamalend.market.rate',
   rebasingYield: 1.002,
   averageRebasingYield: 1.0018,
   totalBorrowRate: 1.08,
@@ -38,7 +38,7 @@ const borrowRate: BorrowRate = {
 const supplyRate: SupplyRate = {
   supplyApy: 2.032,
   averageLendApy: 2.028,
-  averageCategory: 'llamalend.market.supplyRate',
+  averageCategory: 'llamalend.market.rate',
   supplyApyCrvMinBoost: 2.004,
   supplyApyCrvMaxBoost: 3.012,
   averageApyCrvMinBoost: 2.0035,

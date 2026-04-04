@@ -144,7 +144,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         <Grid size={12} data-testid="llama-market-graph">
           <Stack direction="column" alignItems="center">
             <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
-              {t`${AVERAGE_CATEGORIES['llamalend.marketList.chartRate'].period} Rate Chart`}
+              {t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Rate Chart`}
             </Typography>
 
             <LineGraphCell market={market} type={MarketRateType.Borrow} graphSize={graphSize} />

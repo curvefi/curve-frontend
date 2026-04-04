@@ -45,7 +45,7 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
   const { isIntersecting } = useIntersectionObserver(ref, { freezeOnceVisible: true })
   const { snapshots, snapshotKey, isLoading, rate, error } = useSnapshots(
     market,
-    { type, category: 'llamalend.marketList.chartRate' },
+    { type, category: 'llamalend.marketList.rate' },
     isIntersecting,
   )
   const { design } = useTheme()
