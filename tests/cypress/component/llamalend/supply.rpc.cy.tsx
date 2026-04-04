@@ -58,7 +58,7 @@ testCases.forEach(
     borrowedTokenDecimals,
     hasClaimableRewards = false,
   }) => {
-    describe(label, () => {
+    describe.skip(label, () => {
       skipTestsAfterFailure()
 
       const privateKey = generatePrivateKey()

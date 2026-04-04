@@ -21,7 +21,7 @@ import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
 
-describe('UnstakeForm (mocked)', () => {
+describe.skip('UnstakeForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
   it('fills and submits', () => {

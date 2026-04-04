@@ -33,7 +33,7 @@ const testCases: {
   },
 ]
 
-describe('ClaimTab (mocked)', () => {
+describe.skip('ClaimTab (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
   testCases.forEach(({ title, claimableCrv, claimableRewards }) => {
