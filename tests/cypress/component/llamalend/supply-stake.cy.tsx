@@ -25,7 +25,7 @@ const testCases = [
   { approved: false, title: 'fills, approves, and submits', buttonText: 'Approve & Stake' },
 ]
 
-describe.skip('StakeForm (mocked)', () => {
+describe('StakeForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
   testCases.forEach(({ approved, title, buttonText }) => {
