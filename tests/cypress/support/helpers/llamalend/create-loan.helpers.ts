@@ -80,8 +80,12 @@ export const LOAN_TEST_MARKETS = {
   ],
 } as const
 
-export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
-  oneOf(...LOAN_TEST_MARKETS[type])
+type TestLlamaMarket = (typeof LOAN_TEST_MARKETS)[LlamaMarketType][number]
+
+export const oneLoanTestMarket = (
+  type: LlamaMarketType = oneValueOf(LlamaMarketType),
+  filter?: (market: TestLlamaMarket) => boolean,
+) => oneOf(...(filter ? LOAN_TEST_MARKETS[type].filter(filter) : LOAN_TEST_MARKETS[type]))
 
 /**
  * Check all loan detail values are loaded and valid.
