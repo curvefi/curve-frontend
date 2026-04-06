@@ -148,7 +148,7 @@ export const checkSupplyActionInfoValues = ({
     )
   }
   if (symbol) {
-    cy.get('[data-testid="supply-amount-value"]').contains(symbol)
+    getActionValue('supply-amount', 'right').should('contain', symbol)
   }
 
   if (checkEstimatedTxCost) {

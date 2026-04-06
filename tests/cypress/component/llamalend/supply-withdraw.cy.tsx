@@ -21,7 +21,7 @@ const testCases = [
   { isFull: true, title: 'fills and submits full withdraw', buttonText: 'Withdraw All' },
 ]
 
-describe.skip('WithdrawForm (mocked)', () => {
+describe('WithdrawForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
   testCases.forEach(({ isFull, title, buttonText }) => {
