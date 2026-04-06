@@ -9,7 +9,7 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { type AppName, LEND_ROUTES } from '@ui-kit/shared/routes'
+import { type AppName, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain, CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
@@ -53,10 +53,9 @@ export function useLlamalendAppStats(
 ) {
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
-  const { page } = useMatchRoute<{ page: string }>({ to: `$app/$network/$page` }) || {}
+  const isMarketsPage = !!useMatchRoute({ to: `$app/$network/${LLAMALEND_ROUTES.PAGE_MARKETS}` })
 
-  enabled &&= // hide header stats on lend/crvusd market pages only on desktop
-    !isDesktop || currentApp === LLAMALEND_APP || `/${page}` !== LEND_ROUTES.PAGE_MARKETS
+  enabled &&= !isDesktop || currentApp === LLAMALEND_APP || isMarketsPage // hide header stats on lend/crvusd market pages only on desktop
 
   const { data: marketData } = useLlamaMarkets(address, enabled)
   const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
