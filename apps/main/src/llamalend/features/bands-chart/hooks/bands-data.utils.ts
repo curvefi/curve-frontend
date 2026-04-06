@@ -9,13 +9,13 @@ export const parseFetchedBandsBalances = (
   borrowedUsdRate: number | undefined,
 ): ParsedBandsBalances[] =>
   bandsBalances?.map((band) => {
-    const collateralValueUsd = +band.collateral * (collateralUsdRate ?? 0)
-    const borrowedValueUsd = +band.borrowed * (borrowedUsdRate ?? 0)
+    const collateralValueUsd = collateralUsdRate != null ? +band.collateral * collateralUsdRate : band.collateralUsd
+    const borrowedValueUsd = borrowedUsdRate != null ? +band.borrowed * borrowedUsdRate : +band.borrowed
 
     return {
       ...band,
-      collateralValueUsd: collateralUsdRate ? collateralValueUsd : band.collateralUsd,
-      borrowedValueUsd: borrowedUsdRate ? borrowedValueUsd : band.collateralBorrowedUsd - band.collateralUsd,
+      collateralValueUsd,
+      borrowedValueUsd,
       totalBandValueUsd: collateralValueUsd + borrowedValueUsd,
       isOraclePriceBand: false, // updated in chart processing with oraclePriceBand
     }

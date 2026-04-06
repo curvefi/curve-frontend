@@ -23,7 +23,7 @@ type FetchedBandsBalances = {
 export const sortBands = (bandsBalances: BandsBalances) => ({
   bandsBalancesArr: lodash
     .sortBy(Object.keys(bandsBalances), (k) => +k)
-    .map((k) => ({ ...bandsBalances[Number(k)], band: Number(k) })),
+    .map((k) => ({ ...bandsBalances[+k], band: +k })),
   bandsBalances,
 })
 
@@ -52,11 +52,11 @@ export async function fetchChartBandBalancesData(
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: isLiquidationBand(liquidationBand, +n),
       n,
-      p_up: Number(p_up),
-      p_down: Number(p_down),
-      pUpDownMedian: Number(pUpDownMedian),
+      p_up: +p_up,
+      p_down: +p_down,
+      pUpDownMedian: +pUpDownMedian,
     }
   })
 
-  return results.reverse()
+  return results
 }

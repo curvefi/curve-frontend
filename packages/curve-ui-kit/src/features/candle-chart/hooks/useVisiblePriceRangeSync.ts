@@ -16,7 +16,6 @@ export const useVisiblePriceRangeSync = ({
 }) => {
   const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
   const emitPriceRangeRafRef = useRef<number | null>(null)
-  const emitPriceRangeBurstFramesRef = useRef(0)
   const lastEmittedPriceRangeRef = useRef<{ min: number; max: number } | null>(null)
 
   useEffect(() => {
@@ -44,35 +43,19 @@ export const useVisiblePriceRangeSync = ({
 
   // Batch rapid triggers into requestAnimationFrame and sample multiple frames so post-gesture
   // autoscale settling is captured reliably.
-  const scheduleEmitPriceRangeFrames = useCallback(
-    (frames: number) => {
-      if (!onVisiblePriceRangeChangeRef.current) return
-
-      emitPriceRangeBurstFramesRef.current = Math.max(emitPriceRangeBurstFramesRef.current, frames)
-      if (emitPriceRangeRafRef.current !== null) return
-
-      const run = () => {
-        emitPriceRangeRafRef.current = null
-        emitPriceRangeNow()
-        emitPriceRangeBurstFramesRef.current = Math.max(0, emitPriceRangeBurstFramesRef.current - 1)
-
-        if (emitPriceRangeBurstFramesRef.current > 0) {
-          emitPriceRangeRafRef.current = requestAnimationFrame(run)
-        }
-      }
-
-      emitPriceRangeRafRef.current = requestAnimationFrame(run)
-    },
-    [emitPriceRangeNow],
-  )
-
   const scheduleEmitPriceRange = useCallback(() => {
-    scheduleEmitPriceRangeFrames(3)
-  }, [scheduleEmitPriceRangeFrames])
+    if (!onVisiblePriceRangeChangeRef.current) return
+    if (emitPriceRangeRafRef.current !== null) return // already sampling, skip
 
-  const scheduleEmitPriceRangeGesture = useCallback(() => {
-    scheduleEmitPriceRangeFrames(5)
-  }, [scheduleEmitPriceRangeFrames])
+    const run = (remaining: number) => {
+      emitPriceRangeRafRef.current = null
+      emitPriceRangeNow()
+      if (remaining > 1) {
+        emitPriceRangeRafRef.current = requestAnimationFrame(() => run(remaining - 1))
+      }
+    }
+    emitPriceRangeRafRef.current = requestAnimationFrame(() => run(5))
+  }, [emitPriceRangeNow])
 
   // Emit immediately when a consumer is attached or re-attached.
   useEffect(() => {
@@ -81,13 +64,13 @@ export const useVisiblePriceRangeSync = ({
     scheduleEmitPriceRange()
   }, [onVisiblePriceRangeChange, scheduleEmitPriceRange])
 
+  // Cancel any in-flight animation frame burst on unmount.
   useEffect(
     () => () => {
       if (emitPriceRangeRafRef.current !== null) {
         cancelAnimationFrame(emitPriceRangeRafRef.current)
         emitPriceRangeRafRef.current = null
       }
-      emitPriceRangeBurstFramesRef.current = 0
     },
     [],
   )
@@ -101,27 +84,28 @@ export const useVisiblePriceRangeSync = ({
 
     const handlePointerMove = (event: PointerEvent) => {
       if (event.buttons > 0) {
-        scheduleEmitPriceRangeGesture()
+        scheduleEmitPriceRange()
       }
     }
+    // Listen on window so we catch pointer-up even if the cursor leaves the container.
     const handleWindowPointerUp = () => {
-      scheduleEmitPriceRangeGesture()
+      scheduleEmitPriceRange()
     }
 
     container.addEventListener('pointermove', handlePointerMove)
-    container.addEventListener('wheel', scheduleEmitPriceRangeGesture, { passive: true })
-    container.addEventListener('touchend', scheduleEmitPriceRangeGesture, { passive: true })
+    container.addEventListener('wheel', scheduleEmitPriceRange, { passive: true })
+    container.addEventListener('touchend', scheduleEmitPriceRange, { passive: true })
     window.addEventListener('pointerup', handleWindowPointerUp)
     window.addEventListener('pointercancel', handleWindowPointerUp)
 
     return () => {
       container.removeEventListener('pointermove', handlePointerMove)
-      container.removeEventListener('wheel', scheduleEmitPriceRangeGesture)
-      container.removeEventListener('touchend', scheduleEmitPriceRangeGesture)
+      container.removeEventListener('wheel', scheduleEmitPriceRange)
+      container.removeEventListener('touchend', scheduleEmitPriceRange)
       window.removeEventListener('pointerup', handleWindowPointerUp)
       window.removeEventListener('pointercancel', handleWindowPointerUp)
     }
-  }, [chartContainerRef, onVisiblePriceRangeChange, scheduleEmitPriceRangeGesture])
+  }, [chartContainerRef, onVisiblePriceRangeChange, scheduleEmitPriceRange])
 
   return { scheduleEmitPriceRange }
 }

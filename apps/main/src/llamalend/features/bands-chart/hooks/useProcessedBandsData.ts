@@ -1,3 +1,4 @@
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 
@@ -21,10 +22,8 @@ export const useProcessedBandsData = ({
 
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
-    const hasCollateralRate =
-      typeof collateralUsdRate === 'number' && Number.isFinite(collateralUsdRate) && collateralUsdRate > 0
-    const hasBorrowedRate =
-      typeof borrowedUsdRate === 'number' && Number.isFinite(borrowedUsdRate) && borrowedUsdRate > 0
+    const hasCollateralRate = collateralUsdRate != null
+    const hasBorrowedRate = borrowedUsdRate != null
 
     const getBandValues = (band: FetchedBandsBalances) => {
       const collateralAmount = Number(band.collateral)
@@ -96,5 +95,5 @@ export const useProcessedBandsData = ({
       }
     })
 
-    return Array.from(bandsMap.values()).sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
+    return lodash.orderBy(Array.from(bandsMap.values()), 'pUpDownMedian', 'desc')
   }, [marketBandsBalances, userBandsBalances, oraclePriceBand, collateralUsdRate, borrowedUsdRate])

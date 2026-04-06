@@ -54,13 +54,13 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
       ...option,
       series: patchedSeries,
       yAxis: {
-        ...(option.yAxis as object),
+        ...option.yAxis,
         min: yMin,
         max: yMax,
       },
       ...(xMax !== undefined && {
         xAxis: {
-          ...(option.xAxis as object),
+          ...option.xAxis,
           max: xMax,
         },
       }),
