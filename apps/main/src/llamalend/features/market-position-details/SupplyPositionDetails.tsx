@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import type { SupplyRate } from '@/llamalend/rates.types'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
@@ -71,13 +71,13 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
         <MetricGrid>
           <Metric
             size="medium"
-            label={NET_SUPPLY_RATE_TITLE}
+            label={USER_NET_SUPPLY_RATE_TITLE}
             value={totalUserBoost}
             loading={supplyRateLoading}
             valueOptions={{ unit: 'percentage' }}
             notional={boostValue ? t`your boost ${defaultNumberFormatter(boostValue)}x` : undefined}
             valueTooltip={{
-              title: NET_SUPPLY_RATE_TITLE,
+              title: USER_NET_SUPPLY_RATE_TITLE,
               body: (
                 <MarketSupplyRateTooltipContent
                   supplyApy={supplyApy}
