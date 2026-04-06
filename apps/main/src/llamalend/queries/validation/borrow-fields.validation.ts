@@ -66,7 +66,7 @@ export const validateLeverageEnabled = (
   leverageEnabled: boolean | undefined | null,
   { required }: { required: boolean },
 ) => {
-  skipWhen(!required && leverageEnabled == null, () => {
+  skipWhen(!required, () => {
     test('leverageEnabled', 'Leverage must be enabled', () => {
       enforce(leverageEnabled).equals(true)
     })

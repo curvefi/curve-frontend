@@ -29,7 +29,13 @@ export function useMaxTokenValues(
     error: balanceError,
     isLoading: isBalanceLoading,
   } = useTokenBalance({ ...params, tokenAddress: collateralToken })
-  const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
+  const {
+    data: maxBorrow,
+    error: maxBorrowError,
+    isLoading: isLoadingMaxBorrow,
+    validation,
+  } = useCreateLoanMaxReceive(params)
+  console.log(params, validation)
   const {
     data: maxTotalLeverage,
     error: maxLeverageError,
