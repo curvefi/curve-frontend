@@ -45,12 +45,12 @@ export const createLoanFormValidationGroup = (
   group('createLoanFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
     validateUserCollateral(userCollateral, { required: collateralRequired })
-    validateDebt(debt, debtRequired)
+    validateDebt(debt, { required: debtRequired })
     validateSlippage({ slippage })
     validateRange(range)
-    validateMaxDebt(debt, maxDebt, isMaxDebtRequired)
-    if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral)
-    validateLeverageEnabled(leverageEnabled, isLeverageRequired)
+    validateMaxDebt(debt, maxDebt, { required: isMaxDebtRequired })
+    if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral, { required: collateralRequired })
+    validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
   })
 
 export const createLoanQueryValidationSuite = ({

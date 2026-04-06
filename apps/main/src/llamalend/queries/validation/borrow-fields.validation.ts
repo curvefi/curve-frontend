@@ -26,7 +26,7 @@ export const validateUserCollateral = (
   })
 }
 
-export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
+export const validateDebt = (debt: Decimal | undefined | null, { required = true }: { required?: boolean } = {}) => {
   skipWhen(!required, () => {
     test('debt', 'Debt is required', () => {
       enforce(debt).isNotEmpty()
@@ -48,9 +48,9 @@ export const validateRange = (range: number | null | undefined, { MaxLtv, Safe }
 export const validateMaxDebt = (
   debt: Decimal | undefined | null,
   maxDebt: Decimal | undefined | null,
-  isMaxDebtRequired: boolean,
+  { required }: { required: boolean },
 ) => {
-  skipWhen(!isMaxDebtRequired, () => {
+  skipWhen(!required, () => {
     test('maxDebt', 'Maximum debt must be calculated before debt can be validated', () => {
       enforce(maxDebt).isDecimal()
     })
@@ -62,8 +62,11 @@ export const validateMaxDebt = (
   })
 }
 
-export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | null, isLeverageRequired: boolean) => {
-  skipWhen(!isLeverageRequired, () => {
+export const validateLeverageEnabled = (
+  leverageEnabled: boolean | undefined | null,
+  { required }: { required: boolean },
+) => {
+  skipWhen(!required && leverageEnabled == null, () => {
     test('leverageEnabled', 'Leverage must be enabled', () => {
       enforce(leverageEnabled).equals(true)
     })
@@ -72,9 +75,9 @@ export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | n
 
 export const validateLeverageSupported = (
   marketId: LlamaMarketTemplate | string | null | undefined,
-  leverageRequired: boolean,
+  { required }: { required: boolean },
 ) => {
-  skipWhen(!leverageRequired || !marketId, () => {
+  skipWhen(!required || !marketId, () => {
     test('marketId', 'Market does not support leverage', () => {
       const market = getLlamaMarket(marketId!)
       enforce(hasLeverage(market)).isTruthy()
@@ -104,11 +107,12 @@ export const validateMaxBorrowed = (
   {
     maxBorrowed,
     label,
+    required,
   }: {
     label: string
     maxBorrowed: Decimal | undefined | null
+    required: boolean
   },
-  required: boolean,
 ) => {
   skipWhen(!required || !userBorrowed, () => {
     test('maxBorrowed', 'Maximum borrow must be calculated before it can be validated', () => {
@@ -125,7 +129,7 @@ export const validateMaxBorrowed = (
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
-  required: boolean,
+  { required }: { required: boolean },
 ) => {
   skipWhen(!required || !userCollateral, () => {
     test('maxCollateral', 'Maximum collateral must be calculated before collateral can be validated', () => {
@@ -142,7 +146,7 @@ export const validateMaxCollateral = (
 export const validateMaxStateCollateral = (
   stateCollateral: Decimal | null | undefined,
   maxStateCollateral: Decimal | null | undefined,
-  required: boolean,
+  { required }: { required: boolean },
 ) => {
   skipWhen(!required || !stateCollateral, () => {
     test('maxStateCollateral', 'Maximum state collateral must be calculated before collateral can be validated', () => {

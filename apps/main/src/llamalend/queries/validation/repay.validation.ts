@@ -95,13 +95,13 @@ const repayValidationGroup = (
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
   validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed, routeId)
   validateSlippage({ slippage })
-  validateLeverageSupported(marketId, leverageRequired)
+  validateLeverageSupported(marketId, { required: leverageRequired })
   validateIsFull(isFull)
 
   skipWhen(!validateMax, () => {
-    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed }, maxRequired)
-    validateMaxCollateral(userCollateral, maxCollateral, maxRequired)
-    validateMaxStateCollateral(stateCollateral, maxStateCollateral, maxRequired)
+    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed, required: maxRequired })
+    validateMaxCollateral(userCollateral, maxCollateral, { required: maxRequired })
+    validateMaxStateCollateral(stateCollateral, maxStateCollateral, { required: maxRequired })
   })
 }
 

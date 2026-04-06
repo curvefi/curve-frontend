@@ -35,7 +35,7 @@ export const collateralValidationGroup = ({
     marketIdValidationSuite({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
     validateUserCollateral(userCollateral, { required: true })
-    validateMaxCollateral(userCollateral, maxCollateral)
+    validateMaxCollateral(userCollateral, maxCollateral, { required: true })
   })
 
 export const collateralValidationSuite = createValidationSuite((params: CollateralParams) =>
@@ -59,12 +59,12 @@ export const leverageUserMarketValidationSuite = createValidationSuite(
 
 export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, { required: true })
-  validateMaxCollateral(params.userCollateral, params.maxCollateral)
+  validateMaxCollateral(params.userCollateral, params.maxCollateral, { required: true })
 })
 
 export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, { required: true })
-  validateMaxCollateral(params.userCollateral, params.maxCollateral)
+  validateMaxCollateral(params.userCollateral, params.maxCollateral, { required: true })
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
