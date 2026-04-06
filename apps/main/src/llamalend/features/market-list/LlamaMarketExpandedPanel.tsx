@@ -1,4 +1,5 @@
 import { type FunctionComponent, useMemo } from 'react'
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -36,7 +37,7 @@ const ratesConfig: Record<
 > = {
   [MarketRateType.Supply]: {
     tooltipComponent: SupplyRateLendTooltip,
-    title: t`Supply yield`,
+    title: NET_SUPPLY_RATE_TITLE,
     rateKey: 'lendTotalApyMinBoosted',
   },
   [MarketRateType.Borrow]: {
@@ -61,8 +62,12 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
         <Tooltip market={market}>
           <Stack direction="row" alignItems="center" gap={2}>
             {/* todo: omit metric component tooltip */}
-            <Metric label={title} value={rateValue} valueOptions={{ unit: 'percentage' }} />
-            <RewardsIcons market={market} rateType={type} />
+            <Metric
+              label={title}
+              value={rateValue}
+              valueOptions={{ unit: 'percentage' }}
+              rightAdornment={<RewardsIcons market={market} rateType={type} />}
+            />
           </Stack>
         </Tooltip>
       </Grid>

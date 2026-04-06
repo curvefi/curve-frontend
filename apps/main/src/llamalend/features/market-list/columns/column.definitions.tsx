@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
@@ -43,7 +44,7 @@ const headers = {
   [LlamaMarketColumnId.UserDeposited]: t`Supplied Amount`,
   [LlamaMarketColumnId.BorrowRate]: t`Borrow APR`,
   [LlamaMarketColumnId.NetBorrowRate]: t`Net borrow APR`,
-  [LlamaMarketColumnId.LendRate]: t`Supply Yield`,
+  [LlamaMarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
   [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} borrow APR`,
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,

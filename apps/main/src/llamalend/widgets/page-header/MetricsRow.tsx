@@ -1,4 +1,4 @@
-import { MarketTypeSuffix } from '@/llamalend/constants'
+import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
@@ -12,8 +12,6 @@ import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import type { AvailableLiquidity } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
-
-const SUPPLY_RATE_TITLE = t`Net supply APY`
 
 export const MetricsRow = ({
   borrowRate,
@@ -50,7 +48,7 @@ export const MetricsRow = ({
       {supplyRate && (
         <Metric
           alignment={metricAlignment}
-          label={SUPPLY_RATE_TITLE}
+          label={NET_SUPPLY_RATE_TITLE}
           value={supplyRate.totalMinBoost}
           loading={supplyRate.loading}
           valueOptions={{ unit: 'percentage' }}
@@ -63,7 +61,7 @@ export const MetricsRow = ({
               : undefined
           }
           valueTooltip={{
-            title: SUPPLY_RATE_TITLE,
+            title: NET_SUPPLY_RATE_TITLE,
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyRate.supplyApy}

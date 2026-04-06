@@ -168,11 +168,9 @@ export const getSupplyApyMetrics = ({
 export const getSupplyApyAverageMetrics = ({
   snapshots,
   daysBack,
-  userSupplyBoost,
 }: {
   snapshots: LendingSnapshot[] | undefined
   daysBack: number
-  userSupplyBoost?: number | null | undefined
 }) => {
   const averages = calculateAverageRates(snapshots, daysBack, {
     supplyApy: ({ lendApy }) => Number(lendApy) * 100,
@@ -188,24 +186,17 @@ export const getSupplyApyAverageMetrics = ({
     averages?.rebasingYieldApy,
     averages?.extraIncentivesApy,
   )
-  const averageUserBoostApy =
-    averages?.crvMinBoostApr == null || userSupplyBoost == null
-      ? null
-      : aprToApy(averages.crvMinBoostApr * userSupplyBoost)
 
   return {
     averageLendApy: averages?.supplyApy ?? null,
     averageApyCrvMinBoost: averages?.crvMinBoostApy ?? null,
     averageApyCrvMaxBoost: averages?.crvMaxBoostApy ?? null,
-    averageUserBoostApy,
+    averageUserBoostApy: null,
     averageRebasingYield: averages?.rebasingYieldApy ?? null,
     averageExtraIncentivesApy: averages?.extraIncentivesApy ?? null,
     totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostApy),
     totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostApy),
-    totalAverageUserBoost:
-      averageTotalWithoutBoost == null || averageUserBoostApy == null
-        ? null
-        : sumRates(averageTotalWithoutBoost, averageUserBoostApy),
+    totalAverageUserBoost: null,
   }
 }
 

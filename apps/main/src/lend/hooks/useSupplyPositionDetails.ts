@@ -83,7 +83,6 @@ export const useSupplyPositionDetails = ({
   const supplyAverageMetrics = getSupplyApyAverageMetrics({
     snapshots: lendingSnapshots,
     daysBack: rateWindow,
-    userSupplyBoost,
   })
 
   const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null

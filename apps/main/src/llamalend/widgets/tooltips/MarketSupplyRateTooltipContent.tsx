@@ -95,14 +95,17 @@ export const MarketSupplyRateTooltipContent = ({
           </TooltipItems>
         )}
 
-        {totalAverageApy != null && (hasIncentives || hasRebasingYield) && (
+        {totalApy != null && (hasIncentives || hasRebasingYield) && (
           <TooltipItems borderTop>
             <TooltipItem variant="primary" title={t`Net total APY`} loading={isLoading}>
               {formatPercent(totalApy)}
             </TooltipItem>
-            <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-              {totalAverageApy == null ? 'N/A' : formatPercent(totalAverageApy)}
-            </TooltipItem>
+            {/* Historical boost data is only available at the market level, so user totals do not show an average. */}
+            {boost.type === 'market' && (
+              <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+                {totalAverageApy == null ? 'N/A' : formatPercent(totalAverageApy)}
+              </TooltipItem>
+            )}
           </TooltipItems>
         )}
 

@@ -31,7 +31,7 @@ export type AvailableLiquidity = {
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
-const { window: BORROW_WINDOW } = AVERAGE_CATEGORIES[RATE_CATEGORY]
+const { window: RATE_WINDOW } = AVERAGE_CATEGORIES[RATE_CATEGORY]
 
 function buildSupplyRate({
   supplyApy,
@@ -109,7 +109,7 @@ export const usePageHeader = ({
     market ?? undefined,
     blockchainId,
     Boolean(blockchainId && market),
-    { kind: 'limit', limit: isLendMarket ? BORROW_WINDOW : AVERAGE_CATEGORIES[RATE_CATEGORY].window },
+    { kind: 'limit', limit: RATE_WINDOW },
   )
 
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
@@ -136,7 +136,7 @@ export const usePageHeader = ({
     snapshots,
     getBorrowRate: getSnapshotBorrowApr,
     getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-    daysBack: BORROW_WINDOW,
+    daysBack: RATE_WINDOW,
   })
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),

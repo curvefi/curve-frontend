@@ -12,8 +12,6 @@ import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
 
-export type ExtraIncentiveItem = SupplyExtraIncentive
-
 type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined

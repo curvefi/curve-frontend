@@ -1,9 +1,9 @@
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { aprToApy, formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
@@ -61,7 +61,7 @@ export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) =>
   return (
     <Tooltip
       clickable
-      title={t`Net supply rate`}
+      title={NET_SUPPLY_RATE_TITLE}
       body={<LendRateTooltipContent isOpen={open} market={market} />}
       placement="top"
       open={open}
