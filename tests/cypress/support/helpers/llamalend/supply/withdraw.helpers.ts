@@ -37,10 +37,10 @@ export function checkWithdrawDetailsLoaded({
 }
 
 /**
- * Select max withdraw by clicking the Max chip.
+ * Select full withdraw by clicking the 100% chip.
  */
 export const selectMaxWithdraw = () => {
-  cy.get('[data-testid="input-chip-Max"]', LOAD_TIMEOUT).click({ force: true })
+  cy.get('[data-testid="input-chip-100%"]', LOAD_TIMEOUT).click({ force: true })
 }
 
 /**
