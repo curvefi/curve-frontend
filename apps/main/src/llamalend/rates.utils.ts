@@ -177,9 +177,9 @@ export const getSupplyApyAverageMetrics = ({
   const averages = calculateAverageRates(snapshots, daysBack, {
     supplyApy: ({ lendApy }) => Number(lendApy) * 100,
     rebasingYieldApy: ({ borrowedToken }) => borrowedToken.rebasingYield,
-    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
-    crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost),
-    crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost),
+    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost * 100,
+    crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100),
+    crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100),
     extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number),
   })
 

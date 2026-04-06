@@ -1,14 +1,14 @@
+import { ReactNode } from 'react'
 import type { SupplyRate } from '@/llamalend/rates.types'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
-import { Box, Grid, Stack } from '@mui/material'
+import { Grid, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AVERAGE_CATEGORIES, defaultNumberFormatter } from '@ui-kit/utils'
 import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
-import { ReactNode } from 'react'
 
 const { Spacing } = SizesAndSpaces
 
