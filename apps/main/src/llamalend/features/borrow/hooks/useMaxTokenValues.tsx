@@ -35,7 +35,6 @@ export function useMaxTokenValues(
     isLoading: isLoadingMaxBorrow,
     validation,
   } = useCreateLoanMaxReceive(params)
-  console.log(params, validation)
   const {
     data: maxTotalLeverage,
     error: maxLeverageError,

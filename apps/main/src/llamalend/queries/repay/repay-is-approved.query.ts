@@ -1,11 +1,8 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
-
-export type RepayIsApprovedParams<ChainId = IChainId> = RepayParams
 
 export const {
   useQuery: useRepayIsApproved,
@@ -22,7 +19,7 @@ export const {
     userAddress,
     isFull,
     routeId,
-  }: RepayIsApprovedParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayIsApproved',

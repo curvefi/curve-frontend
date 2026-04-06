@@ -28,7 +28,9 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
       - run: yarn format:check
+        if: always()
       - run: yarn typecheck
+        if: always()
       - run: yarn check-supply-chain
 
   test:
