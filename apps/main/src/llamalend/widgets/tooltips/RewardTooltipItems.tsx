@@ -36,9 +36,9 @@ export const RewardsTooltipItems = ({
   return (
     <>
       <TooltipItem title={title}>{totalExtraPercentage}</TooltipItem>
-      {extraIncentives.map(({ percentage, title, address, blockchainId, isBoost }, i) => (
+      {extraIncentives.map(({ percentage, title, address, blockchainId }, i) => (
         <TooltipItem key={i} variant="subItem" title={title} titleIcon={{ blockchainId, address, size: 'mui-sm' }}>
-          {`${isBoost ? '+' : ''}${formatPercent(percentage)}`}
+          {formatPercent(percentage)}
         </TooltipItem>
       ))}
       {extraRewards.map(

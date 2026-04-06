@@ -5,8 +5,9 @@ import { CardHeader, Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { AVERAGE_CATEGORIES, formatNumber } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, defaultNumberFormatter } from '@ui-kit/utils'
 import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
+import { formatNumber } from '@ui/utils/utilsFormat'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,6 +36,8 @@ export type SupplyPositionDetailsProps = {
   supplyAsset: SupplyAsset
   boost: Boost
 }
+
+const SUPPLY_RATE_TITLE = t`Your net supply APY`
 
 export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
@@ -72,17 +75,13 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
       >
         <Metric
           size="medium"
-          label={t`Net supply rate`}
+          label={SUPPLY_RATE_TITLE}
           value={totalUserBoost}
           loading={supplyRateLoading}
           valueOptions={{ unit: 'percentage' }}
-          notional={
-            totalMaxBoost
-              ? t`max Boost ${formatNumber(totalMaxBoost, { unit: 'percentage', abbreviate: false })}`
-              : undefined
-          }
+          notional={boostValue ? t`your boost ${defaultNumberFormatter(boostValue)}x` : undefined}
           valueTooltip={{
-            title: t`Net supply rate`,
+            title: SUPPLY_RATE_TITLE,
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyApy}

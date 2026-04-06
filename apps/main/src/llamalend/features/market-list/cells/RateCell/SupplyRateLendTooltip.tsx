@@ -45,7 +45,7 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
       totalApy={lendTotalApyMinBoosted}
       totalAverageApy={minBoostedAprAverage}
       boost={{
-        type: 'max',
+        type: 'market',
         apy: aprToApy(lendCrvAprBoosted),
         totalApy: lendTotalApyMaxBoosted,
         totalAverageApy: maxBoostedAprAverage,

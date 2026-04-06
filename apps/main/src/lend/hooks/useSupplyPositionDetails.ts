@@ -105,7 +105,7 @@ export const useSupplyPositionDetails = ({
             blockchainId,
             address: r.tokenAddress,
           })) ?? [],
-        baseRate: supplyMetrics.supplyApyCrvMinBoost,
+        userRate: supplyMetrics.userBoostApy,
         userBoost: userSupplyBoost,
       }),
       extraRewards: campaigns,

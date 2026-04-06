@@ -89,13 +89,18 @@ type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: strin
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
   rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, (reward) => aprToApy(reward.apy) as number) : null
 
+const displayUserBoost = (userBoost: number | null | undefined) =>
+  userBoost != null ? ' (' + defaultNumberFormatter(userBoost) + 'x veCRV Boost)' : ''
+
 export const formatSupplyExtraIncentives = ({
   incentives,
   baseRate,
+  userRate,
   userBoost,
 }: {
   incentives: ExtraIncentive[]
-  baseRate: number | null | undefined
+  baseRate?: number | null | undefined
+  userRate?: number | null | undefined
   userBoost?: number | null | undefined
 }): SupplyExtraIncentive[] =>
   notFalsy(
@@ -104,18 +109,15 @@ export const formatSupplyExtraIncentives = ({
       percentage: baseRate,
       address: MAINNET_CRV_ADDRESS,
       blockchainId: 'ethereum',
-      isBoost: false,
     },
-    userBoost &&
-      baseRate &&
-      userBoost > 1 && {
-        title: `Your boost (${defaultNumberFormatter(userBoost)}x)`,
-        percentage: baseRate * userBoost - baseRate,
+    userRate &&
+      baseRate == null && {
+        title: 'CRV' + displayUserBoost(userBoost),
+        percentage: userRate,
         address: MAINNET_CRV_ADDRESS,
         blockchainId: 'ethereum',
-        isBoost: true,
       },
-    ...incentives.map((incentive) => incentive.percentage > 0 && { ...incentive, isBoost: false }),
+    ...incentives.map((incentive) => incentive.percentage > 0 && incentive),
   )
 
 type SupplyRateMetricsParams = {

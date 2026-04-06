@@ -13,6 +13,8 @@ import type { AvailableLiquidity } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
 
+const SUPPLY_RATE_TITLE = t`Net supply APY`
+
 export const MetricsRow = ({
   borrowRate,
   supplyRate,
@@ -48,7 +50,7 @@ export const MetricsRow = ({
       {supplyRate && (
         <Metric
           alignment={metricAlignment}
-          label={t`Net supply rate`}
+          label={SUPPLY_RATE_TITLE}
           value={supplyRate.totalMinBoost}
           loading={supplyRate.loading}
           valueOptions={{ unit: 'percentage' }}
@@ -61,7 +63,7 @@ export const MetricsRow = ({
               : undefined
           }
           valueTooltip={{
-            title: t`Net supply rate`,
+            title: SUPPLY_RATE_TITLE,
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyRate.supplyApy}
@@ -69,7 +71,7 @@ export const MetricsRow = ({
                 totalApy={supplyRate.totalMinBoost}
                 totalAverageApy={supplyRate.totalAverageMinBoost}
                 boost={{
-                  type: 'max',
+                  type: 'market',
                   apy: supplyRate.supplyApyCrvMaxBoost,
                   totalApy: supplyRate.totalMaxBoost,
                   totalAverageApy: supplyRate.totalAverageMaxBoost,

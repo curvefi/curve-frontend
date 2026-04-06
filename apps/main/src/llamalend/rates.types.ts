@@ -2,9 +2,7 @@ import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import type { AverageCategory } from '@ui-kit/utils'
 
-export type SupplyExtraIncentive = ExtraIncentive & {
-  isBoost: boolean
-}
+export type SupplyExtraIncentive = ExtraIncentive
 
 export type BorrowRate = {
   rate: number | null | undefined

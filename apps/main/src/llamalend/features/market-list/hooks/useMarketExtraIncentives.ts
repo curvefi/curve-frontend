@@ -8,12 +8,9 @@ export const useMarketExtraIncentives = (
   type: MarketRateType,
   incentives: ExtraIncentive[],
   baseRate: number | null | undefined,
-  userBoost?: number | null | undefined,
 ): SupplyExtraIncentive[] =>
   useMemo(
-    () =>
-      notFalsy(
-        type === MarketRateType.Supply && formatSupplyExtraIncentives({ incentives, baseRate, userBoost }),
-      ).flat(),
-    [baseRate, incentives, type, userBoost],
+    // todo: use notFalsyArray
+    () => notFalsy(type === MarketRateType.Supply && formatSupplyExtraIncentives({ incentives, baseRate })).flat(),
+    [baseRate, incentives, type],
   )
