@@ -1,4 +1,4 @@
-import { useMarketExtraIncentives } from '@/llamalend/features/market-list/hooks/useMarketExtraIncentives'
+import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import {
   TooltipDescription,
   TooltipFooter,
@@ -7,27 +7,52 @@ import {
   TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
+import { formatNumber } from '@ui/utils/utilsFormat'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
+type SupplyBoostType = 'max' | 'user'
+type SupplyBoost = {
+  type: SupplyBoostType
+  apy: number | null | undefined
+  totalApy: number | null | undefined
+  totalAverageApy: number | null | undefined
+  // veCRV boost
+  value?: number | null | undefined
+}
 export type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | null | undefined
   averageSupplyApy: number | null | undefined
   periodLabel: string
   extraRewards: CampaignPoolRewards[]
-  extraIncentives: ExtraIncentive[]
-  minBoostApy: number | null | undefined
-  maxBoostApy: number | null | undefined
+  extraIncentives: SupplyExtraIncentive[]
   totalApy: number | null | undefined
-  totalMaxBoostApy: number | null | undefined
   totalAverageApy: number | null | undefined
-  totalAverageMaxBoostApy: number | null | undefined
+  boost: SupplyBoost
   rebasingYieldApy: number | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
+}
+
+const MAX_BOOST = 2.5 as const
+
+const displayBoostValue = (value: number | null | undefined) =>
+  value == null ? '' : '(' + formatNumber(value, { maximumFractionDigits: 2 }) + 'x)'
+
+const boostLabels: Record<
+  SupplyBoostType,
+  { boostApyTitle: (value: number | null | undefined) => string; totalApyTitle: string }
+> = {
+  max: {
+    boostApyTitle: (value) => t`Max veCRV Boost ${displayBoostValue(value)}`,
+    totalApyTitle: t`Total max veCRV APY`,
+  },
+  user: {
+    boostApyTitle: (value) => t`Your veCRV boost ${displayBoostValue(value)} `,
+    totalApyTitle: t`Total user boosted APY`,
+  },
 }
 
 export const MarketSupplyRateTooltipContent = ({
@@ -36,22 +61,18 @@ export const MarketSupplyRateTooltipContent = ({
   periodLabel,
   extraRewards,
   extraIncentives,
-  minBoostApy,
-  maxBoostApy,
   totalApy,
-  totalMaxBoostApy,
   totalAverageApy,
-  totalAverageMaxBoostApy,
+  boost,
   rebasingYieldApy,
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const extraIncentivesFormatted = useMarketExtraIncentives(MarketRateType.Supply, extraIncentives, minBoostApy)
-  const showApyDescription = [
-    extraRewards.length > 0 || extraIncentivesFormatted.length > 0,
-    rebasingYieldApy != null,
-  ].some(Boolean)
-  const hasIncentives = !!(extraRewards.length || extraIncentivesFormatted.length)
+  const { boostApyTitle, totalApyTitle } = boostLabels[boost.type]
+  const showApyDescription = [extraRewards.length > 0 || extraIncentives.length > 0, rebasingYieldApy != null].some(
+    Boolean,
+  )
+  const hasIncentives = !!(extraRewards.length || extraIncentives.length)
   const hasRebasingYield = rebasingYieldApy != null
 
   return (
@@ -76,7 +97,7 @@ export const MarketSupplyRateTooltipContent = ({
               title={t`Lending incentives APY*`}
               tooltipType={'supply'}
               extraRewards={extraRewards}
-              extraIncentives={extraIncentivesFormatted}
+              extraIncentives={extraIncentives}
             />
           </TooltipItems>
         )}
@@ -105,21 +126,21 @@ export const MarketSupplyRateTooltipContent = ({
           </TooltipItems>
         )}
 
-        {!!maxBoostApy && (
+        {!!boost.apy && (
           <TooltipItems secondary extraMargin>
-            <TooltipItem title={t`Max veCRV Boost (2.5x)`} loading={isLoading}>
-              {formatPercent(maxBoostApy)}
+            <TooltipItem title={boostApyTitle(boost.type === 'max' ? MAX_BOOST : boost.value)} loading={isLoading}>
+              {formatPercent(boost.apy)}
             </TooltipItem>
           </TooltipItems>
         )}
 
-        {!!maxBoostApy && (
+        {!!boost.apy && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Total max veCRV APY`} loading={isLoading}>
-              {formatPercent(totalMaxBoostApy)}
+            <TooltipItem variant="primary" title={totalApyTitle} loading={isLoading}>
+              {formatPercent(boost.totalApy)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-              {totalAverageMaxBoostApy == null ? 'N/A' : formatPercent(totalAverageMaxBoostApy)}
+              {boost.totalAverageApy == null ? 'N/A' : formatPercent(boost.totalAverageApy)}
             </TooltipItem>
           </TooltipItems>
         )}

@@ -4,6 +4,7 @@ import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-pos
 import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
+  formatSupplyExtraIncentives,
   getSupplyApyMetrics,
   toNumberOrNull,
   aprToApy,
@@ -77,10 +78,12 @@ export const useSupplyPositionDetails = ({
     crvMinBoostApr: onChainRewards?.crvRates?.[0],
     crvMaxBoostApr: onChainRewards?.crvRates?.[1],
     extraIncentivesApy: sumOnChainExtraIncentivesApy(onChainRewards?.rewardsApr),
+    userSupplyBoost,
   })
   const supplyAverageMetrics = getSupplyApyAverageMetrics({
     snapshots: lendingSnapshots,
     daysBack: rateWindow,
+    userSupplyBoost,
   })
 
   const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null
@@ -94,19 +97,23 @@ export const useSupplyPositionDetails = ({
       ...supplyMetrics,
       ...supplyAverageMetrics,
       averageCategory: RATE_CATEGORY,
-      extraIncentives: onChainRewards?.rewardsApr
-        ? onChainRewards.rewardsApr.map((r) => ({
+      extraIncentives: formatSupplyExtraIncentives({
+        incentives:
+          onChainRewards?.rewardsApr?.map((r) => ({
             title: r.symbol,
             percentage: aprToApy(r.apy) as number,
             blockchainId,
             address: r.tokenAddress,
-          }))
-        : [],
+          })) ?? [],
+        baseRate: supplyMetrics.supplyApyCrvMinBoost,
+        userBoost: userSupplyBoost,
+      }),
       extraRewards: campaigns,
       loading:
         islendingSnapshotsLoading ||
         isOnChainRewardsLoading ||
         isUserBalancesLoading ||
+        isUserSupplyBoostLoading ||
         isMarketRatesLoading ||
         !isHydrated,
     },

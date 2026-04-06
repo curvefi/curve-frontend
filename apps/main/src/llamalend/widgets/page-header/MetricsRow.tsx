@@ -66,12 +66,14 @@ export const MetricsRow = ({
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyRate.supplyApy}
                 averageSupplyApy={supplyRate.averageLendApy}
-                minBoostApy={supplyRate.supplyApyCrvMinBoost}
-                maxBoostApy={supplyRate.supplyApyCrvMaxBoost}
                 totalApy={supplyRate.totalMinBoost}
-                totalMaxBoostApy={supplyRate.totalMaxBoost}
                 totalAverageApy={supplyRate.totalAverageMinBoost}
-                totalAverageMaxBoostApy={supplyRate.totalAverageMaxBoost}
+                boost={{
+                  type: 'max',
+                  apy: supplyRate.supplyApyCrvMaxBoost,
+                  totalApy: supplyRate.totalMaxBoost,
+                  totalAverageApy: supplyRate.totalAverageMaxBoost,
+                }}
                 rebasingYieldApy={supplyRate.rebasingYield}
                 isLoading={supplyRate.loading}
                 periodLabel={supplyRatePeriod as string}

@@ -2,6 +2,10 @@ import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import type { AverageCategory } from '@ui-kit/utils'
 
+export type SupplyExtraIncentive = ExtraIncentive & {
+  isBoost: boolean
+}
+
 export type BorrowRate = {
   rate: number | null | undefined
   averageRate: number | null | undefined
@@ -20,15 +24,19 @@ export type SupplyRate = {
   averageCategory: AverageCategory
   supplyApyCrvMinBoost: number | null | undefined
   supplyApyCrvMaxBoost: number | null | undefined
+  userBoostApy: number | null | undefined
   averageApyCrvMinBoost: number | null | undefined
   averageApyCrvMaxBoost: number | null | undefined
+  averageUserBoostApy: number | null | undefined
   rebasingYield: number | null | undefined
   averageRebasingYield: number | null | undefined
   totalMinBoost: number | null | undefined
   totalMaxBoost: number | null | undefined
+  totalUserBoost: number | null | undefined
   totalAverageMinBoost: number | null | undefined
   totalAverageMaxBoost: number | null | undefined
-  extraIncentives: ExtraIncentive[]
+  totalAverageUserBoost: number | null | undefined
+  extraIncentives: SupplyExtraIncentive[]
   extraIncentivesTotalApy: number | null | undefined
   averageExtraIncentivesApy: number | null | undefined
   extraRewards: CampaignPoolRewards[]

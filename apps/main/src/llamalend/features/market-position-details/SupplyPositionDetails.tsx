@@ -39,16 +39,14 @@ export type SupplyPositionDetailsProps = {
 export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
     totalMaxBoost,
-    totalMinBoost,
-    totalAverageMaxBoost,
-    totalAverageMinBoost,
+    totalUserBoost,
+    totalAverageUserBoost,
     supplyApy,
     averageLendApy,
     averageCategory,
     extraRewards,
     extraIncentives,
-    supplyApyCrvMinBoost,
-    supplyApyCrvMaxBoost,
+    userBoostApy,
     loading: supplyRateLoading,
     rebasingYield,
   } = userSupplyRate
@@ -75,7 +73,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
         <Metric
           size="medium"
           label={t`Net supply rate`}
-          value={totalMinBoost}
+          value={totalUserBoost}
           loading={supplyRateLoading}
           valueOptions={{ unit: 'percentage' }}
           notional={
@@ -92,12 +90,15 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
                 periodLabel={averageRatePeriod}
                 extraRewards={extraRewards}
                 extraIncentives={extraIncentives}
-                minBoostApy={supplyApyCrvMinBoost}
-                maxBoostApy={supplyApyCrvMaxBoost}
-                totalApy={totalMinBoost}
-                totalMaxBoostApy={totalMaxBoost}
-                totalAverageApy={totalAverageMinBoost}
-                totalAverageMaxBoostApy={totalAverageMaxBoost}
+                totalApy={totalUserBoost}
+                totalAverageApy={totalAverageUserBoost}
+                boost={{
+                  type: 'user',
+                  apy: userBoostApy,
+                  totalApy: totalUserBoost,
+                  totalAverageApy: totalAverageUserBoost,
+                  value: boostValue,
+                }}
                 rebasingYieldApy={rebasingYield}
                 rebasingSymbol={supplyAssetSymbol}
                 isLoading={supplyRateLoading}

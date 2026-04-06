@@ -1,3 +1,4 @@
+import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
@@ -11,20 +12,14 @@ import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
 
-export type ExtraIncentiveItem = {
-  title: string
-  percentage: number
-  address: string
-  blockchainId: string
-  isBoost: boolean
-}
+export type ExtraIncentiveItem = SupplyExtraIncentive
 
 type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined
   extraRewards: CampaignPoolRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'loan' | 'supply'>
-  extraIncentives: ExtraIncentiveItem[]
+  extraIncentives: SupplyExtraIncentive[]
 }
 
 export const RewardsTooltipItems = ({

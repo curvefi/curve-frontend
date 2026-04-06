@@ -5,6 +5,7 @@ import { useMarketCapAndAvailable, useMarketRates, useMarketVaultOnChainRewards 
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import {
   aprToApy,
+  formatSupplyExtraIncentives,
   getBorrowRateMetrics,
   getLatestSnapshotValue,
   getSnapshotBorrowApr,
@@ -70,15 +71,18 @@ function buildSupplyRate({
     ...supplyMetrics,
     ...supplyAverageMetrics,
     averageCategory: category,
-    extraIncentives:
-      marketOnChainRewards?.rewardsApr && blockchainId
-        ? marketOnChainRewards.rewardsApr.map((reward) => ({
-            title: reward.symbol,
-            percentage: aprToApy(reward.apy) as number,
-            blockchainId,
-            address: reward.tokenAddress,
-          }))
-        : [],
+    extraIncentives: blockchainId
+      ? formatSupplyExtraIncentives({
+          incentives:
+            marketOnChainRewards?.rewardsApr?.map((reward) => ({
+              title: reward.symbol,
+              percentage: aprToApy(reward.apy) as number,
+              blockchainId,
+              address: reward.tokenAddress,
+            })) ?? [],
+          baseRate: supplyMetrics.supplyApyCrvMinBoost,
+        })
+      : [],
     extraRewards: campaigns,
     loading,
   }

@@ -1,8 +1,11 @@
 import { sumBy } from 'lodash'
+import { notFalsy } from '@primitives/objects.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
-import { AVERAGE_CATEGORIES, decimal } from '@ui-kit/utils'
+import type { ExtraIncentive } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES, MAINNET_CRV_ADDRESS, decimal, defaultNumberFormatter } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
+import type { SupplyExtraIncentive } from './rates.types'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined
@@ -86,6 +89,35 @@ type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: strin
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
   rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, (reward) => aprToApy(reward.apy) as number) : null
 
+export const formatSupplyExtraIncentives = ({
+  incentives,
+  baseRate,
+  userBoost,
+}: {
+  incentives: ExtraIncentive[]
+  baseRate: number | null | undefined
+  userBoost?: number | null | undefined
+}): SupplyExtraIncentive[] =>
+  notFalsy(
+    baseRate && {
+      title: 'CRV',
+      percentage: baseRate,
+      address: MAINNET_CRV_ADDRESS,
+      blockchainId: 'ethereum',
+      isBoost: false,
+    },
+    userBoost &&
+      baseRate &&
+      userBoost > 1 && {
+        title: `Your boost (${defaultNumberFormatter(userBoost)}x)`,
+        percentage: baseRate * userBoost - baseRate,
+        address: MAINNET_CRV_ADDRESS,
+        blockchainId: 'ethereum',
+        isBoost: true,
+      },
+    ...incentives.map((incentive) => incentive.percentage > 0 && { ...incentive, isBoost: false }),
+  )
+
 type SupplyRateMetricsParams = {
   supplyApy: number | null | undefined
   crvMinBoostApr: number | null | undefined
@@ -112,7 +144,8 @@ export const getSupplyApyMetrics = ({
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy = aprToApy((crvMinBoostApr ?? 0) * (userSupplyBoost ?? 1))
+  const userBoostApy =
+    crvMinBoostApr == null || userSupplyBoost == null ? null : aprToApy(crvMinBoostApr * userSupplyBoost)
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy)
 
@@ -125,20 +158,24 @@ export const getSupplyApyMetrics = ({
     extraIncentivesTotalApy: extraIncentivesApy,
     totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApy),
     totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApy),
-    totalUserBoost: sumRates(totalWithoutBoost, userBoostApy),
+    totalUserBoost:
+      totalWithoutBoost == null || userBoostApy == null ? null : sumRates(totalWithoutBoost, userBoostApy),
   }
 }
 
 export const getSupplyApyAverageMetrics = ({
   snapshots,
   daysBack,
+  userSupplyBoost,
 }: {
   snapshots: LendingSnapshot[] | undefined
   daysBack: number
+  userSupplyBoost?: number | null | undefined
 }) => {
   const averages = calculateAverageRates(snapshots, daysBack, {
     supplyApy: ({ lendApy }) => Number(lendApy) * 100,
     rebasingYieldApy: ({ borrowedToken }) => borrowedToken.rebasingYield,
+    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
     crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost),
     crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost),
     extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number),
@@ -149,15 +186,24 @@ export const getSupplyApyAverageMetrics = ({
     averages?.rebasingYieldApy,
     averages?.extraIncentivesApy,
   )
+  const averageUserBoostApy =
+    averages?.crvMinBoostApr == null || userSupplyBoost == null
+      ? null
+      : aprToApy(averages.crvMinBoostApr * userSupplyBoost)
 
   return {
     averageLendApy: averages?.supplyApy ?? null,
     averageApyCrvMinBoost: averages?.crvMinBoostApy ?? null,
     averageApyCrvMaxBoost: averages?.crvMaxBoostApy ?? null,
+    averageUserBoostApy,
     averageRebasingYield: averages?.rebasingYieldApy ?? null,
     averageExtraIncentivesApy: averages?.extraIncentivesApy ?? null,
     totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostApy),
     totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostApy),
+    totalAverageUserBoost:
+      averageTotalWithoutBoost == null || averageUserBoostApy == null
+        ? null
+        : sumRates(averageTotalWithoutBoost, averageUserBoostApy),
   }
 }
 

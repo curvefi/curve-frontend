@@ -1,6 +1,6 @@
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { aprToApy } from '@/llamalend/rates.utils'
+import { aprToApy, formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -35,16 +35,21 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
       averageSupplyApy={averageRate}
       periodLabel={AVERAGE_CATEGORIES[averageCategory].period}
       extraRewards={poolRewards}
-      extraIncentives={rates.incentives.map((incentive) => ({
-        ...incentive,
-        percentage: aprToApy(incentive.percentage) as number,
-      }))}
-      minBoostApy={aprToApy(lendCrvAprUnboosted)}
-      maxBoostApy={aprToApy(lendCrvAprBoosted)}
+      extraIncentives={formatSupplyExtraIncentives({
+        incentives: rates.incentives.map((incentive) => ({
+          ...incentive,
+          percentage: aprToApy(incentive.percentage) as number,
+        })),
+        baseRate: aprToApy(lendCrvAprUnboosted),
+      })}
       totalApy={lendTotalApyMinBoosted}
-      totalMaxBoostApy={lendTotalApyMaxBoosted}
       totalAverageApy={minBoostedAprAverage}
-      totalAverageMaxBoostApy={maxBoostedAprAverage}
+      boost={{
+        type: 'max',
+        apy: aprToApy(lendCrvAprBoosted),
+        totalApy: lendTotalApyMaxBoosted,
+        totalAverageApy: maxBoostedAprAverage,
+      }}
       rebasingYieldApy={borrowed?.rebasingYield}
       isLoading={isLoading}
     />
