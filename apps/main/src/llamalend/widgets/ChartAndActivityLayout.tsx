@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
-import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEvents,
   type LlammaActivityProps,
@@ -50,7 +50,7 @@ export type ChartAndActivityLayoutProps = {
   }
   bands?: {
     chartData: ChartDataPoint[]
-    userBandsBalances: ParsedBandsBalances[]
+    userBandsBalances: FetchedBandsBalances[]
     oraclePrice: string | undefined
     isLoading: boolean
     error: Error | null

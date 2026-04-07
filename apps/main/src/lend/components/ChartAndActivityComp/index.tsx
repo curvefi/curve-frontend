@@ -49,8 +49,6 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     chainId: rChainId,
     marketId: rOwmId,
     api,
-    collateralTokenAddress,
-    borrowedTokenAddress,
   })
 
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol) as

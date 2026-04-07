@@ -1,6 +1,6 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo, memo } from 'react'
-import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import { BandsChartToken, ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Box, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart/ChartStateWrapper'
@@ -21,7 +21,7 @@ type BandsChartProps = {
   chartData: ChartDataPoint[]
   error: Error | null
   isLoading: boolean
-  userBandsBalances: ParsedBandsBalances[]
+  userBandsBalances: FetchedBandsBalances[]
   oraclePrice?: string
   height?: number
   priceRange?: { min: number; max: number }

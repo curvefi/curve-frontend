@@ -61,9 +61,3 @@ export type FetchedBandsBalances = {
   p_down: number
   pUpDownMedian: number
 }
-
-export type ParsedBandsBalances = FetchedBandsBalances & {
-  borrowedValueUsd: number
-  collateralValueUsd: number
-  totalBandValueUsd: number
-}

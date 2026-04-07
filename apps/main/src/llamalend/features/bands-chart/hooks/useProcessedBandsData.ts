@@ -6,36 +6,25 @@ type ProcessedBandsData = {
   marketBandsBalances: FetchedBandsBalances[] | undefined
   userBandsBalances: FetchedBandsBalances[] | undefined
   oraclePriceBand: number | null | undefined
-  collateralUsdRate: number | null | undefined
-  borrowedUsdRate: number | null | undefined
 }
 
 export const useProcessedBandsData = ({
   marketBandsBalances,
   userBandsBalances,
   oraclePriceBand,
-  collateralUsdRate,
-  borrowedUsdRate,
 }: ProcessedBandsData) =>
   useMemo(() => {
     if (!marketBandsBalances) return []
 
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
-    const hasCollateralRate = collateralUsdRate != null
-    const hasBorrowedRate = borrowedUsdRate != null
 
-    const getBandValues = (band: FetchedBandsBalances) => {
-      const collateralAmount = Number(band.collateral)
-      const borrowedAmount = Number(band.borrowed)
-
-      const collateralValueUsd = hasCollateralRate ? collateralAmount * collateralUsdRate : band.collateralUsd
-      const borrowedValueUsd = hasBorrowedRate
-        ? borrowedAmount * borrowedUsdRate
-        : band.collateralBorrowedUsd - band.collateralUsd
-
-      return { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd }
-    }
+    const getBandValues = (band: FetchedBandsBalances) => ({
+      collateralAmount: +band.collateral,
+      borrowedAmount: +band.borrowed,
+      collateralValueUsd: band.collateralUsd,
+      borrowedValueUsd: band.collateralBorrowedUsd - band.collateralUsd,
+    })
 
     const marketTuples: [number, ChartDataPoint][] = marketBands.map((band) => {
       const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
@@ -96,4 +85,4 @@ export const useProcessedBandsData = ({
     })
 
     return lodash.orderBy(Array.from(bandsMap.values()), 'pUpDownMedian', 'desc')
-  }, [marketBandsBalances, userBandsBalances, oraclePriceBand, collateralUsdRate, borrowedUsdRate])
+  }, [marketBandsBalances, userBandsBalances, oraclePriceBand])

@@ -1,25 +1,7 @@
 import lodash from 'lodash'
-import type { FetchedBandsBalances, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 
 const ORACLE_CONTEXT_OFFSETS = [-1, 0, 1] as const
-
-export const parseFetchedBandsBalances = (
-  bandsBalances: FetchedBandsBalances[] | undefined,
-  collateralUsdRate: number | undefined,
-  borrowedUsdRate: number | undefined,
-): ParsedBandsBalances[] =>
-  bandsBalances?.map((band) => {
-    const collateralValueUsd = collateralUsdRate != null ? +band.collateral * collateralUsdRate : band.collateralUsd
-    const borrowedValueUsd = borrowedUsdRate != null ? +band.borrowed * borrowedUsdRate : +band.borrowed
-
-    return {
-      ...band,
-      collateralValueUsd,
-      borrowedValueUsd,
-      totalBandValueUsd: collateralValueUsd + borrowedValueUsd,
-      isOraclePriceBand: false, // updated in chart processing with oraclePriceBand
-    }
-  }) ?? []
 
 export const getMissingOracleContextBandNumbers = (
   marketBandsBalances: FetchedBandsBalances[] | undefined,

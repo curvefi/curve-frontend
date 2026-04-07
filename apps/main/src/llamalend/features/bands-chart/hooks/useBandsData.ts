@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import {
   getMissingOracleContextBandNumbers,
   mergeMarketBandsWithOracleContext,
-  parseFetchedBandsBalances,
 } from '@/llamalend/features/bands-chart/hooks/bands-data.utils'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBandsBalances, useUserBandsBalances, useMarketOracleContextBands } from '@/llamalend/queries/bands'
@@ -12,25 +11,18 @@ import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const useBandsData = ({
   chainId,
   marketId,
   api,
-  collateralTokenAddress,
-  borrowedTokenAddress,
 }: {
   chainId: IChainId
   marketId: string
   api: LlamaApi | undefined | null
-  collateralTokenAddress: string | undefined
-  borrowedTokenAddress: string | undefined
 }) => {
   const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
-  const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress: collateralTokenAddress })
-  const { data: borrowedUsdRate } = useTokenUsdRate({ chainId, tokenAddress: borrowedTokenAddress })
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId,
@@ -94,17 +86,10 @@ export const useBandsData = ({
     [marketBandsBalances, oracleContextBands],
   )
 
-  const parsedUserBandsBalances = useMemo(
-    () => parseFetchedBandsBalances(userBandsBalances, collateralUsdRate, borrowedUsdRate),
-    [userBandsBalances, collateralUsdRate, borrowedUsdRate],
-  )
-
   const chartData = useProcessedBandsData({
     marketBandsBalances: marketBandsBalancesWithOracleContext,
-    userBandsBalances: parsedUserBandsBalances,
+    userBandsBalances,
     oraclePriceBand,
-    collateralUsdRate,
-    borrowedUsdRate,
   })
 
   const isLoading =
@@ -122,7 +107,7 @@ export const useBandsData = ({
     isLoading,
     error: marketBandsBalancesError ?? oracleContextBandsError,
     chartData,
-    userBandsBalances: parsedUserBandsBalances,
+    userBandsBalances,
     oraclePrice,
   }
 }
