@@ -279,7 +279,7 @@ function createChadSurfaces() {
     },
     TypeAction: {
       Selected: Violets[50],
-      Hover: Violets[200],
+      Hover: Blues[500],
     },
     Highlight: Violets[700],
   } as const
@@ -290,7 +290,7 @@ function createChadSurfaces() {
       Row: {
         Default: Grays[150],
         Selected: Violets[50],
-        Hover: Violets[200],
+        Hover: Blues[500],
       },
       Header: {
         Fill: Grays[300],
