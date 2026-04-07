@@ -6,7 +6,7 @@ const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
 const SliderBackground = {
-  Safe: { 25: Reds[400], 50: Reds[300], 75: Reds[200], 100: Greens[500] },
+  Safe: { 25: Reds[500], 50: Oranges[500], 75: Yellows[500], 100: Greens[400] },
   Danger: { 25: Reds[200], 50: Reds[300], 75: Reds[400], 100: Reds[500] },
   Disabled: {
     25: alpha(Grays[300], 0.5),
