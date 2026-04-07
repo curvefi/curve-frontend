@@ -1,4 +1,4 @@
-import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
+import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
 import type { RouteResponse } from '@primitives/router.utils'
 import { invalidateRepayExpectedBorrowed, refetchRepayExpectedBorrowed } from './repay-expected-borrowed.query'
 import { invalidateRepayFutureLeverage, refetchRepayFutureLeverage } from './repay-future-leverage.query'
@@ -35,7 +35,5 @@ const invalidate = [
   invalidateRepayRouteImage,
   invalidateRepayFutureLeverage,
 ]
-export const invalidateOrRefetchRepayRouteQueries = async (
-  route: RouteResponse | undefined,
-  params: RepayIsFullParams,
-) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))
+export const invalidateOrRefetchRepayRouteQueries = async (route: RouteResponse | undefined, params: RepayParams) =>
+  route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))

@@ -57,11 +57,11 @@ export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormS
   useMemo(() => filterFormErrors(formState), [formState])
 
 /**
- * Syncs `data` to `callback` whenever it changes, and clears it (calls with `undefined`) on unmount.
+ * Syncs `data` to `callback` whenever it changes to a valid value. Clears it when unmounting.
  */
 export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T | undefined) => void): void {
-  useEffect(() => callback(data ?? undefined), [callback, data]) // keep the parent in sync
-  useEffect(() => () => callback(undefined), [callback]) // clear stale data on unmount
+  useEffect(() => (data == null ? undefined : callback(data)), [callback, data]) // keep parent in sync, keep stale while revalidating
+  useEffect(() => () => callback(undefined), [callback]) // clear stale data only when unmounting
 }
 
 /** Checks if any of the given fields are touched in the form. */

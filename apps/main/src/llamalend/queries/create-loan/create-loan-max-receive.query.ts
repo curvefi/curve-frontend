@@ -110,5 +110,6 @@ export const {
     collateralRequired: true,
     isMaxDebtRequired: false,
     isLeverageRequired: false,
+    ignoreMaxCollateral: true, // allow users to calculate max receive before they have collateral
   }),
 })

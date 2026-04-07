@@ -1,21 +1,14 @@
-import { enforce, group, skipWhen, test } from 'vest'
-import { isRouterRequired } from '@/llamalend/llama.utils'
-import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
+import { group } from 'vest'
 import {
   validateIsFull,
-  validateLeverageSupported,
   validateLeverageValuesSupported,
-  validateMaxBorrowed,
   validateMaxCollateral,
-  validateRoute,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
   CloseLoanParams,
   CollateralHealthParams,
   CollateralParams,
-  RepayIsFullParams,
-  RepayParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite } from '@ui-kit/lib'
@@ -31,80 +24,6 @@ export type CollateralForm = {
   maxCollateral: Decimal | undefined
 }
 
-export type RepayForm = CollateralForm & {
-  stateCollateral: Decimal | undefined
-  userBorrowed: Decimal | undefined
-  maxStateCollateral: Decimal | undefined
-  maxBorrowed: Decimal | undefined
-  isFull: boolean
-  slippage: Decimal
-  routeId: string | undefined
-}
-
-export const validateRepayCollateralField = (
-  field: 'stateCollateral' | 'userCollateral',
-  value: Decimal | null | undefined,
-): void => {
-  skipWhen(value == null, () => {
-    test(field, `Collateral amount must be a non-negative number`, () => {
-      enforce(value).isDecimal().gte(0)
-    })
-  })
-}
-
-const validateMaxStateCollateral = (
-  stateCollateral: Decimal | null | undefined,
-  maxStateCollateral: Decimal | null | undefined,
-) =>
-  skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
-    test('maxStateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
-      enforce(stateCollateral).lte(maxStateCollateral)
-    })
-  })
-
-export const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): void => {
-  skipWhen(userBorrowed == null, () =>
-    test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
-      enforce(userBorrowed).isDecimal().gte(0)
-    }),
-  )
-}
-
-const validateRepayHasValue = (
-  stateCollateral: Decimal | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-) =>
-  test(
-    stateCollateral ? 'stateCollateral' : userCollateral ? 'userCollateral' : 'userBorrowed',
-    'Enter an amount to repay',
-    () => {
-      enforce(stateCollateral ?? userCollateral ?? userBorrowed)
-        .isDecimal()
-        .greaterThan(0)
-    },
-  )
-
-const validateRepayFieldsForMarket = (
-  marketId: string | null | undefined,
-  stateCollateral: Decimal | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-  routeId: string | null | undefined,
-) => {
-  skipWhen(!marketId, () => {
-    if (!marketId) return // somehow, skipWhen doesn't stop execution of the inner function
-    // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
-    const type = getRepayImplementationType(marketId, {
-      stateCollateral: stateCollateral ?? '0',
-      userCollateral: userCollateral ?? '0',
-      userBorrowed: userBorrowed ?? '0',
-    })
-    const swapRequired = !!stateCollateral || !!userCollateral || !!routeId
-    validateRoute(routeId, swapRequired && isRouterRequired(type))
-  })
-}
-
 export const collateralValidationGroup = ({
   chainId,
   userCollateral,
@@ -116,7 +35,7 @@ export const collateralValidationGroup = ({
     marketIdValidationSuite({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
     validateUserCollateral(userCollateral, { required: true })
-    validateMaxCollateral(userCollateral, maxCollateral)
+    validateMaxCollateral(userCollateral, maxCollateral, { required: true })
   })
 
 export const collateralValidationSuite = createValidationSuite((params: CollateralParams) =>
@@ -140,76 +59,17 @@ export const leverageUserMarketValidationSuite = createValidationSuite(
 
 export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, { required: true })
-  validateMaxCollateral(params.userCollateral, params.maxCollateral)
+  validateMaxCollateral(params.userCollateral, params.maxCollateral, { required: true })
 })
 
 export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, { required: true })
-  validateMaxCollateral(params.userCollateral, params.maxCollateral)
+  validateMaxCollateral(params.userCollateral, params.maxCollateral, { required: true })
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
   validateIsFull(isFull)
 })
-
-export const repayValidationGroup = <IChainId extends number>(
-  {
-    chainId,
-    marketId,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    userAddress,
-    slippage,
-    routeId,
-  }: RepayParams<IChainId>,
-  { leverageRequired = false }: { leverageRequired?: boolean } = {},
-) => {
-  chainValidationGroup({ chainId })
-  llamaApiValidationGroup({ chainId })
-  marketIdValidationGroup({ marketId })
-  userAddressValidationGroup({ userAddress })
-  validateRepayCollateralField('userCollateral', userCollateral)
-  validateRepayCollateralField('stateCollateral', stateCollateral)
-  validateRepayBorrowedField(userBorrowed)
-  validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-  validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed, routeId)
-  validateSlippage({ slippage })
-  validateLeverageSupported(marketId, leverageRequired)
-}
-
-export const repayValidationSuite = ({ leverageRequired }: { leverageRequired: boolean }) =>
-  createValidationSuite((params: RepayParams) => repayValidationGroup(params, { leverageRequired }))
-
-export const repayFormValidationSuite = createValidationSuite(
-  ({
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    maxStateCollateral,
-    maxBorrowed,
-    maxCollateral,
-    isFull,
-    slippage,
-  }: RepayForm) => {
-    validateRepayCollateralField('userCollateral', userCollateral)
-    validateRepayCollateralField('stateCollateral', stateCollateral)
-    validateMaxStateCollateral(stateCollateral, maxStateCollateral)
-    validateRepayBorrowedField(userBorrowed)
-    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed })
-    validateMaxCollateral(userCollateral, maxCollateral)
-    validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-    validateIsFull(isFull)
-    validateSlippage({ slippage })
-  },
-)
-
-export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
-  ({ isFull, ...params }: RepayIsFullParams) => {
-    repayValidationGroup(params)
-    group('isFull', () => validateIsFull(isFull))
-  },
-)
 
 export const closeLoanValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) => {

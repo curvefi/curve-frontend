@@ -1,7 +1,8 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 /** Returns whether the planned repay fully closes the loan, whether repayment comes from debt token, wallet collateral, or position collateral. */
@@ -57,6 +58,6 @@ export const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })
