@@ -12,7 +12,8 @@ import {
 import { DAYS, type Period } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { useTheme } from '@mui/material/styles'
-import { fromEntries, mapRecord, recordEntries } from '@primitives/objects.utils'
+import { fromEntries, mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -40,6 +41,13 @@ const MARKET_LABELS = fromEntries(
   recordEntries(MARKETS)
     .filter(([_, { label }]) => label)
     .map(([key, { label }]) => [key, label!]),
+)
+
+const ALL_LABELS = joinButtonText(...recordValues(MARKET_LABELS))
+const ALL_EXCLUDED = joinButtonText(
+  ...recordValues(MARKETS)
+    .filter(({ label }) => !label)
+    .map(({ name }) => name),
 )
 
 const MINT_MARKETS_LABEL = t`Mint markets`
@@ -151,7 +159,12 @@ export function ChartCrvUsdSupplyBreakdown() {
     >
       <ChartFooter
         legendSets={legendSets}
-        description={t`Total crvUSD in circulation broken down by source. "Mint markets" aggregates all standard lending markets. The remaining areas show protocol-specific debt: Keepers debt stabilizes the peg, while Lending operators, Yield basis, and FlashLender debt reflect other protocol-level minting.`}
+        description={notFalsy(
+          t`Total crvUSD in circulation broken down by source.`,
+          t`"Mint markets" aggregates all standard lending markets.`,
+          t`The remaining areas show protocol-specific debt: Keepers debt stabilizes the peg, while ${ALL_LABELS} debt reflect other protocol-level minting.`,
+          ALL_EXCLUDED.length && t`${ALL_EXCLUDED} are not included in the total.`,
+        ).join(' ')}
       />
     </EChartsCard>
   )
