@@ -21,6 +21,7 @@ import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 export type AvailableLiquidity = {
@@ -46,7 +47,7 @@ function buildSupplyRate({
   supplyApy?: number | string | null
   rebasingYieldApy?: number | string | null
   marketOnChainRewards:
-    | { crvRates?: number[]; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
+    | { crvRates?: Range<number> | null; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
     | undefined
   lendingSnapshots: LendingSnapshot[] | undefined
   campaigns: CampaignPoolRewards[]
@@ -58,8 +59,7 @@ function buildSupplyRate({
   const supplyMetrics = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(supplyApy),
     rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
-    crvMinBoostApr: marketOnChainRewards?.crvRates?.[0],
-    crvMaxBoostApr: marketOnChainRewards?.crvRates?.[1],
+    crvBoostApr: marketOnChainRewards?.crvRates,
     extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewards?.rewardsApr),
   })
   const supplyAverageMetrics = getSupplyApyAverageMetrics({

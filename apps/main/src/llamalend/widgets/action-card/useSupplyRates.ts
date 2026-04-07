@@ -13,11 +13,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { q, type Query, type QueryProp } from '@ui-kit/types/util'
+import { q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { BlockchainIds, decimal } from '@ui-kit/utils'
 
 type SupplyRewards = {
-  crvRates?: number[]
+  crvRates?: Range<number> | null
   rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[]
 }
 
@@ -33,8 +33,7 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
   )
   const { totalUserBoost } = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(rates.data?.lendApy),
-    crvMinBoostApr: marketOnChainRewardsQuery.data?.crvRates?.[0],
-    crvMaxBoostApr: marketOnChainRewardsQuery.data?.crvRates?.[1],
+    crvBoostApr: marketOnChainRewardsQuery.data?.crvRates,
     rebasingYieldApy: rebasingYieldApy ?? 0,
     extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewardsQuery.data?.rewardsApr),
     userSupplyBoost: userSupplyBoostQuery.data,
