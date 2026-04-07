@@ -11,7 +11,6 @@ export function useLlamaSnapshot(
   blockchainId: Chain | undefined | null,
   enabled: boolean,
   range: SnapshotRange = { kind: 'timeRange', timeOption: '1M' },
-  aggregate: 'day' | 'week' = 'day',
 ) {
   const isLendMarket = market instanceof LendMarketTemplate
   const controllerAddress = (isLendMarket ? market?.addresses.controller : market?.controller) as Address | undefined
@@ -21,7 +20,6 @@ export function useLlamaSnapshot(
     {
       blockchainId,
       contractAddress: controllerAddress,
-      aggregate,
       timeOption,
       limit,
     },
@@ -31,7 +29,6 @@ export function useLlamaSnapshot(
     {
       blockchainId,
       contractAddress: controllerAddress,
-      aggregate,
       timeOption,
       limit,
     },

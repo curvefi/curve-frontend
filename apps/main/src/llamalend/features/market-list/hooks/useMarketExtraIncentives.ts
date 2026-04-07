@@ -1,37 +1,16 @@
 import { useMemo } from 'react'
-import type { ExtraIncentiveItem } from '@/llamalend/widgets/tooltips/RewardTooltipItems'
+import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
+import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
-import { MAINNET_CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
 
 export const useMarketExtraIncentives = (
   type: MarketRateType,
   incentives: ExtraIncentive[],
-  minApr: number | null | undefined,
-  userBoost?: number | null | undefined,
-): ExtraIncentiveItem[] =>
+  baseRate: number | null | undefined,
+): SupplyExtraIncentive[] =>
   useMemo(
-    () =>
-      type === MarketRateType.Supply
-        ? notFalsy(
-            minApr && {
-              title: 'CRV',
-              percentage: minApr,
-              address: MAINNET_CRV_ADDRESS,
-              blockchainId: 'ethereum',
-              isBoost: false,
-            },
-            userBoost &&
-              minApr &&
-              userBoost > 1 && {
-                title: `Your boost (${defaultNumberFormatter(userBoost)}x)`,
-                percentage: minApr * userBoost - minApr,
-                address: MAINNET_CRV_ADDRESS,
-                blockchainId: 'ethereum',
-                isBoost: true,
-              },
-            ...incentives.map((incentive) => incentive.percentage > 0 && { ...incentive, isBoost: false }),
-          )
-        : [],
-    [incentives, minApr, type, userBoost],
+    // todo: use notFalsyArray
+    () => notFalsy(type === MarketRateType.Supply && formatSupplyExtraIncentives({ incentives, baseRate })).flat(),
+    [baseRate, incentives, type],
   )

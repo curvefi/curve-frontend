@@ -9,6 +9,7 @@ export * from './number'
 export * from './decimal'
 export * from './mui'
 export * from './errors'
+export * from './average-categories'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming
