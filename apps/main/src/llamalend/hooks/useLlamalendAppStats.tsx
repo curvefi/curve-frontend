@@ -39,8 +39,6 @@ const { useQuery: useCrvUsdTotalSupply } = queryFactory({
   validationSuite: EmptyValidationSuite,
 })
 
-const LLAMALEND_APP: AppName = 'llamalend'
-
 export function useLlamalendAppStats(
   {
     chainId,
@@ -53,9 +51,9 @@ export function useLlamalendAppStats(
 ) {
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
-  const isMarketsPage = !!useMatchRoute({ to: `$app/$network/${LLAMALEND_ROUTES.PAGE_MARKETS}` })
+  const isMarketPage = useMatchRoute({ to: `${currentApp}/$network${LLAMALEND_ROUTES.PAGE_MARKETS}/$id` })
 
-  enabled &&= !isDesktop || currentApp === LLAMALEND_APP || isMarketsPage // hide header stats on lend/crvusd market pages only on desktop
+  enabled &&= !isDesktop || !isMarketPage // hide header stats on lend/crvusd market pages only on desktop
 
   const { data: marketData } = useLlamaMarkets(address, enabled)
   const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
