@@ -87,7 +87,7 @@ export const TYPOGRAPHY_VARIANTS = {
 
   buttonXs: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm' },
   buttonS: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'md', textCase: 'uppercase' },
-  buttonM: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'xl', textCase: 'uppercase' },
+  buttonM: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'md', textCase: 'uppercase' },
 
   tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
   tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
