@@ -53,7 +53,7 @@ export const MarketSupplyRateTooltipContent = ({
   )
   const hasIncentives = !!(extraRewards.length || extraIncentives.length)
   const hasRebasingYield = rebasingYieldApy != null
-  const showBoostRow = boost.type === 'market' && boost.apy != null
+  const showBoostRow = boost.type === 'market' && !!boost.apy
 
   return (
     <TooltipWrapper>
