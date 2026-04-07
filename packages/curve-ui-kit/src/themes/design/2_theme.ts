@@ -170,7 +170,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: Grays[500],
       },
     },
     Success: {
@@ -203,7 +203,7 @@ export const createLightDesign = (
     },
     Navigation: {
       Default: {
-        Label: Text.TextColors.Tertiary,
+        Label: Text.TextColors.Secondary,
       },
       Hover: {
         Label: Text.TextColors.Primary,
@@ -229,7 +229,7 @@ export const createLightDesign = (
         Outline: Layer.Highlight.Outline,
       },
       Current: {
-        Label: Text.TextColors.Primary,
+        Label: Text.TextColors.Highlight,
         Outline: Color.Primary[500],
       },
     },
@@ -266,9 +266,9 @@ export const createLightDesign = (
 
   const Chips = {
     Default: {
-      Label: Text.TextColors.Secondary,
-      Fill: Layer[1].Fill,
-      Stroke: Light.Badges.Border.Default,
+      Label: Text.TextColors.Primary,
+      Fill: Grays[100],
+      Stroke: Text.TextColors.Primary,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -314,11 +314,11 @@ export const createLightDesign = (
 
   const Chart = {
     LiquidationZone: {
-      Current: Yellows[400],
-      Future: Blues[200],
+      Current: Oranges[50],
+      Future: Blues[100],
     },
     Candles: {
-      Positive: Greens[400],
+      Positive: Greens[500],
       Negative: Reds[600],
     },
     Lines: {
@@ -479,7 +479,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       '800': Greens[100],
     },
     Tertiary: {
-      '200': Reds[800],
+      '200': Reds[700],
       '300': Oranges[500],
       '400': Yellows[500],
       '600': Yellows[400],
@@ -625,7 +625,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Label: Blues[700],
-        Fill: Transparent,
+        Fill: Grays[850],
       },
     },
     Success: {
@@ -684,8 +684,8 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         Outline: Layer.Highlight.Outline,
       },
       Current: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Primary[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Color.Primary[400],
       },
     },
     Contained: {
@@ -722,16 +722,16 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer[1].Fill,
-      Stroke: Dark.Badges.Border.Default,
+      Fill: Color.Neutral[75],
+      Stroke: Text.TextColors.Primary,
     },
     Hover: {
       Label: Color.Neutral[50],
       Fill: Color.Neutral[900],
     },
     Current: {
-      Label: Text.TextColors.Highlight,
-      Fill: Layer[1].Fill,
+      Label: Color.Primary[500],
+      Fill: Color.Neutral[75],
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -770,10 +770,10 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   const Chart = {
     LiquidationZone: {
       Current: Oranges[900],
-      Future: Blues[800],
+      Future: Blues[950],
     },
     Candles: {
-      Positive: Greens[300],
+      Positive: Greens[400],
       Negative: Reds[500],
     },
     Lines: {
@@ -982,7 +982,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
 
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
-    Focus_Outline: Color.Primary[500],
+    Focus_Outline: Color.Primary[50],
     Radius: {
       xs: '0',
       sm: '0',
@@ -991,22 +991,22 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     },
     Primary: {
       Default: {
-        Label: Grays[50],
-        Fill: Violets[950],
+        Label: Yellows[500],
+        Fill: Greens[600],
       },
       Hover: {
         Label: Grays[50],
-        Fill: Grays[900],
+        Fill: Greens[400],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violets[200],
+        Fill: Grays[300],
       },
     },
     Secondary: {
       Default: {
         Label: Grays[50],
-        Fill: Grays[900],
+        Fill: Violets[500],
       },
       Hover: {
         Label: Grays[50],
@@ -1014,7 +1014,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[600],
+        Fill: Grays[300],
       },
     },
     Outlined: {
@@ -1041,13 +1041,13 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: Grays[500],
       },
     },
     Success: {
       Default: {
-        Label: Grays[900],
-        Fill: Greens[400],
+        Label: Greens[400],
+        Fill: Greens[100],
       },
       Hover: {
         Label: Greens[400],
@@ -1100,7 +1100,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Outline: Layer.Highlight.Outline,
       },
       Current: {
-        Label: Text.TextColors.Primary,
+        Label: Violets[600],
         Outline: Color.Primary[500],
       },
     },
@@ -1137,9 +1137,9 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
 
   const Chips = {
     Default: {
-      Label: Text.TextColors.Secondary,
+      Label: Grays[950],
       Fill: Layer[1].Fill,
-      Stroke: Chad.Badges.Border.Default,
+      Stroke: Grays[950],
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -1185,12 +1185,12 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
 
   const Chart = {
     LiquidationZone: {
-      Current: Yellows[400],
-      Future: Blues[200],
+      Current: Oranges[50],
+      Future: Blues[100],
     },
     Candles: {
-      Positive: Greens[400],
-      Negative: Reds[600],
+      Positive: Greens[500],
+      Negative: Reds[500],
     },
     Lines: {
       Positive: Greens[400],
