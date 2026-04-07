@@ -51,7 +51,7 @@ const {
     }
   },
   category: 'llamalend.borrowMore',
-  validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
+  validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: true }),
 })
 
 const {
@@ -109,7 +109,7 @@ const {
     }
   },
   category: 'llamalend.borrowMore',
-  validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: false }),
+  validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: true }),
 })
 
 export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({

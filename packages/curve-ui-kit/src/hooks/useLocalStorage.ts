@@ -50,6 +50,12 @@ export const useReleaseChannel = () =>
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
+export const useShowNetApr = () =>
+  useLocalStorage<Record<string, boolean>>(
+    `showNetApr`,
+    useMemo(() => ({}), []),
+  )
+
 export const useCreateLoanPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
   useLocalStorage<T>('create-loan-preset', defaultValue)
 
