@@ -31,6 +31,7 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
     snapshotsQuery.data,
     (snapshot) => snapshot.borrowedToken.rebasingYield,
   )
+  // todo: refactor using decimals for calculation, rounding errors causes supplyApy != netSupplyApy even when identical
   const { totalUserBoost } = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(rates.data?.lendApy),
     crvBoostApr: marketOnChainRewardsQuery.data?.crvRates,

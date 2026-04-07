@@ -13,8 +13,8 @@ import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/cr
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
-import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '../../../widgets/action-card/hooks/useBorrowRates'
+import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
 

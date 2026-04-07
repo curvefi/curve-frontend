@@ -7,8 +7,8 @@ import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/share
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
+import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
 
 export type SupplyActionInfoListProps = {
   isOpen: boolean
