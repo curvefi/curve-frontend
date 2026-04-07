@@ -110,7 +110,7 @@ export const Transparent = '#ffffff00' as const
 
 export const Spacing = {
   '0': '0rem',
-  '75': '0.062rem', // ~1px
+  '75': '0.0625rem', // 1px
   '100': '0.125rem', // 2px
   '200': '0.25rem', // 4px
   '300': '0.5rem', // 8px
@@ -124,7 +124,7 @@ export const Spacing = {
 } as const
 
 export const Sizing = {
-  '10': '0.062rem', // ~1px
+  '10': '0.0625rem', // 1px
   '25': '0.125rem', // 2px
   '50': '0.25rem', // 4px
   '100': '0.5rem', // 8px
