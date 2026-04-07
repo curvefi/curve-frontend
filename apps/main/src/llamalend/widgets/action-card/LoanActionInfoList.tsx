@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { QueryProp, Range } from '@ui-kit/types/util'
-import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { decimal, decimalGreaterThan, formatNumber, formatPercent } from '@ui-kit/utils'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
@@ -49,7 +49,7 @@ export type LoanActionInfoListProps = {
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
   leverageTotalCollateral?: QueryProp<Decimal | null>
-  priceImpact?: QueryProp<number | null>
+  priceImpact?: QueryProp<Decimal | null>
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
@@ -126,7 +126,7 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
+  const isHighImpact = priceImpact?.data != null && slippage != null && decimalGreaterThan(priceImpact.data, slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
