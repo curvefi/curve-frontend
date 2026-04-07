@@ -1,6 +1,7 @@
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -10,8 +11,8 @@ import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { useCreateLoanIsApproved } from './create-loan-approved.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-type CreateLoanApproveEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
-type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanApproveEstimateGasQuery<T>>
+type CreateLoanEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
+type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
 
 const {
   useQuery: useCreateLoanApproveEstimateGas,
@@ -31,7 +32,7 @@ const {
     userBorrowed = '0',
     userCollateral = '0',
     leverageEnabled,
-  }: CreateLoanApproveEstimateGasQuery) => {
+  }: CreateLoanEstimateGasQuery) => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
@@ -45,7 +46,7 @@ const {
     }
   },
   category: 'llamalend.createLoan',
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
@@ -85,7 +86,7 @@ const {
     range,
     slippage,
     routeId,
-  }: CreateLoanApproveEstimateGasQuery): Promise<TGas> => {
+  }: CreateLoanEstimateGasQuery): Promise<TGas> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
@@ -106,10 +107,10 @@ const {
     }
   },
   category: 'llamalend.createLoan',
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: true, collateralRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
-    ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
+    ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })
 

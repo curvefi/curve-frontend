@@ -11,10 +11,10 @@ import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-availabl
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
-import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
+import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
@@ -28,22 +28,20 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
-const useRepayParams = <ChainId>({
-  isFull,
-  maxCollateral,
-  slippage,
-  stateCollateral,
-  userBorrowed,
-  userCollateral,
-  routeId,
+const useRepayParams = ({
   chainId,
   marketId,
   userAddress,
-}: RepayForm & {
-  chainId: ChainId
-  marketId: string | undefined
-  userAddress: Address | undefined
-}) =>
+  stateCollateral,
+  userCollateral,
+  userBorrowed,
+  maxCollateral,
+  maxStateCollateral,
+  maxBorrowed,
+  isFull,
+  slippage,
+  routeId,
+}: RepayFormParams) =>
   useFormDebounce(
     useMemo(
       () => ({
@@ -54,6 +52,8 @@ const useRepayParams = <ChainId>({
         userCollateral,
         userBorrowed,
         maxCollateral,
+        maxStateCollateral,
+        maxBorrowed,
         isFull,
         slippage,
         routeId,
@@ -66,6 +66,8 @@ const useRepayParams = <ChainId>({
         userCollateral,
         userBorrowed,
         maxCollateral,
+        maxStateCollateral,
+        maxBorrowed,
         isFull,
         slippage,
         routeId,
@@ -75,7 +77,6 @@ const useRepayParams = <ChainId>({
 
 const formOptions = {
   ...formDefaultOptions,
-  resolver: vestResolver(repayFormValidationSuite),
   defaultValues: {
     stateCollateral: undefined,
     userCollateral: undefined,
@@ -111,7 +112,10 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
-  const form = useForm<RepayForm>(formOptions)
+  const form = useForm<RepayFormData>({
+    ...formOptions,
+    resolver: vestResolver(useMemo(() => repayFormValidationSuite(market), [market])),
+  })
 
   const values = watchForm(form)
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })

@@ -33,27 +33,36 @@ export const createLoanFormValidationGroup = (
     isMaxDebtRequired,
     isLeverageRequired,
     collateralRequired,
-  }: { debtRequired: boolean; isMaxDebtRequired: boolean; isLeverageRequired: boolean; collateralRequired: boolean },
+    ignoreMaxCollateral,
+  }: {
+    debtRequired: boolean
+    isMaxDebtRequired: boolean
+    isLeverageRequired: boolean
+    collateralRequired: boolean
+    ignoreMaxCollateral: boolean
+  },
 ) =>
   group('createLoanFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
     validateUserCollateral(userCollateral, { required: collateralRequired })
-    validateDebt(debt, debtRequired)
+    validateDebt(debt, { required: debtRequired })
     validateSlippage({ slippage })
     validateRange(range)
-    validateMaxDebt(debt, maxDebt, isMaxDebtRequired)
-    validateMaxCollateral(userCollateral, maxCollateral)
-    validateLeverageEnabled(leverageEnabled, isLeverageRequired)
+    validateMaxDebt(debt, maxDebt, { required: isMaxDebtRequired })
+    if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral, { required: collateralRequired })
+    validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
   })
 
 export const createLoanQueryValidationSuite = ({
   debtRequired,
   isMaxDebtRequired = debtRequired,
   collateralRequired = false,
+  ignoreMaxCollateral = !collateralRequired,
   isLeverageRequired = false,
   skipMarketValidation = false,
 }: {
   debtRequired: boolean
+  ignoreMaxCollateral?: boolean
   collateralRequired?: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
@@ -63,7 +72,13 @@ export const createLoanQueryValidationSuite = ({
     skipWhen(skipMarketValidation, () => {
       marketIdValidationSuite(params)
     })
-    createLoanFormValidationGroup(params, { debtRequired, isMaxDebtRequired, isLeverageRequired, collateralRequired })
+    createLoanFormValidationGroup(params, {
+      debtRequired,
+      isMaxDebtRequired,
+      isLeverageRequired,
+      collateralRequired,
+      ignoreMaxCollateral,
+    })
     const { marketId, leverageEnabled, routeId } = params
     skipWhen(!marketId, () => {
       if (!marketId) return
