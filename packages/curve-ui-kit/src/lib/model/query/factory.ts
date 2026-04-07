@@ -58,6 +58,21 @@ export class NoRetryError extends Error {
   constructor(message: string) {
     super(message)
   }
+
+  /**
+   * When we receive 404's from t
+   * @param run
+   */
+  static async catch404<T>(run: () => Promise<T>) {
+    try {
+      return await run()
+    } catch (error) {
+      if (error instanceof FetchError && error.status === 404) {
+        throw new NoRetryError(error.message)
+      }
+      throw error
+    }
+  }
 }
 
 /**

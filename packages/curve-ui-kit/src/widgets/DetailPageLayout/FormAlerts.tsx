@@ -3,15 +3,16 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Query } from '@ui-kit/types/util'
-import { formatPercent, getErrorMessage } from '@ui-kit/utils'
+import { decimalGreaterThan, formatPercent, getErrorMessage } from '@ui-kit/utils'
 
 /** Threshold above which price impact is considered high and warrants a warning */
-export const HIGH_PRICE_IMPACT_THRESHOLD = 5
+export const HIGH_PRICE_IMPACT_THRESHOLD = '5' satisfies Decimal
 
 export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
@@ -61,7 +62,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
   )
 }
 
-export type HighPriceImpactAlertProps = Query<number>
+export type HighPriceImpactAlertProps = Query<Decimal | null>
 
 /**
  * Inline alert displayed when price impact exceeds the threshold.
@@ -76,7 +77,7 @@ export const HighPriceImpactAlert = ({ data: priceImpact, isLoading, error }: Hi
     </Alert>
   ) : (
     priceImpact != null &&
-    priceImpact > HIGH_PRICE_IMPACT_THRESHOLD && (
+    decimalGreaterThan(priceImpact, HIGH_PRICE_IMPACT_THRESHOLD) && (
       <Alert severity="warning" data-testid="high-price-impact-alert" variant="outlined">
         <AlertTitle sx={{ color: 'warning.main' }}>
           {t`High price impact:`} -{formatPercent(priceImpact)}
