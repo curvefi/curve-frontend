@@ -3,32 +3,29 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-export const getActionInfo = (name: string, field?: 'previous') =>
-  cy.get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
+type ActionInfoField = 'previous' | 'left' | 'right' | 'value'
+export const getActionInfo = (name: string, field: ActionInfoField = 'value') =>
+  cy.get(`[data-testid="${notFalsy(name, field).join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
 
 export const DECIMAL_REGEX = /(\d(\.\d+)?)/
 export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))
 
-export const getActionValue = (name: string, field?: 'previous') =>
+export const getActionValue = (name: string, field?: ActionInfoField) =>
   getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
 export const getActionInfoError = (name: string, field?: 'previous') =>
   getActionInfo(name, field).find('[data-testid="error-icon-button"]', LOAD_TIMEOUT)
 
-export type DebtCheck = { current: Decimal; future: Decimal; symbol: string; hasLtv?: boolean }
+export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**
  * Checks the current and future debt values, and that the symbol is displayed correctly.
  */
-export const checkDebt = ({ current, future, symbol, hasLtv = true }: DebtCheck) => {
+export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
   getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
-  cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT).contains(symbol)
+  getActionValue('borrow-debt', 'right').should('contain', symbol)
   getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
-  if (hasLtv) {
-    getActionValue('borrow-ltv').should('include', '%')
-    getActionValue('borrow-ltv', 'previous').should('include', '%')
-  } else {
-    getActionInfo('borrow-ltv').should('not.exist')
-  }
+  getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-ltv', 'previous').should('include', '%')
 }
 
 /**

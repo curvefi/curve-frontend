@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type UnstakeOptions, useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
+import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
   unstakeFormValidationSuite,
   UnstakeParams,
@@ -16,7 +16,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
@@ -36,12 +36,10 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<UnstakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -76,19 +74,17 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isUnstaking,
-    isSuccess: isUnstaked,
     error: unstakeError,
-    data,
-    reset: resetUnstake,
-  } = useUnstakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
+  } = useUnstakeMutation({
+    marketId,
+    network,
+    onReset: form.reset,
+    userAddress,
+  })
 
   const { formState } = form
 
-  useCallbackAfterFormUpdate(form, resetUnstake)
-
-  useEffect(() => {
-    updateForm(form, { maxUnstakeAmount: maxUserUnstake.data })
-  }, [form, maxUserUnstake.data])
+  useFormSync(form, { maxUnstakeAmount: maxUserUnstake.data })
 
   const isPending = formState.isSubmitting || isUnstaking
   return {
@@ -100,9 +96,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || isPending || isDebouncing,
     vaultToken,
     borrowToken,
-    isUnstaked,
     unstakeError,
-    txHash: data?.hash,
     max: maxUserUnstake,
     formErrors: useFormErrors(formState),
   }

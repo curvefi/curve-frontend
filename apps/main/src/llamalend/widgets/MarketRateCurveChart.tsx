@@ -26,14 +26,14 @@ const { Spacing, Height } = SizesAndSpaces
 
 export type RateCurveChartPoint = {
   utilization: number
-  borrowApy: number
+  borrowApr: number
   supplyApy: number
 }
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
 const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash: string }[] = [
-  { key: 'borrowApy', label: t`Borrow APY`, dash: 'none' },
+  { key: 'borrowApr', label: t`Borrow APR`, dash: 'none' },
   { key: 'supplyApy', label: t`Supply APY`, dash: '8 8' },
 ]
 
@@ -89,7 +89,7 @@ export const MarketRateCurveChart = ({
 
   const seriesColors: Record<RateCurveSeriesKey, string> = useMemo(
     () => ({
-      borrowApy: Color.Primary[500],
+      borrowApr: Color.Primary[500],
       supplyApy: Color.Tertiary[400],
     }),
     [Color.Primary, Color.Tertiary],

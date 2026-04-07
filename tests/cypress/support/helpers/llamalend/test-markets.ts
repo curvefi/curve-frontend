@@ -4,7 +4,7 @@ import { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
-type TestMarket = {
+export type TestLlamaMarket = {
   id: string
   label: string
   collateralAddress: Address
@@ -19,7 +19,7 @@ type TestMarket = {
   failureClass?: 'estimate-tx' | 'borrow-max' | 'too-much-debt' | 'no-init'
 }
 
-export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestMarket[]> = {
+export const LOAN_TEST_MARKETS: Record<LlamaMarketType, readonly TestLlamaMarket[]> = {
   [LlamaMarketType.Mint]: [
     {
       id: 'wsteth',

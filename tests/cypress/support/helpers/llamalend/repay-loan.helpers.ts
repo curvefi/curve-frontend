@@ -1,4 +1,5 @@
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
@@ -50,9 +51,4 @@ export function checkRepayDetailsLoaded({
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export function submitRepayForm() {
-  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitRepayForm = () => submitLoanForm({ form: 'repay', message: 'Loan repaid!' })

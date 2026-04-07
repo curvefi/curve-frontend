@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { DepositOptions } from '@/llamalend/mutations/deposit.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -16,7 +15,6 @@ export type DepositFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<DepositOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
@@ -26,24 +24,11 @@ export const DepositForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    borrowToken,
-    isDeposited,
-    depositError,
-    txHash,
-    formErrors,
-    isApproved,
-    max,
-  } = useDepositForm({ market, network, enabled, onSuccess })
+  const { form, params, isPending, onSubmit, isDisabled, borrowToken, depositError, formErrors, isApproved, max } =
+    useDepositForm({ market, network, enabled })
 
   return (
     <Form
@@ -71,15 +56,7 @@ export const DepositForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
       </Button>
 
-      <FormAlerts
-        isSuccess={isDeposited}
-        error={depositError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['depositAmount']}
-        successTitle={t`Deposited successfully`}
-      />
+      <FormAlerts error={depositError} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )
 }

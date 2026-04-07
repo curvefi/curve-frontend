@@ -6,17 +6,14 @@ import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
-import {
-  type RepayForm,
-  repayFromCollateralIsFullValidationSuite,
-} from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFormData } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
@@ -31,8 +28,7 @@ type RepayMutation = {
 export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<RepayMutation>
-  onReset?: () => void
+  onReset: () => void
   userAddress: Address | undefined
 }
 
@@ -88,16 +84,9 @@ const repay = async (
   }
 }
 
-export const useRepayMutation = ({
-  network,
-  network: { chainId },
-  marketId,
-  onSuccess,
-  onReset,
-  userAddress,
-}: RepayOptions) => {
+export const useRepayMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: RepayOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
@@ -111,15 +100,14 @@ export const useRepayMutation = ({
       })
       return { hash: await repay(market, variables) }
     },
-    validationSuite: repayFromCollateralIsFullValidationSuite,
+    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(
-    async ({ userBorrowed = '0', isFull, ...form }: RepayForm) =>
+    async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
       mutate({
         ...form,
         isFull,
@@ -128,5 +116,5 @@ export const useRepayMutation = ({
     [mutate],
   )
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, isPending }
 }

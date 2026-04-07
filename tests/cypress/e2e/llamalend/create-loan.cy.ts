@@ -31,8 +31,8 @@ recordValues(LlamaMarketType).map((marketType) =>
         checkLoanDetailsLoaded({ leverageEnabled, expectGasError: failureClass === 'estimate-tx' })
         checkLoanRangeSlider({ leverageEnabled, canBorrowMax: failureClass !== 'borrow-max' })
         // e2e tests run with a 'fake' account so the transaction fails
-        submitCreateLoanForm('error', 'Transaction failed').then(() =>
-          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
+        submitCreateLoanForm({ expected: 'error' }).then(() =>
+          cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
         )
       })
     })

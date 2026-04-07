@@ -1,5 +1,5 @@
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import type { AlertColor } from '@mui/material/Alert'
+import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
 
@@ -24,16 +24,11 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export function submitImproveHealthForm() {
-  cy.get('[data-testid="improve-health-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitImproveHealthForm = () => submitLoanForm({ form: 'improve-health', message: 'Loan repaid' })
 
-export function submitClosePositionForm(expected: AlertColor = 'success', message = 'Position closed successfully!') {
-  cy.get('[data-testid="close-position-submit"]', LOAD_TIMEOUT).click()
-  return cy
-    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
-    .contains(message, TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitClosePositionForm = (expected: 'success' | 'error' = 'success') =>
+  submitLoanForm({
+    form: 'close-position',
+    message: { success: 'Position closed successfully!', error: 'Transaction failed' }[expected],
+    expected,
+  })

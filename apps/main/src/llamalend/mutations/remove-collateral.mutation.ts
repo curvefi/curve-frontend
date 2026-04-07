@@ -8,14 +8,12 @@ import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 
 type RemoveCollateralMutation = { userCollateral: Decimal }
 
 export type RemoveCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<RemoveCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -24,11 +22,10 @@ export const useRemoveCollateralMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: RemoveCollateralOptions) => {
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<RemoveCollateralMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<RemoveCollateralMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'remove-collateral'] as const,
@@ -39,11 +36,10 @@ export const useRemoveCollateralMutation = ({
     pendingMessage: (mutation, { market }) => t`Removing collateral... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) =>
       t`Collateral removed successfully! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback((form: CollateralForm) => mutate(form as RemoveCollateralMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess, reset }
+  return { onSubmit, error, isPending }
 }

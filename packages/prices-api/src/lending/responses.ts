@@ -96,8 +96,10 @@ export type GetUserCollateralEventsResponse = {
 
 export type GetRateCurveResponse = {
   chain: string
-  rates: { utilization: number; borrow_apy: number; supply_apy: number }[]
-  current_utilization: number
-  current_borrow_apy: number
-  current_supply_apy: number
+  rates: { utilization: number; borrow_apy: number; supply_apy: number; borrow_apr: number; supply_apr: number }[]
+  current_utilization: number | null
+  current_borrow_apy: number | null
+  current_supply_apy: number | null
+  current_borrow_apr: number | null
+  current_supply_apr: number | null
 }

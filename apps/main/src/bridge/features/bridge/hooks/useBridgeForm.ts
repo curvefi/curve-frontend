@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react'
+import { noop } from 'lodash'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -10,7 +11,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -90,16 +91,12 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     [crvUsdBalance, crvUsdBalanceLoading],
   )
 
-  useEffect(() => {
-    updateForm(form, { walletBalance: walletBalance.balance })
-  }, [form, walletBalance.balance])
+  useFormSync(form, { walletBalance: walletBalance.balance })
 
   // Fetch bridge capacity for form validation
   const { data: capacity, isLoading: capacityLoading } = useBridgeCapacity({ chainId })
 
-  useEffect(() => {
-    updateForm(form, { min: capacity?.min, max: capacity?.max })
-  }, [form, capacity?.max, capacity?.min])
+  useFormSync(form, { min: capacity?.min, max: capacity?.max })
 
   // Approve mutation (High chane it'll get merged into the bridge mutation later on as it deviates from the usual approve/execute flow with a single button click)
   const isApproved = useBridgeIsApproved(params)
@@ -107,31 +104,18 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     onSubmit: onSubmitApprove,
     isPending: isApproving,
     error: approveError,
-    data: approveData,
-    reset: resetApprove,
   } = useBridgeApproveMutation({
     chainId,
-    onApproved: async () => {
-      await invalidateBridgeIsApproved(params)
-    },
+    onApproved: async () => await invalidateBridgeIsApproved(params),
+    onReset: noop, // don't reset on approval, keep the values
   })
 
   // Bridge mutation
   const {
     onSubmit: onSubmitBridge,
     isPending: isBridging,
-    isSuccess: isBridged,
     error: bridgeError,
-    data: bridgeData,
-    reset: resetBridge,
-  } = useBridgeMutation({
-    chainId,
-    onReset: form.reset,
-  })
-
-  // Reset mutation state on form changes after mutations
-  useCallbackAfterFormUpdate(form, resetApprove)
-  useCallbackAfterFormUpdate(form, resetBridge)
+  } = useBridgeMutation({ chainId, onReset: form.reset })
 
   /**
    * Set fromChainId to the chainId passed to this form, which is the chain from the URL.
@@ -145,10 +129,8 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     [networks, bridgeNetworks],
   )
 
-  useEffect(() => {
-    const network = supportedNetworks.find((network) => network.chainId === chainId)
-    updateForm(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId })
-  }, [form, supportedNetworks, chainId])
+  const network = supportedNetworks.find((network) => network.chainId === chainId)
+  useFormSync(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId })
 
   // Form errors
   const { formState } = form
@@ -165,8 +147,6 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     // Bridge mutation
     isPending: formState.isSubmitting || isBridging || isApproving,
     isApproved,
-    isBridged,
-    txHash: bridgeData?.hash ?? approveData?.hash,
 
     // Action infos
     bridgeCost: useBridgeCost(params),

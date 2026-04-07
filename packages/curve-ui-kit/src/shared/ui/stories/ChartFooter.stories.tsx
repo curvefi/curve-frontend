@@ -153,7 +153,7 @@ const WithSoftLiquidationWrapper = () => {
     <Box sx={{ maxWidth: 600 }}>
       <ChartFooter
         legendSets={legendSets}
-        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+        description={t`When the price enters the liquidation range, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )
@@ -269,7 +269,7 @@ const FullFeaturedWrapper = () => {
         toggleOptions={timeRanges}
         activeToggleOption={activeTime}
         onToggleChange={handleToggleChange}
-        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+        description={t`When the price enters the liquidation range, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )
@@ -349,7 +349,7 @@ export const BoxLegendsOnly: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Chart footer showing box-style legends using theme chart colors for candles and liquidation zones',
+        story: 'Chart footer showing box-style legends using theme chart colors for candles and liquidation ranges',
       },
     },
   },
@@ -388,7 +388,7 @@ const NarrowContainerWrapper = () => {
         toggleOptions={timeRanges}
         activeToggleOption={activeTime}
         onToggleChange={handleToggleChange}
-        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+        description={t`When the price enters the liquidation range, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )

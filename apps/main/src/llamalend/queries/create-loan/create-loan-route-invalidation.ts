@@ -1,9 +1,5 @@
 import type { CreateLoanDebtParams } from '@/llamalend/features/borrow/types'
 import {
-  invalidateCreateLoanEstimateGasQueries,
-  refetchCreateLoanEstimateGasQueries,
-} from '@/llamalend/queries/create-loan/create-loan-approve-estimate-gas.query'
-import {
   invalidateCreateLoanIsApproved,
   refetchCreateLoanIsApproved,
 } from '@/llamalend/queries/create-loan/create-loan-approved.query'
@@ -11,6 +7,10 @@ import {
   invalidateCreateLoanBands,
   refetchCreateLoanBands,
 } from '@/llamalend/queries/create-loan/create-loan-bands.query'
+import {
+  invalidateCreateLoanEstimateGasQueries,
+  refetchCreateLoanEstimateGasQueries,
+} from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import {
   invalidateCreateLoanExpectedCollateral,
   refetchCreateLoanExpectedCollateral,

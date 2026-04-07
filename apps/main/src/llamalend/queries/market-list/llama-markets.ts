@@ -224,11 +224,7 @@ const convertLendingVault = (
         : [],
     },
     type: LlamaMarketType.Lend,
-    url: getInternalUrl(
-      'lend',
-      chain,
-      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasBorrowed || hasSupplied ? 'manage' : 'create'}`,
-    ),
+    url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
     deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[controller] ?? null,
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],

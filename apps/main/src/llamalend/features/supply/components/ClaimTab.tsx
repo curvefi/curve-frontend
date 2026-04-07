@@ -30,12 +30,10 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     isDisabled,
     isLoading,
     isError,
-    isClaimed,
     claimableTokens,
     totalNotionals,
     usdRateLoading: isNotionalLoading,
     table,
-    txHash,
     claimError,
     claimablesError,
     usdRateError,
@@ -52,7 +50,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           table={table}
           emptyState={
             !isError && (
-              <Alert severity="warning" variant="outlined">
+              <Alert severity="warning" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
                 <AlertTitle>{t`No rewards`}</AlertTitle>
                 {t`There are currently no rewards to claim. Only markets with active gauge have rewards.`}
               </Alert>
@@ -81,15 +79,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           {isPending ? t`Processing...` : t`Claim`}
         </Button>
 
-        <FormAlerts
-          isSuccess={isClaimed}
-          error={claimablesError ?? claimError ?? usdRateError}
-          txHash={txHash}
-          formErrors={[]}
-          network={network}
-          handledErrors={[]}
-          successTitle={t`Claimed successfully`}
-        />
+        <FormAlerts error={claimablesError ?? claimError ?? usdRateError} formErrors={[]} handledErrors={[]} />
       </FormContent>
     </>
   )
