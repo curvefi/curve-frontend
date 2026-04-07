@@ -4,7 +4,7 @@ import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake
 import { useSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts.query'
 import type { UnstakeForm, UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
-import { useSupplyRates } from '@/llamalend/widgets/action-card/useSupplyRates'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'

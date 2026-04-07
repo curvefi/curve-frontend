@@ -4,7 +4,7 @@ import { useWithdrawRemovableVaultShares } from '@/llamalend/queries/supply/supp
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
-import { useSupplyRates } from '@/llamalend/widgets/action-card/useSupplyRates'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'

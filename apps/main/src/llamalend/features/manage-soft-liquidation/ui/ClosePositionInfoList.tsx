@@ -5,7 +5,7 @@ import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mut
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
+import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { constQ, q } from '@ui-kit/types/util'

@@ -5,7 +5,7 @@ import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
-import { useSupplyRates } from '@/llamalend/widgets/action-card/useSupplyRates'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
