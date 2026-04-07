@@ -1,12 +1,11 @@
 import type { UseFormReturn } from 'react-hook-form'
-import { useNetSupplyApy } from '@/llamalend/features/supply/hooks/useNetSupplyApy'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/useSupplyRates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
@@ -33,11 +32,8 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
 
-  const marketRates = useMarketRates(params, isOpen)
-  const marketFutureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
-
-  const { netSupplyApy, expectedNetSupplyApy } = useNetSupplyApy(
-    { params, marketRates: q(marketRates), expectedMarketRates: q(marketFutureRates) },
+  const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
+    { params, reservesDelta: depositAmount },
     isOpen,
   )
 
@@ -62,10 +58,10 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
         userBalances,
         (d) => depositAmount && d.totalSharesAmount && decimalSum(d.totalSharesAmount, depositAmount),
       )}
-      prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(marketFutureRates, (d) => d.lendApy)}
-      prevNetSupplyApy={netSupplyApy && q(netSupplyApy)}
-      netSupplyApy={expectedNetSupplyApy && q(expectedNetSupplyApy)}
+      prevSupplyApy={mapQuery(prevRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(rates, (d) => d.lendApy)}
+      prevNetSupplyApy={prevNetSupplyApy}
+      netSupplyApy={netSupplyApy}
       gas={q(useDepositEstimateGas(networks, params, isOpen))}
     />
   )
