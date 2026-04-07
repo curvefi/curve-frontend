@@ -107,6 +107,7 @@ export const {
       leverageRequired: false,
       debtRequired: false,
       maxDebtRequired: false,
+      ignoreMaxDebt: true,
     }),
   ),
 })

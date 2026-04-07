@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { useShowNetApr } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
@@ -18,7 +20,7 @@ import {
   combineActionInfoState,
   formatAmount,
   formatLeverage,
-  isQueryValueNotEqual,
+  isQueryValueDifferent,
 } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
@@ -55,6 +57,33 @@ export type LoanActionInfoListProps = {
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
   leverageEnabled?: boolean
   routes?: MarketRoutes
+}
+
+/**
+ * Decide whether to show the net borrow APR. We will cache the decision in local storage, so that the layout does not
+ * shift every time the user loads the market forms.
+ */
+function useShouldShowNetApr({
+  prevNetBorrowApr,
+  prevRates,
+  rates,
+  netBorrowApr,
+  tokenSymbol,
+}: {
+  prevNetBorrowApr: QueryProp<Decimal | null> | undefined
+  prevRates: QueryProp<{ borrowApr?: Decimal } | null> | undefined
+  netBorrowApr: QueryProp<Decimal | null> | undefined
+  rates: QueryProp<{ borrowApr?: Decimal } | null> | undefined
+  tokenSymbol: string | undefined
+}) {
+  const [defaultValue, setDefaultValue] = useShowNetApr()
+  const isPrevDiff = isQueryValueDifferent(prevNetBorrowApr, prevRates?.data?.borrowApr)
+  const isDiff = isQueryValueDifferent(netBorrowApr, rates?.data?.borrowApr)
+  const result = isDiff || isPrevDiff
+  useEffect(() => {
+    if (result != null && tokenSymbol != null) setDefaultValue((v) => ({ ...v, [tokenSymbol]: result }))
+  }, [result, setDefaultValue, tokenSymbol])
+  return result ?? defaultValue
 }
 
 /**
@@ -99,9 +128,6 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
-  const shouldShowPrevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
-  const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
-
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
       label={t`Debt`}
@@ -127,7 +153,7 @@ export const LoanActionInfoList = ({
               testId="borrow-apr"
             />
           )}
-          {(shouldShowNetBorrowApr || shouldShowPrevNetBorrowApr) && (
+          {useShouldShowNetApr({ tokenSymbol: collateralSymbol, prevNetBorrowApr, prevRates, netBorrowApr, rates }) && (
             <ActionInfo
               label={t`Net borrow APR`}
               value={netBorrowApr?.data && formatPercent(netBorrowApr.data)}

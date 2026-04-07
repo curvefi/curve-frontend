@@ -1,4 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import { notFalsy } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
@@ -62,6 +63,6 @@ export const {
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
-    ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
+    ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })

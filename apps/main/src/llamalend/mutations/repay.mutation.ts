@@ -6,10 +6,8 @@ import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
-import {
-  type RepayForm,
-  repayFromCollateralIsFullValidationSuite,
-} from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFormData } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -102,14 +100,14 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
       })
       return { hash: await repay(market, variables) }
     },
-    validationSuite: repayFromCollateralIsFullValidationSuite,
+    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
     ...props,
   })
 
   const onSubmit = useCallback(
-    async ({ userBorrowed = '0', isFull, ...form }: RepayForm) =>
+    async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
       mutate({
         ...form,
         isFull,

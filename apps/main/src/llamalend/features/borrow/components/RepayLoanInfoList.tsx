@@ -11,8 +11,7 @@ import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.qu
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
-import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
-import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
 import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/useLeverageInfoFields'
@@ -30,17 +29,17 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
   return decimal(remaining.isNegative() ? 0 : remaining)!
 }
 
-function useRepayRemainingDebt<ChainId extends IChainId>(
+function useRepayRemainingDebt(
   {
     params,
     swapRequired,
     prevDebt,
   }: {
-    params: RepayParams<ChainId>
+    params: RepayParams
     swapRequired: boolean
     prevDebt: Query<Decimal | null>
   },
-  { isFull, userBorrowed }: Pick<RepayForm, 'userBorrowed' | 'isFull'>,
+  { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
   enabled: boolean,
 ) {
   const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled)
@@ -71,15 +70,15 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   prevPrices,
 }: {
   market: LlamaMarketTemplate | undefined
-  params: RepayParams<ChainId>
-  values: RepayForm
+  params: RepayParams
+  values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
   routes: MarketRoutes | undefined
-  form: UseFormReturn<RepayForm>
+  form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
 }) {
@@ -97,7 +96,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas(networks, params, isOpen))}
-      health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(useHealthQueries((isHealthFull) => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       isFullRepay={isFull}
       debt={q(debt)}
