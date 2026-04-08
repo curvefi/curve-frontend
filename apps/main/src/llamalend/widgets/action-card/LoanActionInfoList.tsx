@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -43,6 +44,7 @@ export type LoanActionInfoListProps = {
   debt?: QueryProp<Decimal | null>
   prevCollateral?: QueryProp<Decimal | null>
   collateral?: QueryProp<Decimal | null>
+  returnToWallet?: QueryProp<{ value: Decimal; symbol: string }[]>
   prevLeverageValue?: QueryProp<Decimal | null>
   leverageValue?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
@@ -111,6 +113,7 @@ export const LoanActionInfoList = ({
   prevDebt,
   collateral,
   prevCollateral,
+  returnToWallet,
   prevLeverageValue,
   leverageValue,
   prevLeverageCollateral,
@@ -128,16 +131,21 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const isHighImpact = priceImpact?.data != null && slippage != null && decimalGreaterThan(priceImpact.data, slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
-  const debtActionInfo = (debt || prevDebt) && (
-    <ActionInfo
-      label={t`Debt`}
-      value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
-      prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
-      {...combineActionInfoState(debt, prevDebt)}
-      valueRight={borrowSymbol}
-      size="small"
-      testId="borrow-debt"
-    />
+  const debtActionInfo = (
+    <>
+      {(debt || prevDebt) && (
+        <ActionInfo
+          label={t`Debt`}
+          value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
+          prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
+          {...combineActionInfoState(debt, prevDebt)}
+          valueRight={borrowSymbol}
+          size="small"
+          testId="borrow-debt"
+        />
+      )}
+      {returnToWallet && <ReturnToWalletActionInfo returnToWallet={returnToWallet} />}
+    </>
   )
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">

@@ -1,8 +1,10 @@
 import { BigNumber } from 'bignumber.js'
+import { useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
@@ -10,7 +12,7 @@ import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimat
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { useUserCurrentLeverage } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
@@ -53,6 +55,30 @@ function useRepayRemainingDebt(
         }
       : mapQuery(prevDebt, () => prev && remainingDebt(prev, userBorrowed ?? '0'))
   return { debt, debtDelta: debt.data && prev && decimalMinus(debt.data, prev) }
+}
+
+function useReturnToWallet(
+  {
+    params,
+    collateralSymbol,
+    borrowedSymbol,
+  }: { params: RepayParams; collateralSymbol: string; borrowedSymbol: string },
+  enabled: boolean,
+) {
+  const userState = useUserState(params, enabled)
+  const userBorrowed = useRepayExpectedBorrowed(params, enabled)
+  const data = useMemo(
+    () =>
+      calculateReturnToWallet({
+        totalBorrowed: userBorrowed.data?.totalBorrowed,
+        userState: userState.data,
+        stateCollateralDelta: params.stateCollateral ?? undefined,
+        collateralSymbol,
+        borrowedSymbol,
+      }),
+    [collateralSymbol, params.stateCollateral, borrowedSymbol, userState.data, userBorrowed.data],
+  )
+  return enabled ? { data, ...combineQueryState(userBorrowed, userState) } : undefined
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
@@ -113,6 +139,14 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           },
           isOpen,
         ),
+      )}
+      returnToWallet={useReturnToWallet(
+        {
+          params,
+          collateralSymbol: collateralToken?.symbol ?? '',
+          borrowedSymbol: borrowToken?.symbol ?? '',
+        },
+        isOpen && isFull,
       )}
       {...useLeverageInfoFields({
         leverageEnabled: swapRequired, // in llamalend.js we need to use the leverage implementations to do any swap
