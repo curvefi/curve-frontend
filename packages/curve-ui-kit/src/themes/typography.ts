@@ -91,7 +91,7 @@ export const TYPOGRAPHY_VARIANTS = {
 
   tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
   tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[250], lineHeight: Sizing[250] },
+  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' },
   tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
   tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm' },
   tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
