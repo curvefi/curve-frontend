@@ -1,3 +1,4 @@
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -17,7 +18,7 @@ const TooltipContent = () => (
 )
 
 export const SupplyRateMintTooltip = () => (
-  <Tooltip clickable title={t`Supply Yield`} body={<TooltipContent />} placement="top">
+  <Tooltip clickable title={NET_SUPPLY_RATE_TITLE} body={<TooltipContent />} placement="top">
     <Typography variant="tableCellMBold" color="textPrimary" width={'100%'}>
       —
     </Typography>

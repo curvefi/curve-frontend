@@ -1,19 +1,22 @@
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { aprToApy, formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { RateTooltipProps } from './RateCell'
 
 const rateType = MarketRateType.Supply
+const averageCategory = 'llamalend.marketList.rate'
 
 const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
-  const { averageRate, period, minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(
+  const { minBoostedAprAverage, maxBoostedAprAverage, averageRate, isLoading } = useSnapshots(
     market,
-    rateType,
+    { type: rateType, category: averageCategory },
     isOpen, // important: only call this when the tooltip is open
   ) // todo: `error` is ignored
   const {
@@ -28,18 +31,26 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
 
   return (
     <MarketSupplyRateTooltipContent
-      supplyRate={lendApy}
-      averageRate={averageRate}
-      periodLabel={period}
+      supplyApy={lendApy}
+      averageSupplyApy={averageRate}
+      periodLabel={AVERAGE_CATEGORIES[averageCategory].period}
       extraRewards={poolRewards}
-      extraIncentives={rates.incentives}
-      minBoostApr={lendCrvAprUnboosted}
-      maxBoostApr={lendCrvAprBoosted}
-      totalSupplyRateMinBoost={lendTotalApyMinBoosted}
-      totalSupplyRateMaxBoost={lendTotalApyMaxBoosted}
-      totalAverageSupplyRateMinBoost={minBoostedAprAverage}
-      totalAverageSupplyRateMaxBoost={maxBoostedAprAverage}
-      rebasingYield={borrowed?.rebasingYield}
+      extraIncentives={formatSupplyExtraIncentives({
+        incentives: rates.incentives.map((incentive) => ({
+          ...incentive,
+          percentage: aprToApy(incentive.percentage) as number,
+        })),
+        baseRate: aprToApy(lendCrvAprUnboosted),
+      })}
+      totalApy={lendTotalApyMinBoosted}
+      totalAverageApy={minBoostedAprAverage}
+      boost={{
+        type: 'market',
+        apy: aprToApy(lendCrvAprBoosted),
+        totalApy: lendTotalApyMaxBoosted,
+        totalAverageApy: maxBoostedAprAverage,
+      }}
+      rebasingYieldApy={borrowed?.rebasingYield}
       isLoading={isLoading}
     />
   )
@@ -50,7 +61,7 @@ export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) =>
   return (
     <Tooltip
       clickable
-      title={t`Supply Yield`}
+      title={NET_SUPPLY_RATE_TITLE}
       body={<LendRateTooltipContent isOpen={open} market={market} />}
       placement="top"
       open={open}

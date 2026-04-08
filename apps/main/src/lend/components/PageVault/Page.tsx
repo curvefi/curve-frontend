@@ -19,7 +19,6 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -124,11 +123,7 @@ export const Page = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
       )}
-      {hasSupplyPosition && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          <SupplyPositionDetails {...supplyPositionDetails} />
-        </Stack>
-      )}
+      {hasSupplyPosition && <SupplyPositionDetails {...supplyPositionDetails} />}
       <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
     </DetailPageLayout>
   ) : (

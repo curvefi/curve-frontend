@@ -1,3 +1,4 @@
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -65,7 +66,7 @@ export const SupplyActionInfoList = ({
         )}
         {netSupplyApy && (
           <ActionInfo
-            label={t`Net Supply APY`}
+            label={NET_SUPPLY_RATE_TITLE}
             value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
             {...combineActionInfoState(netSupplyApy)}
             size="small"

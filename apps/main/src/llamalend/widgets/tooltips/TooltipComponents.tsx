@@ -143,3 +143,9 @@ export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
     {text}
   </Typography>
 )
+
+export const TooltipFooter = ({ children }: { children: ReactNode }) => (
+  <Typography variant="bodyXsRegular" component="span" fontStyle="italic">
+    {children}
+  </Typography>
+)
