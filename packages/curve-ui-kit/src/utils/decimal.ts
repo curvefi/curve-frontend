@@ -41,5 +41,7 @@ export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): 
 
 export const decimalNegate = (value: Decimal): Decimal => new BigNumber(value).negated().toFixed() as Decimal
 
+export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber(first).isGreaterThan(second)
+
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

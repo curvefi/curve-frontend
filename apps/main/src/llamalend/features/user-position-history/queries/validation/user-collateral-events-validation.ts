@@ -1,7 +1,7 @@
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { chainNameValidationGroup } from '@ui-kit/lib/model/query/chain-name-validation'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
+import { pricesApiChainNameValidationGroup } from '@ui-kit/lib/model/query/prices-chain-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
@@ -13,7 +13,7 @@ export type UserCollateralEventsValidationParams = {
 
 export const userCollateralEventsValidationSuite = createValidationSuite(
   (params: UserCollateralEventsValidationParams) => {
-    chainNameValidationGroup({ blockchainId: params.blockchainId })
+    pricesApiChainNameValidationGroup({ blockchainId: params.blockchainId })
     contractValidationGroup({ blockchainId: params.blockchainId, contractAddress: params.contractAddress })
     userAddressValidationGroup({ userAddress: params.userAddress })
   },

@@ -13,7 +13,7 @@ import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
-import { isChain, type Chain } from '@curvefi/prices-api'
+import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -52,7 +52,7 @@ export const MintMarketPage = () => {
   })
   const activityQueryParams: UserCollateralEventsProps = {
     app: LlamaMarketType.Mint,
-    chain: isChain(network.id) ? network.id : undefined,
+    chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,
     userAddress: curve?.signerAddress,
     collateralToken: market

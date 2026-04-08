@@ -14,7 +14,7 @@ export type LeverageInfoFieldsOptions = {
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   expected?: Query<{ avgPrice?: Decimal }>
-  priceImpact?: Query<number | null>
+  priceImpact?: Query<Decimal | null>
   routes?: MarketRoutes | undefined
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void

@@ -27,7 +27,11 @@ export function mapRecord<K extends string, V, R>(obj: Record<K, V>, mapper: (ke
 export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRecord<K, T>): [K, T][] =>
   Object.entries(obj) as [K, T][]
 
+/** Creates an array of all the values in the object that are not falsy. */
 export const notFalsy = <T>(...items: (T | Falsy)[]): T[] => items.filter(Boolean) as T[]
+
+/** Creates an array of all the flattened values in the given arrays. */
+export const notFalsyArray = <T>(...items: (T[] | Falsy)[]): T[] => notFalsy(...items).flat()
 
 export function assert<T>(value: T | Falsy, message: string) {
   if (!value) {

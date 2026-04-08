@@ -3,13 +3,14 @@ import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import type { LlamaMarketType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
 type BorrowRateMetric = {
   rate: number | null | undefined
   averageRate: number | null | undefined
-  averageRateLabel: string
+  averageCategory: AverageCategory
   rebasingYield: number | null | undefined
   totalBorrowRate: number | null | undefined
   totalAverageBorrowRate: number | null | undefined
@@ -19,12 +20,13 @@ type BorrowRateMetric = {
 
 type BorrowAprMetricProps = {
   marketType: LlamaMarketType
-  borrowRate: BorrowRateMetric | null | undefined
+  borrowRate: BorrowRateMetric
   collateralSymbol: string | null | undefined
   alignment?: MetricProps['alignment']
 }
 
 export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
+  const averageRatePeriod = AVERAGE_CATEGORIES[borrowRate.averageCategory].period
   const title = getBorrowRateTooltipTitle({
     totalBorrowApr: borrowRate?.totalBorrowRate,
     extraRewards: borrowRate?.extraRewards ?? [],
@@ -43,7 +45,7 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
           ? undefined
           : {
               value: borrowRate.averageRate,
-              unit: { symbol: `% ${borrowRate?.averageRateLabel ?? ''} Avg`, position: 'suffix' },
+              unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' },
             }
       }
       valueTooltip={{
@@ -55,7 +57,7 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
             totalBorrowApr={borrowRate?.totalBorrowRate}
             totalAverageBorrowApr={borrowRate?.totalAverageBorrowRate}
             averageApr={borrowRate?.averageRate}
-            periodLabel={borrowRate?.averageRateLabel ?? ''}
+            periodLabel={averageRatePeriod}
             extraRewards={borrowRate?.extraRewards ?? []}
             rebasingYieldApr={borrowRate?.rebasingYield}
             collateralSymbol={collateralSymbol}

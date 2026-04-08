@@ -17,7 +17,7 @@ import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isChain, type Chain } from '@curvefi/prices-api'
+import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -68,7 +68,7 @@ export const LendMarketPage = () => {
   })
   const activityQueryParams: UserCollateralEventsProps = {
     app: LlamaMarketType.Lend,
-    chain: isChain(network.id) ? network.id : undefined,
+    chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address | undefined,
     userAddress,
     collateralToken: market?.collateral_token,
