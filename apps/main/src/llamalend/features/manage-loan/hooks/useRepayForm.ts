@@ -8,6 +8,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
+import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
@@ -21,9 +22,10 @@ import type { RouteResponse } from '@primitives/router.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import type { AllowUndefined, Range } from '@ui-kit/types/util'
+import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { filterFormErrors, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
+import { isPriceImpactTooHigh } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -136,6 +138,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
 
+  const priceImpact = q(useRepayPriceImpact(params, enabled))
   const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
@@ -143,11 +146,13 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
+    isDisabled:
+      !formState.isValid || isPending || isDebouncing || isFull.isLoading || isPriceImpactTooHigh(priceImpact, params),
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
     repayError,
+    priceImpact,
     isApproved: useRepayIsApproved(params, enabled),
     routes: useMarketRoutes({
       chainId,

@@ -10,6 +10,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
+import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
   getBorrowMoreImplementation,
@@ -27,9 +28,10 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
+import { mapQuery, q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { isPriceImpactTooHigh } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId>({
@@ -124,6 +126,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   useCallbackSync(useBorrowMorePrices(params, enabled), onPricesUpdated)
 
+  const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
+  const priceImpact = q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
@@ -132,11 +136,12 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending || isDebouncing,
+    isDisabled: !formState.isValid || isPending || isDebouncing || isPriceImpactTooHigh(priceImpact, params),
     borrowToken,
     collateralToken,
     borrowError,
     isApproved: useBorrowMoreIsApproved(params, enabled),
+    priceImpact,
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
@@ -151,6 +156,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       },
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
+    isLeverageEnabled,
     leverage: mapQuery(
       useBorrowMoreFutureLeverage(params, isLeverageBorrowMore(market, values.leverageEnabled)),
       (value) => value,

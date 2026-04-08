@@ -5,7 +5,6 @@ import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-lo
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -84,6 +83,7 @@ export const RepayForm = <ChainId extends IChainId>({
     formErrors,
     max,
     isFull,
+    priceImpact,
   } = useRepayForm({ market, network, enabled, onPricesUpdated })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id, collateralEvents })
 
@@ -179,7 +179,7 @@ export const RepayForm = <ChainId extends IChainId>({
           )
         }
       />
-      <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
+      <HighPriceImpactAlert {...priceImpact} slippage={params.slippage} />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`

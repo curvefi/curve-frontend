@@ -3,11 +3,7 @@ import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/B
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import {
-  isLeverageBorrowMore,
-  isLeverageBorrowMoreSupported,
-} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -58,6 +54,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     routes,
     max,
     leverage,
+    isLeverageEnabled,
+    priceImpact,
   } = useBorrowMoreForm({
     market,
     network,
@@ -66,7 +64,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralEvents,
   })
 
-  const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 
   const onLeverageToggle = useCallback(
@@ -149,7 +146,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
+      <HighPriceImpactAlert {...priceImpact} slippage={params.slippage} />
 
       <Button
         type="submit"

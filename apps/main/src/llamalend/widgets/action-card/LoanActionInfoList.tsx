@@ -12,7 +12,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { QueryProp, Range } from '@ui-kit/types/util'
-import { decimal, decimalGreaterThan, formatNumber, formatPercent } from '@ui-kit/utils'
+import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
@@ -129,7 +130,7 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const isHighImpact = priceImpact?.data != null && slippage != null && decimalGreaterThan(priceImpact.data, slippage)
+  const priceImpactSeverity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
   const exchangeRateValue = decimal(exchangeRate?.data)
   const debtActionInfo = (
     <>
@@ -282,9 +283,9 @@ export const LoanActionInfoList = ({
         )}
         {priceImpact && (
           <ActionInfo
-            label={isHighImpact ? t`High price impact` : t`Price impact`}
+            label={priceImpactSeverity ? t`High price impact` : t`Price impact`}
             value={priceImpact.data == null ? '-' : formatPercent(priceImpact.data)}
-            {...(isHighImpact && { valueColor: 'error' })}
+            valueColor={{ error: 'error', warning: 'warning.main' }[priceImpactSeverity!]}
             error={priceImpact.error}
             loading={priceImpact.isLoading}
             size="small"
