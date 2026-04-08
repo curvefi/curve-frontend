@@ -29,17 +29,16 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
     limit,
   }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
-    return NoRetryError.catch404(
-      async () =>
-        await getSnapshots(blockchainId, contractAddress, {
-          agg: aggregate,
-          fetch_on_chain: true,
-          // Use limit for fixed row counts (e.g. 7-day averages), otherwise compute a date range
-          // from timeOption to avoid backend timeouts from unbounded queries
-          ...(limit
-            ? { limit }
-            : { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) }),
-        }),
+    return NoRetryError.catch404(async () =>
+      getSnapshots(blockchainId, contractAddress, {
+        agg: aggregate,
+        fetch_on_chain: true,
+        // Use limit for fixed row counts (e.g. 7-day averages), otherwise compute a date range
+        // from timeOption to avoid backend timeouts from unbounded queries
+        ...(limit
+          ? { limit }
+          : { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) }),
+      }),
     )
   },
   validationSuite: contractValidationSuite,
