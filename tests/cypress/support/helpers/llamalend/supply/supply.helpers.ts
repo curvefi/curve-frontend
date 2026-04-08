@@ -64,7 +64,7 @@ export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
 ] as const
 
 type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
-type SupplyActionType = SupplyFormType | 'claim'
+export type SupplyActionType = SupplyFormType | 'claim-crv-rewards' | 'claim-other-rewards'
 
 const getSupplyInput = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)

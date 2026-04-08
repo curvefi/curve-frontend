@@ -3,11 +3,10 @@ import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import { q, QueryProp } from '@ui-kit/types/util'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
 import { hasClaimableRewards } from './supply-query.helpers'
-import { q, Query, QueryProp } from '@ui-kit/types/util'
-import { Decimal } from '@primitives/decimal.utils'
 
 type ClaimEstimateParams<ChainId = number> = UserMarketParams<ChainId>
 type ClaimEstimateQuery = UserMarketQuery
