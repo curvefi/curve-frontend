@@ -52,11 +52,14 @@ export const useClaimCrvEstimateGas = <ChainId extends IChainId>(
   enabled = true,
 ) => {
   const claimableCrv = useClaimableCrv(query, enabled)
+  const isClaimCrvEnabled = enabled && Number(claimableCrv.data) > 0
+
   return useClaimEstimateGas(
     networks,
     query,
     q(claimableCrv),
-    q(useClaimCrvEstimateGasQuery(query, enabled && Number(claimableCrv.data) > 0)),
+    q(useClaimCrvEstimateGasQuery(query, isClaimCrvEnabled)),
+    isClaimCrvEnabled,
   )
 }
 
@@ -66,10 +69,13 @@ export const useClaimRewardsEstimateGas = <ChainId extends IChainId>(
   enabled = true,
 ) => {
   const claimableRewards = useClaimableRewards(query, enabled)
+  const isClaimRewardsEnabled = enabled && hasClaimableRewards(claimableRewards.data)
+
   return useClaimEstimateGas(
     networks,
     query,
     q(claimableRewards),
-    q(useClaimRewardsEstimateQuery(query, enabled && hasClaimableRewards(claimableRewards.data))),
+    q(useClaimRewardsEstimateQuery(query, isClaimRewardsEnabled)),
+    isClaimRewardsEnabled,
   )
 }

@@ -75,7 +75,17 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             )
           }
         />
-        <Stack flexDirection={{ mobile: 'column-reverse', tablet: 'row' }} gap={Spacing.md}>
+        <Stack flexDirection={'column'} gap={Spacing.xs}>
+          <Button
+            fullWidth
+            type="button"
+            loading={isCrvPending || !market}
+            disabled={isCrvDisabled}
+            data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
+            onClick={onSubmitCrv}
+          >
+            {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
+          </Button>
           <Button
             color="secondary"
             fullWidth
@@ -86,16 +96,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             onClick={onSubmitRewards}
           >
             {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
-          </Button>
-          <Button
-            fullWidth
-            type="button"
-            loading={isCrvPending || !market}
-            disabled={isCrvDisabled}
-            data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
-            onClick={onSubmitCrv}
-          >
-            {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
           </Button>
         </Stack>
 
