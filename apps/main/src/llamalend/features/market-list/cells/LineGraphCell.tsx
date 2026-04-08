@@ -43,7 +43,11 @@ type RateCellProps = {
 export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: RateCellProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const { isIntersecting } = useIntersectionObserver(ref, { freezeOnceVisible: true })
-  const { snapshots, snapshotKey, isLoading, rate, error } = useSnapshots(market, type, isIntersecting)
+  const { snapshots, snapshotKey, isLoading, rate, error } = useSnapshots(
+    market,
+    { type, category: 'llamalend.marketList.rate' },
+    isIntersecting,
+  )
   const { design } = useTheme()
   if (rate == null) return null // supply yield disabled for mint markets
   return (

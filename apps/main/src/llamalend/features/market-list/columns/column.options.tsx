@@ -1,3 +1,4 @@
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
@@ -106,7 +107,7 @@ const createLlamaMarketsColumnOptions = ({
     label: t`Lend`,
     options: [
       {
-        label: `Supply Yield`,
+        label: NET_SUPPLY_RATE_TITLE,
         columns: [LlamaMarketColumnId.LendRate],
         active: onlyPositions != MarketRateType.Borrow,
         enabled: true,
