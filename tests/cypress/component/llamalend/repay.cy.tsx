@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
+import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
@@ -16,6 +17,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const chainId = 1
@@ -45,7 +47,13 @@ describe('RepayForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <RepayForm market={market} networks={llamaNetworks} chainId={chainId} onPricesUpdated={onPricesUpdated} />
+          <RepayForm
+            market={market}
+            networks={llamaNetworks}
+            chainId={chainId}
+            onPricesUpdated={onPricesUpdated}
+            collateralEvents={constQ(fakeCollateralEvents)}
+          />
         </MockLoanTestWrapper>,
       )
 

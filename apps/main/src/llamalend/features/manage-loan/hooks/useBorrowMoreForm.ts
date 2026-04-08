@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -26,7 +27,7 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { mapQuery, type Range } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -88,11 +89,13 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   network,
   enabled,
   onPricesUpdated,
+  collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -147,7 +150,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
         await invalidateOrRefetchBorrowMoreRouteQueries(route, { ...params, routeId: route?.id })
       },
     }),
-    max: useMaxBorrowMoreValues({ params, form, market }, enabled),
+    max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
     leverage: mapQuery(
       useBorrowMoreFutureLeverage(params, isLeverageBorrowMore(market, values.leverageEnabled)),
       (value) => value,

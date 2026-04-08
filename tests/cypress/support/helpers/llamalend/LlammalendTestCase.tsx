@@ -12,6 +12,7 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -25,7 +26,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
-import type { Range } from '@ui-kit/types/util'
+import { constQ, type Range } from '@ui-kit/types/util'
 
 const prefetch = () => prefetchMarkets({})
 
@@ -57,6 +58,8 @@ type LlammalendTestProps = {
   onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
 } & UserMarketQuery<LlamaChainId>
 
+export const fakeCollateralEvents: UserCollateralEvents = { events: [], originalLeverage: `1` }
+
 function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTestProps) {
   const { isHydrated } = useCurve()
   const isLoan = type === 'loan'
@@ -79,6 +82,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTest
       onPricesUpdated={onPricesUpdated!}
       onSuccess={cy.stub()}
       enabled
+      collateralEvents={constQ(fakeCollateralEvents)}
       {...props}
     />
   )

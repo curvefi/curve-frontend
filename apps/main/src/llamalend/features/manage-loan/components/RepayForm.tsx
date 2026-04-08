@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
@@ -18,7 +19,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { q, type Range } from '@ui-kit/types/util'
+import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -58,12 +59,14 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onPricesUpdated,
+  collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const network = networks[chainId]
   const {
@@ -81,13 +84,8 @@ export const RepayForm = <ChainId extends IChainId>({
     formErrors,
     max,
     isFull,
-  } = useRepayForm({
-    market,
-    network,
-    enabled,
-    onPricesUpdated,
-  })
-  const { token, onToken, tokens } = useRepayTokens({ chainId, market, networkId: network.id })
+  } = useRepayForm({ market, network, enabled, onPricesUpdated })
+  const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id, collateralEvents })
 
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken

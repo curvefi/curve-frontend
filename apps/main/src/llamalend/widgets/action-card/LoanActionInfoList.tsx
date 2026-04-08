@@ -167,9 +167,9 @@ export const LoanActionInfoList = ({
         <Stack>
           <ActionInfo
             label={t`Health`}
-            value={health?.data && !isFullRepay ? formatNumber(health.data, { abbreviate: false }) : '∞'}
+            value={health?.data && !isFullRepay ? formatNumber(health.data, { abbreviate: true }) : '∞'}
             {...(prevHealth && {
-              prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: false }) : '∞',
+              prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: true }) : '∞',
             })}
             {...combineActionInfoState(health, prevHealth)}
             valueColor={getHealthValueColor({

@@ -1,9 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { canRepayFromStateCollateral, canRepayFromUserCollateral, getTokens } from '@/llamalend/llama.utils'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import {
+  canRepayFromStateCollateral,
+  canRepayFromUserCollateral,
+  getTokens,
+  isPositionLeveraged,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useIsLeveragedPosition } from '@/llamalend/queries/user/user-current-leverage.query'
 import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
+import type { QueryProp } from '@ui-kit/types/util'
 
 export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'userBorrowed' }
 
@@ -50,16 +56,16 @@ const getRepayTokenOptions = ({
 export const useRepayTokens = ({
   market,
   networkId,
-  chainId,
+  collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
   networkId: string
-  chainId: number
+  collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const [token, onToken] = useState<RepayTokenOption | undefined>()
   const tokens = useMemo(() => getRepayTokenOptions({ market, networkId }), [market, networkId])
-  const { data: leverageEnabled } = useIsLeveragedPosition({ chainId, marketId: market?.id })
-  const field = leverageEnabled === true ? 'userCollateral' : leverageEnabled === false ? 'userBorrowed' : undefined
+  const leverageEnabled = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
+  const field = leverageEnabled === true ? 'stateCollateral' : leverageEnabled === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find((t) => t.field === field)
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

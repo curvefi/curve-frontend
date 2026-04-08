@@ -10,7 +10,7 @@ import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 const { Spacing } = SizesAndSpaces
 
 export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
-  const { txUrl, loanChange, borrowToken, collateralChange, collateralChangeUsd, collateralToken } = event
+  const { url, loanChange, borrowToken, collateralChange, collateralChangeUsd, collateralToken } = event
 
   return (
     <Stack>
@@ -45,7 +45,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
         </Stack>
       </Stack>
 
-      {txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
+      {url && <ExternalLink href={url} label={t`View Transaction`} size="extraSmall" />}
     </Stack>
   )
 }
