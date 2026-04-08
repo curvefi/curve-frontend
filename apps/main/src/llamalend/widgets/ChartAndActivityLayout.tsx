@@ -68,17 +68,13 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
-    setCandlePriceRange((previous) => {
-      if (
-        previous &&
-        Math.abs(previous.min - min) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE &&
-        Math.abs(previous.max - max) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
-      ) {
-        return previous
-      }
-
-      return { min, max }
-    })
+    setCandlePriceRange((previous) =>
+      previous &&
+      Math.abs(previous.min - min) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE &&
+      Math.abs(previous.max - max) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
+        ? previous
+        : { min, max },
+    )
   }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible

@@ -44,8 +44,7 @@ export const useVisiblePriceRangeSync = ({
   // Batch rapid triggers into requestAnimationFrame and sample multiple frames so post-gesture
   // autoscale settling is captured reliably.
   const scheduleEmitPriceRange = useCallback(() => {
-    if (!onVisiblePriceRangeChangeRef.current) return
-    if (emitPriceRangeRafRef.current !== null) return // already sampling, skip
+    if (!onVisiblePriceRangeChangeRef.current || emitPriceRangeRafRef.current !== null) return // already sampling, skip
 
     const run = (remaining: number) => {
       emitPriceRangeRafRef.current = null
