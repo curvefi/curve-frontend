@@ -15,9 +15,9 @@ export function ReturnToWalletActionInfo({
     <>
       <ActionInfo
         label={t`Return to wallet`}
-        valueTooltip={first.value}
-        value={first ? formatNumber(first.value, { abbreviate: true }) : '-'}
-        valueRight={first.symbol}
+        valueTooltip={first && `${formatNumber(first.value, { abbreviate: false })} ${first.symbol}`}
+        value={first == null ? '-' : formatNumber(first.value, { abbreviate: true })}
+        valueRight={first?.symbol}
         size="small"
         testId="return-to-wallet"
         {...combineActionInfoState(returnToWallet)}
@@ -25,7 +25,7 @@ export function ReturnToWalletActionInfo({
       {second && (
         <ActionInfo
           label={''}
-          valueTooltip={second.value}
+          valueTooltip={`${formatNumber(second.value, { abbreviate: false })} ${second.symbol}`}
           value={second ? formatNumber(second.value, { abbreviate: true }) : '-'}
           valueRight={second.symbol}
           size="small"

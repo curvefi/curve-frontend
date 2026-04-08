@@ -97,7 +97,9 @@ export const useUserCollateralEvents = ({
     () =>
       q({
         data: data && {
-          originalLeverage: decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise),
+          originalLeverage: Number(data.totalDepositFromUserPrecise)
+            ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
+            : '0',
           events:
             data.events
               .map((event, index, events) => ({
