@@ -18,6 +18,7 @@ import {
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -71,18 +72,20 @@ function buildSupplyRate({
     ...supplyMetrics,
     ...supplyAverageMetrics,
     averageCategory: category,
-    extraIncentives: blockchainId
-      ? formatSupplyExtraIncentives({
-          incentives:
+    extraIncentives: notFalsyArray(
+      blockchainId &&
+        formatSupplyExtraIncentives({
+          incentives: notFalsyArray(
             marketOnChainRewards?.rewardsApr?.map((reward) => ({
               title: reward.symbol,
               percentage: aprToApy(reward.apy) as number,
               blockchainId,
               address: reward.tokenAddress,
-            })) ?? [],
+            })),
+          ),
           baseRate: supplyMetrics.supplyApyCrvMinBoost,
-        })
-      : [],
+        }),
+    ),
     extraRewards: campaigns,
     loading,
   }

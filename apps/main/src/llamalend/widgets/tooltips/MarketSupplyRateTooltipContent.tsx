@@ -18,8 +18,6 @@ type SupplyBoost = {
   apy: number | null | undefined
   totalApy: number | null | undefined
   totalAverageApy: number | null | undefined
-  // veCRV boost
-  value?: number | null | undefined
 }
 export type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | null | undefined
@@ -48,9 +46,7 @@ export const MarketSupplyRateTooltipContent = ({
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const showApyDescription = [extraRewards.length > 0 || extraIncentives.length > 0, rebasingYieldApy != null].some(
-    Boolean,
-  )
+  const showApyDescription = [extraRewards.length, extraIncentives.length, rebasingYieldApy != null].some(Boolean)
   const hasIncentives = !!(extraRewards.length || extraIncentives.length)
   const hasRebasingYield = rebasingYieldApy != null
   const showBoostRow = boost.type === 'market' && !!boost.apy

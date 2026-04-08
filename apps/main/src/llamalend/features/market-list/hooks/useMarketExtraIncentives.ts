@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
 
 export const useMarketExtraIncentives = (
@@ -10,7 +10,6 @@ export const useMarketExtraIncentives = (
   baseRate: number | null | undefined,
 ): SupplyExtraIncentive[] =>
   useMemo(
-    // todo: use notFalsyArray
-    () => notFalsy(type === MarketRateType.Supply && formatSupplyExtraIncentives({ incentives, baseRate })).flat(),
+    () => notFalsyArray(type === MarketRateType.Supply && formatSupplyExtraIncentives({ incentives, baseRate })),
     [baseRate, incentives, type],
   )
