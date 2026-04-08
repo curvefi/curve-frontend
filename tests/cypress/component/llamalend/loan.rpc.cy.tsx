@@ -36,10 +36,28 @@ import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { waitFor } from '@ui-kit/utils/time.utils'
 
-const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
+const testCases = recordValues(LlamaMarketType).map((marketType) => ({ marketType, ...oneLoanTestMarket(marketType) }))
+
+/**
+ * The lend markets have a memoize() around the userState function that we cannot control from the outside.
+ * This leads to the borrow more form detecting maxDebt=0 during the first render. It needs to be recalled once the user state is updated.
+ * The proper fix is here: https://github.com/curvefi/curve-llamalend.js/pull/86
+ */
+const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: LlamaMarketType) => {
+  if (marketType !== LlamaMarketType.Lend) return // mint markets don't have cache
+  cy.then(LOAD_TIMEOUT, () =>
+    waitFor(async () => {
+      const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()
+      if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
+      console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
+    }, LOAD_TIMEOUT),
+  )
+}
 
 testCases.forEach(
   ({
@@ -53,6 +71,7 @@ testCases.forEach(
     chainId,
     hasLeverage,
     label,
+    marketType,
   }) => {
     describe(label, () => {
       skipTestsAfterFailure()
@@ -77,11 +96,9 @@ testCases.forEach(
       const debtTokenSymbol = 'crvUSD'
       let adminRpcUrl: string
 
-      let onSuccess: ReturnType<typeof cy.stub>
       let onPricesUpdated: ReturnType<typeof cy.stub>
 
       beforeEach(() => {
-        onSuccess = cy.stub().as('onSuccess')
         onPricesUpdated = cy.stub().as('onPricesUpdated')
         const vnet = getVirtualNetwork()
         adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
@@ -92,27 +109,24 @@ testCases.forEach(
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
         <LlammalendTestCase
+          type="loan"
           tab={tab}
           vnet={getVirtualNetwork()}
           privateKey={privateKey}
           chainId={chainId}
           marketId={id}
           userAddress={address}
-          onSuccess={onSuccess}
           onPricesUpdated={onPricesUpdated}
         />
       )
-
-      const expectCallbacks = () => {
-        expect(onSuccess).to.be.calledOnce
-        expect(onPricesUpdated).to.be.called
-      }
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        submitCreateLoanForm().then(expectCallbacks)
+        // we need to pass checkMessage=false because the form is unmounted as soon as the transaction is submitted
+        submitCreateLoanForm({ checkMessage: false }).then(() => expect(onPricesUpdated).to.be.called)
+        waitUntilLendMarketUpdated(id, borrow, marketType)
       })
 
       it(`borrows more`, () => {
@@ -123,7 +137,7 @@ testCases.forEach(
           expectedFutureDebt: debtAfterBorrowMore,
           leverageEnabled,
         })
-        submitBorrowMoreForm().then(expectCallbacks)
+        submitBorrowMoreForm().then(() => expect(onPricesUpdated).to.be.called)
         touchBorrowMoreForm() // make sure the new debt is shown
         checkCurrentDebt(debtAfterBorrowMore)
       })
@@ -136,7 +150,7 @@ testCases.forEach(
           debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: debtTokenSymbol },
           leverageEnabled,
         })
-        submitRepayForm().then(expectCallbacks)
+        submitRepayForm().then(() => expect(onPricesUpdated).to.be.called)
         touchRepayLoanForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: debtTokenSymbol })
       })
@@ -146,11 +160,9 @@ testCases.forEach(
         writeImproveHealthForm({ amount: improveHealth })
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
+          isPriceChanged: false,
         })
-        submitImproveHealthForm().then(() => {
-          expect(onSuccess).to.be.calledOnce
-          expect(onPricesUpdated).not.to.be.called // no prices updates while in soft liquidation
-        })
+        submitImproveHealthForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
         touchImproveHealthForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
@@ -166,10 +178,9 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
-        submitClosePositionForm('error', 'Transaction failed').then(() => {
+        submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
-          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
-          expect(onSuccess).to.not.be.called
+          cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
           expect(onPricesUpdated).not.to.be.called
         })
       })

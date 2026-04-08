@@ -20,9 +20,8 @@ export const calculateLeverageCollateral = (
 ) =>
   totalCollateral &&
   leverage &&
-  // leverage value can be 0 (e.g, full repay). Leverage collateral should be 0 then
-  (new BigNumber(leverage).isEqualTo(0)
-    ? '0'
+  (new BigNumber(leverage).isZero()
+    ? '0' // when leverage is 0, e.g. full repay, the collateral needed is 0
     : decimal(new BigNumber(totalCollateral).minus(new BigNumber(totalCollateral).div(leverage))))
 
 export const ACTION_INFO_GROUP_SX = { gap: Spacing.sm }
@@ -33,13 +32,8 @@ export const combineActionInfoState = (...queries: (QueryProp<unknown> | undefin
 }
 
 // Returns whether an action info should stay visible when its value differs from the reference value.
-export const isQueryValueNotEqual = (
+export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
 ) =>
-  value &&
-  // Keep the action info visible while loading or when the query has failed
-  (value?.isLoading ||
-    value?.error ||
-    // Otherwise, show it only when both values exist and they are numerically different
-    (comparedValue != null && value?.data != null && !new BigNumber(value.data).isEqualTo(comparedValue)))
+  value && value.data != null && comparedValue != null ? !new BigNumber(value.data).isEqualTo(comparedValue) : undefined

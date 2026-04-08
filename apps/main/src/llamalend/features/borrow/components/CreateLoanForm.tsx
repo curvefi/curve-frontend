@@ -65,14 +65,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     form,
     formErrors,
     isApproved,
-    isCreated,
     isPending,
     isDisabled,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
     routes,
-    txHash,
     values,
     leverage,
   } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
@@ -175,15 +173,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         </Button>
       )}
 
-      <FormAlerts
-        isSuccess={isCreated}
-        error={creationError}
-        formErrors={formErrors}
-        network={network}
-        txHash={txHash}
-        handledErrors={['userCollateral', 'debt', 'maxDebt']}
-        successTitle={t`Loan created`}
-      />
+      <FormAlerts error={creationError} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
     </Form>
   )
 }

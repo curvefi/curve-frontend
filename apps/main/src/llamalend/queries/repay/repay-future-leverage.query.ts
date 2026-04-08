@@ -1,7 +1,8 @@
+import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
-import type { RepayParams, RepayQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const {
@@ -18,6 +19,7 @@ export const {
     userAddress,
     slippage,
     routeId,
+    isFull,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -27,6 +29,7 @@ export const {
       { userBorrowed },
       { slippage },
       { routeId },
+      { isFull },
     ] as const,
   queryFn: async ({
     marketId,
@@ -36,7 +39,9 @@ export const {
     userBorrowed,
     slippage,
     routeId,
+    isFull,
   }: RepayQuery) => {
+    if (isFull) return '0' satisfies Decimal
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
@@ -59,5 +64,5 @@ export const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
 })

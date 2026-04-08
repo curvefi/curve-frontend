@@ -1,15 +1,16 @@
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-const getActionInfo = (name: string, field?: 'previous') =>
-  cy.get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
+type ActionInfoField = 'previous' | 'left' | 'right' | 'value'
+export const getActionInfo = (name: string, field: ActionInfoField = 'value') =>
+  cy.get(`[data-testid="${notFalsy(name, field).join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
 
 export const DECIMAL_REGEX = /(\d(\.\d+)?)/
 export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))
 
-export const getActionValue = (name: string, field?: 'previous') =>
+export const getActionValue = (name: string, field?: ActionInfoField) =>
   getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
 export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
@@ -18,8 +19,10 @@ export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
  */
 export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
   getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
-  cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT).contains(symbol)
+  getActionValue('borrow-debt', 'right').should('contain', symbol)
   getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
+  getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-ltv', 'previous').should('include', '%')
 }
 
 /**

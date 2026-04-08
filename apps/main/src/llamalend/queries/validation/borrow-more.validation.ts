@@ -48,17 +48,17 @@ const validateBorrowMoreFieldsForMarket = ({
   marketId,
   leverageEnabled,
   routeId,
-  debtRequired,
+  debt,
 }: {
   marketId: string | null | undefined
   leverageEnabled: boolean | null | undefined
   routeId: string | null | undefined
-  debtRequired: boolean
+  debt: Decimal | null | undefined
 }) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
     const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
-    validateRoute(routeId, debtRequired && !!leverageEnabled && isRouterRequired(type))
+    validateRoute(routeId, !!(debt && leverageEnabled && isRouterRequired(type)))
   })
 }
 
@@ -74,16 +74,14 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     slippage,
     leverageEnabled,
   }: BorrowMoreForm) => {
-    const debtRequired = true
-    const leverageRequired = false
     validateUserCollateral(userCollateral, { required: false })
-    validateMaxCollateral(userCollateral, maxCollateral)
+    validateMaxCollateral(userCollateral, maxCollateral, { required: false })
     validateUserBorrowed(userBorrowed)
-    validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed })
-    validateDebt(debt, debtRequired)
-    validateMaxDebt(debt, maxDebt, debtRequired)
+    validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed, required: true })
+    validateDebt(debt, { required: true })
+    validateMaxDebt(debt, maxDebt, { required: true })
     validateSlippage({ slippage })
-    validateLeverageEnabled(leverageEnabled, leverageRequired)
+    validateLeverageEnabled(leverageEnabled, { required: false })
   },
 )
 
@@ -105,10 +103,12 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     leverageRequired = false,
     debtRequired = false,
     maxDebtRequired = debtRequired,
+    ignoreMaxDebt = !maxDebtRequired,
   }: {
     leverageRequired?: boolean
     debtRequired?: boolean
     maxDebtRequired?: boolean
+    ignoreMaxDebt?: boolean
   } = {},
 ) => {
   chainValidationGroup({ chainId })
@@ -117,12 +117,12 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   userAddressValidationGroup({ userAddress })
   validateUserCollateral(userCollateral, { required: false })
   validateUserBorrowed(userBorrowed)
-  validateDebt(debt, debtRequired)
-  validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debtRequired })
+  validateDebt(debt, { required: debtRequired })
+  if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, { required: maxDebtRequired })
+  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt })
   validateSlippage({ slippage })
-  validateLeverageEnabled(leverageEnabled, leverageRequired)
-  validateLeverageSupported(marketId, leverageRequired)
+  validateLeverageEnabled(leverageEnabled, { required: leverageRequired })
+  validateLeverageSupported(marketId, { required: leverageRequired })
 }
 
 export const borrowMoreValidationSuite = ({

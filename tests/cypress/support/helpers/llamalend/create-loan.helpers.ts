@@ -48,17 +48,17 @@ export const LOAN_TEST_MARKETS = {
   ],
   [LlamaMarketType.Lend]: [
     {
-      id: 'one-way-market-7',
-      label: 'sUSDe-crvUSD Old Lend Market',
-      collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
-      controllerAddress: '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+      id: 'one-way-market-3',
+      label: 'CRV-crvUSD Old Lend Market',
+      collateralAddress: '0xd533a949740bb3306d119cc777fa900ba034cd52', // CRV
+      controllerAddress: '0xeda215b7666936ded834f76f3fbc6f323295110a',
       collateral: '100',
-      borrow: '90',
-      borrowMore: '5',
-      repay: '50',
-      improveHealth: '30',
+      borrow: '3',
+      borrowMore: '1',
+      repay: '2',
+      improveHealth: '0.9',
       chainId,
-      path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+      path: '/lend/ethereum/markets/0xeda215b7666936ded834f76f3fbc6f323295110a',
       hasLeverage: false,
       collateralDecimals,
     },
@@ -80,8 +80,12 @@ export const LOAN_TEST_MARKETS = {
   ],
 } as const
 
-export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
-  oneOf(...LOAN_TEST_MARKETS[type])
+type TestLlamaMarket = (typeof LOAN_TEST_MARKETS)[LlamaMarketType][number]
+
+export const oneLoanTestMarket = (
+  type: LlamaMarketType = oneValueOf(LlamaMarketType),
+  filter?: (market: TestLlamaMarket) => boolean,
+) => oneOf(...(filter ? LOAN_TEST_MARKETS[type].filter(filter) : LOAN_TEST_MARKETS[type]))
 
 /**
  * Check all loan detail values are loaded and valid.
@@ -92,6 +96,7 @@ export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: b
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-ltv', 'previous').should('include', '%')
   getActionValue('estimated-tx-cost').should('include', '$')
 
   if (leverageEnabled) {
@@ -148,12 +153,38 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   checkLoanDetailsLoaded({ leverageEnabled })
 }
 
+export function submitLoanForm({
+  form,
+  message,
+  expected = 'success',
+  checkMessage = true,
+}: {
+  form: string
+  message: string
+  expected?: AlertColor
+  checkMessage?: boolean
+}) {
+  cy.get(`[data-testid="${form}-submit-button"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
+  if (expected !== 'success') {
+    return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
+  }
+  if (!checkMessage) {
+    return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  }
+  return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+}
+
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export function submitCreateLoanForm(expected: AlertColor = 'success', message = 'Loan created') {
-  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
-    .contains(message, TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitCreateLoanForm = ({
+  expected = 'success',
+  checkMessage,
+}: { expected?: 'success' | 'error'; checkMessage?: boolean } = {}) =>
+  submitLoanForm({
+    form: 'create-loan',
+    message: { error: 'Transaction failed', success: 'Loan created' }[expected],
+    expected,
+    checkMessage,
+  })

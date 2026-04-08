@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # needed to diff yarn.lock against the base branch commit
       - uses: actions/setup-node@v6
         with:
           node-version: 24
@@ -26,7 +28,10 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
       - run: yarn format:check
+        if: always()
       - run: yarn typecheck
+        if: always()
+      - run: yarn check-supply-chain
 
   test:
     name: Unit tests

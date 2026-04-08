@@ -11,7 +11,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   {
@@ -27,7 +27,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
 ) {
   const { chainId, userAddress, marketId } = params
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const isLeverage = useIsLeveragedPosition(params) ?? undefined
+  const isLeverage = useIsLeveragedPosition(params)
 
   const maxUserCollateral = useTokenBalance({
     chainId,
@@ -41,13 +41,11 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   })
 
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
-  const maxDebt = maxReceive.data?.maxDebt
-  const maxBorrowed = maxUserBorrowed.data
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled)
 
-  useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
-  useEffect(() => updateForm(form, { maxBorrowed }), [form, maxBorrowed])
-  useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
+  useFormSync(form, { maxCollateral: maxUserCollateral.data })
+  useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
+  useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
   useEffect(() => updateForm(form, { leverageEnabled: isLeverage.data ?? undefined }), [form, isLeverage.data])
 
   return {

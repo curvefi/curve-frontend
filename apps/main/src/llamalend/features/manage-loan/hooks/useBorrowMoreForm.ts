@@ -6,7 +6,7 @@ import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/u
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
+import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
@@ -28,7 +28,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { updateForm, useCallbackAfterFormUpdate, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId>({
@@ -87,13 +87,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled: boolean
-  onSuccess?: NonNullable<OnBorrowedMore>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
@@ -113,20 +111,15 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isBorrowing,
-    isSuccess: isBorrowed,
     error: borrowError,
-    data,
-    reset: resetBorrow,
   } = useBorrowMoreMutation({
     network,
     marketId,
-    onSuccess,
     onReset: form.reset,
     userAddress,
   })
 
   useCallbackSync(useBorrowMorePrices(params, enabled), onPricesUpdated)
-  useCallbackAfterFormUpdate(form, resetBorrow)
 
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
@@ -139,9 +132,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || isPending || isDebouncing,
     borrowToken,
     collateralToken,
-    isBorrowed,
     borrowError,
-    txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({

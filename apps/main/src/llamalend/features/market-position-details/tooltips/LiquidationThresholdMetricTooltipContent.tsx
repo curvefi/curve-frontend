@@ -1,3 +1,4 @@
+import { UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipItem,
   TooltipItems,
@@ -14,8 +15,6 @@ type LiquidationThresholdTooltipContentProps = {
   bandRange: BandRange | undefined | null
 }
 
-const UnavailableNotation = '-'
-
 export const LiquidationThresholdTooltipContent = ({
   liquidationRange,
   rangeToLiquidation,
@@ -23,13 +22,13 @@ export const LiquidationThresholdTooltipContent = ({
 }: LiquidationThresholdTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription
-      text={t`The price at which your position enters the liquidation zone  and your collateral starts to be eroded by LLAMMA. The distance to LT indicates the distance between the current price and the LT.`}
+      text={t`The price at which your position enters the liquidation range  and your collateral starts to be eroded by LLAMMA. The distance to LT indicates the distance between the current price and the LT.`}
     />
     <TooltipItems secondary>
       <TooltipItem title={t`Distance to LT`} variant="independent">
         {rangeToLiquidation ? formatNumber(rangeToLiquidation, { ...FORMAT_OPTIONS.PERCENT }) : UnavailableNotation}
       </TooltipItem>
-      <TooltipItem title={t`Liquidation zone`} variant="independent">
+      <TooltipItem title={t`Liquidation range`} variant="independent">
         {liquidationRange?.value
           ? `${formatNumber(liquidationRange.value[0], { ...FORMAT_OPTIONS.USD })} to ${formatNumber(liquidationRange.value[1], { ...FORMAT_OPTIONS.USD })}`
           : UnavailableNotation}

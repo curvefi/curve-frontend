@@ -6,9 +6,12 @@ import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
-  getSnapshotBorrowRate,
-  getSnapshotCollateralRebasingYieldRate,
-  getSupplyRateMetrics,
+  getLatestSnapshotValue,
+  getSnapshotBorrowApr,
+  getSnapshotCollateralRebasingYieldApr,
+  getSupplyApyAverageMetrics,
+  getSupplyApyMetrics,
+  sumOnChainExtraIncentivesApr,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -28,14 +31,16 @@ const AVERAGE_MULTIPLIER = LAST_MONTH
 const AVERAGE_RATE_LABEL = `${AVERAGE_MULTIPLIER}D`
 
 function buildSupplyRate({
-  marketRates,
+  supplyApy,
+  rebasingYieldApy,
   marketOnChainRewards,
   lendingSnapshots,
   campaigns,
   blockchainId,
   loading,
 }: {
-  marketRates: { lendApy?: number | string | null } | undefined
+  supplyApy?: number | string | null
+  rebasingYieldApy?: number | string | null
   marketOnChainRewards:
     | { crvRates?: number[]; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
     | undefined
@@ -44,15 +49,18 @@ function buildSupplyRate({
   blockchainId: Chain | undefined
   loading: boolean
 }): SupplyRate {
-  const supplyMetrics = getSupplyRateMetrics({
-    supplyApy: toNumberOrNull(marketRates?.lendApy),
-    snapshots: lendingSnapshots,
-    onChainCrvRates: marketOnChainRewards?.crvRates,
-    onChainRewardsApr: marketOnChainRewards?.rewardsApr,
+  const supplyMetrics = getSupplyApyMetrics({
+    supplyApy: toNumberOrNull(supplyApy),
+    rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
+    crvMinBoostApr: marketOnChainRewards?.crvRates?.[0],
+    crvMaxBoostApr: marketOnChainRewards?.crvRates?.[1],
+    extraIncentivesApr: sumOnChainExtraIncentivesApr(marketOnChainRewards?.rewardsApr),
   })
+  const supplyAverageMetrics = getSupplyApyAverageMetrics({ snapshots: lendingSnapshots })
 
   return {
     ...supplyMetrics,
+    ...supplyAverageMetrics,
     averageRateLabel: AVERAGE_RATE_LABEL,
     extraIncentives:
       marketOnChainRewards?.rewardsApr && blockchainId
@@ -114,8 +122,8 @@ export const usePageHeader = ({
   const metrics = getBorrowRateMetrics({
     borrowRate: toNumberOrNull(marketRates?.borrowApr),
     snapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+    getBorrowRate: getSnapshotBorrowApr,
+    getRebasingYield: getSnapshotCollateralRebasingYieldApr,
   })
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),
@@ -128,12 +136,14 @@ export const usePageHeader = ({
     extraRewards: borrowCampaigns,
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
-
+  const lendingSnapshots = isLendMarket ? (snapshots as LendingSnapshot[] | undefined) : undefined
+  const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
   const supplyRate = isLendMarket
     ? buildSupplyRate({
-        marketRates,
+        supplyApy: marketRates?.lendApy,
+        rebasingYieldApy,
         marketOnChainRewards,
-        lendingSnapshots: snapshots as LendingSnapshot[] | undefined,
+        lendingSnapshots,
         campaigns: supplyCampaigns,
         blockchainId,
         loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,

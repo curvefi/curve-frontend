@@ -35,10 +35,10 @@ export const useManageSoftLiquidation = useBetaChannel
 export const useAnalyticsApp = useStableChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
-export const isZapV2Enabled = isAlpha
+export const isZapV2Enabled = () => isAlpha() && localStorage.getItem('disableZapV2') != 'true'
 
 /** New LlamaLend v2 implementation */
-export const isLLv2Enabled = isAlpha
+export const isLLv2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta
 
 /** New market page layout with forms on the right  */
 export const useRightFormTabsLayout = useBetaChannel

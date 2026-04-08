@@ -49,7 +49,7 @@ const alerts = {
     title: t`Liquidation protection active`,
     description: (
       <>
-        {t`Price has entered the liquidation zone and your collateral is at risk. Either close position or add collateral to improve health. While soft liquidation is active, health steadily declines based on market volatility and liquidity available in the liquidation zone.`}
+        {t`Price has entered the liquidation range and your collateral is at risk. Either close position or add collateral to improve health. While soft liquidation is active, health steadily declines based on market volatility and liquidity available in the liquidation range.`}
         <br />
         <br />
         <strong>{t`If health reaches 0 all collateral is at risk of loss.`}</strong>

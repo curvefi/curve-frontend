@@ -4,7 +4,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { useTransactionMutation, type OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
+import { useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { formatNumber } from '@ui-kit/utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { fetchBridgeCost } from '../queries/bridge-cost.query'
@@ -16,12 +16,11 @@ type BridgeMutation = {
 
 export type BridgeOptions = {
   chainId: number
-  onBridged?: OnTransactionSuccess<BridgeMutation>
-  onReset?: () => void
+  onReset: () => void
 }
 
-export const useBridgeMutation = ({ chainId, onBridged, onReset }: BridgeOptions) => {
-  const { mutate, error, data, isPending, isSuccess, reset } = useTransactionMutation<BridgeMutation>({
+export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
+  const { mutate, error, isPending } = useTransactionMutation<BridgeMutation>({
     mutationKey: [...rootKeys.chain({ chainId }), 'bridge'] as const,
     mutationFn: async ({ amount }) => {
       const curve = requireLib('curveApi')
@@ -32,11 +31,10 @@ export const useBridgeMutation = ({ chainId, onBridged, onReset }: BridgeOptions
     validationParams: { chainId },
     pendingMessage: (mutation) => t`Bridging... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
     successMessage: (mutation) => t`Bridged! ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
-    onSuccess: onBridged,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(async (form: BridgeForm) => mutate(form as BridgeMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, isPending }
 }

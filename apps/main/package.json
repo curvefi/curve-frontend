@@ -17,7 +17,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/llamalend-api": "2.0.11",
+    "@curvefi/llamalend-api": "2.0.15",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
@@ -34,7 +34,7 @@
     "recharts": "2.15.4",
     "ui": "*",
     "vest": "^5.4.6",
-    "vite-plugin-svgr": "^4.5.0",
+    "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
   },
   "peerDependencies": {

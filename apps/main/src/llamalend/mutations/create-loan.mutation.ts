@@ -75,12 +75,12 @@ export const useCreateLoanMutation = ({
   network: { chainId },
   marketId,
   onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: CreateLoanOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<CreateLoanMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<CreateLoanMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
@@ -98,10 +98,10 @@ export const useCreateLoanMutation = ({
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback((data: CreateLoanForm) => mutate(data as CreateLoanMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess, reset }
+  return { onSubmit, error, isPending }
 }

@@ -11,7 +11,6 @@ import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 
 type AddCollateralMutation = { userCollateral: Decimal }
@@ -19,7 +18,6 @@ type AddCollateralMutation = { userCollateral: Decimal }
 export type AddCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<AddCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -34,13 +32,12 @@ export const useAddCollateralMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: AddCollateralOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<AddCollateralMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<AddCollateralMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,
@@ -57,11 +54,10 @@ export const useAddCollateralMutation = ({
     validationSuite: collateralValidationSuite,
     pendingMessage: (mutation, { market }) => t`Adding collateral... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Collateral added successfully! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback((form: CollateralForm) => mutate(form as AddCollateralMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess, reset }
+  return { onSubmit, error, isPending }
 }
