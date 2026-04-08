@@ -78,6 +78,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
          *   overlay clipped to bar width. Two identical labels are stacked; the overlay uses
          *   overflow:hidden to show white text over the red bar and black text over the gray background.
          * - health >= CRITICAL: Single label in warning color
+         * - health >= GOOD: Single label in alert primary color (white)
          */}
         {health != null && (
           <Typography
@@ -87,7 +88,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
               bottom: LABEL_INSET,
               left: LABEL_INSET,
               color: (t) =>
-                health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION
+                health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION || health >= HEALTH_THRESHOLDS.GOOD
                   ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
                   : health < HEALTH_THRESHOLDS.CRITICAL
                     ? t.design.Text.TextColors.Primary // Black base for split effect
