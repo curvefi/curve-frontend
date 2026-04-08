@@ -68,6 +68,8 @@ export type AppName = (typeof AppNames)[number]
 export const AppMenuOptions = ['dex', 'llamalend', 'dao', 'bridge', 'analytics'] as const
 export type AppMenuOption = (typeof AppMenuOptions)[number]
 
+export const LlamalendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
+
 export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   dex: {
     label: 'DEX',

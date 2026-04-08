@@ -24,6 +24,9 @@ import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/Market
 export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
   typeof id === 'string' ? (id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)) : id
 
+export const isLendV2Market = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate && market.version === 'v2'
+
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
  * - Lend Market and its `leverage` property has leverage
@@ -47,12 +50,14 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
+  market instanceof LendMarketTemplate
+    ? !isLendV2Market(market) && market.leverage.hasLeverage()
+    : market?.leverageZap !== zeroAddress
 
-export const hasV2Leverage = (market: MintMarketTemplate) => !!market?.leverageV2.hasLeverage()
+export const hasV2Leverage = (market: MintMarketTemplate) => !isLendV2Market(market) && market?.leverageV2.hasLeverage()
 
 export const hasV1Deleverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.deleverageZap !== zeroAddress
+  market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
 
 // hasV2Leverage works for deleverage as well
 export const hasDeleverage = (market: LlamaMarketTemplate) =>

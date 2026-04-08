@@ -92,7 +92,6 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
                     apy: userBoostApy,
                     totalApy: totalUserBoost,
                     totalAverageApy: totalAverageUserBoost,
-                    value: boostValue,
                   }}
                   rebasingYieldApy={rebasingYield}
                   rebasingSymbol={supplyAssetSymbol}
