@@ -2,7 +2,7 @@ import { Breakpoint } from '@mui/material'
 import { type TypographyVariantsOptions } from '@mui/material/styles'
 import { basicMuiTheme } from './basic-theme'
 import { DesignSystem } from './design'
-import { Sizing, TransitionFunction } from './design/0_primitives'
+import { TransitionFunction } from './design/0_primitives'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { Fonts } from './fonts'
 
@@ -71,39 +71,43 @@ const variant = ({
 
 // prettier-ignore
 export const TYPOGRAPHY_VARIANTS = {
-  headingXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
-  headingMBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[400], letterSpacing: '-1.28px', textCase: 'uppercase' },
-  headingMLight: { fontFamily: 'Heading', fontWeight: 'Normal', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px', textCase: 'uppercase' },
-  headingSBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md', letterSpacing: '-0.48px', textCase: 'uppercase' },
-  headingXsBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', textCase: 'uppercase' },
-  headingXsMedium: { fontFamily: 'Heading', fontSize: 'sm', textCase: 'capitalize' },
+  headingXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', lineHeight: 'xxl', letterSpacing: '-4%' },
+  headingMBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-4%', textCase: 'uppercase' },
+  headingMLight: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-4%', textCase: 'uppercase' },
+  headingSBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md', letterSpacing: '-2%', textCase: 'uppercase' },
+  headingXsBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'sm', letterSpacing: '0%', textCase: 'uppercase' },
+  headingXsMedium: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'sm', letterSpacing: '0%' },
 
-  bodyMRegular: { fontFamily: 'Body', fontSize: 'md' },
-  bodyMBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'md' },
-  bodySRegular: { fontFamily: 'Body', fontSize: 'sm', fontWeight: 'Normal', lineHeight: 'sm' },
-  bodySBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'sm' },
-  bodyXsRegular: { fontFamily: 'Body', fontSize: 'xs' },
-  bodyXsBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'xs' },
+  bodyMRegular: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'md', letterSpacing: '0' },
+  bodyMBold: { fontFamily: 'Heading', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'md', letterSpacing: '0' },
+  bodySRegular: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'sm', letterSpacing: '0' },
+  bodySBold: { fontFamily: 'Heading', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'sm', letterSpacing: '0' },
+  bodyXsRegular: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs', letterSpacing: '0' },
+  bodyXsBold: { fontFamily: 'Heading', fontWeight: 'Semi_Bold', fontSize: 'xs', lineHeight: 'xs', letterSpacing: '0' },
 
-  buttonXs: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm' },
-  buttonS: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'md', textCase: 'uppercase' },
-  buttonM: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'md', textCase: 'uppercase' },
+  buttonXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'xs', letterSpacing: '0%' },
+  buttonXxs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs', lineHeight: 'xs', letterSpacing: '0%' },
+  buttonS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'md', letterSpacing: '0%', textCase: 'uppercase' },
+  buttonM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'md', letterSpacing: '0%', textCase: 'uppercase' },
+  buttonTabsS: { fontFamily: 'Heading', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'md', letterSpacing: '0%' },
+  buttonTabsM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', lineHeight: '1rem', letterSpacing: '0%', textCase: 'uppercase' },
+  buttonTabsL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '0%', textCase: 'uppercase' },
 
-  tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
-  tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' },
-  tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
-  tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm' },
-  tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-  tableCellSBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs' },
+  tableHeaderM: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs', letterSpacing: '0' },
+  tableHeaderS: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs', letterSpacing: '0' },
+  tableCellL: { fontFamily: 'Heading', fontWeight: 'Extra_Bold', fontSize: 'md', lineHeight: '1rem', letterSpacing: '0%' },
+  tableCellMRegular: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm', letterSpacing: '0%' },
+  tableCellMBold: { fontFamily: 'Heading', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm', letterSpacing: '0%' },
+  tableCellSRegular: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs', letterSpacing: '0%' },
+  tableCellSBold: { fontFamily: 'Heading', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs', letterSpacing: '0%' },
 
-  highlightXsNotional: { fontFamily: 'Mono', fontSize: 'xs' },
-  highlightXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs' },
-  highlightS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm' },
-  highlightM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' },
-  highlightL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md' },
-  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[400], letterSpacing: '-1.28px' },
-  highlightXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
+  highlightXsNotional: { fontFamily: 'Heading', fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs', letterSpacing: '0%' },
+  highlightXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs', lineHeight: 'xs', letterSpacing: '0%' },
+  highlightS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'sm', letterSpacing: '0%' },
+  highlightM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm', letterSpacing: '0%' },
+  highlightL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md', letterSpacing: '0%' },
+  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-4%' },
+  highlightXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', lineHeight: 'xxl', letterSpacing: '-4%' },
 } as const satisfies Record<string, TypographyVariantDefinition>
 
 export const createTypography = ({ Text }: DesignSystem) =>
