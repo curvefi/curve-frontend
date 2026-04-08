@@ -100,7 +100,7 @@ const createCustomRectSeries = (
       style: {
         fill: color,
         stroke: isSoftLiquidationBand && enableSoftLiquidationOutline ? softLiquidationBandOutlineColor : 'transparent',
-        lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 2 : 0,
+        lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 1 : 0,
       },
     }
   },
@@ -130,7 +130,12 @@ export const getChartOptions = (
   // Calculate x-axis extent for markLines (max endX value across all series)
   // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
   // endX is at index 6, and for the full extent we need marketWidth + userWidth
-  const xEnd = Math.max(...chartData.map((_, i) => (derived.marketData[i] ?? 0) + (derived.userData[i] ?? 0)))
+  const xEnd = Math.max(
+    ...chartData.map(
+      (_, i) =>
+        (derived.marketData[i] ?? 0) + (derived.userCollateralData[i] ?? 0) + (derived.userBorrowedData[i] ?? 0),
+    ),
+  )
   const xStart = 0
 
   // Generate mark areas using exact price edges
@@ -180,7 +185,7 @@ export const getChartOptions = (
       axisLabel: {
         color: palette.scaleLabelsColor,
         hideOverlap: true,
-        overflow: 'break',
+        align: 'left',
         showMinLabel: false,
         showMaxLabel: false,
         // label margin matches the lightweight-charts time scale margin used by the adjacent candle chart
@@ -226,7 +231,8 @@ export const getChartOptions = (
     },
     series: (() => {
       const marketSeriesData: Array<[number, number, number, number, number, number, number]> = []
-      const userSeriesData: Array<[number, number, number, number, number, number, number]> = []
+      const userCollateralSeriesData: Array<[number, number, number, number, number, number, number]> = []
+      const userBorrowedSeriesData: Array<[number, number, number, number, number, number, number]> = []
       const outlineSeriesData: Array<[number, number, number, number, number, number, number]> = []
       for (let i = 0; i < chartData.length; i++) {
         const d = chartData[i]
@@ -235,20 +241,21 @@ export const getChartOptions = (
         const pUp = d.p_up
         const isLiq = derived.isLiquidation[i] ? 1 : 0
         const marketWidth = derived.marketData[i] ?? 0
-        const userWidth = derived.userData[i] ?? 0
-        const marketStart = 0
-        const userStart = marketWidth
-        marketSeriesData.push([median, marketStart, marketWidth, pDown, pUp, isLiq, marketStart + marketWidth])
-        userSeriesData.push([median, userStart, userWidth, pDown, pUp, isLiq, userStart + userWidth])
-        outlineSeriesData.push([
+        const userCollateralWidth = derived.userCollateralData[i] ?? 0
+        const userBorrowedWidth = derived.userBorrowedData[i] ?? 0
+        const totalWidth = marketWidth + userCollateralWidth + userBorrowedWidth
+        marketSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
+        userCollateralSeriesData.push([median, 0, userCollateralWidth, pDown, pUp, isLiq, userCollateralWidth])
+        userBorrowedSeriesData.push([
           median,
-          marketStart,
-          marketWidth + userWidth,
+          userCollateralWidth,
+          userBorrowedWidth,
           pDown,
           pUp,
           isLiq,
-          marketStart + marketWidth + userWidth,
+          userCollateralWidth + userBorrowedWidth,
         ])
+        outlineSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
       }
 
       const marketSeries = createCustomRectSeries(
@@ -275,11 +282,19 @@ export const getChartOptions = (
           : undefined,
       )
 
-      const userSeries = createCustomRectSeries(
+      const userCollateralSeries = createCustomRectSeries(
         'User Collateral',
-        palette.userBandColor,
+        palette.userCollateralShareColor,
         palette.liquidationBandOutlineColor,
-        userSeriesData,
+        userCollateralSeriesData,
+        false,
+      )
+
+      const userBorrowedSeries = createCustomRectSeries(
+        'User Borrowed',
+        palette.userBorrowedShareColor,
+        palette.liquidationBandOutlineColor,
+        userBorrowedSeriesData,
         false,
       )
 
@@ -296,7 +311,7 @@ export const getChartOptions = (
         emphasis: { disabled: true },
       }
 
-      return [marketSeries, userSeries, outlineSeries]
+      return [marketSeries, userCollateralSeries, userBorrowedSeries, outlineSeries]
     })(),
   }
 }

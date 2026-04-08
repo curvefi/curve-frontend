@@ -28,7 +28,9 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
 
     const visibleMax = chartData.reduce(
       (max, d, i) =>
-        d.p_up >= yMin && d.p_down <= yMax ? Math.max(max, derived.marketData[i] + derived.userData[i]) : max,
+        d.p_up >= yMin && d.p_down <= yMax
+          ? Math.max(max, derived.marketData[i] + derived.userCollateralData[i] + derived.userBorrowedData[i])
+          : max,
       0,
     )
     const xMax = visibleMax > 0 ? visibleMax * CHART_PADDING_MULTIPLIER : undefined
