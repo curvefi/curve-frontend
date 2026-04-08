@@ -13,7 +13,7 @@ import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/share
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
-import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'

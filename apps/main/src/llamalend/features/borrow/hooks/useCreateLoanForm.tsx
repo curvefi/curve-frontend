@@ -18,7 +18,7 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
-import { isPriceImpactTooHigh } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
@@ -125,7 +125,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending || isDebouncing || isPriceImpactTooHigh(priceImpact, params),
+    isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
     onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues,
     borrowToken,

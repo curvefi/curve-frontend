@@ -31,7 +31,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
-import { isPriceImpactTooHigh } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId>({
@@ -136,7 +136,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending || isDebouncing || isPriceImpactTooHigh(priceImpact, params),
+    isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
     borrowToken,
     collateralToken,
     borrowError,

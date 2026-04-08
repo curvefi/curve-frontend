@@ -5,33 +5,14 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
+import { usePreviousValue } from '@ui-kit/hooks/usePreviousValue'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Query, type QueryProp } from '@ui-kit/types/util'
-import { decimalGreaterThan, formatPercent, getErrorMessage } from '@ui-kit/utils'
-
-/** Threshold above which price impact blocks the transaction (shown as red alert) */
-export const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
-
-/**
- * Returns the alert severity based on price impact vs. slippage tolerance and critical threshold:
- * - 'error' if price impact exceeds HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD (blocks the transaction)
- * - 'warning' if price impact exceeds the slippage tolerance
- * - null if no alert is needed
- */
-export const getPriceImpactSeverity = (
-  { data: priceImpact }: Query<Decimal | null | undefined>,
-  { slippage }: { slippage: Decimal | null | undefined },
-): 'error' | 'warning' | null => {
-  if (priceImpact == null) return null
-  if (decimalGreaterThan(priceImpact, HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)) return 'error'
-  if (slippage != null && decimalGreaterThan(priceImpact, slippage)) return 'warning'
-  return null
-}
-
-export const isPriceImpactTooHigh = (...params: Parameters<typeof getPriceImpactSeverity>) =>
-  getPriceImpactSeverity(...params) === 'error'
+import { type QueryProp } from '@ui-kit/types/util'
+import { formatPercent, getErrorMessage } from '@ui-kit/utils'
+import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
@@ -81,30 +62,35 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
   )
 }
 
-export type HighPriceImpactAlertProps = QueryProp<Decimal | null> & { slippage?: Decimal }
-
 /**
  * Inline alert displayed when price impact exceeds the threshold.
  * Shows above the submit button to make high price impact visible without opening the accordion.
  */
-export const HighPriceImpactAlert = ({ data: priceImpact, isLoading, error, slippage }: HighPriceImpactAlertProps) => {
-  const severity = getPriceImpactSeverity({ data: priceImpact, isLoading, error }, { slippage })
-  return (
-    !isLoading &&
-    (error ? (
-      <Alert severity="error" data-testid="high-price-impact-error">
-        <AlertTitle>{t`Cannot determine price impact`}</AlertTitle>
-        {error.message}
-      </Alert>
-    ) : (
-      severity && (
-        <Alert severity={severity} data-testid="high-price-impact-alert" variant="outlined">
+export const HighPriceImpactAlert = ({
+  priceImpact: { data, isLoading, error },
+  values: { slippage, leverageEnabled },
+}: {
+  priceImpact: QueryProp<Decimal | null>
+  values: { slippage: Decimal | undefined; leverageEnabled: boolean | undefined }
+}) => {
+  const severity = getPriceImpactSeverity({ data, isLoading, error }, { slippage })
+  const isVisible = leverageEnabled && data && !!(error || severity)
+  const wasVisible = usePreviousValue(isVisible)
+  return error ? (
+    <Alert severity="error" data-testid="high-price-impact-error">
+      <AlertTitle>{t`Cannot determine price impact`}</AlertTitle>
+      {error.message}
+    </Alert>
+  ) : (
+    (severity || wasVisible) && (
+      <WithSkeleton loading={!severity}>
+        <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
           <AlertTitle sx={{ color: 'warning.main' }}>
-            {t`High price impact:`} -{formatPercent(priceImpact)}
+            {t`High price impact:`} -{formatPercent(data)}
           </AlertTitle>
           {t`Consider reducing the amount or waiting for better market conditions.`}
         </Alert>
-      )
-    ))
+      </WithSkeleton>
+    )
   )
 }

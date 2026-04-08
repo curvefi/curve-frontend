@@ -179,7 +179,8 @@ export const RepayForm = <ChainId extends IChainId>({
           )
         }
       />
-      <HighPriceImpactAlert {...priceImpact} slippage={params.slippage} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={{ leverageEnabled: swapRequired, ...params }} />
+
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`

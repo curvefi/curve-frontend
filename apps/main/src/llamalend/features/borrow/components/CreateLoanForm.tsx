@@ -158,7 +158,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         </Collapse>
       </LoanPresetSelector>
 
-      <HighPriceImpactAlert {...priceImpact} slippage={params.slippage} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
 
       {isBorrowDisabled ? (
         <AlertBox alertType={borrowDisabledAlert.alertType!}>{borrowDisabledAlert.message}</AlertBox>

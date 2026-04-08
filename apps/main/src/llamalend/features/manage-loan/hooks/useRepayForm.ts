@@ -10,7 +10,11 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
+import {
+  getRepayImplementationType,
+  isRepayLeveraged,
+  type RepayFormFields,
+} from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
@@ -25,7 +29,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { filterFormErrors, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
-import { isPriceImpactTooHigh } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -147,7 +151,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     isDisabled:
-      !formState.isValid || isPending || isDebouncing || isFull.isLoading || isPriceImpactTooHigh(priceImpact, params),
+      !formState.isValid ||
+      isPending ||
+      isDebouncing ||
+      isFull.isLoading ||
+      shouldBlockTransaction(priceImpact, { ...values, leverageEnabled: isRepayLeveraged(values) }),
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,

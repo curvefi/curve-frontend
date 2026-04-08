@@ -146,7 +146,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert {...priceImpact} slippage={params.slippage} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
 
       <Button
         type="submit"
