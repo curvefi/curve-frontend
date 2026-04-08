@@ -343,6 +343,16 @@ export const createLightDesign = (
       7: Greens[100],
       8: Reds[200],
     },
+    Surfaces: {
+      1: Blues[100],
+      2: Greens[100],
+      3: Yellows[200],
+      4: Oranges[50],
+      5: Reds[50],
+      6: Violets[100],
+      7: Greens[100],
+      8: Reds[200],
+    },
   } as const
 
   const Toggles = {
@@ -808,6 +818,16 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       7: Greens[800],
       8: Reds[200],
     },
+    Surfaces: {
+      1: Blues[950],
+      2: Greens[800],
+      3: Yellows[950],
+      4: Oranges[900],
+      5: Reds[900],
+      6: Violets[900],
+      7: Greens[800],
+      8: Reds[200],
+    },
   } as const
 
   const Toggles = {
@@ -1223,6 +1243,16 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Line6: Violets[600],
       Line7: Blues[800],
       Line8: Reds[800],
+    },
+    Surfaces: {
+      1: Blues[100],
+      2: Greens[100],
+      3: Yellows[200],
+      4: Oranges[50],
+      5: Reds[50],
+      6: Violets[100],
+      7: Greens[100],
+      8: Reds[200],
     },
     Surfaces: {
       1: Blues[100],
