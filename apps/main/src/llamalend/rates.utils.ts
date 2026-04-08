@@ -143,8 +143,7 @@ export const getSupplyApyMetrics = ({
   rebasingYieldApy = rebasingYieldApy ?? null
   extraIncentivesApy = extraIncentivesApy ?? 0
 
-  const crvMinBoostApr = crvBoostApr?.[0] ?? null
-  const crvMaxBoostApr = crvBoostApr?.[1] ?? null
+  const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)

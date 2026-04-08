@@ -4,6 +4,7 @@ import { queryFactory } from '@ui-kit/lib/model/query/factory'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
+import { type Range } from '@ui-kit/types/util'
 import { USE_API } from './market.constants'
 
 /**
@@ -18,7 +19,7 @@ export const { useQuery: useMarketVaultOnChainRewards, invalidate: invalidateMar
         vault.rewardsApr(USE_API),
         addresses.gauge == zeroAddress ? [0, 0] : vault.crvApr(USE_API),
       ])
-      return { rewardsApr, crvRates }
+      return { rewardsApr, crvRates: crvRates as Range<number> }
     },
     category: 'llamalend.market',
     validationSuite: marketIdValidationSuite,

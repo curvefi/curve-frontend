@@ -21,6 +21,9 @@ type SupplyRewards = {
   rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[]
 }
 
+/**
+ * Combines the given markets rates, on-chain rewards, user boost and snapshotsQuery to calculate net supply APY.
+ */
 const addNetApy = <T extends { lendApy?: Decimal }>(
   rates: Query<T>,
   snapshotsQuery: Query<LendingSnapshot[] | undefined>,
