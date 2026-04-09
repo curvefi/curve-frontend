@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
+import { hasClaimableRewards } from '@/llamalend/queries/supply/supply-query.helpers'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
@@ -63,10 +64,13 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
   }, [claimableTokens])
 
   return {
+    claimableCrvError,
+    claimableRewardsError,
+    hasClaimableCrv: Number(claimableCrv) > 0,
+    hasClaimableRewards: hasClaimableRewards(claimableRewards),
     claimableTokens,
     totalNotionals,
     isClaimablesLoading: [isClaimableCrvLoading, isClaimableRewardsLoading].some(Boolean),
-    claimablesError: [claimableCrvError, claimableRewardsError].find(Boolean) ?? null,
     usdRateLoading,
     usdRateError,
   }

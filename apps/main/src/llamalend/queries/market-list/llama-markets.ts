@@ -272,8 +272,7 @@ const convertLendingVault = (
     extraRewardApr.length ? sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number) : null
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
-    crvMinBoostApr: lendCrvAprUnboosted,
-    crvMaxBoostApr: lendCrvAprBoosted,
+    crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],
     rebasingYieldApy: borrowedToken?.rebasingYield,
     extraIncentivesApy: totalExtraRewardApy,
   })

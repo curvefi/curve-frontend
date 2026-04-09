@@ -1,10 +1,10 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import { useSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts.query'
 import type { StakeForm, StakeParams } from '@/llamalend/queries/validation/supply.validation'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -32,7 +32,7 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
 
-  const marketRates = useMarketRates(params, isOpen)
+  const { prevRates, prevNetSupplyApy } = useSupplyRates({ params }, isOpen)
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const amountStakedAssets = useSharesToAssetsAmount({ ...params, shares: stakeAmount }, isOpen)
@@ -55,7 +55,8 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
         (d) =>
           d.stakedSharesAmount && amountStakedAssets.data && decimalSum(d.stakedSharesAmount, amountStakedAssets.data),
       )}
-      supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(prevRates, (d) => d.lendApy)}
+      netSupplyApy={prevNetSupplyApy}
       gas={q(useStakeEstimateGas(networks, params, isOpen))}
     />
   )

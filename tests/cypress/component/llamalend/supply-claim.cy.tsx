@@ -6,6 +6,7 @@ import {
   checkClaimDetailsLoaded,
   checkClaimTableState,
   submitClaimAndSettle,
+  validateClaimTabState,
 } from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import { createClaimScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
@@ -53,11 +54,17 @@ describe('ClaimTab (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
+      validateClaimTabState({
+        crvButtonDisabled: expected.crvButtonDisabled,
+        otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
+      })
+
+      // if (!expected.crvButtonDisabled || !expected.otherRewardsButtonDisabled) {
       checkClaimTableState({
         rows: expected.table.rows,
         totalNotional: expected.table.totalNotional,
-        buttonDisabled: expected.buttonDisabled,
       })
+      // }
 
       cy.then(() => {
         expect(stubs.claimableCrv).to.have.been.calledWithExactly(...expected.claimableCrv)
@@ -74,17 +81,22 @@ describe('ClaimTab (mocked)', () => {
         }
       })
 
-      if (expected.buttonDisabled) {
-        checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
+      if (expected.crvButtonDisabled && expected.otherRewardsButtonDisabled) {
+        checkClaimDetailsLoaded({ hasCrvRewards: false, hasOtherRewards: false })
         return
       }
 
+      // Validate claim details are fully loaded
       checkClaimDetailsLoaded({
-        checkEstimatedTxCost: true,
+        hasCrvRewards: expected.shouldClaimCrv,
+        hasOtherRewards: expected.shouldClaimRewards,
         expectedSymbols: expected.table.rows.map(({ symbol }) => symbol),
       })
 
-      submitClaimAndSettle().then(() => {
+      if (expected.shouldClaimCrv) submitClaimAndSettle('crv')
+      if (expected.shouldClaimRewards) submitClaimAndSettle('other')
+
+      cy.then(() => {
         if (expected.shouldClaimCrv) {
           expect(stubs.claimCrv).to.have.been.calledWithExactly()
         } else {

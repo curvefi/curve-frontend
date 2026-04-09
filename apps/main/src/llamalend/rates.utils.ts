@@ -3,6 +3,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { ExtraIncentive } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, MAINNET_CRV_ADDRESS, decimal, defaultNumberFormatter } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
 import type { SupplyExtraIncentive } from './rates.types'
@@ -122,8 +123,7 @@ export const formatSupplyExtraIncentives = ({
 
 type SupplyRateMetricsParams = {
   supplyApy: number | null | undefined
-  crvMinBoostApr: number | null | undefined
-  crvMaxBoostApr: number | null | undefined
+  crvBoostApr: Range<number> | null | undefined
   rebasingYieldApy: number | null | undefined
   extraIncentivesApy: number | null | undefined
   userSupplyBoost?: number | null | undefined
@@ -135,14 +135,15 @@ type SupplyRateMetricsParams = {
  */
 export const getSupplyApyMetrics = ({
   supplyApy,
-  crvMinBoostApr,
-  crvMaxBoostApr,
+  crvBoostApr,
   rebasingYieldApy,
   extraIncentivesApy,
   userSupplyBoost,
 }: SupplyRateMetricsParams) => {
   rebasingYieldApy = rebasingYieldApy ?? null
   extraIncentivesApy = extraIncentivesApy ?? 0
+
+  const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)

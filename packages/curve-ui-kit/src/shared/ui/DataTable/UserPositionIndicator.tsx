@@ -10,15 +10,15 @@ const { IconSize, Spacing } = SizesAndSpaces
 const ColorStates = {
   info: {
     bg: (t: Theme) => t.design.Layer.Feedback.Info,
-    fg: (t: Theme) => t.design.Layer[1].Outline,
+    fg: (t: Theme) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary,
   },
   orange: {
     bg: (t: Theme) => t.design.Color.Tertiary[400],
-    fg: (t: Theme) => t.design.Layer[1].Outline,
+    fg: (t: Theme) => t.design.Text.TextColors.FilledFeedback.Warning.Primary,
   },
   red: {
     bg: (t: Theme) => t.design.Layer.Feedback.Error,
-    fg: (t: Theme) => t.design.Text.TextColors.FilledFeedback.Alert.Primary,
+    fg: (t: Theme) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary,
   },
 }
 

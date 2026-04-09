@@ -324,7 +324,7 @@ export const createWithdrawScenario = ({
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      futureRates: [amount, '0'] as const,
+      futureRates: [decimalMinus('0', amount), '0'] as const,
       previewWithdraw: [amount] as const,
       estimateGas: [submitAmount] as const,
       submit: [submitAmount] as const,
@@ -453,7 +453,8 @@ export const createClaimScenario = ({
       claimableRewards: [TEST_ADDRESS] as const,
       shouldClaimCrv: Number(claimableCrv) > 0,
       shouldClaimRewards: claimableRewards.some(({ amount }) => Number(amount) > 0),
-      buttonDisabled: Number(claimableCrv) <= 0 && claimableRewards.every(({ amount }) => Number(amount) <= 0),
+      crvButtonDisabled: Number(claimableCrv) <= 0,
+      otherRewardsButtonDisabled: claimableRewards.every(({ amount }) => Number(amount) <= 0),
       table: {
         rows: [
           ...(Number(claimableCrv) > 0
