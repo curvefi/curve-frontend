@@ -4,10 +4,11 @@ import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-pos
 import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
+  formatSupplyExtraIncentives,
   getSupplyApyMetrics,
   toNumberOrNull,
-  LAST_MONTH,
-  sumOnChainExtraIncentivesApr,
+  aprToApy,
+  sumOnChainExtraIncentivesApy,
   getSupplyApyAverageMetrics,
   getLatestSnapshotValue,
 } from '@/llamalend/rates.utils'
@@ -17,6 +18,7 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 type UseSupplyPositionDetailsProps = {
   chainId: ChainId
@@ -25,8 +27,7 @@ type UseSupplyPositionDetailsProps = {
   userAddress: Address | undefined
 }
 
-const AVERAGE_MULTIPLIER = LAST_MONTH
-const AVERAGE_RATE_LABEL = `${AVERAGE_MULTIPLIER}D`
+const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
 export const useSupplyPositionDetails = ({
   chainId,
@@ -36,6 +37,7 @@ export const useSupplyPositionDetails = ({
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
+  const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
@@ -65,8 +67,7 @@ export const useSupplyPositionDetails = ({
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
     contractAddress: market?.addresses?.controller as Address,
-    aggregate: 'day',
-    limit: AVERAGE_MULTIPLIER,
+    limit: rateWindow,
   })
 
   const rebasingYield = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
@@ -74,12 +75,14 @@ export const useSupplyPositionDetails = ({
   const supplyMetrics = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(marketRates?.lendApy),
     rebasingYieldApy: rebasingYield,
-    crvMinBoostApr: onChainRewards?.crvRates?.[0],
-    crvMaxBoostApr: onChainRewards?.crvRates?.[1],
-    extraIncentivesApr: sumOnChainExtraIncentivesApr(onChainRewards?.rewardsApr),
+    crvBoostApr: onChainRewards?.crvRates,
+    extraIncentivesApy: sumOnChainExtraIncentivesApy(onChainRewards?.rewardsApr),
     userSupplyBoost,
   })
-  const supplyAverageMetrics = getSupplyApyAverageMetrics({ snapshots: lendingSnapshots, daysBack: AVERAGE_MULTIPLIER })
+  const supplyAverageMetrics = getSupplyApyAverageMetrics({
+    snapshots: lendingSnapshots,
+    daysBack: rateWindow,
+  })
 
   const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null
   const depositedAmount =
@@ -91,22 +94,24 @@ export const useSupplyPositionDetails = ({
     userSupplyRate: {
       ...supplyMetrics,
       ...supplyAverageMetrics,
-      averageRateLabel: AVERAGE_RATE_LABEL,
-      userCurrentCRVApr: supplyMetrics.userBoostApr,
-      userTotalCurrentSupplyApr: supplyMetrics.totalUserBoost,
-      extraIncentives: onChainRewards?.rewardsApr
-        ? onChainRewards.rewardsApr.map((r) => ({
+      averageCategory: RATE_CATEGORY,
+      extraIncentives: formatSupplyExtraIncentives({
+        incentives:
+          onChainRewards?.rewardsApr?.map((r) => ({
             title: r.symbol,
-            percentage: r.apy,
+            percentage: aprToApy(r.apy) as number,
             blockchainId,
             address: r.tokenAddress,
-          }))
-        : [],
+          })) ?? [],
+        userRate: supplyMetrics.userBoostApy,
+        userBoost: userSupplyBoost,
+      }),
       extraRewards: campaigns,
       loading:
         islendingSnapshotsLoading ||
         isOnChainRewardsLoading ||
         isUserBalancesLoading ||
+        isUserSupplyBoostLoading ||
         isMarketRatesLoading ||
         !isHydrated,
     },

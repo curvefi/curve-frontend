@@ -1,26 +1,38 @@
-import { BigNumber } from 'bignumber.js'
-import { Decimal } from '@primitives/decimal.utils'
+import { sumBy } from 'lodash'
+import { notFalsy } from '@primitives/objects.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { decimal } from '@ui-kit/utils'
+import type { ExtraIncentive } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
+import { AVERAGE_CATEGORIES, MAINNET_CRV_ADDRESS, decimal, defaultNumberFormatter } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
+import type { SupplyExtraIncentive } from './rates.types'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined
   snapshots: TSnapshot[] | undefined
   getBorrowRate: (snapshot: TSnapshot) => number | null | undefined
   getRebasingYield: (snapshot: TSnapshot) => number | null | undefined
-  daysBack?: number
+  daysBack: number
 }
 
-const { AverageRates } = Duration
+const DAYS_PER_YEAR = 365
 
-export const LAST_MONTH = AverageRates.Monthly
-export const LAST_WEEK = AverageRates.Weekly
+/**
+ * Converts an APR into APY using periodic compounding based on a given number of days per compounding period.
+ * The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
+ */
+export const aprToApy = (
+  aprPercentage: number | null | undefined,
+  compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].window,
+): number | null => {
+  if (aprPercentage == null) return null
 
-export const computeDecimalTotalRate = (rate?: Decimal, rebasingYield?: number | null) =>
-  rate && decimal(new BigNumber(rate).minus(rebasingYield ?? 0))
+  const periods = DAYS_PER_YEAR / compoundingDays
+  const compoundedRate = 1 + aprPercentage / 100 / periods
+
+  return (Math.pow(compoundedRate, periods) - 1) * 100
+}
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 
@@ -46,7 +58,7 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
   snapshots,
   getBorrowRate,
   getRebasingYield,
-  daysBack = LAST_MONTH,
+  daysBack,
 }: BorrowRateMetricsParams<TSnapshot>) => {
   const rebasingYield = getLatestSnapshotValue(snapshots, getRebasingYield)
   const totalRate = borrowRate == null ? null : computeTotalRate(borrowRate, rebasingYield ?? 0)
@@ -68,25 +80,52 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
 }
 
 /** Sum a base rate with optional additional components, returning null if the base is null */
-export const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
+const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
   base == null ? null : components.reduce<number>((sum, c) => sum + (c ?? 0), base)
 
 export const toNumberOrNull = (value: number | string | null | undefined) => (value == null ? null : Number(value))
 
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
-const sumSnapshotExtraIncentivesApr = (extraRewardApr: LendingSnapshot['extraRewardApr'] | undefined) =>
-  extraRewardApr?.reduce((acc, reward) => acc + reward.rate, 0) ?? 0
+export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
+  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, (reward) => aprToApy(reward.apy) as number) : null
 
-export const sumOnChainExtraIncentivesApr = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr?.reduce((acc, reward) => acc + reward.apy, 0) ?? 0
+const displayUserBoost = (userBoost: number | null | undefined) =>
+  userBoost != null ? ' (' + defaultNumberFormatter(userBoost) + 'x veCRV Boost)' : ''
+
+export const formatSupplyExtraIncentives = ({
+  incentives,
+  baseRate,
+  userRate,
+  userBoost,
+}: {
+  incentives: ExtraIncentive[]
+  baseRate?: number | null | undefined
+  userRate?: number | null | undefined
+  userBoost?: number | null | undefined
+}): SupplyExtraIncentive[] =>
+  notFalsy(
+    baseRate && {
+      title: 'CRV',
+      percentage: baseRate,
+      address: MAINNET_CRV_ADDRESS,
+      blockchainId: 'ethereum',
+    },
+    userRate &&
+      baseRate == null && {
+        title: 'CRV' + displayUserBoost(userBoost),
+        percentage: userRate,
+        address: MAINNET_CRV_ADDRESS,
+        blockchainId: 'ethereum',
+      },
+    ...incentives.map((incentive) => incentive.percentage > 0 && incentive),
+  )
 
 type SupplyRateMetricsParams = {
   supplyApy: number | null | undefined
-  crvMinBoostApr: number | null | undefined
-  crvMaxBoostApr: number | null | undefined
+  crvBoostApr: Range<number> | null | undefined
   rebasingYieldApy: number | null | undefined
-  extraIncentivesApr: number | null | undefined
+  extraIncentivesApy: number | null | undefined
   userSupplyBoost?: number | null | undefined
 }
 
@@ -96,62 +135,69 @@ type SupplyRateMetricsParams = {
  */
 export const getSupplyApyMetrics = ({
   supplyApy,
-  crvMinBoostApr,
-  crvMaxBoostApr,
+  crvBoostApr,
   rebasingYieldApy,
-  extraIncentivesApr,
+  extraIncentivesApy,
   userSupplyBoost,
 }: SupplyRateMetricsParams) => {
-  crvMinBoostApr = crvMinBoostApr ?? 0
-  crvMaxBoostApr = crvMaxBoostApr ?? 0
   rebasingYieldApy = rebasingYieldApy ?? null
-  extraIncentivesApr = extraIncentivesApr ?? 0
+  extraIncentivesApy = extraIncentivesApy ?? 0
 
-  const userBoostApr = crvMinBoostApr * (userSupplyBoost ?? 1)
-  const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApr)
+  const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
+
+  const crvMinBoostApy = aprToApy(crvMinBoostApr)
+  const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
+  const userBoostApy =
+    crvMinBoostApr == null || userSupplyBoost == null ? null : aprToApy(crvMinBoostApr * userSupplyBoost)
+
+  const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy)
 
   return {
     supplyApy,
-    supplyAprCrvMinBoost: crvMinBoostApr,
-    supplyAprCrvMaxBoost: crvMaxBoostApr,
-    userBoostApr,
+    supplyApyCrvMinBoost: crvMinBoostApy,
+    supplyApyCrvMaxBoost: crvMaxBoostApy,
+    userBoostApy,
     rebasingYield: rebasingYieldApy,
-    extraIncentivesTotalApr: extraIncentivesApr,
-    totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApr),
-    totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApr),
-    totalUserBoost: sumRates(totalWithoutBoost, userBoostApr),
+    extraIncentivesTotalApy: extraIncentivesApy,
+    totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApy),
+    totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApy),
+    totalUserBoost:
+      totalWithoutBoost == null || userBoostApy == null ? null : sumRates(totalWithoutBoost, userBoostApy),
   }
 }
 
 export const getSupplyApyAverageMetrics = ({
   snapshots,
-  daysBack = LAST_MONTH,
+  daysBack,
 }: {
   snapshots: LendingSnapshot[] | undefined
-  daysBack?: number
+  daysBack: number
 }) => {
   const averages = calculateAverageRates(snapshots, daysBack, {
     supplyApy: ({ lendApy }) => Number(lendApy) * 100,
     rebasingYieldApy: ({ borrowedToken }) => borrowedToken.rebasingYield,
-    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
-    crvMaxBoostApr: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
-    extraIncentivesApr: ({ extraRewardApr }) => sumSnapshotExtraIncentivesApr(extraRewardApr),
+    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost * 100,
+    crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100),
+    crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100),
+    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number),
   })
 
   const averageTotalWithoutBoost = sumRates(
     averages?.supplyApy,
     averages?.rebasingYieldApy,
-    averages?.extraIncentivesApr,
+    averages?.extraIncentivesApy,
   )
 
   return {
     averageLendApy: averages?.supplyApy ?? null,
-    averageAprCrvMinBoost: averages?.crvMinBoostApr ?? null,
-    averageAprCrvMaxBoost: averages?.crvMaxBoostApr ?? null,
+    averageApyCrvMinBoost: averages?.crvMinBoostApy ?? null,
+    averageApyCrvMaxBoost: averages?.crvMaxBoostApy ?? null,
+    averageUserBoostApy: null,
     averageRebasingYield: averages?.rebasingYieldApy ?? null,
-    averageExtraIncentivesApr: averages?.extraIncentivesApr ?? null,
-    totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostApr),
-    totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostApr),
+    averageExtraIncentivesApy: averages?.extraIncentivesApy ?? null,
+    totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostApy),
+    totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostApy),
+    totalAverageUserBoost: null,
   }
 }
 

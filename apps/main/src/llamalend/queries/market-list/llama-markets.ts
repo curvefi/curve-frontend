@@ -1,8 +1,8 @@
-import { countBy } from 'lodash'
+import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
-import { computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
+import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { type PartialRecord, recordValues } from '@primitives/objects.utils'
@@ -267,13 +267,14 @@ const convertLendingVault = (
 ): LlamaMarket => {
   const hasBorrowed = userBorrows.has(controller)
   const hasSupplied = userSupplied.has(vault)
-  const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
+  const totalExtraRewardApy =
+    // sumBy returns 0 for empty arrays
+    extraRewardApr.length ? sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number) : null
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
-    crvMinBoostApr: lendCrvAprUnboosted,
-    crvMaxBoostApr: lendCrvAprBoosted,
+    crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],
     rebasingYieldApy: borrowedToken?.rebasingYield,
-    extraIncentivesApr: totalExtraRewardApr,
+    extraIncentivesApy: totalExtraRewardApy,
   })
 
   return {

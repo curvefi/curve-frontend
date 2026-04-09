@@ -50,9 +50,14 @@ export const useReleaseChannel = () =>
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
-export const useShowNetApr = () =>
+type RateType = 'borrow' | 'supply'
+
+export const useShowNetRate = (type: RateType) =>
   useLocalStorage<Record<string, boolean>>(
-    `showNetApr`,
+    {
+      borrow: 'showNetApr',
+      supply: 'showNetApy',
+    }[type],
     useMemo(() => ({}), []),
   )
 

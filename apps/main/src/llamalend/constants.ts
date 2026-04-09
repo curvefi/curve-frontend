@@ -43,3 +43,6 @@ export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Lend]: t`(Lending Markets)`,
   [LlamaMarketType.Mint]: t`(Mint Markets)`,
 }
+
+export const NET_SUPPLY_RATE_TITLE = t`Net supply APY`
+export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
