@@ -15,7 +15,7 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { useBadDebtMarket } from '@/llamalend/hooks/useBadDebtMarket'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
@@ -78,7 +78,7 @@ export const LendMarketPage = () => {
     network,
   }
   const marketAlert = useMarketAlert(chainId, market?.id)
-  const { data: badDebtAlert } = useBadDebtMarket({
+  const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
     blockchainId: activityQueryParams.chain,
     controllerAddress: activityQueryParams.controllerAddress,
@@ -153,7 +153,8 @@ export const LendMarketPage = () => {
       }
     >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-      {badDebtAlert && <BadDebtBanner badDebt={badDebtAlert} />}
+
+      {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
           chainId={chainId}

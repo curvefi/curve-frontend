@@ -16,7 +16,7 @@ import { LlamaIcon } from '../icons/LlamaIcon'
 
 const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 
-export type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
+type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
 export const DEFAULT_SEVERITY = 'info' as const
