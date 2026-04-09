@@ -1,6 +1,5 @@
-import type { Address } from '@primitives/address.utils'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
-import { getTokens } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -16,14 +15,7 @@ export const useAdvancedDetailsData = ({
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
-  const controllerAddress =
-    marketType === LlamaMarketType.Lend
-      ? market && 'addresses' in market
-        ? (market.addresses.controller as Address)
-        : undefined
-      : market && 'controller' in market
-        ? (market.controller as Address)
-        : undefined
+  const controllerAddress = getControllerAddress(market)
 
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,

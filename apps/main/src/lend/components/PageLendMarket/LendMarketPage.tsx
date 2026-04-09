@@ -16,12 +16,12 @@ import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } fro
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -62,6 +62,7 @@ export const LendMarketPage = () => {
 
   const [isLoaded, setLoaded] = useState(false)
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
+  const controllerAddress = getControllerAddress(market)
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Lend,
     chainId,
@@ -71,7 +72,7 @@ export const LendMarketPage = () => {
   const activityQueryParams: UserCollateralEventsProps = {
     app: LlamaMarketType.Lend,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.addresses?.controller as Address | undefined,
+    controllerAddress,
     userAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
@@ -81,7 +82,7 @@ export const LendMarketPage = () => {
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
     blockchainId: activityQueryParams.chain,
-    controllerAddress: activityQueryParams.controllerAddress,
+    controllerAddress,
   })
 
   useEffect(() => {

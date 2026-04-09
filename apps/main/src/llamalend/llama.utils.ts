@@ -131,6 +131,9 @@ export const getTokens = (market: LlamaMarketTemplate) =>
         },
       }
 
+export const getControllerAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
+  (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as Address | undefined
+
 /**
  * Calculates the loan-to-value ratio of a market.
  * @param debtAmount - The amount of debt in the market.

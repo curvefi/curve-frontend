@@ -3,6 +3,7 @@ import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
@@ -16,7 +17,6 @@ import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
@@ -46,10 +46,11 @@ export const MintMarketPage = () => {
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
+  const controllerAddress = getControllerAddress(market)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Mint,
     blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.controller as Address | undefined,
+    controllerAddress,
   })
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
@@ -60,7 +61,7 @@ export const MintMarketPage = () => {
   const activityQueryParams: UserCollateralEventsProps = {
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.controller as Address | undefined,
+    controllerAddress,
     userAddress: curve?.signerAddress,
     collateralToken: market
       ? {

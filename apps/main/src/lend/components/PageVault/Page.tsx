@@ -16,12 +16,12 @@ import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
-import { Address } from '@primitives/address.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -62,10 +62,11 @@ export const Page = () => {
     userAddress,
   })
   const marketAlert = useMarketAlert(rChainId, rOwmId)
+  const controllerAddress = getControllerAddress(market)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
     blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.addresses?.controller as Address | undefined,
+    controllerAddress,
   })
 
   useEffect(() => {
