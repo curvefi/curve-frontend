@@ -78,7 +78,7 @@ export const LendMarketPage = () => {
     network,
   }
   const marketAlert = useMarketAlert(chainId, market?.id)
-  const badDebtAlert = useBadDebtMarket({
+  const { data: badDebtAlert } = useBadDebtMarket({
     type: LlamaMarketType.Lend,
     blockchainId: activityQueryParams.chain,
     controllerAddress: activityQueryParams.controllerAddress,

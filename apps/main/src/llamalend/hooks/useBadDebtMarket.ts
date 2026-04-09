@@ -4,6 +4,7 @@ import { useBadDebtMarketsQuery } from '@/llamalend/queries/market/market-bad-de
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import { combineQueryState } from '@ui-kit/lib'
 import { BannerSeverity } from '@ui-kit/shared/ui/Banner'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
@@ -43,17 +44,18 @@ const getBadDebtMarketSeverity = (data: Omit<BadDebtMarketData, 'severity'>): Ba
  */
 export const useBadDebtMarket = ({ type, blockchainId, controllerAddress }: BadDebtParams) => {
   const enabled = !!blockchainId && !!controllerAddress
-  const { data: badDebtMarkets } = useBadDebtMarketsQuery({ type }, enabled)
-  const { data: llamaMarkets } = useLlamaMarkets(undefined, enabled)
+  const badDebtMarkets = useBadDebtMarketsQuery({ type }, enabled)
+  const llamaMarkets = useLlamaMarkets(undefined, enabled)
 
-  return useMemo(() => {
-    if (!blockchainId || !controllerAddress || !llamaMarkets?.markets?.length || !badDebtMarkets?.length) return null
+  const badDebtData = useMemo(() => {
+    if (!blockchainId || !controllerAddress || !llamaMarkets.data?.markets?.length || !badDebtMarkets.data?.length)
+      return null
 
-    const badDebtUsd = badDebtMarkets.find(
+    const badDebtUsd = badDebtMarkets.data.find(
       (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
     )?.badDebt
 
-    const market = llamaMarkets.markets.find(
+    const market = llamaMarkets.data.markets.find(
       (item) =>
         item.type === type && item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
     )
@@ -68,5 +70,7 @@ export const useBadDebtMarket = ({ type, blockchainId, controllerAddress }: BadD
           marketType: type,
         })
       : null
-  }, [badDebtMarkets, blockchainId, controllerAddress, llamaMarkets, type])
+  }, [badDebtMarkets.data, blockchainId, controllerAddress, llamaMarkets.data, type])
+
+  return { data: badDebtData, ...combineQueryState(llamaMarkets, badDebtMarkets) }
 }

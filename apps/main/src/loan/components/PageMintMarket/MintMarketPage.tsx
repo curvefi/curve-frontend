@@ -46,7 +46,7 @@ export const MintMarketPage = () => {
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
-  const badDebtAlert = useBadDebtMarket({
+  const { data: badDebtAlert } = useBadDebtMarket({
     type: LlamaMarketType.Mint,
     blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,

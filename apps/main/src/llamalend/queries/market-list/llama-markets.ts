@@ -480,7 +480,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
         if (!enabled) {
           // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
-          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined }
+          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined, error: null }
         }
         const [
           lendingVaults,
