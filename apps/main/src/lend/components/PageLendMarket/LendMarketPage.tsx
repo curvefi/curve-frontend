@@ -15,9 +15,9 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getBadDebtBanner } from '@/llamalend/llama.utils'
-import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.query'
+import { useBadDebtMarket } from '@/llamalend/hooks/useBadDebtMarket'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
@@ -83,7 +83,6 @@ export const LendMarketPage = () => {
     blockchainId: activityQueryParams.chain,
     controllerAddress: activityQueryParams.controllerAddress,
   })
-  const badDebtBanner = getBadDebtBanner(LlamaMarketType.Lend)
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -154,7 +153,7 @@ export const LendMarketPage = () => {
       }
     >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-      {badDebtAlert && <MarketAlertBanner alertType={badDebtBanner.alertType} banner={badDebtBanner.banner} />}
+      {badDebtAlert && <BadDebtBanner badDebt={badDebtAlert} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
           chainId={chainId}

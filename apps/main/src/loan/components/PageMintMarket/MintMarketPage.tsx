@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getBadDebtBanner } from '@/llamalend/llama.utils'
-import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.query'
+import { useBadDebtMarket } from '@/llamalend/hooks/useBadDebtMarket'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
+import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -52,7 +51,6 @@ export const MintMarketPage = () => {
     blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,
   })
-  const badDebtBanner = getBadDebtBanner(LlamaMarketType.Mint)
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
     chainId: rChainId,
@@ -122,7 +120,7 @@ export const MintMarketPage = () => {
         />
       }
     >
-      {badDebtAlert && <MarketAlertBanner alertType={badDebtBanner.alertType} banner={badDebtBanner.banner} />}
+      {badDebtAlert && <BadDebtBanner badDebt={badDebtAlert} />}
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
