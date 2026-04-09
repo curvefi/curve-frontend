@@ -4,7 +4,6 @@
   "compilerOptions": {
     // === Language & Output ===
     "target": "ES2023",
-    "module": "ESNext",
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
 
