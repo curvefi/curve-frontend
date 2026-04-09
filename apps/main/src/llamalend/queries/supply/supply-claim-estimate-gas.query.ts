@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import { q, QueryProp } from '@ui-kit/types/util'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
 import { hasClaimableRewards } from './supply-query.helpers'
@@ -27,55 +27,55 @@ export const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   validationSuite: claimableRewardsValidationSuite,
 })
 
-// `createApprovedEstimateGasHook` does not fit here because claim has no approval step and can include
-// two independent action transactions in one flow (`claimCrv` and `claimRewards`). We need to fetch each
-// estimate conditionally and sum both when applicable before converting to gas cost.
-export const useClaimEstimateGas = <ChainId extends IChainId>(
+const useClaimEstimateGas = <ChainId extends IChainId, T>(
+  networks: NetworkDict<ChainId>,
+  query: ClaimEstimateParams<ChainId>,
+  claimable: QueryProp<T>,
+  claimableEstimateGas: QueryProp<TGas>,
+  enabled = true,
+) => {
+  const { chainId } = query
+  const { isLoading: claimableLoading, error: claimableError } = claimable
+  const { data: gasEstimate, isLoading: estimateLoading, error: crvError } = claimableEstimateGas
+  const { data, isLoading, error } = useEstimateGas(networks, chainId, gasEstimate, enabled && gasEstimate != null)
+
+  return {
+    data,
+    isLoading: [claimableLoading, estimateLoading, isLoading].some(Boolean),
+    error: [claimableError, crvError, error].find(Boolean) ?? null,
+  }
+}
+
+export const useClaimCrvEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: ClaimEstimateParams<ChainId>,
   enabled = true,
 ) => {
-  const { chainId } = query
-  const {
-    data: claimableCrv,
-    isLoading: claimableCrvLoading,
-    error: claimableCrvError,
-  } = useClaimableCrv(query, enabled)
-  const {
-    data: claimableRewards,
-    isLoading: claimableRewardsLoading,
-    error: claimableRewardsError,
-  } = useClaimableRewards(query, enabled)
-  const {
-    data: crvEstimate,
-    isLoading: crvLoading,
-    error: crvError,
-  } = useClaimCrvEstimateGasQuery(query, enabled && Number(claimableCrv) > 0)
-  const {
-    data: rewardsEstimate,
-    isLoading: rewardsLoading,
-    error: rewardsError,
-  } = useClaimRewardsEstimateQuery(query, enabled && hasClaimableRewards(claimableRewards))
+  const claimableCrv = useClaimableCrv(query, enabled)
+  const isClaimCrvEnabled = enabled && Number(claimableCrv.data) > 0
 
-  const totalEstimate = useMemo(
-    () =>
-      crvEstimate == null && rewardsEstimate == null
-        ? undefined
-        : Number(crvEstimate ?? 0) + Number(rewardsEstimate ?? 0),
-    [crvEstimate, rewardsEstimate],
+  return useClaimEstimateGas(
+    networks,
+    query,
+    q(claimableCrv),
+    q(useClaimCrvEstimateGasQuery(query, isClaimCrvEnabled)),
+    isClaimCrvEnabled,
   )
+}
 
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas(networks, chainId, totalEstimate, enabled && totalEstimate != null)
+export const useClaimRewardsEstimateGas = <ChainId extends IChainId>(
+  networks: NetworkDict<ChainId>,
+  query: ClaimEstimateParams<ChainId>,
+  enabled = true,
+) => {
+  const claimableRewards = useClaimableRewards(query, enabled)
+  const isClaimRewardsEnabled = enabled && hasClaimableRewards(claimableRewards.data)
 
-  return {
-    data,
-    isLoading: [claimableCrvLoading, claimableRewardsLoading, crvLoading, rewardsLoading, conversionLoading].some(
-      Boolean,
-    ),
-    error: [claimableCrvError, claimableRewardsError, crvError, rewardsError, estimateError].find(Boolean) ?? null,
-  }
+  return useClaimEstimateGas(
+    networks,
+    query,
+    q(claimableRewards),
+    q(useClaimRewardsEstimateQuery(query, isClaimRewardsEnabled)),
+    isClaimRewardsEnabled,
+  )
 }

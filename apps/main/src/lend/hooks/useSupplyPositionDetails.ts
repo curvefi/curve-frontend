@@ -75,8 +75,7 @@ export const useSupplyPositionDetails = ({
   const supplyMetrics = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(marketRates?.lendApy),
     rebasingYieldApy: rebasingYield,
-    crvMinBoostApr: onChainRewards?.crvRates?.[0],
-    crvMaxBoostApr: onChainRewards?.crvRates?.[1],
+    crvBoostApr: onChainRewards?.crvRates,
     extraIncentivesApy: sumOnChainExtraIncentivesApy(onChainRewards?.rewardsApr),
     userSupplyBoost,
   })

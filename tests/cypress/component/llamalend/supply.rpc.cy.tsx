@@ -6,6 +6,7 @@ import {
   checkClaimDetailsLoaded,
   prepareClaimRewards,
   submitClaimAndSettle,
+  validateClaimTabState,
 } from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import {
   checkDepositDetailsLoaded,
@@ -168,12 +169,13 @@ testCases.forEach(
 
         cy.mount(<SupplyTestWrapper tab="claim" />)
         if (!hasClaimableRewards) {
-          checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
+          validateClaimTabState()
           return
         }
-        checkClaimDetailsLoaded()
-        submitClaimAndSettle({ waitForEmptyState: true })
-        checkClaimDetailsLoaded({ hasRewards: false, checkEstimatedTxCost: false })
+        // only claim CRV rewards, no markets with external rewards yet
+        checkClaimDetailsLoaded({ hasOtherRewards: false })
+        submitClaimAndSettle('crv', { waitForEmptyState: true })
+        validateClaimTabState()
       })
 
       it('unstakes from the gauge', () => {
