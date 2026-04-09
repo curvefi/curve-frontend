@@ -26,6 +26,8 @@ const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefine
   return max + bandDelta * 2
 }
 
+const LINE_WIDTH = 0.5
+
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
 // Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric, endX]
@@ -196,7 +198,7 @@ export const getChartOptions = (
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          width: 0.5,
+          width: LINE_WIDTH,
         },
       },
       splitNumber: 3,
@@ -210,11 +212,7 @@ export const getChartOptions = (
         type: 'shadow',
         snap: true,
         label: {
-          show: true,
-          formatter: (params: { value: unknown }) => formatNumberWithOptions(Number(params.value)),
-          padding: [2, 4],
-          borderRadius: 0,
-          backgroundColor: palette.oraclePriceLineColor,
+          show: false,
         },
       },
       axisLabel: {
@@ -223,7 +221,7 @@ export const getChartOptions = (
       splitLine: {
         lineStyle: {
           color: palette.gridColor,
-          width: 0.5,
+          width: LINE_WIDTH,
         },
       },
       min: priceMin,
