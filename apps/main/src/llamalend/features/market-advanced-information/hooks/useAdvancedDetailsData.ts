@@ -1,9 +1,12 @@
+import type { Address } from '@primitives/address.utils'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 export const useAdvancedDetailsData = ({
   chainId,
@@ -12,6 +15,16 @@ export const useAdvancedDetailsData = ({
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
+  const controllerAddress =
+    marketType === LlamaMarketType.Lend
+      ? market && 'addresses' in market
+        ? (market.addresses.controller as Address)
+        : undefined
+      : market && 'controller' in market
+        ? (market.controller as Address)
+        : undefined
+
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -26,6 +39,11 @@ export const useAdvancedDetailsData = ({
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: borrowToken?.address,
+  })
+  const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
+    type: marketType ?? LlamaMarketType.Lend,
+    blockchainId,
+    controllerAddress,
   })
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
@@ -55,6 +73,11 @@ export const useAdvancedDetailsData = ({
       available: capAndAvailable?.available,
       totalAssets: capAndAvailable?.totalAssets,
       loading: !market || capAndAvailableLoading,
+    },
+    solvency: {
+      value: solvencyData?.solvencyPerc,
+      badDebtUsd: solvencyData?.badDebtUsd,
+      loading: !market || solvencyLoading,
     },
   }
 }
