@@ -107,8 +107,8 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               }
             />
             <Stack
-              display={{ mobile: 'block', tablet: showBands ? 'grid' : undefined }}
-              gridTemplateColumns={{ tablet: showBands ? '1fr 5.625rem' : undefined }}
+              display={showBands ? 'grid' : undefined}
+              gridTemplateColumns={showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined}
             >
               {chart.ohlcDataUnavailable ? (
                 <ErrorMessage
