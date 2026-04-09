@@ -27,9 +27,6 @@ export const sortBands = (bandsBalances: BandsBalances) => ({
   bandsBalances,
 })
 
-export const isLiquidationBand = (liquidationBand: number | null | undefined, bandNumber: number) =>
-  liquidationBand != null && liquidationBand === bandNumber
-
 export async function fetchChartBandBalancesData(
   { bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
@@ -50,7 +47,7 @@ export async function fetchChartBandBalancesData(
       collateral: decimal(collateral) as Decimal,
       collateralUsd: collateralUsd.toNumber(),
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
-      isLiquidationBand: isLiquidationBand(liquidationBand, +n),
+      isLiquidationBand: liquidationBand === +n,
       n,
       p_up: +p_up,
       p_down: +p_down,

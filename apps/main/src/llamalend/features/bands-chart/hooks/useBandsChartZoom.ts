@@ -36,8 +36,9 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
     // ECharts won't render a mark line whose endpoint coord falls outside the axis domain.
     // Clamp the end coord x to xMax so lines remain visible after the axis is narrowed.
     const patchedSeries =
-      xMax !== undefined
-        ? (option.series as Record<string, unknown>[]).map((series) => {
+      xMax === undefined
+        ? option.series
+        : (option.series as Record<string, unknown>[]).map((series) => {
             const markLine = series.markLine as { data: MarklineData } | undefined
             if (!markLine?.data) return series
             return {
@@ -48,7 +49,6 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
               },
             }
           })
-        : option.series
 
     return {
       ...option,

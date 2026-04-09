@@ -15,7 +15,7 @@ export const useVisiblePriceRangeSync = ({
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }) => {
   const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
-  const emitPriceRangeRafRef = useRef<number | null>(null)
+  const requestAnimationFrameRef = useRef<number | null>(null)
   const lastEmittedPriceRangeRef = useRef<{ min: number; max: number } | null>(null)
 
   useEffect(() => {
@@ -44,16 +44,16 @@ export const useVisiblePriceRangeSync = ({
   // Batch rapid triggers into requestAnimationFrame and sample multiple frames so post-gesture
   // autoscale settling is captured reliably.
   const scheduleEmitPriceRange = useCallback(() => {
-    if (!onVisiblePriceRangeChangeRef.current || emitPriceRangeRafRef.current !== null) return // already sampling, skip
+    if (!onVisiblePriceRangeChangeRef.current || requestAnimationFrameRef.current !== null) return // already sampling, skip
 
     const run = (remaining: number) => {
-      emitPriceRangeRafRef.current = null
+      requestAnimationFrameRef.current = null
       emitPriceRangeNow()
       if (remaining > 1) {
-        emitPriceRangeRafRef.current = requestAnimationFrame(() => run(remaining - 1))
+        requestAnimationFrameRef.current = requestAnimationFrame(() => run(remaining - 1))
       }
     }
-    emitPriceRangeRafRef.current = requestAnimationFrame(() => run(5))
+    requestAnimationFrameRef.current = requestAnimationFrame(() => run(5))
   }, [emitPriceRangeNow])
 
   // Emit immediately when a consumer is attached or re-attached.
@@ -66,9 +66,9 @@ export const useVisiblePriceRangeSync = ({
   // Cancel any in-flight animation frame burst on unmount.
   useEffect(
     () => () => {
-      if (emitPriceRangeRafRef.current !== null) {
-        cancelAnimationFrame(emitPriceRangeRafRef.current)
-        emitPriceRangeRafRef.current = null
+      if (requestAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(requestAnimationFrameRef.current)
+        requestAnimationFrameRef.current = null
       }
     },
     [],
