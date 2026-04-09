@@ -20,7 +20,7 @@ import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.que
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isChain, type Chain } from '@curvefi/prices-api'
+import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
 import { Address } from '@primitives/address.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -64,7 +64,7 @@ export const Page = () => {
   const marketAlert = useMarketAlert(rChainId, rOwmId)
   const badDebtAlert = useBadDebtMarket({
     type: LlamaMarketType.Lend,
-    blockchainId: isChain(network.id) ? network.id : undefined,
+    blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address | undefined,
   })
   const badDebtBanner = getBadDebtBanner(LlamaMarketType.Lend)

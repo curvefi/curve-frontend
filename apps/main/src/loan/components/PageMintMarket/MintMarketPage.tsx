@@ -49,7 +49,7 @@ export const MintMarketPage = () => {
   const network = networks[rChainId]
   const badDebtAlert = useBadDebtMarket({
     type: LlamaMarketType.Mint,
-    blockchainId: isChain(network.id) ? network.id : undefined,
+    blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,
   })
   const badDebtBanner = getBadDebtBanner(LlamaMarketType.Mint)
