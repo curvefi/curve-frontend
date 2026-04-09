@@ -6,10 +6,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatUsd } from '@ui-kit/utils'
 import { loadTenderlyAccount } from '../../tenderly/account'
 import { sendVnetTransaction } from '../../tenderly/vnet-transaction'
-import { getActionValue } from '../action-info.helpers'
-import { submitSupplyForm } from './supply.helpers'
+import { getActionInfo, getActionValue } from '../action-info.helpers'
+import { submitSupplyForm, SupplyActionType } from './supply.helpers'
 
 const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
+type ClaimRewardType = 'crv' | 'other'
 const GAUGE_ABI = parseAbi([
   'function deposit(uint256 _value)',
   'function withdraw(uint256 _value)',
@@ -19,15 +20,27 @@ const GAUGE_ABI = parseAbi([
   'function deposit_reward_token(address _reward_token, uint256 _amount, uint256 _epoch)',
 ])
 
-const submitClaimForm = () => submitSupplyForm('claim', 'Claimed rewards!')
+const submitClaimForm = (type: SupplyActionType) => submitSupplyForm(type, 'Claimed rewards!')
 
-export const submitClaimAndSettle = ({ waitForEmptyState = false }: { waitForEmptyState?: boolean } = {}) =>
-  submitClaimForm().then(() => {
+const getClaimSubmitButton = (type: ClaimRewardType) =>
+  cy.get(`[data-testid="supply-claim-${type}-rewards-submit-button"]`, LOAD_TIMEOUT)
+
+export const submitClaimAndSettle = (
+  type: ClaimRewardType,
+  {
+    waitForEmptyState = false,
+  }: {
+    waitForEmptyState?: boolean
+  } = {},
+) => {
+  const rewardTypeId: SupplyActionType = `claim-${type}-rewards`
+  return submitClaimForm(rewardTypeId).then(() => {
     if (waitForEmptyState) {
-      cy.get('[data-testid="supply-claim-empty-state"]', LOAD_TIMEOUT).should('be.visible')
-      touchClaimForm()
+      getClaimSubmitButton(type).should('be.disabled')
+      touchClaimForm(rewardTypeId)
     }
   })
+}
 
 const checkpointTenderlySupplyRewards = ({
   vnet,
@@ -75,36 +88,64 @@ export const prepareClaimRewards = ({
  * The claim tab has no editable inputs, so "touching" it means waiting for the
  * post-claim refetch to settle into the empty state.
  */
-const touchClaimForm = () => {
-  cy.get('[data-testid="supply-claim-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
+const touchClaimForm = (type: string) => {
+  cy.get(`[data-testid="supply-${type}-submit-button"]`, LOAD_TIMEOUT).should('be.disabled')
+}
+
+/** Validates the structural state of the claim tab - button state, error presence, and empty state visibility. */
+export function validateClaimTabState({
+  crvButtonDisabled = true,
+  otherRewardsButtonDisabled = true,
+}: {
+  crvButtonDisabled?: boolean
+  otherRewardsButtonDisabled?: boolean
+} = {}) {
+  getClaimSubmitButton('crv').should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
+  getClaimSubmitButton('other').should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
+
+  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+
+  if (crvButtonDisabled && otherRewardsButtonDisabled) {
+    cy.contains('No rewards').should('be.visible')
+    cy.contains('There are currently no rewards to claim').should('be.visible')
+  }
 }
 
 /**
- * Check all claim detail values are loaded and valid.
+ * Validates that claim details are structurally loaded and valid.
+ * Focuses on structural completeness: data exists, amounts are valid numbers, notional values are present, and action info
+ * is loaded.
  */
 export function checkClaimDetailsLoaded({
-  hasRewards = true,
+  hasCrvRewards = true,
+  hasOtherRewards = true,
   expectedSymbols,
-  checkEstimatedTxCost = hasRewards,
+  checkEstimatedTxCost = hasCrvRewards || hasOtherRewards,
 }: {
-  hasRewards?: boolean
+  hasCrvRewards?: boolean
+  hasOtherRewards?: boolean
   expectedSymbols?: string[]
   checkEstimatedTxCost?: boolean
 } = {}) {
-  cy.get('[data-testid="supply-claim-submit-button"]', LOAD_TIMEOUT).should(
-    hasRewards ? 'not.be.disabled' : 'be.disabled',
-  )
-  cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
+  if (hasCrvRewards || hasOtherRewards) {
+    cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
+  } else {
+    cy.get('[data-testid="claim-action-info-list"]').should('not.be.visible')
+    return
+  }
 
   if (checkEstimatedTxCost) {
-    getActionValue('estimated-tx-cost').should('include', '$')
-  }
-  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+    if (hasCrvRewards) {
+      getActionValue('claim-crv-rewards-estimated-tx-cost').should('include', '$')
+    } else {
+      getActionInfo('claim-crv-rewards-estimated-tx-cost').should('have.text', '-')
+    }
 
-  if (!hasRewards) {
-    cy.contains('No rewards').should('be.visible')
-    cy.contains('There are currently no rewards to claim').should('be.visible')
-    return
+    if (hasOtherRewards) {
+      getActionValue('claim-other-rewards-estimated-tx-cost').should('include', '$')
+    } else {
+      getActionInfo('claim-other-rewards-estimated-tx-cost').should('have.text', '-')
+    }
   }
 
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
@@ -115,6 +156,7 @@ export function checkClaimDetailsLoaded({
     expect(Number(match)).to.be.greaterThan(0)
   })
   cy.get('[data-testid="data-table-cell-notional"]').should('have.length.at.least', 1)
+
   if (expectedSymbols && expectedSymbols.length > 1) {
     cy.get('[data-testid="rewards-value"]').should('be.visible')
   }
@@ -124,24 +166,19 @@ export function checkClaimDetailsLoaded({
   })
 }
 
-export const checkClaimTableState = ({
+/**
+ * Validates exact data values in the claim rewards table.
+ * Performs precise matching of amounts, symbols, and notional values.
+ */
+export function checkClaimTableState({
   rows,
   totalNotional,
-  buttonDisabled,
 }: {
   rows: { amount: string; symbol: string; notional?: number }[]
   totalNotional?: number
-  buttonDisabled?: boolean
-}) => {
-  cy.get('[data-testid="supply-claim-submit-button"]').should(buttonDisabled ? 'be.disabled' : 'not.be.disabled')
+}) {
+  if (!rows.length) return
 
-  if (!rows.length) {
-    cy.contains('No rewards').should('be.visible')
-    cy.contains('There are currently no rewards to claim').should('be.visible')
-    return
-  }
-
-  cy.get('[data-testid="data-table"]').should('exist')
   cy.get('[data-testid="data-table-cell-token"]').should('have.length', rows.length)
   cy.get('[data-testid="data-table-cell-notional"]').should('have.length', rows.length)
 

@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { useClaimMutation } from '@/llamalend/mutations/claim.mutation'
+import { useClaimCrvMutation, useClaimRewardsMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { CLAIM_TAB_COLUMNS } from '../components/columns'
@@ -30,8 +31,17 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     [chainId, marketId, userAddress],
   )
 
-  const { claimableTokens, totalNotionals, isClaimablesLoading, claimablesError, usdRateLoading, usdRateError } =
-    useClaimableTokens(params, market, enabled)
+  const {
+    claimableTokens,
+    totalNotionals,
+    isClaimablesLoading,
+    claimableCrvError,
+    claimableRewardsError,
+    usdRateLoading,
+    usdRateError,
+    hasClaimableCrv,
+    hasClaimableRewards,
+  } = useClaimableTokens(params, market, enabled)
 
   const tableData = useMemo(
     () => claimableTokens.map((token) => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
@@ -44,21 +54,31 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     ...getTableOptions(tableData),
   })
 
-  const { onSubmit, isPending: isClaiming, error: claimError } = useClaimMutation({ marketId, network, userAddress })
+  const {
+    onSubmit: onSubmitCrv,
+    isPending: isClaimCrvPending,
+    error: claimCrvError,
+  } = useClaimCrvMutation({ marketId, network, userAddress })
+  const {
+    onSubmit: onSubmitRewards,
+    isPending: isClaimRewardsPending,
+    error: claimRewardsError,
+  } = useClaimRewardsMutation({ marketId, network, userAddress })
 
   return {
     params,
-    claimablesError: claimablesError ?? null,
     claimableTokens,
     totalNotionals,
     usdRateLoading,
-    usdRateError: usdRateError ?? null,
-    isDisabled: !!claimablesError || claimableTokens.length === 0,
+    isCrvDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0].some(Boolean),
+    isRewardsDisabled: [!hasClaimableRewards, !!claimableRewardsError, claimableTokens.length === 0].some(Boolean),
     isLoading: isClaimablesLoading,
-    isError: !!claimablesError,
+    isError: [!!claimableCrvError, !!claimableRewardsError].some(Boolean),
     table,
-    onSubmit,
-    isPending: isClaiming,
-    claimError,
+    onSubmitCrv,
+    onSubmitRewards,
+    isCrvPending: isClaimCrvPending,
+    isRewardsPending: isClaimRewardsPending,
+    errors: notFalsy(usdRateError, claimableCrvError, claimableRewardsError, claimRewardsError, claimCrvError),
   }
 }

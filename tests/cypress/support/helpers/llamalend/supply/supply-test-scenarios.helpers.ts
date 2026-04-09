@@ -453,7 +453,8 @@ export const createClaimScenario = ({
       claimableRewards: [TEST_ADDRESS] as const,
       shouldClaimCrv: Number(claimableCrv) > 0,
       shouldClaimRewards: claimableRewards.some(({ amount }) => Number(amount) > 0),
-      buttonDisabled: Number(claimableCrv) <= 0 && claimableRewards.every(({ amount }) => Number(amount) <= 0),
+      crvButtonDisabled: Number(claimableCrv) <= 0,
+      otherRewardsButtonDisabled: claimableRewards.every(({ amount }) => Number(amount) <= 0),
       table: {
         rows: [
           ...(Number(claimableCrv) > 0
