@@ -12,7 +12,8 @@ import {
 import { DAYS, type Period } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { useTheme } from '@mui/material/styles'
-import { mapRecord, objectKeys, recordEntries } from '@primitives/objects.utils'
+import { fromEntries, mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -20,21 +21,34 @@ import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { formatUsd } from '@ui-kit/utils'
 import { useCrvUsdSupply } from '../queries/useCrvUsdSupply.query'
 
-const MARKET_NAMES = {
-  keepersDebt: 'Keepers debt',
-  lendingOperatorsDebt: 'Lending operators debt',
-  yieldBasisDebt: 'Yield Basis debt',
+/**
+ * Hardcoded market names used in the prices API endpoint.
+ * The `name` is what the prices API returns.
+ * `label` is what we want to display in the chart, `null` to omit the market type.
+ */
+const MARKETS = {
+  keepersDebt: { name: 'Keepers debt', label: t`Keepers debt` },
+  lendingOperatorsDebt: { name: 'Lending operators debt', label: t`Lending operators debt` },
+  yieldBasisDebt: { name: 'Yield Basis debt', label: t`Yield basis debt` },
+  flashLenderDebt: { name: 'FlashLender debt', label: null },
 } as const
 
-type MarketName = keyof typeof MARKET_NAMES
+type MarketName = keyof typeof MARKETS
 
-const MARKET_NAMES_SET = new Set<string>(Object.values(MARKET_NAMES))
+const MARKET_NAMES_SET = new Set<string>(Object.values(MARKETS).map((m) => m.name))
 
-const MARKET_LABELS = {
-  keepersDebt: t`Keepers debt`,
-  lendingOperatorsDebt: t`Lending operators debt`,
-  yieldBasisDebt: t`Yield basis debt`,
-} as const satisfies Record<MarketName, string>
+const MARKET_LABELS = fromEntries(
+  recordEntries(MARKETS)
+    .filter(([_, { label }]) => label)
+    .map(([key, { label }]) => [key, label!]),
+)
+
+const ALL_LABELS = joinButtonText(...recordValues(MARKET_LABELS))
+const ALL_EXCLUDED = joinButtonText(
+  ...recordValues(MARKETS)
+    .filter(({ label }) => !label)
+    .map(({ name }) => name),
+)
 
 const MINT_MARKETS_LABEL = t`Mint markets`
 
@@ -52,7 +66,7 @@ export function ChartCrvUsdSupplyBreakdown() {
 
   // Not using switch hook for the non mint markets as otherwise it's a lot of boilerplate
   const [mintMarketsVisible, , , toggleMintMarketsVisible] = useSwitch(true)
-  const [visibility, setVisibility] = useState<Record<MarketName, boolean>>(() => mapRecord(MARKET_NAMES, () => true))
+  const [visibility, setVisibility] = useState<Record<MarketName, boolean>>(() => mapRecord(MARKETS, () => true))
   const toggleVisibility = (key: MarketName) => setVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
 
   const chartData = useMemo(
@@ -65,7 +79,7 @@ export function ChartCrvUsdSupplyBreakdown() {
           mintMarkets: llama(x)
             .filter((y) => !MARKET_NAMES_SET.has(y.market))
             .sumBy((y) => y.supply),
-          ...mapRecord(MARKET_NAMES, (_, market) => x.find((y) => y.market === market)?.supply ?? 0),
+          ...mapRecord(MARKETS, (_, { name }) => x.find((y) => y.market === name)?.supply ?? 0),
         }))
         .uniqWith((x, y) => x.time === y.time)
         .orderBy((c) => c.time, 'asc')
@@ -81,8 +95,8 @@ export function ChartCrvUsdSupplyBreakdown() {
         toggled: mintMarketsVisible,
         onToggle: toggleMintMarketsVisible,
       },
-      ...objectKeys(MARKET_LABELS).map((key, i) => ({
-        label: MARKET_LABELS[key],
+      ...recordEntries(MARKET_LABELS).map(([key, label], i) => ({
+        label,
         box: { fill: palette.colors[i + 1] },
         toggled: visibility[key],
         onToggle: () => toggleVisibility(key),
@@ -107,8 +121,8 @@ export function ChartCrvUsdSupplyBreakdown() {
               stack: 'supply',
               areaStyle: {},
             },
-            ...recordEntries(MARKET_LABELS).map(([key, label]) => ({
-              name: label,
+            ...recordEntries(MARKET_LABELS).map(([key, name]) => ({
+              name,
               data: chartData.map((x) => x[key]),
               type: 'line' as const,
               stack: 'supply',
@@ -135,7 +149,7 @@ export function ChartCrvUsdSupplyBreakdown() {
             filename="crvusd_supply"
             data={{
               mintMarkets: chartData.map((x) => ({ time: x.time, value: x.mintMarkets })),
-              ...mapRecord(MARKET_NAMES, (key) => chartData.map((x) => ({ time: x.time, value: x[key] }))),
+              ...mapRecord(MARKET_LABELS, (key) => chartData.map((x) => ({ time: x.time, value: x[key] }))),
             }}
             fullscreen={fullscreen}
           />
@@ -145,7 +159,12 @@ export function ChartCrvUsdSupplyBreakdown() {
     >
       <ChartFooter
         legendSets={legendSets}
-        description={t`Total crvUSD in circulation broken down by source. "Mint markets" aggregates all standard lending markets. The remaining areas show protocol-specific debt: Keepers debt stabilizes the peg, while Lending operators, Yield basis, and FlashLender debt reflect other protocol-level minting.`}
+        description={notFalsy(
+          t`Total crvUSD in circulation broken down by source.`,
+          t`"Mint markets" aggregates all standard lending markets.`,
+          t`The remaining areas show protocol-specific debt: Keepers debt stabilizes the peg, while ${ALL_LABELS} debt reflect other protocol-level minting.`,
+          ALL_EXCLUDED.length && t`${ALL_EXCLUDED} are not included in the total.`,
+        ).join(' ')}
       />
     </EChartsCard>
   )

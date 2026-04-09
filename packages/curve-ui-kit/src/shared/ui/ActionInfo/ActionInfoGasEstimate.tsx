@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,15 +16,22 @@ export type TxGasInfo = {
 export type EstimatedTxCostProps = {
   gas: QueryProp<TxGasInfo | null>
   isApproved?: boolean
+  label?: ReactNode
+  testId?: string
 }
 
 const { IconSize } = SizesAndSpaces
 
-export const ActionInfoGasEstimate = ({ gas, isApproved }: EstimatedTxCostProps) => (
+export const ActionInfoGasEstimate = ({
+  gas,
+  isApproved,
+  label = t`Estimated tx cost`,
+  testId = 'estimated-tx-cost',
+}: EstimatedTxCostProps) => (
   <ActionInfo
     label={
       <>
-        {t`Estimated tx cost`}
+        {label}
         <Typography color="textTertiary" component="span" variant="bodyXsRegular">
           {isApproved === true && ` ${t`step 2/2`}`}
           {isApproved === false && ` ${t`step 1/2`}`}
@@ -36,6 +44,6 @@ export const ActionInfoGasEstimate = ({ gas, isApproved }: EstimatedTxCostProps)
     valueLeft={<FireIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
     size="small"
     error={gas.error}
-    testId="estimated-tx-cost"
+    testId={testId}
   />
 )

@@ -55,7 +55,7 @@ export const BlockchainIds = {
   [Chain.Hyperliquid]: 'hyperliquid',
   [Chain.Bsc]: 'bsc',
   [Chain.Taiko]: 'taiko',
-} as const satisfies Partial<Record<Chain, BlockchainId>> as Partial<Record<number, BlockchainId>>
+} satisfies Partial<Record<Chain, BlockchainId>> as Partial<Record<number, BlockchainId>>
 
 /**
  * Converts a numeric chain ID to the prices API blockchain identifier.

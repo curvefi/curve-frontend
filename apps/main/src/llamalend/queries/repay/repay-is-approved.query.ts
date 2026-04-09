@@ -1,11 +1,8 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayIsFullParams, type RepayIsFullQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
-
-export type RepayIsApprovedParams<ChainId = IChainId> = RepayIsFullParams<ChainId>
 
 export const {
   useQuery: useRepayIsApproved,
@@ -22,7 +19,7 @@ export const {
     userAddress,
     isFull,
     routeId,
-  }: RepayIsApprovedParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayIsApproved',
@@ -40,7 +37,7 @@ export const {
     isFull,
     userAddress,
     routeId,
-  }: RepayIsFullQuery): Promise<boolean> => {
+  }: RepayQuery): Promise<boolean> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) return await getLoanImplementation(marketId).fullRepayIsApproved(userAddress)
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
@@ -59,5 +56,5 @@ export const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayFromCollateralIsFullValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
 })

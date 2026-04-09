@@ -139,13 +139,7 @@ export const createComponents = (
   MuiMenuItem: defineMuiMenuItem(design),
   MuiSelect: defineMuiSelect(design),
   MuiSlider: defineMuiSlider(design),
-  MuiSkeleton: {
-    styleOverrides: {
-      root: {
-        backgroundColor: alpha(design.Text.TextColors.Primary, 0.13),
-      },
-    },
-  },
+  MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
   MuiTableRow: {

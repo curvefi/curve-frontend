@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useNavigate, usePathname } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { q } from '@ui-kit/types/util'
@@ -31,8 +30,6 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
     supportedNetworks,
     isPending,
     isApproved,
-    isBridged,
-    txHash,
     bridgeCost,
     gas,
     amountError,
@@ -85,15 +82,7 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
         }
       />
 
-      <FormAlerts
-        isSuccess={isBridged}
-        error={approveError || bridgeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={networks[chainId]}
-        handledErrors={['amount']}
-        successTitle={t`Bridged`}
-      />
+      <FormAlerts error={approveError || bridgeError} formErrors={formErrors} handledErrors={['amount']} />
     </Form>
   )
 }

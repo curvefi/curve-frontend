@@ -1,6 +1,4 @@
-import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -17,7 +15,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  onSuccess,
   onPricesUpdated,
   enabled,
 }: {
@@ -25,7 +22,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled: boolean
-  onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
@@ -42,9 +38,8 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     formErrors,
     collateralToken,
     borrowToken,
-    txHash,
     maxCollateral,
-  } = useAddCollateralForm({ market, network, onSuccess, enabled, onPricesUpdated })
+  } = useAddCollateralForm({ market, network, onPricesUpdated, enabled })
 
   return (
     <Form
@@ -58,7 +53,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          leverageEnabled={!!market && hasLeverageValue(market)}
           market={market}
         />
       }
@@ -76,15 +70,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <FormAlerts
-        isSuccess={action.isSuccess}
-        error={action.error}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['userCollateral']}
-        successTitle={t`Collateral added`}
-      />
+      <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
 
       <Button
         type="submit"

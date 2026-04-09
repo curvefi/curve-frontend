@@ -80,8 +80,12 @@ export const LOAN_TEST_MARKETS = {
   ],
 } as const
 
-export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
-  oneOf(...LOAN_TEST_MARKETS[type])
+type TestLlamaMarket = (typeof LOAN_TEST_MARKETS)[LlamaMarketType][number]
+
+export const oneLoanTestMarket = (
+  type: LlamaMarketType = oneValueOf(LlamaMarketType),
+  filter?: (market: TestLlamaMarket) => boolean,
+) => oneOf(...(filter ? LOAN_TEST_MARKETS[type].filter(filter) : LOAN_TEST_MARKETS[type]))
 
 /**
  * Check all loan detail values are loaded and valid.
@@ -149,12 +153,38 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   checkLoanDetailsLoaded({ leverageEnabled })
 }
 
+export function submitLoanForm({
+  form,
+  message,
+  expected = 'success',
+  checkMessage = true,
+}: {
+  form: string
+  message: string
+  expected?: AlertColor
+  checkMessage?: boolean
+}) {
+  cy.get(`[data-testid="${form}-submit-button"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
+  if (expected !== 'success') {
+    return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
+  }
+  if (!checkMessage) {
+    return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  }
+  return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+}
+
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export function submitCreateLoanForm(expected: AlertColor = 'success', message = 'Loan created') {
-  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
-    .contains(message, TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitCreateLoanForm = ({
+  expected = 'success',
+  checkMessage,
+}: { expected?: 'success' | 'error'; checkMessage?: boolean } = {}) =>
+  submitLoanForm({
+    form: 'create-loan',
+    message: { error: 'Transaction failed', success: 'Loan created' }[expected],
+    expected,
+    checkMessage,
+  })

@@ -1,11 +1,13 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
+import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
+import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { type RepayIsFullQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
-import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
+import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
 
 const {
   useQuery: useRepayLoanEstimateGas,
@@ -22,7 +24,7 @@ const {
     isFull,
     slippage,
     routeId,
-  }: RepayIsApprovedParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.repay',
@@ -42,7 +44,7 @@ const {
     userAddress,
     slippage,
     routeId,
-  }: RepayIsFullQuery): Promise<TGas> => {
+  }: RepayQuery): Promise<TGas> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await getLoanImplementation(marketId).estimateGas.fullRepay(userAddress)
@@ -69,7 +71,8 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayFromCollateralIsFullValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 const {
@@ -86,7 +89,7 @@ const {
     userAddress,
     isFull,
     routeId,
-  }: RepayIsApprovedParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.repayApprove',
@@ -104,7 +107,7 @@ const {
     isFull,
     userAddress,
     routeId,
-  }: RepayIsFullQuery): Promise<TGas> => {
+  }: RepayQuery): Promise<TGas> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await getLoanImplementation(marketId).estimateGas.fullRepayApprove(userAddress)
@@ -125,7 +128,8 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayFromCollateralIsFullValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 export const useRepayEstimateGas = createApprovedEstimateGasHook({
@@ -134,8 +138,8 @@ export const useRepayEstimateGas = createApprovedEstimateGasHook({
   useActionEstimate: useRepayLoanEstimateGas,
 })
 
-export const invalidateRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+export const invalidateRepayEstimateGasQueries = async (params: RepayParams) =>
   await Promise.all([invalidateRepayApproveGasEstimateQuery(params), invalidateRepayLoanEstimateGasQuery(params)])
 
-export const refetchRepayEstimateGasQueries = async (params: RepayIsApprovedParams) =>
+export const refetchRepayEstimateGasQueries = async (params: RepayParams) =>
   await Promise.all([refetchRepayApproveGasEstimateQuery(params), refetchRepayLoanEstimateGasQuery(params)])

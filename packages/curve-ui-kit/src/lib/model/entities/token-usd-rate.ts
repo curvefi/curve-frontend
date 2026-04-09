@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { formatEther, isAddressEqual, type Address } from 'viem'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { FetchError } from '@primitives/fetch.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
@@ -31,7 +32,7 @@ const fetchFromCurveLib = async (libName: LibKey, chainId: number, tokenAddress:
 /** Try prices API (returns null on failure) */
 const fetchFromPricesApi = async (chainId: number, tokenAddress: string) => {
   const blockchainId = BlockchainIds[chainId]
-  if (!blockchainId) return null
+  if (!blockchainId || !isPricesApiChain(blockchainId)) return null
 
   try {
     const { usdPrice } = await getUsdPrice(blockchainId, tokenAddress as Address)

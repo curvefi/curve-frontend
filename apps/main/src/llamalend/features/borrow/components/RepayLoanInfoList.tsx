@@ -11,18 +11,17 @@ import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.qu
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
-import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
-import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
+import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
+import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
+import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
-import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/useLeverageInfoFields'
-import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
-import { decimal, decimalMinus } from '@ui-kit/utils'
+import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -30,17 +29,17 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
   return decimal(remaining.isNegative() ? 0 : remaining)!
 }
 
-function useRepayRemainingDebt<ChainId extends IChainId>(
+function useRepayRemainingDebt(
   {
     params,
     swapRequired,
     prevDebt,
   }: {
-    params: RepayParams<ChainId>
+    params: RepayParams
     swapRequired: boolean
     prevDebt: Query<Decimal | null>
   },
-  { isFull, userBorrowed }: Pick<RepayForm, 'userBorrowed' | 'isFull'>,
+  { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
   enabled: boolean,
 ) {
   const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled)
@@ -71,16 +70,16 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   prevPrices,
 }: {
   market: LlamaMarketTemplate | undefined
-  params: RepayParams<ChainId>
-  values: RepayForm
+  params: RepayParams
+  values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
   routes: MarketRoutes | undefined
-  form: UseFormReturn<RepayForm>
-  prices?: QueryProp<Range<Decimal>>
+  form: UseFormReturn<RepayFormData>
+  prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
@@ -97,7 +96,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas(networks, params, isOpen))}
-      health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(useHealthQueries((isHealthFull) => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       isFullRepay={isFull}
       debt={q(debt)}
@@ -109,7 +108,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            collateralDelta: userCollateral && `${-+userCollateral}`,
+            collateralDelta: userCollateral && decimalNegate(userCollateral),
             expectedBorrowed: debt?.data,
           },
           isOpen,

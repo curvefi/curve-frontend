@@ -3,7 +3,6 @@ import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayL
 import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayForm'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -34,13 +33,11 @@ export const ImproveHealthForm = ({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onSuccess?: RepayOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const {
@@ -51,9 +48,7 @@ export const ImproveHealthForm = ({
     onSubmit,
     borrowToken,
     collateralToken,
-    isRepaid,
     repayError,
-    txHash,
     isApproved,
     formErrors,
     max: { userBorrowed: maxRepay },
@@ -64,7 +59,6 @@ export const ImproveHealthForm = ({
     market,
     network,
     enabled,
-    onSuccess,
     onPricesUpdated: noop, // liquidation prices do not change when in liquidation protection
   })
 
@@ -125,15 +119,7 @@ export const ImproveHealthForm = ({
         <ButtonGetCrvUsd />
       </Stack>
 
-      <FormAlerts
-        isSuccess={isRepaid}
-        error={repayError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={notFalsy('userBorrowed', maxRepay.field)}
-        successTitle={t`Loan repaid`}
-      />
+      <FormAlerts error={repayError} formErrors={formErrors} handledErrors={notFalsy('userBorrowed', maxRepay.field)} />
     </Form>
   )
 }

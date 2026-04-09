@@ -1,6 +1,8 @@
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
@@ -8,15 +10,18 @@ import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { isDevelopment } from '@ui-kit/utils'
 import { type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
@@ -119,6 +124,22 @@ export const PageHeaderView = ({
             </Stack>
           </Stack>
         </Stack>
+        {isDevelopment && (
+          <IconButton
+            size="extraSmall"
+            onClick={() =>
+              market &&
+              invalidateAllUserMarketDetails({
+                chainId: market.getLlamalend().chainId as IChainId,
+                marketId: market.id,
+                userAddress: market.getLlamalend().address as Address,
+              })
+            }
+            sx={{ alignSelf: 'center' }}
+          >
+            <ReloadIcon />
+          </IconButton>
+        )}
       </Stack>
       <MetricsRow
         borrowRate={borrowRate}

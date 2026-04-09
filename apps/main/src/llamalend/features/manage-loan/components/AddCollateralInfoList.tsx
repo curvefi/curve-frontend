@@ -10,9 +10,10 @@ import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-c
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
+import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
+import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { useBorrowRates } from '@/llamalend/widgets/action-card/useBorrowRates'
-import { usePrevLoanState } from '@/llamalend/widgets/action-card/usePrevLoanState'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
@@ -25,7 +26,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
-  leverageEnabled,
   form,
   market,
 }: {
@@ -34,7 +34,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
-  leverageEnabled: boolean
   form: UseFormReturn<CollateralForm>
   market: LlamaMarketTemplate | undefined
 }) {
@@ -65,10 +64,15 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         prevCollateral,
         (stateCollateral) => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
       )}
-      leverageEnabled={leverageEnabled}
-      prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
-      leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
       prices={q(useAddCollateralPrices(params, isOpen))}
+      {...useLeverageInfoFields({
+        leverageEnabled: false,
+        leverageValue: useAddCollateralFutureLeverage(params, isOpen),
+        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        prevCollateral,
+        leverageTotalCollateral: prevCollateral,
+        collateralDelta: userCollateral,
+      })}
       {...prevLoanState}
       {...useBorrowRates({ params, market }, isOpen)}
     />

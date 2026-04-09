@@ -13,11 +13,11 @@ export type LeverageInfoFieldsOptions = {
   prevLeverageValue: Query<Decimal | null>
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
-  expected: Query<{ avgPrice?: Decimal }>
-  priceImpact: Query<number | null>
-  routes: MarketRoutes | undefined
-  slippage: Decimal
-  onSlippageChange: (newSlippage: Decimal) => void
+  expected?: Query<{ avgPrice?: Decimal }>
+  priceImpact?: Query<Decimal | null>
+  routes?: MarketRoutes | undefined
+  slippage?: Decimal
+  onSlippageChange?: (newSlippage: Decimal) => void
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
@@ -52,11 +52,11 @@ export const useLeverageInfoFields = ({
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
           ...(leverageEnabled && {
-            exchangeRate: mapQuery(expected, (data) => data.avgPrice ?? null),
+            exchangeRate: expected && mapQuery(expected, (data) => data.avgPrice ?? null),
             routes,
             slippage,
             onSlippageChange,
-            priceImpact: q(priceImpact),
+            priceImpact: priceImpact && q(priceImpact),
           }),
         }
       : {

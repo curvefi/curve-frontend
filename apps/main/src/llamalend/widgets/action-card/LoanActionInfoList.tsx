@@ -4,22 +4,18 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import type { QueryProp, Range } from '@ui-kit/types/util'
-import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
+import { decimal, decimalGreaterThan, formatNumber, formatPercent } from '@ui-kit/utils'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import {
-  ACTION_INFO_GROUP_SX,
-  combineActionInfoState,
-  formatAmount,
-  formatLeverage,
-  isQueryValueNotEqual,
-} from './info-actions.helpers'
+import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
+import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
@@ -27,7 +23,7 @@ export type LoanActionInfoListProps = {
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal | null>
   isFullRepay?: boolean
-  prices?: QueryProp<Range<Decimal>>
+  prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
@@ -47,7 +43,7 @@ export type LoanActionInfoListProps = {
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
   leverageTotalCollateral?: QueryProp<Decimal | null>
-  priceImpact?: QueryProp<number | null>
+  priceImpact?: QueryProp<Decimal | null>
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
@@ -97,10 +93,17 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
+  const isHighImpact = priceImpact?.data != null && slippage != null && decimalGreaterThan(priceImpact.data, slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
-  const shouldShowPrevNetBorrowApr = isQueryValueNotEqual(prevNetBorrowApr, prevRates?.data?.borrowApr)
-  const shouldShowNetBorrowApr = isQueryValueNotEqual(netBorrowApr, rates?.data?.borrowApr)
+
+  const shouldShowNetBorrowApr = useShouldShowNetRate({
+    tokenSymbol: collateralSymbol,
+    prevNetRate: prevNetBorrowApr,
+    prevRate: prevRates && mapQuery(prevRates, (d) => d?.borrowApr),
+    netRate: netBorrowApr,
+    rate: rates && mapQuery(rates, (d) => d?.borrowApr),
+    defaultValue: useShowNetRate('borrow'),
+  })
 
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
@@ -127,7 +130,7 @@ export const LoanActionInfoList = ({
               testId="borrow-apr"
             />
           )}
-          {(shouldShowNetBorrowApr || shouldShowPrevNetBorrowApr) && (
+          {shouldShowNetBorrowApr && (
             <ActionInfo
               label={t`Net borrow APR`}
               value={netBorrowApr?.data && formatPercent(netBorrowApr.data)}
@@ -171,7 +174,7 @@ export const LoanActionInfoList = ({
           )}
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
-              label={t`Liquidation zone`}
+              label={t`Liquidation range`}
               value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}

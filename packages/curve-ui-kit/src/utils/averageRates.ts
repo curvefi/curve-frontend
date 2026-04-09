@@ -1,4 +1,7 @@
 import lodash from 'lodash'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
+
+const { Weekly, Monthly } = Duration.AverageRates
 
 const { meanBy } = lodash
 
@@ -37,3 +40,22 @@ export function calculateAverageRates<
 
   return result
 }
+
+type AverageType = {
+  /** Number of days included in the average window. */
+  window: number
+  /** Label for the period of the the averaging range. */
+  period: string
+  /** Adjective label for the averaging range. */
+  adjective: string
+}
+
+const { week, month } = {
+  week: { window: Weekly, period: `${Weekly}D`, adjective: 'weekly' },
+  month: { window: Monthly, period: `${Monthly}D`, adjective: 'monthly' },
+} satisfies Record<string, AverageType>
+
+export const AVERAGES_TYPES = {
+  week,
+  month,
+} as const

@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { StakeOptions } from '@/llamalend/mutations/stake.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -15,7 +14,6 @@ export type StakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<StakeOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
@@ -25,7 +23,6 @@ export const StakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -37,13 +34,11 @@ export const StakeForm = <ChainId extends IChainId>({
     isDisabled,
     vaultToken,
     borrowToken,
-    isStaked,
     stakeError,
-    txHash,
     formErrors,
     isApproved,
     max,
-  } = useStakeForm({ market, network, enabled, onSuccess })
+  } = useStakeForm({ market, network, enabled })
 
   return (
     <Form
@@ -71,15 +66,7 @@ export const StakeForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
       </Button>
 
-      <FormAlerts
-        isSuccess={isStaked}
-        error={stakeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['stakeAmount']}
-        successTitle={t`Staked successfully`}
-      />
+      <FormAlerts error={stakeError} formErrors={formErrors} handledErrors={['stakeAmount']} />
     </Form>
   )
 }
