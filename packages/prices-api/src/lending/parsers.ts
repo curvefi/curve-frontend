@@ -83,3 +83,18 @@ export const parseUserCollateralEvents = (
     isPositionClosed: y.is_position_closed,
   })),
 })
+
+export const parseRateCurve = (x: Responses.GetRateCurveResponse): Models.RateCurve => ({
+  rates: x.rates.map((rate) => ({
+    utilization: rate.utilization,
+    borrowApy: rate.borrow_apy,
+    supplyApy: rate.supply_apy,
+    borrowApr: rate.borrow_apr,
+    supplyApr: rate.supply_apr,
+  })),
+  currentUtilization: x.current_utilization,
+  currentBorrowApy: x.current_borrow_apy,
+  currentSupplyApy: x.current_supply_apy,
+  currentBorrowApr: x.current_borrow_apr,
+  currentSupplyApr: x.current_supply_apr,
+})

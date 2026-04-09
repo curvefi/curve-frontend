@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
-import { IconProps } from '@mui/material/Icon'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
@@ -10,15 +9,17 @@ import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { applySxProps } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
-export type ActionInfoSize = 'small' | 'medium' | 'large'
+export type ActionInfoSize = 'small' | 'medium'
 
 export type ActionInfoProps = {
   /** Label displayed on the left side */
@@ -39,8 +40,6 @@ export type ActionInfoProps = {
   prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
-  /** Placeholder when no value or previous value is provided */
-  emptyValue?: ReactNode
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Value to be copied (will display a copy button). */
@@ -70,7 +69,6 @@ const DEFAULT_SIZE: ActionInfoSize = 'medium'
 const labelSize = {
   small: 'bodyXsRegular',
   medium: 'bodyMRegular',
-  large: 'bodyMRegular',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
 const prevValueSize = labelSize
@@ -78,54 +76,51 @@ const prevValueSize = labelSize
 const valueSize = {
   small: 'bodyXsBold',
   medium: 'bodyMBold',
-  large: 'bodyMBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
+const iconButtonSize = {
   small: 'extraExtraSmall',
   medium: 'extraSmall',
-  large: 'extraSmall',
+} satisfies Record<ActionInfoSize, IconButtonProps['size']>
+
+const rowHeight: Record<ActionInfoSize, string> = {
+  small: ButtonSize.xxs,
+  medium: ButtonSize.xs,
 }
 
-const iconSize: Record<ActionInfoSize, IconProps['fontSize']> = {
-  small: 'small',
-  medium: 'medium',
-  large: 'medium',
-}
-
-const isSet = (v: ReactNode) => v || v === 0
-
-type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor'>
+type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor' | 'testId' | 'value'>
 
 const ValueTypography = ({
   size = DEFAULT_SIZE,
   error,
   valueColor,
   children,
+  testId,
+  value,
 }: ValueDecoratorProps & { children: ReactNode }) => (
-  <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')} component="div">
+  <Typography
+    variant={valueSize[size]}
+    color={error ? 'error' : (valueColor ?? 'textPrimary')}
+    component="div"
+    data-testid={testId}
+    data-value={value}
+  >
     {children}
   </Typography>
 )
+
 /** Renders a value as a typography (same variant and color as the main value) if it's a string, otherwise renders the value directly */
-const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps & { value?: ReactNode }) => (
-  <WithWrapper
-    shouldWrap={typeof value === 'string'}
-    Wrapper={ValueTypography}
-    size={size}
-    error={error}
-    valueColor={valueColor}
-  >
-    {value}
+const ValueDecorator = (props: ValueDecoratorProps) => (
+  <WithWrapper shouldWrap={typeof props.value === 'string'} Wrapper={ValueTypography} {...props}>
+    {props.value}
   </WithWrapper>
 )
 export const ActionInfo = ({
   label,
   labelColor,
-  prevValue,
+  prevValue: givenPrevValue,
   prevValueColor,
-  value,
-  emptyValue = '-',
+  value: givenValue,
   valueColor,
   valueLeft,
   valueRight,
@@ -140,86 +135,100 @@ export const ActionInfo = ({
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
-  const showPrevValue = isSet(value) && isSet(prevValue)
-  value ??= prevValue ?? emptyValue
-
+  const buttonSize = iconButtonSize[size]
+  const iconSize = IconButtonIconSize[buttonSize]
+  const value = givenValue ?? givenPrevValue
+  const prevValue = value === givenPrevValue ? null : givenPrevValue
   return (
-    <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
+    <Stack
+      direction="row"
+      alignItems={alignItems}
+      columnGap={Spacing.sm}
+      data-testid={testId}
+      sx={applySxProps(sx, { minHeight: rowHeight[size] })}
+    >
       <Typography
         flexGrow={1}
         variant={labelSize[size]}
         color={labelColor ?? 'textSecondary'}
         textAlign="start"
         component="div"
+        whiteSpace="nowrap"
       >
         {label}
       </Typography>
 
-      <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
-        {showPrevValue && (
-          <Typography
-            variant={prevValueSize[size]}
-            color={prevValueColor ?? 'textTertiary'}
-            data-testid={`${testId}-previous-value`}
-            data-value={`${prevValue}`}
-          >
-            {prevValue}
-          </Typography>
-        )}
-
-        {showPrevValue && (
-          <ArrowForwardIcon
-            sx={{
-              width: IconSize.sm,
-              height: IconSize.sm,
-              color: (t) => t.palette.text.tertiary,
-            }}
-          />
-        )}
-
-        <Tooltip title={valueTooltip} placement="top">
-          {/** Additional stack to add some space between left (icon), value and right (icon) */}
-          <Stack
-            direction="row"
-            alignItems={alignItems}
-            gap={Spacing.xxs}
-            data-testid={`${testId}-value`}
-            data-value={`${value}`}
-            className="ActionInfo-value"
-          >
-            <ValueDecorator value={valueLeft} size={size} error={error} valueColor={valueColor} />
-
-            <WithSkeleton
-              component="div"
-              loading={!!loading}
-              {...(Array.isArray(loading)
-                ? { width: loading[0], height: loading[1] }
-                : { width: '2ch', height: '1rem' })}
+      <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
+        <Stack direction="row" gap={Spacing.xs} flexWrap="wrap" justifyContent="end">
+          <Stack direction="row" gap={Spacing.xs}>
+            <Typography
+              variant={prevValueSize[size]}
+              color={prevValueColor ?? 'textTertiary'}
+              data-testid={`${testId}-previous`}
+              data-value={`${givenPrevValue}`}
+              whiteSpace="nowrap"
             >
-              <ValueTypography size={size} error={error} valueColor={valueColor}>
-                {typeof loading === 'string' ? loading : error ? '' : value}
-              </ValueTypography>
-            </WithSkeleton>
+              {prevValue}
+            </Typography>
+            {prevValue != null && (
+              <ArrowForwardIcon
+                sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
+              />
+            )}
 
-            <ValueDecorator value={valueRight} size={size} error={error} valueColor={valueColor} />
+            <Tooltip title={valueTooltip} placement="top">
+              {/** Additional stack to add some space between left (icon), value and right (icon) */}
+              <Stack
+                direction="row"
+                alignItems={alignItems}
+                gap={Spacing.xxs}
+                className="ActionInfo-value"
+                whiteSpace="nowrap"
+              >
+                <ValueDecorator
+                  value={valueLeft}
+                  size={size}
+                  error={error}
+                  valueColor={valueColor}
+                  testId={`${testId}-left`}
+                />
+
+                <WithSkeleton
+                  component="div"
+                  loading={!!loading}
+                  {...(Array.isArray(loading)
+                    ? { width: loading[0], height: loading[1] }
+                    : { width: '2ch', height: '1rem' })}
+                >
+                  <ValueTypography
+                    size={size}
+                    error={error}
+                    valueColor={valueColor}
+                    testId={`${testId}-value`}
+                    value={value}
+                  >
+                    {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
+                  </ValueTypography>
+                </WithSkeleton>
+              </Stack>
+            </Tooltip>
           </Stack>
-        </Tooltip>
-
-        {error && !loading && (
-          <ErrorIconButton
-            message={errorMessage}
+          <ValueDecorator
+            value={valueRight}
+            size={size}
             error={error}
-            buttonSize={iconButtonSize[size]}
-            iconSize={iconSize[size]}
+            valueColor={valueColor}
+            testId={`${testId}-right`}
           />
-        )}
+        </Stack>
+
+        {error && <ErrorIconButton error={error} size={buttonSize} />}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}
             label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
             confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
-            size={iconButtonSize[size]}
+            size={buttonSize}
           />
         )}
 
@@ -229,7 +238,7 @@ export const ActionInfo = ({
             href={link}
             target="_blank"
             rel="noopener"
-            size={iconButtonSize[size]}
+            size={buttonSize}
           >
             <CallMade />
           </IconButton>

@@ -1,11 +1,11 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
   cacheDir: resolve(__dirname, '../.cache/vite/tests'),
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react(), svgr()],
   resolve: {
     alias: [
       { find: '@cy', replacement: resolve(__dirname, './cypress') },

@@ -18,42 +18,35 @@ const VariantToColorMap = {
   success: 'success',
 } satisfies Record<Variant, ActionInfoProps['valueColor']>
 
-type Props = {
+type Props = Pick<ActionInfoProps, 'label' | 'testId' | 'alignItems'> & {
   children: ReactNode
   isBold?: boolean | null
   isDivider?: boolean
-  isMultiLine?: boolean
-  label?: ReactNode
   loading?: boolean
   loadingSkeleton?: [number, number]
   tooltip?: ReactNode
   variant?: Variant
-  testId?: string
 }
 
 export const DetailInfo = ({
   isBold,
   isDivider,
-  label,
   loading,
   loadingSkeleton,
   tooltip,
   variant,
-  isMultiLine,
   children,
-  testId,
+  ...props
 }: Props) => (
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
     <ActionInfo
-      label={label}
       value={children || '-'}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
       loading={loading && (loadingSkeleton || true)}
-      testId={testId}
+      {...props}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
-      {...(isMultiLine && { alignItems: 'flex-start' })}
     />
   </>
 )

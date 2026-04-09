@@ -123,3 +123,70 @@ export type GetPoolLiquidityEventsResponse = PaginationMeta & {
     provider: Address
   }[]
 }
+
+export type GetPoolSnapshotsResponse = {
+  chain: string
+  address: string
+  data: {
+    timestamp: number
+    a: number | null
+    fee: number | null
+    admin_fee: number | null
+    virtual_price: number | null
+    xcp_profit: number | null
+    xcp_profit_a: number | null
+    base_daily_apr: number | null
+    base_weekly_apr: number | null
+    offpeg_fee_multiplier: number | null
+    gamma: number | null
+    mid_fee: number | null
+    out_fee: number | null
+    fee_gamma: number | null
+    allowed_extra_profit: number | null
+    adjustment_step: number | null
+    ma_half_time: number | null
+    price_scale: number[] | null
+    price_oracle: number[] | null
+    block_number: number | null
+  }[]
+}
+
+type MetadataCoin = Coin & {
+  decimals: number | null
+}
+
+type Oracle = {
+  oracle_address: Address | null
+  method_id: string | null
+  method: string | null
+  is_verified: boolean
+}
+
+type PoolType =
+  | 'main'
+  | 'crypto'
+  | 'factory'
+  | 'factory_crypto'
+  | 'crvusd'
+  | 'factory_tricrypto'
+  | 'stableswapng'
+  | 'twocryptong'
+
+export type GetPoolMetadataResponse = {
+  name: string
+  registry: string
+  registry_type: string
+  lp_token_address: Address
+  coins: MetadataCoin[]
+  gauges: string[]
+  pool_type: PoolType
+  metapool: boolean
+  base_pool: string | null
+  asset_types: number[] | null
+  oracles: (Oracle | null)[] | null
+  vyper_version: string | null
+  deployment_tx: string | null
+  deployment_block: number | null
+  deployment_date: string | null
+  has_donations: boolean
+}

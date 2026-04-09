@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 export const AlertClosePosition = () => (
-  <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
+  <Alert severity="info" variant="outlined">
     <AlertTitle>{t`Close position`}</AlertTitle>
 
     <Stack gap={Spacing.sm}>

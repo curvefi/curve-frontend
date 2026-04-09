@@ -3,10 +3,15 @@ import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 
-export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePrices } = queryFactory({
+export const {
+  useQuery: useBorrowMorePrices,
+  invalidate: invalidateBorrowMorePrices,
+  refetchQuery: refetchBorrowMorePrices,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -55,5 +60,5 @@ export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePr
   },
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false, debtRequired: true }),
-  dependencies: (params) => (params.leverageEnabled ? [getBorrowMoreExpectedCollateralKey(params)] : []),
+  dependencies: (params) => notFalsy(params.leverageEnabled && getBorrowMoreExpectedCollateralKey(params)),
 })

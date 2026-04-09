@@ -45,7 +45,7 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
     userBandsBalances,
     oraclePrice,
     isLoading: isBandsLoading,
-    isError: isBandsError,
+    error: bandsError,
   } = useBandsData({
     chainId,
     marketId,
@@ -72,7 +72,7 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
         userBandsBalances: userBandsBalances ?? [],
         oraclePrice,
         isLoading: isBandsLoading,
-        isError: isBandsError,
+        error: bandsError,
         collateralToken,
         borrowToken,
       }}

@@ -1,20 +1,20 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type StakeOptions, useStakeMutation } from '@/llamalend/mutations/stake.mutation'
+import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
-import { useUserBalances } from '@/llamalend/queries/user'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useVaultUserBalances } from './useVaultUserBalances'
 
 const emptyStakeForm = (): StakeForm => ({
   stakeAmount: undefined,
@@ -33,12 +33,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: NonNullable<StakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -47,8 +45,8 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const vaultToken = getVaultToken(market)
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
-  const maxUserStake = mapQuery(userBalances, (d) => d.vaultShares)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
+  const maxUserStake = mapQuery(userBalances, (d) => d.depositedShares)
 
   const form = useForm<StakeForm>({
     ...formDefaultOptions,
@@ -58,7 +56,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): StakeParams<ChainId> => ({
         chainId,
@@ -73,17 +71,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const {
     onSubmit,
     isPending: isStaking,
-    isSuccess: isStaked,
     error: stakeError,
-    data,
-    reset: resetStake,
-  } = useStakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
+  } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
 
-  useCallbackAfterFormUpdate(form, resetStake)
-
-  useEffect(() => {
-    updateForm(form, { maxStakeAmount: maxUserStake.data })
-  }, [form, maxUserStake.data])
+  useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking
@@ -93,12 +84,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     vaultToken,
     borrowToken,
-    isStaked,
     stakeError,
-    txHash: data?.hash,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
     formErrors: useFormErrors(formState),

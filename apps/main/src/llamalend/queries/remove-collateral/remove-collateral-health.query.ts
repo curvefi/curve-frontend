@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type CollateralHealthParams, type CollateralHealthQuery } from '../validation/manage-loan.types'
@@ -13,7 +13,7 @@ export const { getQueryOptions: getRemoveCollateralHealthOptions } = queryFactor
       { isFull },
     ] as const,
   queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
-    (await getLlamaMarket(marketId).removeCollateralHealth(userCollateral, isFull)) as Decimal,
+    (await getLoanImplementation(marketId).removeCollateralHealth(userCollateral, isFull)) as Decimal,
   category: 'llamalend.removeCollateral',
   validationSuite: collateralHealthValidationSuite,
 })

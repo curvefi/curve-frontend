@@ -7,3 +7,11 @@ export type GetUsdPriceResponse = {
     last_updated: string
   }
 }
+
+export type GetUsdPriceHistoryResponse = {
+  address: Address
+  data: {
+    price: number
+    timestamp: string
+  }[]
+}

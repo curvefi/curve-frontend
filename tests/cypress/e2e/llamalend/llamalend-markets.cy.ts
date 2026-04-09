@@ -48,6 +48,20 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height, breakpoint])
     })
 
+    it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
+      withFilterChips(breakpoint, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      })
+      expandFirstRowOnMobile(breakpoint)
+      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
+      withFilterChips(breakpoint, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+      })
+    })
+
     it('should have sticky headers', () => {
       cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
       cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
@@ -301,24 +315,11 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
 
-    it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      })
-      expandFirstRowOnMobile(breakpoint)
-      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-      })
-    })
-
     it('should hide columns', () => {
       if (breakpoint == 'mobile') {
         // mobile viewports do not have this feature
-        cy.viewport(...oneDesktopViewport())
+        const [width, height] = oneDesktopViewport()
+        cy.viewport(width, height)
       }
       const { toggle, element } = oneOf(
         { toggle: 'tvl', element: 'data-table-header-tvl' },
@@ -350,10 +351,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     function checkLineGraphColor(type: MarketRateType, color: string) {
       // the graphs are lazy loaded, so we need to scroll to them first before checking the color
-      if (breakpoint != 'mobile') {
-        // no need to scroll on mobile, the graph is already in view after collapsing the row
-        cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
-      }
+      cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
       cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
     }
 

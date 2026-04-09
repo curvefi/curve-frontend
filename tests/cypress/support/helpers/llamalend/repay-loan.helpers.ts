@@ -1,5 +1,7 @@
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
@@ -29,17 +31,24 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
 
 export const touchRepayLoanForm = () => touchInput(getRepayInput)
 
-export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtCheck; leverageEnabled?: boolean }) {
+export function checkRepayDetailsLoaded({
+  leverageEnabled,
+  debt,
+  isPriceChanged = true,
+}: {
+  debt: DebtCheck
+  leverageEnabled?: boolean
+  isPriceChanged?: boolean
+}) {
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
-  getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+  getActionValue('borrow-price-range', ...notFalsy(!isPriceChanged && 'previous')).should(
+    'match',
+    /(\d(\.\d+)?) - (\d(\.\d+)?)/,
+  )
   getActionValue('borrow-apr').should('include', '%')
+  getActionValue('estimated-tx-cost').should('include', '$')
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export function submitRepayForm() {
-  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitRepayForm = () => submitLoanForm({ form: 'repay', message: 'Loan repaid!' })

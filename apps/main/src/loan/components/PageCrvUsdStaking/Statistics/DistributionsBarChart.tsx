@@ -8,9 +8,9 @@ import { DistributionsChartTooltip } from './DistributionsChartTooltip'
 
 const { FontSize } = SizesAndSpaces
 
-type RevenueDistributionsBarChartProps = { data: ScrvUsdRevenue | null; height?: number }
+type RevenueDistributionsBarChartProps = { data: ScrvUsdRevenue | null; height: number }
 
-export const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributionsBarChartProps) => {
+export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributionsBarChartProps) => {
   const {
     design: { Color, Text },
   } = useTheme()

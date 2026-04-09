@@ -1,8 +1,9 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { assert, decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
@@ -42,6 +43,7 @@ export const {
   useQuery: useCreateLoanExpectedCollateral,
   queryKey: createLoanExpectedCollateralQueryKey,
   invalidate: invalidateCreateLoanExpectedCollateral,
+  refetchQuery: refetchCreateLoanExpectedCollateral,
 } = queryFactory({
   queryKey: ({
     chainId,

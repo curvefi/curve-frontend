@@ -1,16 +1,22 @@
 import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute, type RouteMutationMeta } from '@ui-kit/entities/router-api'
+import type { FieldsOf } from '@ui-kit/lib'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 import { getUserState } from '../user/user-state.query'
-import type { RepayQuery } from '../validation/manage-loan.types'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'> & {
   slippage?: RepayQuery['slippage']
 }
 export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+
+/** Returns true when repayment closes the loan using only debt tokens from the wallet. */
+export const isFullRepayFromDebtToken = (isFull: boolean, stateCollateral: Decimal, userCollateral: Decimal) =>
+  isFull && !+stateCollateral && !+userCollateral
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -23,17 +29,19 @@ export function getRepayImplementation(
   { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const market = getLlamaMarket(marketId)
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
     (v) => !!+v,
   )
-  if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
   if (market instanceof MintMarketTemplate) {
+    if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
     if (hasV2Leverage(market))
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
     if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
   } else {
+    if (!hasUserCollateral && !hasStateCollateral)
+      return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
     if (hasZapV2(market))
       return [
         'zapV2',
@@ -58,12 +66,26 @@ export function getRepayImplementation(
   )
 }
 
-export function getRepayImplementationType(marketId: string | LlamaMarketTemplate, fields: RepayFormFields) {
-  const params = { ...fields, routeId: undefined }
+export function getRepayImplementationType(
+  marketId: string | LlamaMarketTemplate,
+  { userCollateral, stateCollateral, userBorrowed }: FieldsOf<RepayFormFields>,
+) {
   const routeMeta = {} // we are ignoring the args in this helper anyway
-  const [implementationType] = getRepayImplementation(marketId, params, routeMeta)
+  const [implementationType] = getRepayImplementation(
+    marketId,
+    {
+      userCollateral: userCollateral ?? '0',
+      stateCollateral: stateCollateral ?? '0',
+      userBorrowed: userBorrowed ?? '0',
+      routeId: undefined,
+    },
+    routeMeta,
+  )
   return implementationType
 }
+
+export const isRepayLeveraged = ({ marketId, ...fields }: FieldsOf<RepayFormFields & { marketId: string }>) =>
+  !!marketId && ['V1', 'V2', 'zapV2'].includes(getRepayImplementationType(marketId, fields))
 
 /**
  * This helper gets the user's debt from the user state query cache and converts it to a number. It is only safe to use

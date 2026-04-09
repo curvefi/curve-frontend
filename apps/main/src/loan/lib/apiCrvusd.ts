@@ -9,8 +9,8 @@ import {
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
-import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
-import { type BandBalance, ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import type { LiqRange, MaxRecvLeverage } from '@/loan/store/types'
+import { type BandBalance, ChainId, LlamaApi, Llamma, type Provider, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, log } from '@/loan/utils/helpers'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import PromisePool from '@supercharge/promise-pool'
@@ -19,12 +19,6 @@ import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { getErrorMessage } from '@ui-kit/utils'
 import { ROUTE_AGGREGATOR_LABELS, RouteAggregator } from '../constants'
 import { getLeverageV2RepayArgs, isHigherThanMaxSlippage } from '../utils/utilsLoan'
-
-export const network = {
-  1: {
-    blockchainId: 'ethereum',
-  },
-}
 
 const DEFAULT_USER_STATE = {
   collateral: '0',
@@ -167,14 +161,14 @@ const detailInfo = {
       llamma.stats.totalDebt(),
       llamma.stats.totalCollateral(),
       llamma.stats.totalStablecoin(),
-      llamma.stats.capAndAvailable(),
+      llamma.stats.capAndAvailable().then(({ cap: totalAssets, available }) => ({ totalAssets, available })),
     ])
     const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
     const totalCollateral = fulfilledValue(totalCollateralResult) ?? '0'
     const totalStablecoin = fulfilledValue(totalStablecoinResult) ?? '0'
-    const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { cap: '0', available: '0' }
+    const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { totalAssets: '0', available: '0' }
 
     return {
       oraclePriceBand,

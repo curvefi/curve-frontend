@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
-const iconSx = { width: IconSize.sm, height: IconSize.sm }
+const iconSx = { width: IconSize.xs, height: IconSize.xs }
 
 export const RouteProviderIcons: Record<RouteProvider, () => ReactNode> = {
   curve: () => <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={iconSx} />,

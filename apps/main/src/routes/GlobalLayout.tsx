@@ -8,10 +8,8 @@ import { networks as crvusdNetworks } from '@/loan/networks'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
-import { ScrollUpButton } from '@ui-kit/shared/ui/ScrollUpButton'
+import { APP_LINK, AppMenuOption, type AppName, LlamalendApps } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -19,15 +17,11 @@ import { Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
-const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', 'llamalend']
-
-const useAppStats = (currentApp: AppName, network: NetworkDef) => {
-  const isLlamalendApp = LLAMALEND_APPS.includes(currentApp)
-  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId, currentApp }, isLlamalendApp)
-  const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
-
-  return isLlamalendApp ? llamalendStats : currentApp === 'dex' ? dexStats : []
-}
+const useAppStats = (currentApp: AppName, network: NetworkDef) =>
+  [
+    useLlamalendAppStats({ chainId: network?.chainId, currentApp }, LlamalendApps.includes(currentApp)),
+    useDexAppStats(network, currentApp === 'dex'),
+  ].flat()
 
 const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
@@ -59,9 +53,6 @@ const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
     analytics: allNetworks,
   })[app]
 
-// when the mobile drawer is open, we want to ignore the scrollbar and expand the content to full page width
-const EXPAND_WHEN_HIDDEN = { '[aria-hidden="true"] &': { width: '100vw' } }
-
 export const GlobalLayout = <TId extends string, TChainId extends number>({
   children,
   currentApp,
@@ -73,7 +64,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   network: NetworkDef<TId, TChainId>
   networks: NetworkMapping<TId, TChainId>
 }) => (
-  <Stack sx={EXPAND_WHEN_HIDDEN}>
+  <Stack>
     <Header
       currentApp={currentApp}
       chainId={network.chainId}
@@ -91,6 +82,5 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
     </Box>
     <Footer appName={currentApp} networkId={network.id} />
-    <ScrollUpButton visible={useLayoutStore((state) => state.showScrollButton)} />
   </Stack>
 )

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import type { ClaimOptions } from '@/llamalend/mutations/claim.mutation'
 import { useClaimMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { UserMarketParams } from '@ui-kit/lib/model'
@@ -13,12 +12,10 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: ClaimOptions['onSuccess']
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -34,7 +31,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   )
 
   const { claimableTokens, totalNotionals, isClaimablesLoading, claimablesError, usdRateLoading, usdRateError } =
-    useClaimableTokens(params, enabled)
+    useClaimableTokens(params, market, enabled)
 
   const tableData = useMemo(
     () => claimableTokens.map((token) => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
@@ -47,13 +44,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     ...getTableOptions(tableData),
   })
 
-  const {
-    onSubmit,
-    isPending: isClaiming,
-    isSuccess: isClaimed,
-    error: claimError,
-    data,
-  } = useClaimMutation({ marketId, network, onSuccess, userAddress })
+  const { onSubmit, isPending: isClaiming, error: claimError } = useClaimMutation({ marketId, network, userAddress })
 
   return {
     params,
@@ -67,9 +58,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isError: !!claimablesError,
     table,
     onSubmit,
-    isClaimed,
     isPending: isClaiming,
     claimError,
-    txHash: data?.hash,
   }
 }

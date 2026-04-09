@@ -1,11 +1,15 @@
+import type { RepayHealthParams, RepayHealthQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayHealthParams, type RepayHealthQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRepayHealth } = queryFactory({
+export const {
+  getQueryOptions: getRepayHealthOptions,
+  invalidate: invalidateRepayHealth,
+  refetchQuery: refetchRepayHealth,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -13,7 +17,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    isFull,
+    isHealthFull,
     routeId,
   }: RepayHealthParams) =>
     [
@@ -22,7 +26,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { isFull },
+      { isHealthFull },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -30,16 +34,11 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     stateCollateral,
     userCollateral,
     userBorrowed,
-    isFull,
+    isHealthFull,
     userAddress,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
         return (
@@ -47,20 +46,22 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
             stateCollateral,
             userCollateral,
             userBorrowed,
-            healthIsFull: isFull,
+            healthIsFull: isHealthFull,
             address: userAddress,
             ...parseRoute(routeId),
           })
         ).health as Decimal
       case 'V1':
       case 'V2':
-        return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isFull)) as Decimal
+        return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isHealthFull)) as Decimal
       case 'deleverage':
-        return (await impl.repayHealth(userCollateral, isFull)) as Decimal
-      case 'unleveraged':
-        return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
+        return (await impl.repayHealth(userCollateral, isHealthFull)) as Decimal
+      case 'unleveragedMint':
+        return (await impl.repayHealth(userBorrowed, isHealthFull)) as Decimal
+      case 'unleveragedLend':
+        return (await impl.repayHealth({ debt: userBorrowed, full: isHealthFull })) as Decimal
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayFromCollateralIsFullValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
 })

@@ -1,15 +1,15 @@
-import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { q } from '@ui-kit/types/util'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { q, type Range } from '@ui-kit/types/util'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
 import { RemoveCollateralInfoList } from './RemoveCollateralInfoList'
 
@@ -17,14 +17,14 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
+  onPricesUpdated,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
-  onSuccess?: NonNullable<RemoveCollateralOptions['onSuccess']>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  enabled: boolean
 }) => {
   const network = networks[chainId]
 
@@ -37,11 +37,11 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     action,
     values,
     maxRemovable,
+    positionCollateral,
     formErrors,
     collateralToken,
     borrowToken,
-    txHash,
-  } = useRemoveCollateralForm({ market, network, enabled, onSuccess })
+  } = useRemoveCollateralForm({ market, network, onPricesUpdated, enabled })
 
   return (
     <Form
@@ -55,11 +55,11 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          leverageEnabled={!!market && hasLeverageValue(market)}
+          market={market}
         />
       }
     >
-      <Stack divider={<InputDivider />}>
+      <Stack>
         <LoanFormTokenInput
           label={t`Amount to Remove`}
           token={collateralToken}
@@ -68,22 +68,22 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           form={form}
           testId="remove-collateral-input"
           network={network}
-          positionBalance={{
-            position: q(maxRemovable),
-            tooltip: t`Max Removable Collateral`,
-          }}
+          positionBalance={{ position: positionCollateral, tooltip: t`Collateral in position` }}
+          max={{ ...q(maxRemovable), fieldName: 'maxCollateral' }}
+          message={
+            <Balance
+              prefix={t`Max removable:`}
+              tooltip={t`Max removable collateral`}
+              symbol={collateralToken?.symbol}
+              balance={maxRemovable.data}
+              loading={maxRemovable.isLoading}
+              onClick={() => updateForm(form, { userCollateral: maxRemovable.data })}
+            />
+          }
         />
       </Stack>
 
-      <FormAlerts
-        isSuccess={action.isSuccess}
-        error={action.error}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['userCollateral']}
-        successTitle={t`Collateral removed`}
-      />
+      <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
 
       <Button
         type="submit"

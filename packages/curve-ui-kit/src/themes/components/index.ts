@@ -6,12 +6,12 @@ import { getShadow } from '../basic-theme/shadows'
 import { DesignSystem } from '../design'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
+import { defineMuiCardContent } from './card-content'
 import { defineMuiCardHeader } from './card-header'
 import { defineMuiCheckbox } from './checkbox'
 import { defineMuiChip } from './chip'
 import { defineMuiAlert, defineMuiAlertTitle } from './mui-alert'
 import { defineMuiCard } from './mui-card'
-import { defineMuiCardContent } from './mui-card-content'
 import { defineMuiMenuItem } from './mui-menu-item'
 import { defineMuiSelect } from './mui-select'
 import { defineMuiSwitch } from './mui-switch'
@@ -23,6 +23,14 @@ import { defineMuiTypography } from './typography'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320, maxWidth: '100vw' } as const
+
+/**
+ * Disables MUI's built-in scroll lock, which would add padding to compensate for the
+ * missing scrollbar when overflow is hidden. That compensation is unnecessary here because
+ * `scrollbar-gutter: stable` keeps the scrollbar space reserved at all times.
+ * Scroll locking itself is now handled via native CSS in index.css.
+ */
+const disableScrollLock = true
 
 export const createComponents = (
   design: DesignSystem,
@@ -36,12 +44,13 @@ export const createComponents = (
       disableRipple: true,
     },
   },
-  MuiCard: defineMuiCard(design),
-  MuiCardContent: defineMuiCardContent(),
+  MuiCard: defineMuiCard(),
+  MuiCardContent: defineMuiCardContent(design),
   MuiCardHeader: defineMuiCardHeader(design, typography),
   MuiCardActions: {
     styleOverrides: {
       root: {
+        backgroundColor: design.Layer[1].Fill,
         borderTop: `1px solid ${design.Layer[3].Outline}`,
         minHeight: SizesAndSpaces.ButtonSize.lg,
         justifyContent: 'center',
@@ -110,6 +119,8 @@ export const createComponents = (
       },
     },
   },
+  MuiMenu: { defaultProps: { disableScrollLock } },
+  MuiModal: { defaultProps: { disableScrollLock } },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
     styleOverrides: { root: ({ ownerState }) => ({ columnGap: ownerState.compact ? '0rem' : '2px' }) },
@@ -128,13 +139,7 @@ export const createComponents = (
   MuiMenuItem: defineMuiMenuItem(design),
   MuiSelect: defineMuiSelect(design),
   MuiSlider: defineMuiSlider(design),
-  MuiSkeleton: {
-    styleOverrides: {
-      root: {
-        backgroundColor: alpha(design.Text.TextColors.Primary, 0.13),
-      },
-    },
-  },
+  MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
   MuiTableRow: {

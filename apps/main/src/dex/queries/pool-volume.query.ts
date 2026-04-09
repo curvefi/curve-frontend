@@ -13,7 +13,6 @@ import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
 import { fetchNetworks, useNetworks } from '../entities/networks'
-import { getPoolIds, poolIdsQueryKey } from './pool-ids.query'
 
 const getPoolVolumeFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
   requireLib('curveApi').getPool(poolId).stats.volume()
@@ -38,10 +37,14 @@ export function usePoolVolume({ chainId, poolId }: PoolParams) {
   return usePoolVolumeQuery({ chainId, poolId }, isHydrated && network && !network.isLite)
 }
 
-const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = queryFactory({
+const {
+  useQuery: usePoolVolumesQuery,
+  fetchQuery: fetchPoolVolumesQuery,
+  refetchQuery: refetchPoolVolumesQuery,
+} = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.volume'] as const,
-  queryFn: async ({ chainId }: ChainQuery) => {
-    const poolIds = getPoolIds({ chainId }) ?? []
+  queryFn: async (_params: ChainQuery) => {
+    const poolIds = requireLib('curveApi').getPoolList()
     const { results } = await PromisePool.withConcurrency(10)
       .for(poolIds)
       .process(async (poolId) => [poolId, await getPoolVolumeFromLib({ poolId })] as const)
@@ -53,7 +56,6 @@ const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = que
     curveApiValidationGroup(params)
     chainValidationGroup(params)
   }),
-  dependencies: (params) => [poolIdsQueryKey(params)],
 })
 
 /**
@@ -63,7 +65,8 @@ const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = que
  * Uses a single query keyed only by `chainId` (not per pool) to avoid 1000+ individual query
  * entries that slow down the front-end. Pools are fetched with `PromisePool` at concurrency 10
  * (multicall is not available for volume data, as the data comes from an API endpoint).
- * The poolIds are explicitly not part of the query key.
+ * The poolIds are explicitly not part of the query key. The query reads the currently hydrated
+ * curve instance directly, so DEX hydration must manually refetch this query after pool bootstrap.
  *
  * Disabled on lite networks.
  */
@@ -85,4 +88,16 @@ export async function fetchPoolVolumes({ chainId }: ChainParams) {
   const network = networks?.[chainId ?? 0]
   if (!network || network.isLite) return {}
   return fetchPoolVolumesQuery({ chainId })
+}
+
+/**
+ * Refetch trading volumes for multiple pools into the query cache.
+ *
+ * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
+ */
+export async function refetchPoolVolumes({ chainId }: ChainParams) {
+  const networks = await fetchNetworks()
+  const network = networks?.[chainId ?? 0]
+  if (!network || network.isLite) return {}
+  return refetchPoolVolumesQuery({ chainId })
 }

@@ -55,20 +55,22 @@ export const RouteProvidersAccordion = ({
     <Accordion
       ghost
       title={t`Route provider`}
+      size="extraSmall"
+      testId="route-provider-accordion"
       info={
         error ? (
-          <ErrorIconButton error={error} buttonSize="small" iconSize="small" />
+          <ErrorIconButton error={error} size="extraExtraSmall" />
         ) : (
           !isExpanded &&
-          (selectedRoute ? (
+          (selectedRoute || isLoading ? (
             <Stack direction="row" alignItems="center" gap={Spacing.xs}>
               {Icon && <Icon />}
               <WithSkeleton loading={isLoading}>
-                <Typography variant="bodySRegular" color="textPrimary">
-                  {providerLabels[selectedRoute.router]}
+                <Typography variant="bodyXsRegular" color="textPrimary">
+                  {selectedRoute ? providerLabels[selectedRoute.router] : t`Loading routes`}
                 </Typography>
               </WithSkeleton>
-              <RouteComparisonChip maxAmountOut={maxAmountOut} amountOut={selectedRoute.amountOut} />
+              {selectedRoute && <RouteComparisonChip maxAmountOut={maxAmountOut} amountOut={selectedRoute.amountOut} />}
             </Stack>
           ) : (
             '-'
@@ -77,7 +79,6 @@ export const RouteProvidersAccordion = ({
       }
       expanded={isExpanded}
       toggle={onToggle}
-      sx={{ '&': { paddingBlock: 0 } }} // remove the default padding from the curve accordion
     >
       <Stack paddingBlock={Spacing.sm} gap={Spacing.sm}>
         <Stack>

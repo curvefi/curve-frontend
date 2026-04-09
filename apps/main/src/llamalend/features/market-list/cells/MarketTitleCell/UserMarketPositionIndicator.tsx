@@ -63,7 +63,7 @@ const tooltips: Record<
     tooltipBody: (
       <Stack gap={Spacing.sm}>
         <Paragraph>{t`The oracle price is below your liquidation range. Collateral is fully converted and no further soft-liquidation trades occur while price stays below the range.`}</Paragraph>
-        <Paragraph>{t`No further conversion trades occur while price stays below the range. Health is not being eroded anymore but will be if price re-enters the liquidation zone.`}</Paragraph>
+        <Paragraph>{t`No further conversion trades occur while price stays below the range. Health is not being eroded anymore but will be if price re-enters the liquidation range.`}</Paragraph>
         <Paragraph>{t`Positions get fully liquidated if health reaches 0.`}</Paragraph>
         <Paragraph>{t`You may reduce risk by repaying debt, waiting for price recovery or closing the position and reopening it.`}</Paragraph>
       </Stack>

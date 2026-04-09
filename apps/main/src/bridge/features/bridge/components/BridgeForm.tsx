@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
+import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { q } from '@ui-kit/types/util'
-import { Chain, CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
+import { Chain, CRVUSD_ADDRESS, decimal, requireBlockchainId } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -18,6 +19,8 @@ import { BridgeInfoAlert } from './BridgeInfoAlert'
 export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
   const { isConnected, isConnecting } = useConnection()
   const { connect } = useWallet()
+  const navigate = useNavigate()
+  const pathname = usePathname()
 
   const {
     form,
@@ -27,8 +30,6 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
     supportedNetworks,
     isPending,
     isApproved,
-    isBridged,
-    txHash,
     bridgeCost,
     gas,
     amountError,
@@ -51,7 +52,12 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
       onSubmit={onSubmit}
       footer={
         <>
-          <BridgeActionInfos bridgeCost={q(bridgeCost)} gas={q(gas)} isApproved={isApproved.data} />
+          <BridgeActionInfos
+            bridgeCost={q(bridgeCost)}
+            gas={q(gas)}
+            isApproved={isApproved.data}
+            nativeTokenSymbol={networks[chainId].symbol}
+          />
           <BridgeInfoAlert />
         </>
       }
@@ -71,17 +77,12 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
         onAmount={(amount) => updateForm(form, { amount })}
         onConnect={() => connect()}
+        onChangeNetwork={() =>
+          navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))
+        }
       />
 
-      <FormAlerts
-        isSuccess={isBridged}
-        error={approveError || bridgeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={networks[chainId]}
-        handledErrors={['amount']}
-        successTitle={t`Bridged`}
-      />
+      <FormAlerts error={approveError || bridgeError} formErrors={formErrors} handledErrors={['amount']} />
     </Form>
   )
 }

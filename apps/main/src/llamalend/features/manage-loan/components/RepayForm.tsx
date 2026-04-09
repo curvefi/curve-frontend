@@ -4,8 +4,9 @@ import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/m
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -56,14 +57,12 @@ export const RepayForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: RepayOptions['onSuccess']
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
@@ -76,9 +75,7 @@ export const RepayForm = <ChainId extends IChainId>({
     onSubmit,
     borrowToken,
     collateralToken,
-    isRepaid,
     repayError,
-    txHash,
     isApproved,
     routes,
     formErrors,
@@ -88,7 +85,6 @@ export const RepayForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onSuccess,
     onPricesUpdated,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
@@ -119,7 +115,7 @@ export const RepayForm = <ChainId extends IChainId>({
     () => () => {
       // Reset when selectedField changes and the field is dirty (unmounting the field)
       if (selectedField in form.formState.dirtyFields) {
-        updateForm(form, { [selectedField]: undefined })
+        updateForm(form, { [selectedField]: undefined }, { automated: true })
       }
     },
     [form, selectedField],
@@ -141,6 +137,8 @@ export const RepayForm = <ChainId extends IChainId>({
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
           routes={routes}
+          prices={q(useRepayPrices(params))}
+          prevPrices={q(useUserPrices(params))}
         />
       }
     >
@@ -151,13 +149,11 @@ export const RepayForm = <ChainId extends IChainId>({
         name={selectedField}
         form={form}
         max={q(max[selectedField])}
-        maxType="range"
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -179,7 +175,6 @@ export const RepayForm = <ChainId extends IChainId>({
               onClick={() =>
                 updateForm(form, {
                   [selectedField]: max[selectedField].data,
-                  isFull: selectedField === 'userBorrowed',
                 })
               }
             />
@@ -198,13 +193,9 @@ export const RepayForm = <ChainId extends IChainId>({
       </Button>
 
       <FormAlerts
-        isSuccess={isRepaid}
         error={repayError}
-        txHash={txHash}
         formErrors={formErrors}
-        network={network}
         handledErrors={notFalsy(selectedField, max[selectedField]?.field)}
-        successTitle={t`Loan repaid`}
       />
     </Form>
   )

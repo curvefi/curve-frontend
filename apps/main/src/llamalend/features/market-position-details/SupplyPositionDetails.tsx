@@ -1,19 +1,18 @@
-import { type SupplyRate } from '@/llamalend/features/market-details'
+import { ReactNode } from 'react'
+import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import type { SupplyRate } from '@/llamalend/rates.types'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
-import { CardHeader, Box } from '@mui/material'
+import { Grid, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, defaultNumberFormatter } from '@ui-kit/utils'
 import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
 
-type UserSupplyRate = SupplyRate & {
-  userCurrentCRVApr: number | undefined | null
-  userTotalCurrentSupplyApr: number | undefined | null
-}
 export type Shares = {
   value: number | undefined | null
   staked: number | undefined | null
@@ -33,145 +32,143 @@ export type SupplyAsset = {
 }
 
 export type SupplyPositionDetailsProps = {
-  userSupplyRate: UserSupplyRate
+  userSupplyRate: SupplyRate
   shares: Shares
   supplyAsset: SupplyAsset
   boost: Boost
 }
 
+const SUPPLY_POSITION_TAB = 'supplyPosition'
+
+const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 6, tablet: 3 }}>{children}</Grid>
+
 export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
-    totalSupplyRateMaxBoost,
-    totalSupplyRateMinBoost,
-    totalAverageSupplyRateMaxBoost,
-    totalAverageSupplyRateMinBoost,
-    rate,
-    averageRate,
-    averageRateLabel,
+    totalUserBoost,
+    totalAverageUserBoost,
+    supplyApy,
+    averageLendApy,
+    averageCategory,
     extraRewards,
     extraIncentives,
-    supplyAprCrvMinBoost,
-    supplyAprCrvMaxBoost,
-    userTotalCurrentSupplyApr,
+    userBoostApy,
     loading: supplyRateLoading,
     rebasingYield,
   } = userSupplyRate
   const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount } = supplyAsset
   const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
   const { value: boostValue, loading: boostLoading } = boost
+  const { period: averageRatePeriod } = AVERAGE_CATEGORIES[averageCategory]
 
   return (
-    <Box>
-      <CardHeader title={t`Supplying Information`} size="small" />
-      <Box
-        display="grid"
-        gap={3}
-        sx={(theme) => ({
-          padding: Spacing.md,
-          gridTemplateColumns: '1fr 1fr',
-          // 550px
-          [theme.breakpoints.up(550)]: {
-            gridTemplateColumns: '1fr 1fr 1fr 1fr',
-          },
-        })}
-      >
-        <Metric
-          size="medium"
-          label={t`Supply rate`}
-          value={userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost}
-          loading={supplyRateLoading}
-          valueOptions={{ unit: 'percentage', color: 'warning' }}
-          notional={
-            totalSupplyRateMaxBoost
-              ? t`max Boost ${formatNumber(totalSupplyRateMaxBoost, { unit: 'percentage', abbreviate: false })}`
-              : undefined
-          }
-          valueTooltip={{
-            title: t`Supply Rate`,
-            body: (
-              <MarketSupplyRateTooltipContent
-                supplyRate={rate}
-                averageRate={averageRate}
-                periodLabel={averageRateLabel ?? ''}
-                extraRewards={extraRewards ?? []}
-                extraIncentives={extraIncentives ?? []}
-                minBoostApr={supplyAprCrvMinBoost}
-                maxBoostApr={supplyAprCrvMaxBoost}
-                userBoost={boostValue}
-                userTotalCurrentSupplyApr={userTotalCurrentSupplyApr}
-                totalSupplyRateMinBoost={totalSupplyRateMinBoost}
-                totalSupplyRateMaxBoost={totalSupplyRateMaxBoost}
-                totalAverageSupplyRateMinBoost={totalAverageSupplyRateMinBoost}
-                totalAverageSupplyRateMaxBoost={totalAverageSupplyRateMaxBoost}
-                rebasingYield={rebasingYield}
-                rebasingSymbol={supplyAssetSymbol}
-                isLoading={supplyRateLoading}
-              />
-            ),
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-        <Metric
-          size="medium"
-          label={t`Amount supplied`}
-          value={depositedAmount}
-          loading={supplyAssetLoading}
-          valueOptions={{ unit: 'dollar' }}
-          notional={
-            depositedAmount
-              ? {
-                  value: depositedAmount,
-                  unit: { symbol: ` ${supplyAssetSymbol}`, position: 'suffix' },
-                }
-              : undefined
-          }
-          valueTooltip={{
-            title: t`Amount Supplied`,
-            body: <AmountSuppliedTooltipContent shares={shares} supplyAsset={supplyAsset} />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-        <Metric
-          size="medium"
-          label={t`Vault shares`}
-          value={sharesValue}
-          loading={sharesLoading}
-          valueOptions={{}}
-          notional={
-            sharesStaked != null && sharesValue != null
-              ? {
-                  value: (sharesStaked / sharesValue) * 100,
-                  unit: { symbol: t`% staked`, position: 'suffix' },
-                }
-              : undefined
-          }
-          valueTooltip={{
-            title: t`Vault Shares`,
-            body: <VaultSharesTooltipContent />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-        <Metric
-          size="medium"
-          label={t`veCRV Boost`}
-          value={boostValue}
-          loading={boostLoading}
-          valueOptions={{ unit: 'multiplier' }}
-          valueTooltip={{
-            title: t`veCRV Boost`,
-            body: <BoostTooltipContent />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-      </Box>
-    </Box>
+    <Stack>
+      <TabsSwitcher
+        variant="contained"
+        value={SUPPLY_POSITION_TAB}
+        options={[{ value: SUPPLY_POSITION_TAB, label: t`Supply Details` }]}
+      />
+      <Grid container padding={Spacing.md} spacing={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <MetricGrid>
+          <Metric
+            size="medium"
+            label={USER_NET_SUPPLY_RATE_TITLE}
+            value={totalUserBoost}
+            loading={supplyRateLoading}
+            valueOptions={{ unit: 'percentage' }}
+            notional={boostValue ? t`your boost ${defaultNumberFormatter(boostValue)}x` : undefined}
+            valueTooltip={{
+              title: USER_NET_SUPPLY_RATE_TITLE,
+              body: (
+                <MarketSupplyRateTooltipContent
+                  supplyApy={supplyApy}
+                  averageSupplyApy={averageLendApy}
+                  periodLabel={averageRatePeriod}
+                  extraRewards={extraRewards}
+                  extraIncentives={extraIncentives}
+                  totalApy={totalUserBoost}
+                  totalAverageApy={totalAverageUserBoost}
+                  boost={{
+                    type: 'user',
+                    apy: userBoostApy,
+                    totalApy: totalUserBoost,
+                    totalAverageApy: totalAverageUserBoost,
+                  }}
+                  rebasingYieldApy={rebasingYield}
+                  rebasingSymbol={supplyAssetSymbol}
+                  isLoading={supplyRateLoading}
+                />
+              ),
+              placement: 'top',
+              arrow: false,
+              clickable: true,
+            }}
+          />
+        </MetricGrid>
+        <MetricGrid>
+          <Metric
+            size="medium"
+            label={t`Amount supplied`}
+            value={depositedAmount}
+            loading={supplyAssetLoading}
+            valueOptions={{ unit: 'dollar' }}
+            notional={
+              depositedAmount
+                ? {
+                    value: depositedAmount,
+                    unit: { symbol: ` ${supplyAssetSymbol}`, position: 'suffix' },
+                  }
+                : undefined
+            }
+            valueTooltip={{
+              title: t`Amount Supplied`,
+              body: <AmountSuppliedTooltipContent shares={shares} supplyAsset={supplyAsset} />,
+              placement: 'top',
+              arrow: false,
+              clickable: true,
+            }}
+          />
+        </MetricGrid>
+        <MetricGrid>
+          <Metric
+            size="medium"
+            label={t`Vault shares`}
+            value={sharesValue}
+            loading={sharesLoading}
+            valueOptions={{}}
+            notional={
+              sharesStaked != null && sharesValue != null
+                ? {
+                    value: (sharesStaked / sharesValue) * 100,
+                    unit: { symbol: t`% staked`, position: 'suffix' },
+                  }
+                : undefined
+            }
+            valueTooltip={{
+              title: t`Vault Shares`,
+              body: <VaultSharesTooltipContent />,
+              placement: 'top',
+              arrow: false,
+              clickable: true,
+            }}
+          />
+        </MetricGrid>
+        <MetricGrid>
+          <Metric
+            size="medium"
+            label={t`veCRV Boost`}
+            value={boostValue}
+            loading={boostLoading}
+            valueOptions={{ unit: 'multiplier' }}
+            valueTooltip={{
+              title: t`veCRV Boost`,
+              body: <BoostTooltipContent />,
+              placement: 'top',
+              arrow: false,
+              clickable: true,
+            }}
+          />
+        </MetricGrid>
+      </Grid>
+    </Stack>
   )
 }

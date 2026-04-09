@@ -1,3 +1,4 @@
+import { formatCryptoA } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   ExtraMarginRow,
@@ -27,6 +28,7 @@ export const CryptoswapParameters = ({ chainId }: Props) => {
   const allowedExtraProfit = useStore((state) => state.createPool.parameters.allowedExtraProfit)
   const cryptoA = useStore((state) => state.createPool.parameters.cryptoA)
   const adjustmentStep = useStore((state) => state.createPool.parameters.adjustmentStep)
+  const swapType = useStore((state) => state.createPool.swapType)
   const { data: network } = useNetworkByChain({ chainId })
 
   return (
@@ -81,7 +83,7 @@ export const CryptoswapParameters = ({ chainId }: Props) => {
             {cryptoA === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${cryptoA}`}</SummaryData>
+              <SummaryData>{`${formatCryptoA(cryptoA, swapType)}`}</SummaryData>
             )}
           </ExtraMarginRow>
           <CategoryDataRow>

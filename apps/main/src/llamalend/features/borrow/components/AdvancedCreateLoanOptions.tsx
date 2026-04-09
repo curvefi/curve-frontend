@@ -50,7 +50,7 @@ export const AdvancedCreateLoanOptions = ({
           '& .recharts-reference-line-line': { strokeDasharray: '6' },
         }}
       >
-        <Typography variant="bodyXsRegular">{t`Liquidation range`}</Typography>
+        <Typography variant="bodyXsRegular" color="textSecondary">{t`Liquidation range`}</Typography>
         <ChartLiquidationRange
           data={useLiquidationRangeChartData(params)}
           healthColorKey="healthy"

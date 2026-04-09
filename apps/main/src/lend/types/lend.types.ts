@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
@@ -10,12 +9,12 @@ import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
 export type { Wallet } from '@ui-kit/features/connect-wallet'
+export type { Provider } from '@ui-kit/lib/ethers'
 
 export type Api = LlamaApi
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
-export type Provider = ethers.BrowserProvider
 export type EstimatedGas = number | number[] | null
 export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
@@ -121,7 +120,7 @@ export type MarketStatBands = {
   error: string
 }
 export type MarketsStatsBandsMapper = { [owmId: string]: MarketStatBands }
-export type MarketStatCapAndAvailable = { cap: string; available: string; error: string }
+export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
 export type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
 export type MarketMaxLeverage = { maxLeverage: string; error: string }
 export type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }
@@ -190,7 +189,7 @@ export type UserLoanDetails = {
     loss?: UserLoss
     prices: string[]
     range: number | null
-    state: { collateral: string; borrowed: string; debt: string; N: string }
+    state: { collateral: string; borrowed: string; debt: string; N: string; isSoftLiquidation: boolean }
     status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
   } | null

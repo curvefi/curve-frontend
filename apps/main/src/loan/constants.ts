@@ -16,7 +16,7 @@ export enum TITLE {
   rate = 'rate',
   available = 'available',
   totalBorrowed = 'totalBorrowed',
-  cap = 'cap',
+  totalAssets = 'totalAssets',
   totalCollateral = 'totalCollateral',
   myDebt = 'myDebt',
   myHealth = 'myHealth',

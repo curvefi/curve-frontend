@@ -1,14 +1,16 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { normalizeBands, getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { BN } from '@ui/utils'
-import type { MarketQuery } from '@ui-kit/lib/model'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import type { MarketParams, MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
-import { sortBands, fetchChartBandBalancesData } from './utils'
+import { fetchChartBandBalancesData, sortBands } from './utils'
 import { liquidationBandValidationGroup, oraclePriceBandValidationGroup } from './validation'
 
 const isMarket = true
+const QUERY_KEY = 'bandsBalances' as const
 
 type MarketBandsBalancesQuery = MarketQuery & {
   liquidationBand: number
@@ -24,58 +26,48 @@ export const marketBandsBalancesValidationSuite = createValidationSuite((params:
 
 export const { useQuery: useMarketBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, liquidationBand, oraclePriceBand }: MarketBandsBalancesParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'bandsBalances', { liquidationBand }, { oraclePriceBand }] as const,
+    [...rootKeys.market({ chainId, marketId }), QUERY_KEY, { liquidationBand }, { oraclePriceBand }] as const,
   queryFn: async ({ marketId, liquidationBand, oraclePriceBand }: MarketBandsBalancesQuery) => {
     const market = getLlamaMarket(marketId)
     const normalizedLiquidationBand = liquidationBand ?? null
     const normalizedOraclePriceBand = oraclePriceBand ?? null
 
-    let data
-    // lend
-    if (market instanceof LendMarketTemplate) {
-      const bandsBalances = await market.stats.bandsBalances()
-      data = await fetchChartBandBalancesData(sortBands(bandsBalances), normalizedLiquidationBand, market, isMarket)
-      // mint
-    } else {
-      const bandsBalances = await market.stats.bandsBalances()
-      // format bands balances to the same format as lend market bands balances
-      const formattedBandsBalances = Object.fromEntries(
-        Object.entries(bandsBalances).map(([key, value]) => [
-          key,
-          { borrowed: value.stablecoin, collateral: value.collateral },
-        ]),
-      )
-      data = await fetchChartBandBalancesData(
-        sortBands(formattedBandsBalances),
-        normalizedLiquidationBand,
-        market,
-        isMarket,
-      )
-    }
+    const data = await fetchChartBandBalancesData(
+      sortBands(normalizeBands(await market.stats.bandsBalances())),
+      normalizedLiquidationBand,
+      market,
+      isMarket,
+    )
+
+    if (normalizedOraclePriceBand == null) return data
 
     // Ensure oracle band and a small neighborhood around it are present (inline)
-    if (typeof normalizedOraclePriceBand === 'number') {
-      for (const offset of [-1, 0, 1]) {
-        const band = normalizedOraclePriceBand + offset
-        if (!Number.isFinite(band) || data.some((b) => b.n === band)) continue
-        const [p_up, p_down] = await market.calcBandPrices(+band)
-        const pUpDownMedian = Number(new BN(p_up).plus(p_down).dividedBy(2))
-        data.push({
-          borrowed: '0',
-          collateral: '0',
-          collateralUsd: 0,
-          collateralBorrowedUsd: 0,
-          isLiquidationBand: normalizedLiquidationBand ? (normalizedLiquidationBand === +band ? 'SL' : '') : '',
-          n: band,
-          p_up: Number(p_up),
-          p_down: Number(p_down),
-          pUpDownMedian,
-        })
-      }
+    for (const offset of [-1, 0, 1]) {
+      const band = normalizedOraclePriceBand + offset
+      if (!Number.isFinite(band) || data.some((b) => b.n === band)) continue
+      const [p_up, p_down] = await getPricesImplementation(market).calcBandPrices(+band)
+      const pUpDownMedian = Number(new BN(p_up).plus(p_down).dividedBy(2))
+      data.push({
+        borrowed: '0',
+        collateral: '0',
+        collateralUsd: 0,
+        collateralBorrowedUsd: 0,
+        isLiquidationBand: normalizedLiquidationBand ? (normalizedLiquidationBand === +band ? 'SL' : '') : '',
+        n: band,
+        p_up: Number(p_up),
+        p_down: Number(p_down),
+        pUpDownMedian,
+      })
     }
-
     return data
   },
   category: 'llamalend.market',
   validationSuite: marketBandsBalancesValidationSuite,
 })
+
+/**
+ * Prefix-based invalidation because the query key includes extra params (liquidationBand, oraclePriceBand)
+ * that aren't available at invalidation time. Band balances can change even when those params stay the same.
+ */
+export const invalidateMarketBandsBalances = ({ chainId, marketId }: MarketParams) =>
+  queryClient.invalidateQueries({ queryKey: [...rootKeys.market({ chainId, marketId }), QUERY_KEY] })

@@ -3,8 +3,13 @@ import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { decimal } from '@ui-kit/utils'
 
-export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowMorePriceImpact } = queryFactory({
+export const {
+  useQuery: useBorrowMorePriceImpact,
+  invalidate: invalidateBorrowMorePriceImpact,
+  refetchQuery: refetchBorrowMorePriceImpact,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -39,10 +44,12 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
       leverageEnabled,
       routeId,
     })
-    if (type === 'unleveraged') throw new Error('Price impact is not applicable for unleveraged borrow more')
-    return type === 'zapV2'
-      ? Number((await impl.borrowMoreExpectedMetrics(...args)).priceImpact)
-      : Number(await impl.borrowMorePriceImpact(userBorrowed, debt))
+    if (type === 'unleveraged') return '0' // there is no price impact, user repays debt directly
+    const priceImpact =
+      type === 'zapV2'
+        ? (await impl.borrowMoreExpectedMetrics(...args)).priceImpact
+        : await impl.borrowMorePriceImpact(userBorrowed, debt)
+    return decimal(priceImpact) ?? null
   },
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreLeverageValidationSuite,

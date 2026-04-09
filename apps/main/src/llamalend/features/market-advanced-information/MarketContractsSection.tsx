@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import CardHeader from '@mui/material/CardHeader'
@@ -37,8 +38,9 @@ const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: 
   </Stack>
 )
 
-export const MarketContractsSection = ({ market, network }: MarketContractsProps) => {
+export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const { data: oracleAddress } = useMarketOracleAddress({ chainId, marketId: market?.id })
 
   const tokenItems: ContractItem[] = market
     ? [
@@ -83,23 +85,28 @@ export const MarketContractsSection = ({ market, network }: MarketContractsProps
               : { address: market.addresses.gauge }),
           },
           { key: 'monetary-policy', label: t`Monetary policy`, address: market.addresses.monetary_policy },
+          { key: 'oracle', label: t`Oracle`, address: oracleAddress },
         ]
       : [
           { key: 'amm', label: t`AMM`, address: market.address },
           { key: 'controller', label: t`Controller`, address: market.controller },
           { key: 'monetary-policy', label: t`Monetary policy`, address: market.monetaryPolicy },
+          { key: 'oracle', label: t`Oracle`, address: oracleAddress },
         ]
     : []
 
   return (
-    <Stack>
-      <CardHeader title={t`Contracts`} size="small" data-inline />
-      <Stack paddingBlock={Spacing.sm}>
-        {tokenItems.map(({ key, label, address }) => (
-          <AddressActionInfo key={key} network={network} title={label} address={address} />
-        ))}
+    <Stack gap={Spacing.md}>
+      <Stack gap={Spacing.sm}>
+        <CardHeader title={t`Contracts`} size="small" data-inline />
+        <Stack>
+          {tokenItems.map(({ key, label, address }) => (
+            <AddressActionInfo key={key} network={network} title={label} address={address} />
+          ))}
+        </Stack>
       </Stack>
-      <Stack paddingBlock={Spacing.sm}>
+
+      <Stack>
         {infraItems.map(({ key, label, address, fallbackValue }) =>
           fallbackValue ? (
             <ActionInfo key={key} label={label} value={fallbackValue ?? t`No gauge`} />

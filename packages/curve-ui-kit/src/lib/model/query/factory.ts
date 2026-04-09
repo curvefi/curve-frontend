@@ -1,18 +1,20 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
+import { isEmpty } from '@primitives/objects.utils'
 import {
-  QueryFunctionContext,
-  queryOptions,
-  useQuery,
   type DefaultError,
   type FetchQueryOptions,
+  keepPreviousData,
+  QueryFunctionContext,
   type QueryKey,
+  queryOptions,
+  useQuery,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
-import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
@@ -56,6 +58,21 @@ export class NoRetryError extends Error {
   constructor(message: string) {
     super(message)
   }
+
+  /**
+   * When we receive 404's from t
+   * @param run
+   */
+  static async catch404<T>(run: () => Promise<T>) {
+    try {
+      return await run()
+    } catch (error) {
+      if (error instanceof FetchError && error.status === 404) {
+        throw new NoRetryError(error.message)
+      }
+      throw error
+    }
+  }
 }
 
 /**
@@ -85,6 +102,7 @@ export function queryFactory<
   validationSuite,
   dependencies,
   disableLog,
+  keepPreviousData: shouldKeepPreviousData,
   ...options
 }: {
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
@@ -95,6 +113,7 @@ export function queryFactory<
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
+  keepPreviousData?: boolean
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
@@ -111,12 +130,13 @@ export function queryFactory<
       },
       enabled:
         enabled &&
-        checkValidity(validationSuite, params) &&
+        isEmpty(validate(validationSuite, params)) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
         !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
         failureCount < 3,
+      ...(shouldKeepPreviousData && { placeholderData: keepPreviousData }),
       ...options,
     })
   return {
@@ -134,7 +154,12 @@ export function queryFactory<
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
-    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    useQuery: (params: TParams, condition?: boolean) => {
+      const options = getQueryOptions(params, condition)
+      const result = useQuery(options)
+      // add validation results to the query result via Object.assign so we don't enumerate all react-query properties
+      return Object.assign(result, { validation: options.enabled ? {} : validate(validationSuite, params) })
+    },
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   } as const
 }

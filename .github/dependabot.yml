@@ -13,6 +13,8 @@ updates:
       - /tests/
     schedule:
       interval: 'monthly'
+    cooldown:
+      default-days: 4  # avoid new packages that could have chain attack vulnerabilities
     ignore:
       - dependency-name: zustand
         update-types: ['version-update:semver-major']
@@ -26,3 +28,14 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    cooldown:
+      default-days: 4  # avoid new packages that could have chain attack vulnerabilities
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - '*'

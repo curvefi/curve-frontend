@@ -1,4 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import { notFalsy } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
@@ -8,7 +9,11 @@ import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanBandsResult = [number, number]
 
-export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBands } = queryFactory({
+export const {
+  useQuery: useCreateLoanBands,
+  invalidate: invalidateCreateLoanBands,
+  refetchQuery: refetchCreateLoanBands,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -58,6 +63,6 @@ export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBan
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
-    ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
+    ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })

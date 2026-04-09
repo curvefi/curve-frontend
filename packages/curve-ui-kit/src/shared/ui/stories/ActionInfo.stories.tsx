@@ -7,7 +7,7 @@ import { shortenAddress } from '@ui-kit/utils'
 import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
 
-const SIZES = ['small', 'medium', 'large'] as ActionInfoSize[]
+const SIZES: ActionInfoSize[] = ['small', 'medium']
 
 const meta: Meta<typeof ActionInfo> = {
   title: 'UI Kit/Widgets/ActionInfo',
@@ -44,10 +44,6 @@ const meta: Meta<typeof ActionInfo> = {
     prevValueColor: {
       control: 'color',
       description: 'Custom color for the previous value text',
-    },
-    emptyValue: {
-      control: 'text',
-      description: 'Placeholder rendered when neither current nor previous value is provided',
     },
     link: {
       control: 'text',

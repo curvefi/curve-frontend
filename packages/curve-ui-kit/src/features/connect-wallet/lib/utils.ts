@@ -2,6 +2,7 @@ import type { Eip1193Provider } from 'ethers'
 import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
 import { NETWORK_CONSTANTS as LLAMA_NETWORKS } from '@curvefi/llamalend-api/lib/llamalend'
+import { assert } from '@primitives/objects.utils'
 import type { NetworkDef } from '@ui/utils'
 import { AppName } from '@ui-kit/shared/routes'
 import type { LlamaApi, Wallet } from './types'
@@ -73,9 +74,7 @@ export const globalLibs = {
 
   /** Get the current instance of a library or throw if not initialized */
   require<K extends LibKey>(key: K): NonNullable<Libs[K]> {
-    const lib = globalLibs.get(key)
-    if (!lib) throw new Error(`${key} not initialized`)
-    return lib
+    return assert(globalLibs.get(key), `${key} not initialized`)
   },
 
   /** Set the current instance of a library */

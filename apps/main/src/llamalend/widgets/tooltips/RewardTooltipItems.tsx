@@ -1,3 +1,4 @@
+import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
@@ -11,20 +12,12 @@ import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
 
-export type ExtraIncentiveItem = {
-  title: string
-  percentage: number
-  address: string
-  blockchainId: string
-  isBoost: boolean
-}
-
 type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined
   extraRewards: CampaignPoolRewards[]
-  tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
-  extraIncentives: ExtraIncentiveItem[]
+  tooltipType: Extract<RewardsAction, 'borrow' | 'loan' | 'supply'>
+  extraIncentives: SupplyExtraIncentive[]
 }
 
 export const RewardsTooltipItems = ({
@@ -41,9 +34,9 @@ export const RewardsTooltipItems = ({
   return (
     <>
       <TooltipItem title={title}>{totalExtraPercentage}</TooltipItem>
-      {extraIncentives.map(({ percentage, title, address, blockchainId, isBoost }, i) => (
+      {extraIncentives.map(({ percentage, title, address, blockchainId }, i) => (
         <TooltipItem key={i} variant="subItem" title={title} titleIcon={{ blockchainId, address, size: 'mui-sm' }}>
-          {`${isBoost ? '+' : ''}${formatPercent(percentage)}`}
+          {formatPercent(percentage)}
         </TooltipItem>
       ))}
       {extraRewards.map(

@@ -1,5 +1,6 @@
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
@@ -8,6 +9,7 @@ export const {
   useQuery: useCreateLoanIsApproved,
   fetchQuery: fetchCreateLoanIsApproved,
   invalidate: invalidateCreateLoanIsApproved,
+  refetchQuery: refetchCreateLoanIsApproved,
 } = queryFactory({
   queryKey: ({
     chainId,
@@ -43,5 +45,5 @@ export const {
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
-  dependencies: (params) => (params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
+  dependencies: (params) => notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
 })

@@ -1,7 +1,8 @@
-import { countBy } from 'lodash'
+import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
-import { computeTotalRate } from '@/llamalend/rates.utils'
+import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
+import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { type PartialRecord, recordValues } from '@primitives/objects.utils'
@@ -10,6 +11,7 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -44,6 +46,7 @@ export type LlamaMarket = {
   controllerAddress: Address
   vaultAddress: Address | null
   assets: Assets
+  version: 'v1' | 'v2'
   maxLtv: number
   utilizationPercent: number
   liquidityUsd: number
@@ -52,7 +55,7 @@ export type LlamaMarket = {
   totalCollateralUsd: number
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
-    lendApr: number | null // base lend APR %
+    lendApy: number | null // base lend APY %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
     lendTotalApyMinBoosted: number | null
@@ -249,7 +252,7 @@ const convertLendingVault = (
     collateralBalanceUsd,
     borrowApy,
     borrowApr,
-    aprLend: lendApr,
+    apyLend: lendApy,
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
@@ -264,12 +267,23 @@ const convertLendingVault = (
 ): LlamaMarket => {
   const hasBorrowed = userBorrows.has(controller)
   const hasSupplied = userSupplied.has(vault)
-  const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
+  const totalExtraRewardApy =
+    // sumBy returns 0 for empty arrays
+    extraRewardApr.length ? sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number) : null
+  const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
+    supplyApy: lendApy,
+    crvMinBoostApr: lendCrvAprUnboosted,
+    crvMaxBoostApr: lendCrvAprBoosted,
+    rebasingYieldApy: borrowedToken?.rebasingYield,
+    extraIncentivesApy: totalExtraRewardApy,
+  })
+
   return {
     chain,
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
+    version: 'v1', // todo: get version from backend
     assets: {
       borrowed: {
         ...borrowedToken,
@@ -296,13 +310,11 @@ const convertLendingVault = (
       totalAssetsUsd - // supplied assets
       totalDebtUsd,
     rates: {
-      lendApr,
+      lendApy,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
-      lendTotalApyMinBoosted:
-        lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
-      lendTotalApyMaxBoosted:
-        lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
+      lendTotalApyMinBoosted: totalMinBoost,
+      lendTotalApyMaxBoosted: totalMaxBoost,
       borrowApy,
       borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
@@ -317,11 +329,7 @@ const convertLendingVault = (
         : [],
     },
     type: LlamaMarketType.Lend,
-    url: getInternalUrl(
-      'lend',
-      chain,
-      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasBorrowed || hasSupplied ? 'manage' : 'create'}`,
-    ),
+    url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
     deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[controller] ?? null,
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
@@ -374,6 +382,7 @@ const convertMintMarket = (
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
+    version: 'v1',
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,
@@ -402,7 +411,7 @@ const convertMintMarket = (
     totalDebtUsd: borrowedUsd,
     totalCollateralUsd: collateralAmountUsd,
     rates: {
-      lendApr: null,
+      lendApy: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
       lendTotalApyMinBoosted: null,
@@ -524,7 +533,11 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   ...(mintMarkets.data ?? []).map((market) =>
                     convertMintMarket(market, favoriteMarketsSet, campaigns, userMints, countMarket(market)),
                   ),
-                ],
+                ].filter(
+                  ({ createdAt, deprecatedMessage, userHasPositions }) =>
+                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || isLLv2Enabled()) &&
+                    (!deprecatedMessage || userHasPositions),
+                ),
               }
             : undefined
         return { ...combineQueriesMeta(results), data }

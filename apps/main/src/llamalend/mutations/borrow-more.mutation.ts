@@ -17,16 +17,12 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
-
-export type OnBorrowedMore = OnTransactionSuccess<BorrowMoreMutation>
 
 export type BorrowMoreOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnBorrowedMore
-  onReset?: () => void
+  onReset: () => void
   userAddress: Address | undefined
 }
 
@@ -34,7 +30,6 @@ const approveBorrowMore = async (
   market: LlamaMarketTemplate,
   { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
-  if (!+userCollateral && !+userBorrowed) return []
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
@@ -75,12 +70,11 @@ export const useBorrowMoreMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: BorrowMoreOptions) => {
   const config = useConfig()
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMoreMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<BorrowMoreMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
@@ -97,11 +91,10 @@ export const useBorrowMoreMutation = ({
     validationSuite: borrowMoreMutationValidationSuite,
     pendingMessage: (mutation, { market }) => t`Borrowing more... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Borrowed more! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(async (form: BorrowMoreForm) => mutate(form as BorrowMoreMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, isPending }
 }

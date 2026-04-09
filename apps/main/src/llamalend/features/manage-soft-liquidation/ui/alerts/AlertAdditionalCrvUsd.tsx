@@ -10,33 +10,32 @@ import { formatTokens } from '../action-infos/util'
 const { Spacing } = SizesAndSpaces
 
 type Props = {
-  debtTokenSymbol: string
+  debtTokenSymbol: string | undefined // this can be undefined if the userState query failed or is pending
   missing: Decimal
   balance: Decimal
 }
 
-export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol, balance }: Props) => (
-  <Alert severity="error" variant="outlined" sx={{ boxShadow: 'none' }}>
+export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol: debtToken = t`debt tokens`, balance }: Props) => (
+  <Alert severity="error" variant="outlined">
     <AlertTitle>{t`Additional crvUSD required`}</AlertTitle>
 
     <Stack gap={Spacing.sm}>
       <Typography variant="bodySRegular" color="textSecondary">
         <Trans>
           Your position cannot be closed because the outstanding debt amount is greater than the available collateral
-          value. Additionally, your wallet does not contain sufficient <strong>{debtTokenSymbol}</strong> tokens to
-          cover the remaining debt balance that exceeds your collateral.
+          value. Additionally, your wallet does not contain sufficient <strong>{debtToken}</strong> to cover the
+          remaining debt balance that exceeds your collateral.
         </Trans>
       </Typography>
 
       <Typography variant="bodySRegular" color="textSecondary">
         <Trans>
-          A minimum balance of <strong>{formatTokens({ symbol: debtTokenSymbol, amount: missing })}</strong> is required
-          in your wallet to close the position
+          A minimum balance of <strong>{formatTokens({ symbol: debtToken, amount: missing })}</strong> is required in
+          your wallet to close the position
         </Trans>
         <Typography variant="bodyXsRegular" color="textTertiary" component="span">
           <Trans>
-            (You currently have <strong>{formatTokens({ symbol: debtTokenSymbol, amount: balance })}</strong> in your
-            wallet)
+            (You currently have <strong>{formatTokens({ symbol: debtToken, amount: balance })}</strong> in your wallet)
           </Trans>
         </Typography>
         .

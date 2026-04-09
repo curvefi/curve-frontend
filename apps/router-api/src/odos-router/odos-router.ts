@@ -3,11 +3,13 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
+import { generateId } from '../router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
 
 const { ODOS_API_URL = 'https://prices.curve.finance/odos' } = process.env
+const protocol = 'odos' as const
 
 async function getOdosQuote(
   {
@@ -33,7 +35,7 @@ async function getOdosQuote(
     to_address: tokenOut,
     amount: amountIn,
     slippage: `${slippage}`,
-    pathVizImage: 'false',
+    pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
     caller_address: userAddress,
     blacklist: '',
   }
@@ -88,19 +90,18 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
     log.info({ message: 'odos route request skipped', query })
     return []
   }
-  const {
-    outAmounts,
-    pathId,
-    pathVizImage,
-    priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
-
-  const id = assert(pathId, 'Odos quote missing pathId')
-  const { transaction } = await assembleOdosQuote({ pathId: id, userAddress }, log)
+  const [{ outAmounts, pathId, pathVizImage, priceImpact = null }, id] = await Promise.all([
+    getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log),
+    generateId(protocol, query),
+  ])
+  const { transaction } = await assembleOdosQuote(
+    { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
+    log,
+  )
   return [
     {
-      id: `odos:${id}`,
-      router: 'odos',
+      id,
+      router: protocol,
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
       priceImpact,
@@ -112,7 +113,7 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
           name: 'Odos route',
           tokenIn: [tokenIn],
           tokenOut: [tokenOut],
-          protocol: 'odos',
+          protocol,
           action: 'swap',
           chainId,
           args: { pathId, pathVizImage },

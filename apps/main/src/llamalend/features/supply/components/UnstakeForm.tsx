@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { UnstakeOptions } from '@/llamalend/mutations/unstake.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -7,6 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useUnstakeForm } from '../hooks/useUnstakeForm'
+import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
 export type UnstakeFormProps<ChainId extends IChainId> = {
@@ -14,7 +14,6 @@ export type UnstakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<UnstakeOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-unstake'
@@ -24,24 +23,11 @@ export const UnstakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: UnstakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    vaultToken,
-    borrowToken,
-    isUnstaked,
-    unstakeError,
-    txHash,
-    formErrors,
-    max,
-  } = useUnstakeForm({ market, network, enabled, onSuccess })
+  const { form, params, isPending, onSubmit, isDisabled, vaultToken, borrowToken, unstakeError, formErrors, max } =
+    useUnstakeForm({ market, network, enabled })
 
   return (
     <Form
@@ -63,6 +49,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
           tooltip: t`Staked vault shares`,
         }}
       />
+      {Number(max.data) > 0 && <AlertUnstakeOnly />}
 
       <Button
         type="submit"
@@ -73,15 +60,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : t`Unstake`}
       </Button>
 
-      <FormAlerts
-        isSuccess={isUnstaked}
-        error={unstakeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['unstakeAmount']}
-        successTitle={t`Unstaked successfully`}
-      />
+      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAmount']} />
     </Form>
   )
 }

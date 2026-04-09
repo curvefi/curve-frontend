@@ -1,14 +1,14 @@
 import BigNumber from 'bignumber.js'
+import { MarketTypeSuffix } from '@/llamalend/constants'
+import { formatCollateralNotional, getUtilizationPercent } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
-  MarketTypeSuffix,
   MaxLeverageTooltip,
   TotalCollateralTooltip,
   UtilizationTooltip,
   TooltipOptions,
-} from '@/llamalend/features/market-details'
-import { formatCollateralNotional } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { Box, CardHeader } from '@mui/material'
+} from '@/llamalend/widgets/tooltips'
+import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
@@ -32,22 +32,19 @@ const formatLiquidity = (value: number) =>
 
 type AvailableLiquidityValues = {
   available?: Decimal
-  cap?: Decimal
+  totalAssets?: Decimal
 }
 
-const getUtilizationMetrics = ({ available, cap }: AvailableLiquidityValues) => {
-  if (available == null || cap == null) return {}
+const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityValues) => {
+  const utilization = getUtilizationPercent(available, totalAssets)
+  if (utilization == null || available == null || totalAssets == null) return {}
 
   const availableBN = new BigNumber(available)
-  const capBN = new BigNumber(cap)
-  if (capBN.isZero()) return {}
-
-  const usedLiquidity = capBN.minus(availableBN)
-  const utilization = usedLiquidity.div(capBN).times(100).toNumber()
+  const capBN = new BigNumber(totalAssets)
 
   return {
     utilization,
-    utilizationBreakdown: `${formatLiquidity(usedLiquidity.toNumber())}/${formatLiquidity(capBN.toNumber())}`,
+    utilizationBreakdown: `${formatLiquidity(capBN.minus(availableBN).toNumber())}/${formatLiquidity(capBN.toNumber())}`,
   }
 }
 
@@ -61,64 +58,57 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
-    <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-      <CardHeader title={t`Advanced Details`} size={'small'} />
-      <Box
-        display="grid"
-        gap={3}
-        sx={{
-          padding: Spacing.md,
-          gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
+    <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
+      <Metric
+        size="small"
+        label={t`Utilization`}
+        value={utilization}
+        loading={availableLiquidity?.loading}
+        valueOptions={{ unit: 'percentage' }}
+        notional={utilization != null ? utilizationBreakdown : undefined}
+        valueTooltip={{
+          title: t`Utilization ${MarketTypeSuffix[marketType]}`,
+          body: <UtilizationTooltip marketType={marketType} />,
+          ...TooltipOptions,
         }}
-      >
+      />
+      <Metric
+        size="small"
+        label={t`Total collateral`}
+        value={collateral?.combinedCollateralUsdValue}
+        loading={collateral?.loading}
+        valueOptions={{ unit: 'dollar' }}
+        notional={
+          collateral?.loading
+            ? undefined
+            : formatCollateralNotional(
+                {
+                  value: collateral?.totalCollateral ?? null,
+                  symbol: collateral?.collateralSymbol ?? undefined,
+                },
+                { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
+              )
+        }
+        valueTooltip={{
+          title: t`Total Collateral`,
+          body: <TotalCollateralTooltip {...collateral} />,
+          ...TooltipOptions,
+        }}
+      />
+      {maxLeverage && (
         <Metric
           size="small"
-          label={t`Utilization`}
-          value={utilization}
-          loading={availableLiquidity?.loading}
-          valueOptions={{ unit: 'percentage' }}
-          notional={utilization != null ? utilizationBreakdown : undefined}
+          label={t`Max leverage`}
+          value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
+          loading={maxLeverage?.loading}
+          valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
-            title: t`Utilization ${MarketTypeSuffix[marketType]}`,
-            body: <UtilizationTooltip marketType={marketType} />,
+            title: t`Maximum Leverage`,
+            body: <MaxLeverageTooltip />,
             ...TooltipOptions,
           }}
         />
-        <Metric
-          size="small"
-          label={t`Total collateral`}
-          value={collateral?.combinedCollateralUsdValue}
-          loading={collateral?.loading}
-          valueOptions={{ unit: 'dollar' }}
-          notional={
-            collateral?.loading
-              ? undefined
-              : formatCollateralNotional(
-                  { value: collateral?.totalCollateral ?? null, symbol: collateral?.collateralSymbol ?? undefined },
-                  { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
-                )
-          }
-          valueTooltip={{
-            title: t`Total Collateral`,
-            body: <TotalCollateralTooltip />,
-            ...TooltipOptions,
-          }}
-        />
-        {maxLeverage && (
-          <Metric
-            size="small"
-            label={t`Max leverage`}
-            value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
-            loading={maxLeverage?.loading}
-            valueOptions={{ unit: 'multiplier' }}
-            valueTooltip={{
-              title: t`Maximum Leverage`,
-              body: <MaxLeverageTooltip />,
-              ...TooltipOptions,
-            }}
-          />
-        )}
-      </Box>
+      )}
     </Box>
   )
 }

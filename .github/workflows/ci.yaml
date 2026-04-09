@@ -15,8 +15,10 @@ jobs:
     timeout-minutes: 6
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # needed to diff yarn.lock against the base branch commit
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: yarn
@@ -26,15 +28,18 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
       - run: yarn format:check
+        if: always()
       - run: yarn typecheck
+        if: always()
+      - run: yarn check-supply-chain
 
   test:
     name: Unit tests
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: yarn
@@ -44,7 +49,8 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build  # make sure the build works + uploads source maps to Sentry
       - run: yarn test
-        working-directory: tests
+        env:
+          ENSO_API_KEY: ${{ secrets.ENSO_API_KEY }}
 
   cypress-component:
     strategy:
@@ -56,8 +62,8 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: yarn
@@ -65,14 +71,21 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
 
-      - run: yarn run cy:run:component --browser ${{ matrix.browser }}
+      - run: |
+          set -o pipefail
+          yarn run cy:run:component --browser ${{ matrix.browser }} 2>&1 | \
+            tee ../cypress-component-${{ matrix.browser }}-${{ matrix.count }}.log \
+              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
@@ -86,8 +99,8 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: yarn
@@ -95,14 +108,16 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - name: Optimize dependencies
+      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
 
       - name: Run RPC tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:rpc --browser electron 2>&1 | tee ../rpc-cypress.log # rpc tests are expensive, stick to one browser
+          # rpc tests are expensive, stick to one browser
+          yarn run cy:run:rpc --browser electron 2>&1 | \
+            tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
@@ -111,7 +126,7 @@ jobs:
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}
           CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-rpc
@@ -119,7 +134,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: rpc-cypress-log
@@ -140,8 +155,8 @@ jobs:
     timeout-minutes: 25
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: yarn
@@ -168,7 +183,9 @@ jobs:
         working-directory: tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
+          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | \
+            tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log \
+              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
@@ -190,7 +207,7 @@ jobs:
         run: |
           ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
@@ -198,7 +215,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
@@ -213,13 +230,11 @@ jobs:
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
     steps:
       - name: Send Slack alert
-        env:
-          SLACK_TEXT: >-
-            ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
-            on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
-            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>
-            by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
+          SLACK_TEXT="❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed> \
+          on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}> \
+          at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}> \
+          by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>"
           curl --request POST \
                --header 'Content-type: application/json' \
                --data-binary "{\"text\": \"$SLACK_TEXT\"}" \

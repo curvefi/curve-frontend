@@ -1,33 +1,34 @@
-import {
-  type BorrowRate,
-  type SupplyRate,
-  type AvailableLiquidity,
-  MarketTypeSuffix,
-  MarketSupplyRateTooltipContent,
-  AvailableLiquidityTooltip,
-  TooltipOptions,
-} from '@/llamalend/features/market-details'
+import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
+import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import type { AvailableLiquidity } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
 
-type MetricRowProps = {
+export const MetricsRow = ({
+  borrowRate,
+  supplyRate,
+  availableLiquidity,
+  marketType,
+  collateral,
+}: {
   borrowRate: BorrowRate
   supplyRate?: SupplyRate
   availableLiquidity: AvailableLiquidity
   marketType: LlamaMarketType
   collateral: { symbol: string } | undefined
-}
-
-export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketType, collateral }: MetricRowProps) => {
+}) => {
   const isMobile = useIsMobile()
   const metricAlignment = isMobile ? 'start' : 'end'
+  const supplyRatePeriod = supplyRate ? AVERAGE_CATEGORIES[supplyRate.averageCategory].period : null
 
   return (
     <Stack
@@ -47,35 +48,37 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
       {supplyRate && (
         <Metric
           alignment={metricAlignment}
-          label={t`Supply rate`}
-          value={supplyRate?.totalSupplyRateMinBoost}
-          loading={supplyRate?.loading}
+          label={NET_SUPPLY_RATE_TITLE}
+          value={supplyRate.totalMinBoost}
+          loading={supplyRate.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={
-            supplyRate?.averageRate
+            supplyRate.totalAverageMinBoost != null
               ? {
-                  value: supplyRate.averageRate,
-                  unit: { symbol: `% ${supplyRate.averageRateLabel} Avg`, position: 'suffix' },
+                  value: supplyRate.totalAverageMinBoost,
+                  unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
                 }
               : undefined
           }
           valueTooltip={{
-            title: t`Supply Rate`,
+            title: NET_SUPPLY_RATE_TITLE,
             body: (
               <MarketSupplyRateTooltipContent
-                supplyRate={supplyRate?.rate}
-                averageRate={supplyRate?.averageRate}
-                minBoostApr={supplyRate?.supplyAprCrvMinBoost}
-                maxBoostApr={supplyRate?.supplyAprCrvMaxBoost}
-                totalSupplyRateMinBoost={supplyRate?.totalSupplyRateMinBoost}
-                totalSupplyRateMaxBoost={supplyRate?.totalSupplyRateMaxBoost}
-                totalAverageSupplyRateMinBoost={supplyRate?.totalAverageSupplyRateMinBoost}
-                totalAverageSupplyRateMaxBoost={supplyRate?.totalAverageSupplyRateMaxBoost}
-                rebasingYield={supplyRate?.rebasingYield}
-                isLoading={supplyRate?.loading}
-                periodLabel={supplyRate?.averageRateLabel}
-                extraRewards={supplyRate?.extraRewards ?? []}
-                extraIncentives={supplyRate?.extraIncentives ?? []}
+                supplyApy={supplyRate.supplyApy}
+                averageSupplyApy={supplyRate.averageLendApy}
+                totalApy={supplyRate.totalMinBoost}
+                totalAverageApy={supplyRate.totalAverageMinBoost}
+                boost={{
+                  type: 'market',
+                  apy: supplyRate.supplyApyCrvMaxBoost,
+                  totalApy: supplyRate.totalMaxBoost,
+                  totalAverageApy: supplyRate.totalAverageMaxBoost,
+                }}
+                rebasingYieldApy={supplyRate.rebasingYield}
+                isLoading={supplyRate.loading}
+                periodLabel={supplyRatePeriod as string}
+                extraRewards={supplyRate.extraRewards ?? []}
+                extraIncentives={supplyRate.extraIncentives ?? []}
               />
             ),
             ...TooltipOptions,

@@ -1,10 +1,9 @@
-import { MouseEvent, useMemo } from 'react'
+import { useMemo } from 'react'
 import Stack from '@mui/material/Stack'
-import { useSearchParams } from '@ui-kit/hooks/router'
+import { getSearchString, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { pushSearchParams } from '@ui-kit/utils/urls'
 import { TabPanel } from '@ui-kit/widgets/Legal/components/general/TabPanel'
 import { NATIVE_BRIDGES, WEB3_BRIDGES } from './bridges'
 import { BridgeOverview } from './components/BridgeOverview'
@@ -13,7 +12,8 @@ import { TABS, VALID_TABS, type Tab } from './constants'
 const { Spacing } = SizesAndSpaces
 
 export const Bridges = () => {
-  const tabParam = useSearchParams()?.get('tab')
+  const searchParams = useSearchParams()
+  const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'web3'
 
   const tabs = useMemo(
@@ -21,11 +21,10 @@ export const Bridges = () => {
       ...TABS.map(({ value, ...props }) => ({
         ...props,
         value,
-        href: { query: { tab: value } },
-        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { tab: value }),
+        href: getSearchString({ tab: value }, searchParams),
       })),
     ],
-    [],
+    [searchParams],
   )
 
   return (

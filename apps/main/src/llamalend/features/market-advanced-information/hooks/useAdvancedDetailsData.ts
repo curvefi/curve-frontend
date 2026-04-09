@@ -43,7 +43,8 @@ export const useAdvancedDetailsData = ({
       borrowedSymbol: borrowToken?.symbol ?? null,
       totalBorrowed: borrowedTotal,
       combinedCollateralUsdValue,
-      usdRate: collateralUsdRate ?? null,
+      collateralUsdRate: collateralUsdRate ?? null,
+      borrowedUsdRate: borrowedUsdRate ?? null,
       loading: !market || totalCollateralLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     maxLeverage: {
@@ -52,7 +53,7 @@ export const useAdvancedDetailsData = ({
     },
     availableLiquidity: {
       available: capAndAvailable?.available,
-      cap: capAndAvailable?.cap,
+      totalAssets: capAndAvailable?.totalAssets,
       loading: !market || capAndAvailableLoading,
     },
   }

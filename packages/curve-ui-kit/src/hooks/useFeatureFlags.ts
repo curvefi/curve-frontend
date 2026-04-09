@@ -10,10 +10,11 @@ const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**
- * Pre-Beta channel works like beta for preview/localhost urls, but completely hidden in production.
+ * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  *  */
-const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
+const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+// const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
@@ -31,20 +32,16 @@ export const useNewBandsChart = useBetaChannel
 export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
-export const useAnalyticsApp = useAlphaChannel
-
-/** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
-export const useFastbridge = useBetaChannel
-
-/** New page header with market metrics on market detail pages */
-export const useIntegratedLlamaHeader = useStableChannel
-
-/** New lend market header subnav */
-export const useLendMarketSubNav = useIntegratedLlamaHeader
+export const useAnalyticsApp = useStableChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
-export const isZapV2Enabled = () =>
-  getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+export const isZapV2Enabled = () => isAlpha() && localStorage.getItem('disableZapV2') != 'true'
 
-/** New tabs for BorrowPositionDetails */
-export const useNewPositionDetailsTabs = useIntegratedLlamaHeader
+/** New LlamaLend v2 implementation */
+export const isLLv2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta
+
+/** New market page layout with forms on the right  */
+export const useRightFormTabsLayout = useBetaChannel
+
+/** New market historical rates chart */
+export const useMarketHistoricalRatesChart = useBetaChannel
