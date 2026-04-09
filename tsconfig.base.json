@@ -10,7 +10,6 @@
     // === Module Resolution ===
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "esModuleInterop": true,
 
     // === Type Checking ===
     "isolatedModules": true,
