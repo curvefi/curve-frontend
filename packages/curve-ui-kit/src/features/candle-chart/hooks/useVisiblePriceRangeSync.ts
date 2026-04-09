@@ -1,9 +1,10 @@
 import type { IChartApi } from 'lightweight-charts'
-import { useCallback, useEffect, useRef, type RefObject } from 'react'
+import { throttle } from 'lodash'
+import { useEffect, useRef, type RefObject } from 'react'
 
 /**
  * Keeps external consumers (e.g. BandsChart) synced with the candle chart's
- * current visible y-range.
+ * current visible y-range via a throttled read.
  */
 export const useVisiblePriceRangeSync = ({
   chartRef,
@@ -14,65 +15,45 @@ export const useVisiblePriceRangeSync = ({
   chartContainerRef: RefObject<HTMLDivElement | null>
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }) => {
-  const onVisiblePriceRangeChangeRef = useRef(onVisiblePriceRangeChange)
-  const requestAnimationFrameRef = useRef<number | null>(null)
-  const lastEmittedPriceRangeRef = useRef<{ min: number; max: number } | null>(null)
+  const callbackRef = useRef(onVisiblePriceRangeChange)
+  const lastRef = useRef({ min: 0, max: 0 })
 
   useEffect(() => {
-    onVisiblePriceRangeChangeRef.current = onVisiblePriceRangeChange
+    callbackRef.current = onVisiblePriceRangeChange
   }, [onVisiblePriceRangeChange])
 
-  // Read from the chart and emit only when min/max actually changed.
-  const emitPriceRangeNow = useCallback(() => {
-    if (!chartRef.current || !onVisiblePriceRangeChangeRef.current) return
+  const emitRef = useRef<ReturnType<typeof throttle> | null>(null)
 
-    const priceRange = chartRef.current.priceScale('right').getVisibleRange()
-    if (!priceRange) return
+  // Build the throttled emitter once, in an effect so ref access is safe.
+  useEffect(() => {
+    emitRef.current = throttle(
+      () => {
+        const chart = chartRef.current
+        if (!chart || !callbackRef.current) return
 
-    const min = priceRange.from
-    const max = priceRange.to
-    const previous = lastEmittedPriceRangeRef.current
+        const range = chart.priceScale('right').getVisibleRange()
+        if (!range) return
 
-    if (previous && previous.min === min && previous.max === max) {
-      return
-    }
+        const { from: min, to: max } = range
+        if (min === lastRef.current.min && max === lastRef.current.max) return
 
-    lastEmittedPriceRangeRef.current = { min, max }
-    onVisiblePriceRangeChangeRef.current(min, max)
+        lastRef.current = { min, max }
+        callbackRef.current(min, max)
+      },
+      16, // ~1 frame at 60fps
+      { leading: false, trailing: true },
+    )
+    return () => emitRef.current?.cancel()
   }, [chartRef])
 
-  // Batch rapid triggers into requestAnimationFrame and sample multiple frames so post-gesture
-  // autoscale settling is captured reliably.
-  const scheduleEmitPriceRange = useCallback(() => {
-    if (!onVisiblePriceRangeChangeRef.current || requestAnimationFrameRef.current !== null) return // already sampling, skip
+  const scheduleEmitPriceRange = () => emitRef.current?.()
 
-    const run = (remaining: number) => {
-      requestAnimationFrameRef.current = null
-      emitPriceRangeNow()
-      if (remaining > 1) {
-        requestAnimationFrameRef.current = requestAnimationFrame(() => run(remaining - 1))
-      }
-    }
-    requestAnimationFrameRef.current = requestAnimationFrame(() => run(5))
-  }, [emitPriceRangeNow])
-
-  // Emit immediately when a consumer is attached or re-attached.
+  // Emit when a consumer is first attached or re-attached.
   useEffect(() => {
     if (!onVisiblePriceRangeChange) return
-    lastEmittedPriceRangeRef.current = null
+    lastRef.current = { min: 0, max: 0 }
     scheduleEmitPriceRange()
-  }, [onVisiblePriceRangeChange, scheduleEmitPriceRange])
-
-  // Cancel any in-flight animation frame burst on unmount.
-  useEffect(
-    () => () => {
-      if (requestAnimationFrameRef.current !== null) {
-        cancelAnimationFrame(requestAnimationFrameRef.current)
-        requestAnimationFrameRef.current = null
-      }
-    },
-    [],
-  )
+  }, [onVisiblePriceRangeChange])
 
   // lightweight-charts exposes priceScale().getVisibleRange(), but no
   // subscribeVisiblePriceRangeChange API. Gesture listeners are the fallback
@@ -104,7 +85,7 @@ export const useVisiblePriceRangeSync = ({
       window.removeEventListener('pointerup', handleWindowPointerUp)
       window.removeEventListener('pointercancel', handleWindowPointerUp)
     }
-  }, [chartContainerRef, onVisiblePriceRangeChange, scheduleEmitPriceRange])
+  }, [chartContainerRef, onVisiblePriceRangeChange])
 
   return { scheduleEmitPriceRange }
 }
