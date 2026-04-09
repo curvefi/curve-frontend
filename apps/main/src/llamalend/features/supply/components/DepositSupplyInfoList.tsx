@@ -1,10 +1,10 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -32,8 +32,10 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
 
-  const marketRates = useMarketRates(params, isOpen)
-  const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
+  const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
+    { params, reservesDelta: depositAmount },
+    isOpen,
+  )
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const additionalVaultShares = useDepositExpectedVaultShares(params, isOpen)
@@ -56,8 +58,10 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
         userBalances,
         (d) => depositAmount && d.totalSharesAmount && decimalSum(d.totalSharesAmount, depositAmount),
       )}
-      prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
+      prevSupplyApy={mapQuery(prevRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(rates, (d) => d.lendApy)}
+      prevNetSupplyApy={prevNetSupplyApy}
+      netSupplyApy={netSupplyApy}
       gas={q(useDepositEstimateGas(networks, params, isOpen))}
     />
   )

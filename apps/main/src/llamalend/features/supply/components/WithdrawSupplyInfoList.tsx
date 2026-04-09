@@ -1,9 +1,9 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketSupplyFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { useWithdrawRemovableVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
+import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -29,8 +29,10 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   const { chainId, marketId, userAddress, withdrawAmount, isFull } = params
   const isOpen = isFormTouched(form, 'withdrawAmount')
 
-  const marketRates = useMarketRates(params, isOpen)
-  const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
+  const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
+    { params, reservesDelta: withdrawAmount && decimalMinus('0', withdrawAmount) },
+    isOpen,
+  )
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const removableVaultShares = useWithdrawRemovableVaultShares(params, isOpen)
@@ -56,8 +58,10 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
         userBalances,
         (d) => d.totalSharesAmount && withdrawAmount && decimalMinus(d.totalSharesAmount, withdrawAmount),
       )}
-      prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
+      prevSupplyApy={mapQuery(prevRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(rates, (d) => d.lendApy)}
+      prevNetSupplyApy={prevNetSupplyApy}
+      netSupplyApy={netSupplyApy}
       gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
     />
   )

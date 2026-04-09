@@ -324,7 +324,7 @@ export const createWithdrawScenario = ({
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      futureRates: [amount, '0'] as const,
+      futureRates: [decimalMinus('0', amount), '0'] as const,
       previewWithdraw: [amount] as const,
       estimateGas: [submitAmount] as const,
       submit: [submitAmount] as const,

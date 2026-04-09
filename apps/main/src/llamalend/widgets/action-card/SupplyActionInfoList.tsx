@@ -1,11 +1,13 @@
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
+import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
 
 export type SupplyActionInfoListProps = {
@@ -28,6 +30,7 @@ export type SupplyActionInfoListProps = {
   prevSupplyApy?: QueryProp<Decimal | null>
   /** Net supply APY (accounting for rewards, etc.) */
   netSupplyApy?: QueryProp<Decimal | null>
+  prevNetSupplyApy?: QueryProp<Decimal | null>
   /** Estimated gas cost for the transaction */
   gas: QueryProp<TxGasInfo | null>
 }
@@ -49,55 +52,68 @@ export const SupplyActionInfoList = ({
   supplyApy,
   prevSupplyApy,
   netSupplyApy,
+  prevNetSupplyApy,
   gas,
-}: SupplyActionInfoListProps) => (
-  <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
-    <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
-      <Stack>
-        {(supplyApy || prevSupplyApy) && (
+}: SupplyActionInfoListProps) => {
+  const shouldShowNetSupplyApy = useShouldShowNetRate({
+    tokenSymbol: suppliedSymbol,
+    prevNetRate: prevNetSupplyApy,
+    prevRate: prevSupplyApy,
+    netRate: netSupplyApy,
+    rate: supplyApy,
+    defaultValue: useShowNetRate('supply'),
+  })
+
+  return (
+    <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
+      <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+        <Stack>
+          {(supplyApy || prevSupplyApy) && (
+            <ActionInfo
+              label={t`Supply APY`}
+              value={supplyApy?.data && formatPercent(supplyApy.data)}
+              prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
+              {...combineActionInfoState(supplyApy, prevSupplyApy)}
+              size="small"
+              testId="supply-apy"
+            />
+          )}
+          {shouldShowNetSupplyApy && (
+            <ActionInfo
+              label={NET_SUPPLY_RATE_TITLE}
+              value={netSupplyApy?.data && formatPercent(netSupplyApy.data)}
+              prevValue={prevNetSupplyApy?.data && formatPercent(prevNetSupplyApy.data)}
+              {...combineActionInfoState(netSupplyApy, prevNetSupplyApy)}
+              size="small"
+              testId="supply-net-apy"
+            />
+          )}
+        </Stack>
+        <Stack>
           <ActionInfo
-            label="Supply APY"
-            value={supplyApy?.data && formatPercent(supplyApy.data)}
-            prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
-            {...combineActionInfoState(supplyApy, prevSupplyApy)}
+            label={sharesLabel}
+            value={vaultShares?.data && formatAmount(vaultShares.data)}
+            prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
+            {...combineActionInfoState(vaultShares, prevVaultShares)}
             size="small"
-            testId="supply-apy"
+            testId="supply-vault-shares"
           />
-        )}
-        {netSupplyApy && (
-          <ActionInfo
-            label={NET_SUPPLY_RATE_TITLE}
-            value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
-            {...combineActionInfoState(netSupplyApy)}
-            size="small"
-            testId="supply-net-apy"
-          />
-        )}
+          {(amountSupplied || prevAmountSupplied) && (
+            <ActionInfo
+              label={amountLabel}
+              value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
+              prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
+              {...combineActionInfoState(amountSupplied, prevAmountSupplied)}
+              valueRight={suppliedSymbol}
+              size="small"
+              testId="supply-amount"
+            />
+          )}
+        </Stack>
       </Stack>
       <Stack>
-        <ActionInfo
-          label={sharesLabel}
-          value={vaultShares?.data && formatAmount(vaultShares.data)}
-          prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
-          {...combineActionInfoState(vaultShares, prevVaultShares)}
-          size="small"
-          testId="supply-vault-shares"
-        />
-        {(amountSupplied || prevAmountSupplied) && (
-          <ActionInfo
-            label={amountLabel}
-            value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
-            prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
-            {...combineActionInfoState(amountSupplied, prevAmountSupplied)}
-            valueRight={suppliedSymbol}
-            size="small"
-            testId="supply-amount"
-          />
-        )}
+        <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />
       </Stack>
-    </Stack>
-    <Stack>
-      <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />
-    </Stack>
-  </ActionInfoCollapse>
-)
+    </ActionInfoCollapse>
+  )
+}
