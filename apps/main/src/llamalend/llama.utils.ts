@@ -16,7 +16,7 @@ import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { CRVUSD, decimalAbs, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -317,11 +317,10 @@ export function calculateReturnToWallet({
   const { debt: stateDebt = '0', collateral: stateCollateral = '0', stablecoin: stateBorrowed = '0' } = userState ?? {}
   if (+totalBorrowed > 0) {
     const returnCollateral = decimalMinus(stateCollateral, stateCollateralDelta)
-    const returnBorrowed = decimalAbs(decimalMinus(stateDebt, decimalSum(totalBorrowed, stateBorrowed)))
+    const returnBorrowed = decimalMinus(decimalSum(totalBorrowed, stateBorrowed), stateDebt)
     return notFalsy(
-      +returnCollateral && { value: returnCollateral, symbol: collateralSymbol },
-      // todo: the abs()>=1 doesn't make sense for me, check if it's really needed. Kept old behavior for now.
-      +returnBorrowed >= 1 && { value: returnBorrowed, symbol: borrowedSymbol },
+      +returnCollateral > 0 && { value: returnCollateral, symbol: collateralSymbol },
+      +returnBorrowed > 0 && { value: returnBorrowed, symbol: borrowedSymbol },
     )
   }
   const returnBorrowed = decimalMinus(stateBorrowed, stateDebt)

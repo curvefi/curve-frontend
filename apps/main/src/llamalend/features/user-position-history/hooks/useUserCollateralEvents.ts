@@ -99,7 +99,7 @@ export const useUserCollateralEvents = ({
         data: data && {
           originalLeverage: Number(data.totalDepositFromUserPrecise)
             ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
-            : '0',
+            : '0', // deposit should only be 0 if there is no loan, this is just a guard for div-by-zero errors
           events:
             data.events
               .map((event, index, events) => ({

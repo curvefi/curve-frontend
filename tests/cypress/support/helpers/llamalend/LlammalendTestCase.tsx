@@ -12,11 +12,11 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
@@ -57,8 +57,6 @@ type LlammalendTestProps = {
   onSuccess?: ReturnType<typeof cy.stub>
   onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
 } & UserMarketQuery<LlamaChainId>
-
-export const fakeCollateralEvents: UserCollateralEvents = { events: [], originalLeverage: `1` }
 
 function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTestProps) {
   const { isHydrated } = useCurve()

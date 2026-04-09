@@ -23,7 +23,8 @@ export const getPriceImpactSeverity = (
 
 /**
  * Defines whether to block the transaction due to the price impact.
- * Returns true if the price impact exceeds the critical threshold or if the price impact data is null (query loading or disabled)
+ * Returns true if the price impact exceeds the critical threshold or if the price impact data is null (query loading or disabled).
+ * We don't check the isLoading property as the query will be disabled until maxDebt is calculated.
  */
 export const shouldBlockTransaction = (
   priceImpact: Query<Decimal | null>,

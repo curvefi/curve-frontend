@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/LlammalendTestCase'
-import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
+import { fakeCollateralEvents, TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
 import {

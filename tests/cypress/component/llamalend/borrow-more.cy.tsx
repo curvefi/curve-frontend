@@ -6,7 +6,7 @@ import {
   submitBorrowMoreForm,
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
-import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   llamaNetworks,
