@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 import { isAddressEqual } from 'viem'
+import { useBadDebtMarketsQuery } from '@/llamalend/queries/market/market-bad-debt.query'
+import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { useBadDebtMarketsQuery } from '@/llamalend/queries/market/market-bad-debt.query'
-import { useMarketExposureQuery } from '@/llamalend/queries/market/market-exposure.query'
 import { BannerSeverity } from '@ui-kit/shared/ui/Banner'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
 type BadDebtParams = {
   type: LlamaMarketType
+  blockchainId: Chain | undefined
+  controllerAddress: Address | undefined
 }
 
 export type BadDebtMarketData = {
@@ -37,36 +39,34 @@ const getBadDebtMarketSeverity = (data: Omit<BadDebtMarketData, 'severity'>): Ba
 }
 
 /**
- * Returns bad debt data for a single market if the bad debt with the market exposure value ratio, are above threshold
+ * Returns bad debt data for a single market if the bad debt with the market exposure value ratio, are above a threshold
  */
-export const useBadDebtMarket = ({
-  type,
-  blockchainId,
-  controllerAddress,
-}: BadDebtParams & {
-  blockchainId: Chain | undefined
-  controllerAddress: Address | undefined
-}) => {
+export const useBadDebtMarket = ({ type, blockchainId, controllerAddress }: BadDebtParams) => {
   const enabled = !!blockchainId && !!controllerAddress
   const { data: badDebtMarkets } = useBadDebtMarketsQuery({ type }, enabled)
-  const { data: marketExposure } = useMarketExposureQuery({ type }, enabled)
+  const { data: llamaMarkets } = useLlamaMarkets(undefined, enabled)
 
   return useMemo(() => {
-    if (!blockchainId || !controllerAddress || !badDebtMarkets?.length) return null
+    if (!blockchainId || !controllerAddress || !llamaMarkets?.markets?.length || !badDebtMarkets?.length) return null
 
-    const market = badDebtMarkets.find(
+    const badDebtUsd = badDebtMarkets.find(
       (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
+    )?.badDebt
+
+    const market = llamaMarkets.markets.find(
+      (item) =>
+        item.type === type && item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
     )
-    const exposureUsd = marketExposure?.find(
-      (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
-    )?.exposureUsd
 
-    if (market?.badDebt == null || exposureUsd == null) return null
+    const exposureUsd =
+      market && (market.type === LlamaMarketType.Lend ? market.liquidityUsd + market.totalDebtUsd : market.totalDebtUsd)
 
-    return getBadDebtMarketSeverity({
-      badDebtUsd: market.badDebt,
-      percentage: (market.badDebt / exposureUsd) * 100,
-      marketType: type,
-    })
-  }, [badDebtMarkets, blockchainId, controllerAddress, marketExposure, type])
+    return badDebtUsd && exposureUsd
+      ? getBadDebtMarketSeverity({
+          badDebtUsd,
+          percentage: (badDebtUsd / exposureUsd) * 100,
+          marketType: type,
+        })
+      : null
+  }, [badDebtMarkets, blockchainId, controllerAddress, llamaMarkets, type])
 }
