@@ -1,6 +1,6 @@
-import lodash from 'lodash'
 import { useMemo } from 'react'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import { sortBy } from '@primitives/array.utils'
 
 type ProcessedBandsData = {
   marketBandsBalances: FetchedBandsBalances[] | undefined
@@ -77,5 +77,5 @@ export const useProcessedBandsData = ({ marketBandsBalances, userBandsBalances }
       }
     })
 
-    return lodash.orderBy(Array.from(bandsMap.values()), 'pUpDownMedian', 'desc')
+    return sortBy(Array.from(bandsMap.values()), (d) => d.pUpDownMedian, 'desc')
   }, [marketBandsBalances, userBandsBalances])
