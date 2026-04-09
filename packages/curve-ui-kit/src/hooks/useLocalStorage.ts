@@ -81,6 +81,8 @@ export const useFavoriteMarkets = () => {
   return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
 }
 
+export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-visible', false)
+
 export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
 

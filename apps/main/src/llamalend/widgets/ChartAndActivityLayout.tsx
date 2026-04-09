@@ -13,7 +13,7 @@ import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
@@ -62,7 +62,8 @@ export type ChartAndActivityLayoutProps = {
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
   const theme = useTheme()
-  const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
+  const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
+  const toggleBandsVisible = useCallback(() => setIsBandsVisible((prev) => !prev), [setIsBandsVisible])
   const newBandsChartEnabled = useNewBandsChart()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
