@@ -11,42 +11,36 @@ export const useBandsData = ({
   chainId,
   marketId,
   api,
+  enabled = true,
 }: {
   chainId: IChainId
   marketId: string
   api: LlamaApi | undefined | null
+  enabled?: boolean
 }) => {
   const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
-  const { data: liquidationBand, isLoading: isLiquidationBandLoading } = useMarketLiquidationBand({
-    chainId,
-    marketId,
-  })
-  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useUserBandsBalances({
-    chainId,
-    marketId,
-    userAddress,
-    loanExists,
-    liquidationBand,
-  })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    { chainId, marketId, userAddress },
+    enabled,
+  )
+  const { data: liquidationBand, isLoading: isLiquidationBandLoading } = useMarketLiquidationBand(
+    { chainId, marketId },
+    enabled,
+  )
+  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useUserBandsBalances(
+    { chainId, marketId, userAddress, loanExists, liquidationBand },
+    enabled,
+  )
   const {
     data: marketBandsBalances,
     isLoading: isMarketBandsBalancesLoading,
     error: marketBandsBalancesError,
-  } = useMarketBandsBalances({
-    chainId,
-    marketId,
-    liquidationBand,
-  })
-  const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice({
-    chainId,
-    marketId,
-  })
+  } = useMarketBandsBalances({ chainId, marketId, liquidationBand }, enabled)
+  const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice(
+    { chainId, marketId },
+    enabled,
+  )
 
   const chartData = useProcessedBandsData({
     marketBandsBalances,
