@@ -18,7 +18,6 @@ export type ChartDataPoint = {
   userBandBorrowedValueUsd?: number
   userBandTotalCollateralValueUsd?: number
   isLiquidationBand: boolean
-  isOraclePriceBand: boolean
 }
 
 export type BandsChartPalette = {

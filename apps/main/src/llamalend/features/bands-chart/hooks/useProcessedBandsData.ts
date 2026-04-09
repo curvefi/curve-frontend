@@ -5,14 +5,9 @@ import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/
 type ProcessedBandsData = {
   marketBandsBalances: FetchedBandsBalances[] | undefined
   userBandsBalances: FetchedBandsBalances[] | undefined
-  oraclePriceBand: number | null | undefined
 }
 
-export const useProcessedBandsData = ({
-  marketBandsBalances,
-  userBandsBalances,
-  oraclePriceBand,
-}: ProcessedBandsData) =>
+export const useProcessedBandsData = ({ marketBandsBalances, userBandsBalances }: ProcessedBandsData) =>
   useMemo(() => {
     if (!marketBandsBalances) return []
 
@@ -45,7 +40,6 @@ export const useProcessedBandsData = ({
               ? collateralValueUsd + borrowedValueUsd
               : undefined,
           isLiquidationBand: band.isLiquidationBand,
-          isOraclePriceBand: band.n === oraclePriceBand,
         },
       ]
     })
@@ -68,7 +62,6 @@ export const useProcessedBandsData = ({
               ? collateralValueUsd + borrowedValueUsd
               : undefined,
           isLiquidationBand: band.isLiquidationBand,
-          isOraclePriceBand: band.n === oraclePriceBand,
         },
       ]
     })
@@ -85,4 +78,4 @@ export const useProcessedBandsData = ({
     })
 
     return lodash.orderBy(Array.from(bandsMap.values()), 'pUpDownMedian', 'desc')
-  }, [marketBandsBalances, userBandsBalances, oraclePriceBand])
+  }, [marketBandsBalances, userBandsBalances])
