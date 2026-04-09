@@ -4,6 +4,7 @@ import { Chain as ChainId } from '@ui-kit/utils/network'
 import {
   arbitrum,
   arbitrumSepolia,
+  arcTestnet,
   aurora,
   avalanche,
   base,
@@ -32,6 +33,7 @@ import type { defaultGetRpcUrls } from './rpc'
 export const wagmiChains = [
   arbitrum,
   arbitrumSepolia,
+  arcTestnet,
   aurora,
   avalanche,
   base,
