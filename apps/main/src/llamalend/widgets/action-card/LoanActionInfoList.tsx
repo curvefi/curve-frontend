@@ -1,5 +1,6 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -10,7 +11,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
-import { decimal, decimalGreaterThan, formatNumber, formatPercent } from '@ui-kit/utils'
+import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
@@ -37,6 +39,7 @@ export type LoanActionInfoListProps = {
   debt?: QueryProp<Decimal | null>
   prevCollateral?: QueryProp<Decimal | null>
   collateral?: QueryProp<Decimal | null>
+  returnToWallet?: QueryProp<{ value: Decimal; symbol: string }[]>
   prevLeverageValue?: QueryProp<Decimal | null>
   leverageValue?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
@@ -78,6 +81,7 @@ export const LoanActionInfoList = ({
   prevDebt,
   collateral,
   prevCollateral,
+  returnToWallet,
   prevLeverageValue,
   leverageValue,
   prevLeverageCollateral,
@@ -93,7 +97,7 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const isHighImpact = priceImpact?.data != null && slippage != null && decimalGreaterThan(priceImpact.data, slippage)
+  const priceImpactSeverity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
   const exchangeRateValue = decimal(exchangeRate?.data)
 
   const shouldShowNetBorrowApr = useShouldShowNetRate({
@@ -105,16 +109,21 @@ export const LoanActionInfoList = ({
     defaultValue: useShowNetRate('borrow'),
   })
 
-  const debtActionInfo = (debt || prevDebt) && (
-    <ActionInfo
-      label={t`Debt`}
-      value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
-      prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
-      {...combineActionInfoState(debt, prevDebt)}
-      valueRight={borrowSymbol}
-      size="small"
-      testId="borrow-debt"
-    />
+  const debtActionInfo = (
+    <>
+      {(debt || prevDebt) && (
+        <ActionInfo
+          label={t`Debt`}
+          value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
+          prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
+          {...combineActionInfoState(debt, prevDebt)}
+          valueRight={borrowSymbol}
+          size="small"
+          testId="borrow-debt"
+        />
+      )}
+      {returnToWallet && <ReturnToWalletActionInfo returnToWallet={returnToWallet} />}
+    </>
   )
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
@@ -144,9 +153,9 @@ export const LoanActionInfoList = ({
         <Stack>
           <ActionInfo
             label={t`Health`}
-            value={health?.data && !isFullRepay ? formatNumber(health.data, { abbreviate: false }) : '∞'}
+            value={health?.data && !isFullRepay ? formatNumber(health.data, { abbreviate: true }) : '∞'}
             {...(prevHealth && {
-              prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: false }) : '∞',
+              prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: true }) : '∞',
             })}
             {...combineActionInfoState(health, prevHealth)}
             valueColor={getHealthValueColor({
@@ -251,9 +260,9 @@ export const LoanActionInfoList = ({
         )}
         {priceImpact && (
           <ActionInfo
-            label={isHighImpact ? t`High price impact` : t`Price impact`}
+            label={priceImpactSeverity ? t`High price impact` : t`Price impact`}
             value={priceImpact.data == null ? '-' : formatPercent(priceImpact.data)}
-            {...(isHighImpact && { valueColor: 'error' })}
+            valueColor={{ error: 'error', warning: 'warning.main' }[priceImpactSeverity!]}
             error={priceImpact.error}
             loading={priceImpact.isLoading}
             size="small"

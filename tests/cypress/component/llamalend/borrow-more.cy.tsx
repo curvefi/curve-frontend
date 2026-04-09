@@ -6,6 +6,7 @@ import {
   submitBorrowMoreForm,
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
+import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   llamaNetworks,
@@ -15,6 +16,7 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -69,6 +71,7 @@ describe('BorrowMoreForm (mocked)', () => {
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             enabled
+            collateralEvents={constQ(fakeCollateralEvents)}
           />
         </MockLoanTestWrapper>,
       )

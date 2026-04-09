@@ -1,12 +1,9 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import {
-  isLeverageBorrowMore,
-  isLeverageBorrowMoreSupported,
-} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -17,7 +14,7 @@ import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { q, type Range } from '@ui-kit/types/util'
+import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -32,12 +29,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onPricesUpdated,
+  collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const network = networks[chainId]
   const {
@@ -55,14 +54,16 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     routes,
     max,
     leverage,
+    isLeverageEnabled,
+    priceImpact,
   } = useBorrowMoreForm({
     market,
     network,
     enabled,
     onPricesUpdated,
+    collateralEvents,
   })
 
-  const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 
   const onLeverageToggle = useCallback(
@@ -145,7 +146,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
 
       <Button
         type="submit"

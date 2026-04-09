@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
-import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
@@ -50,7 +50,7 @@ export const MintMarketPage = () => {
     marketId,
     market: market ?? null,
   })
-  const activityQueryParams: UserCollateralEventsProps = {
+  const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,
@@ -65,7 +65,7 @@ export const MintMarketPage = () => {
       : undefined,
     borrowToken: CRVUSD,
     network,
-  }
+  })
   useEffect(() => {
     if (isHydrated && curve && market) {
       void (async () => {
@@ -98,7 +98,11 @@ export const MintMarketPage = () => {
       formTabs={
         !isLoading &&
         (loanExists ? (
-          <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
+          <ManageLoanTabs
+            {...formProps}
+            collateralEvents={collateralEvents}
+            isInSoftLiquidation={loanStatus !== 'healthy'}
+          />
         ) : (
           <CreateLoanTabs {...formProps} />
         ))
@@ -116,7 +120,7 @@ export const MintMarketPage = () => {
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
-        activityQueryParams={activityQueryParams}
+        events={collateralEvents}
       />
       <MarketInformationComposite
         market={market ?? null}
