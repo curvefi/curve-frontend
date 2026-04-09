@@ -8,8 +8,8 @@ function createLightSurfaces() {
     Disabled: Grays[500],
     Highlight: Blues[500],
     Feedback: {
-      Success: Greens[300],
-      Warning: Yellows[500],
+      Success: Greens[600],
+      Warning: Oranges[500],
       Error: Reds[500],
       Danger: Oranges[500],
       Inverted: Grays[50],
@@ -52,7 +52,7 @@ function createLightSurfaces() {
     },
     Feedback: {
       Info: Blues[500],
-      Success: Greens[300],
+      Success: Greens[600],
       Danger: Oranges[500],
       Warning: Yellows[500],
       Error: Reds[500],
@@ -60,7 +60,7 @@ function createLightSurfaces() {
     Highlight: Blues[500],
     TypeAction: {
       Selected: Blues[100],
-      Hover: Grays[150],
+      Hover: Grays[10],
     },
   } as const
   return {
@@ -69,8 +69,8 @@ function createLightSurfaces() {
     Tables: {
       Row: {
         Default: Grays[50],
-        Selected: Grays[150],
-        Hover: Blues[100],
+        Selected: Blues[100],
+        Hover: Grays[10],
       },
       Header: {
         Fill: Grays[200],
@@ -92,7 +92,7 @@ function createLightSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Greens[400],
+        Active: Blues[500],
         Alert: Reds[500],
         Highlight: Blues[500],
         Warning: Oranges[500],
@@ -162,14 +162,14 @@ function createDarkSurfaces() {
     },
     Feedback: {
       Info: Blues[50],
-      Success: Greens[400],
+      Success: Greens[300],
       Warning: Yellows[500],
       Danger: Oranges[500],
       Error: Reds[500],
     },
     Highlight: Blues[50],
     TypeAction: {
-      Selected: Blues[900],
+      Selected: Grays[850],
       Hover: Grays[750],
     },
   } as const
@@ -179,7 +179,7 @@ function createDarkSurfaces() {
     Tables: {
       Row: {
         Default: Grays[950],
-        Selected: Blues[900],
+        Selected: Grays[850],
         Hover: Grays[750],
       },
       Header: {
@@ -202,7 +202,7 @@ function createDarkSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Greens[400],
+        Active: Blues[400],
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Oranges[500],
@@ -223,8 +223,8 @@ function createDarkSurfaces() {
 function createChadSurfaces() {
   const Text = {
     Feedback: {
-      Warning: Yellows[500],
-      Success: Greens[400],
+      Warning: Oranges[500],
+      Success: Greens[600],
       Danger: Oranges[500],
       Error: Reds[500],
       Inverted: Grays[50],
@@ -263,16 +263,16 @@ function createChadSurfaces() {
       Outline: Grays[400],
     },
     '2': {
-      Fill: Grays[300],
+      Fill: Grays[200],
       Outline: Grays[500],
     },
     '3': {
-      Fill: Grays[400],
+      Fill: Grays[300],
       Outline: Grays[600],
     },
     Feedback: {
-      Info: Violets[700],
-      Success: Greens[400],
+      Info: Blues[500],
+      Success: Greens[600],
       Warning: Yellows[500],
       Danger: Oranges[500],
       Error: Reds[500],
@@ -281,7 +281,7 @@ function createChadSurfaces() {
       Selected: Violets[50],
       Hover: Violets[200],
     },
-    Highlight: Violets[800],
+    Highlight: Violets[700],
   } as const
   return {
     Text,
@@ -293,7 +293,7 @@ function createChadSurfaces() {
         Hover: Violets[200],
       },
       Header: {
-        Fill: Grays[400],
+        Fill: Grays[300],
         Label: {
           Default: Grays[750],
           Hover: Violets[600],
@@ -312,7 +312,7 @@ function createChadSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Greens[500],
+        Active: Violets[500],
         Alert: Reds[500],
         Highlight: Violets[800],
         Warning: Oranges[500],
@@ -339,7 +339,7 @@ function createLightInvertedSurfaces() {
     Highlight: Blues[300],
     Feedback: {
       Success: Greens[300],
-      Warning: Yellows[500],
+      Warning: Oranges[500],
       Error: Reds[500],
       Danger: Oranges[500],
       Inverted: Grays[50],
@@ -422,7 +422,7 @@ function createLightInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Greens[500],
+        Active: Blues[400],
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Oranges[500],
@@ -453,7 +453,7 @@ function createDarkInvertedSurfaces() {
         Secondary: Grays[700],
       },
       Highlight: {
-        Primary: Blues[300],
+        Primary: Blues[500],
         Secondary: Grays[300],
       },
       Warning: {
@@ -470,8 +470,8 @@ function createDarkInvertedSurfaces() {
       },
     },
     Feedback: {
-      Success: Greens[400],
-      Warning: Yellows[500],
+      Success: Greens[600],
+      Warning: Oranges[500],
       Error: Reds[500],
       Danger: Oranges[500],
       Inverted: Grays[950],
@@ -492,7 +492,7 @@ function createDarkInvertedSurfaces() {
     },
     Feedback: {
       Info: Blues[500],
-      Success: Greens[400],
+      Success: Greens[600],
       Warning: Yellows[500],
       Danger: Oranges[500],
       Error: Reds[500],
@@ -532,7 +532,7 @@ function createDarkInvertedSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Greens[500],
+        Active: Blues[500],
         Alert: Reds[500],
         Highlight: Blues[500],
         Warning: Oranges[500],
@@ -554,7 +554,7 @@ function createChadInvertedSurfaces() {
   const Text = {
     Feedback: {
       Warning: Yellows[500],
-      Success: Greens[400],
+      Success: Greens[500],
       Error: Reds[500],
       Danger: Oranges[500],
       Inverted: Grays[50],
@@ -601,8 +601,8 @@ function createChadInvertedSurfaces() {
       Outline: Violets[500],
     },
     Feedback: {
-      Info: Grays[850],
-      Success: Greens[400],
+      Info: Blues[500],
+      Success: Greens[300],
       Warning: Yellows[500],
       Error: Reds[500],
       Danger: Oranges[500],
@@ -611,7 +611,7 @@ function createChadInvertedSurfaces() {
       Selected: Violets[900],
       Hover: Violets[800],
     },
-    Highlight: Violets[950],
+    Highlight: Violets[400],
   } as const
   return {
     Text,
@@ -642,7 +642,7 @@ function createChadInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Greens[400],
+        Active: Violets[400],
         Alert: Reds[500],
         Highlight: Violets[200],
         Warning: Oranges[500],
