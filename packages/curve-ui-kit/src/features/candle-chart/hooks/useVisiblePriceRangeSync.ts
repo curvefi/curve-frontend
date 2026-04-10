@@ -1,12 +1,13 @@
 import type { IChartApi } from 'lightweight-charts'
 import { throttle } from 'lodash'
 import { useCallback, useEffect, useRef, type RefObject } from 'react'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 // Ignore microscopic floating-point drift from autoscale math so we don't
 // emit range updates that are visually identical but still trigger re-renders.
 const PRICE_RANGE_ABSOLUTE_EPSILON = 1e-8
 const PRICE_RANGE_RELATIVE_EPSILON = 1e-6
-const THROTTLE_MS = 16
+const THROTTLE_MS = Duration.ChartFrame
 const STEADY_STATE_BURST_FRAMES = 3
 const SETTLE_BURST_FRAMES = 2
 
@@ -40,7 +41,7 @@ export const useVisiblePriceRangeSync = ({
   }, [onVisiblePriceRangeChange])
 
   const emitRef = useRef<ReturnType<typeof throttle> | null>(null)
-  const emitRafRef = useRef<number | null>(null)
+  const emitRequestAnimationFrameRef = useRef<number | null>(null)
   // Number of remaining frames to sample after a trigger. Multiple triggers
   // extend this burst so we can capture post-autoscale settling.
   const emitBurstFramesRef = useRef(0)
@@ -62,12 +63,12 @@ export const useVisiblePriceRangeSync = ({
 
   const runEmitFrame = useCallback(() => {
     const tick = () => {
-      emitRafRef.current = null
+      emitRequestAnimationFrameRef.current = null
       emitVisibleRange()
       emitBurstFramesRef.current = Math.max(0, emitBurstFramesRef.current - 1)
 
       if (emitBurstFramesRef.current > 0) {
-        emitRafRef.current = requestAnimationFrame(tick)
+        emitRequestAnimationFrameRef.current = requestAnimationFrame(tick)
       }
     }
 
@@ -77,11 +78,14 @@ export const useVisiblePriceRangeSync = ({
   const scheduleEmitPriceRangeFrames = useCallback(
     (frames: number) => {
       if (!callbackRef.current) return
-      // Never shrink an in-flight burst; only extend it.
+      // Why this exists: price-scale autoscaling can settle over a few frames.
+      // If another trigger arrives while sampling is already running, we keep
+      // the current requestAnimationFrame loop and extend its remaining frames. This avoids
+      // spawning overlapping loops while still capturing the final settled range.
       emitBurstFramesRef.current = Math.max(emitBurstFramesRef.current, frames)
 
-      if (emitRafRef.current === null) {
-        emitRafRef.current = requestAnimationFrame(runEmitFrame)
+      if (emitRequestAnimationFrameRef.current === null) {
+        emitRequestAnimationFrameRef.current = requestAnimationFrame(runEmitFrame)
       }
     },
     [runEmitFrame],
@@ -95,9 +99,9 @@ export const useVisiblePriceRangeSync = ({
     })
     return () => {
       emitRef.current?.cancel()
-      if (emitRafRef.current !== null) {
-        cancelAnimationFrame(emitRafRef.current)
-        emitRafRef.current = null
+      if (emitRequestAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(emitRequestAnimationFrameRef.current)
+        emitRequestAnimationFrameRef.current = null
       }
       emitBurstFramesRef.current = 0
     }

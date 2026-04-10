@@ -70,9 +70,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
     setCandlePriceRange((previous) =>
-      previous &&
-      Math.abs(previous.min - min) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE &&
-      Math.abs(previous.max - max) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
+      previous && Math.abs(Math.max(previous.min - min, previous.max - max)) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
         ? previous
         : { min, max },
     )
