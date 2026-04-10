@@ -652,7 +652,7 @@ export const createPoolWithdrawSlice = (
   },
 })
 
-export function getActiveKey(
+function getActiveKey(
   poolId: string,
   formType: FormType,
   {

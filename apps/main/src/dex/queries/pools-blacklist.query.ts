@@ -8,7 +8,7 @@ import { mapQuery } from '@ui-kit/types/util'
 // List from api.curve.finance: https://raw.githubusercontent.com/curvefi/curve-api/eed5dd84492b3e5611a34504a98bc1fa256defa5/routes/v1/getHiddenPools.js
 
 // We allow blocking more than just the chains supported by prices api.
-export type ChainBlacklist = Chain | 'avalanche' | 'moonbeam' | 'kava'
+type ChainBlacklist = Chain | 'avalanche' | 'moonbeam' | 'kava'
 
 /**
  * A local hardcoded blacklist of pools we don't want to show in the front-end for whatever reason.

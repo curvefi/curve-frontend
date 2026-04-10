@@ -15,7 +15,7 @@ export const LegendLine = ({ color, dash, opacity = 1 }: { color: string; dash?:
   </svg>
 )
 
-export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fill: string; opacity?: number }) => (
+const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fill: string; opacity?: number }) => (
   <svg width="12" height="12" style={{ opacity, transition: `opacity ${TransitionFunction}` }}>
     <rect x="0" y="0" width="12" height="12" stroke={outline} fill={fill} />
   </svg>

@@ -5,7 +5,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { ChainParams } from '@ui-kit/lib/model/query'
 import { useOneWayMarketNames } from './chain-query'
 
-export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
+const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params
   const { data: marketNames, isSuccess, error } = useOneWayMarketNames(params)
   const { llamaApi: api, isHydrated } = useCurve()

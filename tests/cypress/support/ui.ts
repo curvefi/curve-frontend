@@ -8,10 +8,10 @@ const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
 export const oneDesktopViewport = () =>
   [oneInt(DESKTOP_BREAKPOINT, MAX_WIDTH), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'desktop'] as const
 
-export const oneMobileViewport = () =>
+const oneMobileViewport = () =>
   [oneInt(MIN_WIDTH, TABLET_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'mobile'] as const
 
-export const oneTabletViewport = () =>
+const oneTabletViewport = () =>
   [oneInt(TABLET_BREAKPOINT, DESKTOP_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'tablet'] as const
 
 export const oneMobileOrTabletViewport = () => oneOf<Viewport>(oneMobileViewport(), oneTabletViewport())
@@ -19,7 +19,7 @@ export const oneMobileOrTabletViewport = () => oneOf<Viewport>(oneMobileViewport
 export const oneTabletOrDesktopViewport = () => oneOf<Viewport>(oneTabletViewport(), oneDesktopViewport())
 
 export type Breakpoint = 'mobile' | 'tablet' | 'desktop'
-export type Viewport = readonly [number, number, Breakpoint]
+type Viewport = readonly [number, number, Breakpoint]
 
 export const allViewports = () => [oneMobileViewport(), oneTabletViewport(), oneDesktopViewport()] satisfies Viewport[]
 

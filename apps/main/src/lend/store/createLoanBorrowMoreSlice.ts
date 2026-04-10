@@ -342,7 +342,7 @@ export const createLoanBorrowMore = (
   },
 })
 
-export function _getActiveKeys(
+function _getActiveKeys(
   api: Api | null,
   market: OneWayMarketTemplate | undefined,
   { userCollateral, userBorrowed, debt }: FormValues,

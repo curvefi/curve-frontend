@@ -69,7 +69,7 @@ export const requireBlockchainId = (chainId: Chain) =>
  * Maps prices API blockchain identifiers to numeric chain IDs.
  * Reverse mapping of chainIdToBlockchainId.
  */
-export const ChainIds: Partial<Record<BlockchainId, Chain>> = {
+const ChainIds: Partial<Record<BlockchainId, Chain>> = {
   ethereum: Chain.Ethereum,
   arbitrum: Chain.Arbitrum,
   optimism: Chain.Optimism,

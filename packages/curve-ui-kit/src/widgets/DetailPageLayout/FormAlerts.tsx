@@ -12,11 +12,11 @@ import { Query } from '@ui-kit/types/util'
 import { decimalGreaterThan, formatPercent, getErrorMessage } from '@ui-kit/utils'
 
 /** Threshold above which price impact is considered high and warrants a warning */
-export const HIGH_PRICE_IMPACT_THRESHOLD = '5' satisfies Decimal
+const HIGH_PRICE_IMPACT_THRESHOLD = '5' satisfies Decimal
 
-export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
+type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
-export type FormAlertProps<Field extends string> = {
+type FormAlertProps<Field extends string> = {
   error: Error | null
   formErrors: FormErrors<Field> // list of all form errors
   handledErrors: Field[] // list of fields that have their errors already handled/displayed elsewhere
@@ -62,7 +62,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
   )
 }
 
-export type HighPriceImpactAlertProps = Query<Decimal | null>
+type HighPriceImpactAlertProps = Query<Decimal | null>
 
 /**
  * Inline alert displayed when price impact exceeds the threshold.

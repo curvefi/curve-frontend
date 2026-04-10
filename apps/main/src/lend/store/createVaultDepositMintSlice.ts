@@ -214,11 +214,11 @@ export const createVaultMint = (
   },
 })
 
-export function _isDeposit(formType: FormType) {
+function _isDeposit(formType: FormType) {
   return formType === 'deposit'
 }
 
-export function _getActiveKey(
+function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
   market: OneWayMarketTemplate | undefined,

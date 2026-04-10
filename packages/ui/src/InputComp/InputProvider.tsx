@@ -33,7 +33,7 @@ interface InputWrapperProps {
   minHeight?: InputMinHeight
 }
 
-export const InputWrapper: IStyledComponent<'web', InputWrapperProps & ComponentPropsWithRef<'div'>> = styled(
+const InputWrapper: IStyledComponent<'web', InputWrapperProps & ComponentPropsWithRef<'div'>> = styled(
   Box,
 )<InputWrapperProps>`
   ${focusVisible};

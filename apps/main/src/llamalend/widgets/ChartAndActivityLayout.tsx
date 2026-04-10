@@ -36,7 +36,7 @@ const TABS: TabOption<Tab>[] = [
 
 const EMPTY_ARRAY: never[] = []
 
-export type ChartAndActivityLayoutProps = {
+type ChartAndActivityLayoutProps = {
   chart: {
     ohlcDataUnavailable: boolean
     isLoading: boolean

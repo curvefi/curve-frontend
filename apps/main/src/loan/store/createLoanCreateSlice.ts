@@ -493,7 +493,7 @@ export const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreAp
   },
 })
 
-export function getCreateLoanActiveKey(
+function getCreateLoanActiveKey(
   llamma: Llamma,
   { collateral, debt, n }: FormValues,
   isLeverage: boolean,

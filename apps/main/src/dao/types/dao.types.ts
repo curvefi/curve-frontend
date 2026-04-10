@@ -3,7 +3,7 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { BaseConfig } from '@ui/utils'
 
-export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
+export type { CurveApi } from '@ui-kit/features/connect-wallet'
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
 export type { Provider } from '@ui-kit/lib/ethers'
 

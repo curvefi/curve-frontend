@@ -1,6 +1,6 @@
 import type { DesignSystem } from '@ui-kit/themes/design'
 
-export type ShadowElevation = -2 | -1 | 1 | 2 | 3
+type ShadowElevation = -2 | -1 | 1 | 2 | 3
 
 export const getShadow = (design: DesignSystem, elevation: ShadowElevation) =>
   ({

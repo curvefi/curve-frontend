@@ -5,7 +5,7 @@ import { pricesApiChainNameValidationGroup } from '@ui-kit/lib/model/query/price
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
-export type UserCollateralEventsValidationParams = {
+type UserCollateralEventsValidationParams = {
   blockchainId: Chain
   contractAddress: Address | undefined
   userAddress: Address | undefined

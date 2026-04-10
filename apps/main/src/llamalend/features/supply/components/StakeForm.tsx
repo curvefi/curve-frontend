@@ -9,7 +9,7 @@ import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useStakeForm } from '../hooks/useStakeForm'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
-export type StakeFormProps<ChainId extends IChainId> = {
+type StakeFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId

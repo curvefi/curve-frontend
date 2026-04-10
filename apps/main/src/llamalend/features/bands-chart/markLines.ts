@@ -6,7 +6,7 @@ import { ChartDataPoint, BandsChartPalette, UserBandsPriceRange } from './types'
  * Each markLine is an array of two coordinate points: [startPoint, endPoint]
  * Includes lineStyle metadata for label styling
  */
-export type MarkLine = [
+type MarkLine = [
   { coord: [number, number]; label: { formatter: string; position: string } },
   { coord: [number, number] },
 ] & {

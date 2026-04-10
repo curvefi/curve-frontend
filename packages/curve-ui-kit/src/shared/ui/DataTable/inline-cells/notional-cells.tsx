@@ -7,7 +7,7 @@ import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/Inline
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { formatUsd, type SxProps } from '@ui-kit/utils'
 
-export type NotionalCellData = TableItem & {
+type NotionalCellData = TableItem & {
   isLoading?: boolean // used for partial loading states e.g. notional rates
 }
 

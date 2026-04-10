@@ -160,7 +160,7 @@ export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
   }, '')
 }
 
-export function _getDefaultTokenMapper(curve: CurveApi) {
+function _getDefaultTokenMapper(curve: CurveApi) {
   const { address, symbol, wrappedAddress, wrappedSymbol } = curve.getNetworkConstants().NATIVE_TOKEN
   return {
     [address]: { ...DEFAULT_TOKEN, symbol, address },

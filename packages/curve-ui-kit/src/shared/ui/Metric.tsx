@@ -31,7 +31,7 @@ export const MetricSize = {
   extraLarge: 'highlightXxl',
 } as const satisfies Record<string, TypographyVariantKey>
 
-export const MetricUnitSize = {
+const MetricUnitSize = {
   small: 'highlightXs',
   medium: 'highlightS',
   large: 'highlightM',

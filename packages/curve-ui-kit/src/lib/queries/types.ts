@@ -17,7 +17,7 @@ export type PartialQueryResult<T> = Pick<
 >
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyFunction = (...args: any[]) => any
+type AnyFunction = (...args: any[]) => any
 
 /** Extracts the data type from a useQuery hook */
 export type QueryData<TUseQuery extends AnyFunction> = NonNullable<ReturnType<TUseQuery>['data']>

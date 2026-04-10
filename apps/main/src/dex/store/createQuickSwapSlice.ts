@@ -14,13 +14,13 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageR
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
-import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { sleep } from '@ui-kit/utils/time.utils'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -498,7 +498,7 @@ function getRouterActiveKey(
   return `${chainId}-${parsedSignerAddress}-${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
 }
 
-export function getRouterSwapsExchangeRates(
+function getRouterSwapsExchangeRates(
   exchangeRates: string[],
   searchedParams: SearchedParams,
   tokensNameMapper: { [p: string]: string },

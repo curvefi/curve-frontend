@@ -7,7 +7,7 @@ interface Props extends IntersectionObserverInit {
 
 type IntersectionEntry = IntersectionObserverEntry | { isIntersecting: boolean }
 
-export const observeNode = (
+const observeNode = (
   node: Element,
   callback: (entries: IntersectionObserverEntry[]) => void,
   observerParams?: IntersectionObserverInit,

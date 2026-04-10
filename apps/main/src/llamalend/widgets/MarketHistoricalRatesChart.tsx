@@ -25,7 +25,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export type RateMode = 'borrow' | 'supply'
+type RateMode = 'borrow' | 'supply'
 
 export type RateChartPoint = {
   timestamp: number

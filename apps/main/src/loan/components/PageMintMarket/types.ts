@@ -4,11 +4,6 @@ import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import type { Step } from '@ui/Stepper/types'
 
-export type CreateFormType = 'create' | 'leverage'
-export type ManageFormType = 'loan' | 'collateral' | 'swap' | 'deleverage'
-export type LoanFormType = 'loan-increase' | 'loan-decrease' | 'loan-liquidate'
-export type CollateralFormType = 'collateral-increase' | 'collateral-decrease'
-
 export type FormStatus = {
   isApproved: boolean
   isComplete: boolean

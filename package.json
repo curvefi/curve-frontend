@@ -27,9 +27,7 @@
     "check-supply-chain": "node .github/check-supply-chain.mjs"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
-    "@commitlint/load": "20.5.0",
     "@eslint/eslintrc": "*",
     "@eslint/js": "*",
     "@types/react": "*",
@@ -39,7 +37,6 @@
     "echarts-for-react": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "ethers": "*",
     "husky": "^9.1.7",
     "immer": "*",
     "lint-staged": "16.4.0",
@@ -49,10 +46,7 @@
     "react-dom": "*",
     "styled-components": "*",
     "typescript": "*",
-    "vite": "*",
-    "vite-plugin-svgr": "*",
-    "vitest": "*",
-    "zustand": "*"
+    "vite": "*"
   },
   "packageManager": "yarn@4.6.0",
   "lint-staged": {

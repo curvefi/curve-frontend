@@ -1,1 +1,1 @@
-export { type ChainSwitcherProps, ChainSwitcher } from './ChainSwitcher'
+export { ChainSwitcher } from './ChainSwitcher'

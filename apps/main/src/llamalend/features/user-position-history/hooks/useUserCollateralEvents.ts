@@ -53,7 +53,7 @@ export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
   borrowToken: CollateralEventToken | undefined
   collateralToken: CollateralEventToken | undefined
 }
-export type ParsedUserCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
+type ParsedUserCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
   events: ParsedUserCollateralEvent[]
 }
 

@@ -5,7 +5,7 @@ import type { Range } from '@ui-kit/types/util'
 import { type CollateralParams, type CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 
-export const { useQuery: useAddCollateralPrices, invalidate: invalidateAddCollateralPrices } = queryFactory({
+export const { useQuery: useAddCollateralPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralPrices', { userCollateral }] as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>

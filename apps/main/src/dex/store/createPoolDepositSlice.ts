@@ -636,7 +636,7 @@ export const createPoolDepositSlice = (
   },
 })
 
-export function getActiveKey(
+function getActiveKey(
   poolId: string,
   formType: FormType,
   { amounts, isBalancedAmounts, isWrapped, lpToken }: FormValues,

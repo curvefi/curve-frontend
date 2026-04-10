@@ -29,7 +29,7 @@ import {
 import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
 import type { defaultGetRpcUrls } from './rpc'
 
-export const wagmiChains = [
+const wagmiChains = [
   mainnet,
   optimism,
   bsc,

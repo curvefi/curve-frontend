@@ -14,7 +14,7 @@ type BridgeMutation = {
   amount: Decimal
 }
 
-export type BridgeOptions = {
+type BridgeOptions = {
   chainId: number
   onReset: () => void
 }

@@ -547,7 +547,7 @@ const StatsData = styled.p`
 
 type SpanProps = ComponentPropsWithRef<'span'>
 
-export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
+const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `

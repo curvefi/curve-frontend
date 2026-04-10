@@ -11,7 +11,7 @@ import { AppLib, CurveApi, LibChainId, LibKey, LibNetworkId, Libs } from './type
 /**
  * Compare the signer address of the wallet with the one in the library.
  */
-export const compareSignerAddress = (wallet: Wallet | undefined, lib: Libs[LibKey]) =>
+const compareSignerAddress = (wallet: Wallet | undefined, lib: Libs[LibKey]) =>
   wallet?.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
 
 export const isWalletMatching = <TChainId extends number>(

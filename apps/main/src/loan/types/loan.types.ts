@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
-import { TITLE } from '@/loan/constants'
 import { crvusdjsApi as curvejsApi } from '@/loan/lib/apiCrvusd'
 import type { INetworkName, IRates } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -95,8 +94,6 @@ export type UserWalletBalances = {
   collateral: string
   error: string
 }
-export type Theme = 'default' | 'dark' | 'chad'
-
 export interface CollateralAlert extends TooltipProps {
   alertType: AlertType
   isCloseOnTooltipOnly?: boolean
@@ -105,6 +102,5 @@ export interface CollateralAlert extends TooltipProps {
   message: ReactNode
 }
 
-export type TitleKey = keyof typeof TITLE
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

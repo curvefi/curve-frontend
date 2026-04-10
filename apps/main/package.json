@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@curvefi/llamalend-api": "2.0.15",
-    "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@supercharge/promise-pool": "^3.3.0",
@@ -26,13 +25,11 @@
     "@tanstack/react-router-devtools": "^1.166.9",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
-    "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
     "react-hook-form": "7.71.2",
     "recharts": "2.15.4",
-    "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
@@ -52,7 +49,6 @@
   },
   "devDependencies": {
     "@curvefi/api": "*",
-    "@eslint/js": "*",
     "@sentry/vite-plugin": "^4.5.0",
     "@types/lodash": "^4.17.23",
     "@types/memoizee": "^0.4.12",
@@ -60,13 +56,9 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "*",
-    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "*",
-    "eslint-config-custom": "*",
-    "globals": "^17.4.0",
     "pinst": "^3.0.0",
     "typescript": "*",
-    "typescript-eslint": "^8.57.1",
     "vite": "*"
   }
 }

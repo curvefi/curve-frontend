@@ -33,7 +33,7 @@ export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: stri
 }
 
 // router swap
-export function getIsLowExchangeRate(
+function getIsLowExchangeRate(
   isCrypto: boolean,
   expected: string,
   fromAmount: string,

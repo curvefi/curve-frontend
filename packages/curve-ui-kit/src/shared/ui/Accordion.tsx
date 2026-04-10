@@ -70,7 +70,7 @@ type ControlledAccordionProps = {
   toggle: () => void
 }
 
-export type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
+type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
 
 /**
  * Handles the toggle logic for both controlled and uncontrolled accordion modes.

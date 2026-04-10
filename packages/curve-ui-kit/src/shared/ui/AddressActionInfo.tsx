@@ -4,7 +4,7 @@ import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { shortenAddress } from '../../utils'
 import { ActionInfo } from './ActionInfo'
 
-export interface AddressActionInfoProps {
+interface AddressActionInfoProps {
   network: BaseConfig | undefined
   title: ReactNode
   address: string | undefined

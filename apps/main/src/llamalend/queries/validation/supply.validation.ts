@@ -82,7 +82,7 @@ export function requireGauge(marketId: string): LendMarketTemplate {
   return lendMarket
 }
 
-export const validateHasVault = (marketId: string | null | undefined) => {
+const validateHasVault = (marketId: string | null | undefined) => {
   skipWhen(!marketId, () => {
     test('marketId', 'Market does not have a vault', () => {
       const market = getLlamaMarket(marketId!)
@@ -100,7 +100,7 @@ const validateHasGauge = (marketId: string | null | undefined) => {
   })
 }
 
-export const validateDepositAmount = (
+const validateDepositAmount = (
   amount: Decimal | undefined | null,
   { depositRequired = false }: { depositRequired?: boolean } = {},
 ) => {

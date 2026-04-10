@@ -5,7 +5,6 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@eslint/js": "*",
     "@tanstack/eslint-plugin-query": "5.91.4",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
@@ -19,7 +18,6 @@
     "eslint-plugin-react-refresh": "^0.4.26",
     "eslint-plugin-storybook": "10.2.19",
     "eslint-plugin-unused-imports": "^4.3.0",
-    "prettier-eslint": "^16.4.2",
     "typescript": "*"
   }
 }

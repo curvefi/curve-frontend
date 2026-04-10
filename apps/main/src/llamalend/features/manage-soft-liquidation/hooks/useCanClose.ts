@@ -8,7 +8,7 @@ import { decimal } from '@ui-kit/utils'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
-export type CanCloseData = { canClose: boolean; missing: Decimal; balance: Decimal }
+type CanCloseData = { canClose: boolean; missing: Decimal; balance: Decimal }
 
 /**
  * Determines if a user can close their position and calculates how much

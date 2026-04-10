@@ -1,5 +1,4 @@
-import type { FormDetailInfo as Di, FormStatus as Fs } from '@/loan/components/PageMintMarket/types'
-import { LiqRange } from '@/loan/types/loan.types'
+import type { FormStatus as Fs } from '@/loan/components/PageMintMarket/types'
 
 export type FormValues = {
   debt: string
@@ -13,5 +12,3 @@ export interface FormStatus extends Fs {
   warning: string
   step: StepKey
 }
-
-export interface FormDetailInfo extends Di, LiqRange {}

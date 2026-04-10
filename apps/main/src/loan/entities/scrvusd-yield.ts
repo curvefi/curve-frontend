@@ -7,7 +7,7 @@ import { addMovingAverages } from '@ui-kit/shared/ui/Chart'
 
 export type ScrvUsdYieldWithAverages = Yield & { proj_apy_7d_avg: number; proj_apy_total_avg: number }
 
-export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
+const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
   const aggNumbers: Record<TimeOption, number> = { '1M': 4, '6M': 16, '1Y': 32 }
   const timeUnit: Record<TimeOption, string> = { '1M': 'hour', '6M': 'hour', '1Y': 'hour' }
 
