@@ -60,7 +60,7 @@ export const parseUserCollateralEvents = (
       collateralReceived: y.liquidation.collateral_received,
       collateralReceivedUsd: y.liquidation.collateral_received_usd,
       stablecoinReceived: y.liquidation.stablecoin_received,
-      stablecoinRecievedUsd: y.liquidation.stablecoin_received_usd,
+      stablecoinReceivedUsd: y.liquidation.stablecoin_received_usd,
       debt: y.liquidation.debt,
       debtUsd: y.liquidation.debt_usd,
     },

@@ -14,7 +14,7 @@ import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
-import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -69,7 +69,7 @@ export const LendMarketPage = () => {
     marketId,
     market: market ?? null,
   })
-  const activityQueryParams: UserCollateralEventsProps = {
+  const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress,
@@ -77,11 +77,11 @@ export const LendMarketPage = () => {
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
     network,
-  }
+  })
   const marketAlert = useMarketAlert(chainId, market?.id)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
-    blockchainId: activityQueryParams.chain,
+    blockchainId: network.id,
     controllerAddress,
   })
 
@@ -138,7 +138,7 @@ export const LendMarketPage = () => {
         marketId &&
         !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
+          <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
         ) : (
           <LoanCreateTabs {...pageProps} params={params} />
         ))
@@ -166,7 +166,7 @@ export const LendMarketPage = () => {
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
-        activityQueryParams={activityQueryParams}
+        events={collateralEvents}
       />
       <MarketInformationComposite
         pageProps={pageProps}

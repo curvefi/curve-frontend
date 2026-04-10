@@ -10,7 +10,7 @@ const { Spacing } = SizesAndSpaces
 
 type TimestampCellProps = {
   timestamp: Date
-  txUrl?: string
+  txUrl?: string | null
 }
 
 /**

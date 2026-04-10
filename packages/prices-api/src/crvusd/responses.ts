@@ -1,4 +1,5 @@
 import type { Address, Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain, PaginationMeta } from '..'
 
 export type GetMarketsResponse = {
@@ -148,16 +149,20 @@ export type GetUserMarketSnapshotsResponse = PaginationMeta & {
 }
 
 export type GetUserCollateralEventsResponse = {
+  chain: Chain
   controller: Address
   user: Address
   total_deposit: number
+  total_deposit_from_user: number
   total_borrowed: number
-  total_deposit_precise: string
-  total_borrowed_precise: string
+  total_deposit_precise: Decimal
+  total_borrowed_precise: Decimal
+  total_deposit_from_user_precise: Decimal
+  total_deposit_from_user_usd_value: number
   total_deposit_usd_value: number
   count: number
-  pagination: number
-  page: number
+  pagination: number | null
+  page: number | null
   data: [
     {
       dt: string
