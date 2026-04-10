@@ -7,7 +7,7 @@ const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string
       clearTimeout(id)
       reject(new Error(message || `Promise timed out after ${timeout}ms`))
     }, timeout)
-    promise.then(resolve, reject)
+    promise.then(resolve, reject).finally(() => clearTimeout(id))
   })
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))

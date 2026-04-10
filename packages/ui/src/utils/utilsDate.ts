@@ -17,13 +17,6 @@ const convertDate = (input: Date | number | string): Date => {
 }
 
 /**
- * Converts date to relative time format
- * @example
- * convertTimeAgo(new Date(Date.now() - 2*60*60*1000)) // "2h"
- * convertTimeAgo(new Date(Date.now() - 30*60*1000)) // "30m"
- * convertTimeAgo(new Date(Date.now() - 2*24*60*60*1000)) // "2d"
- */
-/**
  * Formats a date into a human-readable string with two variant options.
  *
  * @param date - The date to format. Can be a Date object, a string representation of a date, or a timestamp in milliseconds.
