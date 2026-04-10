@@ -1,4 +1,4 @@
-export { useUserState } from './user-state.query'
+export { useUserState, type UserState } from './user-state.query'
 export { useUserHealth, getUserHealthOptions } from './user-health.query'
 export { useLoanExists, refetchLoanExists, getLoanExists } from './user-loan-exists.query'
 export { useUserPrices } from './user-prices.query'

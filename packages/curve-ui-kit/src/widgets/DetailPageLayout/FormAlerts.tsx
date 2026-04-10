@@ -5,14 +5,14 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
+import { usePreviousValue } from '@ui-kit/hooks/usePreviousValue'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Query } from '@ui-kit/types/util'
-import { decimalGreaterThan, formatPercent, getErrorMessage } from '@ui-kit/utils'
-
-/** Threshold above which price impact is considered high and warrants a warning */
-const HIGH_PRICE_IMPACT_THRESHOLD = '5' satisfies Decimal
+import { type QueryProp } from '@ui-kit/types/util'
+import { formatPercent, getErrorMessage } from '@ui-kit/utils'
+import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
@@ -62,27 +62,35 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
   )
 }
 
-type HighPriceImpactAlertProps = Query<Decimal | null>
-
 /**
  * Inline alert displayed when price impact exceeds the threshold.
  * Shows above the submit button to make high price impact visible without opening the accordion.
  */
-export const HighPriceImpactAlert = ({ data: priceImpact, isLoading, error }: HighPriceImpactAlertProps) =>
-  !isLoading &&
-  (error ? (
+export const HighPriceImpactAlert = ({
+  priceImpact: { data, isLoading, error },
+  values: { slippage, leverageEnabled },
+}: {
+  priceImpact: QueryProp<Decimal | null>
+  values: { slippage: Decimal | undefined; leverageEnabled: boolean | undefined }
+}) => {
+  const severity = getPriceImpactSeverity({ data, isLoading, error }, { slippage })
+  const isVisible = leverageEnabled && data && !!(error || severity)
+  const wasVisible = usePreviousValue(isVisible)
+  return error ? (
     <Alert severity="error" data-testid="high-price-impact-error">
       <AlertTitle>{t`Cannot determine price impact`}</AlertTitle>
       {error.message}
     </Alert>
   ) : (
-    priceImpact != null &&
-    decimalGreaterThan(priceImpact, HIGH_PRICE_IMPACT_THRESHOLD) && (
-      <Alert severity="warning" data-testid="high-price-impact-alert" variant="outlined">
-        <AlertTitle sx={{ color: 'warning.main' }}>
-          {t`High price impact:`} -{formatPercent(priceImpact)}
-        </AlertTitle>
-        {t`Consider reducing the amount or waiting for better market conditions.`}
-      </Alert>
+    (severity || wasVisible) && (
+      <WithSkeleton loading={!severity}>
+        <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
+          <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
+            {t`High price impact:`} -{formatPercent(data)}
+          </AlertTitle>
+          {t`Consider reducing the amount or waiting for better market conditions.`}
+        </Alert>
+      </WithSkeleton>
     )
-  ))
+  )
+}

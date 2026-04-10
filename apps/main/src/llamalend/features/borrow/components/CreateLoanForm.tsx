@@ -3,7 +3,6 @@ import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
-import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -73,6 +72,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     routes,
     values,
     leverage,
+    priceImpact,
   } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
 
   const toggleLeverage = useCallback(
@@ -158,7 +158,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         </Collapse>
       </LoanPresetSelector>
 
-      <HighPriceImpactAlert {...q(useCreateLoanPriceImpact(params, values.leverageEnabled))} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
 
       {isBorrowDisabled ? (
         <AlertBox alertType={borrowDisabledAlert.alertType!}>{borrowDisabledAlert.message}</AlertBox>

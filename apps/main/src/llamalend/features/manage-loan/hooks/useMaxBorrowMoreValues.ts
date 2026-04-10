@@ -1,13 +1,14 @@
 import type { UseFormReturn } from 'react-hook-form'
 import { PRESET_RANGES } from '@/llamalend/constants'
-import { getTokens } from '@/llamalend/llama.utils'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { getTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { useFormSync } from '@ui-kit/utils/react-form.utils'
 
@@ -16,10 +17,12 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
     params,
     form,
     market,
+    collateralEvents: { data: events },
   }: {
     params: BorrowMoreParams<ChainId>
     form: UseFormReturn<BorrowMoreForm>
     market: LlamaMarketTemplate | undefined
+    collateralEvents: QueryProp<UserCollateralEvents>
   },
   enabled?: boolean,
 ) {
@@ -43,6 +46,8 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
+  // override the user's leverage choice when we get to know the user has a (non)-leveraged position
+  useFormSync(form, { leverageEnabled: events && isPositionLeveraged(events.originalLeverage) })
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },

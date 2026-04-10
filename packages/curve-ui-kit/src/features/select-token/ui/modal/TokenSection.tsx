@@ -65,7 +65,7 @@ export const TokenSection = <T extends Option = Option>({
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 {title}
                 {isLoading && (
-                  <Box sx={{ marginBlockEnd: Spacing.xs }}>
+                  <Box sx={{ marginBlockEnd: Spacing.xs, marginInlineEnd: Spacing.sm }}>
                     <Spinner size={15} />
                   </Box>
                 )}

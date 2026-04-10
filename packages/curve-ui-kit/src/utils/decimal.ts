@@ -43,5 +43,11 @@ export const decimalNegate = (value: Decimal): Decimal => new BigNumber(value).n
 
 export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber(first).isGreaterThan(second)
 
+/** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
+export const decimalDiv = (first: Decimal, second: Decimal) =>
+  new BigNumber(first).dividedBy(second).toFixed() as Decimal
+
+export const decimalAbs = (value: Decimal) => new BigNumber(value).abs().toFixed() as Decimal
+
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

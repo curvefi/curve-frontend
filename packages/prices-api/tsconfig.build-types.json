@@ -3,6 +3,7 @@
   "compilerOptions": {
     "incremental": false,
     "declarationMap": false,
-    "paths": { "@primitives/*": ["../../primitives/dist/*"] }
+    "paths": { "@primitives/*": ["../primitives/dist/*"] },
+    "rootDir": "./src"
   }
 }

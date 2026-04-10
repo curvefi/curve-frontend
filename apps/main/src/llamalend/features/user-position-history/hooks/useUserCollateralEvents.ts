@@ -1,21 +1,19 @@
 import { useMemo } from 'react'
 import { type Chain } from '@curvefi/prices-api'
-import {
-  UserCollateralEvent as CrvUsdUserCollateralEvent,
-  UserCollateralEvents as CrvUsdUserCollateralEvents,
-} from '@curvefi/prices-api/crvusd'
-import {
-  UserCollateralEvent as LendingUserCollateralEvent,
-  UserCollateralEvents as LendingUserCollateralEvents,
-} from '@curvefi/prices-api/lending'
+import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/prices-api/crvusd'
+import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { pick } from '@primitives/objects.utils'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
+import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { q, type QueryProp } from '@ui-kit/types/util'
+import { decimalDiv } from '@ui-kit/utils'
 import { useUserCrvUsdCollateralEventsQuery } from '../queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '../queries/user-lend-collateral-events'
 
-type UserCollateralEvent = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
-type UserCollateralEvents = LendingUserCollateralEvents | CrvUsdUserCollateralEvents
+type UserCollateralEventFromApi = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
 
 /**
  * Types:
@@ -39,32 +37,28 @@ export type UserCollateralEventType =
   | 'Hard Liquidation'
   | 'Partial Liquidation'
 
-type CollateralEventToken = {
-  symbol: string
-  address: string
-  decimals: number
-  name: string
-}
+const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp'] as const
 
-export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
-  type: UserCollateralEventType
-  txUrl?: string
-  url?: string | null
-  borrowToken: CollateralEventToken | undefined
-  collateralToken: CollateralEventToken | undefined
-}
-type ParsedUserCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
+type CollateralEventToken = { symbol: string; address: string; decimals: number; name: string }
+
+export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> &
+  TableItem & {
+    type: UserCollateralEventType
+    borrowToken: CollateralEventToken | undefined
+    collateralToken: CollateralEventToken | undefined
+  }
+
+export type UserCollateralEvents = {
   events: ParsedUserCollateralEvent[]
+  originalLeverage: Decimal
 }
 
 const parseEventType = (
-  event: UserCollateralEvent,
-  previousEvent: UserCollateralEvent | undefined,
+  { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: UserCollateralEventFromApi,
+  previousEvent: UserCollateralEventFromApi | undefined,
 ): UserCollateralEventType => {
-  const { type, loanChange, collateralChange, liquidation, user, isPositionClosed } = event
-  // if previous event == null it's the first event (must be open position).
-  // if previous event is isPositionClosed === true, the next 'Borrow' must be open position.
-  if (type === 'Borrow' && (previousEvent == null || previousEvent?.isPositionClosed)) return 'Open Position'
+  // when !previousEvent it's the first event. if isPositionClosed, the next 'Borrow' must be 'Open position'
+  if (type === 'Borrow' && (!previousEvent || previousEvent.isPositionClosed)) return 'Open Position'
   if (type === 'Borrow' && loanChange > 0 && collateralChange === 0) return 'Borrow More'
   if (type === 'Borrow' && collateralChange > 0 && loanChange === 0) return 'Add Collateral'
   if (type === 'Repay' && liquidation != null) return 'Partial Liquidation'
@@ -93,41 +87,33 @@ export const useUserCollateralEvents = ({
   collateralToken,
   borrowToken,
   network,
-}: UserCollateralEventsProps): {
-  data?: ParsedUserCollateralEvents
-  isLoading: boolean
-  isError: boolean
-} => {
-  const params = {
-    blockchainId: chain,
-    contractAddress: controllerAddress,
-    userAddress,
-  }
-  const { data, isLoading, isError } = {
+}: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
+  const params = { blockchainId: chain, contractAddress: controllerAddress, userAddress }
+  const { data, isLoading, error } = {
     [LlamaMarketType.Lend]: useUserLendCollateralEventsQuery(params, app === LlamaMarketType.Lend),
     [LlamaMarketType.Mint]: useUserCrvUsdCollateralEventsQuery(params, app === LlamaMarketType.Mint),
   }[app]
-
   return useMemo(
-    () => ({
-      ...(data && {
-        data: {
-          ...data,
+    () =>
+      q({
+        data: data && {
+          originalLeverage: Number(data.totalDepositFromUserPrecise)
+            ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
+            : '0', // deposit should only be 0 if there is no loan, this is just a guard for div-by-zero errors
           events:
-            data?.events
-              .map((event, index) => ({
-                ...event,
-                type: parseEventType(event, data?.events[index - 1]),
-                txUrl: scanTxPath(network, event.txHash),
+            data.events
+              .map((event, index, events) => ({
+                type: parseEventType(event, events[index - 1]),
+                url: scanTxPath(network, event.txHash),
                 borrowToken,
                 collateralToken,
+                ...pick(event, ...OriginalFields),
               }))
               .reverse() || [],
         },
+        isLoading,
+        error,
       }),
-      isLoading,
-      isError,
-    }),
-    [data, isLoading, isError, network, borrowToken, collateralToken],
+    [data, isLoading, error, network, borrowToken, collateralToken],
   )
 }

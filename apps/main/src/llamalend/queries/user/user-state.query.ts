@@ -2,6 +2,7 @@ import { getUserPositionImplementation } from '@/llamalend/queries/market/market
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import type { QueryData } from '@ui-kit/lib/queries'
 
 export const { useQuery: useUserState, getQueryData: getUserState } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userState'] as const,
@@ -28,3 +29,5 @@ export const { useQuery: useUserState, getQueryData: getUserState } = queryFacto
   category: 'llamalend.userState',
   validationSuite: userMarketValidationSuite,
 })
+
+export type UserState = QueryData<typeof useUserState>
