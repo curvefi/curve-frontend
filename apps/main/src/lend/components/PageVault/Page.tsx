@@ -124,7 +124,12 @@ export const Page = () => {
         />
       )}
       {hasSupplyPosition && <SupplyPositionDetails {...supplyPositionDetails} />}
-      <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
+      <MarketInformationComposite
+        loanExists={loanExists}
+        pageProps={pageProps}
+        type="supply"
+        showLiquidationRange={false}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

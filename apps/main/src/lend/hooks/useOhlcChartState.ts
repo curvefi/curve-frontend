@@ -26,6 +26,7 @@ type UseOhlcChartStateProps = {
   rChainId: ChainId
   rOwmId: string
   previewPrices: Range<Decimal> | undefined
+  showLiquidationRange: boolean
 }
 
 const useLegacyChartPrices = () => {
@@ -71,14 +72,22 @@ const useLegacyChartPrices = () => {
   ]) as Range<Decimal> | undefined
 }
 
-export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcChartStateProps) => {
+export const useOhlcChartState = ({
+  rChainId,
+  rOwmId,
+  previewPrices,
+  showLiquidationRange,
+}: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
   const storePreviewPrices = useLegacyChartPrices()
-  const { data: userPrices } = useUserPrices({
-    chainId: rChainId,
-    marketId: rOwmId,
-    userAddress,
-  })
+  const { data: userPrices } = useUserPrices(
+    {
+      chainId: rChainId,
+      marketId: rOwmId,
+      userAddress,
+    },
+    showLiquidationRange,
+  )
   const market = useOneWayMarket(rChainId, rOwmId).data
   const oraclePoolFetchStatus = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
   const oraclePoolData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.data)
@@ -135,6 +144,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
     hasNewLiquidationRange: !!newLiqPrices,
     hasLiquidationRange: !!userPrices,
     llammaEndpoint: selectedChartKey === 'llamma',
+    showLiquidationRange,
   })
 
   const selectedLiqRange = useLiquidationRange({

@@ -163,6 +163,7 @@ export const LendMarketPage = () => {
         type="borrow"
         loanExists={loanExists}
         previewPrices={previewPrices}
+        showLiquidationRange
       />
     </DetailPageLayout>
   ) : (

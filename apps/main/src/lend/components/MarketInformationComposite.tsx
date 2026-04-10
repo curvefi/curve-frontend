@@ -26,17 +26,13 @@ type MarketInformationCompProps = {
   loanExists: boolean | undefined
   type: 'borrow' | 'supply'
   previewPrices?: Range<Decimal> | undefined
+  showLiquidationRange: boolean
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComposite = ({
-  pageProps,
-  loanExists,
-  type,
-  previewPrices,
-}: MarketInformationCompProps) => {
+export const MarketInformationComposite = ({ pageProps, loanExists, type, ...props }: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const newBandsChartEnabled = useNewBandsChart()
@@ -44,7 +40,7 @@ export const MarketInformationComposite = ({
 
   return (
     <Stack gap={PAGE_SPACING}>
-      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
+      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} {...props} />
       {type === 'borrow' && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />

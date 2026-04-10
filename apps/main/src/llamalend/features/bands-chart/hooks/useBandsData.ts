@@ -17,12 +17,14 @@ export const useBandsData = ({
   api,
   collateralTokenAddress,
   borrowedTokenAddress,
+  showLiquidationRange = true,
 }: {
   chainId: IChainId
   marketId: string
   api: LlamaApi | undefined | null
   collateralTokenAddress: string | undefined
   borrowedTokenAddress: string | undefined
+  showLiquidationRange?: boolean
 }) => {
   const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
@@ -37,13 +39,16 @@ export const useBandsData = ({
     chainId,
     marketId,
   })
-  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useMarketUserBandsBalances({
-    chainId,
-    marketId,
-    userAddress,
-    loanExists,
-    liquidationBand,
-  })
+  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useMarketUserBandsBalances(
+    {
+      chainId,
+      marketId,
+      userAddress,
+      loanExists,
+      liquidationBand,
+    },
+    showLiquidationRange,
+  )
   const { data: oraclePriceBand, isLoading: isMarketOraclePriceBandLoading } = useMarketOraclePriceBand({
     chainId,
     marketId,

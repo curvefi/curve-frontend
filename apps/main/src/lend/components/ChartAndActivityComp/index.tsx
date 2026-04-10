@@ -15,9 +15,16 @@ type ChartAndActivityCompProps = {
   rOwmId: string
   api: Api | undefined
   previewPrices: Range<Decimal> | undefined
+  showLiquidationRange: boolean
 }
 
-export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({
+  rChainId,
+  rOwmId,
+  api,
+  previewPrices,
+  showLiquidationRange,
+}: ChartAndActivityCompProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
@@ -37,6 +44,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     rChainId,
     rOwmId,
     previewPrices,
+    showLiquidationRange,
   })
 
   const {
@@ -51,6 +59,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     api,
     collateralTokenAddress,
     borrowedTokenAddress,
+    showLiquidationRange,
   })
 
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol) as
