@@ -3,6 +3,7 @@ import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
@@ -212,7 +213,7 @@ export const CandleChart = ({
       if (wrapperRef.current) {
         setWrapperWidth(wrapperRef.current.clientWidth)
       }
-    }, 16), // ~60fps
+    }, Duration.ChartFrame), // ~60fps
   )
 
   // Update wrapper dimensions when wrapperRef changes
