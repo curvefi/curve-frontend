@@ -81,7 +81,7 @@ export const LendMarketPage = () => {
   const marketAlert = useMarketAlert(chainId, market?.id)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
-    blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
+    blockchainId: network.id,
     controllerAddress,
   })
 

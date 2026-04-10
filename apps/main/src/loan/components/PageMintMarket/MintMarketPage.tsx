@@ -49,7 +49,7 @@ export const MintMarketPage = () => {
   const controllerAddress = getControllerAddress(market)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Mint,
-    blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
+    blockchainId: network.id,
     controllerAddress,
   })
   const borrowPositionDetails = useBorrowPositionDetails({

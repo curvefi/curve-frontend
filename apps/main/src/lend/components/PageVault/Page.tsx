@@ -21,7 +21,7 @@ import { useLoanExists } from '@/llamalend/queries/user'
 import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
+import { type Chain } from '@curvefi/prices-api'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -65,7 +65,7 @@ export const Page = () => {
   const controllerAddress = getControllerAddress(market)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
-    blockchainId: isPricesApiChain(network.id) ? network.id : undefined,
+    blockchainId: network.id,
     controllerAddress,
   })
 
