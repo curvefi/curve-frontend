@@ -558,13 +558,13 @@ export const useLlamaMarket = (
   const llamaMarketsQuery = useLlamaMarkets(undefined, enabled && !!blockchainId && !!controllerAddress)
   const markets = llamaMarketsQuery.data?.markets
 
-  const data = useMemo(() => {
-    if (!blockchainId || !controllerAddress || !markets) return undefined
-
-    return markets.find(
-      (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
-    )
-  }, [blockchainId, controllerAddress, markets])
+  const data = useMemo(
+    () =>
+      blockchainId &&
+      controllerAddress &&
+      markets?.find((item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress)),
+    [blockchainId, controllerAddress, markets],
+  )
 
   return { ...llamaMarketsQuery, data }
 }

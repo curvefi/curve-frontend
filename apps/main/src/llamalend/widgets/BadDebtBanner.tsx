@@ -15,7 +15,7 @@ const SOLVENCY_THRESHOLDS = {
   solvent: 98,
   reduced: 90,
   low: 80,
-  insolvent: -Infinity,
+  insolvent: 0,
 }
 
 const BANNER_CONFIG = [
