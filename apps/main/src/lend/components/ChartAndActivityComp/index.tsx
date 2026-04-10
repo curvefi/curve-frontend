@@ -14,7 +14,7 @@ type ChartAndActivityCompProps = {
   rChainId: ChainId
   rOwmId: string
   api: Api | undefined
-  previewPrices: Range<Decimal> | undefined
+  previewPrices?: Range<Decimal>
   showLiquidationRange: boolean
 }
 

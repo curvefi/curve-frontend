@@ -25,7 +25,7 @@ type MarketInformationCompProps = {
   pageProps: PageContentProps
   loanExists: boolean | undefined
   type: 'borrow' | 'supply'
-  previewPrices?: Range<Decimal> | undefined
+  previewPrices?: Range<Decimal>
   showLiquidationRange: boolean
 }
 
