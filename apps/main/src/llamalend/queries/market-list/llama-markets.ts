@@ -1,6 +1,6 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { ethAddress, isAddressEqual } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
@@ -544,3 +544,27 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       [enabled, userAddress],
     ),
   })
+
+export const useLlamaMarket = (
+  {
+    blockchainId,
+    controllerAddress,
+  }: {
+    blockchainId: Chain | undefined
+    controllerAddress: Address | undefined
+  },
+  enabled: boolean | undefined = true,
+) => {
+  const llamaMarketsQuery = useLlamaMarkets(undefined, enabled && !!blockchainId && !!controllerAddress)
+  const markets = llamaMarketsQuery.data?.markets
+
+  const data = useMemo(() => {
+    if (!blockchainId || !controllerAddress || !markets) return undefined
+
+    return markets.find(
+      (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
+    )
+  }, [blockchainId, controllerAddress, markets])
+
+  return { ...llamaMarketsQuery, data }
+}

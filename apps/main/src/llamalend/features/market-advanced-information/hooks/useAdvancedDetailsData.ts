@@ -12,7 +12,7 @@ export const useAdvancedDetailsData = ({
   market,
   marketId,
   marketType,
-}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
+}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
   const controllerAddress = getControllerAddress(market)
@@ -33,7 +33,7 @@ export const useAdvancedDetailsData = ({
     tokenAddress: borrowToken?.address,
   })
   const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
-    type: marketType ?? LlamaMarketType.Lend,
+    type: marketType,
     blockchainId,
     controllerAddress,
   })
@@ -67,7 +67,7 @@ export const useAdvancedDetailsData = ({
       loading: !market || capAndAvailableLoading,
     },
     solvency: {
-      value: solvencyData?.solvencyPerc,
+      value: solvencyData?.solvencyPercent,
       badDebtUsd: solvencyData?.badDebtUsd,
       loading: !market || solvencyLoading,
     },

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { isAddressEqual } from 'viem'
-import { useBadDebtMarketsQuery } from '@/llamalend/queries/market/market-bad-debt.query'
-import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
+import { useBadDebtMarkets } from '@/llamalend/queries/market/market-bad-debt.query'
+import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { combineQueryState } from '@ui-kit/lib'
@@ -15,8 +15,8 @@ type BadDebtParams = {
 
 export type BadDebtMarketData = {
   badDebtUsd: number
-  solvencyPerc: number
-  insolvencyPerc: number
+  solvencyPercent: number
+  insolvencyPercent: number
   marketType: LlamaMarketType
 }
 
@@ -25,18 +25,12 @@ export type BadDebtMarketData = {
  */
 export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: BadDebtParams) => {
   const enabled = !!blockchainId && !!controllerAddress
-  const badDebtMarkets = useBadDebtMarketsQuery({ type }, enabled)
-  const llamaMarkets = useLlamaMarkets(undefined, enabled)
+  const badDebtMarkets = useBadDebtMarkets({ type }, enabled)
+  const llamaMarketQuery = useLlamaMarket({ blockchainId, controllerAddress })
+  const market = llamaMarketQuery?.data
 
   const badDebtData = useMemo(() => {
-    if (!blockchainId || !controllerAddress || !llamaMarkets.data?.markets || !badDebtMarkets.data) return undefined
-
-    const market = llamaMarkets.data.markets.find(
-      (item) =>
-        item.type === type && item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
-    )
-
-    if (market == null) return undefined
+    if (!blockchainId || !controllerAddress || !market || !badDebtMarkets.data) return undefined
 
     const badDebtUsd =
       badDebtMarkets.data.find(
@@ -45,15 +39,15 @@ export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: Bad
     const exposureUsd =
       market.type === LlamaMarketType.Lend ? market.liquidityUsd + market.totalDebtUsd : market.totalDebtUsd
 
-    const solvencyPerc = exposureUsd ? (Math.max(0, exposureUsd - badDebtUsd) / exposureUsd) * 100 : 0
+    const solvencyPercent = exposureUsd ? (Math.max(0, exposureUsd - badDebtUsd) / exposureUsd) * 100 : 0
 
     return {
       badDebtUsd,
-      solvencyPerc,
-      insolvencyPerc: 100 - solvencyPerc,
-      marketType: type,
+      solvencyPercent,
+      insolvencyPercent: 100 - solvencyPercent,
+      marketType: market.type,
     }
-  }, [badDebtMarkets.data, blockchainId, controllerAddress, llamaMarkets.data, type])
+  }, [badDebtMarkets.data, blockchainId, controllerAddress, market])
 
-  return { data: badDebtData, ...combineQueryState(llamaMarkets, badDebtMarkets) }
+  return { data: badDebtData, ...combineQueryState(llamaMarketQuery, badDebtMarkets) }
 }

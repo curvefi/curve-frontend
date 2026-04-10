@@ -1,60 +1,50 @@
 import type { BadDebtMarketData } from '@/llamalend/hooks/useSolvencyMarket'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Banner, BannerProps } from '@ui-kit/shared/ui/Banner'
+import { Banner } from '@ui-kit/shared/ui/Banner'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 
 type Props = {
-  solvencyPerc: BadDebtMarketData['solvencyPerc'] | undefined
+  solvencyPercent: BadDebtMarketData['solvencyPercent'] | undefined
   marketType: BadDebtMarketData['marketType']
 }
 
-type BannerConfig = {
-  title: string
-  subtitle: string
-  severity: BannerProps['severity']
-} | null
-
-const SOLVENCY_THRESHOLDS = {
-  // Market above this threshold are considered fully solvent.
-  solvent: 98,
-  reduced: 90,
-  // Markets below this threshold have a very low solvency.
-  low: 80,
-}
-
-const getBannerConfigs = ({ solvencyPerc, marketType }: Props): BannerConfig => {
-  if (solvencyPerc == null) return null
-  const formattedSolvency = formatPercent(solvencyPerc)
-  const isLend = marketType === LlamaMarketType.Lend
-
-  if (solvencyPerc >= SOLVENCY_THRESHOLDS.solvent) {
-    return null
-  } else if (solvencyPerc >= SOLVENCY_THRESHOLDS.reduced) {
-    return {
-      title: t`Reduced Market Solvency`,
-      subtitle: t`Market solvency is ${formattedSolvency}. ${isLend ? 'A small share of supplied funds is not fully covered.' : ''}`,
-      severity: 'warning',
-    }
-  } else if (solvencyPerc >= SOLVENCY_THRESHOLDS.low)
-    return {
-      title: t`Low Market Solvency`,
-      subtitle: t`Market solvency is ${formattedSolvency}. ${isLend ? 'Part of the supplied funds is no longer fully covered.' : ''}`,
-      severity: 'warning',
-    }
-
-  return {
+const BANNER_CONFIG = [
+  {
+    // Market above this threshold are considered fully solvent.
+    threshold: 98,
+    title: t`Reduced Market Solvency`,
+    lendSubtitle: t`A small share of supplied funds is not fully covered.`,
+    severity: 'warning',
+  },
+  {
+    threshold: 90,
+    title: t`Low Market Solvency`,
+    lendSubtitle: t`Part of the supplied funds is no longer fully covered.`,
+    severity: 'warning',
+  },
+  {
+    threshold: 80,
     title: t`Very Low Market Solvency`,
-    subtitle: t`Market solvency is ${formattedSolvency}. ${isLend ? 'A large share of supplied funds is no longer fully covered.' : ''}`,
+    lendSubtitle: t`A large share of supplied funds is no longer fully covered.`,
     severity: 'alert',
-  }
-}
+  },
+] as const
 
-export const BadDebtBanner = (props: Props) => {
-  const banner = getBannerConfigs(props)
-  return banner ? (
-    <Banner severity={banner.severity} subtitle={banner.subtitle}>
-      {banner.title}
-    </Banner>
-  ) : null
+export const BadDebtBanner = ({ solvencyPercent, marketType }: Props) => {
+  const banner = solvencyPercent != null && BANNER_CONFIG.find((config) => solvencyPercent > config.threshold)
+  return (
+    banner && (
+      <Banner
+        severity={banner.severity}
+        subtitle={notFalsy(
+          t`Market solvency is ${formatPercent(solvencyPercent)}.`,
+          marketType === LlamaMarketType.Lend && banner.lendSubtitle,
+        ).join(' ')}
+      >
+        {banner.title}
+      </Banner>
+    )
+  )
 }
