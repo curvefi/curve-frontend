@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEvents,
@@ -65,6 +66,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible((prev) => !prev), [setIsBandsVisible])
   const newBandsChartEnabled = useNewBandsChart()
+  const bandsPalette = useBandsChartPalette()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
 
@@ -77,6 +79,29 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
+  const chartFooterLegendSets = useMemo(() => {
+    if (!showBands) return chart.legendSets
+
+    const collateralSymbol = bands?.collateralToken?.symbol
+    const borrowSymbol = bands?.borrowToken?.symbol
+
+    return [
+      ...chart.legendSets,
+      ...(collateralSymbol
+        ? [{ label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } } satisfies LegendItem]
+        : []),
+      ...(borrowSymbol
+        ? [{ label: borrowSymbol, box: { fill: bandsPalette.userBorrowedShareColor } } satisfies LegendItem]
+        : []),
+    ]
+  }, [
+    showBands,
+    chart.legendSets,
+    bands?.collateralToken?.symbol,
+    bands?.borrowToken?.symbol,
+    bandsPalette.userCollateralShareColor,
+    bandsPalette.userBorrowedShareColor,
+  ])
 
   return (
     <Stack>
@@ -136,7 +161,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                 />
               )}
             </Stack>
-            <ChartFooter legendSets={chart.legendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+            <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
           </Stack>
         )}
       </Stack>
