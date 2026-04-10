@@ -23,6 +23,7 @@
     "@curvefi/api": "*",
     "@types/node": "*",
     "eslint": "*",
+    "eslint-config-custom": "*",
     "tsx": "4.21.0",
     "typescript": "*",
     "vitest": "*"

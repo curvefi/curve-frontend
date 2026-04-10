@@ -25,11 +25,13 @@
     "@tanstack/react-router-devtools": "^1.166.9",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
+    "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
     "react-hook-form": "7.71.2",
     "recharts": "2.15.4",
+    "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
@@ -59,6 +61,7 @@
     "eslint": "*",
     "pinst": "^3.0.0",
     "typescript": "*",
+    "typescript-eslint": "^8.57.1",
     "vite": "*"
   }
 }

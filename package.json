@@ -37,6 +37,7 @@
     "echarts-for-react": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
+    "ethers": "*",
     "husky": "^9.1.7",
     "immer": "*",
     "lint-staged": "16.4.0",
@@ -46,7 +47,10 @@
     "react-dom": "*",
     "styled-components": "*",
     "typescript": "*",
-    "vite": "*"
+    "vite": "*",
+    "vite-plugin-svgr": "*",
+    "vitest": "*",
+    "zustand": "*"
   },
   "packageManager": "yarn@4.6.0",
   "lint-staged": {
