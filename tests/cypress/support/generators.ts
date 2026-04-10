@@ -3,7 +3,6 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { decimal } from '@ui-kit/utils/decimal'
 
 export const MAX_USD_VALUE = 400_000_000
@@ -19,7 +18,6 @@ export const oneInt = (minOrMax = 100, maxExclusive?: number): number => Math.fl
 export const oneOf = <T>(...options: T[]) => options[oneInt(0, options.length)]
 export const oneBool = () => oneOf(true, false)
 export const oneValueOf = <K extends PropertyKey, T>(obj: Record<K, T>) => oneOf(...recordValues(obj))
-export const oneMarketType = () => oneOf(LlamaMarketType.Lend, LlamaMarketType.Mint)
 
 export const oneAddress = (): Address =>
   `0x${range(4) // create separate ints otherwise they aren't large enough

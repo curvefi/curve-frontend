@@ -1,6 +1,6 @@
 import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
-import { oneMarketType } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { oneMarketType } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 
