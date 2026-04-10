@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "./src",
     "outDir": "dist",
     "noImplicitOverride": true,
     "noImplicitReturns": true,
@@ -9,8 +8,9 @@
     "noUnusedParameters": true,
     "noEmit": false,
     "paths": {
-      "@primitives/*": ["../../primitives/src/*"]
-    }
+      "@primitives/*": ["../primitives/src/*"]
+    },
+    "rootDir": ".."
   },
   "include": ["src"]
 }

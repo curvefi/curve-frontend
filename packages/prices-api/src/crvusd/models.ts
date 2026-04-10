@@ -1,4 +1,5 @@
 import type { Address, Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain } from '..'
 
 export type Market = {
@@ -158,10 +159,13 @@ export type UserCollateralEvents = {
   controller: Address
   user: Address
   totalDeposit: number
-  totalDepositPrecise: string
-  totalDepositUsd: number
+  totalDepositFromUser: number
   totalBorrowed: number
-  totalBorrowedPrecise: string
+  totalDepositPrecise: Decimal
+  totalBorrowedPrecise: Decimal
+  totalDepositFromUserPrecise: Decimal
+  totalDepositFromUserUsdValue: number
+  totalDepositUsdValue: number
   events: UserCollateralEvent[]
 }
 

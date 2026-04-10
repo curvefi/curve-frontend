@@ -5,6 +5,7 @@ import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
+import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -14,9 +15,10 @@ import type { RouteResponse } from '@primitives/router.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { type Range } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
@@ -115,13 +117,15 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
+  const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
+
   const isPending = formState.isSubmitting || isCreating
   return {
     form,
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending || isDebouncing,
+    isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
     onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues,
     borrowToken,
@@ -133,6 +137,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       ...combineQueryState(maxTokenValues.debt, expectedCollateral),
     },
     isApproved: useCreateLoanIsApproved(params),
+    priceImpact,
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,

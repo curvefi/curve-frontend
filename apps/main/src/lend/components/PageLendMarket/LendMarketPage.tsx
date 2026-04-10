@@ -14,7 +14,7 @@ import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
-import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
@@ -66,7 +66,7 @@ export const LendMarketPage = () => {
     marketId,
     market: market ?? null,
   })
-  const activityQueryParams: UserCollateralEventsProps = {
+  const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address | undefined,
@@ -74,7 +74,7 @@ export const LendMarketPage = () => {
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
     network,
-  }
+  })
   const marketAlert = useMarketAlert(chainId, market?.id)
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export const LendMarketPage = () => {
         marketId &&
         !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
+          <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
         ) : (
           <LoanCreateTabs {...pageProps} params={params} />
         ))
@@ -156,7 +156,7 @@ export const LendMarketPage = () => {
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
-        activityQueryParams={activityQueryParams}
+        events={collateralEvents}
       />
       <MarketInformationComposite
         pageProps={pageProps}

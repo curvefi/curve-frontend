@@ -2,6 +2,8 @@ import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { UserState } from '@/llamalend/queries/user'
+import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -14,8 +16,7 @@ import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { CRVUSD, formatNumber } from '@ui-kit/utils'
-import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -295,4 +296,36 @@ export const getUtilizationPercent = (available: Decimal | undefined, totalAsset
   const total = +totalAssets
   if (total === 0) return undefined
   return ((total - +available) / total) * 100
+}
+
+/**
+ * Calculates the return to wallet amounts for a given receive amount.
+ */
+export function calculateReturnToWallet({
+  totalBorrowed = '0',
+  userState,
+  stateCollateralDelta = '0',
+  collateralSymbol,
+  borrowedSymbol,
+}: {
+  totalBorrowed: Decimal | undefined
+  userState: UserState | undefined
+  stateCollateralDelta: Decimal | undefined
+  collateralSymbol: string
+  borrowedSymbol: string
+}): { value: Decimal; symbol: string }[] {
+  const { debt: stateDebt = '0', collateral: stateCollateral = '0', stablecoin: stateBorrowed = '0' } = userState ?? {}
+  if (+totalBorrowed > 0) {
+    const returnCollateral = decimalMinus(stateCollateral, stateCollateralDelta)
+    const returnBorrowed = decimalMinus(decimalSum(totalBorrowed, stateBorrowed), stateDebt)
+    return notFalsy(
+      +returnCollateral > 0 && { value: returnCollateral, symbol: collateralSymbol },
+      +returnBorrowed > 0 && { value: returnBorrowed, symbol: borrowedSymbol },
+    )
+  }
+  const returnBorrowed = decimalMinus(stateBorrowed, stateDebt)
+  return notFalsy(
+    { value: stateCollateral, symbol: collateralSymbol },
+    +returnBorrowed > 0 && { value: returnBorrowed, symbol: borrowedSymbol },
+  )
 }

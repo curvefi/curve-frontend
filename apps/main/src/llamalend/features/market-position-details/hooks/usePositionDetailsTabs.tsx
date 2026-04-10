@@ -24,14 +24,12 @@ export const usePositionDetailsTabs = ({
   activityIsLoading,
   activityIsError,
 }: {
-  events: ParsedUserCollateralEvent[]
+  events: ParsedUserCollateralEvent[] | undefined
   hasPosition: boolean | undefined
   borrowPositionDetails: BorrowPositionDetailsProps
   activityIsLoading: boolean
   activityIsError: boolean
 }) => {
-  const hasActivity = events.length > 0
-
   const tabOptions = useMemo<PositionDetailsTabOption[]>(
     () =>
       notFalsy(
@@ -41,7 +39,7 @@ export const usePositionDetailsTabs = ({
           render: () =>
             hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />,
         },
-        hasActivity && {
+        events?.length && {
           value: 'activity' as const,
           label: t`Activity`,
           render: () => (
@@ -56,7 +54,7 @@ export const usePositionDetailsTabs = ({
           ),
         },
       ),
-    [hasActivity, hasPosition, borrowPositionDetails, events, activityIsLoading, activityIsError],
+    [hasPosition, borrowPositionDetails, events, activityIsLoading, activityIsError],
   )
 
   const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)

@@ -16,6 +16,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
@@ -25,7 +26,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
-import type { Range } from '@ui-kit/types/util'
+import { constQ, type Range } from '@ui-kit/types/util'
 
 const prefetch = () => prefetchMarkets({})
 
@@ -79,6 +80,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTest
       onPricesUpdated={onPricesUpdated!}
       onSuccess={cy.stub()}
       enabled
+      collateralEvents={constQ(fakeCollateralEvents)}
       {...props}
     />
   )

@@ -40,7 +40,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   market: LlamaMarketTemplate | undefined
   onSlippageChange: (newSlippage: Decimal) => void
-  leverageEnabled: boolean
+  leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>
   routes: MarketRoutes | undefined
 }) {
