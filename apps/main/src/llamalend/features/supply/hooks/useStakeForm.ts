@@ -13,11 +13,13 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
+const userDefaultValues = { stakeAmount: undefined }
+
 const emptyStakeForm = (): StakeForm => ({
-  stakeAmount: undefined,
+  ...userDefaultValues,
   maxStakeAmount: undefined,
 })
 
@@ -72,7 +74,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     onSubmit,
     isPending: isStaking,
     error: stakeError,
-  } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
+  } = useStakeMutation({ marketId, network, onReset: () => resetForm(form, userDefaultValues), userAddress })
 
   useFormSync(form, { maxStakeAmount: maxUserStake.data })
 

@@ -33,6 +33,11 @@ export function updateForm<TFieldValues extends FieldValues>(
   form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
 }
 
+export const resetForm = <TFieldValues extends FieldValues>(
+  form: UseFormReturn<TFieldValues>,
+  valuesToReset: FormUpdates<TFieldValues>,
+): void => form.reset({ ...form.getValues(), ...valuesToReset })
+
 /**
  * Syncs the form with the given values. IMPORTANT: This only works if you always pass the same keys in the same order!
  */

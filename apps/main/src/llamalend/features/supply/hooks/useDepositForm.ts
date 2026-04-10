@@ -15,13 +15,20 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+
+const userDefaultValues = { depositAmount: undefined }
 
 const emptyDepositForm = (): DepositForm => ({
-  depositAmount: undefined,
+  ...userDefaultValues,
   maxDepositAmount: undefined,
 })
 
+const formOptions = {
+  ...formDefaultOptions,
+  resolver: vestResolver(depositFormValidationSuite),
+  defaultValues: emptyDepositForm(),
+}
 export const useDepositForm = <ChainId extends LlamaChainId>({
   market,
   network,
@@ -43,11 +50,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     tokenAddress: borrowToken?.address,
   })
 
-  const form = useForm<DepositForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(depositFormValidationSuite),
-    defaultValues: emptyDepositForm(),
-  })
+  const form = useForm<DepositForm>(formOptions)
 
   const depositAmount = watchField(form, 'depositAmount')
 
@@ -70,7 +73,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   } = useDepositMutation({
     marketId,
     network,
-    onReset: form.reset,
+    onReset: () => resetForm(form, userDefaultValues),
     userAddress,
   })
 

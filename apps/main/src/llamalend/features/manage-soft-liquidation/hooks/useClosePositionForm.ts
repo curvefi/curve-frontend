@@ -9,14 +9,15 @@ import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { filterFormErrors } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors, resetForm } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useCanClose } from './useCanClose'
 import { useCollateralToRecover } from './useCollateralToRecover'
 
+const userDefaultValues = {}
 const formOptions = {
   ...formDefaultOptions,
-  defaultValues: { slippage: SLIPPAGE_PRESETS.STABLE },
+  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE_PRESETS.STABLE },
 } as const
 
 /** Hook to build state for the close-position form */
@@ -45,7 +46,7 @@ export function useClosePositionForm({
   } = useClosePositionMutation({
     network,
     marketId,
-    onReset: form.reset,
+    onReset: () => resetForm(form, userDefaultValues),
     userAddress,
   })
 
