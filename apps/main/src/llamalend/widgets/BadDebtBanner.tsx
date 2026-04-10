@@ -10,22 +10,29 @@ type Props = {
   marketType: BadDebtMarketData['marketType']
 }
 
+const SOLVENCY_THRESHOLDS = {
+  // Market above this threshold are considered fully solvent, and the banner should not be displayed
+  solvent: 98,
+  reduced: 90,
+  low: 80,
+  insolvent: -Infinity,
+}
+
 const BANNER_CONFIG = [
   {
-    // Market above this threshold are considered fully solvent.
-    threshold: 98,
+    threshold: SOLVENCY_THRESHOLDS.reduced,
     title: t`Reduced Market Solvency`,
     lendSubtitle: t`A small share of supplied funds is not fully covered.`,
     severity: 'warning',
   },
   {
-    threshold: 90,
+    threshold: SOLVENCY_THRESHOLDS.low,
     title: t`Low Market Solvency`,
     lendSubtitle: t`Part of the supplied funds is no longer fully covered.`,
     severity: 'warning',
   },
   {
-    threshold: 80,
+    threshold: SOLVENCY_THRESHOLDS.insolvent,
     title: t`Very Low Market Solvency`,
     lendSubtitle: t`A large share of supplied funds is no longer fully covered.`,
     severity: 'alert',
@@ -33,7 +40,10 @@ const BANNER_CONFIG = [
 ] as const
 
 export const BadDebtBanner = ({ solvencyPercent, marketType }: Props) => {
-  const banner = solvencyPercent != null && BANNER_CONFIG.find((config) => solvencyPercent > config.threshold)
+  const banner =
+    solvencyPercent != null &&
+    solvencyPercent < SOLVENCY_THRESHOLDS.solvent &&
+    BANNER_CONFIG.find((config) => solvencyPercent >= config.threshold)
   return (
     banner && (
       <Banner
