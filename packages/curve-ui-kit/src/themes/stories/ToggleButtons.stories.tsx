@@ -37,6 +37,7 @@ type Story = StoryObj<typeof ToggleButtonGroup>
 
 export const Exclusive: Story = {
   render: (args) => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [alignment, setAlignment] = useState('left')
 
     const handleAlignment = (_: MouseEvent<HTMLElement>, newAlignment: string) => {
@@ -69,6 +70,7 @@ export const Exclusive: Story = {
 
 export const Multiple: Story = {
   render: (args) => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [formats, setFormats] = useState(['bold', 'italic'])
 
     const handleFormat = (_: MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -103,6 +105,7 @@ export const Multiple: Story = {
 
 export const Standalone: Story = {
   render: () => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [selected, setSelected] = useState(false)
 
     return (
@@ -115,6 +118,7 @@ export const Standalone: Story = {
 
 export const Text: Story = {
   render: (args) => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [alignment, setAlignment] = useState('left')
 
     const handleAlignment = (_: MouseEvent<HTMLElement>, newAlignment: string | null) => {

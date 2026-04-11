@@ -109,7 +109,6 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           data-testid={`menu-${id}`}
           open={isOpen}
           onClose={close}
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{

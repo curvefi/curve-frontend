@@ -49,7 +49,6 @@ export const useBandsChartZoom = ({
         lastAppliedZoom.endValue !== initialZoomIndices.endValue)
 
     if (chartDataLength > 0 && initialZoomIndices && (bandsChanged || zoomParamsChanged)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDefaultZoom({
         startValue: initialZoomIndices.startValue,
         endValue: initialZoomIndices.endValue,

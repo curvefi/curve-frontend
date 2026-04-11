@@ -69,7 +69,6 @@ export const useRepayTokens = ({
   const defaultToken = tokens.find((t) => t.field === field)
   useEffect(() => {
     // override the user's choice when we get to know they have a (non)-leveraged position
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (defaultToken) onToken(defaultToken)
   }, [defaultToken])
   return { tokens, token: token ?? tokens[0], onToken }

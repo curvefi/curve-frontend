@@ -50,7 +50,6 @@ export function useIntersectionObserver(elementRef: RefObject<Element | null>, o
   useEffect(() => {
     // show node if IO not supported
     if (!window.IntersectionObserver) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEntry({ isIntersecting: true })
       return
     }

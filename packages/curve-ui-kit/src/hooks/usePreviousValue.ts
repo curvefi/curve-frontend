@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 export function usePreviousValue<T>(value: T | null | undefined) {
   const [previous, setPrevious] = useState<T | null | undefined>(value)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (value != null) setPrevious(value)
   }, [value])
   return previous
