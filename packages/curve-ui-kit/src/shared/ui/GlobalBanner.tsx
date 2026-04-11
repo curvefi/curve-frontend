@@ -1,5 +1,12 @@
 import { useChainId, useConnection } from 'wagmi'
-import { isFailure, useCurve, useSwitchChain, type WagmiChainId } from '@ui-kit/features/connect-wallet'
+import { formatDate } from '@ui/utils'
+import {
+  deprecatedChains,
+  isFailure,
+  useCurve,
+  useSwitchChain,
+  type WagmiChainId,
+} from '@ui-kit/features/connect-wallet'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -22,11 +29,12 @@ const maintenanceMessage = process.env.PUBLIC_MAINTENANCE_MESSAGE
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
-  const { connectState } = useCurve()
+  const { connectState, network } = useCurve()
   const switchChain = useSwitchChain()
   const walletChainId = useChainId()
   const pathname = usePathname()
   const currentApp = getCurrentApp(pathname)
+  const deprecatedAt = deprecatedChains[networkId as keyof typeof deprecatedChains]
 
   const showSwitchNetworkMessage = isConnected && chainId && walletChainId != chainId
   const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)
@@ -47,6 +55,11 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
         </Banner>
       )}
       <PhishingWarningBanner />
+      {deprecatedAt && network && (
+        <Banner severity="alert">
+          {t`${network.name} will be deprecated at ${formatDate(deprecatedAt)}. Future management of positions will only be possible via the chain explorer. Manage your positions accordingly.`}
+        </Banner>
+      )}
       {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
       {showSwitchNetworkMessage && (
         <Banner
