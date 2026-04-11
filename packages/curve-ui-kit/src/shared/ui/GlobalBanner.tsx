@@ -34,10 +34,6 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const walletChainId = useChainId()
   const pathname = usePathname()
   const currentApp = getCurrentApp(pathname)
-  const deprecatedAt = deprecatedChains[networkId as keyof typeof deprecatedChains]
-
-  const showSwitchNetworkMessage = isConnected && chainId && walletChainId != chainId
-  const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)
 
   const { shouldShowBanner: showAaveBanner, dismissBanner: dismissAaveBanner } = useDismissBanner(
     'aave-v2-frozen-avalanche-polygon',
@@ -55,13 +51,9 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
         </Banner>
       )}
       <PhishingWarningBanner />
-      {deprecatedAt && network && (
-        <Banner severity="alert">
-          {t`${network.name} will be deprecated at ${formatDate(deprecatedAt)}. Future management of positions will only be possible via the chain explorer. Manage your positions accordingly.`}
-        </Banner>
-      )}
-      {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
-      {showSwitchNetworkMessage && (
+      {maintenanceMessage ? (
+        <Banner severity="warning">{maintenanceMessage}</Banner>
+      ) : isConnected && chainId && walletChainId != chainId ? (
         <Banner
           severity="warning"
           buttonText={t`Change network`}
@@ -70,21 +62,27 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
           <strong>{networkId}</strong>.{' '}
         </Banner>
-      )}
-      {showConnectApiErrorMessage && (
+      ) : isFailure(connectState) ? (
         <Banner severity="alert">
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
         </Banner>
-      )}
-      {showAaveBanner && currentApp === 'dex' && [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
-        <Banner
-          severity="info"
-          subtitle={t`Aave is deprecating its V2 markets on Polygon and Avalanche. Deposits and swaps are not supported`}
-          onClick={dismissAaveBanner}
-          learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445"
-        >
-          {t`Aave V2 Frozen aTokens`}
+      ) : networkId in deprecatedChains && network ? (
+        <Banner severity="alert">
+          {t`${network.name} will be deprecated at ${formatDate(deprecatedChains[networkId])}. Future management of positions will only be possible via the chain explorer. Manage your positions accordingly.`}
         </Banner>
+      ) : (
+        showAaveBanner &&
+        currentApp === 'dex' &&
+        [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
+          <Banner
+            severity="info"
+            subtitle={t`Aave is deprecating its V2 markets on Polygon and Avalanche. Deposits and swaps are not supported`}
+            onClick={dismissAaveBanner}
+            learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445"
+          >
+            {t`Aave V2 Frozen aTokens`}
+          </Banner>
+        )
       )}
     </StackBanners>
   )
