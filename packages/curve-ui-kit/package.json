@@ -30,6 +30,7 @@
     "@tanstack/react-table": "8.21.3",
     "@walletconnect/ethereum-provider": "^2.23.4",
     "dayjs": "^1.11.19",
+    "lodash": "*",
     "viem": "^2.45.0",
     "wagmi": "^3.4.1"
   },
@@ -50,6 +51,7 @@
     "@storybook/addon-docs": "10.2.19",
     "@storybook/addon-themes": "10.2.19",
     "@storybook/react-vite": "10.2.19",
+    "@types/lodash": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "*",

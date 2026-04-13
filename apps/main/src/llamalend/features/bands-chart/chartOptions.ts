@@ -1,7 +1,7 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { formatNumberWithOptions } from './bands-chart.utils'
-import { generateMarkLines, createLabelStyle } from './markLines'
+import { generateMarkLines } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
 const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
@@ -41,7 +41,6 @@ const createCustomRectSeries = (
 ) => ({
   name,
   type: 'custom' as const,
-  animation: true,
   animationDuration: Duration.Transition,
   animationDurationUpdate: Duration.Transition,
   animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
@@ -51,16 +50,12 @@ const createCustomRectSeries = (
   clip: true, // Clip rectangles to grid area to prevent overflow over axis labels
   emphasis: {
     focus: 'self',
-    itemStyle: {
-      opacity: 1,
-    },
   },
   renderItem: (
     _params: unknown,
     api: {
       value: (index: number) => number
       coord: (point: number[]) => number[]
-      style: (opts: Record<string, unknown>) => Record<string, unknown>
     },
   ) => {
     const startX = api.value(1)
@@ -102,11 +97,11 @@ const createCustomRectSeries = (
     return {
       type: 'rect',
       shape: { x: left, y: paddedTop, width, height: paddedHeight },
-      style: api.style({
+      style: {
         fill: color,
         stroke: isSoftLiquidationBand && enableSoftLiquidationOutline ? softLiquidationBandOutlineColor : 'transparent',
         lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 2 : 0,
-      }),
+      },
     }
   },
   ...(markArea && { markArea }),
@@ -126,10 +121,8 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (!chartData.length) return {}
 
-  const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 0, bottom: 8 }
-  const gridRight = 16 + dataZoomWidth
-  const labelXOffset = 16 - (gridRight - dataZoomWidth)
+  // bottom padding matches the lightweight-charts time scale spacing used by the adjacent candle chart
+  const gridPadding = { left: 0, top: 0, right: 4, bottom: 7 }
 
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)
@@ -146,17 +139,14 @@ export const getChartOptions = (
     : []
 
   // Generate all mark lines (user range + oracle price) using coord format
-  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
+  const markLines = generateMarkLines(userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
-    backgroundColor: 'transparent',
-    animation: true,
     animationDuration: Duration.Transition,
     animationDurationUpdate: Duration.Transition,
-    animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
     grid: {
       left: gridPadding.left,
-      right: gridRight,
+      right: gridPadding.right,
       top: gridPadding.top,
       bottom: gridPadding.bottom,
       containLabel: true,
@@ -167,7 +157,6 @@ export const getChartOptions = (
         type: 'shadow',
         axis: 'y',
         snap: true,
-        triggerTooltip: true,
         shadowStyle: {
           opacity: 0.1,
         },
@@ -179,7 +168,6 @@ export const getChartOptions = (
       // ECharts sets white-space: nowrap on the tooltip container by default; override to allow wrapping
       extraCssText:
         'white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: none !important; width: max-content !important;',
-      confine: false,
       // Only show tooltip when there's actual data at the hovered position
       triggerOn: 'mousemove',
     },
@@ -192,28 +180,26 @@ export const getChartOptions = (
       axisLabel: {
         color: palette.scaleLabelsColor,
         hideOverlap: true,
-        interval: 'auto',
         overflow: 'break',
-        showMinLabel: true,
+        showMinLabel: false,
         showMaxLabel: false,
-        margin: 8,
+        // label margin matches the lightweight-charts time scale margin used by the adjacent candle chart
+        margin: 10,
         formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'solid',
           width: 0.5,
         },
       },
+      splitNumber: 3,
     },
     yAxis: {
-      type: 'value',
       position: 'right',
       axisLine: { show: false },
       axisTick: { show: false },
-      overflow: 'hide',
       axisPointer: {
         show: true,
         type: 'shadow',
@@ -227,18 +213,11 @@ export const getChartOptions = (
         },
       },
       axisLabel: {
-        color: palette.scaleLabelsColor,
-        hideOverlap: true,
-        overflow: 'break',
-        showMinLabel: false,
-        showMaxLabel: false,
-        formatter: (value: number) => formatNumberWithOptions(value),
+        show: false,
       },
       splitLine: {
-        show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'solid',
           width: 0.5,
         },
       },
@@ -279,34 +258,18 @@ export const getChartOptions = (
         marketSeriesData,
         false,
         markAreas.length
-          ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
+          ? { silent: true, itemStyle: { color: palette.userRangeBackgroundColor }, data: markAreas }
           : undefined,
         markLines.length
           ? {
               animation: false,
               animationDuration: 0,
               animationDurationUpdate: 0,
-              silent: false,
               symbol: 'none',
+              label: { show: false },
               data: markLines.map((line) => {
                 const [startPoint, endPoint] = line
-                return [
-                  {
-                    ...startPoint,
-                    label: {
-                      ...startPoint.label,
-                      position: 'start',
-                      align: 'left',
-                      verticalAlign: 'middle',
-                      offset: [-labelXOffset, 0],
-                      ...createLabelStyle(line.lineStyle, palette),
-                    },
-                  },
-                  {
-                    ...endPoint,
-                    lineStyle: line.lineStyle,
-                  },
-                ]
+                return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
               }),
             }
           : undefined,
@@ -335,44 +298,5 @@ export const getChartOptions = (
 
       return [marketSeries, userSeries, outlineSeries]
     })(),
-    dataZoom: [
-      {
-        type: 'slider',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        right: 10,
-        width: dataZoomWidth,
-        brushSelect: false,
-        showDataShadow: false,
-        borderColor: 'none',
-        backgroundColor: palette.zoomTrackBackgroundColor,
-        fillerColor: palette.zoomThumbColor,
-        handleSize: '100%',
-        handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
-        showDetail: false,
-        labelFormatter: (value: number | string) => formatNumberWithOptions(Number(value)),
-        dataBackground: {
-          lineStyle: {
-            color: palette.gridColor,
-            opacity: 0.5,
-          },
-          areaStyle: {
-            color: palette.gridColor,
-            opacity: 0.2,
-          },
-        },
-        // Prevent filtering of markLines when zooming
-        filterMode: 'none',
-      },
-      {
-        type: 'inside',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        zoomOnMouseWheel: 'shift',
-        moveOnMouseWheel: true,
-        // Prevent filtering of markLines when zooming
-        filterMode: 'none',
-      },
-    ],
   }
 }

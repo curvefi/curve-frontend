@@ -30,6 +30,7 @@ export type OhlcChartProps = {
   refetchingCapped: boolean
   selectChartList: ChartSelections[]
   latestOraclePrice?: string
+  onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
 export const ChartWrapper = ({
@@ -51,6 +52,7 @@ export const ChartWrapper = ({
   refetchingCapped,
   selectChartList,
   latestOraclePrice,
+  onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
   const wrapperRef = useRef(null)
@@ -97,6 +99,7 @@ export const ChartWrapper = ({
             liqRangeNewVisible={liqRangeNewVisible}
             oraclePriceVisible={oraclePriceVisible}
             latestOraclePrice={latestOraclePrice}
+            onVisiblePriceRangeChange={onVisiblePriceRangeChange}
           />
         </Box>
       </ChartStateWrapper>
