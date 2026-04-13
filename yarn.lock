@@ -591,15 +591,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:2.0.15":
-  version: 2.0.15
-  resolution: "@curvefi/llamalend-api@npm:2.0.15"
+"@curvefi/llamalend-api@npm:2.0.17":
+  version: 2.0.17
+  resolution: "@curvefi/llamalend-api@npm:2.0.17"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/7ff444f266a7579deb8a71b50820e14086bc76c3bc266955af5dee987d7f7b058caccd3b1711f7122eb3591db3ccc5173c129a6b4b6b840007665554cf8064e4
+  checksum: 10c0/e03c9f4ebe7c1f72dd0c4f6696d316eb23a003221953c80506bced6d1de25104fac9466cbfc7139346807d216228afa23e4e6b8e23f343f837c775b3f7ee753b
   languageName: node
   linkType: hard
 
@@ -6013,7 +6013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.23":
+"@types/lodash@npm:*, @types/lodash@npm:^4.17.23":
   version: 4.17.24
   resolution: "@types/lodash@npm:4.17.24"
   checksum: 10c0/b72f60d4daacdad1fa643edb3faba204c02a01eb1ac00a83ff73496a6d236fc55e459c06106e8ced42277dba932d087d8fc090f8de4ef590d3f91e6d6f7ce85a
@@ -8721,6 +8721,7 @@ __metadata:
     "@tanstack/react-query-devtools": "npm:5.91.3"
     "@tanstack/react-query-persist-client": "npm:5.90.24"
     "@tanstack/react-table": "npm:8.21.3"
+    "@types/lodash": "npm:*"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@vitejs/plugin-react": "npm:*"
@@ -8728,6 +8729,7 @@ __metadata:
     dayjs: "npm:^1.11.19"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
+    lodash: "npm:*"
     storybook: "npm:10.2.19"
     typescript: "npm:*"
     viem: "npm:^2.45.0"
@@ -12452,7 +12454,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:2.0.15"
+    "@curvefi/llamalend-api": "npm:2.0.17"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"

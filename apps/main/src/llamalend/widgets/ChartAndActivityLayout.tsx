@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
-import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEvents,
   type LlammaActivityProps,
@@ -13,7 +13,7 @@ import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
@@ -35,6 +35,9 @@ const TABS: TabOption<Tab>[] = [
 ]
 
 const EMPTY_ARRAY: never[] = []
+// Ignore tiny floating-point jitter from chart autoscale updates.
+// This keeps the layout from re-rendering when the visible range is effectively unchanged.
+const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
 
 export type ChartAndActivityLayoutProps = {
   chart: {
@@ -47,7 +50,7 @@ export type ChartAndActivityLayoutProps = {
   }
   bands?: {
     chartData: ChartDataPoint[]
-    userBandsBalances: ParsedBandsBalances[]
+    userBandsBalances: FetchedBandsBalances[]
     oraclePrice: string | undefined
     isLoading: boolean
     error: Error | null
@@ -59,9 +62,19 @@ export type ChartAndActivityLayoutProps = {
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
   const theme = useTheme()
-  const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
+  const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
+  const toggleBandsVisible = useCallback(() => setIsBandsVisible((prev) => !prev), [setIsBandsVisible])
   const newBandsChartEnabled = useNewBandsChart()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
+  const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
+
+  const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
+    setCandlePriceRange((previous) =>
+      previous && Math.abs(Math.max(previous.min - min, previous.max - max)) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
+        ? previous
+        : { min, max },
+    )
+  }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
 
@@ -93,8 +106,8 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               }
             />
             <Stack
-              display={{ mobile: 'block', tablet: showBands ? 'grid' : undefined }}
-              gridTemplateColumns={{ tablet: showBands ? '1fr 14rem' : undefined }}
+              display={showBands ? 'grid' : undefined}
+              gridTemplateColumns={showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined}
             >
               {chart.ohlcDataUnavailable ? (
                 <ErrorMessage
@@ -104,7 +117,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                   sx={{ alignSelf: 'center' }}
                 />
               ) : (
-                <ChartWrapper {...chart.ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
+                <ChartWrapper
+                  {...chart.ohlcChartProps}
+                  betaBackgroundColor={theme.design.Layer[1].Fill}
+                  onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
+                />
               )}
               {showBands && (
                 <BandsChart
@@ -115,6 +132,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                   chartData={bands.chartData}
                   userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
                   oraclePrice={bands.oraclePrice}
+                  priceRange={candlePriceRange}
                 />
               )}
             </Stack>
