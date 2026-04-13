@@ -70,7 +70,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
                 {formatUsdValue(data.userBandBorrowedValueUsd)}
               </TooltipItem>
             </TooltipItems>
-            <TooltipItem variant="primary" title={t`Your band  liquidity`}>
+            <TooltipItem variant="primary" title={t`Your band liquidity`}>
               {formatUsdValue(data.userBandTotalCollateralValueUsd)}
             </TooltipItem>
           </Stack>

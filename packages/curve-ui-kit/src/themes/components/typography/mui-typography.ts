@@ -19,12 +19,8 @@ const variantMapping = {
   bodyXsBold: 'p',
 
   buttonXs: 'span',
-  buttonXxs: 'span',
   buttonS: 'span',
   buttonM: 'span',
-  buttonTabsS: 'span',
-  buttonTabsM: 'span',
-  buttonTabsL: 'span',
 
   tableHeaderM: 'p',
   tableHeaderS: 'p',
