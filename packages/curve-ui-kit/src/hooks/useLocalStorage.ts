@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { type MigrationOptions, useStoredState } from './useStoredState'
+import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
 
@@ -39,11 +39,12 @@ const useLocalStorage = <T>(key: string, initialValue: T, migration?: MigrationO
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 
+const [ReleaseChannelKey, ReleaseChannelVersion] = ['release-channel', 1] as const
 export const getReleaseChannel = () =>
-  getFromLocalStorage<ReleaseChannel>('release-channel-v1') ?? defaultReleaseChannel
+  getFromLocalStorage<ReleaseChannel>(getStorageKey(ReleaseChannelKey, ReleaseChannelVersion)) ?? defaultReleaseChannel
 export const useReleaseChannel = () =>
-  useLocalStorage<ReleaseChannel>('release-channel', defaultReleaseChannel, {
-    version: 1,
+  useLocalStorage<ReleaseChannel>(ReleaseChannelKey, defaultReleaseChannel, {
+    version: ReleaseChannelVersion,
     migrate: (oldValue) => (oldValue ? ReleaseChannel.Beta : ReleaseChannel.Stable),
     oldKey: 'beta',
   })
@@ -76,10 +77,11 @@ export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
     migration,
   )
 
-export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
+const FavoriteMarketsKey = 'favoriteMarkets'
+export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>(FavoriteMarketsKey) ?? []
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
-  return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+  return useLocalStorage<Address[]>(FavoriteMarketsKey, initialValue)
 }
 
 export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-visible', false)
