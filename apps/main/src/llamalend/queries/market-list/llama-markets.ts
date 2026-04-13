@@ -11,7 +11,6 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
-import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -461,7 +460,10 @@ type LlamaMarketsQueries = [
  * @param userAddress - The user's address
  * @param enabled - Whether the query is enabled
  */
-export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
+export const useLlamaMarkets = (
+  { userAddress, enableLLv2 }: { userAddress: Address | undefined; enableLLv2: boolean },
+  enabled = true,
+) =>
   useQueries({
     queries: useMemo<LlamaMarketsQueries>(
       () => [
@@ -534,13 +536,13 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   ),
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
-                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || isLLv2Enabled()) &&
+                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || enableLLv2) &&
                     (!deprecatedMessage || userHasPositions),
                 ),
               }
             : undefined
         return { ...combineQueriesMeta(results), data }
       },
-      [enabled, userAddress],
+      [enabled, userAddress, enableLLv2],
     ),
   })

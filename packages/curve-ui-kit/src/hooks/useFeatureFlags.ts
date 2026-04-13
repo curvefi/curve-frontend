@@ -38,7 +38,8 @@ export const useAnalyticsApp = useStableChannel
 export const isZapV2Enabled = () => isAlpha() && localStorage.getItem('disableZapV2') != 'true'
 
 /** New LlamaLend v2 implementation */
-export const isLLv2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta
+export const useLLv2 = useBetaChannel
+export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** New market page layout with forms on the right  */
 export const useRightFormTabsLayout = useBetaChannel

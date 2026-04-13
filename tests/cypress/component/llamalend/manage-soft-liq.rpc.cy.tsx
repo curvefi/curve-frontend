@@ -40,7 +40,7 @@ describe('Manage soft liquidation', () => {
         app="llamalend"
         network={network}
         onChainUnavailable={console.error}
-        hydrate={{ llamalend: () => prefetchMarkets({}) }}
+        hydrate={{ llamalend: () => prefetchMarkets({ chainId, enableLLv2: true }) }}
       >
         {children}
       </CurveProvider>

@@ -11,6 +11,7 @@ import {
   HydratorMap,
 } from '@ui-kit/features/connect-wallet/lib/types'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import type { AppName } from '@ui-kit/shared/routes'
 import { useSwitchChain } from './useSwitchChain'
 import { globalLibs, isWalletMatching } from './utils'
@@ -44,6 +45,7 @@ export const CurveProvider = <App extends AppName>({
   const isFocused = useIsDocumentFocused()
   const libKey = AppLibs[app]
   const config = useConfig()
+  const [releaseChannel] = useReleaseChannel()
 
   useEffect(() => {
     /**
@@ -72,7 +74,7 @@ export const CurveProvider = <App extends AppName>({
     const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
       if (globalLibs.hydrated[app] != lib && hydrate[app]) {
         setConnectState(HYDRATING)
-        await hydrate[app](config, lib, prevLib, wallet) // if thrown, it will be caught in initLib
+        await hydrate[app](config, lib, prevLib, wallet, releaseChannel) // if thrown, it will be caught in initLib
       }
       globalLibs.hydrated[app] = lib as (typeof globalLibs.hydrated)[App]
       setConnectState(SUCCESS)
@@ -117,7 +119,7 @@ export const CurveProvider = <App extends AppName>({
     }
     void initLib()
     return () => abort.abort()
-  }, [app, config, hydrate, isReconnecting, libKey, network, wallet, walletChainId])
+  }, [app, config, hydrate, isReconnecting, libKey, network, wallet, walletChainId, releaseChannel])
 
   // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
