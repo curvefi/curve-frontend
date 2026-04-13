@@ -219,10 +219,7 @@ export const getChartOptions = (
         show: false,
       },
       splitLine: {
-        lineStyle: {
-          color: palette.gridColor,
-          width: LINE_WIDTH,
-        },
+        show: false,
       },
       min: priceMin,
       max: priceMax,
