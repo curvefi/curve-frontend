@@ -1,7 +1,7 @@
 import { useChainId, useConnection } from 'wagmi'
 import { formatDate } from '@ui/utils'
 import {
-  deprecatedChains,
+  DEPRECATED_CHAINS,
   isFailure,
   useCurve,
   useSwitchChain,
@@ -34,11 +34,13 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const walletChainId = useChainId()
   const pathname = usePathname()
   const currentApp = getCurrentApp(pathname)
+  const deprecationDate = DEPRECATED_CHAINS[networkId as keyof typeof DEPRECATED_CHAINS]
 
   const { shouldShowBanner: showAaveBanner, dismissBanner: dismissAaveBanner } = useDismissBanner(
     'aave-v2-frozen-avalanche-polygon',
     Duration.Banner.Monthly,
   )
+
   return (
     <StackBanners>
       {releaseChannel !== ReleaseChannel.Stable && !isCypress && (
@@ -66,9 +68,11 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
         <Banner severity="alert">
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
         </Banner>
-      ) : networkId in deprecatedChains && network ? (
+      ) : deprecationDate ? (
         <Banner severity="alert">
-          {t`${network.name} will be deprecated at ${formatDate(deprecatedChains[networkId])}. Future management of positions will only be possible via the chain explorer. Manage your positions accordingly.`}
+          {t`${network?.name} will be deprecated at ${formatDate(deprecationDate)}. `}
+          {t`Future management of positions will only be possible via the chain explorer. `}
+          {t`Manage your positions accordingly. `}
         </Banner>
       ) : (
         showAaveBanner &&

@@ -66,12 +66,7 @@ export const wagmiChains = [
 ] as const
 
 const deprecateDate = new Date('2027-01-01')
-export const deprecatedChains = {
-  aurora: deprecateDate,
-  celo: deprecateDate,
-  kava: deprecateDate,
-  moonbeam: deprecateDate,
-}
+export const DEPRECATED_CHAINS = { aurora: deprecateDate, kava: deprecateDate, moonbeam: deprecateDate }
 
 /** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
 export const wagmiChainsMap = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
