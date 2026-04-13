@@ -32,16 +32,13 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
   } = useClaimableCrv(params, enabled)
 
   const crvAddress = useMemo(() => market && getCrvAddress(market), [market])
+  const rewardsAddresses = useMemo(() => claimableRewards?.map((r) => r.token) ?? [], [claimableRewards])
 
-  const tokenAddresses = useMemo(
-    () => notFalsy(crvAddress, ...(claimableRewards?.map((r) => r.token) ?? [])),
-    [claimableRewards, crvAddress],
-  )
   const {
     data: usdRates,
     isLoading: usdRateLoading,
     error: usdRateError,
-  } = useTokenUsdRates({ chainId, tokenAddresses })
+  } = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress, ...rewardsAddresses) })
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
@@ -68,6 +65,8 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     claimableRewardsError,
     hasClaimableCrv: Number(claimableCrv) > 0,
     hasClaimableRewards: hasClaimableRewards(claimableRewards),
+    crvTokenAddress: crvAddress,
+    rewardTokenAddresses: rewardsAddresses,
     claimableTokens,
     totalNotionals,
     isClaimablesLoading: [isClaimableCrvLoading, isClaimableRewardsLoading].some(Boolean),
