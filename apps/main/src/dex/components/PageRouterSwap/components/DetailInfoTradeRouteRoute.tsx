@@ -1,27 +1,28 @@
-import lodash from 'lodash'
-import { useMemo } from 'react'
-import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworks } from '@/dex/entities/networks'
-import { type UrlParams } from '@/dex/types/main.types'
+import { type PoolData, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { Icon } from '@ui/Icon'
+import Stack from '@mui/material/Stack'
 import { ExternalLink } from '@ui/Link'
-import { TextEllipsis } from '@ui/TextEllipsis'
-import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenAddress } from '@ui-kit/utils'
+
+const { Spacing } = SizesAndSpaces
 
 export const DetailInfoTradeRouteRoute = ({
   params,
   route,
-  routesLength,
   tokensNameMapper,
+  poolData,
 }: {
   params: UrlParams
   route: Route
-  routesLength: number
   tokensNameMapper: { [address: string]: string }
+  poolData: PoolData | undefined
 }) => {
   const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
   const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
@@ -29,65 +30,37 @@ export const DetailInfoTradeRouteRoute = ({
   const { swapCustomRouteRedirect } =
     Object.values(networks).find(({ networkId }) => networkId === params.network) || {}
 
-  const path = useMemo(() => {
-    if (route.poolId && swapCustomRouteRedirect?.[route.poolId]) {
-      return { pathname: swapCustomRouteRedirect[route.poolId], isExternal: true }
-    } else if (route.routeUrlId) {
-      return { pathname: getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`), isExternal: false }
-    }
-  }, [params, route.poolId, route.routeUrlId, swapCustomRouteRedirect])
-
-  const labelProps = { maxWidth: '70px', smMaxWidth: '90px' }
-
-  const InputAndOutputTokenLabel =
-    (routesLength || 1) > 1 ? (
-      <RouteTokenNames>
-        <TextEllipsis {...labelProps}>{inputToken}</TextEllipsis> <RouteTokenNameIcon name="ArrowRight" size={16} />{' '}
-        <TextEllipsis {...labelProps}>{outputToken}</TextEllipsis>{' '}
-      </RouteTokenNames>
-    ) : null
-
-  return lodash.isUndefined(path) ? (
-    <>
-      <strong>{route.name}</strong>
-      {InputAndOutputTokenLabel}
-    </>
-  ) : path.isExternal ? (
-    <>
-      <ExternalLink $noStyles href={path.pathname} target="_blank">
-        <strong>{route.name || route.poolId}</strong>
-      </ExternalLink>
-      {InputAndOutputTokenLabel}
-    </>
-  ) : (
-    <>
-      <RouteName href={path.pathname} target="_blank">
-        <strong>{route.name || route.poolId}</strong>
-      </RouteName>
-      {InputAndOutputTokenLabel}
-    </>
+  const { tokenAddresses, tokens } = poolData ?? {}
+  return (
+    <ActionInfo
+      size="small"
+      label={
+        route.poolId && swapCustomRouteRedirect?.[route.poolId] ? (
+          <ExternalLink $noStyles href={swapCustomRouteRedirect[route.poolId]} target="_blank">
+            {route.name || route.poolId}
+          </ExternalLink>
+        ) : route.routeUrlId ? (
+          <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+            {/* todo: <TokenIcons blockchainId={params.network} tokens={zip(tokens, tokenAddresses).map(([symbol = '?', address = zeroAddress]) => ({ symbol, address }))} />*/}
+            <TokenPair
+              size="md"
+              chain={params.network}
+              assets={{
+                primary: { symbol: inputToken, address: route.inputCoinAddress },
+                secondary: { symbol: outputToken, address: route.outputCoinAddress },
+              }}
+              hideChainIcon
+            />
+            <RouterLink href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`)} target="_blank">
+              {route.name || route.poolId}
+            </RouterLink>
+          </Stack>
+        ) : (
+          route?.name
+        )
+      }
+      prevValue={inputToken}
+      value={outputToken}
+    />
   )
 }
-
-const RouteTokenNameIcon = styled(Icon)`
-  width: 10px;
-  margin: 0 var(--spacing-1);
-`
-
-const RouteTokenNames = styled.span`
-  align-items: center;
-  display: inline-flex;
-  font-size: var(--font-size-1);
-  padding: 1px 3px;
-  opacity: 0.7;
-  margin-left: 4px;
-`
-
-const RouteName = styled(Link)`
-  display: inline-block;
-  max-width: 110px;
-  color: inherit;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-`

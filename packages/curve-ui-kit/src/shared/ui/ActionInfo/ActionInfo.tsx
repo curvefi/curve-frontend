@@ -62,6 +62,8 @@ export type ActionInfoProps = {
   sx?: StackProps['sx']
   /** CSS align-items property */
   alignItems?: StackProps['alignItems']
+  /** CSS flex-direction property */
+  direction?: StackProps['direction']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -133,6 +135,7 @@ export const ActionInfo = ({
   error = false,
   alignItems = 'center',
   testId = 'action-info',
+  direction = 'row',
   sx,
 }: ActionInfoProps) => {
   const buttonSize = iconButtonSize[size]
@@ -141,7 +144,7 @@ export const ActionInfo = ({
   const prevValue = value === givenPrevValue ? null : givenPrevValue
   return (
     <Stack
-      direction="row"
+      direction={direction}
       alignItems={alignItems}
       columnGap={Spacing.sm}
       data-testid={testId}
@@ -159,7 +162,12 @@ export const ActionInfo = ({
       </Typography>
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
-        <Stack direction="row" gap={Spacing.xs} flexWrap="wrap" justifyContent="end">
+        <Stack
+          direction="row"
+          gap={Spacing.xs}
+          flexWrap="wrap"
+          justifyContent={direction == 'column' ? 'start' : 'end'}
+        >
           <Stack direction="row" gap={Spacing.xs}>
             <Typography
               variant={prevValueSize[size]}

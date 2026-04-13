@@ -499,28 +499,13 @@ function getRouterActiveKey(
 }
 
 export function getRouterSwapsExchangeRates(
-  exchangeRates: string[],
-  searchedParams: SearchedParams,
+  [value]: string[],
+  { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: { [p: string]: string },
 ) {
-  const fromToken = tokensNameMapper[searchedParams.fromAddress]
-  const toToken = tokensNameMapper[searchedParams.toAddress]
-  return [
-    {
-      from: fromToken,
-      to: toToken,
-      fromAddress: searchedParams.fromAddress,
-      value: exchangeRates[0],
-      label: `${fromToken}/${toToken}`,
-    },
-    {
-      from: toToken,
-      to: fromToken,
-      fromAddress: searchedParams.toAddress,
-      value: exchangeRates[1],
-      label: `${toToken}/${fromToken}`,
-    },
-  ]
+  const fromToken = tokensNameMapper[fromAddress]
+  const toToken = tokensNameMapper[toAddress]
+  return [{ from: fromToken, to: toToken, fromAddress, value, label: `${fromToken}/${toToken}` }]
 }
 
 export function getRouterWarningModal(

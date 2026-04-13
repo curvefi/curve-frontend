@@ -1,4 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui-kit/lib/i18n'
 import { Query } from '@ui-kit/types/util'
 import { decimalGreaterThan } from '@ui-kit/utils'
 
@@ -30,3 +31,13 @@ export const shouldBlockTransaction = (
   priceImpact: Query<Decimal | null>,
   { slippage, leverageEnabled }: { slippage: Decimal | null | undefined; leverageEnabled: boolean | undefined },
 ) => (leverageEnabled && priceImpact.data == null) || getPriceImpactSeverity(priceImpact, { slippage }) === 'error'
+
+export const getPriceImpactDisplay = (
+  priceImpact: Query<Decimal | null> | undefined,
+  { slippage }: { slippage: Decimal | null | undefined },
+) => {
+  const priceImpactSeverity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
+  const label = priceImpactSeverity ? t`High price impact` : t`Price impact`
+  const color = { error: 'error', warning: 'warning.main' }[priceImpactSeverity!]
+  return { label, color }
+}

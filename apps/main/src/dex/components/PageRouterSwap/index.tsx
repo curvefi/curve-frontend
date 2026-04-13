@@ -1,11 +1,9 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
-import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
-import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { DetailInfoTradeRoute } from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRoute'
 import { RouterSwapAlerts } from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
   FormStatus,
@@ -18,7 +16,7 @@ import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
@@ -27,11 +25,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
-import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import { getStepStatus } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector, useTokenSelectorData } from '@ui-kit/features/select-token'
@@ -42,11 +40,13 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal } from '@ui-kit/utils'
+import { q } from '@ui-kit/types/util'
+import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const { Spacing } = SizesAndSpaces
 
@@ -72,6 +72,7 @@ export const QuickSwap = ({
   const isSubscribed = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
+  const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
@@ -86,15 +87,14 @@ export const QuickSwap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const haveSigner = !!userAddress
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
-    !haveSigner,
+    !userAddress,
   )
 
-  const routesAndOutput = haveSigner ? rpcRoutesAndOutput : apiRoutes
+  const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
   const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
   const slippageImpact = routesAndOutput
@@ -426,11 +426,10 @@ export const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
-  const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading =
     !pageLoaded ||
-    (haveSigner ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
+    (userAddress ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
@@ -439,6 +438,14 @@ export const QuickSwap = ({
   const setToAmount = useCallback(
     (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
     [updateFormValues],
+  )
+  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(
+    {
+      data: decimal(routesAndOutput?.priceImpact),
+      error: null,
+      isLoading: routesAndOutputLoading,
+    },
+    { slippage: storeMaxSlippage as Decimal },
   )
 
   return (
@@ -485,7 +492,10 @@ export const QuickSwap = ({
             />
           </TokenSelector>
         }
-        message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+        message={
+          formValues.fromError &&
+          t`Amount > wallet balance ${formatNumber(userFromBalance as Decimal, { abbreviate: false })}`
+        }
       />
 
       {/* SWAP ICON */}
@@ -540,32 +550,45 @@ export const QuickSwap = ({
 
       {/* detail info */}
       <Stack>
-        <DetailInfoExchangeRate loading={routesAndOutputLoading} exchangeRates={routesAndOutput?.exchangeRates} />
-        <DetailInfoPriceImpact
+        <SlippageToleranceActionInfo
+          maxSlippage={storeMaxSlippage}
+          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
+          size="small"
+        />
+        <ActionInfo
+          label={priceImpactLabel}
+          value={routesAndOutput?.priceImpact == null ? '-' : formatPercent(routesAndOutput.priceImpact)}
+          valueColor={priceImpactColor}
           loading={routesAndOutputLoading}
-          priceImpact={routesAndOutput?.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact}
+          size="small"
+          testId="swap-price-impact"
+        />
+        <ActionInfo
+          label={t`Exchange rate`}
+          value={routesAndOutput?.exchangeRates.map(
+            ({ from, value, to }) => `1 ${from} = ${formatNumber(value as Decimal, { abbreviate: false })} ${to}`,
+          )}
+          loading={routesAndOutputLoading}
+          size="small"
+          testId="swap-exchange-rate"
         />
         <DetailInfoTradeRoute
           params={params}
           loading={routesAndOutputLoading}
           routes={routesAndOutput?.routes}
           tokensNameMapper={tokensNameMapper}
+          poolDataMapper={poolDataMapper}
         />
-
-        {haveSigner && (
-          <DetailInfoEstGas
-            chainId={chainId}
-            {...formEstGas}
-            loading={typeof formEstGas === 'undefined' && routesAndOutputLoading}
-            isDivider
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
+        {userAddress && (
+          <ActionInfoGasEstimate
+            gas={q({
+              data: formEstGas && { estGasCostUsd: formEstGas.estimatedGas },
+              isLoading: formEstGas?.loading,
+              error: null,
+            })}
+            isApproved={formStatus.isApproved}
           />
         )}
-        <SlippageToleranceActionInfo
-          maxSlippage={storeMaxSlippage}
-          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
-        />
       </Stack>
 
       {/* alerts */}
@@ -582,7 +605,7 @@ export const QuickSwap = ({
       />
 
       {/* actions */}
-      <FormConnectWallet loading={haveSigner && !steps.length}>
+      <FormConnectWallet loading={!!userAddress && !steps.length}>
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
       </FormConnectWallet>

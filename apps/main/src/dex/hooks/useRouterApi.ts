@@ -26,13 +26,10 @@ const calculateExchangeRates = (
   { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: TokensNameMapper,
 ) => {
-  const [rateAB, rateBA] = getExchangeRates(amountOut, fromAmount)
+  const [rateAB] = getExchangeRates(amountOut, fromAmount)
   const fromLabel = tokensNameMapper[fromAddress] ?? fromAddress
   const toLabel = tokensNameMapper[toAddress] ?? toAddress
-  return [
-    { from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` },
-    { from: toLabel, to: fromLabel, fromAddress: toAddress, value: rateBA, label: `${toLabel}/${fromLabel}` },
-  ]
+  return [{ from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` }]
 }
 
 /** Get max slippage from user profile store depending on route type */
