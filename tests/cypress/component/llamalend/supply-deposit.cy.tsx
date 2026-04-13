@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
+import { FormDisabledAlert } from '@/llamalend/llamalend.types'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { submitDepositForm, writeDepositForm } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
-import { createDepositScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
-  checkSupplyActionInfoValues,
-  checkSupplySubmitButtonText,
-} from '@cy/support/helpers/llamalend/supply/supply.helpers'
+  checkDepositSubmit,
+  submitDepositForm,
+  writeDepositForm,
+} from '@cy/support/helpers/llamalend/supply/deposit.helpers'
+import { createDepositScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
+import { checkSupplyActionInfoValues } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   llamaNetworks,
   resetLlamaTestContext,
@@ -16,15 +18,24 @@ import {
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
-const testCases = [
+const testCases: { approved: boolean; title: string; buttonText: string; depositAlert?: FormDisabledAlert }[] = [
   { approved: true, title: 'fills and submits (already approved)', buttonText: 'Deposit' },
   { approved: false, title: 'fills, approves, and submits', buttonText: 'Approve & Deposit' },
+  {
+    approved: true,
+    title: 'fills and cannot submit (market alert)',
+    buttonText: 'Deposit',
+    depositAlert: {
+      alertType: 'danger',
+      message: 'This market is deprecated after a donation attack.',
+    } as const,
+  },
 ]
 
 describe('DepositForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
-  testCases.forEach(({ approved, title, buttonText }) => {
+  testCases.forEach(({ approved, title, buttonText, depositAlert }) => {
     it(title, () => {
       const { input, market, llamaApi, expected, stubs } = createDepositScenario({ chainId, approved })
 
@@ -33,13 +44,19 @@ describe('DepositForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <DepositForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+          <DepositForm
+            market={market}
+            networks={llamaNetworks}
+            chainId={chainId}
+            depositDisabledAlert={depositAlert}
+            enabled
+          />
         </MockLoanTestWrapper>,
       )
 
       writeDepositForm({ amount: input.amount })
       checkSupplyActionInfoValues(expected.actionInfo)
-      checkSupplySubmitButtonText('deposit', buttonText)
+      checkDepositSubmit({ buttonText, depositAlert })
 
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
@@ -54,6 +71,8 @@ describe('DepositForm (mocked)', () => {
           expect(stubs.estimateGasDepositApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })
+
+      if (depositAlert) return
 
       submitDepositForm().then(() => {
         expect(stubs.deposit).to.have.been.calledWithExactly(...expected.submit)

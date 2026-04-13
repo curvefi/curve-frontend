@@ -1,5 +1,12 @@
+import type { FormDisabledAlert } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { checkSupplyActionInfoValues, submitSupplyForm, touchSupplyInput, writeSupplyInput } from './supply.helpers'
+import {
+  checkSupplyActionInfoValues,
+  checkSupplySubmitButtonText,
+  submitSupplyForm,
+  touchSupplyInput,
+  writeSupplyInput,
+} from './supply.helpers'
 
 export const submitDepositForm = () => submitSupplyForm('deposit', 'Deposit successful!')
 
@@ -8,6 +15,25 @@ export const submitDepositForm = () => submitSupplyForm('deposit', 'Deposit succ
  */
 export function writeDepositForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'deposit', amount })
+}
+
+/**
+ * Check the deposit submit state for enabled and disabled markets.
+ */
+export function checkDepositSubmit({
+  buttonText,
+  depositAlert,
+}: {
+  buttonText: string
+  depositAlert?: FormDisabledAlert
+}) {
+  if (depositAlert) {
+    cy.get('[data-testid="supply-deposit-submit-button"]').should('not.exist')
+    cy.get('[data-testid="alert-disable-form"]').should('exist')
+    return
+  }
+
+  checkSupplySubmitButtonText('deposit', buttonText)
 }
 
 /**
