@@ -306,6 +306,8 @@ export const createWithdrawScenario = ({
   } as const
   const currentApy = '0.0510'
   const futureApy = isFull ? '0.0540' : '0.0531'
+  const maxWithdraw = createStub(depositedShares)
+  const maxRedeem = createStub(depositedShares)
   const previewWithdraw = createStub(input.amount)
   const estimateGasWithdraw = createStub(`${142_000}`)
   const estimateGasRedeem = createStub(`${149_000}`)
@@ -319,6 +321,8 @@ export const createWithdrawScenario = ({
     currentApy,
     futureApy,
     vaultOverrides: {
+      maxWithdraw,
+      maxRedeem,
       previewWithdraw,
       withdraw,
       redeem,
@@ -337,6 +341,8 @@ export const createWithdrawScenario = ({
       walletBalances: [] as const,
       marketRates: [false, false] as const,
       futureRates: [decimalMinus('0', amount), '0'] as const,
+      maxWithdraw: [] as const,
+      maxRedeem: [] as const,
       previewWithdraw: [amount] as const,
       estimateGas: [submitAmount] as const,
       submit: [submitAmount] as const,
@@ -352,6 +358,8 @@ export const createWithdrawScenario = ({
     },
     stubs: {
       ...sharedStubs,
+      maxWithdraw,
+      maxRedeem,
       previewWithdraw,
       estimateGasWithdraw,
       estimateGasRedeem,
