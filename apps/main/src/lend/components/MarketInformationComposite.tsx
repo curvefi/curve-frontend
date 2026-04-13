@@ -40,12 +40,13 @@ export const MarketInformationComposite = ({
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const newBandsChartEnabled = useNewBandsChart()
+  const isBorrow = type === 'borrow'
   const blockchainId = networks[rChainId].id as Chain
 
   return (
     <Stack gap={PAGE_SPACING}>
-      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
-      {type === 'borrow' && !newBandsChartEnabled && (
+      {isBorrow && <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />}
+      {isBorrow && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
@@ -53,7 +54,7 @@ export const MarketInformationComposite = ({
 
       {useMarketHistoricalRatesChart() && (
         <>
-          <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />
+          {isBorrow && <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />}
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="supply" />
           <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
         </>
