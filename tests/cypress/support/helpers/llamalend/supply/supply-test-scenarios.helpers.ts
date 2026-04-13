@@ -130,8 +130,16 @@ const createBaseSupplyMarket = ({
   }
 }
 
-export const createDepositScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
-  const input = { amount: '12.5' as const }
+export const createDepositScenario = ({
+  chainId,
+  approved,
+  maxDeposit = '1000000',
+}: {
+  chainId: number
+  approved: boolean
+  maxDeposit?: Decimal
+}) => {
+  const input = { amount: '12.5' as const, maxDeposit }
   const amount = input.amount
   const amountArgs = [amount] as const
   const balances = {
@@ -144,6 +152,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
   const futureApy = '0.0412'
   const depositApprove = createStub([TEST_TX_HASH])
   const depositIsApproved = approved ? createStub(true) : createIsApprovedStub(depositApprove)
+  const maxDepositStub = createStub(input.maxDeposit)
   const previewDeposit = createStub(input.amount)
   const estimateGasDeposit = createStub(`${150_000}`)
   const estimateGasDepositApprove = createStub(`${95_000}`)
@@ -156,6 +165,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
     currentApy,
     futureApy,
     vaultOverrides: {
+      maxDeposit: maxDepositStub,
       previewDeposit,
       depositIsApproved,
       depositApprove,
@@ -175,6 +185,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
       walletBalances: [] as const,
       marketRates: [false, false] as const,
       futureRates: [amount, '0'] as const,
+      maxDeposit: [] as const,
       previewDeposit: amountArgs,
       isApproved: amountArgs,
       estimateGas: amountArgs,
@@ -193,6 +204,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
     },
     stubs: {
       ...sharedStubs,
+      maxDeposit: maxDepositStub,
       previewDeposit,
       depositIsApproved,
       depositApprove,

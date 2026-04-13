@@ -79,6 +79,7 @@ export const createMockLendEstimateGas = (): MockLendEstimateGas => ({
 
 export type MockLendVault = {
   estimateGas: MockLendEstimateGas
+  maxDeposit: MockMethod
   convertToAssets: MockMethod
   previewDeposit: MockMethod
   previewWithdraw: MockMethod
@@ -99,6 +100,7 @@ export type MockLendVault = {
 
 export const createMockLendVault = (): MockLendVault => ({
   estimateGas: createMockLendEstimateGas(),
+  maxDeposit: cy.stub().resolves('0'),
   convertToAssets: cy.stub().callsFake(async (shares: string) => shares),
   previewDeposit: cy.stub().resolves('0'),
   previewWithdraw: cy.stub().resolves('0'),

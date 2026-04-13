@@ -1,4 +1,5 @@
 import type { FormDisabledAlert } from '@/llamalend/llamalend.types'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkSupplyActionInfoValues,
@@ -23,13 +24,19 @@ export function writeDepositForm({ amount }: { amount: Decimal }) {
 export function checkDepositSubmit({
   buttonText,
   depositAlert,
+  maxDeposit,
 }: {
   buttonText: string
   depositAlert?: FormDisabledAlert
+  maxDeposit?: Decimal
 }) {
   if (depositAlert) {
     cy.get('[data-testid="supply-deposit-submit-button"]').should('not.exist')
     cy.get('[data-testid="alert-disable-form"]').should('exist')
+    return
+  }
+  if (maxDeposit) {
+    cy.get('[data-testid="supply-deposit-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
     return
   }
 
@@ -56,3 +63,12 @@ export function checkDepositDetailsLoaded({
  * Touch the deposit form to refresh state after submission.
  */
 export const touchDepositForm = () => touchSupplyInput('deposit')
+
+/**
+ * Verifies the deposit max-limit error is shown only when a maxDeposit is set.
+ */
+export const checkMaxDeposit = (maxDeposit?: Decimal) => {
+  cy.contains(`Amount exceeds maximum of${maxDeposit ? ' ' + maxDeposit : ''}`, LOAD_TIMEOUT).should(
+    maxDeposit ? 'be.visible' : 'not.exist',
+  )
+}

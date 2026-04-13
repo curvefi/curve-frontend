@@ -4,6 +4,7 @@ import { FormDisabledAlert } from '@/llamalend/llamalend.types'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkDepositSubmit,
+  checkMaxDeposit,
   submitDepositForm,
   writeDepositForm,
 } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
@@ -15,12 +16,20 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
-const testCases: { approved: boolean; title: string; buttonText: string; depositAlert?: FormDisabledAlert }[] = [
+const testCases: {
+  approved: boolean
+  title: string
+  buttonText: string
+  depositAlert?: FormDisabledAlert
+  maxDeposit?: Decimal
+}[] = [
   { approved: true, title: 'fills and submits (already approved)', buttonText: 'Deposit' },
   { approved: false, title: 'fills, approves, and submits', buttonText: 'Approve & Deposit' },
+  { approved: true, title: 'fills and cannot submit (max deposit limit)', buttonText: 'Deposit', maxDeposit: '5' },
   {
     approved: true,
     title: 'fills and cannot submit (market alert)',
@@ -35,9 +44,9 @@ const testCases: { approved: boolean; title: string; buttonText: string; deposit
 describe('DepositForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
-  testCases.forEach(({ approved, title, buttonText, depositAlert }) => {
+  testCases.forEach(({ approved, title, buttonText, depositAlert, maxDeposit }) => {
     it(title, () => {
-      const { input, market, llamaApi, expected, stubs } = createDepositScenario({ chainId, approved })
+      const { input, market, llamaApi, expected, stubs } = createDepositScenario({ chainId, approved, maxDeposit })
 
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks: llamaNetworks })
@@ -55,8 +64,10 @@ describe('DepositForm (mocked)', () => {
       )
 
       writeDepositForm({ amount: input.amount })
+      checkMaxDeposit(maxDeposit)
+      checkDepositSubmit({ buttonText, depositAlert, maxDeposit })
+      if (maxDeposit) return
       checkSupplyActionInfoValues(expected.actionInfo)
-      checkDepositSubmit({ buttonText, depositAlert })
 
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
