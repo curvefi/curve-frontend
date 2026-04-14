@@ -578,6 +578,7 @@ export const QuickSwap = ({
           routes={routesAndOutput?.routes}
           tokensNameMapper={tokensNameMapper}
           poolDataMapper={poolDataMapper}
+          swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
         />
         {userAddress && (
           <ActionInfoGasEstimate
