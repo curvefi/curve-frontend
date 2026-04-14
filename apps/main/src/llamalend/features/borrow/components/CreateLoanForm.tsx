@@ -14,7 +14,6 @@ import { AlertBox } from '@ui/AlertBox'
 import type { AlertType } from '@ui/AlertBox/types'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
@@ -121,17 +120,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           hideBalance
           testId="borrow-debt-input"
           network={network}
-          message={
-            <Balance
-              prefix={t`Max borrow:`}
-              tooltip={t`Max borrow`}
-              symbol={borrowToken?.symbol}
-              balance={values.maxDebt}
-              loading={maxDebt.isLoading}
-              onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
-              buttonTestId="borrow-set-debt-to-max"
-            />
-          }
+          message={`${t`Max borrow:`} ${values.maxDebt ?? '-'} ${borrowToken?.symbol}`}
         />
       </Stack>
 
