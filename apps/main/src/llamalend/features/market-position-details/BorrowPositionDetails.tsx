@@ -1,4 +1,4 @@
-import { Alert, Stack, Typography } from '@mui/material'
+import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowInformation } from './BorrowInformation'
@@ -46,29 +46,31 @@ export type BorrowPositionDetailsProps = {
 
 const alerts = {
   soft: {
-    title: t`Liquidation protection active`,
-    description: (
-      <>
-        {t`Price has entered the liquidation range and your collateral is at risk. Either close position or add collateral to improve health. While soft liquidation is active, health steadily declines based on market volatility and liquidity available in the liquidation range.`}
-        <br />
-        <br />
-        <strong>{t`If health reaches 0 all collateral is at risk of loss.`}</strong>
-      </>
-    ),
+    title: t`Soft-liquidation active`,
+    description: t`Your position is inside the liquidation range and is being rebalanced by LLAMMA. This can reduce collateral over time. Repay debt or close the position to lower risk. If health falls below 0, the position becomes eligible for hard liquidation.`,
+    severity: 'warning',
   },
   hard: {
     title: t`Liquidation protection disabled`,
     description: t`Health has reached 0 and your position can now be liquidated at any time and all collateral lost. To recover remaining collateral (minus fees), repay your debt and withdraw promptly.`,
+    severity: 'error',
   },
-}
+} as const
 
 const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
-  const { title, description } = alerts[type]
+  const { title, description, severity } = alerts[type]
 
   return (
-    <Alert variant="outlined" severity="error">
-      <Stack display="flex" flexDirection="column">
-        <Typography variant="bodySBold">{title}</Typography>
+    <Alert
+      variant="outlined"
+      severity={severity}
+      sx={{
+        // remove the max width as the component is wider than 90characters
+        '& .MuiAlert-message': { maxWidth: 'none' },
+      }}
+    >
+      <AlertTitle>{title}</AlertTitle>
+      <Stack>
         <Typography variant="bodyXsRegular">{description}</Typography>
       </Stack>
     </Alert>
@@ -87,12 +89,7 @@ export const BorrowPositionDetails = ({
   <Stack padding={Spacing.md} gap={Spacing.md}>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
-    <Stack
-      direction={'column'}
-      display={{ tablet: 'flex', desktop: 'grid' }}
-      gridTemplateColumns={'1fr 1fr'}
-      gap={Spacing.md}
-    >
+    <Stack gap={Spacing.md}>
       <HealthDetails health={health} liquidationAlert={liquidationAlert} />
       <BorrowInformation
         collateralValue={collateralValue}
