@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { AlertType } from '@ui/AlertBox/types'
 import type { BaseConfig } from '@ui/utils'
 
 export type LlamaNetwork<ChainId extends IChainId = IChainId> = BaseConfig<INetworkName, ChainId>
@@ -17,4 +18,9 @@ export type HealthMode = {
   message: string | null
   warningTitle: string
   warning: string
+}
+
+export type FormDisabledAlert = {
+  alertType?: AlertType
+  message?: ReactNode
 }

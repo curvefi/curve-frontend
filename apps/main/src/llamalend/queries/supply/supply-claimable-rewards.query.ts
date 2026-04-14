@@ -1,7 +1,12 @@
 import { Address } from 'viem'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
-import { claimableRewardsValidationSuite, requireVault, requireGauge } from '../validation/supply.validation'
+import {
+  claimableCrvValidationSuite,
+  claimableRewardsValidationSuite,
+  requireVault,
+  requireGauge,
+} from '../validation/supply.validation'
 
 export type ClaimableReward = { token: Address; symbol: string; amount: Decimal }
 
@@ -20,5 +25,5 @@ export const { useQuery: useClaimableCrv, fetchQuery: fetchClaimableCrv } = quer
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireVault(marketId).vault.claimableCrv(userAddress)) as Decimal,
   category: 'llamalend.supply',
-  validationSuite: claimableRewardsValidationSuite,
+  validationSuite: claimableCrvValidationSuite,
 })

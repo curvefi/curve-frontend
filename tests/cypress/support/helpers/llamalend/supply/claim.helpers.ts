@@ -1,4 +1,4 @@
-import { encodeFunctionData, parseAbi, type Address } from 'viem'
+import { type Address, encodeFunctionData, parseAbi } from 'viem'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
@@ -96,19 +96,16 @@ const touchClaimForm = (type: string) => {
 export function validateClaimTabState({
   crvButtonDisabled = true,
   otherRewardsButtonDisabled = true,
+  noRewards = crvButtonDisabled && otherRewardsButtonDisabled,
 }: {
   crvButtonDisabled?: boolean
   otherRewardsButtonDisabled?: boolean
+  noRewards?: boolean
 } = {}) {
   getClaimSubmitButton('crv').should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   getClaimSubmitButton('other').should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
-
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-
-  if (crvButtonDisabled && otherRewardsButtonDisabled) {
-    cy.contains('No rewards').should('be.visible')
-    cy.contains('There are currently no rewards to claim').should('be.visible')
-  }
+  cy.get('[data-testid="supply-claim-empty-state"]', LOAD_TIMEOUT).should(noRewards ? 'be.visible' : 'not.exist')
 }
 
 /**

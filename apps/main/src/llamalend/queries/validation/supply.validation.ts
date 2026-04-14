@@ -148,6 +148,10 @@ const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketPa
   validateHasVault(params.marketId)
 }
 
+export const supplyUserValidationSuite = createValidationSuite<UserMarketParams>((params) => {
+  supplyUserValidationGroup(params)
+})
+
 export const depositValidationSuite = createValidationSuite((params: DepositParams) => {
   supplyUserValidationGroup(params)
   validateDepositAmount(params.depositAmount, { depositRequired: true })
@@ -156,6 +160,10 @@ export const depositValidationSuite = createValidationSuite((params: DepositPara
 export const claimableRewardsValidationSuite = createValidationSuite((params: UserMarketParams) => {
   supplyUserValidationGroup(params)
   validateHasGauge(params.marketId)
+})
+
+export const claimableCrvValidationSuite = createValidationSuite((params: UserMarketParams) => {
+  supplyUserValidationGroup(params)
 })
 
 export const claimValidationSuite = createValidationSuite((params: UserMarketParams) => {
