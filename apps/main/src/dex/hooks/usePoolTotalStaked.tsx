@@ -78,7 +78,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
         }
       })()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curveApi?.signerAddress, curveApi?.chainId, address, rpcUrl, walletProvider])
 
   return staked

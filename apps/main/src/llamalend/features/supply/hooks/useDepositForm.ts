@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
+import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
@@ -13,9 +14,8 @@ import {
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
   depositAmount: undefined,
@@ -36,12 +36,6 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   const marketId = market?.id
 
   const { borrowToken } = market ? getTokens(market) : {}
-
-  const maxUserDeposit = useTokenBalance({
-    chainId,
-    userAddress,
-    tokenAddress: borrowToken?.address,
-  })
 
   const form = useForm<DepositForm>({
     ...formDefaultOptions,
@@ -76,8 +70,6 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
 
   const { formState } = form
 
-  useFormSync(form, { maxDepositAmount: maxUserDeposit.data })
-
   const isPending = formState.isSubmitting || isDepositing
   return {
     form,
@@ -87,7 +79,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || isPending || isDebouncing,
     borrowToken,
     depositError,
-    max: maxUserDeposit,
+    max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }, enabled),
     isApproved: useDepositIsApproved(params, enabled),
     formErrors: useFormErrors(formState),
   }

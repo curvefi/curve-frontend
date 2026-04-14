@@ -41,6 +41,8 @@ export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): 
 
 export const decimalNegate = (value: Decimal): Decimal => new BigNumber(value).negated().toFixed() as Decimal
 
+export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first).isEqualTo(second)
+
 export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber(first).isGreaterThan(second)
 
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */

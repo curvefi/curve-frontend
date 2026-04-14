@@ -196,7 +196,7 @@ export const CollateralDecrease = ({
     if (haveSigner && chainId && llamma) {
       init(chainId, llamma)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, haveSigner, init, llamma?.id])
 
   // steps
@@ -213,7 +213,7 @@ export const CollateralDecrease = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [confirmedHealthWarning, healthMode?.message, llamma?.id, haveSigner, formEstGas.loading, formStatus, formValues])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null

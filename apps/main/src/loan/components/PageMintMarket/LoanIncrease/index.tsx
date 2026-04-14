@@ -245,7 +245,7 @@ export const LoanIncrease = ({
     if (isReady && chainId && llamma) {
       void init(chainId, llamma)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, chainId, llamma])
 
   // steps
@@ -263,7 +263,7 @@ export const LoanIncrease = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [confirmedHealthWarning, healthMode?.message, llamma?.id, haveSigner, formEstGas.loading, formStatus, formValues])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null

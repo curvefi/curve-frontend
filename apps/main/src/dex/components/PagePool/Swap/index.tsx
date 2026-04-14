@@ -295,7 +295,7 @@ export const Swap = ({
     if (poolId) {
       resetState(poolData)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // get user balances
@@ -310,13 +310,13 @@ export const Swap = ({
     if (chainId && poolId) {
       updateFormValues({}, null, null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // maxSlippage
   useEffect(() => {
     updateFormValues({}, null, maxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // steps
@@ -338,7 +338,7 @@ export const Swap = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     config,
     chainId,
@@ -355,7 +355,7 @@ export const Swap = ({
   ])
 
   // pageVisible
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line @eslint-react/exhaustive-deps
   useEffect(() => fetchData(), [isPageVisible])
 
   // re-fetch data

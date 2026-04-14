@@ -40,7 +40,7 @@ export const useFormSync = <TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
   values: FormUpdates<TFieldValues>,
 ) =>
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line @eslint-react/exhaustive-deps
   useEffect(() => updateForm(form, values, { automated: true }), [...Object.values(values), form])
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>

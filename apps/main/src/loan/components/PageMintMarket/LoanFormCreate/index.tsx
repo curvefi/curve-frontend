@@ -88,7 +88,7 @@ const useFetchInitial = ({
     if (loaded && curve && llamma) {
       void setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   return fetchInitial
@@ -323,7 +323,7 @@ export const LoanFormCreate = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     confirmedHealthWarning,
     healthMode?.message,
@@ -339,7 +339,7 @@ export const LoanFormCreate = ({
 
   useEffect(() => {
     updateFormValues(formValues)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [haveSigner])
 
   return (

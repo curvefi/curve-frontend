@@ -37,7 +37,7 @@ export const Withdraw = (transferProps: TransferProps) => {
     if (poolData) {
       resetState(poolData, 'WITHDRAW')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id])
 
   return (

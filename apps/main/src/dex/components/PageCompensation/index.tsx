@@ -101,7 +101,7 @@ export const FormCompensation = ({
       void getBalances(signerAddress, contracts)
       void getVestContract(signerAddress, contracts)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [signerAddress])
 
   return (

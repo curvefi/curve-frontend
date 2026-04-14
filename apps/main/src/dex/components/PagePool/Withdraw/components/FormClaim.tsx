@@ -135,7 +135,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (poolId) {
       resetState(poolData, 'CLAIM')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -143,7 +143,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (chainId && poolId) {
       updateFormValues()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // fetch claimable
@@ -151,7 +151,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (chainId && poolData && haveSigner) {
       void fetchClaimable(activeKey, chainId, poolData.pool)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress])
 
   // steps
@@ -160,7 +160,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging, seed.isSeed)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolData, slippageConfirmed, signerAddress, formValues, formStatus, rewardsNeedNudging, seed.isSeed])
 
   const handleBtnClick = (isClaimCrv: boolean, isClaimRewards: boolean) => {

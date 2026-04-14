@@ -135,7 +135,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
   useEffect(() => {
     if (isLoaded) updateFormValues()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -144,7 +144,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formStatus, haveClaimableCrv, haveClaimableRewards])
 
   return (

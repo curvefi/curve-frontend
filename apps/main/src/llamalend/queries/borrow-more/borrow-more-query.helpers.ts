@@ -58,7 +58,7 @@ export function getBorrowMoreImplementationArgs(
       userBorrowed,
       dDebt: debt,
       debt,
-      ...parseMutationRoute(routeId, +(slippage ?? 0)),
+      ...parseMutationRoute(routeId, slippage ?? '0', impl),
     }
     return [type, impl, [routerArgs]] as const
   }
