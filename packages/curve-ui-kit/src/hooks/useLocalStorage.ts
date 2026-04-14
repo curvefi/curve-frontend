@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
@@ -86,8 +87,13 @@ export const useFavoriteMarkets = () => {
 
 export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-visible', false)
 
-export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
+/**
+ * Returns a tuple containing a boolean indicating whether the banner should be shown, and a function to dismiss the banner.
+ * Do NOT export this hook, as it directly exposes local storage keys!
+ */
+const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Banner = 'Monthly') => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
+  const expirationTime = Duration.Banner[frequency]
 
   const shouldShowBanner = useMemo(
     // eslint-disable-next-line react-hooks/purity
@@ -95,9 +101,16 @@ export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
     [dismissedAt, expirationTime],
   )
 
-  const dismissBanner = useCallback(() => {
-    setDismissedAt(Date.now())
-  }, [setDismissedAt])
+  const dismissBanner = useCallback(() => setDismissedAt(Date.now()), [setDismissedAt])
 
-  return { shouldShowBanner, dismissBanner }
+  return [shouldShowBanner, dismissBanner] as const
 }
+
+export const useDismissAaveBanner = () => useDismissBanner('aave-v2-frozen-avalanche-polygon')
+
+export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
+
+export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-dismissed')
+
+export const useDismissPoolBanner = (network: string, poolId: string) =>
+  useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
