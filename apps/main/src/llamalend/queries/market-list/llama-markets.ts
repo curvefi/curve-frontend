@@ -1,21 +1,23 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { ethAddress, isAddressEqual } from 'viem'
+import { useConnection } from 'wagmi'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { type PartialRecord, recordValues } from '@primitives/objects.utils'
-import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
-import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { useQueries } from '@tanstack/react-query'
+import { type CampaignPoolRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
-import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
   getLendingVaultsOptions,
@@ -461,7 +463,10 @@ type LlamaMarketsQueries = [
  * @param userAddress - The user's address
  * @param enabled - Whether the query is enabled
  */
-export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
+export const useLlamaMarkets = (
+  { userAddress, enableLLv2 }: { userAddress: Address | undefined; enableLLv2: boolean },
+  enabled = true,
+) =>
   useQueries({
     queries: useMemo<LlamaMarketsQueries>(
       () => [
@@ -480,7 +485,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
         if (!enabled) {
           // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
-          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined }
+          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined, error: null }
         }
         const [
           lendingVaults,
@@ -534,13 +539,33 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   ),
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
-                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || isLLv2Enabled()) &&
+                    (createdAt <= LLAMMALEND_V2_DATE.getTime() || enableLLv2) &&
                     (!deprecatedMessage || userHasPositions),
                 ),
               }
             : undefined
         return { ...combineQueriesMeta(results), data }
       },
-      [enabled, userAddress],
+      [enabled, userAddress, enableLLv2],
     ),
   })
+
+export const useLlamaMarket = ({
+  blockchainId,
+  controllerAddress,
+}: {
+  blockchainId: Chain | undefined
+  controllerAddress: Address | undefined
+}) =>
+  useMappedQuery(
+    useLlamaMarkets({ userAddress: useConnection().address, enableLLv2: useLLv2() }),
+    useCallback(
+      ({ markets }) =>
+        blockchainId &&
+        controllerAddress &&
+        markets?.find(
+          (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
+        ),
+      [blockchainId, controllerAddress],
+    ),
+  )

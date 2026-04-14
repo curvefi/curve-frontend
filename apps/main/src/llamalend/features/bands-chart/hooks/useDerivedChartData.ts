@@ -30,7 +30,7 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
 
       marketData.push(marketBandValue)
       userData.push(userBandValue)
-      isLiquidation.push(d.isLiquidationBand === 'SL')
+      isLiquidation.push(d.isLiquidationBand)
     }
 
     return { yAxisData, marketData, userData, isLiquidation }

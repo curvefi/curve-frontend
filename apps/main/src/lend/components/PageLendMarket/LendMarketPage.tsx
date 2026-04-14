@@ -15,10 +15,13 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
+import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -29,7 +32,6 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { MarketAlertBanner } from '../MarketAlertBanner'
 
 export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
@@ -60,6 +62,7 @@ export const LendMarketPage = () => {
 
   const [isLoaded, setLoaded] = useState(false)
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
+  const controllerAddress = getControllerAddress(market)
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Lend,
     chainId,
@@ -69,13 +72,18 @@ export const LendMarketPage = () => {
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.addresses?.controller as Address | undefined,
+    controllerAddress,
     userAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
     network,
   })
   const marketAlert = useMarketAlert(chainId, market?.id)
+  const { data: solvencyMarket } = useSolvencyMarket({
+    type: LlamaMarketType.Lend,
+    blockchainId: network.id,
+    controllerAddress,
+  })
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -145,6 +153,8 @@ export const LendMarketPage = () => {
       }
     >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+
+      {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
           chainId={chainId}

@@ -6,6 +6,7 @@ import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@
 import { type default as llamaApi } from '@curvefi/llamalend-api'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { AppName } from '@ui-kit/shared/routes'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 export type Wallet = {
   readonly provider?: Eip1193Provider
@@ -60,7 +61,8 @@ export type Hydrator<App extends AppName> = (
   config: Config,
   lib: AppLib<App>,
   prevLib: AppLib<App> | undefined,
-  wallet?: Wallet,
+  wallet: Wallet | undefined,
+  releaseChannel: ReleaseChannel,
 ) => Promise<void>
 export type HydratorMap = { [A in AppName]?: Hydrator<A> }
 
