@@ -16,7 +16,6 @@ import { joinButtonText } from '@primitives/string.utils'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
@@ -93,11 +92,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const swapRequired = selectedToken !== borrowToken
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const {
-    data: maxAmountInBorrowToken,
-    isLoading: maxAmountInBorrowTokenLoading,
-    error: maxAmountInBorrowTokenError,
-  } = useTokenAmountConversion({
+  const { data: maxAmountInBorrowToken } = useTokenAmountConversion({
     chainId,
     amountIn: max[selectedField],
     tokenInAddress: selectedToken?.address,
@@ -162,22 +157,8 @@ export const RepayForm = <ChainId extends IChainId>({
             tokens={tokens}
           />
         }
-        message={
-          maxAmountInBorrowTokenError?.message ?? (
-            <Balance
-              prefix={maxAmountPrefix}
-              tooltip={t`Max available to repay`}
-              symbol={borrowToken?.symbol}
-              balance={maxAmountInBorrowToken}
-              loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-              onClick={() =>
-                updateForm(form, {
-                  [selectedField]: max[selectedField].data,
-                })
-              }
-            />
-          )
-        }
+        message={`${maxAmountPrefix} ${maxAmountInBorrowToken ?? '-'} ${borrowToken?.symbol}`}
+        onMessageNumberClick={() => updateForm(form, { [selectedField]: max[selectedField].data })}
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={{ leverageEnabled: swapRequired, ...params }} />
 

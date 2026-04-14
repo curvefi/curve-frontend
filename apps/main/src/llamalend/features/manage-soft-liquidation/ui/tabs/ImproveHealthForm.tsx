@@ -11,7 +11,6 @@ import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
@@ -91,16 +90,7 @@ export const ImproveHealthForm = ({
         max={{ ...q(maxRepay), fieldName: maxRepay.field }}
         testId="improve-health-input-debt"
         network={network}
-        message={
-          <Balance
-            prefix={t`Max repay amount:`}
-            tooltip={t`Max available to repay`}
-            symbol={borrowToken?.symbol}
-            balance={maxRepay.data}
-            loading={maxRepay.isLoading}
-            onClick={() => updateForm(form, { userBorrowed: maxRepay.data })}
-          />
-        }
+        message={`${t`Max repay amount:`} ${maxRepay.data ?? '-'} ${borrowToken?.symbol}`}
       />
 
       <AlertRepayDebtToIncreaseHealth />
