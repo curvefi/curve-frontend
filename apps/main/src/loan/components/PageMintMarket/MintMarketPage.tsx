@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -14,7 +17,6 @@ import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
@@ -44,6 +46,12 @@ export const MintMarketPage = () => {
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
+  const controllerAddress = getControllerAddress(market)
+  const { data: solvencyMarket } = useSolvencyMarket({
+    type: LlamaMarketType.Mint,
+    blockchainId: network.id,
+    controllerAddress,
+  })
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
     chainId: rChainId,
@@ -53,7 +61,7 @@ export const MintMarketPage = () => {
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.controller as Address | undefined,
+    controllerAddress,
     userAddress: curve?.signerAddress,
     collateralToken: market
       ? {
@@ -117,6 +125,7 @@ export const MintMarketPage = () => {
         />
       }
     >
+      {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}

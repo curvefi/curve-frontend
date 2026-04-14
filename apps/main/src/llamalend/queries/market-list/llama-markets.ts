@@ -1,6 +1,6 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { ethAddress, isAddressEqual } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
@@ -482,7 +482,7 @@ export const useLlamaMarkets = (
       (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
         if (!enabled) {
           // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
-          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined }
+          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined, error: null }
         }
         const [
           lendingVaults,
@@ -546,3 +546,27 @@ export const useLlamaMarkets = (
       [enabled, userAddress, enableLLv2],
     ),
   })
+
+export const useLlamaMarket = (
+  {
+    blockchainId,
+    controllerAddress,
+  }: {
+    blockchainId: Chain | undefined
+    controllerAddress: Address | undefined
+  },
+  enabled: boolean | undefined = true,
+) => {
+  const llamaMarketsQuery = useLlamaMarkets(undefined, enabled && !!blockchainId && !!controllerAddress)
+  const markets = llamaMarketsQuery.data?.markets
+
+  const data = useMemo(
+    () =>
+      blockchainId &&
+      controllerAddress &&
+      markets?.find((item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress)),
+    [blockchainId, controllerAddress, markets],
+  )
+
+  return { ...llamaMarketsQuery, data }
+}
