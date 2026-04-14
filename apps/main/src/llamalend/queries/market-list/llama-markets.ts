@@ -11,6 +11,7 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -557,7 +558,10 @@ export const useLlamaMarket = (
   },
   enabled: boolean | undefined = true,
 ) => {
-  const llamaMarketsQuery = useLlamaMarkets(undefined, enabled && !!blockchainId && !!controllerAddress)
+  const llamaMarketsQuery = useLlamaMarkets(
+    { userAddress: undefined, enableLLv2: useLLv2() },
+    enabled && !!blockchainId && !!controllerAddress,
+  )
   const markets = llamaMarketsQuery.data?.markets
 
   const data = useMemo(
