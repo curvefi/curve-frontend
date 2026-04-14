@@ -15,14 +15,6 @@ export type MarketAlert = TooltipProps & {
   message?: ReactNode
 }
 
-const badDebtBannerAlert: MarketAlert = {
-  alertType: 'warning',
-  banner: {
-    title: t`Bad debt`,
-    subtitle: t`This market has bad debt, supplying crvUSD in this market is currently not recommended.`,
-  },
-}
-
 type Alerts = { [chainId: number]: { [owmId: string]: MarketAlert } }
 
 export const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
@@ -45,10 +37,6 @@ export const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
           isDisableDeposit: true,
           message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
         },
-      },
-      [Chain.Fraxtal]: {
-        'one-way-market-2': badDebtBannerAlert,
-        'one-way-market-4': badDebtBannerAlert,
       },
     }
 

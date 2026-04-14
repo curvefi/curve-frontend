@@ -28,8 +28,6 @@ import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { constQ, type Range } from '@ui-kit/types/util'
 
-const prefetch = () => prefetchMarkets({})
-
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
 const LoanComponents = {
   'borrow-more': BorrowMoreForm,
@@ -88,16 +86,16 @@ function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTest
 
 export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
 
-export const LlammalendTestCase = ({ vnet, privateKey, ...props }: LlammalendTestCaseProps) => (
+export const LlammalendTestCase = ({ vnet, privateKey, chainId, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider
       app="llamalend"
-      network={llamaNetworks[props.chainId]}
+      network={llamaNetworks[chainId]}
       onChainUnavailable={console.error}
-      hydrate={{ llamalend: prefetch }}
+      hydrate={useMemo(() => ({ llamalend: () => prefetchMarkets({ chainId, enableLLv2: true }) }), [chainId])}
     >
       <Box sx={{ maxWidth: 520 }}>
-        <LlammalendTest {...props} />
+        <LlammalendTest {...props} chainId={chainId} />
       </Box>
     </CurveProvider>
   </ComponentTestWrapper>

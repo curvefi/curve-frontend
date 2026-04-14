@@ -4,6 +4,7 @@ import { formatCollateralNotional, getUtilizationPercent } from '@/llamalend/lla
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   MaxLeverageTooltip,
+  SolvencyTooltip,
   TotalCollateralTooltip,
   UtilizationTooltip,
   TooltipOptions,
@@ -49,7 +50,7 @@ const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityVal
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { collateral, availableLiquidity, maxLeverage } = useAdvancedDetailsData({
+  const { collateral, availableLiquidity, maxLeverage, solvency } = useAdvancedDetailsData({
     chainId,
     market,
     marketId,
@@ -92,6 +93,18 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         valueTooltip={{
           title: t`Total Collateral`,
           body: <TotalCollateralTooltip {...collateral} />,
+          ...TooltipOptions,
+        }}
+      />
+      <Metric
+        size="small"
+        label={t`Solvency`}
+        value={solvency?.value}
+        loading={solvency?.loading}
+        valueOptions={{ unit: 'percentage' }}
+        valueTooltip={{
+          title: t`Solvency`,
+          body: <SolvencyTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
       />

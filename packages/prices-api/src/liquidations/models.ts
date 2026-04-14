@@ -67,5 +67,11 @@ export type TotalOverview = {
   liquidatablePositions: number
   liquidatablePosDebtUsd: number
   liquidatableCollateralUsd: number
-  liquidatableBorrowedUsd: number
+  liquidatableBorrowedUsd: number | null
+  liquidatableStablecoinUsd: number | null
 }[]
+
+export type BadDebt = (TotalOverview[number] & {
+  market: string
+  controllerAddress: Address
+})[]
