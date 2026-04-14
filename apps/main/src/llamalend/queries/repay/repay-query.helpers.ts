@@ -51,7 +51,7 @@ export function getRepayImplementation(
             stateCollateral,
             userCollateral,
             userBorrowed,
-            ...((routeMeta as RouteMutationMeta) ?? parseMutationRoute(routeId, +(slippage ?? 0))),
+            ...((routeMeta as RouteMutationMeta) ?? parseMutationRoute(routeId, +(slippage ?? 0), market.coinDecimals)),
           },
         ],
       ] as const

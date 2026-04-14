@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { formatUnits } from 'viem'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
@@ -25,10 +26,14 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
  * Like parseRoute, but also computes minRecv from outAmount and slippage.
  * minRecv = outAmount * (100 - slippage) / 100
  */
-export const parseMutationRoute = (routeId: string | undefined, slippage: Amount): RouteMutationMeta => {
+export const parseMutationRoute = (
+  routeId: string | undefined,
+  slippage: Amount,
+  [, collateralDecimals]: number[],
+): RouteMutationMeta => {
   const route = parseRoute(routeId)
-  const minReceive = BigNumber(route.quote.outAmount).times(BigNumber(100).minus(slippage)).div(100).toString()
-  return { ...route, minRecv: minReceive }
+  const minReceive = BigInt(BigNumber(route.quote.outAmount).times(BigNumber(100).minus(slippage)).div(100).toFixed(0))
+  return { ...route, minRecv: formatUnits(minReceive, collateralDecimals) }
 }
 
 /**
