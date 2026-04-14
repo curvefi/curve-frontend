@@ -39,16 +39,23 @@ const validateRepayHasValue = (
   stateCollateral: Decimal | null | undefined,
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
-) =>
-  test(
-    stateCollateral ? 'stateCollateral' : userCollateral ? 'userCollateral' : 'userBorrowed',
-    'Enter an amount to repay',
-    () => {
-      enforce(stateCollateral ?? userCollateral ?? userBorrowed)
-        .isDecimal()
-        .greaterThan(0)
-    },
-  )
+) => {
+  const activeField = stateCollateral
+    ? ('stateCollateral' as const)
+    : userCollateral
+      ? ('userCollateral' as const)
+      : ('userBorrowed' as const)
+  const validate = (field: typeof activeField, value: Decimal | null | undefined) => {
+    skipWhen(activeField !== field, () => {
+      test(field, 'Enter an amount to repay', () => {
+        enforce(value).isDecimal().greaterThan(0)
+      })
+    })
+  }
+  validate('stateCollateral', stateCollateral)
+  validate('userCollateral', userCollateral)
+  validate('userBorrowed', userBorrowed)
+}
 
 const validateRepayFieldsForMarket = (
   marketId: LlamaMarketTemplate | string | null | undefined,
