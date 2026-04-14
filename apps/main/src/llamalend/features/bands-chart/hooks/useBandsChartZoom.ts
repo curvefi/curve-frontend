@@ -1,4 +1,5 @@
 import type { EChartsOption } from 'echarts-for-react'
+import { sum, zip } from 'lodash'
 import { useMemo } from 'react'
 import { PRICE_SCALE_MARGINS } from '@ui-kit/features/candle-chart'
 import { ChartDataPoint, DerivedChartData } from '../types'
@@ -26,11 +27,9 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
     const yMin = priceRange.min - PRICE_SCALE_MARGINS.bottom * fullSpan
     const yMax = priceRange.max + PRICE_SCALE_MARGINS.top * fullSpan
 
+    const totals = zip(derived.marketData, derived.userCollateralData, derived.userBorrowedData).map(sum)
     const visibleMax = chartData.reduce(
-      (max, d, i) =>
-        d.p_up >= yMin && d.p_down <= yMax
-          ? Math.max(max, derived.marketData[i] + derived.userCollateralData[i] + derived.userBorrowedData[i])
-          : max,
+      (max, d, i) => (d.p_up >= yMin && d.p_down <= yMax ? Math.max(max, totals[i]) : max),
       0,
     )
     const xMax = visibleMax > 0 ? visibleMax * CHART_PADDING_MULTIPLIER : undefined

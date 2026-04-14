@@ -1,4 +1,5 @@
 import type { EChartsOption } from 'echarts-for-react'
+import { sum, zip } from 'lodash'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { formatNumberWithOptions } from './bands-chart.utils'
 import { generateMarkLines } from './markLines'
@@ -132,12 +133,7 @@ export const getChartOptions = (
   // Calculate x-axis extent for markLines (max endX value across all series)
   // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
   // endX is at index 6, and for the full extent we need marketWidth + userWidth
-  const xEnd = Math.max(
-    ...chartData.map(
-      (_, i) =>
-        (derived.marketData[i] ?? 0) + (derived.userCollateralData[i] ?? 0) + (derived.userBorrowedData[i] ?? 0),
-    ),
-  )
+  const xEnd = Math.max(...zip(derived.marketData, derived.userCollateralData, derived.userBorrowedData).map(sum))
   const xStart = 0
 
   // Generate mark areas using exact price edges
