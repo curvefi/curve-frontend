@@ -47,8 +47,7 @@ export function getBorrowMoreImplementationArgs(
     slippage?: BorrowMoreQuery['slippage']
   },
 ) {
-  const market = getLlamaMarket(marketId)
-  const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
+  const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
   if (type === 'unleveraged') {
     if (+userBorrowed) throw new Error(`Invalid userBorrowed for unleveraged borrow more: ${userBorrowed}`)
     return [type, impl, [userCollateral, debt]] as const
@@ -59,7 +58,7 @@ export function getBorrowMoreImplementationArgs(
       userBorrowed,
       dDebt: debt,
       debt,
-      ...parseMutationRoute(routeId, +(slippage ?? 0), market.coinDecimals),
+      ...parseMutationRoute(routeId, slippage ?? '0', impl),
     }
     return [type, impl, [routerArgs]] as const
   }

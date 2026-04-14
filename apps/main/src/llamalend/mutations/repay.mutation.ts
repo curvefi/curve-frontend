@@ -69,7 +69,7 @@ const repay = async (
         stateCollateral,
         userCollateral,
         userBorrowed,
-        ...parseMutationRoute(routeId, slippage, market.coinDecimals),
+        ...parseMutationRoute(routeId, slippage, impl),
       })) as Hex
     case 'V1':
     case 'V2':

@@ -1,8 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { formatUnits } from 'viem'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
+import { ILeverageZapV2 } from '@curvefi/llamalend-api/lib/lendMarkets/interfaces/leverageZapV2'
 import type { Address } from '@primitives/address.utils'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
@@ -28,12 +27,11 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
  */
 export const parseMutationRoute = (
   routeId: string | undefined,
-  slippage: Amount,
-  [, collateralDecimals]: number[],
+  slippage: Decimal,
+  zapv2: ILeverageZapV2,
 ): RouteMutationMeta => {
   const route = parseRoute(routeId)
-  const minReceive = BigInt(BigNumber(route.quote.outAmount).times(BigNumber(100).minus(slippage)).div(100).toFixed(0))
-  return { ...route, minRecv: formatUnits(minReceive, collateralDecimals) }
+  return { ...route, minRecv: zapv2.calcMinRecv(route.quote.outAmount, Number(slippage)) }
 }
 
 /**
