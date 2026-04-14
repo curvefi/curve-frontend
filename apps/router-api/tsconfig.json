@@ -2,9 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "vitest/globals"],
-    "baseUrl": "./src",
     "paths": {
-      "@primitives/*": ["../../../packages/primitives/src/*"]
+      "@primitives/*": ["../../packages/primitives/src/*"]
     }
   },
   "include": ["src", "test"]

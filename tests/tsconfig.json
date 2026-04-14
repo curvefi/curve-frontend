@@ -2,17 +2,16 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "types": [],
-    "baseUrl": "./cypress",
     "paths": {
-      "@/*": ["../../apps/main/src/*"],
-      "@cy/*": ["*"],
-      "@ui": ["../../packages/ui/src/index.ts"],
-      "@ui/*": ["../../packages/ui/src/*"],
-      "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
-      "@external-rewards": ["../../packages/external-rewards/src/index.ts"],
-      "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
-      "@primitives/*": ["../../packages/primitives/src/*"]
+      "@/*": ["../apps/main/src/*"],
+      "@cy/*": ["./cypress/*"],
+      "@ui": ["../packages/ui/src/index.ts"],
+      "@ui/*": ["../packages/ui/src/*"],
+      "@ui-kit/*": ["../packages/curve-ui-kit/src/*"],
+      "@external-rewards": ["../packages/external-rewards/src/index.ts"],
+      "@curvefi/prices-api": ["../packages/prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../packages/prices-api/src/*"],
+      "@primitives/*": ["../packages/primitives/src/*"]
     }
   },
   "include": [

@@ -5,6 +5,7 @@ import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@primitives/fetch.utils'
 import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -55,7 +56,7 @@ export function useLlamalendAppStats(
 
   enabled &&= !isDesktop || !isMarketPage // hide header stats on lend/crvusd market pages only on desktop
 
-  const { data: marketData } = useLlamaMarkets(address, enabled)
+  const { data: marketData } = useLlamaMarkets({ userAddress: address, enableLLv2: useLLv2() }, enabled)
   const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)

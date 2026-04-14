@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, ParsedBandsBalances, UserBandsPriceRange } from '../types'
+import { ChartDataPoint, FetchedBandsBalances, UserBandsPriceRange } from '../types'
 
 /**
  * Calculates the user positions price range
@@ -14,7 +14,7 @@ import { ChartDataPoint, ParsedBandsBalances, UserBandsPriceRange } from '../typ
  */
 export const useUserBandsPriceRange = (
   chartData: ChartDataPoint[],
-  userBandsBalances: ParsedBandsBalances[],
+  userBandsBalances: FetchedBandsBalances[],
 ): UserBandsPriceRange =>
   useMemo(() => {
     if (!userBandsBalances.length) return null
