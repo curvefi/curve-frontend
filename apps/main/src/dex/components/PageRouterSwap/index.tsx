@@ -584,7 +584,7 @@ export const QuickSwap = ({
           <ActionInfoGasEstimate
             gas={q({
               data: formEstGas && { estGasCostUsd: formEstGas.estimatedGas },
-              isLoading: formEstGas?.loading,
+              isLoading: formEstGas?.loading ?? routesAndOutputLoading,
               error: null,
             })}
             isApproved={formStatus.isApproved}

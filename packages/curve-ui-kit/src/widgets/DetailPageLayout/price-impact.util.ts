@@ -39,6 +39,6 @@ export const getPriceImpactDisplay = (
   const severity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
   return {
     label: severity ? t`High price impact` : t`Price impact`,
-    color: severity && { error: 'error', warning: 'warning.main' }[severity],
+    color: severity ? { error: 'error', warning: 'warning.main' }[severity] : undefined,
   }
 }

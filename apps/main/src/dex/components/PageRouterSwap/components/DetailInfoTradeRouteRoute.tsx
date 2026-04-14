@@ -40,11 +40,16 @@ export const DetailInfoTradeRouteRoute = ({
           </ExternalLink>
         ) : route.routeUrlId ? (
           <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-            <TokenIcons
-              blockchainId={params.network}
-              tokens={zip(tokens, tokenAddresses).map(([symbol = '?', address = zeroAddress]) => ({ symbol, address }))}
-              variant="icon"
-            />
+            {tokens && (
+              <TokenIcons
+                blockchainId={params.network}
+                tokens={zip(tokens, tokenAddresses).map(([symbol = '?', address = zeroAddress]) => ({
+                  symbol,
+                  address,
+                }))}
+                variant="icon"
+              />
+            )}
             <RouterLink href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`)} target="_blank">
               {route.name || route.poolId}
             </RouterLink>

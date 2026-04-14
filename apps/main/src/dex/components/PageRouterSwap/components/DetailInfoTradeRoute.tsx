@@ -36,7 +36,7 @@ export const DetailInfoTradeRoute = ({
             swapCustomRouteRedirect={swapCustomRouteRedirect?.[routes[0].poolId]}
           />
         ) : (
-          !routes && '-'
+          !routes?.length && '-'
         )
       }
       loading={loading}
@@ -69,7 +69,7 @@ export const DetailInfoTradeRoute = ({
               route={route}
               tokensNameMapper={tokensNameMapper}
               poolData={poolDataMapper?.[route.poolId]}
-              swapCustomRouteRedirect={swapCustomRouteRedirect?.[routes[0].poolId]}
+              swapCustomRouteRedirect={swapCustomRouteRedirect?.[route.poolId]}
             />
           ))}
         </Stack>

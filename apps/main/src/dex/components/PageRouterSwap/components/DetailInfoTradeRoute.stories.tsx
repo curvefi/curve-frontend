@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CRVUSD_ADDRESS, REUSD_ADDRESS } from '@ui-kit/utils'
 import { DetailInfoTradeRoute } from './DetailInfoTradeRoute'
 
-const tokensNameMapper: TokensNameMapper = { REUSD_ADDRESS: 'reUSD', ethAddress: 'ETH', CRVUSD_ADDRESS: 'crvUSD' }
+const tokensNameMapper: TokensNameMapper = { [REUSD_ADDRESS]: 'reUSD', [ethAddress]: 'ETH', [CRVUSD_ADDRESS]: 'crvUSD' }
 
 const poolDataMapper = {
   'pool-1': {
