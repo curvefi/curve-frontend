@@ -79,7 +79,7 @@ describe('Error Boundary', () => {
         }
       },
     })
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Page error')
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })
 
