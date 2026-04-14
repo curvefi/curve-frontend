@@ -12,20 +12,12 @@ type Props = {
 
 const SOLVENCY_THRESHOLDS = {
   // Market above this threshold are considered fully solvent, and the banner should not be displayed
-  solvent: 98,
-  reduced: 90,
-  low: 80,
+  solvent: 99.9,
+  low: 90,
   insolvent: 0,
 }
 
 const BANNER_CONFIG = [
-  {
-    id: 'reduced',
-    threshold: SOLVENCY_THRESHOLDS.reduced,
-    title: t`Reduced Market Solvency`,
-    lendSubtitle: t`A small share of supplied funds is not fully covered.`,
-    severity: 'warning',
-  },
   {
     id: 'low',
     threshold: SOLVENCY_THRESHOLDS.low,
