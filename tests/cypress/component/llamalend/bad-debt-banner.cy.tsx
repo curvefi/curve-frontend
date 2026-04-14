@@ -15,7 +15,7 @@ const mountBanner = ({ solvencyPercent, marketType }: { solvencyPercent: number;
 const visibleCases = [
   {
     name: 'renders low market solvency banner',
-    range: [90, 99.99],
+    range: [90, 99.9],
     id: 'low',
   },
   {
@@ -29,7 +29,7 @@ const BANNER_PREFIX_ID = 'bad-debt-banner-'
 
 describe('BadDebtBanner', () => {
   it('does not render for solvent markets', () => {
-    mountBanner({ solvencyPercent: oneFloat(99.99, 101), marketType: oneMarketType() })
+    mountBanner({ solvencyPercent: oneFloat(99.9, 101), marketType: oneMarketType() })
     cy.get(`[data-testid^=${BANNER_PREFIX_ID}]`).should('not.exist')
   })
 
