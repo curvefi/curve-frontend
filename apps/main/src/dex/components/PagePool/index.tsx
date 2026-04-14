@@ -24,7 +24,6 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@primitives/objects.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
 import { Box } from '@ui/Box'
@@ -188,7 +187,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         <PoolAlertBanner
           alertType={poolAlert.alertType}
           banner={poolAlert.banner}
-          poolAlertBannerKey={notFalsy('pool-alert-banner-dismissed', params.network, params.poolIdOrAddress).join('-')}
+          network={params.network}
+          poolId={params.poolIdOrAddress}
         />
       )}
       <DetailPageLayout

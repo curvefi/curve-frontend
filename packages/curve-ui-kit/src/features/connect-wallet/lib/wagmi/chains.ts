@@ -65,8 +65,13 @@ export const wagmiChains = [
   zksync,
 ] as const
 
-const deprecateDate = new Date('2027-01-01')
-export const DEPRECATED_CHAINS = { aurora: deprecateDate, kava: deprecateDate, moonbeam: deprecateDate }
+const deprecateDate = new Date('2026-07-01')
+export const DEPRECATED_CHAINS: Record<number, Date> = {
+  [aurora.id]: deprecateDate,
+  [kava.id]: deprecateDate,
+  [moonbeam.id]: deprecateDate,
+}
+export const DOWNGRADED_CHAINS: Set<number> = new Set([avalanche, fantom, xLayer, sonic].map((c) => c.id))
 
 /** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
 export const wagmiChainsMap = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
