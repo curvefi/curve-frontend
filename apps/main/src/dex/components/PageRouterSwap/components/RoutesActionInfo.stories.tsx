@@ -3,7 +3,7 @@ import { Route } from '@/dex/components/PageRouterSwap/types'
 import { PoolDataMapper, TokensNameMapper } from '@/dex/types/main.types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CRVUSD_ADDRESS, REUSD_ADDRESS } from '@ui-kit/utils'
-import { DetailInfoTradeRoute } from './DetailInfoTradeRoute'
+import { RoutesActionInfo } from './RoutesActionInfo'
 
 const tokensNameMapper: TokensNameMapper = { [REUSD_ADDRESS]: 'reUSD', [ethAddress]: 'ETH', [CRVUSD_ADDRESS]: 'crvUSD' }
 
@@ -33,9 +33,9 @@ const routes = [
   { poolId: 'pool-2', inputCoinAddress: ethAddress, outputCoinAddress: CRVUSD_ADDRESS, name: 'ETH/crvUSD Pool' },
 ] as Route[]
 
-const meta: Meta<typeof DetailInfoTradeRoute> = {
+const meta: Meta<typeof RoutesActionInfo> = {
   title: 'DEX/PageRouterSwap/DetailInfoTradeRoute',
-  component: DetailInfoTradeRoute,
+  component: RoutesActionInfo,
   args: {
     params: { network: 'ethereum' },
     loading: false,
@@ -47,7 +47,7 @@ const meta: Meta<typeof DetailInfoTradeRoute> = {
 
 export default meta
 
-type Story = StoryObj<typeof DetailInfoTradeRoute>
+type Story = StoryObj<typeof RoutesActionInfo>
 
 export const Loading: Story = { args: { loading: true, routes: undefined } }
 export const SingleRoute: Story = { args: { routes: routes.slice(0, 1) } }

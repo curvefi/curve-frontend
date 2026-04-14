@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { IndicatorIcon } from '@ui-kit/shared/icons/IndicatorIcon'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 
-export const DetailInfoTradeRoute = ({
+export const RoutesActionInfo = ({
   params,
   loading,
   routes,
@@ -25,7 +25,7 @@ export const DetailInfoTradeRoute = ({
   <>
     <ActionInfo
       size="small"
-      label={t`Trade routed through:`}
+      label={t`Trade route`}
       value={
         routes?.length === 1 ? (
           <DetailInfoTradeRouteRoute

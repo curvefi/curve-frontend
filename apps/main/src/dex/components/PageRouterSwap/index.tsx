@@ -3,8 +3,8 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
-import { DetailInfoTradeRoute } from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRoute'
 import { RouterSwapAlerts } from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
+import { RoutesActionInfo } from '@/dex/components/PageRouterSwap/components/RoutesActionInfo'
 import type {
   ExchangeRate,
   FormStatus,
@@ -52,7 +52,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 const { Spacing } = SizesAndSpaces
 
 const formatExchangeRate = ({ from, to, value }: ExchangeRate) =>
-  ['1', from, '=', formatNumber(value as Decimal, { abbreviate: false }), to].join(' ')
+  ['1', from, '=', +value ? formatNumber(value, { abbreviate: true }) : '-', to].join(' ')
 
 export const QuickSwap = ({
   pageLoaded,
@@ -553,33 +553,37 @@ export const QuickSwap = ({
       />
 
       {/* detail info */}
-      <Stack>
-        <SlippageToleranceActionInfo
-          maxSlippage={storeMaxSlippage}
-          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
-          size="small"
-        />
-        <ActionInfo
-          label={priceImpactLabel}
-          value={routesAndOutput?.priceImpact == null ? '-' : formatPercent(routesAndOutput.priceImpact)}
-          valueColor={priceImpactColor}
-          loading={routesAndOutputLoading}
-          size="small"
-        />
-        <ActionInfo
-          label={t`Exchange rate`}
-          value={routesAndOutput?.exchangeRate && formatExchangeRate(routesAndOutput.exchangeRate)}
-          loading={routesAndOutputLoading}
-          size="small"
-        />
-        <DetailInfoTradeRoute
-          params={params}
-          loading={routesAndOutputLoading}
-          routes={routesAndOutput?.routes}
-          tokensNameMapper={tokensNameMapper}
-          poolDataMapper={poolDataMapper}
-          swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
-        />
+      <Stack gap={Spacing.xs}>
+        <Stack>
+          <SlippageToleranceActionInfo
+            maxSlippage={storeMaxSlippage}
+            stateKey={isStableswapRoute ? 'stable' : 'crypto'}
+            size="small"
+          />
+          <ActionInfo
+            label={priceImpactLabel}
+            value={routesAndOutput?.priceImpact == null ? '-' : formatPercent(routesAndOutput.priceImpact)}
+            valueColor={priceImpactColor}
+            loading={routesAndOutputLoading}
+            size="small"
+            testId="price-impact"
+          />
+          <ActionInfo
+            label={t`Exchange rate`}
+            value={routesAndOutput?.exchangeRate && formatExchangeRate(routesAndOutput.exchangeRate)}
+            loading={routesAndOutputLoading}
+            size="small"
+            testId="exchange-rate"
+          />
+          <RoutesActionInfo
+            params={params}
+            loading={routesAndOutputLoading}
+            routes={routesAndOutput?.routes}
+            tokensNameMapper={tokensNameMapper}
+            poolDataMapper={poolDataMapper}
+            swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
+          />
+        </Stack>
         {userAddress && (
           <ActionInfoGasEstimate
             gas={q({

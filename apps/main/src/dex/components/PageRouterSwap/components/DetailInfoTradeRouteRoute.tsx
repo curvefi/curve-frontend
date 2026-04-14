@@ -50,7 +50,14 @@ export const DetailInfoTradeRouteRoute = ({
                 variant="icon"
               />
             )}
-            <RouterLink href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`)} target="_blank">
+            <RouterLink
+              href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`)}
+              target="_blank"
+              sx={{
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
               {route.name || route.poolId}
             </RouterLink>
           </Stack>
