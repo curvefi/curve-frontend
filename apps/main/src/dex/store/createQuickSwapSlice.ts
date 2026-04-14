@@ -207,7 +207,7 @@ export const createQuickSwapSlice = (
                 ...resp,
                 router: 'curve',
                 loading: false,
-                exchangeRates: getRouterSwapsExchangeRates(exchangeRates, searchedParams, tokensNameMapper),
+                exchangeRate: getRouterSwapsExchangeRate(exchangeRates, searchedParams, tokensNameMapper),
                 fetchedToAmount: '',
                 modal: getRouterWarningModal(
                   resp,
@@ -498,14 +498,14 @@ function getRouterActiveKey(
   return `${chainId}-${parsedSignerAddress}-${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
 }
 
-export function getRouterSwapsExchangeRates(
+export function getRouterSwapsExchangeRate(
   [value]: string[],
   { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: { [p: string]: string },
 ) {
   const fromToken = tokensNameMapper[fromAddress]
   const toToken = tokensNameMapper[toAddress]
-  return [{ from: fromToken, to: toToken, fromAddress, value, label: `${fromToken}/${toToken}` }]
+  return { from: fromToken, to: toToken, fromAddress, value, label: `${fromToken}/${toToken}` }
 }
 
 export function getRouterWarningModal(

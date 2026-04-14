@@ -36,8 +36,9 @@ export const getPriceImpactDisplay = (
   priceImpact: Query<Decimal | null> | undefined,
   { slippage }: { slippage: Decimal | null | undefined },
 ) => {
-  const priceImpactSeverity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
-  const label = priceImpactSeverity ? t`High price impact` : t`Price impact`
-  const color = { error: 'error', warning: 'warning.main' }[priceImpactSeverity!]
-  return { label, color }
+  const severity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
+  return {
+    label: severity ? t`High price impact` : t`Price impact`,
+    color: severity && { error: 'error', warning: 'warning.main' }[severity],
+  }
 }

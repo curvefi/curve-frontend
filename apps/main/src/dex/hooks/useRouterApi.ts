@@ -66,7 +66,7 @@ const convertRoute = (
   return {
     router,
     loading: isPending,
-    exchangeRates: calculateExchangeRates(
+    exchangeRate: calculateExchangeRates(
       toAmountOutput,
       isFrom ? fromAmount : fromAmountOutput,
       { fromAddress, toAddress },

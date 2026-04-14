@@ -39,7 +39,7 @@ export type RoutesAndOutputModal = {
 
 export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   loading: boolean
-  exchangeRates: ExchangeRate[]
+  exchangeRate: ExchangeRate
   isExchangeRateLow: boolean
   isHighSlippage: boolean
   isStableswapRoute: boolean

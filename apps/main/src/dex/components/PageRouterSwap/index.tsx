@@ -6,6 +6,7 @@ import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/component
 import { DetailInfoTradeRoute } from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRoute'
 import { RouterSwapAlerts } from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
+  ExchangeRate,
   FormStatus,
   FormValues,
   RoutesAndOutput,
@@ -49,6 +50,9 @@ import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-im
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const { Spacing } = SizesAndSpaces
+
+const formatExchangeRate = ({ from, to, value }: ExchangeRate) =>
+  ['1', from, '=', formatNumber(value as Decimal, { abbreviate: false }), to].join(' ')
 
 export const QuickSwap = ({
   pageLoaded,
@@ -561,16 +565,12 @@ export const QuickSwap = ({
           valueColor={priceImpactColor}
           loading={routesAndOutputLoading}
           size="small"
-          testId="swap-price-impact"
         />
         <ActionInfo
           label={t`Exchange rate`}
-          value={routesAndOutput?.exchangeRates.map(
-            ({ from, value, to }) => `1 ${from} = ${formatNumber(value as Decimal, { abbreviate: false })} ${to}`,
-          )}
+          value={routesAndOutput?.exchangeRate && formatExchangeRate(routesAndOutput.exchangeRate)}
           loading={routesAndOutputLoading}
           size="small"
-          testId="swap-exchange-rate"
         />
         <DetailInfoTradeRoute
           params={params}
