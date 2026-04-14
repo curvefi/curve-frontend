@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import {
@@ -11,6 +10,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
+import { decimalEqual } from '@ui-kit/utils'
 import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
@@ -30,9 +30,9 @@ const getIsWithdrawFull = ({
   depositedShares &&
   maxRedeemShares &&
   // Only use redeem when the vault says the full deposited share balance is redeemable.
-  new BigNumber(maxRedeemShares).eq(depositedShares) &&
+  decimalEqual(maxRedeemShares, depositedShares) &&
   // Flip to full mode once the entered amount reaches the current max withdrawable assets.
-  new BigNumber(withdrawAmount).eq(new BigNumber(maxWithdrawAmount))
+  decimalEqual(withdrawAmount, maxWithdrawAmount)
 
 export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   {

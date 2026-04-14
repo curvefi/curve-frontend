@@ -66,6 +66,8 @@ describe('DepositForm (mocked)', () => {
       writeDepositForm({ amount: input.amount })
       checkMaxDeposit(maxDeposit)
       checkDepositSubmit({ buttonText, depositAlert, maxDeposit })
+      // When `maxDeposit` is set, the entered amount exceeds the max, so the test stops after validating the disabled state.
+      // This avoids adding custom expectations for action info values in this scenario.
       if (maxDeposit) return
       checkSupplyActionInfoValues(expected.actionInfo)
 
@@ -83,6 +85,7 @@ describe('DepositForm (mocked)', () => {
         }
       })
 
+      // A deposit alert blocks submission, so the test stops after validating the disabled state and actions infos.
       if (depositAlert) return
 
       submitDepositForm().then(() => {
