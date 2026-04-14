@@ -5739,13 +5739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-async-storage-persister@npm:^5.97.0":
-  version: 5.99.0
-  resolution: "@tanstack/query-async-storage-persister@npm:5.99.0"
+"@tanstack/query-async-storage-persister@npm:5.97.0":
+  version: 5.97.0
+  resolution: "@tanstack/query-async-storage-persister@npm:5.97.0"
   dependencies:
-    "@tanstack/query-core": "npm:5.99.0"
-    "@tanstack/query-persist-client-core": "npm:5.99.0"
-  checksum: 10c0/701602ef913e46c46fe0b07758aca948b4701ef5ccdbe0c8a0f07b9b94611f34be9b73e6a050ad64064633a607a60301ec863ad6e1ae68cdd797069b091f43ec
+    "@tanstack/query-core": "npm:5.97.0"
+    "@tanstack/query-persist-client-core": "npm:5.97.0"
+  checksum: 10c0/7f9a3c3e0c8f3e1a465921e74dbdd49c7da4af75f2218e5bcb357598bf6d1ed10f8d843f11330f168792897a72623b179a8d939df6d89bce15c90a1348d208c3
   languageName: node
   linkType: hard
 
@@ -5753,13 +5753,6 @@ __metadata:
   version: 5.97.0
   resolution: "@tanstack/query-core@npm:5.97.0"
   checksum: 10c0/db2d1cceede8be44826ce2b6d0424caeb77cd6ebf26d3ab066b1e2c7004e73c3a80f81b545771c8237067e857131dae930ef31fcad2a9bb1326d6fa4111b779b
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-core@npm:5.99.0":
-  version: 5.99.0
-  resolution: "@tanstack/query-core@npm:5.99.0"
-  checksum: 10c0/e46315e0a532be77b86e3bf47c4395b2ba072251f007794b670f72d36062ae6b5560957400281ece8c177c9518fe6b2fef92d3e56cea3bc12d5c2f750ea7743b
   languageName: node
   linkType: hard
 
@@ -5776,15 +5769,6 @@ __metadata:
   dependencies:
     "@tanstack/query-core": "npm:5.97.0"
   checksum: 10c0/cbeea6679596fdf1afe7aace52746bb5f485bcd37b4f7ac7980fd1b130a41cc6b38e76b05867d0ecc261b86a37bf28e96bb827f2e1b5c363504c6ab3d6795b56
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-persist-client-core@npm:5.99.0":
-  version: 5.99.0
-  resolution: "@tanstack/query-persist-client-core@npm:5.99.0"
-  dependencies:
-    "@tanstack/query-core": "npm:5.99.0"
-  checksum: 10c0/0176a111ee15936d666dd3dac938eaa5107cd172a0144178e0c9bc2c50c022d19a0c28ace804c42f497160d51afee2b25acb12691aaa7bbee562d95d1e4b04b0
   languageName: node
   linkType: hard
 
@@ -6278,7 +6262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:8.58.2, @typescript-eslint/eslint-plugin@npm:^8.58.1":
+"@typescript-eslint/eslint-plugin@npm:8.58.2, @typescript-eslint/eslint-plugin@npm:^8.58.2":
   version: 8.58.2
   resolution: "@typescript-eslint/eslint-plugin@npm:8.58.2"
   dependencies:
@@ -6298,7 +6282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:8.58.2, @typescript-eslint/parser@npm:^8.58.1":
+"@typescript-eslint/parser@npm:8.58.2, @typescript-eslint/parser@npm:^8.58.2":
   version: 8.58.2
   resolution: "@typescript-eslint/parser@npm:8.58.2"
   dependencies:
@@ -9012,7 +8996,7 @@ __metadata:
     "@storybook/addon-docs": "npm:10.3.5"
     "@storybook/addon-themes": "npm:10.3.5"
     "@storybook/react-vite": "npm:10.3.5"
-    "@tanstack/query-async-storage-persister": "npm:^5.97.0"
+    "@tanstack/query-async-storage-persister": "npm:5.97.0"
     "@tanstack/react-query": "npm:5.97.0"
     "@tanstack/react-query-devtools": "npm:5.97.0"
     "@tanstack/react-query-persist-client": "npm:5.97.0"
@@ -10169,8 +10153,8 @@ __metadata:
     "@eslint-react/eslint-plugin": "npm:4.2.3"
     "@eslint/js": "npm:*"
     "@tanstack/eslint-plugin-query": "npm:5.97.0"
-    "@typescript-eslint/eslint-plugin": "npm:^8.58.1"
-    "@typescript-eslint/parser": "npm:^8.58.1"
+    "@typescript-eslint/eslint-plugin": "npm:^8.58.2"
+    "@typescript-eslint/parser": "npm:^8.58.2"
     eslint: "npm:*"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-import-resolver-typescript: "npm:4.4.4"
@@ -12840,7 +12824,7 @@ __metadata:
     react-hook-form: "npm:7.72.1"
     recharts: "npm:2.15.4"
     typescript: "npm:*"
-    typescript-eslint: "npm:^8.58.1"
+    typescript-eslint: "npm:^8.58.2"
     ui: "npm:*"
     vest: "npm:^5.4.6"
     vite: "npm:*"
@@ -15925,7 +15909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.58.1":
+"typescript-eslint@npm:^8.58.2":
   version: 8.58.2
   resolution: "typescript-eslint@npm:8.58.2"
   dependencies:
