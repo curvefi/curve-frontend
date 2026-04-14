@@ -9012,7 +9012,7 @@ __metadata:
     lodash: "npm:*"
     storybook: "npm:10.3.5"
     typescript: "npm:*"
-    viem: "npm:^2.47.12"
+    viem: "npm:^2.47.17"
     vite: "npm:*"
     vitest: "npm:*"
     wagmi: "npm:^3.6.1"
@@ -16392,7 +16392,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.47.12":
+"viem@npm:^2.47.17":
   version: 2.47.17
   resolution: "viem@npm:2.47.17"
   dependencies:
