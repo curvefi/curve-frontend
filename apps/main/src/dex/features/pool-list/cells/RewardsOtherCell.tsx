@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy } from '@/dex/types/main.types'

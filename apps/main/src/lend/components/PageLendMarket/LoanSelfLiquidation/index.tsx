@@ -176,7 +176,7 @@ export const LoanSelfLiquidation = ({
   // max slippage
   useEffect(() => {
     if (isLoaded && api && market && maxSlippage) void fetchDetails(api, market, maxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // init
@@ -185,7 +185,7 @@ export const LoanSelfLiquidation = ({
       resetState()
       void fetchDetails(api, market, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -194,7 +194,7 @@ export const LoanSelfLiquidation = ({
       const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, userState)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances, userState])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

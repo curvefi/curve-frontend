@@ -32,9 +32,7 @@ export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable
  * We ignore the lint rule for now as Tanstack table isn't supported with the React compiler yet.
  * Note we don't use the compiler due to this reason, we only use the lint rules.
  */
-export const useTable = <TData extends RowData>(options: TableOptions<TData>) =>
-  // eslint-disable-next-line react-hooks/incompatible-library
-  useReactTable<TData>(options)
+export const useTable = <TData extends RowData>(options: TableOptions<TData>) => useReactTable<TData>(options)
 
 /** Define the alignment of the data or header cell based on the column type. */
 export const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>

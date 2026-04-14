@@ -29,7 +29,7 @@ export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoo
     return () => {
       isSubscribed.current = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   return (

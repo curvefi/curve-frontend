@@ -23,7 +23,6 @@ export const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | u
   }, [])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (contract && isValidAddress) void getTotalSupply(contract)
   }, [contract, isValidAddress, getTotalSupply])
 

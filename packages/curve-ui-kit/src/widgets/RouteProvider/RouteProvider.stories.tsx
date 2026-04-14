@@ -40,12 +40,10 @@ const RouteProviderStory = ({
   const [selectedRoute, setSelectedRoute] = useState(givenSelectedRoute)
   const [isLoading, setIsLoading] = useState(givenIsLoading)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
-  /* eslint-disable react-hooks/set-state-in-effect -- Syncing Storybook controls with local state */
   useEffect(() => setRoutes(givenRoutes), [givenRoutes])
   useEffect(() => setSelectedRoute(givenSelectedRoute), [givenSelectedRoute])
   useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
   useEffect(() => setIsLoading(givenIsLoading), [givenIsLoading])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <Box sx={{ maxWidth: MaxWidth.actionCard }}>

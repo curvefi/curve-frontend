@@ -96,7 +96,6 @@ const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Ba
   const expirationTime = Duration.Banner[frequency]
 
   const shouldShowBanner = useMemo(
-    // eslint-disable-next-line react-hooks/purity
     () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
     [dismissedAt, expirationTime],
   )

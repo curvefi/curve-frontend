@@ -261,7 +261,7 @@ export const LoanCreateForm = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     isLoaded,
     confirmedWarning,
@@ -283,7 +283,7 @@ export const LoanCreateForm = ({
   // signerAddress, maxSlippage state change
   useEffect(() => {
     if (isLoaded) updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   useEffect(() => {
@@ -291,7 +291,7 @@ export const LoanCreateForm = ({
       resetState()
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   const disabled = !!formStatus.step

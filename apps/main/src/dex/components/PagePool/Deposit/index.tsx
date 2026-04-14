@@ -41,7 +41,7 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
       handleTabChange('DEPOSIT')
       resetState(poolData, 'DEPOSIT')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id])
 
   return (
