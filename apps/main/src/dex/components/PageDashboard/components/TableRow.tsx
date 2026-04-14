@@ -63,6 +63,7 @@ export const TableRow = ({
 
 type SpanProps = ComponentPropsWithRef<'span'>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const DetailText: IStyledComponent<'web', SpanProps> = styled.span`
   font-size: var(--font-size-1);
   opacity: 0.8;
@@ -70,6 +71,7 @@ export const DetailText: IStyledComponent<'web', SpanProps> = styled.span`
 
 type DivProps = ComponentPropsWithRef<'div'>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const Info: IStyledComponent<'web', DivProps> = styled.div`
   white-space: nowrap;
 `

@@ -51,6 +51,7 @@ export const PoolTitleCell = ({
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const StyledIcon: IStyledComponent<'web', IconProps> = styled(Icon)`
   margin: var(--spacing-3) auto 0;
   color: var(--white);

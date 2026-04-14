@@ -93,6 +93,7 @@ const SectionTitle = styled(TextCaption).attrs(() => ({ as: 'h3', isBold: true, 
 
 type DetailsButtonProps = ButtonProps & { $isOpen?: boolean }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const DetailsButton: IStyledComponent<'web', DetailsButtonProps & ComponentPropsWithRef<'button'>> = styled(
   Button,
 )<DetailsButtonProps>`

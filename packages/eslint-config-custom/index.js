@@ -5,7 +5,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
-  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint', 'react-refresh'],
+  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint'],
   rules: {
     // The follow react rules are turned off as they were not enabled or working properly in the old eslint react plugin
     // These rules are new recommended ones that came with the migration from eslint-plugin-react to @eslint-react,

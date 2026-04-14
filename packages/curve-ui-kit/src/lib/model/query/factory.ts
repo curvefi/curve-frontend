@@ -116,6 +116,7 @@ export function queryFactory<
   keepPreviousData?: boolean
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
       queryKey: queryKey(params),

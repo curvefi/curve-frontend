@@ -32,6 +32,7 @@ const StyledLoader = styled(Loader)<{ row?: boolean }>`
 `
 
 type MetricsTitleProps = { row?: boolean }
+// eslint-disable-next-line react-refresh/only-export-components
 export const MetricsTitle: IStyledComponent<'web', MetricsTitleProps & ComponentPropsWithRef<'p'>> =
   styled.p<MetricsTitleProps>`
     font-size: var(--font-size-1);
@@ -46,6 +47,7 @@ export const MetricsTitle: IStyledComponent<'web', MetricsTitleProps & Component
   `
 
 type MetricsColumnDataProps = { noMargin?: boolean; capitalize?: boolean }
+// eslint-disable-next-line react-refresh/only-export-components
 export const MetricsColumnData: IStyledComponent<'web', MetricsColumnDataProps & ComponentPropsWithRef<'h3'>> =
   styled.h3<MetricsColumnDataProps>`
     margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
