@@ -39,6 +39,7 @@ export const LoanFormTokenInput = <
   tokenSelector,
   hideBalance,
   onValueChange,
+  onMessageNumberClick,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -70,6 +71,7 @@ export const LoanFormTokenInput = <
    * Called after the form value is set.
    */
   onValueChange?: (value: Decimal | undefined) => void
+  onMessageNumberClick?: (value: Decimal | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const {
@@ -138,9 +140,9 @@ export const LoanFormTokenInput = <
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? (
-        <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />
+        <HelperMessage message={errorMessage} onNumberClick={onMessageNumberClick ?? onBalance} isError />
       ) : (
-        message && <HelperMessage onNumberClick={onBalance} message={message} />
+        message && <HelperMessage onNumberClick={onMessageNumberClick ?? onBalance} message={message} />
       )}
     </LargeTokenInput>
   )
