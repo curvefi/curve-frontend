@@ -21,9 +21,11 @@ import { WithSkeleton } from './WithSkeleton'
 const { Spacing, IconSize } = SizesAndSpaces
 
 // Correspond to flexbox align items values.
+// eslint-disable-next-line react-refresh/only-export-components
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const MetricSize = {
   small: 'highlightM',
   medium: 'highlightL',
@@ -31,6 +33,7 @@ export const MetricSize = {
   extraLarge: 'highlightXxl',
 } as const satisfies Record<string, TypographyVariantKey>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const MetricUnitSize = {
   small: 'highlightXs',
   medium: 'highlightS',
@@ -45,6 +48,7 @@ const MetricChangeSize = {
   extraLarge: 'highlightM',
 } as const satisfies Record<string, TypographyVariantKey>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {

@@ -547,6 +547,7 @@ const StatsData = styled.p`
 
 type SpanProps = ComponentPropsWithRef<'span'>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
