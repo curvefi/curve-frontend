@@ -17,6 +17,7 @@ import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/mai
 import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
@@ -207,7 +208,11 @@ export const createQuickSwapSlice = (
                 ...resp,
                 router: 'curve',
                 loading: false,
-                exchangeRate: getRouterSwapsExchangeRate(exchangeRates, searchedParams, tokensNameMapper),
+                exchangeRate: getRouterSwapsExchangeRate(
+                  exchangeRates as [Decimal, Decimal],
+                  searchedParams,
+                  tokensNameMapper,
+                ),
                 fetchedToAmount: '',
                 modal: getRouterWarningModal(
                   resp,
@@ -499,7 +504,7 @@ function getRouterActiveKey(
 }
 
 export function getRouterSwapsExchangeRate(
-  [value]: string[],
+  [value]: [Decimal, Decimal],
   { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: { [p: string]: string },
 ) {
