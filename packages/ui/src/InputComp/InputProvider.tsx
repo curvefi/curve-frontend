@@ -33,6 +33,7 @@ interface InputWrapperProps {
   minHeight?: InputMinHeight
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const InputWrapper: IStyledComponent<'web', InputWrapperProps & ComponentPropsWithRef<'div'>> = styled(
   Box,
 )<InputWrapperProps>`

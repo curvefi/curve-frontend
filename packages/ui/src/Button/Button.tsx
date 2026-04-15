@@ -36,6 +36,7 @@ export const Button = forwardRef<
   )
 })
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const StyledButton: IStyledComponent<'web', ButtonProps & ComponentPropsWithRef<'button'>> =
   styled.button<ButtonProps>`
     ${buttonBaseStyles};

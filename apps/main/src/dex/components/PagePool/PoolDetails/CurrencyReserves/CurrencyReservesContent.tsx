@@ -94,6 +94,7 @@ const TokenLabelLink = styled(ExternalLink)`
 type SpanProps = ComponentPropsWithRef<'span'>
 type ChipComponentProps = ComponentProps<typeof Chip>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TokenBalancePercent: IStyledComponent<'web', ChipComponentProps> = styled(Chip)`
   align-items: center;
   display: inline-flex;
@@ -106,6 +107,7 @@ export const TokenBalancePercent: IStyledComponent<'web', ChipComponentProps> = 
   }
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
