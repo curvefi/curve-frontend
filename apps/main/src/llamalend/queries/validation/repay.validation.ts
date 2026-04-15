@@ -40,21 +40,11 @@ const validateRepayHasValue = (
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
 ) => {
-  const activeField = stateCollateral
-    ? ('stateCollateral' as const)
-    : userCollateral
-      ? ('userCollateral' as const)
-      : ('userBorrowed' as const)
-  const validate = (field: typeof activeField, value: Decimal | null | undefined) => {
-    skipWhen(activeField !== field, () => {
-      test(field, 'Enter an amount to repay', () => {
-        enforce(value).isDecimal().greaterThan(0)
-      })
-    })
-  }
-  validate('stateCollateral', stateCollateral)
-  validate('userCollateral', userCollateral)
-  validate('userBorrowed', userBorrowed)
+  test('root', 'Enter an amount to repay', () => {
+    enforce(stateCollateral ?? userCollateral ?? userBorrowed)
+      .isDecimal()
+      .greaterThan(0)
+  })
 }
 
 const validateRepayFieldsForMarket = (
