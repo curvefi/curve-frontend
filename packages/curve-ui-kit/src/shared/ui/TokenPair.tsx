@@ -17,10 +17,11 @@ type Props = {
     secondary: Asset
   }
   hideChainIcon?: boolean
+  size?: keyof typeof IconSize
 }
 
-export const TokenPair = ({ chain, assets: { primary, secondary }, hideChainIcon = false }: Props) => (
-  <Box sx={{ position: 'relative', width: IconSize.xl, height: IconSize.xl }}>
+export const TokenPair = ({ chain, assets: { primary, secondary }, hideChainIcon = false, size = 'xl' }: Props) => (
+  <Box sx={{ position: 'relative', width: IconSize[size], height: IconSize[size] }}>
     <TokenIcon
       blockchainId={chain}
       address={secondary.address}

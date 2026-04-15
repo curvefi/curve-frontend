@@ -1,5 +1,5 @@
 import { skipWhen } from 'vest'
-import { isRouterRequired } from '@/llamalend/llama.utils'
+import { isRouterRequired, tryGetLlamaMarket } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
@@ -55,10 +55,10 @@ const validateBorrowMoreFieldsForMarket = ({
   routeId: string | null | undefined
   debt: Decimal | null | undefined
 }) => {
-  skipWhen(!marketId, () => {
-    if (!marketId) return
-    const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
-    validateRoute(routeId, !!(debt && leverageEnabled && isRouterRequired(type)))
+  const market = tryGetLlamaMarket(marketId)
+  skipWhen(!market, () => {
+    const [type] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
+    validateRoute(routeId, !!(debt && leverageEnabled && type && isRouterRequired(type)))
   })
 }
 
