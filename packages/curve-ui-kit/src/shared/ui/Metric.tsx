@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { toArray } from '@primitives/array.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -54,6 +55,11 @@ export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: number
   abbreviate?: boolean // Defaults to true
+}
+
+type MetricErrorTooltip = Omit<TooltipProps, 'children' | 'title' | 'body'> & {
+  title: ReactNode
+  body: ReactNode
 }
 
 /**
@@ -172,6 +178,11 @@ export type MetricProps = {
   /** Optional content to display to the right of the value */
   rightAdornment?: ReactNode
 
+  /** Shows an error triangle icon on the metric value row. */
+  error?: Error
+  /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
+  errorTooltip?: MetricErrorTooltip
+
   size?: keyof typeof MetricSize
   alignment?: Alignment
   loading?: boolean
@@ -192,6 +203,8 @@ export const Metric = ({
   notional,
 
   rightAdornment,
+  error = undefined,
+  errorTooltip,
 
   size = 'medium',
   alignment = 'start',
@@ -206,6 +219,7 @@ export const Metric = ({
       showToast({ title: copyText, message: value, severity: 'info' })
     }
   }, [value, copyText])
+  const hasError = !!error
 
   return (
     <Stack alignItems={alignment} data-testid={testId} sx={sx}>
@@ -222,17 +236,28 @@ export const Metric = ({
       </Typography>
 
       <WithSkeleton loading={loading}>
-        <Stack direction="row" alignItems="baseline">
-          <MetricValue
-            value={value}
-            valueOptions={valueOptions}
-            change={change}
-            size={size}
-            copyValue={value || value === 0 ? copyValue : undefined}
-            tooltip={valueTooltip}
-            testId={testId}
-          />
-          {rightAdornment}
+        <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+          {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
+          {hasError ? (
+            <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
+              <Typography component="span" variant={MetricSize[size]} color="error">
+                <ExclamationTriangleIcon fontSize="inherit" />
+              </Typography>
+            </Tooltip>
+          ) : (
+            <>
+              <MetricValue
+                value={value}
+                valueOptions={valueOptions}
+                change={change}
+                size={size}
+                copyValue={value || value === 0 ? copyValue : undefined}
+                tooltip={valueTooltip}
+                testId={testId}
+              />
+              {rightAdornment}
+            </>
+          )}
         </Stack>
       </WithSkeleton>
 
