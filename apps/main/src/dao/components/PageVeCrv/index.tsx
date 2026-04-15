@@ -40,7 +40,6 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   useEffect(() => {
     if (canUnlock) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTab('withdraw')
     }
     // if user has no locked crv, and is not on the create tab, set the tab to create

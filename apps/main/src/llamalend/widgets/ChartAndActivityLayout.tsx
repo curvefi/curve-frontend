@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEvents,
@@ -9,6 +10,7 @@ import {
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { type Token } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
@@ -65,6 +67,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible((prev) => !prev), [setIsBandsVisible])
   const newBandsChartEnabled = useNewBandsChart()
+  const bandsPalette = useBandsChartPalette()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
 
@@ -77,6 +80,26 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
+  const collateralSymbol = bands?.collateralToken?.symbol
+  const borrowSymbol = bands?.borrowToken?.symbol
+  const chartFooterLegendSets = useMemo(
+    () =>
+      showBands
+        ? notFalsy<LegendItem>(
+            ...chart.legendSets,
+            collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
+            borrowSymbol && { label: borrowSymbol, box: { fill: bandsPalette.userBorrowedShareColor } },
+          )
+        : chart.legendSets,
+    [
+      showBands,
+      chart.legendSets,
+      collateralSymbol,
+      borrowSymbol,
+      bandsPalette.userCollateralShareColor,
+      bandsPalette.userBorrowedShareColor,
+    ],
+  )
 
   return (
     <Stack>
@@ -136,7 +159,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                 />
               )}
             </Stack>
-            <ChartFooter legendSets={chart.legendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+            <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
           </Stack>
         )}
       </Stack>

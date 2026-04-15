@@ -49,7 +49,6 @@ export const useChartTimeSettings = (
   }, [])
 
   const chartTimeSettings = useMemo(() => {
-    // eslint-disable-next-line react-hooks/purity -- Date.now() is intentionally called once per timeOption change
     const now = Date.now() / 1000
     const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, now)
     return {

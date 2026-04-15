@@ -68,7 +68,7 @@ export const useRepayTokens = ({
   const field = leverageEnabled === true ? 'stateCollateral' : leverageEnabled === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find((t) => t.field === field)
   useEffect(() => {
-    // previous token is always set, but we want to override when we know if the position was leveraged
+    // override the user's choice when we get to know they have a (non)-leveraged position
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (defaultToken) onToken(defaultToken)
   }, [defaultToken])

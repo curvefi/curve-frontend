@@ -156,7 +156,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
       resetState()
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -165,7 +165,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
       const updatedSteps = getSteps(activeKey, api, market, formEstGas, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, activeKey, formEstGas?.loading, formStatus, formValues, userBalances, userState])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

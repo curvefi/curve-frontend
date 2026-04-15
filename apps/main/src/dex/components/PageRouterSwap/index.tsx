@@ -121,7 +121,7 @@ export const QuickSwap = ({
       Object.values(tokensMapper ?? {})
         .filter((token) => !!token)
         .map(toTokenOption(network?.networkId)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
     [tokensMapperStr, network?.networkId],
   )
 
@@ -386,25 +386,25 @@ export const QuickSwap = ({
       isSubscribed.current = false
       updateFormValues({}, false, '', true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   // maxSlippage
   useEffect(() => {
     if (isReady) updateFormValues({}, false, cryptoMaxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [cryptoMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {
     if (isReady) throttledFetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isPageVisible])
 
   // network switched
   useEffect(() => {
     updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.chainId])
 
   // updateForm - immediate fetch on token changes
@@ -427,7 +427,7 @@ export const QuickSwap = ({
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
     setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
   const isDisable = formStatus.formProcessing

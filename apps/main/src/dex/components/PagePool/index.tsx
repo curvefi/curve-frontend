@@ -128,7 +128,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
     if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
     setSeed({ isSeed, loaded: true })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id, currencyReserves?.total])
 
   const isRewardsDistributor = useMemo(

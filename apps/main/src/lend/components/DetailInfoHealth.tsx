@@ -94,7 +94,6 @@ export const DetailInfoHealth = ({
   // current health mode
   useEffect(() => {
     if (typeof oraclePriceBand === 'number' && bandsCurrent && healthFullCurrent && healthNotFullCurrent) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentHealthMode(
         getHealthMode(
           market?.borrowed_token?.symbol,

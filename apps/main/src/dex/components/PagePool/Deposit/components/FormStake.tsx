@@ -148,7 +148,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (poolId) {
       resetState(poolData, 'STAKE')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -156,7 +156,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (chainId && poolId) {
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // steps
@@ -165,7 +165,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, formValues, formStatus])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
