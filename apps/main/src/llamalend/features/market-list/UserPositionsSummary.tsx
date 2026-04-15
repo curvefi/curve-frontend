@@ -3,10 +3,8 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Grid, { GridProps } from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useUserPositionsSummary'
@@ -30,7 +28,7 @@ const UserPositionStatisticItem = ({
   return (
     <Grid size={itemSize}>
       <Metric
-        value={!hasError && data}
+        value={data}
         size="medium"
         // isLoading can still be true if there is an error
         loading={!hasError && isLoading}
@@ -38,18 +36,12 @@ const UserPositionStatisticItem = ({
           unit: 'dollar',
         }}
         label={label}
-        rightAdornment={
-          hasError && (
-            <Tooltip
-              arrow
-              placement="top"
-              title={t`Error fetching ${label}`}
-              body={<TooltipDescription text={t`Some positions could not be loaded correctly.`} />}
-            >
-              <ExclamationTriangleIcon fontSize="small" color="error" />
-            </Tooltip>
-          )
-        }
+        error={error}
+        errorTooltip={{
+          placement: 'top',
+          title: t`Error fetching ${label}`,
+          body: <TooltipDescription text={t`Some positions could not be loaded correctly.`} />,
+        }}
       />
     </Grid>
   )
