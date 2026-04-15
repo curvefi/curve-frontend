@@ -62,15 +62,7 @@ export const DetailInfoTradeRoutes = ({
         )
       }
       {...(parsedRoutes && {
-        alignItems: 'start',
-        sx: {
-          flexWrap: 'wrap',
-          // for some reason the routes are not taking 100% width, and we need to override the ActionInfo styles
-          '& .ActionInfo-valueGroup': {
-            flexBasis: '100%',
-            '& .ActionInfo-value': { flexBasis: '100%', '& > .MuiTypography-root': { width: '100%' } },
-          },
-        },
+        isVertical: true,
       })}
       loading={loading && [180, 24]}
     />

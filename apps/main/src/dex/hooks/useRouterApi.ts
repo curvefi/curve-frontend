@@ -20,7 +20,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { fromWei, toWei } from '@ui-kit/utils'
 
 /** Calculate exchange rates for display */
-const calculateExchangeRates = (
+const calculateExchangeRate = (
   amountOut: Decimal,
   fromAmount: string,
   { fromAddress, toAddress }: SearchedParams,
@@ -29,10 +29,9 @@ const calculateExchangeRates = (
   const [rateAB, rateBA] = getExchangeRates(amountOut, fromAmount)
   const fromLabel = tokensNameMapper[fromAddress] ?? fromAddress
   const toLabel = tokensNameMapper[toAddress] ?? toAddress
-  return [
-    { from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` },
-    { from: toLabel, to: fromLabel, fromAddress: toAddress, value: rateBA, label: `${toLabel}/${fromLabel}` },
-  ]
+  return rateAB > rateBA
+    ? { from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` }
+    : { from: toLabel, to: fromLabel, fromAddress: toAddress, value: rateBA, label: `${toLabel}/${fromLabel}` }
 }
 
 /** Get max slippage from user profile store depending on route type */
@@ -69,7 +68,7 @@ const convertRoute = (
   return {
     router,
     loading: isPending,
-    exchangeRates: calculateExchangeRates(
+    exchangeRate: calculateExchangeRate(
       toAmountOutput,
       isFrom ? fromAmount : fromAmountOutput,
       { fromAddress, toAddress },
