@@ -104,7 +104,7 @@ export const ClosePositionForm = ({
         <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
           {isPending
             ? t`Processing...`
-            : joinButtonText(isApproved?.data === false && t`Approve`, t`Repay debt`, t`close position`)}
+            : joinButtonText(isApproved?.data === false && t`Approve`, t`Repay debt`, t`Withdraw collateral`)}
         </Button>
       </Stack>
 
