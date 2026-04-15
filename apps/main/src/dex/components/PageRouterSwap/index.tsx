@@ -40,6 +40,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -97,6 +98,7 @@ export const QuickSwap = ({
     { chainId, userAddress, searchedParams },
     !userAddress,
   )
+  const gas = useEstimateGas(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
@@ -584,16 +586,7 @@ export const QuickSwap = ({
             swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
           />
         </Stack>
-        {userAddress && (
-          <ActionInfoGasEstimate
-            gas={q({
-              data: formEstGas && { estGasCostUsd: formEstGas.estimatedGas },
-              isLoading: formEstGas?.loading ?? routesAndOutputLoading,
-              error: null,
-            })}
-            isApproved={formStatus.isApproved}
-          />
-        )}
+        {userAddress && <ActionInfoGasEstimate gas={q(gas)} isApproved={formStatus.isApproved} />}
       </Stack>
 
       {/* alerts */}
