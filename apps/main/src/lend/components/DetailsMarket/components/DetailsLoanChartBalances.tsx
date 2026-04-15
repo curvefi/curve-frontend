@@ -52,7 +52,7 @@ export const DetailsLoanChartBalances = ({
   const parsedChartBandBalancesData = useMemo(() => {
     setBrushIndex({ startIndex: undefined, endIndex: undefined })
     return chartBandBalancesData && _parseData(chartBandBalancesData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chartBandBalancesData?.length])
 
   return (

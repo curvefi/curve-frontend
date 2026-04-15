@@ -203,7 +203,7 @@ export const FormDeposit = ({
     if (poolId) {
       resetState(poolData, 'DEPOSIT')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -211,7 +211,7 @@ export const FormDeposit = ({
     if (chainId && poolId) {
       updateFormValues({}, null, null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
@@ -219,7 +219,7 @@ export const FormDeposit = ({
     if (maxSlippage) {
       updateFormValues({}, null, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // steps
@@ -238,7 +238,7 @@ export const FormDeposit = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     curve?.chainId,
     poolData?.pool.id,

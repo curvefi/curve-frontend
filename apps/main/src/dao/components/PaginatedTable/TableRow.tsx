@@ -22,6 +22,7 @@ export const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableR
 )
 
 type TableRowWrapperProps = { columns: number; gridTemplateColumns?: string }
+// eslint-disable-next-line react-refresh/only-export-components
 export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & ComponentPropsWithRef<'div'>> =
   styled.div<TableRowWrapperProps>`
     display: grid;
@@ -34,6 +35,7 @@ export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & Com
     }
   `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TableData: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
   font-variant-numeric: tabular-nums;
   font-size: var(--font-size-2);
@@ -58,6 +60,7 @@ export const TableData: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = st
   }
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TableDataLink: IStyledComponent<'web', InternalLinkProps> = styled(InternalLink)<InternalLinkProps>`
   font-variant-numeric: tabular-nums;
   font-size: var(--font-size-2);

@@ -35,6 +35,7 @@ export const KEBAB_TAB_VALUE = '__kebab__'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SIZE_TO_ICON_SIZE = {
   small: IconSize.sm,
   medium: IconSize.md,

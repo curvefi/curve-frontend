@@ -24,7 +24,8 @@ export type BandsChartPalette = {
   gridColor: string
   scaleLabelsColor: string
   marketBandColor: string
-  userBandColor: string
+  userCollateralShareColor: string
+  userBorrowedShareColor: string
   userRangeBackgroundColor: string
   userRangeTopLineColor: string
   userRangeBottomLineColor: string
@@ -42,7 +43,8 @@ export type UserBandsPriceRange = {
 export type DerivedChartData = {
   yAxisData: number[]
   marketData: number[]
-  userData: number[]
+  userCollateralData: number[]
+  userBorrowedData: number[]
   isLiquidation: boolean[]
 }
 

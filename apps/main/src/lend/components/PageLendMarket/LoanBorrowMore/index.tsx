@@ -270,13 +270,13 @@ export const LoanBorrowMore = ({
       resetState()
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // form changed to leverage, reset form
   useEffect(() => {
     if (isLoaded) updateFormValues(DEFAULT_FORM_VALUES, '', true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLeverage])
 
   // steps
@@ -298,7 +298,7 @@ export const LoanBorrowMore = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     isLoaded,
     activeKey,
@@ -316,7 +316,7 @@ export const LoanBorrowMore = ({
 
   useEffect(() => {
     if (isLoaded) updateFormValues({}, maxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

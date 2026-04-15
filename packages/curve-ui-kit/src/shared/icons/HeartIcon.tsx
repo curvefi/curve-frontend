@@ -1,5 +1,6 @@
 import { createSvgIcon } from '@mui/material/utils'
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const HeartIcon = createSvgIcon(
   <svg viewBox="0 0 25 22" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
     <path

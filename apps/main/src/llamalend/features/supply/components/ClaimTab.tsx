@@ -57,8 +57,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           emptyState={
             !isError && (
               <Alert severity="warning" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
-                <AlertTitle>{t`No rewards`}</AlertTitle>
-                {t`There are currently no rewards to claim. Only markets with active gauge have rewards.`}
+                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
               </Alert>
             )
           }
