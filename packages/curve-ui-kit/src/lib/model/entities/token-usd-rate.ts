@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { formatEther, isAddressEqual, type Address, ethAddress } from 'viem'
+import { type Address, ethAddress, formatEther, isAddressEqual } from 'viem'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { FetchError } from '@primitives/fetch.utils'
@@ -8,12 +8,11 @@ import { getLib } from '@ui-kit/features/connect-wallet'
 import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
-import { USD_RATE_KEY_IDENTIFER } from '@ui-kit/lib/api/cache'
 import {
+  type ChainParams,
   NoRetryError,
   queryFactory,
   rootKeys,
-  type ChainParams,
   type TokenParams,
   type TokenQuery,
 } from '@ui-kit/lib/model/query'
@@ -118,7 +117,7 @@ export const {
   fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
-  queryKey: (params: TokenParams) => [...rootKeys.token(params), USD_RATE_KEY_IDENTIFER] as const,
+  queryKey: (params: TokenParams) => [...rootKeys.token(params), 'usdRate' as const] as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })
