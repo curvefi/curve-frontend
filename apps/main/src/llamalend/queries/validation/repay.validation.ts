@@ -1,5 +1,5 @@
 import { enforce, skipWhen, test } from 'vest'
-import { isRouterRequired } from '@/llamalend/llama.utils'
+import { isRouterRequired, tryGetLlamaMarket } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
@@ -57,16 +57,18 @@ const validateRepayFieldsForMarket = (
   userBorrowed: Decimal | null | undefined,
   routeId: string | null | undefined,
 ) => {
-  skipWhen(!marketId, () => {
-    if (!marketId) return // somehow, skipWhen doesn't stop execution of the inner function
+  const market = tryGetLlamaMarket(marketId)
+  skipWhen(!market, () => {
     // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
-    const type = getRepayImplementationType(marketId, {
-      stateCollateral: stateCollateral ?? '0',
-      userCollateral: userCollateral ?? '0',
-      userBorrowed: userBorrowed ?? '0',
-    })
-    const swapRequired = !!stateCollateral || !!userCollateral || !!routeId
-    validateRoute(routeId, swapRequired && isRouterRequired(type))
+    const type =
+      market &&
+      getRepayImplementationType(market, {
+        stateCollateral: stateCollateral ?? '0',
+        userCollateral: userCollateral ?? '0',
+        userBorrowed: userBorrowed ?? '0',
+      })
+    const swapRequired = stateCollateral || userCollateral || routeId
+    validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
   })
 }
 
