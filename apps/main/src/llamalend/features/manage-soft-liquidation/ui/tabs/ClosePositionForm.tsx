@@ -13,7 +13,6 @@ import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
-import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
 
@@ -107,8 +106,6 @@ export const ClosePositionForm = ({
             ? t`Processing...`
             : joinButtonText(isApproved?.data === false && t`Approve`, t`Repay debt`, t`close position`)}
         </Button>
-
-        <ButtonGetCrvUsd />
       </Stack>
 
       <FormAlerts
