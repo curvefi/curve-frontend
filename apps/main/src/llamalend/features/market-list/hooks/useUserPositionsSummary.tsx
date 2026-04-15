@@ -53,7 +53,12 @@ type PositionQueryEntry =
 
 const MISSING_PRICE_RESULT: TokenPriceData = 0
 
-const createMetric = (label: string, data: number, isLoading: boolean, error: Error | null): UserPositionSummaryMetric => ({
+const createMetric = (
+  label: string,
+  data: number,
+  isLoading: boolean,
+  error: Error | null,
+): UserPositionSummaryMetric => ({
   label,
   data,
   isLoading,
