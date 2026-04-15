@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { type SubmitEventHandler, useEffect, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
 import type { Query } from '@ui-kit/types/util'
@@ -68,4 +68,4 @@ export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T
 export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: Path<T>[]) =>
   fields.some((field) => field in form.formState.touchedFields)
 
-export const cancelSubmit = (e: SubmitEvent) => e.preventDefault()
+export const cancelSubmit: SubmitEventHandler<HTMLFormElement> = (e) => e.preventDefault()
