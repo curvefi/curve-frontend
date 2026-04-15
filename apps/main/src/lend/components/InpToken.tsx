@@ -52,7 +52,7 @@ export const InpToken = ({
           ? t`Amount > max debt ${formatNumber(debt)}`
           : inpError === 'too-much-collateral'
             ? t`Amount > collateral ${formatNumber(tokenBalance)}`
-            : inpError
+            : null
     }
     disabled={inpDisabled}
     walletBalance={{

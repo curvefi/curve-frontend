@@ -1,4 +1,3 @@
-import { noop } from 'lodash'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
@@ -18,7 +17,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { cancelSubmit, updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
@@ -128,7 +127,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     params,
     isPending,
     isDisabled,
-    onSubmit: isDisabled ? noop : form.handleSubmit(onSubmit),
+    onSubmit: isDisabled ? cancelSubmit : form.handleSubmit(onSubmit),
     maxTokenValues,
     borrowToken,
     collateralToken,

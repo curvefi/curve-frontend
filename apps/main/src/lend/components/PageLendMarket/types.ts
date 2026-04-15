@@ -1,10 +1,4 @@
-import {
-  DetailInfoLeverageResp,
-  DetailInfoResp,
-  ExpectedCollateral,
-  type FormStatus as Fs,
-  FutureRates,
-} from '@/lend/types/lend.types'
+import { DetailInfoResp, type FormStatus as Fs, FutureRates } from '@/lend/types/lend.types'
 
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
 export type InpError = 'too-much' | 'too-much-max' | ''
@@ -35,12 +29,6 @@ export type DetailInfo = DetailInfoResp & {
   error: string
 }
 
-export type DetailInfoLeverage = DetailInfoLeverageResp & {
-  expectedCollateral: ExpectedCollateral | null
-  routeImage: string | null
-  loading: boolean
-  error: string
-}
 export type FormDetailInfo = {
   healthFull: string
   healthNotFull: string

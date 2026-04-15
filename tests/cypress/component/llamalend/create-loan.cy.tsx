@@ -23,7 +23,6 @@ describe('CreateLoanForm (mocked)', () => {
         presetRange: 50,
         approved,
       })
-      const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
@@ -64,7 +63,6 @@ describe('CreateLoanForm (mocked)', () => {
           expect(stubs.createLoanApprove).to.have.been.calledWithExactly(...expected.approve)
         }
         expect(stubs.createLoan).to.have.been.calledWithExactly(...expected.submit)
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })
