@@ -104,7 +104,7 @@ export const PageRouterSwap = () => {
     routerCachedToAddress,
   ])
   return (
-    <Card sx={{ maxWidth: MaxWidth.actionCard, margin: '0 auto' }}>
+    <Card sx={{ maxWidth: MaxWidth.actionCard, margin: '0 auto' }} data-testid="swap-page">
       <CardHeader title={t`Swap`} />
       <CardContent>
         {rChainId && (
