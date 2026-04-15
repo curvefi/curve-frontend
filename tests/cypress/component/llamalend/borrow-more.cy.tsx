@@ -16,7 +16,6 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
-import { range } from '@primitives/objects.utils'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
@@ -49,65 +48,63 @@ const testCases = [
   },
 ]
 
-range(10).forEach((index) => {
-  describe('BorrowMoreForm (mocked)' + ` ${index + 1}`, () => {
-    beforeEach(() => mockMintSnapshots({ limit: 1 }))
+describe('BorrowMoreForm (mocked)', () => {
+  beforeEach(() => mockMintSnapshots({ limit: 1 }))
 
-    afterEach(() => resetLlamaTestContext())
+  afterEach(() => resetLlamaTestContext())
 
-    testCases.forEach(({ approved, title, withCollateral, buttonText }) => {
-      it(title, () => {
-        const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
-        const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
-          createBorrowMoreScenario({ chainId, approved, collateral: userCollateral })
-        const onPricesUpdated = cy.spy().as('onPricesUpdated')
+  testCases.forEach(({ approved, title, withCollateral, buttonText }) => {
+    it(title, () => {
+      const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
+      const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
+        createBorrowMoreScenario({ chainId, approved, collateral: userCollateral })
+      const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
-        setLlamaApi(llamaApi)
-        setGasInfo({ chainId, networks: llamaNetworks })
+      setLlamaApi(llamaApi)
+      setGasInfo({ chainId, networks: llamaNetworks })
 
-        cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <BorrowMoreForm
-              market={market}
-              networks={llamaNetworks}
-              chainId={chainId}
-              onPricesUpdated={onPricesUpdated}
-              enabled
-              collateralEvents={constQ(fakeCollateralEvents)}
-            />
-          </MockLoanTestWrapper>,
-        )
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi}>
+          <BorrowMoreForm
+            market={market}
+            networks={llamaNetworks}
+            chainId={chainId}
+            onPricesUpdated={onPricesUpdated}
+            enabled
+            collateralEvents={constQ(fakeCollateralEvents)}
+          />
+        </MockLoanTestWrapper>,
+      )
 
-        writeBorrowMoreForm({ debt: borrow, userCollateral })
-        checkBorrowMoreDetailsLoaded({
-          expectedCurrentDebt,
-          expectedFutureDebt,
-          leverageEnabled: false,
-        })
-        cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
+      writeBorrowMoreForm({ debt: borrow, userCollateral })
+      checkBorrowMoreDetailsLoaded({
+        expectedCurrentDebt,
+        expectedFutureDebt,
+        leverageEnabled: false,
+      })
+      cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
-        cy.then(() => {
-          expect(stubs.parameters).to.have.been.calledWithExactly()
-          expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
-          expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
-          expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-          if (approved) {
-            expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
-            expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
-          } else {
-            expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-          }
-        })
+      cy.then(() => {
+        expect(stubs.parameters).to.have.been.calledWithExactly()
+        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
+        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if (approved) {
+          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
+        }
+      })
 
-        submitBorrowMoreForm().then(() => {
-          expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
-          if (approved) {
-            expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
-            expect(stubs.borrowMoreApprove).to.not.have.been.called
-          } else {
-            expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
-          }
-        })
+      submitBorrowMoreForm().then(() => {
+        expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
+        if (approved) {
+          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.borrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
+        }
       })
     })
   })

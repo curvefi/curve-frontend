@@ -1,4 +1,5 @@
 import { getLlamaMarket, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 
 /**
@@ -13,7 +14,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
  * For non-leveraged operations:
  * - 'unleveraged' using `market` directly
  */
-export function getCreateLoanImplementation(marketId: string, leverageEnabled: boolean) {
+export function getCreateLoanImplementation(marketId: string | LlamaMarketTemplate, leverageEnabled: boolean) {
   const market = getLlamaMarket(marketId)
   return market instanceof LendMarketTemplate
     ? leverageEnabled

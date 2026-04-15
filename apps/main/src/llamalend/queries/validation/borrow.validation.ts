@@ -84,7 +84,6 @@ export const createLoanQueryValidationSuite = ({
     skipWhen(!market, () => {
       const [type] = market ? getCreateLoanImplementation(market, !!leverageEnabled) : []
       // if we don't need debt we cannot need a route, as we need a route to calculate max debt
-      const routeRequired = !!type && debtRequired && !!leverageEnabled && isRouterRequired(type)
-      validateRoute(routeId, routeRequired)
+      validateRoute(routeId, !!(type && debtRequired && leverageEnabled && isRouterRequired(type)))
     })
   })
