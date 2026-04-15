@@ -61,14 +61,7 @@ const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
   const { title, description, severity } = alerts[type]
 
   return (
-    <Alert
-      variant="outlined"
-      severity={severity}
-      sx={{
-        // remove the max width as the component is wider than 90characters
-        '& .MuiAlert-message': { maxWidth: 'none' },
-      }}
-    >
+    <Alert variant="outlined" severity={severity}>
       <AlertTitle>{title}</AlertTitle>
       <Stack>
         <Typography variant="bodyXsRegular">{description}</Typography>
@@ -86,10 +79,10 @@ export const BorrowPositionDetails = ({
   collateralValue,
   totalDebt,
 }: BorrowPositionDetailsProps) => (
-  <Stack padding={Spacing.md} gap={Spacing.md}>
+  <Stack padding={Spacing.md} gap={Spacing.xs}>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
-    <Stack gap={Spacing.md}>
+    <Stack gap={Spacing.sm}>
       <HealthDetails health={health} liquidationAlert={liquidationAlert} />
       <BorrowInformation
         collateralValue={collateralValue}

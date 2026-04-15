@@ -2,7 +2,7 @@ import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips
 import Box from '@mui/material/Box'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-const HealthTooltipContent = () => (
+export const HealthTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`Health shows your cushion before hard liquidation.`} />
     <TooltipDescription
@@ -20,9 +20,3 @@ const HealthTooltipContent = () => (
     />
   </TooltipWrapper>
 )
-
-export const HEALTH_TOOLTIP = {
-  title: t`Health`,
-  body: <HealthTooltipContent />,
-  placement: 'top',
-} as const
