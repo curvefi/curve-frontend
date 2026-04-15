@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
-import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
+import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
@@ -139,7 +139,7 @@ export const LendMarketPage = () => {
         (loanExists ? (
           <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
         ) : (
-          <LoanCreateTabs {...pageProps} params={params} />
+          <CreateLoanTabs {...pageProps} params={params} />
         ))
       }
       header={

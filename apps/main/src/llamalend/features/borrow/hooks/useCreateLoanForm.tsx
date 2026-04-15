@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
@@ -21,7 +22,7 @@ import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
-import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
+import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
 import { invalidateOrRefetchCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
@@ -38,14 +39,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   network,
   network: { chainId },
   preset,
-  onSuccess,
   onPricesUpdated,
+  disabled,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   preset: LoanPreset
-  onSuccess: CreateLoanOptions['onSuccess']
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  disabled: boolean
 }) {
   const { address: userAddress } = useConnection()
   const form = useForm<CreateLoanForm>({
@@ -106,7 +107,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     network,
     marketId: market?.id,
     onReset: form.reset,
-    onSuccess,
     userAddress,
   })
 
@@ -120,13 +120,15 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
 
   const isPending = formState.isSubmitting || isCreating
+  const isDisabled =
+    disabled || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params)
   return {
     form,
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
-    onSubmit: form.handleSubmit(onSubmit),
+    isDisabled,
+    onSubmit: isDisabled ? noop : form.handleSubmit(onSubmit),
     maxTokenValues,
     borrowToken,
     collateralToken,

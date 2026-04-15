@@ -35,7 +35,6 @@ describe('CreateLoanForm (mocked)', () => {
             market={market}
             networks={llamaNetworks}
             chainId={chainId}
-            onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
           />
         </MockLoanTestWrapper>,
