@@ -237,7 +237,7 @@ export const Metric = ({
       <WithSkeleton loading={loading}>
         <Stack direction="row" alignItems="baseline">
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
-          {!!error ? (
+          {error ? (
             <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
               <Typography component="span" variant={MetricSize[size]} color="error">
                 <ExclamationTriangleIcon fontSize="inherit" />
