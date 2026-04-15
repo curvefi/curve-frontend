@@ -22,10 +22,11 @@ import { readContract } from '@wagmi/core'
 
 export const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
-const getTestTokenPrice = async (chainId: number, tokenAddress: string): Promise<number | null> => {
+const getTestTokenPrice = async (chainId: number, tokenAddress: Address): Promise<number | null> => {
   if (chainId === Chain.Optimism) {
-    if (tokenAddress === '0x79cc1c5c0171ff25ef391055e529a56a12bf3d39') return await fetchUsdRate(chainId, ethAddress)
-    if (tokenAddress === '0xe8e9cd957dc2b5a32ea822a3799f65940cf51f19') return 1
+    if (isAddressEqual(tokenAddress, '0x79cc1c5c0171ff25ef391055e529a56a12bf3d39'))
+      return await fetchUsdRate(chainId, ethAddress)
+    if (isAddressEqual(tokenAddress, '0xe8e9cd957dc2b5a32ea822a3799f65940cf51f19')) return 1
   }
   return null
 }
@@ -94,7 +95,7 @@ const fetchFallbackSreUsd = async (chainId: number, tokenAddress: string): Promi
 /** Main fetcher that tries all sources in order */
 const fetchUsdRate = async (chainId: number, tokenAddress: string) => {
   const rate =
-    (await getTestTokenPrice(chainId, tokenAddress)) ??
+    (await getTestTokenPrice(chainId, tokenAddress as Address)) ??
     (await fetchFromCurveLib('curveApi', chainId, tokenAddress)) ??
     (await fetchFromCurveLib('llamaApi', chainId, tokenAddress)) ??
     (await fetchFromPricesApi(chainId, tokenAddress)) ??
