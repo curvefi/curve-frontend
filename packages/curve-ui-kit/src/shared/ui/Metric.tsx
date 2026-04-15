@@ -219,7 +219,6 @@ export const Metric = ({
       showToast({ title: copyText, message: value, severity: 'info' })
     }
   }, [value, copyText])
-  const hasError = !!error
 
   return (
     <Stack alignItems={alignment} data-testid={testId} sx={sx}>
@@ -236,9 +235,9 @@ export const Metric = ({
       </Typography>
 
       <WithSkeleton loading={loading}>
-        <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+        <Stack direction="row" alignItems="baseline">
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
-          {hasError ? (
+          {!!error ? (
             <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
               <Typography component="span" variant={MetricSize[size]} color="error">
                 <ExclamationTriangleIcon fontSize="inherit" />
