@@ -19,17 +19,20 @@ const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultRele
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
 
-/** New unified supply/vault forms (deposit/withdraw/claim) */
-export const useLendingMuiForm = useBetaChannel
-
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = useBetaChannel
+export const useManageLoanMuiForm = useStableChannel
+
+/** New unified supply/vault forms (deposit/withdraw/claim) */
+export const useLendingMuiForm = useManageLoanMuiForm
+
+/** New card for managing soft liquidations */
+export const useManageSoftLiquidation = useManageLoanMuiForm
+
+/** New market page layout with forms on the right  */
+export const useRightFormTabsLayout = useManageLoanMuiForm
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
-
-/** New card for managing soft liquidations */
-export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useStableChannel
@@ -40,9 +43,6 @@ export const isZapV2Enabled = () => isAlpha() && localStorage.getItem('disableZa
 /** New LlamaLend v2 implementation */
 export const useLLv2 = useBetaChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
-
-/** New market page layout with forms on the right  */
-export const useRightFormTabsLayout = useBetaChannel
 
 /** New market historical rates chart */
 export const useMarketHistoricalRatesChart = useBetaChannel
