@@ -68,22 +68,21 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
  */
 export const HighPriceImpactAlert = ({
   priceImpact: { data, isLoading, error },
-  values: { slippage, leverageEnabled },
+  values: { slippage },
 }: {
   priceImpact: QueryProp<Decimal | null>
-  values: { slippage: Decimal | undefined; leverageEnabled: boolean | undefined }
+  values: { slippage: Decimal | undefined }
 }) => {
-  const severity = getPriceImpactSeverity({ data, isLoading, error }, { slippage })
-  const isVisible = leverageEnabled && data && !!(error || severity)
-  const wasVisible = usePreviousValue(isVisible)
+  const severity = getPriceImpactSeverity({ data }, { slippage })
+  const prevSeverity = usePreviousValue(severity)
   return error ? (
     <Alert severity="error" data-testid="high-price-impact-error">
       <AlertTitle>{t`Cannot determine price impact`}</AlertTitle>
       {error.message}
     </Alert>
   ) : (
-    (severity || wasVisible) && (
-      <WithSkeleton loading={!severity}>
+    (severity || (prevSeverity && isLoading)) && (
+      <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
           <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
             {t`High price impact:`} -{formatPercent(data)}
