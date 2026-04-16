@@ -179,7 +179,7 @@ export type MetricProps = {
   rightAdornment?: ReactNode
 
   /** Shows an error triangle icon on the metric value row. */
-  error?: Error
+  error?: Error | null
   /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
   errorTooltip?: MetricErrorTooltip
 

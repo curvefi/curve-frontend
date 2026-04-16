@@ -19,9 +19,7 @@ type UserPositionStatisticsProps = {
 
 const UserPositionStatisticItem = ({
   label,
-  data,
-  isLoading,
-  error,
+  metric: { data, isLoading, error },
   itemSize,
 }: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => {
   const hasError = !!error
@@ -64,8 +62,8 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
         borderBlock: (t) => `1px solid ${t.design.Layer[1].Outline}`,
       }}
     >
-      {summary.map((item) => (
-        <UserPositionStatisticItem key={item.label} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
+      {summary.map((item, index) => (
+        <UserPositionStatisticItem key={index} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
       ))}
     </Grid>
   )
