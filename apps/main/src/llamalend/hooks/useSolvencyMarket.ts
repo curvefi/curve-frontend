@@ -13,13 +13,6 @@ type BadDebtParams = {
   controllerAddress: Address | undefined
 }
 
-export type BadDebtMarketData = {
-  badDebtUsd: number
-  solvencyPercent: number
-  insolvencyPercent: number
-  marketType: LlamaMarketType
-}
-
 /**
  * Returns solvency and insolvency data for a single market.
  */
@@ -39,12 +32,12 @@ export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: Bad
     const exposureUsd =
       market.type === LlamaMarketType.Lend ? market.liquidityUsd + market.totalDebtUsd : market.totalDebtUsd
 
-    const solvencyPercent = exposureUsd ? (Math.max(0, exposureUsd - badDebtUsd) / exposureUsd) * 100 : 0
+    const solvencyPercent = exposureUsd ? (Math.max(0, exposureUsd - badDebtUsd) / exposureUsd) * 100 : undefined
 
     return {
       badDebtUsd,
       solvencyPercent,
-      insolvencyPercent: 100 - solvencyPercent,
+      insolvencyPercent: solvencyPercent == null ? undefined : 100 - solvencyPercent,
       marketType: market.type,
     }
   }, [badDebtMarkets.data, blockchainId, controllerAddress, market])

@@ -82,6 +82,8 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
     '0x184F3Fed33D4194A5603C14481241BD089268e4b', // factory-stable-ng-685 - Team asked to hide
   ],
   arbitrum: [
+    '0x15FB53Cb126140dfbfDED07d0057E1896B2dbCa3', // factory-stable-ng-206 - Unitos.net/USDT - scam pool pretending to be USDT
+
     // List from api.curve.finance
     '0xE9dcF2d2A17eAD11fab8b198578B20535370Be6a', // factory-v2-1 - duplicate MIM pool
     '0x6041631c566Eb8dc6258A75Fa5370761d4873990', // factory-v2-3 - non pegged pool
