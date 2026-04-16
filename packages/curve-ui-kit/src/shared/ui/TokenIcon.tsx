@@ -14,7 +14,7 @@ const { IconSize } = SizesAndSpaces
 // TODO: For another time, we should infer the size type from `keyof typeof IconSize` and generate
 // the corresponding size classes programmatically. This component is also used in legacy UI,
 // where 'sm' differs from MUI's 'sm'. At the moment of writing this refactor is out of scope.
-export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'lg' | 'xl'
+export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xs' | 'lg' | 'xl'
 
 export const DEFAULT_SIZE: Size = 'sm'
 
@@ -82,6 +82,7 @@ export const TokenIcon = ({
                 height: '1.5rem',
               },
             }),
+            ...(size === 'xs' && handleBreakpoints({ width: IconSize['xs'], height: IconSize['xs'] })),
             ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
             ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
             ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),

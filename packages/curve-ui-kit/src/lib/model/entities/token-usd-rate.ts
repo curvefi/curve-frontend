@@ -8,6 +8,7 @@ import { getLib } from '@ui-kit/features/connect-wallet'
 import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
+import { USD_RATE_KEY_IDENTIFER } from '@ui-kit/lib/api/cache'
 import {
   NoRetryError,
   queryFactory,
@@ -19,8 +20,6 @@ import {
 import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
 import { BlockchainIds, Chain, REUSD_ADDRESS, SREUSD_ADDRESS } from '@ui-kit/utils'
 import { readContract } from '@wagmi/core'
-
-export const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
 const getTestTokenPrice = async (chainId: number, tokenAddress: Address): Promise<number | null> => {
   if (chainId === Chain.Optimism) {
@@ -120,7 +119,7 @@ export const {
   fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
-  queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
+  queryKey: (params: TokenParams) => [...rootKeys.token(params), USD_RATE_KEY_IDENTIFER] as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })

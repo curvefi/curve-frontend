@@ -1,5 +1,5 @@
 import { enforce, skipWhen, test } from 'vest'
-import { getLlamaMarket, hasGauge, hasVault } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasGauge, hasVault, tryGetLlamaMarket } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -68,10 +68,8 @@ export type SharesToAssetsParams<ChainId = number> = FieldsOf<SharesToAssetsQuer
  * Accepts either a market ID string or a LlamaMarketTemplate instance.
  * @throws Error if the market does not have a vault (only LendMarkets have vaults)
  */
-export function requireVault(marketId: string): LendMarketTemplate
-export function requireVault(market: LlamaMarketTemplate): LendMarketTemplate
-export function requireVault(marketOrId: string | LlamaMarketTemplate): LendMarketTemplate {
-  const market = typeof marketOrId === 'string' ? getLlamaMarket(marketOrId) : marketOrId
+export function requireVault(marketId: string | LlamaMarketTemplate): LendMarketTemplate {
+  const market = getLlamaMarket(marketId)
   assert(hasVault(market), 'Market does not have a vault')
   return market as LendMarketTemplate
 }
@@ -83,19 +81,19 @@ export function requireGauge(marketId: string): LendMarketTemplate {
 }
 
 export const validateHasVault = (marketId: string | null | undefined) => {
-  skipWhen(!marketId, () => {
+  const market = tryGetLlamaMarket(marketId!)
+  skipWhen(!market, () => {
     test('marketId', 'Market does not have a vault', () => {
-      const market = getLlamaMarket(marketId!)
-      enforce(hasVault(market)).isTruthy()
+      enforce(market && hasVault(market)).isTruthy()
     })
   })
 }
 
 const validateHasGauge = (marketId: string | null | undefined) => {
-  skipWhen(!marketId, () => {
+  const market = tryGetLlamaMarket(marketId!)
+  skipWhen(!market, () => {
     test('marketId', 'Market does not have a gauge', () => {
-      const market = getLlamaMarket(marketId!)
-      enforce(hasGauge(market)).isTruthy()
+      enforce(market && hasGauge(market)).isTruthy()
     })
   })
 }
