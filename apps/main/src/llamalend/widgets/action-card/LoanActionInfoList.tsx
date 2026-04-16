@@ -275,7 +275,7 @@ export const LoanActionInfoList = ({
             label={t`Exchange rate`}
             value={
               exchangeRateValue &&
-              `1 ${collateralSymbol} = ${formatNumber(exchangeRateValue, { abbreviate: false })} ${borrowSymbol}`
+              `1 ${collateralSymbol} = ${formatNumber(exchangeRateValue, { abbreviate: false, highPrecision: true })} ${borrowSymbol}`
             }
             error={exchangeRate.error}
             loading={exchangeRate.isLoading}
