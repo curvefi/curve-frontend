@@ -1,4 +1,3 @@
-import type { BadDebtMarketData } from '@/llamalend/hooks/useSolvencyMarket'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
@@ -6,8 +5,8 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 
 type Props = {
-  solvencyPercent: BadDebtMarketData['solvencyPercent'] | undefined
-  marketType: BadDebtMarketData['marketType']
+  solvencyPercent: number | undefined
+  marketType: LlamaMarketType
 }
 
 const SOLVENCY_THRESHOLDS = {
