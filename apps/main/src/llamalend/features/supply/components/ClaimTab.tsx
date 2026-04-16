@@ -58,7 +58,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             !isError && (
               <Alert severity="warning" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
                 <AlertTitle>{t`No rewards to claim`}</AlertTitle>
-                {t`DAO gauge voting may be needed before this market starts emitting.`}
               </Alert>
             )
           }

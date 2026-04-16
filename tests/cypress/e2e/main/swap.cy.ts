@@ -1,3 +1,5 @@
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { ExpectedExchangeRate } from '@cy/support/helpers/swap/swap.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('DEX Swap', () => {
@@ -16,14 +18,14 @@ describe('DEX Swap', () => {
     cy.get('@to').click()
 
     cy.get('@to', LOAD_TIMEOUT).should('not.contain', '0.0')
-    cy.get(`[data-testid="exchange-rate-value"]`).contains('/', LOAD_TIMEOUT)
+    getActionValue('exchange-rate').should('match', ExpectedExchangeRate)
     cy.get(`[data-testid="price-impact-value"]`).contains('%', LOAD_TIMEOUT)
 
     cy.get('@to').type('4321')
     cy.get('@from').click()
 
     cy.get('@from', LOAD_TIMEOUT).should('not.contain', '1234')
-    cy.get(`[data-testid="exchange-rate-value"]`).contains('/', LOAD_TIMEOUT)
+    getActionValue('exchange-rate').should('match', ExpectedExchangeRate)
     cy.get(`[data-testid="price-impact-value"]`).contains('%', LOAD_TIMEOUT)
   })
 })
