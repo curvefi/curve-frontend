@@ -2,6 +2,7 @@ import { RewardsApy } from '@/dex/types/main.types'
 import type { CellContext } from '@tanstack/react-table'
 import { useHasPoolRewards } from '../hooks/useHasPoolRewards'
 import type { PoolListItem } from '../types'
+import { Placeholder } from './Placeholder'
 import { RewardsCrvCell } from './RewardsCrvCell'
 import { RewardsIncentivesCell } from './RewardsIncentivesCell'
 
@@ -11,12 +12,12 @@ export const RewardsOtherCell = (props: Prop) => {
   const rewards = props.getValue()
   const { hasCrv, hasIncentives } = useHasPoolRewards(rewards, props.row.original)
 
-  if (!hasCrv && !hasIncentives) return <>-</>
-
-  return (
+  return hasCrv || hasIncentives ? (
     <>
-      <RewardsCrvCell placeholder={null} {...props} />
-      <RewardsIncentivesCell placeholder={null} {...props} />
+      <RewardsCrvCell placeholder={false} {...props} />
+      <RewardsIncentivesCell placeholder={false} {...props} />
     </>
+  ) : (
+    <Placeholder />
   )
 }
