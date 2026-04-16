@@ -26,9 +26,6 @@ import {
 import {
   checkClosePositionDetailsLoaded,
   submitClosePositionForm,
-  submitImproveHealthForm,
-  touchImproveHealthForm,
-  writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
@@ -157,13 +154,13 @@ testCases.forEach(
 
       it(`increases health`, () => {
         cy.mount(<LoanTestWrapper tab="improve-health" />)
-        writeImproveHealthForm({ amount: improveHealth })
+        writeRepayLoanForm({ amount: improveHealth })
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
           isPriceChanged: false,
         })
-        submitImproveHealthForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
-        touchImproveHealthForm() // make sure the new debt is shown
+        submitRepayForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
+        touchRepayLoanForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
 

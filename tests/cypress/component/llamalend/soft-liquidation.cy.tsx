@@ -5,12 +5,14 @@ import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
-import { checkRepayDetailsLoaded } from '@cy/support/helpers/llamalend/repay-loan.helpers'
+import {
+  checkRepayDetailsLoaded,
+  submitRepayForm,
+  writeRepayLoanForm,
+} from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import {
   checkClosePositionDetailsLoaded,
   submitClosePositionForm,
-  submitImproveHealthForm,
-  writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
 import {
   llamaNetworks,
@@ -20,6 +22,7 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
 const testCases = [
@@ -46,16 +49,21 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ImproveHealthForm market={market} networks={llamaNetworks} chainId={chainId} />
+            <ImproveHealthForm
+              market={market}
+              networks={llamaNetworks}
+              chainId={chainId}
+              collateralEvents={constQ(undefined)}
+            />
           </MockLoanTestWrapper>,
         )
 
-        writeImproveHealthForm({ amount: borrow })
+        writeRepayLoanForm({ amount: borrow })
         checkRepayDetailsLoaded({
           debt: { current: debt, future: debtAfterImprove, symbol: 'crvUSD' },
           isPriceChanged: false,
         })
-        cy.get('[data-testid="improve-health-submit-button"]').should('not.be.disabled')
+        cy.get('[data-testid="repay-submit-button"]').should('not.be.disabled')
 
         cy.then(() => {
           expect(stubs.parameters).to.have.been.calledWithExactly()
@@ -72,7 +80,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
           }
         })
 
-        submitImproveHealthForm().then(() => {
+        submitRepayForm().then(() => {
           expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           if (approved) {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
