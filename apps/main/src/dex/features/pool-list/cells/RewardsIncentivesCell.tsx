@@ -1,26 +1,25 @@
+import type { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { RewardsApy } from '@/dex/types/main.types'
-import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { PoolColumnId } from '../columns'
+import { useHasPoolRewards } from '../hooks/useHasPoolRewards'
 import type { PoolListItem } from '../types'
 
-type Prop = CellContext<PoolListItem, RewardsApy | undefined>
+type Prop = CellContext<PoolListItem, RewardsApy | undefined> & { placeholder?: ReactNode }
 
-export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolData } }: Prop) => {
-  const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: poolData.network as Chain,
-    address: poolData?.pool?.address as Address,
-  })
-  const { other } = getValue() ?? {}
+export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolData }, placeholder = '-' }: Prop) => {
+  const rewards = getValue()
+  const { hasIncentives, campaigns } = useHasPoolRewards(rewards, poolData)
+  const { other } = rewards ?? {}
 
-  return other?.length || campaigns.length ? (
+  if (!hasIncentives) return placeholder
+
+  return (
     <Stack alignItems="end">
       {other?.map((o) => (
         <Typography
@@ -32,5 +31,5 @@ export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolDa
       ))}
       {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} />}
     </Stack>
-  ) : null
+  )
 }
