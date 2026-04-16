@@ -43,8 +43,8 @@ describe('StakeForm (mocked)', () => {
       readStakeAvailableAmount()
       writeStakeForm({ amount: input.amount })
       checkStakeSubmit({ buttonText, hasGauge })
+      // stop test if no gauge because no gas estimation and submit disabled
       if (!hasGauge) return
-
       checkSupplyActionInfoValues(expected.actionInfo)
 
       cy.then(() => {

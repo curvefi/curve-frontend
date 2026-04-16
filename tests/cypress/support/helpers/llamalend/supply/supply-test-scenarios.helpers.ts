@@ -426,10 +426,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
         prevAmountSupplied: balances.gauge,
         symbol: 'crvUSD',
       },
-      alert: {
-        title: 'Unstake only',
-        description: 'recover your lent assets',
-      },
+      alert: 'alert-unstake-only',
     },
     stubs: {
       ...sharedStubs,

@@ -33,10 +33,7 @@ export function checkStakeSubmit({ buttonText, hasGauge = true }: { buttonText: 
   if (!hasGauge) {
     cy.get('[data-testid="supply-stake-submit-button"]').should('not.exist')
 
-    checkSupplyAlert({
-      title: 'Staking unavailable',
-      description: 'This market does not have a gauge.',
-    })
+    checkSupplyAlert('alert-no-gauge')
 
     return
   }
