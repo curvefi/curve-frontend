@@ -20,15 +20,11 @@ const BANNER_CONFIG = [
   {
     id: 'low',
     threshold: SOLVENCY_THRESHOLDS.low,
-    title: t`Low Market Solvency`,
-    lendSubtitle: t`Part of the supplied funds is no longer fully covered.`,
     severity: 'warning',
   },
   {
     id: 'insolvent',
     threshold: SOLVENCY_THRESHOLDS.insolvent,
-    title: t`Very Low Market Solvency`,
-    lendSubtitle: t`A large share of supplied funds is no longer fully covered.`,
     severity: 'alert',
   },
 ] as const
@@ -44,11 +40,11 @@ export const BadDebtBanner = ({ solvencyPercent, marketType }: Props) => {
         severity={banner.severity}
         subtitle={notFalsy(
           t`Market solvency is ${formatPercent(solvencyPercent)}.`,
-          marketType === LlamaMarketType.Lend && banner.lendSubtitle,
+          marketType === LlamaMarketType.Lend && t`Part of the supplied funds is no longer fully covered.`,
         ).join(' ')}
         testId={`bad-debt-banner-${banner.id}`}
       >
-        {banner.title}
+        {t`Low Market Solvency`}
       </Banner>
     )
   )
