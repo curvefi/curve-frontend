@@ -16,9 +16,10 @@ import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-us
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Query } from '@ui-kit/types/util'
 import { requireChainId } from '@ui-kit/utils'
 
-export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; error?: unknown }
+export type UserPositionSummaryMetric = { label: string; metric: Query<number> }
 
 type StatsQueryOptions =
   | ReturnType<typeof getUserLendingVaultStatsOptions>
@@ -53,11 +54,14 @@ type PositionQueryEntry =
 
 const MISSING_PRICE_RESULT: TokenPriceData = 0
 
-const createMetric = (label: string, data: number, isLoading: boolean, error?: unknown): UserPositionSummaryMetric => ({
+const createMetric = (
+  label: string,
+  data: number,
+  isLoading: boolean,
+  error: Error | null,
+): UserPositionSummaryMetric => ({
   label,
-  data,
-  isLoading,
-  error,
+  metric: { data, isLoading, error },
 })
 
 const getSupplyEntry = (market: LlamaMarket, userAddress: Address | undefined): PositionQueryEntry | null => {

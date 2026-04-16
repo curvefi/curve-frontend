@@ -130,12 +130,14 @@ const MintManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
+        component: ({ rChainId, market, isReady, collateralEvents }: MintManageLoanProps) => (
           <ImproveHealthForm
             chainId={rChainId}
             market={market ?? undefined}
             networks={softLiqNetworks}
             enabled={isReady}
+            collateralEvents={collateralEvents}
+            isInSoftLiquidation
           />
         ),
       },
