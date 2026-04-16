@@ -160,7 +160,7 @@ export const RepayForm = <ChainId extends IChainId>({
         message={`${maxAmountPrefix} ${maxAmountInBorrowToken ?? '-'} ${borrowToken?.symbol}`}
         onMessageNumberClick={() => updateForm(form, { [selectedField]: max[selectedField].data })}
       />
-      <HighPriceImpactAlert priceImpact={priceImpact} values={{ leverageEnabled: swapRequired, ...params }} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
 
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
