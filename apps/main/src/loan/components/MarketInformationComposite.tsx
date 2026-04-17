@@ -22,7 +22,6 @@ const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
   market: Llamma | null
-  marketId: string
   chainId: ChainId
   page?: 'create' | 'manage'
   previewPrices: Range<Decimal> | undefined
@@ -30,7 +29,6 @@ type MarketInformationCompProps = {
 
 export const MarketInformationComposite = ({
   market,
-  marketId,
   chainId,
   page = 'manage',
   previewPrices,
@@ -39,10 +37,10 @@ export const MarketInformationComposite = ({
 
   return (
     <Stack gap={PAGE_SPACING}>
-      <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
+      <ChartAndActivityComp chainId={chainId} market={market} previewPrices={previewPrices} />
       {!newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
-          <BandsComp market={market} marketId={marketId} page={page} />
+          <BandsComp market={market} page={page} />
         </Stack>
       )}
       {useMarketHistoricalRatesChart() && (
@@ -56,12 +54,7 @@ export const MarketInformationComposite = ({
           <CardHeader title={t`Advanced Details`} size="small" />
           <CardContent>
             <Stack>
-              <AdvancedDetails
-                chainId={chainId}
-                marketId={marketId}
-                market={market}
-                marketType={LlamaMarketType.Mint}
-              />
+              <AdvancedDetails chainId={chainId} market={market} marketType={LlamaMarketType.Mint} />
               <MarketInfoLayout
                 chainId={chainId}
                 marketType={LlamaMarketType.Mint}

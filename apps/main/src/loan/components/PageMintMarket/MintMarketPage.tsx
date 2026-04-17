@@ -39,12 +39,12 @@ export const MintMarketPage = () => {
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
-  const marketId = market?.id ?? ''
+  const marketId = market?.id
 
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
 
-  const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
+  const loanStatus = useUserLoanDetails(marketId ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
   const controllerAddress = getControllerAddress(market)
   const { data: solvencyMarket } = useSolvencyMarket({
@@ -55,7 +55,6 @@ export const MintMarketPage = () => {
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
     chainId: rChainId,
-    marketId,
     market: market ?? null,
   })
   const collateralEvents = useUserCollateralEvents({
@@ -116,13 +115,7 @@ export const MintMarketPage = () => {
         ))
       }
       header={
-        <PageHeader
-          chainId={rChainId}
-          marketId={marketId}
-          isLoading={!isHydrated}
-          market={market}
-          blockchainId={network.id as Chain}
-        />
+        <PageHeader chainId={rChainId} isLoading={!isHydrated} market={market} blockchainId={network.id as Chain} />
       }
     >
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
@@ -133,7 +126,6 @@ export const MintMarketPage = () => {
       />
       <MarketInformationComposite
         market={market ?? null}
-        marketId={marketId}
         chainId={rChainId}
         page="manage"
         previewPrices={previewPrices}

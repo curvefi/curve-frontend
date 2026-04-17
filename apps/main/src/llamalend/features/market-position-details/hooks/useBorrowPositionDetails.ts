@@ -47,16 +47,15 @@ const resolveMarket = (marketType: LlamaMarketType, market: LlamaMarketTemplate 
 export type UseBorrowPositionDetailsParams = {
   marketType: LlamaMarketType
   chainId: number
-  marketId: string
   market: LlamaMarketTemplate | null | undefined
 }
 
 export const useBorrowPositionDetails = ({
   marketType,
   chainId,
-  marketId,
   market,
 }: UseBorrowPositionDetailsParams): BorrowPositionDetailsProps => {
+  const marketId = market?.id
   const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const { collateralTokenAddress, collateralSymbol, borrowTokenAddress, borrowSymbol, leverageEnabled } = useMemo(

@@ -93,15 +93,14 @@ function buildSupplyRate({
 
 export const usePageHeader = ({
   chainId,
-  marketId,
   market,
   blockchainId,
 }: {
   chainId: number
-  marketId: string
   market: LlamaMarketTemplate | null | undefined
   blockchainId: Chain | undefined
 }) => {
+  const marketId = market?.id
   const isMarketMetadataLoading = !market
   const isLendMarket = market instanceof LendMarketTemplate
   const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined

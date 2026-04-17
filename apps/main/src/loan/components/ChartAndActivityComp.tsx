@@ -14,11 +14,10 @@ import type { Range } from '@ui-kit/types/util'
 type ChartAndActivityCompProps = {
   chainId: ChainId
   market: Llamma | null
-  marketId: string
   previewPrices: Range<Decimal> | undefined
 }
 
-export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ chainId, market, previewPrices }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
   const [isBandsVisible] = useBandsChartVisible()
   const collateralTokenAddress = market?.coinAddresses[1]
@@ -38,7 +37,6 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
   } = useOhlcChartState({
     chainId,
     market,
-    marketId,
     previewPrices,
   })
 
@@ -50,7 +48,7 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
     error: bandsError,
   } = useBandsData({
     chainId,
-    marketId,
+    marketId: market?.id,
     api,
     enabled: isBandsVisible,
   })

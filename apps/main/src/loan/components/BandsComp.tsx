@@ -9,11 +9,10 @@ import { ChartUserBands } from './ChartUserBands'
 
 type BandsCompProps = {
   market: Llamma | null
-  marketId: string
   page: 'create' | 'manage'
 }
 
-export const BandsComp = ({ market, marketId, page }: BandsCompProps) => {
+export const BandsComp = ({ market, page }: BandsCompProps) => {
   const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(page === 'create' ? 'market' : 'user')
 
   const SelectorMenu =
@@ -38,10 +37,8 @@ export const BandsComp = ({ market, marketId, page }: BandsCompProps) => {
 
   return (
     <Stack>
-      {selectedBand === 'user' && <ChartUserBands market={market} marketId={marketId} selectorMenu={SelectorMenu} />}
-      {selectedBand === 'market' && (
-        <DetailsBandsChart marketId={marketId} market={market} selectorMenu={SelectorMenu} />
-      )}
+      {selectedBand === 'user' && <ChartUserBands market={market} selectorMenu={SelectorMenu} />}
+      {selectedBand === 'market' && <DetailsBandsChart market={market} selectorMenu={SelectorMenu} />}
     </Stack>
   )
 }

@@ -29,18 +29,16 @@ const { Spacing } = SizesAndSpaces
 
 export const PageHeader = ({
   chainId,
-  marketId,
   isLoading,
   market,
   blockchainId,
 }: {
   chainId: number
-  marketId: string
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   blockchainId: Chain
 }) => {
-  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
+  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, market, blockchainId })
   return (
     <PageHeaderView
       isLoading={isLoading}

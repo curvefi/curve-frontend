@@ -23,7 +23,6 @@ export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | nu
 type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
-  marketId: string
   previewPrices: Range<Decimal> | undefined
 }
 
@@ -54,7 +53,8 @@ const useLegacyChartPrices = () => {
     | undefined
 }
 
-export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: OhlcChartStateProps) => {
+export const useOhlcChartState = ({ chainId, market, previewPrices }: OhlcChartStateProps) => {
+  const marketId = market?.id
   const { address: userAddress } = useConnection()
   const storePreviewPrices = useLegacyChartPrices()
   const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
@@ -73,7 +73,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
   const resetOhlcState = useStore((state) => state.ohlcCharts.resetState)
-  const priceInfo = useStore((state) => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
+  const priceInfo = useStore((state) => state.loans.detailsMapper[marketId ?? '']?.priceInfo ?? null)
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
 
@@ -139,7 +139,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     )
     void fetchLlammaOhlcData(
       chainId,
-      marketId,
+      marketId ?? '',
       poolAddress,
       chartInterval,
       timeUnit,

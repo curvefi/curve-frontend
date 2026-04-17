@@ -23,7 +23,6 @@ const { Spacing } = SizesAndSpaces
 
 export type AdvancedDetailsProps = {
   chainId: number | undefined | null
-  marketId: string | undefined | null
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
 }
@@ -49,11 +48,10 @@ const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityVal
   }
 }
 
-export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
+export const AdvancedDetails = ({ chainId, market, marketType }: AdvancedDetailsProps) => {
   const { collateral, availableLiquidity, maxLeverage, solvency } = useAdvancedDetailsData({
     chainId,
     market,
-    marketId,
     marketType,
   })
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)

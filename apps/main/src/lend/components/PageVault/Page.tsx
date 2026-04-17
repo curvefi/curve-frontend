@@ -35,6 +35,7 @@ export const Page = () => {
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
+  const marketId = market?.id
   const network = networks[rChainId]
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
@@ -42,24 +43,22 @@ export const Page = () => {
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
 
-  const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { address: userAddress } = useConnection()
   const [isLoaded, setLoaded] = useState(false)
 
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
-    marketId: market?.id,
+    marketId,
     userAddress,
   })
 
   const supplyPositionDetails = useSupplyPositionDetails({
     chainId: rChainId,
     market,
-    marketId: rOwmId,
     userAddress,
   })
-  const marketAlert = useMarketAlert(rChainId, rOwmId)
+  const marketAlert = useMarketAlert(rChainId, marketId)
   const controllerAddress = getControllerAddress(market)
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
@@ -96,7 +95,7 @@ export const Page = () => {
   const pageProps: PageContentProps = {
     params,
     rChainId,
-    rOwmId,
+    rOwmId: marketId ?? '',
     userAddress,
     isLoaded,
     api,
@@ -110,15 +109,9 @@ export const Page = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <DetailPageLayout
-      formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}
+      formTabs={rChainId && marketId && <VaultTabs {...pageProps} params={params} />}
       header={
-        <PageHeader
-          chainId={rChainId}
-          marketId={rOwmId}
-          isLoading={!isHydrated}
-          market={market}
-          blockchainId={network.id as Chain}
-        />
+        <PageHeader chainId={rChainId} isLoading={!isHydrated} market={market} blockchainId={network.id as Chain} />
       }
     >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}

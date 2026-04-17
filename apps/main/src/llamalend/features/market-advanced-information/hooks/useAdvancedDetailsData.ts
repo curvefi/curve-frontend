@@ -3,16 +3,16 @@ import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
+import type { ChainParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 export const useAdvancedDetailsData = ({
   chainId,
   market,
-  marketId,
   marketType,
-}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
+}: ChainParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
+  const marketId = market?.id
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
   const controllerAddress = getControllerAddress(market)

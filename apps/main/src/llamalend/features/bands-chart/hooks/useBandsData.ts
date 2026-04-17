@@ -14,7 +14,7 @@ export const useBandsData = ({
   enabled = true,
 }: {
   chainId: IChainId
-  marketId: string
+  marketId: string | undefined
   api: LlamaApi | undefined | null
   enabled?: boolean
 }) => {

@@ -23,7 +23,6 @@ import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 type UseSupplyPositionDetailsProps = {
   chainId: ChainId
   market: OneWayMarketTemplate | null | undefined
-  marketId: string
   userAddress: Address | undefined
 }
 
@@ -32,9 +31,9 @@ const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 export const useSupplyPositionDetails = ({
   chainId,
   market,
-  marketId,
   userAddress,
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
+  const marketId = market?.id
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId].id as Chain
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]

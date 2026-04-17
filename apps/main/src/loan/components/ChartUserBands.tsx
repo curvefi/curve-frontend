@@ -20,15 +20,8 @@ const DEFAULT_BAND_CHART_DATA = {
   collateralStablecoinUsd: 0,
 }
 
-export const ChartUserBands = ({
-  marketId,
-  market,
-  selectorMenu,
-}: {
-  marketId: string
-  market: Llamma | null
-  selectorMenu?: ReactNode
-}) => {
+export const ChartUserBands = ({ market, selectorMenu }: { market: Llamma | null; selectorMenu?: ReactNode }) => {
+  const marketId = market?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
   const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(marketId) ?? {}
 
