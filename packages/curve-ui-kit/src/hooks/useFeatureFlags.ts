@@ -4,7 +4,7 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { getReleaseChannel, useReleaseChannel } from './useLocalStorage'
+import { getReleaseChannel, useReleaseChannel, useTryNewLlamalend } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
@@ -16,11 +16,8 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
 // const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New unified create loan form */
-export const useCreateLoanMuiForm = useStableChannel
-
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = useStableChannel
+export const useManageLoanMuiForm = () => [useBetaChannel(), useTryNewLlamalend()[0]].some(Boolean)
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
 export const useLendingMuiForm = useManageLoanMuiForm

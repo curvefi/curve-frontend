@@ -14,6 +14,7 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { TryNewLlamalend } from '@/llamalend/features/try-new-llamalend/TryNewLlamalend'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -121,6 +122,7 @@ export const Page = () => {
         />
       }
     >
+      {!marketAlert?.banner && loanExists === true && <TryNewLlamalend />}
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (

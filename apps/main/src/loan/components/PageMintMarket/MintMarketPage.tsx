@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { TryNewLlamalend } from '@/llamalend/features/try-new-llamalend/TryNewLlamalend'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
@@ -126,6 +127,7 @@ export const MintMarketPage = () => {
       }
     >
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
+      {loanExists === true && <TryNewLlamalend />}
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}

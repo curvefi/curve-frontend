@@ -50,6 +50,8 @@ export const useReleaseChannel = () =>
     oldKey: 'beta',
   })
 
+export const useTryNewLlamalend = () => useLocalStorage<boolean | null>('try-new-llamalend', null)
+
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
