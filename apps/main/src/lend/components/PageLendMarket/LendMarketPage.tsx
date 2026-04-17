@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
-import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
+import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
-import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
@@ -40,7 +39,6 @@ export const LendMarketPage = () => {
 
   const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
   const { llamaApi: api = null, provider } = useCurve()
-  const titleMapper = useTitleMapper()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
@@ -124,7 +122,6 @@ export const LendMarketPage = () => {
     api,
     market,
     userActiveKey,
-    titleMapper,
     onPricesUpdated,
   }
 
@@ -139,7 +136,7 @@ export const LendMarketPage = () => {
         (loanExists ? (
           <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
         ) : (
-          <LoanCreateTabs {...pageProps} params={params} />
+          <CreateLoanTabs {...pageProps} params={params} />
         ))
       }
       header={

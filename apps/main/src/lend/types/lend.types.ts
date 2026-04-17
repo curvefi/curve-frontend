@@ -1,10 +1,7 @@
-import type { ReactNode } from 'react'
-import { TITLE } from '@/lend/constants'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
-import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
@@ -87,7 +84,6 @@ export type PageContentProps<T = UrlParams> = {
   isLoaded: boolean
   api: LlamaApi | null
   market: OneWayMarketTemplate | undefined
-  titleMapper: TitleMapper
 }
 export type LiqRange = {
   prices: string[]
@@ -212,7 +208,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type MarketDetailsView = 'user' | 'market' | ''
-export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 
 export enum FormWarning {
   // loan deleverage

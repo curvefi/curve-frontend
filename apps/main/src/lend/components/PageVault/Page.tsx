@@ -7,7 +7,6 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
-import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
@@ -35,7 +34,6 @@ export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const network = networks[rChainId]
 
@@ -104,7 +102,6 @@ export const Page = () => {
     api,
     market,
     userActiveKey,
-    titleMapper,
   }
 
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
