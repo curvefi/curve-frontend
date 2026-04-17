@@ -170,7 +170,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[500],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -635,7 +635,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Label: Blues[700],
-        Fill: Grays[850],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -1061,7 +1061,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[500],
+        Fill: Transparent,
       },
     },
     Success: {

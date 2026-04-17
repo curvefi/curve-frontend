@@ -45,6 +45,14 @@ const meta: Meta<typeof Metric> = {
       control: 'object',
       description: 'Optional notional values that gives context or underlying value of the key metric',
     },
+    error: {
+      control: 'object',
+      description: 'Pass an Error object to show the error icon and hide the metric value row content',
+    },
+    errorTooltip: {
+      control: 'object',
+      description: 'Optional tooltip shown on the error icon. Requires both title and body',
+    },
   },
   args: {
     size: 'medium',
@@ -195,6 +203,23 @@ export const RightAdornment: Story = {
     docs: {
       description: {
         story: 'Demonstrates the Metric component with a right adornment',
+      },
+    },
+  },
+}
+
+export const ErrorWithTooltip: Story = {
+  args: {
+    error: new globalThis.Error('Metric failed to load'),
+    errorTooltip: {
+      title: 'Error fetching metric',
+      body: 'Some positions could not be loaded correctly.',
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the Metric component error icon with a tooltip.',
       },
     },
   },

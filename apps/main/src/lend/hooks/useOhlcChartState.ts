@@ -33,11 +33,6 @@ const useLegacyChartPrices = () => {
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
   const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
   const repayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const repayLeveragePrices = useStore((state) => state.loanRepay.detailInfoLeverage[repayActiveKey]?.prices ?? null)
@@ -54,21 +49,10 @@ const useLegacyChartPrices = () => {
     if (addCollateralPrices?.length) return addCollateralPrices
     if (repayLoanPrices?.length) return repayLoanPrices
     if (borrowMorePrices?.length) return borrowMorePrices
-    if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
-      const prices = liqRangesMapper[formValues.n].prices
-      return [prices[1], prices[0]]
-    }
-    return loanCreateLeverageDetailInfo?.prices ?? null
-  }, [
-    repayLeveragePrices,
-    removeCollateralPrices,
-    addCollateralPrices,
-    repayLoanPrices,
-    borrowMorePrices,
-    formValues.n,
-    liqRangesMapper,
-    loanCreateLeverageDetailInfo,
-  ]) as Range<Decimal> | undefined
+    return null
+  }, [repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
+    | Range<Decimal>
+    | undefined
 }
 
 export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcChartStateProps) => {

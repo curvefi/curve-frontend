@@ -2,7 +2,6 @@ import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { AlertDisableForm } from '@/llamalend/widgets/action-card/AlertDisableForm'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,17 +36,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
-  onSuccess,
   borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  onSuccess: CreateLoanOptions['onSuccess']
-  borrowDisabledAlert?: FormDisabledAlert
+  borrowDisabledAlert?: FormDisabledAlert | false
 }) => {
-  const isBorrowDisabled = !!borrowDisabledAlert
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -66,7 +62,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     values,
     leverage,
     priceImpact,
-  } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
+  } = useCreateLoanForm({ market, network, preset, onPricesUpdated, disabled: !!borrowDisabledAlert })
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
@@ -77,7 +73,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      onSubmit={isBorrowDisabled ? form.handleSubmit(() => undefined) : onSubmit}
+      onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
           market={market}
@@ -143,7 +139,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
 
-      {isBorrowDisabled ? (
+      {borrowDisabledAlert ? (
         <AlertDisableForm>{borrowDisabledAlert.message}</AlertDisableForm>
       ) : (
         <Button

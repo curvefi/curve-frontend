@@ -1,20 +1,6 @@
-import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
+import { type Mutation, MutationCache } from '@tanstack/react-query'
 import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
-
-export const USD_RATE_KEY_IDENTIFER = 'usdRate' as const
-
-// disable logging for queries that are too verbose
-const disableCacheQueryKeys = new Set<unknown>(['readContracts', USD_RATE_KEY_IDENTIFER])
-
-export const queryCache = new QueryCache({
-  onError: (error: Error, query) => logError(query.queryKey, error, error.message),
-  onSuccess: (data, { queryKey }) => {
-    if (!queryKey.some((key) => disableCacheQueryKeys.has(key))) {
-      logSuccess(queryKey, ...[data ? [data] : []])
-    }
-  },
-})
 
 const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, variables: unknown) => {
   const queryKeyFn = mutation.options.meta?.queryKeyFn

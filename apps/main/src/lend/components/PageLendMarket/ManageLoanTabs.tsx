@@ -121,8 +121,14 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
-          <ImproveHealthForm chainId={chainId} market={market} networks={networks} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, isLoaded, collateralEvents }: ManageLoanProps) => (
+          <ImproveHealthForm
+            chainId={chainId}
+            market={market}
+            networks={networks}
+            enabled={isLoaded}
+            collateralEvents={collateralEvents}
+          />
         ),
       },
       {

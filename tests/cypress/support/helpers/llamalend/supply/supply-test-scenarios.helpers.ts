@@ -1,3 +1,4 @@
+import { zeroAddress } from 'viem'
 import type { Address } from 'viem'
 import { oneAddress } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -60,6 +61,7 @@ const createBaseSupplyMarket = ({
   vaultOverrides,
   currentApy,
   futureApy,
+  hasGauge = true,
 }: {
   chainId: number
   walletBalances: {
@@ -73,6 +75,7 @@ const createBaseSupplyMarket = ({
   }
   currentApy: Decimal
   futureApy: Decimal
+  hasGauge?: boolean
 }) => {
   const statsRates = createStub(createSupplyRates(currentApy))
   const statsFutureRates = createStub(createSupplyRates(futureApy))
@@ -100,7 +103,7 @@ const createBaseSupplyMarket = ({
       address: SUPPLY_MARKET_ADDRESSES.borrowed,
       decimals: 18,
     },
-    addresses: SUPPLY_MARKET_ADDRESSES,
+    addresses: { ...SUPPLY_MARKET_ADDRESSES, ...(!hasGauge && { gauge: zeroAddress }) },
     stats: {
       rates: statsRates,
       futureRates: statsFutureRates,
@@ -215,7 +218,15 @@ export const createDepositScenario = ({
   }
 }
 
-export const createStakeScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+export const createStakeScenario = ({
+  chainId,
+  approved,
+  hasGauge = true,
+}: {
+  chainId: number
+  approved: boolean
+  hasGauge?: boolean
+}) => {
   const input = { amount: '15' as const }
   const amount = input.amount
   const balances = {
@@ -238,6 +249,7 @@ export const createStakeScenario = ({ chainId, approved }: { chainId: number; ap
     walletBalances: balances,
     currentApy,
     futureApy,
+    hasGauge,
     vaultOverrides: {
       stakeIsApproved,
       stakeApprove,
@@ -414,10 +426,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
         prevAmountSupplied: balances.gauge,
         symbol: 'crvUSD',
       },
-      alert: {
-        title: 'Unstake only',
-        description: 'recover your lent assets',
-      },
+      alert: 'alert-unstake-only',
     },
     stubs: {
       ...sharedStubs,
