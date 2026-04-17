@@ -17,6 +17,6 @@ export const useDeprecatedMarket = ({
     return (
       Object.entries(DEPRECATED_LLAMAS[blockchainId] ?? {}).find(([address]) =>
         isAddressEqual(address as Address, controllerAddress),
-      )?.[1].message ?? null
+      )?.[1] ?? null
     )
   }, [blockchainId, controllerAddress])
