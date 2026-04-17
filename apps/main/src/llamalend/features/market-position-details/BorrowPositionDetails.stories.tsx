@@ -53,8 +53,7 @@ export const CloseToLiquidation: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Position close to soft liquidation. No alert banner, but health bar shows risky (orange) state.',
+        story: 'Position close to soft liquidation. No alert banner, but health bar shows risky (orange) state.',
       },
     },
   },
