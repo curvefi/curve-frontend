@@ -31,6 +31,7 @@ export default defineConfig(({ command }) => ({
         (warn.code === 'EVAL' && warn.id?.endsWith('/apps/main/src/main.tsx')) // required eval()
           ? undefined
           : handler(warn),
+      external: ['src/eip-6963.ts'], // exclude eip-6963 from the bundle since it's loaded separately in index.html, this allows it to be loaded in the global scope before the app initializes and avoids issues with circular dependencies and module resolution
     },
   },
   preview: { port: 3000 },
