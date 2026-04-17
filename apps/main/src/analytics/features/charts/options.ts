@@ -13,6 +13,8 @@ const deepMerge = <T>(target: T, source: DeepPartial<T>): T => ({
   ),
 })
 
+const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const // not an array to prevent typing as number[]
+
 /** Creates a color palette (and font settings) derived from the MUI theme for use in ECharts options. */
 export const createPalette = ({ theme }: { theme: Theme }) => ({
   fontFamily: theme.typography.bodyMRegular.fontFamily as string,
@@ -21,27 +23,8 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
   gridLinesColor: theme.design.Color.Neutral[300],
   axisLabelsColor: theme.design.Text.TextColors.Tertiary,
 
-  colors: [
-    theme.design.Chart.Lines.Line1,
-    theme.design.Chart.Lines.Line2,
-    theme.design.Chart.Lines.Line3,
-    theme.design.Chart.Lines.Line4,
-    theme.design.Chart.Lines.Line5,
-    theme.design.Chart.Lines.Line6,
-    theme.design.Chart.Lines.Line7,
-    theme.design.Chart.Lines.Line8,
-  ],
-
-  surfaceColors: [
-    theme.design.Chart.Surfaces[1],
-    theme.design.Chart.Surfaces[2],
-    theme.design.Chart.Surfaces[3],
-    theme.design.Chart.Surfaces[4],
-    theme.design.Chart.Surfaces[5],
-    theme.design.Chart.Surfaces[6],
-    theme.design.Chart.Surfaces[7],
-    theme.design.Chart.Surfaces[8],
-  ],
+  colors: CHART_COLOR_INDICES.map((i) => theme.design.Chart.Lines[i]),
+  surfaceColors: CHART_COLOR_INDICES.map((i) => theme.design.Chart.Surfaces[i]),
 })
 
 type ChartPalette = ReturnType<typeof createPalette>
