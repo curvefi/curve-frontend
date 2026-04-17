@@ -1,5 +1,8 @@
 import { ReactNode, useMemo } from 'react'
+import { isAddressEqual } from 'viem'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { Address } from '@primitives/address.utils'
+import { recordEntries } from '@primitives/objects.utils'
 import { AlertType } from '@ui/AlertBox/types'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { t } from '@ui-kit/lib/i18n'
@@ -17,12 +20,12 @@ export type MarketAlert = TooltipProps & {
   message?: ReactNode
 }
 
-type Alerts = { [chainId: number]: { [owmId: string]: MarketAlert } }
+type Alerts = { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
 
 const LEND_MARKETS_ALERTS: Alerts = {
   [Chain.Ethereum]: {
-    // sdola-crvusd lend market
-    'one-way-market-30': {
+    // one-way-market-30 - sDOLA/crvUSD
+    '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
       alertType: 'danger',
       isDisableBorrow: true,
       isDisableDeposit: true,
@@ -30,7 +33,8 @@ const LEND_MARKETS_ALERTS: Alerts = {
     },
   },
   [Chain.Arbitrum]: {
-    'one-way-market-7': {
+    // one-way-market-7 - FXN/crvUSD
+    '0x7adcc491f0b7f9bc12837b8f5edf0e580d176f1f': {
       alertType: 'danger',
       isDisableDeposit: true,
       message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
@@ -42,15 +46,15 @@ const MINT_MARKETS_ALERTS: Alerts = {}
 
 export const useMarketAlert = <ChainId extends IChainId>(
   rChainId: ChainId,
-  rOwmId: string | undefined,
+  controllerAddress: Address | undefined,
   marketType: LlamaMarketType,
 ) =>
   useMemo(() => {
-    if (!rChainId || !rOwmId) return null
+    if (!rChainId || !controllerAddress) return null
 
-    const foundAlert = (marketType === LlamaMarketType.Lend ? LEND_MARKETS_ALERTS : MINT_MARKETS_ALERTS)[rChainId]?.[
-      rOwmId
-    ]
+    const chainAlerts = (marketType === LlamaMarketType.Lend ? LEND_MARKETS_ALERTS : MINT_MARKETS_ALERTS)[rChainId]
+    // use isAddressEqual instead of a simple lookup to match checksummed addresses
+    const [_, alert] = recordEntries(chainAlerts).find(([address]) => isAddressEqual(address, controllerAddress)) ?? []
 
-    return foundAlert || null
-  }, [rChainId, rOwmId, marketType])
+    return alert
+  }, [rChainId, controllerAddress, marketType])

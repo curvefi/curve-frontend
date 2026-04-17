@@ -11,6 +11,7 @@ import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { DetailInfo } from '@ui/DetailInfo'
@@ -30,7 +31,7 @@ import { decimal } from '@ui-kit/utils'
 export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
   const isSubscribed = useRef(false)
-  const marketAlert = useMarketAlert(rChainId, rOwmId, LlamaMarketType.Lend)
+  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const activeKey = useStore((state) => state.vaultDepositMint.activeKey)
   const formEstGas = useStore((state) => state.vaultDepositMint.formEstGas[activeKey])

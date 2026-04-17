@@ -11,6 +11,7 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLendingMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -18,8 +19,8 @@ import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type VaultProps = PageContentProps<MarketUrlParams>
 
-function DepositTab({ rChainId, rOwmId, market, isLoaded }: VaultProps) {
-  const marketAlert = useMarketAlert(rChainId, rOwmId, LlamaMarketType.Lend)
+function DepositTab({ rChainId, market, isLoaded }: VaultProps) {
+  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
   const depositDisabledAlert = marketAlert?.isDisableDeposit
     ? { message: marketAlert.message, alertType: marketAlert.alertType }
     : undefined
