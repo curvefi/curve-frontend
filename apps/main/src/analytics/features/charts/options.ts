@@ -31,6 +31,17 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
     theme.design.Chart.Lines.Line7,
     theme.design.Chart.Lines.Line8,
   ],
+
+  surfaceColors: [
+    theme.design.Chart.Surfaces[1],
+    theme.design.Chart.Surfaces[2],
+    theme.design.Chart.Surfaces[3],
+    theme.design.Chart.Surfaces[4],
+    theme.design.Chart.Surfaces[5],
+    theme.design.Chart.Surfaces[6],
+    theme.design.Chart.Surfaces[7],
+    theme.design.Chart.Surfaces[8],
+  ],
 })
 
 type ChartPalette = ReturnType<typeof createPalette>
@@ -73,9 +84,14 @@ export const createChartOptions = ({
   deepMerge(createDefaults(palette), {
     ...options,
     series: toArray(options.series)
-      .map((serie, index) => ({ serie, toggled: legendSets[index].toggled, color: palette.colors[index] }))
+      .map((serie, index) => ({
+        serie,
+        toggled: legendSets[index].toggled,
+        color: palette.colors[index],
+        surfaceColor: palette.surfaceColors[index],
+      }))
       .filter(({ toggled }) => toggled !== false)
-      .map(({ serie, color }) => deepMerge(createSerieDefaults(serie, color), serie)),
+      .map(({ serie, color, surfaceColor }) => deepMerge(createSerieDefaults(serie, color, surfaceColor), serie)),
   })
 
 const createDefaults = (palette: ChartPalette): EChartsOption => ({
@@ -104,7 +120,7 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
   },
 })
 
-const createSerieDefaults = (serie: SeriesOption, color: string): SeriesOption => ({
+const createSerieDefaults = (serie: SeriesOption, color: string, surfaceColor: string): SeriesOption => ({
   symbol: 'circle',
   symbolSize: 8,
   showSymbol: false, // hidden by default, only shown on hover (emphasis below)
@@ -116,7 +132,7 @@ const createSerieDefaults = (serie: SeriesOption, color: string): SeriesOption =
   silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
   lineStyle: { color, width: 2 },
   itemStyle: { color, borderColor: color, borderWidth: 2 }, // tooltip marker color
-  ...('areaStyle' in serie && { areaStyle: { color, opacity: 1 } }),
+  ...('areaStyle' in serie && { areaStyle: { color: surfaceColor, opacity: 1 } }),
 })
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */
