@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import { networks } from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { ChainParams } from '@ui-kit/lib/model/query'
 import { useOneWayMarketNames } from './chain-query'
 
-const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
-  const { chainId } = params
-  const { data: marketNames, isSuccess, error } = useOneWayMarketNames(params)
+const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
+  const { data: marketNames, isSuccess, error } = useOneWayMarketNames({ chainId, enableLLv2: useLLv2() })
   const { llamaApi: api, isHydrated } = useCurve()
   const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(

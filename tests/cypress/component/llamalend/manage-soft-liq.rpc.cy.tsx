@@ -9,6 +9,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
 import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 describe('Manage soft liquidation', () => {
@@ -28,7 +29,15 @@ describe('Manage soft liquidation', () => {
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
     if (!market) return <Skeleton />
     const Component = { 'improve-health': ImproveHealthForm, 'close-position': ClosePositionForm }[tab]
-    return <Component market={market} networks={softLiqNetworks} chainId={chainId} enabled={isHydrated} />
+    return (
+      <Component
+        market={market}
+        networks={softLiqNetworks}
+        chainId={chainId}
+        enabled={isHydrated}
+        collateralEvents={constQ(undefined)}
+      />
+    )
   }
 
   const TestComponentWrapper = ({ children }: { children: ReactNode }) => (
@@ -40,7 +49,7 @@ describe('Manage soft liquidation', () => {
         app="llamalend"
         network={network}
         onChainUnavailable={console.error}
-        hydrate={{ llamalend: () => prefetchMarkets({}) }}
+        hydrate={{ llamalend: () => prefetchMarkets({ chainId, enableLLv2: true }) }}
       >
         {children}
       </CurveProvider>

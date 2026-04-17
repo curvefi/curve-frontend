@@ -73,14 +73,26 @@ export type GetLiqHealthDecilesResponse = {
   }[]
 }
 
+type TotalOverview = {
+  chain: Chain
+  soft_liquidation_users: number
+  bad_debt: number
+  liquidatable_positions: number
+  liquidatable_pos_debt_usd: number
+  liquidatable_collateral_usd: number
+  // only for lending endpoint
+  liquidatable_borrowed_usd: number | undefined
+  // only for crvusd endpoint
+  liquidatable_stablecoin_usd: number | undefined
+}
+
 export type GetTotalOverviewResponse = {
-  data: {
-    chain: Chain
-    soft_liquidation_users: number
-    bad_debt: number
-    liquidatable_positions: number
-    liquidatable_pos_debt_usd: number
-    liquidatable_collateral_usd: number
-    liquidatable_borrowed_usd: number
-  }[]
+  data: TotalOverview[]
+}
+
+export type GetBadDebtResponse = {
+  data: (TotalOverview & {
+    market: string
+    controller_address: Address
+  })[]
 }

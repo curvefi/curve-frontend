@@ -60,7 +60,6 @@ export const DetailsUserLoanChartBandBalances = ({
   }, [bandsBalances, oraclePriceBand])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBrushIndex({ startIndex: undefined, endIndex: undefined })
   }, [chartBandBalancesData])
 

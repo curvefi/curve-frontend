@@ -33,7 +33,6 @@ export const LiquidationRangeSlider = ({
 
   useEffect(() => {
     if (selectedLiqRange?.n) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSliderValue(selectedLiqRange.n)
     }
   }, [selectedLiqRange?.n])

@@ -17,29 +17,20 @@ export type ChartDataPoint = {
   userBandBorrowedAmount?: number
   userBandBorrowedValueUsd?: number
   userBandTotalCollateralValueUsd?: number
-  isLiquidationBand: string
-  isOraclePriceBand: boolean
+  isLiquidationBand: boolean
 }
 
 export type BandsChartPalette = {
-  backgroundColor: string
-  textColor: string
-  textColorInverted: string
   gridColor: string
   scaleLabelsColor: string
   marketBandColor: string
-  userBandColor: string
-  borderColor: string
-  userRangeHighlightColor: string
-  userRangeTopLabelBackgroundColor: string
-  userRangeTopLabelTextColor: string
-  userRangeBottomLabelBackgroundColor: string
-  userRangeBottomLabelTextColor: string
+  userCollateralShareColor: string
+  userBorrowedShareColor: string
+  userRangeBackgroundColor: string
+  userRangeTopLineColor: string
+  userRangeBottomLineColor: string
   oraclePriceLineColor: string
   liquidationBandOutlineColor: string
-  zoomTrackBackgroundColor: string
-  zoomThumbColor: string
-  zoomThumbHandleBorderColor: string
 }
 
 export type UserBandsPriceRange = {
@@ -52,7 +43,8 @@ export type UserBandsPriceRange = {
 export type DerivedChartData = {
   yAxisData: number[]
   marketData: number[]
-  userData: number[]
+  userCollateralData: number[]
+  userBorrowedData: number[]
   isLiquidation: boolean[]
 }
 
@@ -64,15 +56,9 @@ export type FetchedBandsBalances = {
   collateral: Decimal
   collateralUsd: number
   collateralBorrowedUsd: number
-  isLiquidationBand: string
+  isLiquidationBand: boolean
   n: number
   p_up: number
   p_down: number
   pUpDownMedian: number
-}
-
-export type ParsedBandsBalances = FetchedBandsBalances & {
-  borrowedValueUsd: number
-  collateralValueUsd: number
-  totalBandValueUsd: number
 }

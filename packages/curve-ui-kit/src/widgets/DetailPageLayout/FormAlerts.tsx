@@ -67,23 +67,25 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
  * Shows above the submit button to make high price impact visible without opening the accordion.
  */
 export const HighPriceImpactAlert = ({
-  priceImpact: { data, isLoading, error },
-  values: { slippage, leverageEnabled },
+  priceImpact: { data, isLoading: isImpactLoading, error },
+  max: { isLoading: isMaxLoading },
+  values: { slippage },
 }: {
   priceImpact: QueryProp<Decimal | null>
-  values: { slippage: Decimal | undefined; leverageEnabled: boolean | undefined }
+  max: QueryProp<unknown> // dependent query that is necessary before the price impact query is even enabled
+  values: { slippage: Decimal | undefined }
 }) => {
-  const severity = getPriceImpactSeverity({ data, isLoading, error }, { slippage })
-  const isVisible = leverageEnabled && data && !!(error || severity)
-  const wasVisible = usePreviousValue(isVisible)
+  const isLoading = isImpactLoading || isMaxLoading // impact will only start loading after the max is available
+  const severity = getPriceImpactSeverity({ data }, { slippage })
+  const prevSeverity = usePreviousValue(severity)
   return error ? (
     <Alert severity="error" data-testid="high-price-impact-error">
       <AlertTitle>{t`Cannot determine price impact`}</AlertTitle>
       {error.message}
     </Alert>
   ) : (
-    (severity || wasVisible) && (
-      <WithSkeleton loading={!severity}>
+    (severity || (prevSeverity && isLoading)) && (
+      <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
           <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
             {t`High price impact:`} -{formatPercent(data)}

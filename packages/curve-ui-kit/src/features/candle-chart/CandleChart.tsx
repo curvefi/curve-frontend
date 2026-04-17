@@ -2,10 +2,14 @@ import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWh
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
-import { styled } from 'styled-components'
+import { Box } from '@mui/material'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
+import { useCandleTimeScaleSubscriptions } from './hooks/useCandleTimeScaleSubscriptions'
 import type { ChartColors } from './hooks/useChartPalette'
+import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
@@ -92,6 +96,7 @@ type Props = {
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   latestOraclePrice?: string
+  onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
 export const CandleChart = ({
@@ -110,8 +115,9 @@ export const CandleChart = ({
   liqRangeCurrentVisible,
   liqRangeNewVisible,
   latestOraclePrice,
+  onVisiblePriceRangeChange,
 }: Props) => {
-  const chartContainerRef = useRef(null)
+  const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi>(null)
 
   const newRangeSeriesRef = useRef<LiquidationRangeSeriesApi | null>(null)
@@ -207,7 +213,7 @@ export const CandleChart = ({
       if (wrapperRef.current) {
         setWrapperWidth(wrapperRef.current.clientWidth)
       }
-    }, 16), // ~60fps
+    }, Duration.ChartFrame), // ~60fps
   )
 
   // Update wrapper dimensions when wrapperRef changes
@@ -273,10 +279,7 @@ export const CandleChart = ({
         autoScale: true,
         alignLabels: true,
         borderVisible: false,
-        scaleMargins: {
-          top: 0.1,
-          bottom: 0.1,
-        },
+        scaleMargins: PRICE_SCALE_MARGINS,
       },
     })
     chartRef.current.timeScale()
@@ -583,17 +586,44 @@ export const CandleChart = ({
     })
   }, [memoizedColors.oraclePrice, oraclePriceVisible])
 
-  // Event subscription effect
-  useEffect(() => {
-    if (!chartRef.current) return
+  const { scheduleEmitPriceRange } = useVisiblePriceRangeSync({
+    chartRef,
+    chartContainerRef,
+    onVisiblePriceRangeChange,
+  })
+  useCandleTimeScaleSubscriptions({
+    chartRef,
+    onVisibleLogicalRangeChange: handleVisibleLogicalRangeChange,
+    enableVisiblePriceRangeSync: !!onVisiblePriceRangeChange,
+    scheduleEmitPriceRange,
+  })
 
-    const timeScale = chartRef.current.timeScale()
-    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+  // Listen to series data updates to catch autoscale changes caused by setData/update.
+  useEffect(() => {
+    if (!onVisiblePriceRangeChange) return
+
+    const watchedSeries = [
+      candlestickSeriesRef.current,
+      oraclePriceSeriesRef.current,
+      currentRangeSeriesRef.current,
+      newRangeSeriesRef.current,
+      ...historicalRangeSeriesRefs.current,
+    ]
+
+    watchedSeries.forEach((series) => {
+      series?.subscribeDataChanged(scheduleEmitPriceRange)
+    })
+
+    if (watchedSeries.length > 0) {
+      scheduleEmitPriceRange()
+    }
 
     return () => {
-      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+      watchedSeries.forEach((series) => {
+        series?.unsubscribeDataChanged(scheduleEmitPriceRange)
+      })
     }
-  }, [handleVisibleLogicalRangeChange])
+  }, [onVisiblePriceRangeChange, scheduleEmitPriceRange, liqRangeCurrentVisible, liqRangeNewVisible, liquidationRange])
 
   // Update liquidation range data when it changes
   useEffect(() => {
@@ -618,6 +648,7 @@ export const CandleChart = ({
       currentRangeSeriesRef.current?.setData([])
       newRangeSeriesRef.current?.setData([])
       historicalRangeSeriesRefs.current.forEach((series) => series?.setData([]))
+      scheduleEmitPriceRange()
       return
     }
 
@@ -644,7 +675,16 @@ export const CandleChart = ({
       const normalized = historicalRanges[index] ? normalizeLiquidationRangePoints(historicalRanges[index]) : []
       series.setData(normalized)
     })
-  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
+
+    // Liquidation range data can expand the price scale — re-emit so the bands chart stays in sync.
+    scheduleEmitPriceRange()
+  }, [
+    liquidationRange,
+    liquidationRange?.historical,
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    scheduleEmitPriceRange,
+  ])
 
   // Update liquidation range series colors and price line styling
   useEffect(() => {
@@ -767,11 +807,7 @@ export const CandleChart = ({
     }
   }, [wrapperRef, isUnmounting])
 
-  return <Container ref={chartContainerRef} />
+  return (
+    <Box sx={{ position: 'absolute', width: '100%', fontVariantNumeric: 'tabular-nums' }} ref={chartContainerRef} />
+  )
 }
-
-const Container = styled.div`
-  position: absolute;
-  width: 100%;
-  font-variant-numeric: tabular-nums;
-`

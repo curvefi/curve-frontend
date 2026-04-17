@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -71,3 +72,14 @@ export const mapQuery = <TSource, TResult>(
 
 /** Creates a QueryProp constant data, no loading or error state. */
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
+
+/** Hook similar to mapQuery for queries that need memoization */
+export const useMappedQuery = <TSource, TResult>(
+  { isLoading, error, data }: Query<TSource>,
+  transform: (data: TSource) => TResult | null | undefined,
+) =>
+  q({
+    isLoading,
+    data: useMemo(() => (data == null ? undefined : (transform(data) ?? undefined)), [data, transform]),
+    error,
+  })

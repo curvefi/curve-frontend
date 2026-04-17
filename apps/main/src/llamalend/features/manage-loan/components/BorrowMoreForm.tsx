@@ -12,7 +12,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
@@ -124,16 +123,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
-          message={
-            <Balance
-              prefix={t`Max borrow amount:`}
-              tooltip={t`Max available to borrow`}
-              symbol={borrowToken?.symbol}
-              balance={max.debt.data}
-              loading={max.debt.isLoading}
-              onClick={() => updateForm(form, { debt: max.debt.data })}
-            />
-          }
+          message={`${t`Max borrow amount:`} ${max.debt.data ?? '-'} ${borrowToken?.symbol}`}
         />
       </Stack>
 
@@ -146,7 +136,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.maxLeverage)} />
 
       <Button
         type="submit"

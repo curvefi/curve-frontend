@@ -22,11 +22,13 @@ const Wrapper: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   padding: 1rem 1.25rem;
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TipTitle: IStyledComponent<'web', DivProps> = styled.div`
   font-weight: bold;
   margin-bottom: 2px;
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TipContent: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   align-items: center;
   display: grid;
@@ -37,6 +39,7 @@ export const TipContent: IStyledComponent<'web', BoxComponentProps> = styled(Box
   }
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TipIcon: IStyledComponent<'web', IconComponentProps> = styled(Icon)`
   position: relative;
   left: -2px;

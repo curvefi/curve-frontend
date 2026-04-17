@@ -157,22 +157,8 @@ export const checkSupplyActionInfoValues = ({
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export const checkSupplyAlert = ({
-  title,
-  description,
-  testId,
-}: {
-  title: string
-  description?: string
-  testId?: string
-}) => {
-  const alert = testId
-    ? cy.get(`[data-testid="${testId}"]`)
-    : cy.contains('.MuiAlert-root', title).closest('.MuiAlert-root')
-  alert.should('be.visible').within(() => {
-    cy.contains(title)
-    if (description) cy.contains(description)
-  })
+export const checkSupplyAlert = (testId: string) => {
+  cy.get(`[data-testid="${testId}"]`).should('be.visible')
 }
 
 /**

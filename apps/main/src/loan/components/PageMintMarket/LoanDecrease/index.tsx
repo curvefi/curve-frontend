@@ -220,7 +220,7 @@ export const LoanDecrease = ({
       const updatedSteps = getSteps(activeKey, curve, llamma, formEstGas, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [healthMode?.percent, llamma?.id, curve?.chainId, formEstGas.loading, formStatus, formValues])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null

@@ -1,8 +1,6 @@
 import type { ComponentPropsWithRef } from 'react'
-import { styled, type IStyledComponent } from 'styled-components'
+import { type IStyledComponent, styled } from 'styled-components'
 
-type DivProps = ComponentPropsWithRef<'div'>
-
-export const StyledDetailInfoWrapper: IStyledComponent<'web', DivProps> = styled.div`
+export const StyledDetailInfoWrapper: IStyledComponent<'web', ComponentPropsWithRef<'div'>> = styled.div`
   margin-top: 0.375rem; // 6px
 `

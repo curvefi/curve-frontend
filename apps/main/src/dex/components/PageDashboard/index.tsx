@@ -91,7 +91,7 @@ export const Dashboard = ({
   // curvejs change
   useEffect(() => {
     updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, !pageLoaded, haveAllPools, poolsMapper])
 
   // signerAddress
@@ -99,7 +99,7 @@ export const Dashboard = ({
     if (signerAddress) {
       updateFormValues({ walletAddress: signerAddress })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [signerAddress])
 
   const updatePath = useCallback(

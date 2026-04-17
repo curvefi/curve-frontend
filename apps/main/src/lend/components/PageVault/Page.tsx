@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
-import { MarketAlertBanner } from '@/lend/components/MarketAlertBanner'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
-import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
@@ -16,22 +14,26 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
+import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import type { Chain } from '@curvefi/prices-api'
+import { type Chain } from '@curvefi/prices-api'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const network = networks[rChainId]
 
@@ -58,10 +60,15 @@ export const Page = () => {
     userAddress,
   })
   const marketAlert = useMarketAlert(rChainId, rOwmId)
+  const controllerAddress = getControllerAddress(market)
+  const { data: solvencyMarket } = useSolvencyMarket({
+    type: LlamaMarketType.Lend,
+    blockchainId: network.id,
+    controllerAddress,
+  })
 
   useEffect(() => {
     if (api && market && isPageVisible) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoaded(true)
       const timer = setTimeout(
         () =>
@@ -95,7 +102,6 @@ export const Page = () => {
     api,
     market,
     userActiveKey,
-    titleMapper,
   }
 
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
@@ -116,6 +122,7 @@ export const Page = () => {
       }
     >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+      {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner
           chainId={rChainId}

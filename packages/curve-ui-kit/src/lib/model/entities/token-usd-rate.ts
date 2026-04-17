@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { formatEther, isAddressEqual, type Address } from 'viem'
+import { type Address, ethAddress, formatEther, isAddressEqual } from 'viem'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { FetchError } from '@primitives/fetch.utils'
@@ -9,18 +9,25 @@ import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import {
+  type ChainParams,
   NoRetryError,
   queryFactory,
   rootKeys,
-  type ChainParams,
   type TokenParams,
   type TokenQuery,
 } from '@ui-kit/lib/model/query'
 import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
-import { BlockchainIds, REUSD_ADDRESS, SREUSD_ADDRESS } from '@ui-kit/utils'
+import { BlockchainIds, Chain, REUSD_ADDRESS, SREUSD_ADDRESS } from '@ui-kit/utils'
 import { readContract } from '@wagmi/core'
 
-export const QUERY_KEY_IDENTIFIER = 'usdRate' as const
+const getTestTokenPrice = async (chainId: number, tokenAddress: Address): Promise<number | null> => {
+  if (chainId === Chain.Optimism) {
+    if (isAddressEqual(tokenAddress, '0x79cc1c5c0171ff25ef391055e529a56a12bf3d39'))
+      return await fetchUsdRate(chainId, ethAddress)
+    if (isAddressEqual(tokenAddress, '0xe8e9cd957dc2b5a32ea822a3799f65940cf51f19')) return 1
+  }
+  return null
+}
 
 /** Try Curve/Llama API (returns null on failure) */
 const fetchFromCurveLib = async (libName: LibKey, chainId: number, tokenAddress: string): Promise<number | null> => {
@@ -86,6 +93,7 @@ const fetchFallbackSreUsd = async (chainId: number, tokenAddress: string): Promi
 /** Main fetcher that tries all sources in order */
 const fetchUsdRate = async (chainId: number, tokenAddress: string) => {
   const rate =
+    (await getTestTokenPrice(chainId, tokenAddress as Address)) ??
     (await fetchFromCurveLib('curveApi', chainId, tokenAddress)) ??
     (await fetchFromCurveLib('llamaApi', chainId, tokenAddress)) ??
     (await fetchFromPricesApi(chainId, tokenAddress)) ??
@@ -110,7 +118,7 @@ export const {
   fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
-  queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
+  queryKey: (params: TokenParams) => [...rootKeys.token(params), 'usdRate' as const] as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })

@@ -45,7 +45,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
+import { DetailInfoTradeRoutes } from './components/DetailInfoTradeRoutes'
 
 export const LoanDeleverage = ({
   curve,
@@ -206,14 +206,14 @@ export const LoanDeleverage = ({
     return () => {
       isSubscribed.current = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   // signer changed
   useEffect(() => {
     updateFormValues(DEFAULT_FORM_VALUES, '', true)
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.signerAddress])
 
   // update formValues
@@ -221,7 +221,7 @@ export const LoanDeleverage = ({
     if (chainId && llamma) {
       updateFormValues({}, '', false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, llamma, userState?.collateral, userLoanDetails?.userIsCloseToLiquidation])
 
   // maxSlippage
@@ -229,7 +229,7 @@ export const LoanDeleverage = ({
     if (maxSlippage) {
       updateFormValues({}, maxSlippage, false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   //  pageVisible
@@ -237,7 +237,7 @@ export const LoanDeleverage = ({
     if (!formStatus.isInProgress) {
       updateFormValues({}, '', false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isPageVisible])
 
   // interval
@@ -253,7 +253,7 @@ export const LoanDeleverage = ({
       const updatedSteps = getSteps(activeKey, curve, llamma, formStatus, formValues, detailInfo)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     detailInfo.loading,
     detailInfo.isHighImpact,

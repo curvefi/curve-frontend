@@ -13,4 +13,3 @@ export type LiqRange = {
 }
 
 export type LiqRangeSliderIdx = LiqRange & { sliderIdx: number }
-export type LiqRangesMapper = { [n: string]: LiqRangeSliderIdx }

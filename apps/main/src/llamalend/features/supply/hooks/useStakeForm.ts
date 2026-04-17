@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens, hasVault } from '@/llamalend/llama.utils'
+import { getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
@@ -41,6 +41,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
+  const marketHasGauge = !!market && hasGauge(market)
 
   const vaultToken = getVaultToken(market)
   const { borrowToken } = market ? getTokens(market) : {}
@@ -84,12 +85,13 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending || isDebouncing,
+    isDisabled: !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     stakeError,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
+    hasGauge: marketHasGauge,
     formErrors: useFormErrors(formState),
   }
 }

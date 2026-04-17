@@ -1,8 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
-import type { HealthMode } from '@/llamalend/llamalend.types'
-import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
-import type { Step } from '@ui/Stepper/types'
 
 export type FormStatus = {
   isApproved: boolean
@@ -42,60 +38,12 @@ export type FormValues = {
 
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
 
-export interface CreateFormStatus extends FormStatus {
-  error: string
-  warning: 'loan-exists' | string
-  step: StepKey
-}
-
 export type PageLoanCreateProps = {
   curve: LlamaApi | null
   isReady: boolean
   market: Llamma | null
   params: CollateralUrlParams
   rChainId: ChainId
-}
-
-export type CreateFormDetailInfo = {
-  activeKey: string
-  activeKeyLiqRange: string
-  chainId: ChainId
-  curve: LlamaApi | null
-  formEstGas: FormEstGas
-  formValues: FormValues
-  haveSigner: boolean
-  healthMode: HealthMode
-  isLeverage: boolean
-  isReady: boolean
-  llamma: Llamma | null
-  steps: Step[]
-  setHealthMode: Dispatch<SetStateAction<HealthMode>>
-  updateFormValues: (updatedFormValues: FormValues) => void
-}
-
-export type FormDetailInfoLeverage = {
-  collateral: string
-  leverage: string
-  routeName: string
-  maxRange: number | null
-  healthFull: string
-  healthNotFull: string
-  priceImpact: string
-  isHighImpact: boolean
-  bands: [number, number]
-  prices: string[]
-  error: string
-  loading: boolean
-}
-
-export type FormDetailInfoSharedProps = {
-  activeStep: number | null
-  detailInfoLTV?: ReactNode
-  isValidFormValues?: boolean
-  llamma: Llamma | null
-  selectedLiqRange: LiqRangeSliderIdx | undefined
-  handleLiqRangesEdit(): void
-  handleSelLiqRange(n: number): void
 }
 
 export type MaxRecvLeverage = {

@@ -13,7 +13,7 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
-import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
@@ -24,6 +24,16 @@ import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
  */
 export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
   typeof id === 'string' ? (id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)) : id
+
+/**
+ * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
+ * We use this helper during query validation since we cannot crash the validation suite outside `test()`
+ */
+export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) => {
+  if (typeof marketId === 'object') return marketId
+  const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
+  return marketId && lib && getLlamaMarket(marketId, lib)
+}
 
 const isLendV2Market = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && market.version === 'v2'
 
@@ -130,6 +140,9 @@ export const getTokens = (market: LlamaMarketTemplate) =>
           decimals: market.borrowed_token.decimals,
         },
       }
+
+export const getControllerAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
+  (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as Address | undefined
 
 /**
  * Calculates the loan-to-value ratio of a market.

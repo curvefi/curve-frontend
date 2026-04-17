@@ -114,7 +114,6 @@ const MultiSelect = <T extends string>({
         <Menu
           open={isOpen}
           onClose={close}
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}

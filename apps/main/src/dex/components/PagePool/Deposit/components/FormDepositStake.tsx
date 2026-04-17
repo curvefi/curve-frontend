@@ -206,7 +206,7 @@ export const FormDepositStake = ({
     if (poolId) {
       resetState(poolData, 'DEPOSIT_STAKE')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -214,7 +214,7 @@ export const FormDepositStake = ({
     if (chainId && poolId) {
       updateFormValues({}, null, null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
@@ -222,7 +222,7 @@ export const FormDepositStake = ({
     if (maxSlippage) {
       updateFormValues({}, null, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // steps
@@ -241,7 +241,7 @@ export const FormDepositStake = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, formValues, formStatus, slippage.isHighSlippage, slippageConfirmed, maxSlippage])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null

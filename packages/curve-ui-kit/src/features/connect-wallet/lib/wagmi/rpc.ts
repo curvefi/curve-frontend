@@ -2,7 +2,12 @@ import { Chain as ChainId } from '@ui-kit/utils/network'
 
 /** Fallback RPC URLs for each chain to improve wallet connection resilience. */
 export const RPC: Record<ChainId, string[]> = {
-  [ChainId.Ethereum]: ['https://eth.drpc.org', 'https://eth-pokt.nodies.app', 'https://eth.blockrazor.xyz'],
+  [ChainId.Ethereum]: [
+    'https://ethereum-rpc.publicnode.com',
+    'https://eth.drpc.org',
+    'https://eth-pokt.nodies.app',
+    'https://eth.blockrazor.xyz',
+  ],
   [ChainId.Arbitrum]: ['https://arb1.arbitrum.io/rpc', 'https://1rpc.io/arb'],
   [ChainId.Avalanche]: ['https://api.avax.network/ext/bc/C/rpc'],
   [ChainId.Base]: ['https://mainnet.base.org'],

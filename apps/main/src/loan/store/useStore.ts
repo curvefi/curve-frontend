@@ -11,7 +11,6 @@ import {
   LoanCollateralIncreaseSlice,
   createLoanCollateralIncrease,
 } from '@/loan/store/createLoanCollateralIncreaseSlice'
-import { LoanCreateSlice, createLoanCreate } from '@/loan/store/createLoanCreateSlice'
 import { LoanDecreaseSlice, createLoanDecrease } from '@/loan/store/createLoanDecreaseSlice'
 import { LoanDeleverageSlice, createLoanDeleverageSlice } from '@/loan/store/createLoanDeleverageSlice'
 import { LoanIncreaseSlice, createLoanIncrease } from '@/loan/store/createLoanIncreaseSlice'
@@ -23,7 +22,6 @@ import { ScrvUsdSlice, createScrvUsdSlice } from '@/loan/store/createScrvUsdSlic
 export type State = AppSlice &
   ChartBandsSlice &
   LoansSlice &
-  LoanCreateSlice &
   LoanCollateralDecreaseSlice &
   LoanCollateralIncreaseSlice &
   LoanDecreaseSlice &
@@ -37,7 +35,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createAppSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createLoansSlice(set, get),
-  ...createLoanCreate(set, get),
   ...createLoanCollateralDecrease(set, get),
   ...createLoanCollateralIncrease(set, get),
   ...createLoanDecrease(set, get),

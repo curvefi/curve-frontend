@@ -33,9 +33,6 @@ const useLegacyChartPrices = () => {
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
   const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
   const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
   const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
   const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
@@ -51,20 +48,10 @@ const useLegacyChartPrices = () => {
     if (increaseCollateralPrices?.length) return increaseCollateralPrices
     if (decreaseLoanPrices?.length) return decreaseLoanPrices
     if (increaseLoanPrices?.length) return increaseLoanPrices
-    if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
-      const prices = liqRangesMapper[formValues.n].prices
-      return [prices[1], prices[0]]
-    }
     return undefined
-  }, [
-    deleveragePrices,
-    decreaseCollateralPrices,
-    increaseCollateralPrices,
-    decreaseLoanPrices,
-    increaseLoanPrices,
-    formValues.n,
-    liqRangesMapper,
-  ]) as Range<Decimal> | undefined
+  }, [deleveragePrices, decreaseCollateralPrices, increaseCollateralPrices, decreaseLoanPrices, increaseLoanPrices]) as
+    | Range<Decimal>
+    | undefined
 }
 
 export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: OhlcChartStateProps) => {
