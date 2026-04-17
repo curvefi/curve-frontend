@@ -35,7 +35,7 @@
     "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "*",
-    "vite-plugin-vercel": "9.1.1"
+    "vite-plugin-vercel": "11.0.3"
   },
   "peerDependencies": {
     "@curvefi/api": "*",
@@ -53,7 +53,7 @@
   "devDependencies": {
     "@curvefi/api": "*",
     "@eslint/js": "*",
-    "@sentry/vite-plugin": "^4.5.0",
+    "@sentry/vite-plugin": "5.2.0",
     "@types/lodash": "^4.17.23",
     "@types/memoizee": "^0.4.12",
     "@types/node": "*",

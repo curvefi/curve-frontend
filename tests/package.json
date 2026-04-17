@@ -21,13 +21,12 @@
     "download:artifacts": "node --experimental-strip-types scripts/download-artifacts.ts"
   },
   "devDependencies": {
-    "@cypress/react": "^9.0.1",
-    "@cypress/vite-dev-server": "^7.2.1",
-    "@types/cypress": "^1.1.6",
+    "@cypress/react": "9.0.2",
+    "@cypress/vite-dev-server": "7.3.0",
     "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "*",
     "@vitest/ui": "^4.1.4",
-    "cypress": "^15.13.1",
+    "cypress": "15.14.0",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
     "typescript": "*",
