@@ -93,7 +93,7 @@ export const DataTable = <T extends TableItem>({
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
-  const { isLimited, isLoading: isLoadingViewAll, handleShowAll } = useTableRowLimit(rowLimit)
+  const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
   const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
   const showViewAllButton = isLimited && rows.length > rowLimit!
@@ -165,7 +165,7 @@ export const DataTable = <T extends TableItem>({
             {footerRow && <TableRow>{footerRow}</TableRow>}
             {showViewAllButton && (
               <TableRow>
-                <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
+                <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}
                 </TableViewAllCell>
               </TableRow>
