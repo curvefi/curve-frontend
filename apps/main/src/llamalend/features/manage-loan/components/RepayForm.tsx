@@ -169,7 +169,7 @@ export const RepayForm = <ChainId extends IChainId>({
         message={`${maxAmountPrefix} ${maxAmountInBorrowToken ?? '-'} ${borrowToken?.symbol}`}
         onMessageNumberClick={() => updateForm(form, { [selectedField]: max[selectedField].data })}
       />
-      <HighPriceImpactAlert priceImpact={priceImpact} values={{ leverageEnabled: swapRequired, ...params }} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} />
 
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
 

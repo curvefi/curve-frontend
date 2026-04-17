@@ -7,6 +7,7 @@ import {
   submitSupplyForm,
   touchSupplyInput,
   writeSupplyInput,
+  checkSupplyAlert,
 } from './supply.helpers'
 
 export const submitStakeForm = () => submitSupplyForm('stake', 'Stake successful!')
@@ -23,6 +24,21 @@ export const readStakeAvailableAmount = () =>
  */
 export function writeStakeForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'stake', amount })
+}
+
+/**
+ * Check the stake submit state for enabled and disabled markets.
+ */
+export function checkStakeSubmit({ buttonText, hasGauge = true }: { buttonText: string; hasGauge?: boolean }) {
+  if (!hasGauge) {
+    cy.get('[data-testid="supply-stake-submit-button"]').should('not.exist')
+
+    checkSupplyAlert('alert-no-gauge')
+
+    return
+  }
+
+  checkSupplySubmitButtonText('stake', buttonText)
 }
 
 /**

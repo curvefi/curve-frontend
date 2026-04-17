@@ -56,7 +56,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           table={table}
           emptyState={
             !isError && (
-              <Alert severity="warning" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
+              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
                 <AlertTitle>{t`No rewards to claim`}</AlertTitle>
               </Alert>
             )

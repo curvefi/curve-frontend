@@ -4,12 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { q, QueryProp } from '@ui-kit/types/util'
-import {
-  claimableCrvValidationSuite,
-  claimableRewardsValidationSuite,
-  requireGauge,
-  requireVault,
-} from '../validation/supply.validation'
+import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
 import { hasClaimableRewards } from './supply-query.helpers'
 
@@ -21,7 +16,7 @@ export const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimCrv'] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireVault(marketId).vault.estimateGas.claimCrv(),
   category: 'llamalend.supply',
-  validationSuite: claimableCrvValidationSuite,
+  validationSuite: claimableRewardsValidationSuite,
 })
 
 export const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({

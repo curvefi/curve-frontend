@@ -8,20 +8,6 @@ export const ROUTE = { ...CRVUSD_ROUTES, PAGE_INTEGRATIONS: '/integrations', PAG
 
 export const SCRVUSD_GAS_ESTIMATE = { FIRST_DEPOSIT: 95500, FOLLOWING_DEPOSIT: 78500, WITHDRAW: 73500 }
 
-export enum TITLE {
-  isInMarket = 'isInMarket',
-  name = 'name',
-  tokenCollateral = 'tokenCollateral',
-  tokenBorrow = 'tokenBorrow',
-  rate = 'rate',
-  available = 'available',
-  totalBorrowed = 'totalBorrowed',
-  totalAssets = 'totalAssets',
-  totalCollateral = 'totalCollateral',
-  myDebt = 'myDebt',
-  myHealth = 'myHealth',
-}
-
 export const DEFAULT_WALLET_BALANCES: UserWalletBalances = { stablecoin: '0', collateral: '0', error: '' }
 
 export enum RouteAggregator {

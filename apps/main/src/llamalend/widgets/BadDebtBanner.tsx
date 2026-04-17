@@ -1,4 +1,3 @@
-import type { BadDebtMarketData } from '@/llamalend/hooks/useSolvencyMarket'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
@@ -6,8 +5,8 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 
 type Props = {
-  solvencyPercent: BadDebtMarketData['solvencyPercent'] | undefined
-  marketType: BadDebtMarketData['marketType']
+  solvencyPercent: number | undefined
+  marketType: LlamaMarketType
 }
 
 const SOLVENCY_THRESHOLDS = {
@@ -21,15 +20,11 @@ const BANNER_CONFIG = [
   {
     id: 'low',
     threshold: SOLVENCY_THRESHOLDS.low,
-    title: t`Low Market Solvency`,
-    lendSubtitle: t`Part of the supplied funds is no longer fully covered.`,
     severity: 'warning',
   },
   {
     id: 'insolvent',
     threshold: SOLVENCY_THRESHOLDS.insolvent,
-    title: t`Very Low Market Solvency`,
-    lendSubtitle: t`A large share of supplied funds is no longer fully covered.`,
     severity: 'alert',
   },
 ] as const
@@ -45,11 +40,11 @@ export const BadDebtBanner = ({ solvencyPercent, marketType }: Props) => {
         severity={banner.severity}
         subtitle={notFalsy(
           t`Market solvency is ${formatPercent(solvencyPercent)}.`,
-          marketType === LlamaMarketType.Lend && banner.lendSubtitle,
+          marketType === LlamaMarketType.Lend && t`Part of the supplied funds is no longer fully covered.`,
         ).join(' ')}
         testId={`bad-debt-banner-${banner.id}`}
       >
-        {banner.title}
+        {t`Low Market Solvency`}
       </Banner>
     )
   )
