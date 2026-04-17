@@ -48,11 +48,20 @@ Examples of deprecation reasons include protocol exploits, vulnerabilities, misc
 
 LlamaLend market deprecations are defined in the `DEPRECATED_LLAMAS` constant. `llama-markets.ts` reads from that constant and maps matching markets to a `deprecatedMessage` field. When set, the market surfaces a deprecation notice to the user. Markets with a deprecation message will be excluded from listings, while still remaining accessible to users with existing positions.
 
+### Market Alerts
+
+**Location:** [`apps/main/src/llamalend/features/market-list/hooks/useMarketAlert.tsx`](apps/main/src/llamalend/features/market-list/hooks/useMarketAlert.tsx)
+
+LlamaLend also has a separate market alert mechanism for cases where a market should stay visible but new actions should be discouraged or blocked.
+
+These alerts are distinct from `DEPRECATED_LLAMAS`. They can show a banner on the market detail page, or disable creating new borrow positions, and disable new supply deposits.
+
 ## Summary
 
-| Mechanism   | Scope   | Effect                                 | Location                                                                         |
-| ----------- | ------- | -------------------------------------- | -------------------------------------------------------------------------------- |
-| Blacklist   | Pools   | Hidden from front-end                  | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts) |
-| Blacklist   | Tokens  | Shown as disabled in token selector    | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)   |
-| Deprecation | Pools   | Warning shown, actions may be disabled | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                   |
-| Deprecation | Markets | Deprecation message shown              | [`constants.ts`](apps/main/src/llamalend/queries/market-list/constants.ts)       |
+| Mechanism   | Scope         | Effect                                        | Location                                                                                      |
+| ----------- | ------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Blacklist   | Pools         | Hidden from front-end                         | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts)              |
+| Blacklist   | Tokens        | Shown as disabled in token selector           | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)                |
+| Deprecation | Pools         | Warning shown, actions may be disabled        | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                                |
+| Deprecation | Markets       | Badge/banner shown;                           | [`constants.ts`](apps/main/src/llamalend/queries/market-list/constants.ts)                    |
+| Deprecation | Market alerts | Warning shown, borrow/deposit may be disabled | [`useMarketAlert.tsx`](apps/main/src/llamalend/features/market-list/hooks/useMarketAlert.tsx) |
