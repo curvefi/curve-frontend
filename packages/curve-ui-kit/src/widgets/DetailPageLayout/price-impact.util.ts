@@ -2,6 +2,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Query } from '@ui-kit/types/util'
 import { decimalGreaterThan } from '@ui-kit/utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 /** Threshold above which price impact blocks the transaction (shown as red alert) */
 const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
@@ -13,14 +14,14 @@ const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
  * - null if no alert is needed
  */
 export const getPriceImpactSeverity = (
-  { data: priceImpact }: Query<Decimal | null>,
+  { data: priceImpact }: Pick<Query<Decimal | null>, 'data'>,
   { slippage }: { slippage: Decimal | null | undefined },
-): 'error' | 'warning' | null => {
-  if (priceImpact == null) return null
-  if (decimalGreaterThan(priceImpact, HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)) return 'error'
-  if (slippage != null && decimalGreaterThan(priceImpact, slippage)) return 'warning'
-  return null
-}
+): 'error' | 'warning' | null =>
+  decimalGreaterThan(priceImpact ?? '0', HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
+    ? 'error'
+    : decimalGreaterThan(priceImpact ?? '0', slippage ?? SLIPPAGE_PRESETS.CRYPTO)
+      ? 'warning'
+      : null
 
 /**
  * Defines whether to block the transaction due to the price impact.

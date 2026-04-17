@@ -45,7 +45,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
+import { DetailInfoTradeRoutes } from './components/DetailInfoTradeRoutes'
 
 export const LoanDeleverage = ({
   curve,

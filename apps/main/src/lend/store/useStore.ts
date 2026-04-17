@@ -4,40 +4,38 @@ import { devtools } from 'zustand/middleware'
 import { AppSlice, createAppSlice } from '@/lend/store/createAppSlice'
 import { ChartBandsSlice, createChartBandsSlice } from '@/lend/store/createChartBandsStore'
 import {
-  LoanBorrowMoreSlice,
   createLoanBorrowMore as createLoanBorrowMoreSlice,
+  LoanBorrowMoreSlice,
 } from '@/lend/store/createLoanBorrowMoreSlice'
 import {
-  LoanCollateralAddSlice,
   createLoanCollateralAdd as createLoanCollateralAddSlice,
+  LoanCollateralAddSlice,
 } from '@/lend/store/createLoanCollateralAddSlice'
 import {
-  LoanCollateralRemoveSlice,
   createLoanCollateralRemove as createLoanCollateralRemoveSlice,
+  LoanCollateralRemoveSlice,
 } from '@/lend/store/createLoanCollateralRemoveSlice'
-import { LoanCreateSlice, createLoanCreate } from '@/lend/store/createLoanCreateSlice'
-import { LoanRepaySlice, createLoanRepaySlice } from '@/lend/store/createLoanRepaySlice'
-import { LoanSelfLiquidationSlice, createLoanSelfLiquidationSlice } from '@/lend/store/createLoanSelfLiquidationSlice'
-import { MarketsSlice, createMarketsSlice } from '@/lend/store/createMarketsSlice'
-import { OhlcChartSlice, createOhlcChart as createOhlcChartSlice } from '@/lend/store/createOhlcChartSlice'
-import { UserSlice, createUserSlice } from '@/lend/store/createUserSlice'
-import { VaultClaimSlice, createVaultClaim as createVaultClaimSlice } from '@/lend/store/createVaultClaimSlice'
+import { createLoanRepaySlice, LoanRepaySlice } from '@/lend/store/createLoanRepaySlice'
+import { createLoanSelfLiquidationSlice, LoanSelfLiquidationSlice } from '@/lend/store/createLoanSelfLiquidationSlice'
+import { createMarketsSlice, MarketsSlice } from '@/lend/store/createMarketsSlice'
+import { createOhlcChart as createOhlcChartSlice, OhlcChartSlice } from '@/lend/store/createOhlcChartSlice'
+import { createUserSlice, UserSlice } from '@/lend/store/createUserSlice'
+import { createVaultClaim as createVaultClaimSlice, VaultClaimSlice } from '@/lend/store/createVaultClaimSlice'
 import {
-  VaultDepositMintSlice,
   createVaultMint as createVaultDepositMintSlice,
+  VaultDepositMintSlice,
 } from '@/lend/store/createVaultDepositMintSlice'
-import { VaultStakeSlice, createVaultStake as createVaultStakeSlice } from '@/lend/store/createVaultStakeSlice'
-import { VaultUnstakeSlice, createVaultUnstake as createVaultUnstakeSlice } from '@/lend/store/createVaultUnstakeSlice'
+import { createVaultStake as createVaultStakeSlice, VaultStakeSlice } from '@/lend/store/createVaultStakeSlice'
+import { createVaultUnstake as createVaultUnstakeSlice, VaultUnstakeSlice } from '@/lend/store/createVaultUnstakeSlice'
 import {
-  VaultWithdrawRedeemSlice,
   createVaultWithdrawRedeem as createVaultWithdrawRedeemSlice,
+  VaultWithdrawRedeemSlice,
 } from '@/lend/store/createVaultWithdrawRedeemSlice'
 
 export type State = AppSlice &
   ChartBandsSlice &
   UserSlice &
   MarketsSlice &
-  LoanCreateSlice &
   LoanCollateralRemoveSlice &
   LoanCollateralAddSlice &
   LoanRepaySlice &
@@ -55,7 +53,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),
   ...createUserSlice(set, get),
-  ...createLoanCreate(set, get),
   ...createLoanCollateralRemoveSlice(set, get),
   ...createLoanCollateralAddSlice(set, get),
   ...createLoanRepaySlice(set, get),
