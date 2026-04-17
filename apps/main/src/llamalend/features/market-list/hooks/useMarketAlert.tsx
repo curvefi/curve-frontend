@@ -29,6 +29,13 @@ export const LEND_MARKETS_ALERTS: Alerts = {
       isDisableDeposit: true,
       message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
     },
+    // one-way-market-3 - CRV/crvUSD
+    '0xeda215b7666936ded834f76f3fbc6f323295110a': {
+      alertType: 'danger',
+      isDisableBorrow: true,
+      isDisableDeposit: true,
+      message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+    },
   },
   [Chain.Arbitrum]: {
     // one-way-market-7 - FXN/crvUSD
