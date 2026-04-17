@@ -1,4 +1,4 @@
-import PromisePool from '@supercharge/promise-pool'
+import { PromisePool } from '@supercharge/promise-pool'
 import { requireLib, useCurve } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import {
