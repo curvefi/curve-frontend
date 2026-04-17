@@ -14,11 +14,13 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useDeprecatedMarket } from '@/llamalend/hooks/useDeprecatedMarket'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
-import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
+import { BadDebtBanner } from '@/llamalend/widgets/banners/BadDebtBanner'
+import { DeprecatedMarketBanner } from '@/llamalend/widgets/banners/DeprecatedMarketBanner'
+import { MarketAlertBanner } from '@/llamalend/widgets/banners/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -77,6 +79,7 @@ export const LendMarketPage = () => {
     network,
   })
   const marketAlert = useMarketAlert(chainId, market?.id)
+  const deprecatedMessage = useDeprecatedMarket({ blockchainId: network.id, controllerAddress })
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Lend,
     blockchainId: network.id,
@@ -150,7 +153,7 @@ export const LendMarketPage = () => {
       }
     >
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-
+      {deprecatedMessage && <DeprecatedMarketBanner message={deprecatedMessage} />}
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && (
         <CampaignRewardsBanner

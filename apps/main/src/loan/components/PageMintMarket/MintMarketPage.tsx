@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useDeprecatedMarket } from '@/llamalend/hooks/useDeprecatedMarket'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
+import { BadDebtBanner } from '@/llamalend/widgets/banners/BadDebtBanner'
+import { DeprecatedMarketBanner } from '@/llamalend/widgets/banners/DeprecatedMarketBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -47,6 +49,7 @@ export const MintMarketPage = () => {
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
   const controllerAddress = getControllerAddress(market)
+  const deprecatedMessage = useDeprecatedMarket({ blockchainId: network.id, controllerAddress })
   const { data: solvencyMarket } = useSolvencyMarket({
     type: LlamaMarketType.Mint,
     blockchainId: network.id,
@@ -125,6 +128,7 @@ export const MintMarketPage = () => {
         />
       }
     >
+      {deprecatedMessage && <DeprecatedMarketBanner message={deprecatedMessage} />}
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       <PositionDetailsComposite
         hasPosition={loanExists}
