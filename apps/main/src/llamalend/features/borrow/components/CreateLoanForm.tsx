@@ -137,7 +137,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         </Collapse>
       </LoanPresetSelector>
 
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
 
       {borrowDisabledAlert ? (
         <AlertDisableForm>{borrowDisabledAlert.message}</AlertDisableForm>
