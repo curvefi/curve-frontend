@@ -53,7 +53,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 const { Spacing } = SizesAndSpaces
 
 const formatExchangeRate = ({ from, to, value }: ExchangeRate) =>
-  ['1', from, '=', +value ? formatNumber(value, { abbreviate: true }) : '-', to].join(' ')
+  ['1', from, '=', +value ? formatNumber(value, { abbreviate: true, highPrecision: true }) : '-', to].join(' ')
 
 export const QuickSwap = ({
   pageLoaded,

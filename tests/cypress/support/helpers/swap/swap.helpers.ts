@@ -1,7 +1,7 @@
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 
-export const ExpectedExchangeRate = /1 ETH = \d\.\d\dk USDT/
+export const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDT/
 
 const getFromAmountInput = (options = {}) => cy.get('[data-testid="from-amount"] [name="fromAmount"]', options)
 const getToAmountInput = (options = {}) => cy.get('[data-testid="to-amount"] [name="toAmount"]', options)
