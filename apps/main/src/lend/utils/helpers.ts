@@ -1,4 +1,4 @@
-import { AlertType, Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { isDevelopment } from '@ui-kit/utils'
 
 export * from './utilsRouter'
