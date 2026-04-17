@@ -111,7 +111,6 @@ export const LendMarketPage = () => {
   useEffect(() => {
     if (api && market && isPageVisible) {
       if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoaded(true)
     }
   }, [api, isPageVisible, loanExists, market, setMarketsStateKey])

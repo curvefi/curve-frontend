@@ -168,6 +168,7 @@ export const ComplexContent: Story = {
 
 export const Controlled: Story = {
   render: () => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [expanded, , , toggle] = useSwitch(true)
     return (
       <Stack gap={4}>

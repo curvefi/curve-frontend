@@ -85,7 +85,6 @@ const useTabs = (results: LlamaMarketsResult | undefined) => {
 
   // Update tab when defaultTab changes (e.g., when user positions data loads)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTab(defaultTab.value)
   }, [defaultTab.value])
 

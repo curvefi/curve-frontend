@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js'
-import { ethAddress } from 'viem'
-import { zeroAddress } from 'viem'
+import { ethAddress, zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
+import { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { decimalDiv } from '@ui-kit/utils'
 
 const LOW_EXCHANGE_RATE = 0.98
 
@@ -85,17 +85,12 @@ export function getSwapActionModalType(isHighImpact: boolean, isLowExchangeRate:
   return modalType
 }
 
-export function getExchangeRates(expected: string, fromAmount: string) {
+export function getExchangeRates(expected: string, fromAmount: string): [Decimal, Decimal] {
   if (Number(expected) === 0 || Number(fromAmount) === 0) {
     return ['0', '0']
   }
-
-  const parsedExpected = new BigNumber(expected).dividedBy(fromAmount).toString()
-  let parsedExpectedReversed = ''
-  if (Number(parsedExpected) !== 0) {
-    parsedExpectedReversed = new BigNumber(1).dividedBy(parsedExpected).toString()
-  }
-  return [parsedExpected, parsedExpectedReversed]
+  const parsedExpected = decimalDiv(expected as Decimal, fromAmount as Decimal)
+  return [parsedExpected, +parsedExpected ? decimalDiv('1', parsedExpected) : '0']
 }
 
 export function _parseRoutesAndOutput(

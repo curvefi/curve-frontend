@@ -22,15 +22,15 @@
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@supercharge/promise-pool": "^3.3.0",
-    "@tanstack/react-router": "^1.167.4",
-    "@tanstack/react-router-devtools": "^1.166.9",
+    "@tanstack/react-router": "^1.168.10",
+    "@tanstack/react-router-devtools": "^1.166.11",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
     "external-rewards": "*",
-    "fuse.js": "^7.1.0",
+    "fuse.js": "^7.3.0",
     "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
-    "react-hook-form": "7.71.2",
+    "react-hook-form": "7.72.1",
     "recharts": "2.15.4",
     "ui": "*",
     "vest": "^5.4.6",
@@ -66,7 +66,7 @@
     "globals": "^17.4.0",
     "pinst": "^3.0.0",
     "typescript": "*",
-    "typescript-eslint": "^8.57.1",
+    "typescript-eslint": "^8.58.2",
     "vite": "*"
   }
 }

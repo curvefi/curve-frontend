@@ -85,7 +85,6 @@ export const ButtonMenu = <T extends string>({
 
       {options.length > 0 && (
         <Menu
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={anchorEl.current}
           open={open}
           onClose={onClose}
