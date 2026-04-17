@@ -29,7 +29,7 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
-import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
+import { getIsUserCloseToLiquidation, getLiquidationStatusLegacy, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
@@ -294,7 +294,7 @@ const user = {
             prices,
             loss,
             leverage,
-            status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+            status: getLiquidationStatusLegacy(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',
         }

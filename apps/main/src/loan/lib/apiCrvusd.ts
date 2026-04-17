@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 import {
   getIsUserCloseToLiquidation,
-  getLiquidationStatus,
+  getLiquidationStatusLegacy,
   hasV2Leverage,
   reverseBands,
   sortBandsMint,
@@ -236,7 +236,7 @@ const detailInfo = {
       userBandsPct: userBandsRange ? llamma.calcRangePct(userBandsRange) : '0',
       userPrices,
       userLoss: parseUserLoss(userLoss),
-      userStatus: getLiquidationStatus(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
+      userStatus: getLiquidationStatusLegacy(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
     }
 
     return fetchedUserDetails

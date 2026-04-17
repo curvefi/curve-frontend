@@ -4,7 +4,7 @@ import {
   calculateRangeToLiquidation,
   type BorrowPositionDetailsProps,
 } from '@/llamalend/features/market-position-details'
-import { getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getIsUserCloseToSoftLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -112,16 +112,29 @@ export const useBorrowPositionDetails = ({
     return +(+healthNotFullValue < 0 ? healthNotFullValue : healthFullValue)
   }, [hasLoan, healthFullValue, healthNotFullValue])
 
-  const status = useMemo(() => {
-    if (!hasLoan || !healthNotFullValue || !userBandsValue) return null
-    const isClose = getIsUserCloseToLiquidation(userBandsValue[0], liquidationBand ?? null, oraclePriceBand)
-    return getLiquidationStatus(healthNotFullValue, isClose, borrowed ?? '0')
-  }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, borrowed])
+  const positionStatus = useMemo(() => {
+    if (!hasLoan || !healthNotFullValue || !userBandsValue) return undefined
+    const isCloseToSoftLiquidation = getIsUserCloseToSoftLiquidation(
+      userBandsValue[0],
+      liquidationBand ?? null,
+      oraclePriceBand,
+    )
+    // userBandsValue[1] is the lower price boundary of a users range. Band numbers go up in numbers when going down in prices
+    const isUserBelowRange = oraclePriceBand && userBandsValue[1] ? oraclePriceBand > userBandsValue[0] : false
+    return getLiquidationStatus(
+      healthNotFullValue,
+      isCloseToSoftLiquidation,
+      isUserBelowRange,
+      collateral ?? '0',
+      borrowed ?? '0',
+    )
+  }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, collateral, borrowed])
 
   return {
     liquidationAlert: {
-      softLiquidation: status?.colorKey === 'soft_liquidation',
-      hardLiquidation: status?.colorKey === 'hard_liquidation',
+      softLiquidation: positionStatus === 'softLiquidation',
+      hardLiquidation: positionStatus === 'hardLiquidation',
+      status: positionStatus,
     },
     health: {
       value: healthValue,

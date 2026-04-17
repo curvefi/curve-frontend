@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { HealthColorKey, UserPositionStatus, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -213,6 +213,23 @@ const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (user
  */
 export function getLiquidationStatus(
   healthNotFull: string,
+  userIsCloseToSoftLiquidation: boolean,
+  userIsBelowRange: boolean,
+  userStateCollateral: string,
+  userStateBorrowed: string,
+): UserPositionStatus {
+  const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
+  if (+healthNotFull < 0) return 'hardLiquidation'
+  if (userIsBelowRange && +userStateCollateral > threshold) return 'incompleteConversion'
+  if (userIsBelowRange && +userStateCollateral <= threshold) return 'fullyConverted'
+  if (+userStateBorrowed > threshold) return 'softLiquidation'
+  if (userIsCloseToSoftLiquidation) return 'closeToLiquidation'
+  return 'healthy'
+}
+
+/** @deprecated Use {@link getLiquidationStatus} — this legacy version returns label/tooltip for the old forms. */
+export function getLiquidationStatusLegacy(
+  healthNotFull: string,
   userIsCloseToLiquidation: boolean,
   userStateStablecoin: string,
 ) {
@@ -242,7 +259,11 @@ export function getLiquidationStatus(
   return userStatus
 }
 
-export function getIsUserCloseToLiquidation(
+// is user fully converted
+
+// is user not fully converted but below range
+
+export function getIsUserCloseToSoftLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
   oraclePriceBand: number | null | undefined,
@@ -254,6 +275,9 @@ export function getIsUserCloseToLiquidation(
   }
   return false
 }
+
+/** @deprecated Use {@link getIsUserCloseToSoftLiquidation} */
+export const getIsUserCloseToLiquidation = getIsUserCloseToSoftLiquidation
 
 export function reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
