@@ -48,10 +48,10 @@ export const LOAN_TEST_MARKETS = {
   ],
   [LlamaMarketType.Lend]: [
     {
-      id: 'one-way-market-3',
-      label: 'CRV-crvUSD Old Lend Market',
-      collateralAddress: '0xd533a949740bb3306d119cc777fa900ba034cd52', // CRV
-      controllerAddress: '0xeda215b7666936ded834f76f3fbc6f323295110a',
+      id: 'one-way-market-2',
+      label: 'tBTC-crvUSD Old Lend Market',
+      collateralAddress: '0x18084fba666a33d37592fa2633fd49a74dd93a88', // tBTC
+      controllerAddress: '0x413fd2511bad510947a91f5c6c79ebd8138c29fc',
       collateral: '100',
       borrow: '3',
       borrowMore: '1',
