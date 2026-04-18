@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
-import { calculateLtv } from '@/llamalend/llama.utils'
+import { calculateLtv, getLiquidationStatus } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
@@ -70,11 +70,20 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
 
   const borrowedAmount = stats ? ('borrowed' in stats ? stats.borrowed : stats.stablecoin) : 0
 
+  const status = stats
+    ? getLiquidationStatus(
+        decimal(stats.health) ?? '0',
+        stats.softLiquidation,
+        !stats.softLiquidation && borrowedAmount > 0,
+        decimal(stats.collateral) ?? '0',
+        decimal(borrowedAmount) ?? '0',
+      )
+    : undefined
+
   return {
     ...(stats && {
       data: {
-        softLiquidation: stats.softLiquidation,
-        liquidated: stats.healthFull < 0 && borrowedAmount === 0,
+        status,
         health: stats.healthFull,
         borrowed: stats.debt,
         collateral: {

@@ -212,12 +212,13 @@ const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (user
  * But user is at risk of liquidation if not full < 0
  */
 export function getLiquidationStatus(
-  healthNotFull: string,
+  healthNotFull: Decimal | undefined,
   userIsCloseToSoftLiquidation: boolean,
   userIsBelowRange: boolean,
-  userStateCollateral: string,
-  userStateBorrowed: string,
-): UserPositionStatus {
+  userStateCollateral: Decimal | undefined,
+  userStateBorrowed: Decimal | undefined,
+): UserPositionStatus | undefined {
+  if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
   const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
   if (+healthNotFull < 0) return 'hardLiquidation'
   if (userIsBelowRange && +userStateCollateral > threshold) return 'incompleteConversion'

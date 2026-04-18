@@ -15,13 +15,14 @@ const { Spacing } = SizesAndSpaces
 
 export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const { data, error } = useUserMarketStats(row.original, LlamaMarketColumnId.UserHealth)
-  const { health, softLiquidation } = data ?? {}
+  const { health, status } = data ?? {}
+  const softLiquidation = status === 'softLiquidation'
   return health == null ? (
     error && <ErrorCell error={error} />
   ) : (
     <Tooltip
-      title={softLiquidation ? 'Liquidation Protection On' : 'Position active'}
-      body={<HealthTooltipContent softLiquidation={!!softLiquidation} />}
+      title={softLiquidation ? t`Liquidation Protection On` : t`Position active`}
+      body={<HealthTooltipContent softLiquidation={softLiquidation} />}
       placement="top"
     >
       <Stack gap={Spacing.xs}>

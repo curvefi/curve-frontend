@@ -121,13 +121,7 @@ export const useBorrowPositionDetails = ({
     )
     // userBandsValue[1] is the lower price boundary of a users range. Band numbers go up in numbers when going down in prices
     const isUserBelowRange = oraclePriceBand && userBandsValue[1] ? oraclePriceBand > userBandsValue[0] : false
-    return getLiquidationStatus(
-      healthNotFullValue,
-      isCloseToSoftLiquidation,
-      isUserBelowRange,
-      collateral ?? '0',
-      borrowed ?? '0',
-    )
+    return getLiquidationStatus(healthNotFullValue, isCloseToSoftLiquidation, isUserBelowRange, collateral, borrowed)
   }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, collateral, borrowed])
 
   return {
