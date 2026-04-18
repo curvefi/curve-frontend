@@ -277,9 +277,6 @@ export function getIsUserCloseToSoftLiquidation(
   return false
 }
 
-/** @deprecated Use {@link getIsUserCloseToSoftLiquidation} */
-export const getIsUserCloseToLiquidation = getIsUserCloseToSoftLiquidation
-
 export function reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
 }

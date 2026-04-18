@@ -30,7 +30,7 @@ import {
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
 import {
-  getIsUserCloseToLiquidation,
+  getIsUserCloseToSoftLiquidation,
   getLiquidationStatusLegacy,
   reverseBands,
   sortBandsLend,
@@ -277,7 +277,11 @@ const user = {
         const { liquidationBand } = resp ?? {}
 
         const reversedUserBands = reverseBands(bands)
-        const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
+        const isCloseToLiquidation = getIsUserCloseToSoftLiquidation(
+          reversedUserBands[0],
+          liquidationBand,
+          oraclePriceBand,
+        )
         const parsedBandsBalances = await fetchChartBandBalancesData(
           sortBandsLend(bandsBalances),
           liquidationBand,
