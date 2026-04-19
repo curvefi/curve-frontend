@@ -22,14 +22,6 @@ export const getPositionStatusContent = (
     severity: 'info',
     hasMarketAlert: false,
   },
-  closeToLiquidation: {
-    title: t`Position is healthy`,
-    description: (
-      <Trans>The oracle price is above your liquidation range. No soft-liquidation conversions are occurring.</Trans>
-    ),
-    severity: 'info',
-    hasMarketAlert: false,
-  },
   softLiquidation: {
     title: t`Liquidation protection active`,
     description: (

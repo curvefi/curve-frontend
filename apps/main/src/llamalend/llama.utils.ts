@@ -224,7 +224,6 @@ export function getLiquidationStatus(
   if (userIsBelowRange && +userStateCollateral > threshold) return 'incompleteConversion'
   if (userIsBelowRange && +userStateCollateral <= threshold) return 'fullyConverted'
   if (+userStateBorrowed > threshold) return 'softLiquidation'
-  if (userIsCloseToSoftLiquidation) return 'closeToLiquidation'
   return 'healthy'
 }
 
@@ -259,10 +258,6 @@ export function getLiquidationStatusLegacy(
 
   return userStatus
 }
-
-// is user fully converted
-
-// is user not fully converted but below range
 
 export function getIsUserCloseToSoftLiquidation(
   userFirstBand: number,

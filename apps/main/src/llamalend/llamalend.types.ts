@@ -14,7 +14,6 @@ export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidat
 
 export type UserPositionStatus =
   | 'healthy'
-  | 'closeToLiquidation'
   | 'softLiquidation'
   | 'fullyConverted'
   | 'incompleteConversion'
