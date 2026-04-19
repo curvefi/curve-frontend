@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, UserPositionStatus, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -217,14 +217,14 @@ export function getLiquidationStatus(
   userIsBelowRange: boolean,
   userStateCollateral: Decimal | undefined,
   userStateBorrowed: Decimal | undefined,
-): UserPositionStatus | undefined {
+) {
   if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
   const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
-  if (+healthNotFull < 0) return 'hardLiquidation'
-  if (userIsBelowRange && +userStateCollateral > threshold) return 'incompleteConversion'
-  if (userIsBelowRange && +userStateCollateral <= threshold) return 'fullyConverted'
-  if (+userStateBorrowed > threshold) return 'softLiquidation'
-  return 'healthy'
+  if (+healthNotFull < 0) return 'hardLiquidation' as const
+  if (userIsBelowRange && +userStateCollateral > threshold) return 'incompleteConversion' as const
+  if (userIsBelowRange && +userStateCollateral <= threshold) return 'fullyConverted' as const
+  if (+userStateBorrowed > threshold) return 'softLiquidation' as const
+  return 'healthy' as const
 }
 
 /** @deprecated Use {@link getLiquidationStatus} — this legacy version returns label/tooltip for the old forms. */

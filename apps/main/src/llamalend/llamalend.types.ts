@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -12,12 +13,7 @@ export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
 
 export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 
-export type UserPositionStatus =
-  | 'healthy'
-  | 'softLiquidation'
-  | 'fullyConverted'
-  | 'incompleteConversion'
-  | 'hardLiquidation'
+export type UserPositionStatus = NonNullable<ReturnType<typeof getLiquidationStatus>>
 
 export type HealthMode = {
   percent: string
