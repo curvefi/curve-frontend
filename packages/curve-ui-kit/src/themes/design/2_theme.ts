@@ -316,8 +316,9 @@ export const createLightDesign = (
     LiquidationZone: {
       Current: Oranges[50],
       Future: Blues[100],
-      TopLine: Reds[600],
-      BottomLine: Yellows[500],
+      CurrentTopLine: Reds[600],
+      CurrentBottomLine: Yellows[500],
+      FutureLine: Blues[500],
     },
     Candles: {
       Positive: Greens[500],
@@ -783,8 +784,9 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     LiquidationZone: {
       Current: Oranges[900],
       Future: Blues[950],
-      TopLine: Reds[500],
-      BottomLine: Yellows[500],
+      CurrentTopLine: Reds[500],
+      CurrentBottomLine: Yellows[500],
+      FutureLine: Blues[500],
     },
     Candles: {
       Positive: Greens[400],
@@ -1211,8 +1213,9 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     LiquidationZone: {
       Current: Oranges[50],
       Future: Blues[100],
-      TopLine: Reds[500],
-      BottomLine: Yellows[500],
+      CurrentTopLine: Reds[500],
+      CurrentBottomLine: Yellows[500],
+      FutureLine: Violets[500],
     },
     Candles: {
       Positive: Greens[500],
