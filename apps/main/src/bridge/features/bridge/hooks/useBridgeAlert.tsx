@@ -14,7 +14,7 @@ type Alerts = { [chainId: number]: BridgeAlert }
 const RSETH_ALERT: BridgeAlert = {
   alertType: 'danger',
   isDisableBridge: true,
-  message: t`FastBridge is temporarily paused as a precaution pending further clarity from a recent third-party incident`,
+  message: t`FastBridge is temporarily paused as a precaution pending further clarity from a recent third-party incident. No issue has been identified with Curve.`,
 }
 
 const BRIDGE_ALERTS: Alerts = {
