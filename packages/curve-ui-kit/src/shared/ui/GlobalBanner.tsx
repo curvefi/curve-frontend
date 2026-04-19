@@ -102,6 +102,15 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`Aave V2 Frozen aTokens`}
         </Banner>
       )}
+      {currentApp === 'bridge' && (
+        <Banner
+          severity="info"
+          subtitle={t`FastBridge is temporarily paused as a precaution pending further clarity from a recent third-party incident`}
+          learnMoreUrl="https://x.com/CurveFinance/status/2045868949892378783?s=20"
+        >
+          {t`FastBridge paused`}
+        </Banner>
+      )}
     </StackBanners>
   )
 }
