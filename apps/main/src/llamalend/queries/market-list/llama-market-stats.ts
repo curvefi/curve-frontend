@@ -72,11 +72,11 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
 
   const status = stats
     ? getLiquidationStatus(
-        decimal(stats.health) ?? '0',
+        decimal(stats.health),
         stats.softLiquidation,
         !stats.softLiquidation && borrowedAmount > 0,
-        decimal(stats.collateral) ?? '0',
-        decimal(borrowedAmount) ?? '0',
+        decimal(stats.collateral),
+        decimal(borrowedAmount),
       )
     : undefined
 
