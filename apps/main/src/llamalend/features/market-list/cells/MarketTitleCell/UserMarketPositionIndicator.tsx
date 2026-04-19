@@ -29,7 +29,6 @@ type ColorEffect = (set: (value: (prev: ColorState) => ColorState) => void) => v
 const setInfo: ColorEffect = (set) => set(() => 'info')
 const statusColorEffect: Record<UserPositionStatus, ColorEffect> = {
   healthy: setInfo,
-  closeToLiquidation: setInfo,
   softLiquidation: flickerEffect,
   incompleteConversion: flickerEffect,
   fullyConverted: flickerEffect,
