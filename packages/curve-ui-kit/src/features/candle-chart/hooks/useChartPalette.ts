@@ -42,13 +42,13 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const textPrimary = theme.palette.text.tertiary
   const textHighlight = theme.palette.text.highlight
   const rangeLineTop = error
-  const rangeLineBottom = theme.design.Chart.Lines.Line2
+  const rangeLineBottom = theme.design.Chart.Lines[2]
   const rangeBackground = theme.design.Chart.LiquidationZone.Current
-  const rangeLineFutureTop = theme.design.Chart.Lines.Line1
-  const rangeLineFutureBottom = theme.design.Chart.Lines.Line1
+  const rangeLineFutureTop = theme.design.Chart.Lines[1]
+  const rangeLineFutureBottom = theme.design.Chart.Lines[1]
   const rangeBackgroundFuture = theme.design.Chart.LiquidationZone.Future
   const oraclePrice = primary
-  const cursorVertLine = theme.design.Chart.Lines.Line1
+  const cursorVertLine = theme.design.Chart.Lines[1]
   const gridLine = theme.design.Color.Neutral[300]
 
   return useMemo(
