@@ -6,6 +6,8 @@ export type PositionStatusContent = {
   title: string
   description: ReactNode
   severity: 'info' | 'warning' | 'error'
+  /** Shows an alert box above health bar */
+  hasMarketAlert: boolean
 }
 
 export const getPositionStatusContent = (
@@ -18,6 +20,7 @@ export const getPositionStatusContent = (
       <Trans>The oracle price is above your liquidation range. No soft-liquidation conversions are occurring.</Trans>
     ),
     severity: 'info',
+    hasMarketAlert: false,
   },
   closeToLiquidation: {
     title: t`Position is healthy`,
@@ -25,6 +28,7 @@ export const getPositionStatusContent = (
       <Trans>The oracle price is above your liquidation range. No soft-liquidation conversions are occurring.</Trans>
     ),
     severity: 'info',
+    hasMarketAlert: false,
   },
   softLiquidation: {
     title: t`Liquidation protection active`,
@@ -41,6 +45,7 @@ export const getPositionStatusContent = (
       </Trans>
     ),
     severity: 'warning',
+    hasMarketAlert: true,
   },
   hardLiquidation: {
     title: t`Position can be hard-liquidated`,
@@ -51,6 +56,7 @@ export const getPositionStatusContent = (
       </Trans>
     ),
     severity: 'error',
+    hasMarketAlert: true,
   },
   fullyConverted: {
     title: t`Fully converted to ${borrowSymbol}`,
@@ -65,6 +71,7 @@ export const getPositionStatusContent = (
       </Trans>
     ),
     severity: 'warning',
+    hasMarketAlert: true,
   },
   incompleteConversion: {
     title: t`Position at risk — incomplete conversion`,
@@ -76,5 +83,6 @@ export const getPositionStatusContent = (
       </Trans>
     ),
     severity: 'error',
+    hasMarketAlert: true,
   },
 })

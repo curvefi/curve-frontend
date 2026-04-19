@@ -46,28 +46,6 @@ export type BorrowPositionDetailsProps = {
   totalDebt: TotalDebt
 }
 
-const LiquidationAlert = ({
-  type,
-  collateralSymbol,
-  borrowSymbol,
-}: {
-  type: Exclude<UserPositionStatus, 'healthy' | 'closeToLiquidation'>
-  collateralSymbol: string | undefined
-  borrowSymbol: string | undefined
-}) => {
-  const content = getPositionStatusContent(collateralSymbol, borrowSymbol)
-  const { title, description, severity } = content[type]
-
-  return (
-    <Alert variant="outlined" severity={severity}>
-      <AlertTitle>{title}</AlertTitle>
-      <Stack>
-        <Typography variant="bodyXsRegular">{description}</Typography>
-      </Stack>
-    </Alert>
-  )
-}
-
 export const BorrowPositionDetails = ({
   liquidationAlert,
   health,
@@ -76,26 +54,30 @@ export const BorrowPositionDetails = ({
   leverage,
   collateralValue,
   totalDebt,
-}: BorrowPositionDetailsProps) => (
-  <Stack padding={Spacing.md} gap={Spacing.xs}>
-    {liquidationAlert.status &&
-      liquidationAlert.status !== 'healthy' &&
-      liquidationAlert.status !== 'closeToLiquidation' && (
-        <LiquidationAlert
-          type={liquidationAlert.status}
-          collateralSymbol={collateralValue.collateral.symbol}
-          borrowSymbol={collateralValue.borrow.symbol}
-        />
+}: BorrowPositionDetailsProps) => {
+  const status = liquidationAlert.status
+  const statusContent =
+    status && getPositionStatusContent(collateralValue.collateral.symbol, collateralValue.borrow.symbol)[status]
+  return (
+    <Stack padding={Spacing.md} gap={Spacing.xs}>
+      {statusContent?.hasMarketAlert && (
+        <Alert variant="outlined" severity={statusContent.severity}>
+          <AlertTitle>{statusContent.title}</AlertTitle>
+          <Stack>
+            <Typography variant="bodyXsRegular">{statusContent.description}</Typography>
+          </Stack>
+        </Alert>
       )}
-    <Stack gap={Spacing.sm}>
-      <HealthDetails health={health} liquidationAlert={liquidationAlert} />
-      <BorrowInformation
-        collateralValue={collateralValue}
-        leverage={leverage}
-        liquidationRange={liquidationRange}
-        bandRange={bandRange}
-        totalDebt={totalDebt}
-      />
+      <Stack gap={Spacing.sm}>
+        <HealthDetails health={health} liquidationAlert={liquidationAlert} />
+        <BorrowInformation
+          collateralValue={collateralValue}
+          leverage={leverage}
+          liquidationRange={liquidationRange}
+          bandRange={bandRange}
+          totalDebt={totalDebt}
+        />
+      </Stack>
     </Stack>
-  </Stack>
-)
+  )
+}
