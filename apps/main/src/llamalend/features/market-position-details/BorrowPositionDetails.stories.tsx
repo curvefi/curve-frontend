@@ -43,22 +43,6 @@ export const Healthy: Story = {
   },
 }
 
-export const CloseToLiquidation: Story = {
-  args: {
-    ...baseProps,
-    liquidationAlert: { softLiquidation: false, hardLiquidation: false, status: 'closeToLiquidation' },
-    health: { value: 8, loading: false },
-    liquidationRange: { value: [1800, 2200], rangeToLiquidation: 3, loading: false },
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Position close to soft liquidation. No alert banner, but health bar shows risky (orange) state.',
-      },
-    },
-  },
-}
-
 export const SoftLiquidation: Story = {
   args: {
     ...baseProps,
