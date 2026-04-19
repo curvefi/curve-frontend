@@ -41,8 +41,8 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const error = theme.design.Chart.Candles.Negative
   const textPrimary = theme.palette.text.tertiary
   const textHighlight = theme.palette.text.highlight
-  const rangeLineTop = error
-  const rangeLineBottom = theme.design.Chart.Lines[2]
+  const rangeLineTop = theme.design.Chart.LiquidationZone.TopLine
+  const rangeLineBottom = theme.design.Chart.LiquidationZone.BottomLine
   const rangeBackground = theme.design.Chart.LiquidationZone.Current
   const rangeLineFutureTop = theme.design.Chart.Lines[1]
   const rangeLineFutureBottom = theme.design.Chart.Lines[1]
