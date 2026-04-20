@@ -58,10 +58,10 @@ These alerts are distinct from `DEPRECATED_LLAMAS`. They can show a banner on th
 
 ## Summary
 
-| Mechanism   | Scope         | Effect                                        | Location                                                                                      |
-| ----------- | ------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Blacklist   | Pools         | Hidden from front-end                         | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts)              |
-| Blacklist   | Tokens        | Shown as disabled in token selector           | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)                |
-| Deprecation | Pools         | Warning shown, actions may be disabled        | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                                |
-| Deprecation | Markets       | Badge/banner shown;                           | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts)            |
-| Deprecation | Market alerts | Warning shown, borrow/deposit may be disabled | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts)            |
+| Mechanism   | Scope         | Effect                                        | Location                                                                           |
+| ----------- | ------------- | --------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Blacklist   | Pools         | Hidden from front-end                         | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts)   |
+| Blacklist   | Tokens        | Shown as disabled in token selector           | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)     |
+| Deprecation | Pools         | Warning shown, actions may be disabled        | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                     |
+| Deprecation | Markets       | Badge/banner shown;                           | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts) |
+| Deprecation | Market alerts | Warning shown, borrow/deposit may be disabled | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts) |
