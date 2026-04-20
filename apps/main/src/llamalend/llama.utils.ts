@@ -142,8 +142,14 @@ export const getTokens = (market: LlamaMarketTemplate) =>
         },
       }
 
-export const getControllerAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
-  (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as Address | undefined
+export function getControllerAddress(market: LlamaMarketTemplate): Address
+export function getControllerAddress(market: null | undefined): undefined
+export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined
+export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined {
+  return (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as
+    | Address
+    | undefined
+}
 
 /**
  * Calculates the loan-to-value ratio of a market.

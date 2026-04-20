@@ -1,9 +1,11 @@
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { type State, useStore } from '@/lend/store/useStore'
 import { Api } from '@/lend/types/lend.types'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/user'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { networks } from '../networks'
 
 export const refetchUserMarket = async ({
   market,
@@ -22,7 +24,13 @@ export const refetchUserMarket = async ({
   await Promise.all([
     loanExists && user.fetchAll(api, market, true),
     loanExists &&
-      invalidateAllUserMarketDetails({ chainId: api.chainId, marketId: market.id, userAddress: api.signerAddress }),
+      invalidateAllUserMarketDetails({
+        chainId: api.chainId,
+        marketId: market.id,
+        userAddress: api.signerAddress,
+        contractAddress: getControllerAddress(market),
+        blockchainId: networks[api.chainId].id,
+      }),
     invalidateMarketDetails({ chainId: api.chainId, marketId: market.id }),
     markets.fetchAll(api, market, true),
   ])

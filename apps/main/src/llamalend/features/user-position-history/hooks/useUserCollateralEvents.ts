@@ -6,12 +6,19 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
+import type { UserContractQuery } from '@ui-kit/lib/model'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type QueryProp } from '@ui-kit/types/util'
 import { decimalDiv } from '@ui-kit/utils'
-import { useUserCrvUsdCollateralEventsQuery } from '../queries/user-crvusd-collateral-events'
-import { useUserLendCollateralEventsQuery } from '../queries/user-lend-collateral-events'
+import {
+  invalidateUserCrvUsdCollateralEventsQuery,
+  useUserCrvUsdCollateralEventsQuery,
+} from '../queries/user-crvusd-collateral-events'
+import {
+  invalidateUserLendCollateralEventsQuery,
+  useUserLendCollateralEventsQuery,
+} from '../queries/user-lend-collateral-events'
 
 type UserCollateralEventFromApi = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
 
@@ -117,3 +124,6 @@ export const useUserCollateralEvents = ({
     [data, isLoading, error, network, borrowToken, collateralToken],
   )
 }
+
+export const invalidateUserCollateralEvents = (params: UserContractQuery) =>
+  Promise.all([invalidateUserLendCollateralEventsQuery(params), invalidateUserCrvUsdCollateralEventsQuery(params)])

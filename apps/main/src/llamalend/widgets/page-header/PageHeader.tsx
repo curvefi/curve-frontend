@@ -1,4 +1,4 @@
-import { getTokens } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
@@ -124,17 +124,23 @@ export const PageHeaderView = ({
             </Stack>
           </Stack>
         </Stack>
-        {isDevelopment && (
+        {isDevelopment && market && (
           <IconButton
             size="extraSmall"
-            onClick={() =>
-              market &&
-              invalidateAllUserMarketDetails({
-                chainId: market.getLlamalend().chainId as IChainId,
+            onClick={() => {
+              const {
+                chainId,
+                constants: { NETWORK_NAME },
+                signerAddress,
+              } = market.getLlamalend()
+              return invalidateAllUserMarketDetails({
+                chainId: chainId as IChainId,
                 marketId: market.id,
-                userAddress: market.getLlamalend().address as Address,
+                userAddress: signerAddress as Address,
+                blockchainId: NETWORK_NAME,
+                contractAddress: getControllerAddress(market),
               })
-            }
+            }}
             sx={{ alignSelf: 'center' }}
           >
             <ReloadIcon />
