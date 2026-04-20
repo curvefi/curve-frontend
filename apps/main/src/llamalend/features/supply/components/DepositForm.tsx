@@ -1,10 +1,10 @@
 import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { AlertDisableForm } from '@/llamalend/widgets/action-card/AlertDisableForm'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -63,7 +63,6 @@ export const DepositForm = <ChainId extends IChainId>({
           {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
         </Button>
       )}
-
       <FormAlerts error={depositError} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )
