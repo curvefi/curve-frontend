@@ -3,14 +3,15 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
+import { Select } from '@ui-kit/shared/ui/Select'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -113,7 +114,6 @@ const MultiSelect = <T extends string>({
         <Menu
           open={isOpen}
           onClose={close}
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
@@ -171,7 +171,7 @@ const addresses = {
   DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
   USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
   WBTC: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-  CRV: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+  CRV: MAINNET_CRV_ADDRESS,
 } as const
 
 export const CustomRendering: Story = {

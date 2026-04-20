@@ -165,7 +165,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
     return () => {
       isSubscribed.current = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   // steps
@@ -174,7 +174,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [activeKey, curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
 
   // interval

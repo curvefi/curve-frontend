@@ -1,24 +1,33 @@
+import { useState } from 'react'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield'
+import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
-import { Stack, Card, CardHeader, Box } from '@mui/material'
+import { Stack, Card, CardHeader } from '@mui/material'
+import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
-import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
-import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
+import {
+  ChartHeader,
+  type ChartSelections,
+  type LegendItem,
+  ChartFooter,
+  ChartStateWrapper,
+} from '@ui-kit/shared/ui/Chart'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Chain } from '@ui-kit/utils'
 import { AdvancedDetails } from './AdvancedDetails'
 import { RevenueDistributionsBarChart } from './DistributionsBarChart'
 import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing, MaxWidth, Height } = SizesAndSpaces
+const EMPTY_YIELD_DATA: never[] = []
 
 const chartLabels: Record<StatisticsChart, string> = {
   savingsRate: t`Savings Rate`,
@@ -42,15 +51,18 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
   const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
   const setRevenueChartTimeOption = useStore((state) => state.scrvusd.setRevenueChartTimeOption)
 
-  const { data: yieldData } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
-  const { data: revenueData } = useScrvUsdRevenue({})
-
-  const smallBreakPoint = '35.9375rem' // 575px
-  const smallView = useMediaQuery(`(max-width: ${smallBreakPoint})`)
+  const {
+    data: yieldData,
+    isLoading: isScrvUsdYieldLoading,
+    error: scrvUsdYieldError,
+  } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
+  const { data: revenueData, isLoading: isRevenueLoading, error: revenueError } = useScrvUsdRevenue({})
 
   const {
     design: { Color },
   } = useTheme()
+
+  const [visibleSeries, setVisibleSeries] = useState<YieldKeys[]>(Object.keys(priceLineLabels) as YieldKeys[])
 
   const priceLineColors = {
     apyProjected: Color.Primary[500],
@@ -58,12 +70,14 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
     proj_apy_total_avg: Color.Tertiary[400],
   } as const satisfies Record<YieldKeys, string>
 
-  const legendSets: LegendItem[] = Object.entries(priceLineLabels).map(([key, { label, dash }]) => ({
+  const legendSets: LegendItem[] = recordEntries(priceLineLabels).map(([key, { label, dash }]) => ({
     label,
     line: {
-      lineStroke: priceLineColors[key as YieldKeys],
+      lineStroke: priceLineColors[key],
       dash,
     },
+    toggled: visibleSeries.includes(key),
+    onToggle: () => setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
   }))
 
   return (
@@ -75,37 +89,58 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
           : MaxWidth.section,
       }}
     >
-      <Card elevation={0}>
-        <CardHeader title="Statistics" />
-        <Box sx={{ padding: Spacing.md, marginBottom: smallView ? Spacing.xl : 0 }}>
+      <Card>
+        <CardHeader size="small" title={t`Statistics`} />
+        <CardContent component={Stack} gap={Spacing.md}>
           <StatsStack />
-        </Box>
-        <ChartHeader
-          chartSelections={{
-            selections: chartSelections,
-            activeSelection: selectedStatisticsChart,
-            setActiveSelection: setSelectedStatisticsChart,
-          }}
-          chartOptionVariant="buttons-group"
-          expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
-          sx={[{ padding: Spacing.md }]}
-        />
-        {selectedStatisticsChart === 'savingsRate' && (
-          <Stack sx={{ marginBottom: smallView ? Spacing.xl : 0 }}>
-            <RevenueLineChart data={yieldData ?? []} />
-            <Box sx={{ paddingInline: Spacing.md, paddingBottom: Spacing.md }}>
+
+          <ChartHeader
+            chartSelections={{
+              selections: chartSelections,
+              activeSelection: selectedStatisticsChart,
+              setActiveSelection: setSelectedStatisticsChart,
+            }}
+            chartOptionVariant="buttons-group"
+            expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
+          />
+
+          {selectedStatisticsChart === 'savingsRate' && (
+            <Stack gap={Spacing.md}>
+              <ChartStateWrapper
+                height={Height.chart}
+                isLoading={isScrvUsdYieldLoading}
+                error={scrvUsdYieldError}
+                errorMessage={t`Unable to fetch savings rate data.`}
+              >
+                <RevenueLineChart
+                  height={Height.chart}
+                  data={yieldData ?? EMPTY_YIELD_DATA}
+                  visibleSeries={visibleSeries}
+                />
+              </ChartStateWrapper>
               <ChartFooter
                 legendSets={legendSets}
                 toggleOptions={timeOptions}
                 activeToggleOption={revenueChartTimeOption}
                 onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
               />
-            </Box>
-          </Stack>
-        )}
-        {selectedStatisticsChart === 'distributions' && <RevenueDistributionsBarChart data={revenueData ?? null} />}
+            </Stack>
+          )}
+
+          {selectedStatisticsChart === 'distributions' && (
+            <ChartStateWrapper
+              height={Height.chart}
+              isLoading={isRevenueLoading}
+              error={revenueError}
+              errorMessage={t`Unable to fetch distributions data.`}
+            >
+              <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+            </ChartStateWrapper>
+          )}
+
+          <AdvancedDetails network={networks[Chain.Ethereum]} />
+        </CardContent>
       </Card>
-      <AdvancedDetails />
     </Stack>
   )
 }

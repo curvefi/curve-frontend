@@ -219,7 +219,7 @@ export const FormWithdraw = ({
     if (poolId) {
       resetState(poolData, 'WITHDRAW')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -227,7 +227,7 @@ export const FormWithdraw = ({
     if (chainId && poolId) {
       updateFormValues({}, null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
@@ -235,7 +235,7 @@ export const FormWithdraw = ({
     if (maxSlippage) {
       updateFormValues({}, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // steps
@@ -256,7 +256,7 @@ export const FormWithdraw = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     config,
     chainId,

@@ -8,6 +8,7 @@ import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayo
 import type { Chain } from '@curvefi/prices-api'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 
 type ChartAndActivityCompProps = {
@@ -18,6 +19,7 @@ type ChartAndActivityCompProps = {
 }
 
 export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: ChartAndActivityCompProps) => {
+  const [isBandsVisible] = useBandsChartVisible()
   const market = useOneWayMarket(rChainId, rOwmId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
@@ -44,13 +46,12 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     userBandsBalances,
     oraclePrice,
     isLoading: isBandsLoading,
-    isError: isBandsError,
+    error: bandsError,
   } = useBandsData({
     chainId: rChainId,
     marketId: rOwmId,
     api,
-    collateralTokenAddress,
-    borrowedTokenAddress,
+    enabled: isBandsVisible,
   })
 
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol) as
@@ -73,7 +74,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
         userBandsBalances: userBandsBalances ?? [],
         oraclePrice,
         isLoading: isBandsLoading,
-        isError: isBandsError,
+        error: bandsError,
         collateralToken,
         borrowToken,
       }}

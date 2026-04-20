@@ -71,7 +71,6 @@ function useRowExpansion<T>(row: Row<T>) {
   useEffect(() => {
     if (rowExpanded) {
       if (!render) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setRender(true)
       } else if (!expanded) {
         setExpanded(true)

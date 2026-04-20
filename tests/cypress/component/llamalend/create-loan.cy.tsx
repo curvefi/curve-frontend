@@ -1,18 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks as loanNetworks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import {
   checkLoanDetailsLoaded,
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { llamaNetworks, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 
-const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
 const testCases = [
   { approved: false, title: 'fills, approves, and submits' },
@@ -27,19 +23,17 @@ describe('CreateLoanForm (mocked)', () => {
         presetRange: 50,
         approved,
       })
-      const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks })
+      setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
           <CreateLoanForm
             market={market}
-            networks={networks}
+            networks={llamaNetworks}
             chainId={chainId}
-            onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
           />
         </MockLoanTestWrapper>,
@@ -69,7 +63,6 @@ describe('CreateLoanForm (mocked)', () => {
           expect(stubs.createLoanApprove).to.have.been.calledWithExactly(...expected.approve)
         }
         expect(stubs.createLoan).to.have.been.calledWithExactly(...expected.submit)
-        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

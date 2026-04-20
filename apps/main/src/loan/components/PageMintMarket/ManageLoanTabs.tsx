@@ -4,6 +4,7 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { CollateralDecrease } from '@/loan/components/PageMintMarket/CollateralDecrease'
@@ -18,32 +19,35 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import type { Range } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 type MintManageLoanProps = ManageLoanProps & {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  collateralEvents: QueryProp<UserCollateralEvents>
 }
 
-const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
   <BorrowMoreForm
     networks={networks}
     chainId={rChainId}
     market={market ?? undefined}
     enabled={isReady}
     onPricesUpdated={onPricesUpdated}
+    collateralEvents={collateralEvents}
   />
 )
 
-const RepayTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+const RepayTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
   <RepayForm
     networks={networks}
     chainId={rChainId}
     market={market ?? undefined}
     enabled={isReady}
     onPricesUpdated={onPricesUpdated}
+    collateralEvents={collateralEvents}
   />
 )
 
@@ -91,15 +95,27 @@ const MintManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
+        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+          <AddCollateralForm
+            networks={networks}
+            chainId={rChainId}
+            market={market ?? undefined}
+            enabled={isReady}
+            onPricesUpdated={onPricesUpdated}
+          />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
+        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+          <RemoveCollateralForm
+            networks={networks}
+            chainId={rChainId}
+            market={market ?? undefined}
+            enabled={isReady}
+            onPricesUpdated={onPricesUpdated}
+          />
         ),
       },
     ],
@@ -114,13 +130,14 @@ const MintManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
+        component: ({ rChainId, market, isReady, collateralEvents }: MintManageLoanProps) => (
           <ImproveHealthForm
             chainId={rChainId}
             market={market ?? undefined}
             networks={softLiqNetworks}
             enabled={isReady}
-            onPricesUpdated={onPricesUpdated}
+            collateralEvents={collateralEvents}
+            isInSoftLiquidation
           />
         ),
       },

@@ -1,10 +1,10 @@
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { DepositOptions } from '@/llamalend/mutations/deposit.mutation'
+import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -16,7 +16,7 @@ export type DepositFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<DepositOptions['onSuccess']>
+  depositDisabledAlert?: FormDisabledAlert
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
@@ -26,29 +26,18 @@ export const DepositForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
+  depositDisabledAlert,
 }: DepositFormProps<ChainId>) => {
+  const isDepositDisabled = !!depositDisabledAlert
   const network = networks[chainId]
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    borrowToken,
-    isDeposited,
-    depositError,
-    txHash,
-    formErrors,
-    isApproved,
-    max,
-  } = useDepositForm({ market, network, enabled, onSuccess })
+  const { form, params, isPending, onSubmit, isDisabled, borrowToken, depositError, formErrors, isApproved, max } =
+    useDepositForm({ market, network, enabled })
 
   return (
     <Form
       {...form}
-      onSubmit={onSubmit}
+      onSubmit={isDepositDisabled ? form.handleSubmit(() => undefined) : onSubmit}
       footer={<DepositSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
@@ -62,24 +51,19 @@ export const DepositForm = <ChainId extends IChainId>({
         network={network}
       />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid={`${TEST_ID_PREFIX}-submit-button`}
-      >
-        {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
-      </Button>
-
-      <FormAlerts
-        isSuccess={isDeposited}
-        error={depositError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['depositAmount']}
-        successTitle={t`Deposited successfully`}
-      />
+      {isDepositDisabled ? (
+        <AlertDisableForm>{depositDisabledAlert.message}</AlertDisableForm>
+      ) : (
+        <Button
+          type="submit"
+          loading={isPending || !market}
+          disabled={isDisabled}
+          data-testid={`${TEST_ID_PREFIX}-submit-button`}
+        >
+          {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
+        </Button>
+      )}
+      <FormAlerts error={depositError} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )
 }

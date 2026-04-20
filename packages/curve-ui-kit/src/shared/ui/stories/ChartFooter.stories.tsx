@@ -153,7 +153,7 @@ const WithSoftLiquidationWrapper = () => {
     <Box sx={{ maxWidth: 600 }}>
       <ChartFooter
         legendSets={legendSets}
-        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+        description={t`When the price enters the liquidation range, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )
@@ -269,7 +269,7 @@ const FullFeaturedWrapper = () => {
         toggleOptions={timeRanges}
         activeToggleOption={activeTime}
         onToggleChange={handleToggleChange}
-        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+        description={t`When the price enters the liquidation range, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )
@@ -291,9 +291,9 @@ const LineLegendsWrapper = () => {
   const theme = useTheme()
 
   const legendSets: LegendItem[] = [
-    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines.Line1, dash: 'none' } },
-    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines.Line2, dash: '4 2' } },
-    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines.Line3, dash: '2 2' } },
+    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1], dash: 'none' } },
+    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: '4 2' } },
+    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines[3], dash: '2 2' } },
   ]
 
   return (
@@ -349,7 +349,7 @@ export const BoxLegendsOnly: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Chart footer showing box-style legends using theme chart colors for candles and liquidation zones',
+        story: 'Chart footer showing box-style legends using theme chart colors for candles and liquidation ranges',
       },
     },
   },
@@ -388,7 +388,7 @@ const NarrowContainerWrapper = () => {
         toggleOptions={timeRanges}
         activeToggleOption={activeTime}
         onToggleChange={handleToggleChange}
-        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+        description={t`When the price enters the liquidation range, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )

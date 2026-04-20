@@ -132,7 +132,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
   useEffect(() => {
     if (isLoaded) updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -141,7 +141,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

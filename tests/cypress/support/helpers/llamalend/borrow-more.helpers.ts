@@ -1,5 +1,6 @@
+import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../../ui'
+import { LOAD_TIMEOUT } from '../../ui'
 import { checkDebt, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
@@ -8,8 +9,13 @@ const getBorrowMoreInput = (field: BorrowMoreField) =>
   cy.get(`[data-testid="borrow-more-input-${field}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
 const getDebtInput = () => getBorrowMoreInput('debt')
+const getCollateralInput = () => getBorrowMoreInput('collateral')
 
-export function writeBorrowMoreForm({ debt }: { debt: Decimal }) {
+export function writeBorrowMoreForm({ debt, userCollateral }: { debt: Decimal; userCollateral?: Decimal }) {
+  if (userCollateral) {
+    getCollateralInput().clear()
+    getCollateralInput().type(userCollateral)
+  }
   getDebtInput().clear()
   getDebtInput().type(debt)
   getDebtInput().blur() // make sure field is touched to open the action info list
@@ -27,6 +33,7 @@ export function checkBorrowMoreDetailsLoaded({
   leverageEnabled: boolean
 }) {
   getActionValue('borrow-apr').should('include', '%')
+  getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
   getActionValue('estimated-tx-cost').should('include', '$')
   checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })
@@ -37,9 +44,4 @@ export function checkBorrowMoreDetailsLoaded({
   }
 }
 
-export function submitBorrowMoreForm() {
-  cy.get('[data-testid="borrow-more-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Borrowed more!', TRANSACTION_LOAD_TIMEOUT)
-}
+export const submitBorrowMoreForm = () => submitLoanForm({ form: 'borrow-more', message: 'Borrowed more!' })

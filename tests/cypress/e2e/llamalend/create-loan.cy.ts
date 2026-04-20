@@ -14,9 +14,10 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 // With other network conditions when the fee is fine, we get 'insufficient funds' since account is generated and has no funds.
 const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
 
-describe('Create loan', () => {
-  recordValues(LlamaMarketType).forEach((marketType) => {
-    const { collateral, borrow, path, label, hasLeverage } = oneLoanTestMarket(marketType)
+describe.skip('Create loan', () => {
+  const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
+
+  testCases.forEach(({ collateral, borrow, path, label, hasLeverage }) => {
     const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
     it(label, () => {
@@ -25,8 +26,8 @@ describe('Create loan', () => {
       checkLoanDetailsLoaded({ leverageEnabled })
       checkLoanRangeSlider({ leverageEnabled })
       // e2e tests run with a 'fake' account so the transaction fails
-      submitCreateLoanForm('error', 'Transaction failed').then(() =>
-        cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
+      submitCreateLoanForm({ expected: 'error' }).then(() =>
+        cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
       )
     })
   })

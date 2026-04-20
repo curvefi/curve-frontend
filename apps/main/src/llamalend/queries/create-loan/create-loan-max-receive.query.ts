@@ -1,11 +1,12 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { getExpectedFn } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { assert, decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
@@ -106,7 +107,9 @@ export const {
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({
     debtRequired: false,
+    collateralRequired: true,
     isMaxDebtRequired: false,
     isLeverageRequired: false,
+    ignoreMaxCollateral: true, // allow users to calculate max receive before they have collateral
   }),
 })

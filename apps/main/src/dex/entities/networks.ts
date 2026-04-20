@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { assert } from '@primitives/objects.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
@@ -13,13 +14,8 @@ const { useQuery, fetchQuery, getQueryData } = queryFactory({
 export const useNetworksQuery = () => useQuery({})
 export const fetchNetworks = () => fetchQuery({})
 
-export const getNetworks = () => {
-  const result = getQueryData({})
-  if (!result) {
-    throw new Error('Do not use this hook while loading, it should be after RootLayout has loaded the networks')
-  }
-  return result
-}
+export const getNetworks = () =>
+  assert(getQueryData({}), 'Do not use this hook while loading, it should be after RootLayout has loaded the networks')
 
 /** Only use this after the networks have been fetched in the RootLayout. Used for legacy code only. */
 export const useNetworks = () => {
@@ -32,7 +28,7 @@ export const useNetworks = () => {
 
 export const useNetworkByChain = ({ chainId }: { chainId: number }) => {
   const { data: networks } = useNetworks()
-  const network = useMemo(() => networks[chainId], [chainId, networks])
-  if (!network) throw new Error(`Network not found with chainId ${chainId}`)
-  return { data: network }
+  return {
+    data: useMemo(() => assert(networks[chainId], `Network not found with chainId ${chainId}`), [chainId, networks]),
+  }
 }

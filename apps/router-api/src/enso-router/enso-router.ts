@@ -1,5 +1,6 @@
 import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
+import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteResponse, TransactionData } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
@@ -67,14 +68,13 @@ export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBas
   const { ok, status, statusText } = response
   if (!ok) {
     const [message, body] = ['Enso route request failed', await response.text()]
-    log.error({ message, status, statusText, url, body })
+    log.error({ message, status, statusText, url, body, authenticated: !!ENSO_API_KEY })
     return []
   }
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object
   const json = (await response.json()) as EnsoRouteResponse | EnsoRouteResponse[]
-  const data = Array.isArray(json) ? json : [json]
-  return data.map(
+  return toArray(json).map(
     ({ route, amountOut, ...routeProps }): RouteResponse => ({
       id: buildEnsoRouteId(route),
       router: 'enso',

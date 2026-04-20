@@ -10,13 +10,11 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { formatTokenAmounts } from '../llama.utils'
 
 export type UnstakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess?: OnTransactionSuccess<UnstakeMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -25,11 +23,10 @@ export const useUnstakeMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: UnstakeOptions) => {
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<UnstakeMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<UnstakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
@@ -42,11 +39,11 @@ export const useUnstakeMutation = ({
       t`Unstaking... ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Unstake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
-    onSuccess,
-    onReset,
+    mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
+    ...props,
   })
 
   const onSubmit = useCallback(async (form: UnstakeForm) => mutate(form as UnstakeMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, isPending }
 }

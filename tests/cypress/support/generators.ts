@@ -3,7 +3,6 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
-import type { Range } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils/decimal'
 
 export const MAX_USD_VALUE = 400_000_000
@@ -13,11 +12,6 @@ export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
 
 export const oneDecimal = (minOrMax = 1, maxExclusive?: number, maxDecimals = 6): Decimal =>
   decimal(new BigNumber(oneFloat(minOrMax, maxExclusive)).decimalPlaces(maxDecimals, BigNumber.ROUND_DOWN).toString())!
-
-export const oneDecimalRange = (minOrMax = 1, maxExclusive?: number, maxDecimals = 6): Range<Decimal> => {
-  const start = oneDecimal(minOrMax, maxExclusive, maxDecimals)
-  return [start, oneDecimal(+start, maxExclusive, maxDecimals)]
-}
 
 export const oneInt = (minOrMax = 100, maxExclusive?: number): number => Math.floor(oneFloat(minOrMax, maxExclusive))
 
@@ -54,4 +48,4 @@ export const oneDate = ({
 }: {
   minDate?: Date
   maxDate?: Date
-}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))
+} = {}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))

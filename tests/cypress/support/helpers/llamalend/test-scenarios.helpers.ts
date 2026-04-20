@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
-import { CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { CRVUSD_ADDRESS, decimal, decimalMinus, decimalSum } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from './mock-loan-test-data'
 import { createMockMintMarket } from './mock-market.helpers'
 import { seedErc20BalanceForAddresses } from './query-cache.helpers'
@@ -16,25 +17,25 @@ const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
   })
   seedErc20BalanceForAddresses({
     chainId,
-    tokenAddress: CRVUSD_ADDRESS as Address,
+    tokenAddress: CRVUSD_ADDRESS,
     addresses: [TEST_ADDRESS],
     rawBalance: 10n ** 22n,
   })
 }
 
-type TestStubArg = string | number | boolean | bigint | symbol | null | undefined | object
+export type TestStubArg = string | number | boolean | bigint | symbol | null | undefined | object
 
 // define our own interface so we don't get errors from SinonStub
-type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((...args: TArgs) => Promise<TResult>) & {
+export type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((...args: TArgs) => Promise<TResult>) & {
   calledWithExactly: (...args: TArgs) => boolean
   callCount: number
 }
 
-const createStub = <TResult, TArgs extends readonly TestStubArg[] = readonly TestStubArg[]>(result: TResult) =>
+export const createStub = <TResult, TArgs extends readonly TestStubArg[] = readonly TestStubArg[]>(result: TResult) =>
   cy.stub().resolves(result) as TestStub<TArgs, TResult>
 
 /** Creates an isApproved stub that returns false until approveStub has been called, then returns true. */
-const createIsApprovedStub = (approveStub: TestStub<readonly [string], unknown>) =>
+export const createIsApprovedStub = (approveStub: TestStub<readonly [string], unknown>) =>
   cy.stub().callsFake(async () => approveStub.callCount > 0) as TestStub<readonly [string], boolean>
 
 const generateMarketRates = () => ({
@@ -55,10 +56,6 @@ const oneAprPair = () => ({
   rates: generateMarketRates(),
   future_rates: generateMarketRates(),
 })
-
-const debtAfterAdd = (baseDebt: string, delta: string) => decimal(new BigNumber(baseDebt).plus(delta).decimalPlaces(2))!
-const debtAfterSub = (baseDebt: string, delta: string) =>
-  decimal(new BigNumber(baseDebt).minus(delta).decimalPlaces(2))!
 
 export const createCreateLoanScenario = ({
   chainId,
@@ -123,13 +120,21 @@ export const createCreateLoanScenario = ({
 }
 
 /** Default collateral address used in createMockMintMarket */
-const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as Address
+const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as const
 
-export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+export const createBorrowMoreScenario = ({
+  chainId,
+  approved,
+  collateral = '0' as const,
+}: {
+  chainId: number
+  approved: boolean
+  collateral?: Decimal
+}) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
   const expectedCurrentDebt = oneDecimal(10, 200, 2)
-  const expectedFutureDebt = debtAfterAdd(expectedCurrentDebt, borrow)
+  const expectedFutureDebt = decimalSum(expectedCurrentDebt, borrow)
 
   const borrowMoreApprove = createStub(TEST_TX_HASH)
   const borrowMorePrices = createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)])
@@ -150,7 +155,7 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
   const market = createMockMintMarket({
     stats: { parameters: stubs.parameters },
     estimateGas: { borrowMore: stubs.estimateGasBorrowMore, borrowMoreApprove: stubs.estimateGasBorrowMoreApprove },
-    userState: createStub({ collateral: '0', stablecoin: '0', debt: expectedCurrentDebt }),
+    userState: createStub({ collateral: '1', stablecoin: '0', debt: expectedCurrentDebt }),
     userHealth: createStub(oneDecimal(20, 80, 2)),
     borrowMoreHealth: stubs.borrowMoreHealth,
     borrowMoreMaxRecv: stubs.borrowMoreMaxRecv,
@@ -164,20 +169,20 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
 
   return {
     borrow,
-    collateral: '0' as const,
+    collateral,
     userBorrowed: '0' as const,
     expectedCurrentDebt,
     expectedFutureDebt,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
-      health: ['0', borrow] as const,
-      maxRecv: ['0'] as const,
-      isApproved: ['0'] as const,
-      estimateGasApprove: ['0'] as const,
-      approve: ['0'] as const,
-      estimateGas: ['0', borrow] as const,
-      submit: ['0', borrow] as const,
+      health: [collateral, borrow] as const,
+      maxRecv: [collateral] as const,
+      isApproved: [collateral] as const,
+      estimateGasApprove: [collateral] as const,
+      approve: [collateral] as const,
+      estimateGas: [collateral, borrow] as const,
+      submit: [collateral, borrow] as const,
     },
     stubs,
   }
@@ -187,7 +192,7 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(0.5, 20, 2)
   const collateral = oneDecimal(0.05, 2, 3)
-  const currentDebt = debtAfterAdd(borrow, oneDecimal(0.5, 50, 2))
+  const currentDebt = decimalSum(borrow, oneDecimal(0.5, 50, 2))
   const repayApproveStub = createStub(TEST_TX_HASH)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
@@ -221,7 +226,7 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
     borrow,
     collateral,
     currentDebt,
-    futureDebt: debtAfterSub(currentDebt, borrow),
+    futureDebt: decimalMinus(currentDebt, borrow),
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
@@ -242,7 +247,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
   const borrow = oneDecimal(0.5, 20, 2)
   const collateral = oneDecimal(0.02, 0.6, 3)
   const stateBorrowed = oneDecimal(0.2, 8, 2)
-  const debt = debtAfterAdd(borrow, oneDecimal(0.5, 40, 2))
+  const debt = decimalSum(borrow, oneDecimal(0.5, 40, 2))
   const slippage = 0.1
   const repayApproveStub = createStub(TEST_TX_HASH)
   const selfLiquidateApproveStub = createStub(TEST_TX_HASH)
@@ -253,6 +258,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     estimateGasRepay: createStub(oneInt(120_000, 240_000)),
     estimateGasRepayApprove: estimateGasRepayApproveStub,
     estimateGasSelfLiquidate: createStub(oneInt(150_000, 280_000)),
+    estimateGasSelfLiquidateApprove: createStub(oneInt(20_000, 150_000)),
     repayHealth: createStub(oneDecimal(30, 98, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
     repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
@@ -261,6 +267,16 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub(selfLiquidateApproveStub),
     selfLiquidateApprove: selfLiquidateApproveStub,
     selfLiquidate: createStub(TEST_TX_HASH),
+    walletBalances: createStub({
+      // Ensure wallet stablecoin balance is always enough to close the position
+      // canClose requires: borrowed >= (debt - stablecoin) * 1.0001
+      stablecoin: decimal(new BigNumber(debt).minus(stateBorrowed).times(1.0001).plus(1).decimalPlaces(2))!,
+      collateral: oneDecimal(0.02, 0.5, 3),
+    }),
+    loanExists: createStub(true),
+    userState: createStub({ collateral, stablecoin: stateBorrowed, debt }),
+    userHealth: createStub(oneDecimal(20, 70, 2)),
+    userPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
   } as const
 
   const market = createMockMintMarket({
@@ -268,25 +284,21 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     estimateGas: {
       repay: stubs.estimateGasRepay,
       selfLiquidate: stubs.estimateGasSelfLiquidate,
-      ...(!approved && { repayApprove: stubs.estimateGasRepayApprove }),
+      repayApprove: stubs.estimateGasRepayApprove,
+      selfLiquidateApprove: stubs.estimateGasSelfLiquidateApprove,
     },
-    wallet: {
-      balances: createStub({
-        // Ensure wallet stablecoin balance is always enough to close the position
-        // canClose requires: borrowed >= (debt - stablecoin) * 1.0001
-        stablecoin: decimal(new BigNumber(debt).minus(stateBorrowed).times(1.0001).plus(1).decimalPlaces(2))!,
-        collateral: oneDecimal(0.02, 0.5, 3),
-      }),
-    },
-    userState: createStub({ collateral, stablecoin: stateBorrowed, debt }),
-    userHealth: createStub(oneDecimal(20, 70, 2)),
+    wallet: { balances: stubs.walletBalances },
+    loanExists: stubs.loanExists,
+    userState: stubs.userState,
+    userHealth: stubs.userHealth,
+    userPrices: stubs.userPrices,
     repayHealth: stubs.repayHealth,
     repayPrices: stubs.repayPrices,
     repayIsApproved: stubs.repayIsApproved,
-    ...(!approved && { repayApprove: stubs.repayApprove }),
+    repayApprove: stubs.repayApprove,
     repay: stubs.repay,
     selfLiquidateIsApproved: stubs.selfLiquidateIsApproved,
-    ...(!approved && { selfLiquidateApprove: stubs.selfLiquidateApprove }),
+    selfLiquidateApprove: stubs.selfLiquidateApprove,
     selfLiquidate: stubs.selfLiquidate,
   })
 
@@ -294,7 +306,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     borrow,
     collateral,
     debt,
-    debtAfterImprove: debtAfterSub(debt, borrow),
+    debtAfterImprove: decimalMinus(debt, borrow),
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {

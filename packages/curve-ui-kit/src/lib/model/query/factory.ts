@@ -1,19 +1,20 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
+import { isEmpty } from '@primitives/objects.utils'
 import {
-  QueryFunctionContext,
-  queryOptions,
-  useQuery,
-  keepPreviousData,
   type DefaultError,
   type FetchQueryOptions,
+  keepPreviousData,
+  QueryFunctionContext,
   type QueryKey,
+  queryOptions,
+  useQuery,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
-import { logQuery } from '@ui-kit/lib/logging'
+import { logError, logQuery, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
-import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
@@ -57,6 +58,21 @@ export class NoRetryError extends Error {
   constructor(message: string) {
     super(message)
   }
+
+  /**
+   * When we receive 404's from t
+   * @param run
+   */
+  static async catch404<T>(run: () => Promise<T>) {
+    try {
+      return await run()
+    } catch (error) {
+      if (error instanceof FetchError && error.status === 404) {
+        throw new NoRetryError(error.message)
+      }
+      throw error
+    }
+  }
 }
 
 /**
@@ -72,6 +88,22 @@ export class NoRetryError extends Error {
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
+async function runQuery<TKey extends QueryKey, TData, TQuery>(
+  queryKey: TKey,
+  queryFn: (params: TQuery) => Promise<TData>,
+  disableLog: true | undefined,
+) {
+  try {
+    if (!disableLog) logQuery(queryKey)
+    const data = await queryFn(getParamsFromQueryKey(queryKey))
+    if (!disableLog) logSuccess(queryKey, ...[data ? [data] : []])
+    return data
+  } catch (error) {
+    logError(queryKey, error, error.message)
+    throw error
+  }
+}
+
 export function queryFactory<
   TQuery extends object,
   const TKey extends readonly unknown[],
@@ -80,7 +112,7 @@ export function queryFactory<
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
-  queryFn: runQuery,
+  queryFn,
   queryKey,
   category,
   validationSuite,
@@ -100,21 +132,14 @@ export function queryFactory<
   keepPreviousData?: boolean
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
       queryKey: queryKey(params),
-      queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => {
-        try {
-          if (!disableLog) logQuery(queryKey)
-          return await runQuery(getParamsFromQueryKey(queryKey))
-        } catch (error) {
-          console.error(`Error in query `, JSON.stringify(queryKey), error) // log here, `queryClient.onError` has no stack trace
-          throw error
-        }
-      },
+      queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => await runQuery(queryKey, queryFn, disableLog),
       enabled:
         enabled &&
-        checkValidity(validationSuite, params) &&
+        isEmpty(validate(validationSuite, params)) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
@@ -138,7 +163,12 @@ export function queryFactory<
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
-    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    useQuery: (params: TParams, condition?: boolean) => {
+      const options = getQueryOptions(params, condition)
+      const result = useQuery(options)
+      // add validation results to the query result via Object.assign so we don't enumerate all react-query properties
+      return Object.assign(result, { validation: options.enabled ? {} : validate(validationSuite, params) })
+    },
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   } as const
 }

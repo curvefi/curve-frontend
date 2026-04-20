@@ -1,25 +1,22 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
-import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
+import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
-import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
-import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
-import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
+import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
-import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isChain, type Chain } from '@curvefi/prices-api'
-import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
+import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -30,7 +27,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { MarketAlertBanner } from '../MarketAlertBanner'
+import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
@@ -39,7 +36,6 @@ export const LendMarketPage = () => {
 
   const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
   const { llamaApi: api = null, provider } = useCurve()
-  const titleMapper = useTitleMapper()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
@@ -61,22 +57,22 @@ export const LendMarketPage = () => {
 
   const [isLoaded, setLoaded] = useState(false)
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
+  const controllerAddress = getControllerAddress(market)
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Lend,
     chainId,
     marketId,
     market: market ?? null,
   })
-  const activityQueryParams: UserCollateralEventsProps = {
+  const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
-    chain: isChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.addresses?.controller as Address | undefined,
+    chain: isPricesApiChain(network.id) ? network.id : undefined,
+    controllerAddress,
     userAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
     network,
-  }
-  const marketAlert = useMarketAlert(chainId, market?.id)
+  })
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -104,7 +100,6 @@ export const LendMarketPage = () => {
   useEffect(() => {
     if (api && market && isPageVisible) {
       if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoaded(true)
     }
   }, [api, isPageVisible, loanExists, market, setMarketsStateKey])
@@ -118,7 +113,6 @@ export const LendMarketPage = () => {
     api,
     market,
     userActiveKey,
-    titleMapper,
     onPricesUpdated,
   }
 
@@ -131,40 +125,37 @@ export const LendMarketPage = () => {
         marketId &&
         !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
+          <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
         ) : (
-          <LoanCreateTabs {...pageProps} params={params} />
+          <CreateLoanTabs {...pageProps} params={params} />
         ))
       }
-    >
-      <PageHeader
-        chainId={chainId}
-        marketId={marketId}
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-      />
-      {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-      {!isHighSeverityAlert(marketAlert?.alertType) && (
-        <CampaignRewardsBanner
+      header={
+        <PageHeader
           chainId={chainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
+          marketId={marketId}
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
         />
-      )}
+      }
+    >
+      <MarketBanners
+        chainId={chainId}
+        market={market}
+        rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
+      />
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
-        activityQueryParams={activityQueryParams}
+        events={collateralEvents}
       />
-      <Stack>
-        <MarketInformationComposite
-          pageProps={pageProps}
-          type="borrow"
-          loanExists={loanExists}
-          previewPrices={previewPrices}
-        />
-      </Stack>
+      <MarketInformationComposite
+        pageProps={pageProps}
+        type="borrow"
+        loanExists={loanExists}
+        previewPrices={previewPrices}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

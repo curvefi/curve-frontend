@@ -51,7 +51,7 @@ export const NETWORK_BASE_CONFIG = {
     chainId: Chain.Polygon,
     gasPricesUrl: 'https://gasstation.polygon.technology/v2',
     gasPricesDefault: 0,
-    rpcUrl: 'https://polygon-rpc.com',
+    rpcUrl: 'https://polygon.drpc.org',
     nativeCurrencySymbol: 'POL',
     explorerUrl: 'https://polygonscan.com/',
     orgUIPath: 'https://polygon.curve.finance',
@@ -135,7 +135,7 @@ export const NETWORK_BASE_CONFIG = {
     id: 'fraxtal',
     chainId: Chain.Fraxtal,
     rpcUrl: `https://rpc.frax.com`,
-    nativeCurrencySymbol: 'frxETH',
+    nativeCurrencySymbol: 'FRAX',
     explorerUrl: 'https://fraxscan.com/',
   },
   [Chain.XLayer]: {

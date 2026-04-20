@@ -1,26 +1,23 @@
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { Icon } from '@ui/Icon'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from '@ui/images'
 import { t } from '@ui-kit/lib/i18n'
 import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => {
-  const {
-    design: { Layer },
-  } = useTheme()
-
-  return (
-    <Stack direction="column" gap={Spacing.md} padding={Spacing.lg} sx={{ backgroundColor: Layer[1].Fill }}>
+export const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => (
+  <Card>
+    <CardContent component={Stack} gap={Spacing.md} direction="column">
       <Typography alignSelf="center" variant="headingSBold">
         {t`How to get yield with Savings crvUSD?`}
       </Typography>
@@ -35,7 +32,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           },
         }}
       >
-        <Stack direction="column" gap={Spacing.sm}>
+        <Stack gap={Spacing.sm}>
           <img src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Get crvUSD`}</Typography>
           <Typography variant="bodyMRegular">
@@ -49,7 +46,8 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
             <Link href="https://swap.cow.fi/#/1/swap/WETH/scrvUSD">Cowswap</Link>.
           </Typography>
         </Stack>
-        <Stack direction="column" gap={Spacing.sm}>
+
+        <Stack gap={Spacing.sm}>
           <img src={RCScrvUSDLogoSM} alt="scrvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Deposit crvUSD and get scrvUSD`}</Typography>
           <Typography variant="bodyMRegular">
@@ -61,7 +59,8 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
             {t`scrvUSD is a yield-bearing stablecoin you can use further in DeFi.`}
           </Typography>
         </Stack>
-        <Stack direction="column" gap={Spacing.sm}>
+
+        <Stack gap={Spacing.sm}>
           <YieldGrowth color="inherit" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Watch your yield grow`}</Typography>
           <Typography variant="bodyMRegular">
@@ -76,10 +75,10 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           </Typography>
         </Stack>
       </Stack>
-      <Button color="ghost" href="https://docs.curve.finance/user/curve-tokens/scrvusd">
-        {t`LEARN MORE`}
-        <Icon name="ArrowUpRight" size={20} />
-      </Button>
-    </Stack>
-  )
-}
+
+      <Box display="flex" justifyContent="center">
+        <ExternalLink href="https://docs.curve.finance/user/curve-tokens/scrvusd" label={t`Learn More`} />
+      </Box>
+    </CardContent>
+  </Card>
+)

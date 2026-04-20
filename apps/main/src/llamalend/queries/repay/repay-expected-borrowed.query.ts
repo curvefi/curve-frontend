@@ -1,8 +1,9 @@
+import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
-import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 export type RepayExpectedBorrowedResult = {
@@ -64,12 +65,13 @@ export const {
         const { stablecoins, routeIdx } = await impl.repayStablecoins(...args)
         return { totalBorrowed: stablecoins[routeIdx] as Decimal }
       }
-      case 'unleveraged':
+      case 'unleveragedMint':
+      case 'unleveragedLend':
         return {
           totalBorrowed: decimal(getUserDebtFromQueryCache({ chainId, marketId, userAddress }) - +userBorrowed)!,
         }
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
 })

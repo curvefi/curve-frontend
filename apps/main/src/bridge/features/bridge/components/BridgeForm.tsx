@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useNavigate, usePathname } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { q } from '@ui-kit/types/util'
@@ -11,13 +10,18 @@ import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import type { BridgeFormParams } from '../BridgeFormTabs'
+import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { useBridgeForm } from '../hooks/useBridgeForm'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent } from './BridgeFormContent'
 import { BridgeInfoAlert } from './BridgeInfoAlert'
 
 /** Hooks up the bridge form content with an actual form and hooks */
-export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
+export const BridgeForm = ({
+  chainId,
+  networks,
+  bridgeDisabledAlert,
+}: BridgeFormParams & { bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'> }) => {
   const { isConnected, isConnecting } = useConnection()
   const { connect } = useWallet()
   const navigate = useNavigate()
@@ -31,8 +35,6 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
     supportedNetworks,
     isPending,
     isApproved,
-    isBridged,
-    txHash,
     bridgeCost,
     gas,
     amountError,
@@ -55,7 +57,12 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
       onSubmit={onSubmit}
       footer={
         <>
-          <BridgeActionInfos bridgeCost={q(bridgeCost)} gas={q(gas)} isApproved={isApproved.data} />
+          <BridgeActionInfos
+            bridgeCost={q(bridgeCost)}
+            gas={q(gas)}
+            isApproved={isApproved.data}
+            nativeTokenSymbol={networks[chainId].symbol}
+          />
           <BridgeInfoAlert />
         </>
       }
@@ -67,6 +74,7 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
         amountError={amountError}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
+        bridgeDisabledAlert={bridgeDisabledAlert}
         loading={!supportedNetworks.length || loading}
         isPending={isPending}
         isApproved={isApproved?.data}
@@ -80,15 +88,7 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
         }
       />
 
-      <FormAlerts
-        isSuccess={isBridged}
-        error={approveError || bridgeError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={networks[chainId]}
-        handledErrors={['amount']}
-        successTitle={t`Bridged`}
-      />
+      <FormAlerts error={approveError || bridgeError} formErrors={formErrors} handledErrors={['amount']} />
     </Form>
   )
 }

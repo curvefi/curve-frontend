@@ -1,10 +1,9 @@
-import { formatCollateralNotional } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, isPositionLeveraged } from '@/llamalend/llama.utils'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import {
   LiquidationThresholdTooltipContent,
   type Leverage,
@@ -13,8 +12,6 @@ import {
   type LiquidationRange,
   type BandRange,
 } from './'
-
-const { MaxWidth } = SizesAndSpaces
 
 const dollarUnitOptions = {
   abbreviate: false,
@@ -45,8 +42,7 @@ export const BorrowInformation = ({
       display="grid"
       gap={3}
       sx={{
-        gridTemplateColumns: '1fr 1fr',
-        [`@media (min-width: ${MaxWidth.legacyMarketAndBorrowDetails})`]: { gridTemplateColumns: '1fr 1fr' },
+        gridTemplateColumns: { mobile: '1fr 1fr', desktop: 'repeat(4, 1fr)' },
       }}
     >
       <Metric
@@ -113,16 +109,15 @@ export const BorrowInformation = ({
           clickable: true,
         }}
       />
-      {leverage?.value != null &&
-        leverage.value > 1 && ( // Leverage is only available on lend for now
-          <Metric
-            size="small"
-            label={t`Leverage`}
-            value={leverage.value}
-            loading={leverage.loading}
-            valueOptions={{ unit: 'multiplier' }}
-          />
-        )}
+      {isPositionLeveraged(leverage?.value) && (
+        <Metric
+          size="small"
+          label={t`Leverage`}
+          value={leverage?.value}
+          loading={leverage?.loading}
+          valueOptions={{ unit: 'multiplier' }}
+        />
+      )}
     </Stack>
   </Stack>
 )

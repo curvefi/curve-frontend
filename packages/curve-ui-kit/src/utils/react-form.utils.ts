@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react'
+import { type SubmitEventHandler, useEffect, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
+import type { Query } from '@ui-kit/types/util'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
@@ -16,6 +17,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 export function updateForm<TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
   updates: FormUpdates<TFieldValues>,
+  { automated = false }: { automated?: boolean } = {},
 ): void {
   const changes = recordEntries(updates).filter(([field, value]) => form.getValues(field) !== value)
   if (!changes.length) return // no changes, skip revalidation
@@ -23,13 +25,23 @@ export function updateForm<TFieldValues extends FieldValues>(
     // eslint-disable-next-line no-restricted-syntax
     form.setValue(field as Path<TFieldValues>, value, {
       shouldValidate: false, // we revalidate just below.
-      shouldDirty: true,
-      shouldTouch: true,
+      shouldDirty: !automated,
+      shouldTouch: !automated,
     }),
   )
   // eslint-disable-next-line no-restricted-syntax
   form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
 }
+
+/**
+ * Syncs the form with the given values. IMPORTANT: This only works if you always pass the same keys in the same order!
+ */
+export const useFormSync = <TFieldValues extends FieldValues>(
+  form: UseFormReturn<TFieldValues>,
+  values: FormUpdates<TFieldValues>,
+) =>
+  // eslint-disable-next-line @eslint-react/exhaustive-deps
+  useEffect(() => updateForm(form, values, { automated: true }), [...Object.values(values), form])
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(
@@ -44,11 +56,16 @@ export const filterFormErrors = <TFieldValues extends FieldValues>(formState: Fo
 export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   useMemo(() => filterFormErrors(formState), [formState])
 
-export const useCallbackAfterFormUpdate = <TFieldValues extends FieldValues>(
-  form: UseFormReturn<TFieldValues>,
-  callback: () => void,
-) => useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+/**
+ * Syncs `data` to `callback` whenever it changes to a valid value. Clears it when unmounting.
+ */
+export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T | undefined) => void): void {
+  useEffect(() => (data == null ? undefined : callback(data)), [callback, data]) // keep parent in sync, keep stale while revalidating
+  useEffect(() => () => callback(undefined), [callback]) // clear stale data only when unmounting
+}
 
 /** Checks if any of the given fields are touched in the form. */
 export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: Path<T>[]) =>
   fields.some((field) => field in form.formState.touchedFields)
+
+export const cancelSubmit: SubmitEventHandler<HTMLFormElement> = (e) => e.preventDefault()

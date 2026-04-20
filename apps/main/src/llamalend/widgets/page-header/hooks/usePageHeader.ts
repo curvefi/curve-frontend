@@ -4,19 +4,26 @@ import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketCapAndAvailable, useMarketRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import {
-  LAST_MONTH,
+  aprToApy,
+  formatSupplyExtraIncentives,
   getBorrowRateMetrics,
-  getSnapshotBorrowRate,
-  getSnapshotCollateralRebasingYieldRate,
-  getSupplyRateMetrics,
+  getLatestSnapshotValue,
+  getSnapshotBorrowApr,
+  getSnapshotCollateralRebasingYieldApr,
+  getSupplyApyAverageMetrics,
+  getSupplyApyMetrics,
+  sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
+import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 export type AvailableLiquidity = {
   value: number | null | undefined
@@ -24,45 +31,61 @@ export type AvailableLiquidity = {
   loading: boolean
 }
 
-const AVERAGE_RATE_LABEL = `${LAST_MONTH}D`
-const SNAPSHOTS_QUERY_LIMIT = LAST_MONTH
+const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
+
+const { window: RATE_WINDOW } = AVERAGE_CATEGORIES[RATE_CATEGORY]
 
 function buildSupplyRate({
-  marketRates,
+  supplyApy,
+  rebasingYieldApy,
   marketOnChainRewards,
   lendingSnapshots,
   campaigns,
   blockchainId,
   loading,
+  category,
 }: {
-  marketRates: { lendApy?: number | string | null } | undefined
+  supplyApy?: number | string | null
+  rebasingYieldApy?: number | string | null
   marketOnChainRewards:
-    | { crvRates?: number[]; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
+    | { crvRates?: Range<number> | null; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
     | undefined
   lendingSnapshots: LendingSnapshot[] | undefined
   campaigns: CampaignPoolRewards[]
   blockchainId: Chain | undefined
   loading: boolean
+  category: AverageCategory
 }): SupplyRate {
-  const supplyMetrics = getSupplyRateMetrics({
-    supplyApy: toNumberOrNull(marketRates?.lendApy),
+  const { window: daysBack } = AVERAGE_CATEGORIES[category]
+  const supplyMetrics = getSupplyApyMetrics({
+    supplyApy: toNumberOrNull(supplyApy),
+    rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
+    crvBoostApr: marketOnChainRewards?.crvRates,
+    extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewards?.rewardsApr),
+  })
+  const supplyAverageMetrics = getSupplyApyAverageMetrics({
     snapshots: lendingSnapshots,
-    onChainCrvRates: marketOnChainRewards?.crvRates,
-    onChainRewardsApr: marketOnChainRewards?.rewardsApr,
+    daysBack,
   })
 
   return {
     ...supplyMetrics,
-    averageRateLabel: AVERAGE_RATE_LABEL,
-    extraIncentives:
-      marketOnChainRewards?.rewardsApr && blockchainId
-        ? marketOnChainRewards.rewardsApr.map((reward) => ({
-            title: reward.symbol,
-            percentage: reward.apy,
-            blockchainId,
-            address: reward.tokenAddress,
-          }))
-        : [],
+    ...supplyAverageMetrics,
+    averageCategory: category,
+    extraIncentives: notFalsyArray(
+      blockchainId &&
+        formatSupplyExtraIncentives({
+          incentives: notFalsyArray(
+            marketOnChainRewards?.rewardsApr?.map((reward) => ({
+              title: reward.symbol,
+              percentage: aprToApy(reward.apy) as number,
+              blockchainId,
+              address: reward.tokenAddress,
+            })),
+          ),
+          baseRate: supplyMetrics.supplyApyCrvMinBoost,
+        }),
+    ),
     extraRewards: campaigns,
     loading,
   }
@@ -89,10 +112,13 @@ export const usePageHeader = ({
     market ?? undefined,
     blockchainId,
     Boolean(blockchainId && market),
-    SNAPSHOTS_QUERY_LIMIT,
+    { kind: 'limit', limit: RATE_WINDOW },
   )
 
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
+    { chainId, marketId },
+    !isMarketMetadataLoading,
+  )
   const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
   const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketVaultOnChainRewards(
     { chainId, marketId },
@@ -111,13 +137,14 @@ export const usePageHeader = ({
   const metrics = getBorrowRateMetrics({
     borrowRate: toNumberOrNull(marketRates?.borrowApr),
     snapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+    getBorrowRate: getSnapshotBorrowApr,
+    getRebasingYield: getSnapshotCollateralRebasingYieldApr,
+    daysBack: RATE_WINDOW,
   })
   const borrowRate: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),
     averageRate: metrics.averageRate,
-    averageRateLabel: AVERAGE_RATE_LABEL,
+    averageCategory: RATE_CATEGORY,
     rebasingYield: metrics.rebasingYield,
     averageRebasingYield: metrics.averageRebasingYield,
     totalBorrowRate: metrics.totalRate,
@@ -125,21 +152,24 @@ export const usePageHeader = ({
     extraRewards: borrowCampaigns,
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
-
+  const lendingSnapshots = isLendMarket ? (snapshots as LendingSnapshot[] | undefined) : undefined
+  const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
   const supplyRate = isLendMarket
     ? buildSupplyRate({
-        marketRates,
+        supplyApy: marketRates?.lendApy,
+        rebasingYieldApy,
         marketOnChainRewards,
-        lendingSnapshots: snapshots as LendingSnapshot[] | undefined,
+        lendingSnapshots,
         campaigns: supplyCampaigns,
         blockchainId,
         loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
+        category: RATE_CATEGORY,
       })
     : undefined
 
   const availableLiquidity: AvailableLiquidity = {
     value: toNumberOrNull(capAndAvailable?.available),
-    max: toNumberOrNull(capAndAvailable?.cap),
+    max: toNumberOrNull(capAndAvailable?.totalAssets),
     loading: isCapAndAvailableLoading || isMarketMetadataLoading,
   }
 

@@ -23,7 +23,6 @@ export const BalanceAmount = <T extends Amount>({
 }) => (
   <WithSkeleton loading={loading}>
     <Typography
-      component="span"
       className="balance"
       variant="highlightXs"
       color={disabled ? 'textDisabled' : children == null ? 'textTertiary' : 'textPrimary'}

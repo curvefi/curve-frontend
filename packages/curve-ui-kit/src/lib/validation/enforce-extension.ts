@@ -1,4 +1,5 @@
 import { isAddress, zeroAddress } from 'viem'
+import { isPricesApiChain } from '@curvefi/prices-api'
 
 // Copied from https://github.com/validatorjs/validator.js/blob/3c857088d58197453957a2b924dfedea328003b6/src/lib/isDecimal.js#L19
 function isDecimal<T>(value: T, options?: { decimal_digits?: string }): boolean {
@@ -31,12 +32,8 @@ export const extendEnforce = (enforce: typeof import('vest').enforce) =>
       pass: typeof value === 'number' && value > 0,
       message: () => 'Must be a positive number',
     }),
-    isValidChainId: <T>(value: T) => ({
-      pass: typeof value === 'number', // && value > 0,
+    isValidPricesApiChain: <T>(value: T) => ({
+      pass: typeof value === 'string' && isPricesApiChain(value),
       message: () => 'Must be a valid chain ID',
-    }),
-    isValidChainName: <T>(value: T) => ({
-      pass: typeof value === 'string',
-      message: () => 'Must be a valid chain name',
     }),
   })

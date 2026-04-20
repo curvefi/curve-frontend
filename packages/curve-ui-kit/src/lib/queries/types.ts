@@ -13,7 +13,7 @@ export type QueryResultsArray<T extends QueryOptionsArray> = {
 
 export type PartialQueryResult<T> = Pick<
   UseQueryResult<T>,
-  'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching'
+  'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching' | 'error'
 >
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -18,7 +18,7 @@ type TokenBalanceQuery = ChainQuery & UserQuery & TokenQuery
 
 /** Convert user collateral from GetBalanceReturnType to number */
 const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
-  formatUnits(value || 0n, decimals || DEFAULT_DECIMALS) as Decimal
+  formatUnits(value || 0n, decimals ?? DEFAULT_DECIMALS) as Decimal
 
 /** Create query options for native token balance */
 const getNativeBalanceQueryOptions = (config: Config, { chainId, userAddress }: ChainQuery & UserQuery) =>
@@ -67,6 +67,26 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
           staleTime: 0,
         })
         .then((results) => convertBalance(parseERC20Results(results)))
+
+/** Invalidate a specific token balance query  */
+export const invalidateTokenBalance = (config: Config, query: TokenBalanceQuery) => {
+  const { queryKey } = isNative(query)
+    ? getNativeBalanceQueryOptions(config, query)
+    : readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) })
+
+  return queryClient.invalidateQueries({ queryKey, exact: true })
+}
+
+/** Invalidate a set of token balances for the same user and chain. */
+export const invalidateTokenBalances = async (
+  config: Config,
+  { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
+) =>
+  await Promise.all(
+    uniqAddresses(tokenAddresses).map((tokenAddress) =>
+      invalidateTokenBalance(config, { chainId, userAddress, tokenAddress }),
+    ),
+  )
 
 /**
  * Query freshness configuration for singular token balance queries.

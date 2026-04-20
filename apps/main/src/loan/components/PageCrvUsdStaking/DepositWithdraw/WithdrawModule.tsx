@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
-import { InputDivider } from '@/llamalend/widgets/InputDivider'
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { networks } from '@/loan/networks'
@@ -38,7 +37,7 @@ export const WithdrawModule = () => {
     t`Input amount exceeds your balance, click max to use all your balance`
 
   return (
-    <Stack gap={Spacing.sm} divider={<InputDivider />}>
+    <Stack gap={Spacing.xs}>
       <LargeTokenInput
         label={t`From Vault`}
         name="withdraw-from"

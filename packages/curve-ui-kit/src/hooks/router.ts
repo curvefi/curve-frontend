@@ -6,15 +6,18 @@ import {
   useParams as useTanstackParams,
 } from '@tanstack/react-router'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type NavigateOptions = { replace?: boolean; resetScroll?: boolean; state?: any }
+
 /**
  * Use navigate function from tanstack router.
- * Returns a function that accepts a URL string and an options object with `replace` and `state` properties.
+ * Returns a function that accepts a URL string and an options object with `replace`, `resetScroll` and `state` properties.
+ * Scroll is reset on push navigation and preserved on replace navigation, unless `resetScroll` is explicitly set.
  */
 export function useNavigate() {
   const navigate = useTanstackNavigate()
   return useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (to: string, options: { replace?: boolean; state?: any } = {}): void => void navigate({ to, ...options }),
+    (to: string, options?: NavigateOptions): void => void navigate({ to, resetScroll: !options?.replace, ...options }),
     [navigate],
   )
 }
@@ -26,6 +29,32 @@ export function useNavigate() {
 export function useSearchParams(): URLSearchParams {
   const { search } = useTanstackLocation()
   return useMemo(() => new URLSearchParams(search), [search])
+}
+
+type SearchParamsUpdate = Record<string, string | string[] | null>
+
+export const getSearchString = (update: SearchParamsUpdate, previous?: URLSearchParams) => {
+  const params = new URLSearchParams(previous ?? '')
+  Object.entries(update).forEach(([key, value]) => {
+    params.delete(key)
+    if (Array.isArray(value)) value.forEach((item) => params.append(key, item))
+    else if (value != null) params.set(key, value)
+  })
+  return params.size ? `?${params}`.replaceAll('%2C', ',') : ''
+}
+
+/**
+ * Update URL search params through TanStack Router, preserving the current pathname.
+ */
+export function useSearchNavigate(searchParams: URLSearchParams) {
+  const navigate = useNavigate()
+  const pathname = usePathname()
+  return useCallback(
+    (update: SearchParamsUpdate, options?: NavigateOptions) => {
+      navigate(pathname + getSearchString(update, searchParams), options)
+    },
+    [navigate, pathname, searchParams],
+  )
 }
 
 /**

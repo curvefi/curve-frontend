@@ -1,6 +1,7 @@
+import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 export const {
@@ -48,11 +49,12 @@ export const {
         return await impl.repayIsAvailable(...args, userAddress)
       case 'deleverage':
         return await impl.isAvailable(...args, userAddress)
-      case 'unleveraged':
+      case 'unleveragedMint':
+      case 'unleveragedLend':
         // For unleveraged markets, repayment is available when user has debt
         return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
 })

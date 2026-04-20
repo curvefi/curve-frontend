@@ -3,17 +3,43 @@ module.exports = {
     'eslint:recommended',
     'plugin:@tanstack/query/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
     'prettier',
   ],
-  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint', 'react', 'react-hooks', 'react-refresh'],
+  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint'],
   rules: {
+    // The follow react rules are turned off as they were not enabled or working properly in the old eslint react plugin
+    // These rules are new recommended ones that came with the migration from eslint-plugin-react to @eslint-react,
+    // and we haven't had the bandwidth to fix all the issues they raise yet.
+    // We should create future PRs to re-enable these rules and fix any issues that arise
+    '@eslint-react/naming-convention-context-name': 'off',
+    '@eslint-react/naming-convention-ref-name': 'off',
+    '@eslint-react/naming-convention-id-name': 'off',
+    '@eslint-react/component-hook-factories': 'off',
+    '@eslint-react/set-state-in-effect': 'off', // painful to disable but we manually disabled it in a shit ton of cases already, requires a huge refactor
+    '@eslint-react/purity': 'off',
+    '@eslint-react/no-array-index-key': 'off',
+    '@eslint-react/no-forward-ref': 'off',
+    '@eslint-react/no-clone-element': 'off',
+    '@eslint-react/no-use-context': 'off',
+    '@eslint-react/no-context-provider': 'off',
+    '@eslint-react/no-unnecessary-use-prefix': 'off',
+    '@eslint-react/no-children-to-array': 'off',
+    '@eslint-react/no-children-map': 'off',
+    '@eslint-react/no-nested-component-definitions': 'off',
+    '@eslint-react/web-api-no-leaked-timeout': 'off',
+    '@eslint-react/dom-no-flush-sync': 'off',
+    '@eslint-react/web-api-no-leaked-event-listener': 'off',
+    '@eslint-react/use-state': [
+      'warn',
+      {
+        enforceSetterName: false, // we're not really sticking to the 'setX' naming convention in a lot of cases
+        enforceLazyInitialization: false, // something we didn't adhere to previously, but should refactor in the future anyway?
+      },
+    ],
+
     'object-shorthand': 'warn',
     'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
-    'react/react-in-jsx-scope': 'off', // Not needed in React 17+
-    'react/prop-types': 'off', // We use TypeScript
     'unused-imports/no-unused-imports': 'warn',
     'import/no-default-export': 'error',
 
@@ -42,6 +68,17 @@ module.exports = {
         ],
       },
     ],
+
+    'no-restricted-imports': [
+      'warn',
+      {
+        paths: ['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select'].map((component) => ({
+          name: `@mui/material/${component}`,
+          message: `Use \`import { ${component} } from '@ui-kit/shared/ui/${component}'\` instead.`,
+        })),
+      },
+    ],
+
     '@typescript-eslint/no-floating-promises': 'warn',
     '@typescript-eslint/no-unused-vars': [
       'warn',
@@ -55,8 +92,6 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/triple-slash-reference': 'off',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 

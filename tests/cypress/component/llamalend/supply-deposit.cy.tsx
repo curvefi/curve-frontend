@@ -1,0 +1,101 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
+import { FormDisabledAlert } from '@/llamalend/llamalend.types'
+import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import {
+  checkDepositSubmit,
+  checkMaxDeposit,
+  submitDepositForm,
+  writeDepositForm,
+} from '@cy/support/helpers/llamalend/supply/deposit.helpers'
+import { createDepositScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
+import { checkSupplyActionInfoValues } from '@cy/support/helpers/llamalend/supply/supply.helpers'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
+import type { Decimal } from '@primitives/decimal.utils'
+import { Chain } from '@ui-kit/utils'
+
+const chainId = Chain.Ethereum
+const testCases: {
+  approved: boolean
+  title: string
+  buttonText: string
+  depositAlert?: FormDisabledAlert
+  maxDeposit?: Decimal
+}[] = [
+  { approved: true, title: 'fills and submits (already approved)', buttonText: 'Deposit' },
+  { approved: false, title: 'fills, approves, and submits', buttonText: 'Approve & Deposit' },
+  { approved: true, title: 'fills and cannot submit (max deposit limit)', buttonText: 'Deposit', maxDeposit: '5' },
+  {
+    approved: true,
+    title: 'fills and cannot submit (market alert)',
+    buttonText: 'Deposit',
+    depositAlert: {
+      alertType: 'danger',
+      message: 'This market is deprecated after a donation attack.',
+    } as const,
+  },
+]
+
+describe('DepositForm (mocked)', () => {
+  afterEach(() => resetLlamaTestContext())
+
+  testCases.forEach(({ approved, title, buttonText, depositAlert, maxDeposit }) => {
+    it(title, () => {
+      const { input, market, llamaApi, expected, stubs } = createDepositScenario({ chainId, approved, maxDeposit })
+
+      setLlamaApi(llamaApi)
+      setGasInfo({ chainId, networks: llamaNetworks })
+
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi}>
+          <DepositForm
+            market={market}
+            networks={llamaNetworks}
+            chainId={chainId}
+            depositDisabledAlert={depositAlert}
+            enabled
+          />
+        </MockLoanTestWrapper>,
+      )
+
+      writeDepositForm({ amount: input.amount })
+      checkMaxDeposit(maxDeposit)
+      checkDepositSubmit({ buttonText, depositAlert, maxDeposit })
+      // When `maxDeposit` is set, the entered amount exceeds the max, so the test stops after validating the disabled state.
+      // This avoids adding custom expectations for action info values in this scenario.
+      if (maxDeposit) return
+      checkSupplyActionInfoValues(expected.actionInfo)
+
+      cy.then(() => {
+        expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
+        expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
+        expect(stubs.statsFutureRates).to.have.been.calledWithExactly(...expected.futureRates)
+        expect(stubs.previewDeposit).to.have.been.calledWithExactly(...expected.previewDeposit)
+        expect(stubs.depositIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if (approved) {
+          expect(stubs.estimateGasDeposit).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.estimateGasDepositApprove).to.not.have.been.called
+        } else {
+          expect(stubs.estimateGasDepositApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
+        }
+      })
+
+      // A deposit alert blocks submission, so the test stops after validating the disabled state and actions infos.
+      if (depositAlert) return
+
+      submitDepositForm().then(() => {
+        expect(stubs.deposit).to.have.been.calledWithExactly(...expected.submit)
+        if (approved) {
+          expect(stubs.depositApprove).to.not.have.been.called
+        } else {
+          expect(stubs.depositApprove).to.have.been.calledWithExactly(...expected.approve)
+        }
+      })
+    })
+  })
+})

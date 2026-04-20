@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain } from '..'
 
 type Bar = {
@@ -45,9 +46,9 @@ export type GetUserCollateralEventsResponse = {
   total_deposit: number
   total_deposit_from_user: number
   total_borrowed: number
-  total_deposit_precise: string
-  total_borrowed_precise: string
-  total_deposit_from_user_precise: string
+  total_deposit_precise: Decimal
+  total_borrowed_precise: Decimal
+  total_deposit_from_user_precise: Decimal
   total_deposit_from_user_usd_value: number
   total_deposit_usd_value: number
   count: number
@@ -92,4 +93,14 @@ export type GetUserCollateralEventsResponse = {
       is_position_closed: boolean
     },
   ]
+}
+
+export type GetRateCurveResponse = {
+  chain: string
+  rates: { utilization: number; borrow_apy: number; supply_apy: number; borrow_apr: number; supply_apr: number }[]
+  current_utilization: number | null
+  current_borrow_apy: number | null
+  current_supply_apy: number | null
+  current_borrow_apr: number | null
+  current_supply_apr: number | null
 }

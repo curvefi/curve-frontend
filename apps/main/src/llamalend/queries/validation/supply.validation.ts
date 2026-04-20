@@ -1,13 +1,13 @@
 import { enforce, skipWhen, test } from 'vest'
-import { getLlamaMarket, hasGauge, hasVault } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasGauge, hasVault, tryGetLlamaMarket } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
-import { assert } from '@ui-kit/utils'
 
 export type DepositMutation = {
   depositAmount: Decimal
@@ -23,12 +23,15 @@ export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
 export type WithdrawMutation = {
   withdrawAmount: Decimal
+  isFull: boolean
+  userVaultShares: Decimal
 }
 
 type CalculatedWithdrawValues = {
   maxWithdrawAmount: Decimal | undefined
 }
-export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount'> & CalculatedWithdrawValues
+export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount' | 'userVaultShares'> &
+  CalculatedWithdrawValues
 
 export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & WithdrawMutation
 export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
@@ -65,10 +68,8 @@ export type SharesToAssetsParams<ChainId = number> = FieldsOf<SharesToAssetsQuer
  * Accepts either a market ID string or a LlamaMarketTemplate instance.
  * @throws Error if the market does not have a vault (only LendMarkets have vaults)
  */
-export function requireVault(marketId: string): LendMarketTemplate
-export function requireVault(market: LlamaMarketTemplate): LendMarketTemplate
-export function requireVault(marketOrId: string | LlamaMarketTemplate): LendMarketTemplate {
-  const market = typeof marketOrId === 'string' ? getLlamaMarket(marketOrId) : marketOrId
+export function requireVault(marketId: string | LlamaMarketTemplate): LendMarketTemplate {
+  const market = getLlamaMarket(marketId)
   assert(hasVault(market), 'Market does not have a vault')
   return market as LendMarketTemplate
 }
@@ -80,19 +81,19 @@ export function requireGauge(marketId: string): LendMarketTemplate {
 }
 
 export const validateHasVault = (marketId: string | null | undefined) => {
-  skipWhen(!marketId, () => {
+  const market = tryGetLlamaMarket(marketId!)
+  skipWhen(!market, () => {
     test('marketId', 'Market does not have a vault', () => {
-      const market = getLlamaMarket(marketId!)
-      enforce(hasVault(market)).isTruthy()
+      enforce(market && hasVault(market)).isTruthy()
     })
   })
 }
 
 const validateHasGauge = (marketId: string | null | undefined) => {
-  skipWhen(!marketId, () => {
+  const market = tryGetLlamaMarket(marketId!)
+  skipWhen(!market, () => {
     test('marketId', 'Market does not have a gauge', () => {
-      const market = getLlamaMarket(marketId!)
-      enforce(hasGauge(market)).isTruthy()
+      enforce(market && hasGauge(market)).isTruthy()
     })
   })
 }
@@ -101,9 +102,14 @@ export const validateDepositAmount = (
   amount: Decimal | undefined | null,
   { depositRequired = false }: { depositRequired?: boolean } = {},
 ) => {
-  skipWhen(!depositRequired && !amount, () => {
+  skipWhen(!depositRequired, () => {
+    test('depositAmount', 'Deposit amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('depositAmount', 'Deposit amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -117,8 +123,13 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
 }
 
 const validateSharesToAssets = (shares: Decimal | undefined | null) => {
-  test('shares', 'Shares must be a positive number', () => {
-    enforce(shares).isNumeric().gt(0)
+  test('shares', 'Shares are required', () => {
+    enforce(shares).isNotEmpty()
+  })
+  skipWhen(!shares, () => {
+    test('shares', 'Shares must be a non-negative number', () => {
+      enforce(shares).isDecimal().gte(0)
+    })
   })
 }
 
@@ -135,6 +146,10 @@ const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketPa
   validateHasVault(params.marketId)
 }
 
+export const supplyUserValidationSuite = createValidationSuite<UserMarketParams>((params) => {
+  supplyUserValidationGroup(params)
+})
+
 export const depositValidationSuite = createValidationSuite((params: DepositParams) => {
   supplyUserValidationGroup(params)
   validateDepositAmount(params.depositAmount, { depositRequired: true })
@@ -143,6 +158,10 @@ export const depositValidationSuite = createValidationSuite((params: DepositPara
 export const claimableRewardsValidationSuite = createValidationSuite((params: UserMarketParams) => {
   supplyUserValidationGroup(params)
   validateHasGauge(params.marketId)
+})
+
+export const claimableCrvValidationSuite = createValidationSuite((params: UserMarketParams) => {
+  supplyUserValidationGroup(params)
 })
 
 export const claimValidationSuite = createValidationSuite((params: UserMarketParams) => {
@@ -158,9 +177,14 @@ const validateWithdrawAmount = (
   amount: Decimal | undefined | null,
   { withdrawRequired = false }: { withdrawRequired?: boolean } = {},
 ) => {
-  skipWhen(!withdrawRequired && !amount, () => {
+  skipWhen(!withdrawRequired, () => {
+    test('withdrawAmount', 'Withdraw amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('withdrawAmount', 'Withdraw amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -169,6 +193,22 @@ const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount
   skipWhen(amount == null || maxAmount == null, () => {
     test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
       enforce(amount).lte(maxAmount)
+    })
+  })
+}
+
+const validateUserVaultShares = (
+  shares: Decimal | undefined | null,
+  { sharesRequired = false }: { sharesRequired?: boolean } = {},
+) => {
+  skipWhen(!sharesRequired, () => {
+    test('userVaultShares', 'Vault shares are required', () => {
+      enforce(shares).isNotEmpty()
+    })
+  })
+  skipWhen(shares == null, () => {
+    test('userVaultShares', 'Vault shares must be a positive number', () => {
+      enforce(shares).isDecimal().gt(0)
     })
   })
 }
@@ -192,15 +232,21 @@ const withdrawValidationGroup = <IChainId extends number>({
 export const withdrawValidationSuite = createValidationSuite((params: WithdrawParams) => {
   userMarketValidationSuite(params)
   withdrawValidationGroup(params)
+  validateUserVaultShares(params.userVaultShares, { sharesRequired: !!params.isFull })
 })
 
 const validateStakeAmount = (
   amount: Decimal | undefined | null,
   { stakeRequired = false }: { stakeRequired?: boolean } = {},
 ) => {
-  skipWhen(!stakeRequired && !amount, () => {
+  skipWhen(!stakeRequired, () => {
+    test('stakeAmount', 'Stake amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('stakeAmount', 'Stake amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }
@@ -232,9 +278,14 @@ const validateUnstakeAmount = (
   amount: Decimal | undefined | null,
   { unstakeRequired = false }: { unstakeRequired?: boolean } = {},
 ) => {
-  skipWhen(!unstakeRequired && !amount, () => {
+  skipWhen(!unstakeRequired, () => {
+    test('unstakeAmount', 'Unstake amount is required', () => {
+      enforce(amount).isNotEmpty()
+    })
+  })
+  skipWhen(!amount, () => {
     test('unstakeAmount', 'Unstake amount must be a positive number', () => {
-      enforce(amount).isNumeric().gt(0)
+      enforce(amount).isDecimal().gt(0)
     })
   })
 }

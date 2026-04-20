@@ -20,11 +20,12 @@ type Props = {
   sortField: PoolColumnId
 }
 
-// Temporary minimal sort options until full options are defined
 const useDexPoolSortOptions = () =>
   [
     { id: PoolColumnId.Volume, label: t`Volume` },
     { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
+    { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
+    { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
   ] as const
 
 export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {

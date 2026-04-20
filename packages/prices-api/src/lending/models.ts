@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain } from '..'
 
 type Bar = {
@@ -55,7 +56,7 @@ export type UserCollateralEvent = {
     collateralReceived: number
     collateralReceivedUsd: number
     stablecoinReceived: number
-    stablecoinRecievedUsd: number
+    stablecoinReceivedUsd: number
     debt: number
     debtUsd: number
   }
@@ -83,11 +84,28 @@ export type UserCollateralEvents = {
   user: Address
   totalDeposit: number
   totalBorrowed: number
-  totalDepositPrecise: string
-  totalBorrowedPrecise: string
+  totalDepositPrecise: Decimal
+  totalBorrowedPrecise: Decimal
   totalDepositFromUser: number
-  totalDepositFromUserPrecise: string
+  totalDepositFromUserPrecise: Decimal
   totalDepositUsdValue: number
   totalBorrowedUsdValue: number
   events: UserCollateralEvent[]
+}
+
+export type RateCurvePoint = {
+  utilization: number
+  borrowApy: number
+  supplyApy: number
+  borrowApr: number
+  supplyApr: number
+}
+
+export type RateCurve = {
+  rates: RateCurvePoint[]
+  currentUtilization: number | null
+  currentBorrowApy: number | null
+  currentSupplyApy: number | null
+  currentBorrowApr: number | null
+  currentSupplyApr: number | null
 }

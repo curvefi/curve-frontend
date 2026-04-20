@@ -1,38 +1,29 @@
-import { useMemo } from 'react'
-import {
-  useUserCollateralEvents,
-  type UserCollateralEventsProps,
-} from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { type UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import Stack from '@mui/material/Stack'
 import { findTab } from '@ui-kit/hooks/useTabs'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import type { QueryProp } from '@ui-kit/types/util'
 import type { BorrowPositionDetailsProps } from './BorrowPositionDetails'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 
 export const PositionDetailsComposite = ({
   hasPosition,
   borrowPositionDetails,
-  activityQueryParams,
+  events: { data, isLoading, error },
 }: {
   hasPosition: boolean | undefined
   borrowPositionDetails: BorrowPositionDetailsProps
-  activityQueryParams: UserCollateralEventsProps
+  events: QueryProp<UserCollateralEvents>
 }) => {
-  const {
-    data: userCollateralEvents,
-    isLoading: activityIsLoading,
-    isError: activityIsError,
-  } = useUserCollateralEvents(activityQueryParams)
-  const activityEvents = useMemo(() => userCollateralEvents?.events ?? [], [userCollateralEvents?.events])
-
   const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({
-    events: activityEvents,
+    events: data?.events,
     hasPosition,
     borrowPositionDetails,
-    activityIsLoading,
-    activityIsError,
+    activityIsLoading: isLoading,
+    activityIsError: !!error,
   })
+
   const activeTab = findTab(tabOptions, tab)
 
   return (

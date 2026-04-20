@@ -28,13 +28,13 @@ export const defineMuiAlert = (
       ...handleBreakpoints({
         ...bodyXsRegular,
         borderWidth: OutlineWidth,
+        boxShadow: 'none',
         paddingInline: Spacing.xs,
         paddingBlockStart: 0,
         paddingBlockEnd: Spacing.xs,
       }),
       '& .MuiAlert-message': {
         flexGrow: 1,
-        maxWidth: '90ch',
         textWrapStyle: 'pretty',
         ...handleBreakpoints({
           paddingInlineEnd: Spacing.sm,

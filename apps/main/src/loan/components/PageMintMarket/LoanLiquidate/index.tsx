@@ -176,7 +176,7 @@ export const LoanLiquidate = ({
     if (chainId && llamma && llammaId && typeof userWalletBalances?.stablecoin !== 'undefined') {
       void fetchTokensToLiquidate(chainId, llamma, llammaId, maxSlippage, userWalletBalances)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.signerAddress, chainId, llamma, llammaId, maxSlippage, userWalletBalances?.stablecoin])
 
   // steps
@@ -194,7 +194,7 @@ export const LoanLiquidate = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     llamma?.id,
     haveSigner,

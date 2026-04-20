@@ -21,7 +21,7 @@ export const SlippageToleranceActionInfoPure = ({
     value={formatPercent(maxSlippage)}
     valueRight={
       <SlippageSettings
-        buttonSize="extraSmall"
+        buttonSize="extraExtraSmall"
         buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
         maxSlippage={`${maxSlippage}`}
         onSave={onSave}
@@ -33,13 +33,22 @@ export const SlippageToleranceActionInfoPure = ({
 )
 
 /** Hooked up version of the slippage tolerance action info component that saves slippage in a store */
-export const SlippageToleranceActionInfo = ({ maxSlippage, stateKey }: { maxSlippage: string; stateKey?: string }) => {
+export const SlippageToleranceActionInfo = ({
+  maxSlippage,
+  stateKey,
+  size,
+}: {
+  maxSlippage: string
+  stateKey?: string
+  size?: ActionInfoSize
+}) => {
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   return (
     <SlippageToleranceActionInfoPure
       maxSlippage={decimal(maxSlippage)!}
       onSave={(slippage: string) => setMaxSlippage(slippage, stateKey)}
+      size={size}
     />
   )
 }

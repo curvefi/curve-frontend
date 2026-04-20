@@ -1,17 +1,22 @@
-import { getTokens } from '@/llamalend/llama.utils'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 export const useAdvancedDetailsData = ({
   chainId,
   market,
   marketId,
   marketType,
-}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
+}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
+  const controllerAddress = getControllerAddress(market)
+
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -26,6 +31,11 @@ export const useAdvancedDetailsData = ({
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: borrowToken?.address,
+  })
+  const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
+    type: marketType,
+    blockchainId,
+    controllerAddress,
   })
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
@@ -43,7 +53,8 @@ export const useAdvancedDetailsData = ({
       borrowedSymbol: borrowToken?.symbol ?? null,
       totalBorrowed: borrowedTotal,
       combinedCollateralUsdValue,
-      usdRate: collateralUsdRate ?? null,
+      collateralUsdRate: collateralUsdRate ?? null,
+      borrowedUsdRate: borrowedUsdRate ?? null,
       loading: !market || totalCollateralLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     maxLeverage: {
@@ -52,8 +63,13 @@ export const useAdvancedDetailsData = ({
     },
     availableLiquidity: {
       available: capAndAvailable?.available,
-      cap: capAndAvailable?.cap,
+      totalAssets: capAndAvailable?.totalAssets,
       loading: !market || capAndAvailableLoading,
+    },
+    solvency: {
+      value: solvencyData?.solvencyPercent,
+      badDebtUsd: solvencyData?.badDebtUsd,
+      loading: !market || solvencyLoading,
     },
   }
 }

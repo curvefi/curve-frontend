@@ -28,7 +28,7 @@ const meta: Meta<typeof Accordion> = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium'],
+      options: ['extraSmall', 'small', 'medium'],
       description: 'The size of the accordion header',
     },
     info: {
@@ -68,42 +68,23 @@ export const Default: Story = {
 }
 
 export const Medium: Story = {
-  args: {
-    size: 'medium',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Medium-sized accordion header',
-      },
-    },
-  },
+  args: { size: 'medium' },
+  parameters: { docs: { description: { story: 'Medium-sized accordion header' } } },
+}
+
+export const ExtraSmall: Story = {
+  args: { size: 'extraSmall' },
+  parameters: { docs: { description: { story: 'extraSmall-sized accordion header' } } },
 }
 
 export const WithIcon: Story = {
-  args: {
-    icon: <AcUnitIcon color="primary" />,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Accordion with an icon in the header',
-      },
-    },
-  },
+  args: { icon: <AcUnitIcon color="primary" /> },
+  parameters: { docs: { description: { story: 'Accordion with an icon in the header' } } },
 }
 
 export const Ghost: Story = {
-  args: {
-    ghost: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Accordion without a border (ghost mode)',
-      },
-    },
-  },
+  args: { ghost: true },
+  parameters: { docs: { description: { story: 'Accordion without a border (ghost mode)' } } },
 }
 
 export const WithInfo: Story = {
@@ -114,13 +95,7 @@ export const WithInfo: Story = {
       </Typography>
     ),
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Accordion with additional information in the header',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Accordion with additional information in the header' } } },
 }
 
 export const WithReactNodeTitle: Story = {
@@ -193,6 +168,7 @@ export const ComplexContent: Story = {
 
 export const Controlled: Story = {
   render: () => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [expanded, , , toggle] = useSwitch(true)
     return (
       <Stack gap={4}>

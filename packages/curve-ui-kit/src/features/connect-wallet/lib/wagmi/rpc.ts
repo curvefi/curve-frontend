@@ -4,7 +4,12 @@ import { wagmiChainsMap } from './chains'
 
 /** Fallback RPC URLs for each chain to improve wallet connection resilience. */
 export const RPC: Record<ChainId, string[]> = {
-  [ChainId.Ethereum]: ['https://eth.drpc.org', 'https://eth-pokt.nodies.app', 'https://eth.blockrazor.xyz'],
+  [ChainId.Ethereum]: [
+    'https://ethereum-rpc.publicnode.com',
+    'https://eth.drpc.org',
+    'https://eth-pokt.nodies.app',
+    'https://eth.blockrazor.xyz',
+  ],
   [ChainId.Arbitrum]: ['https://arb1.arbitrum.io/rpc', 'https://1rpc.io/arb'],
   [ChainId.Avalanche]: ['https://api.avax.network/ext/bc/C/rpc'],
   [ChainId.Base]: ['https://mainnet.base.org'],
@@ -15,7 +20,7 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.Gnosis]: ['https://rpc.gnosischain.com'],
   [ChainId.Kava]: ['https://evm.kava.io'],
   [ChainId.Optimism]: ['https://mainnet.optimism.io'],
-  [ChainId.Polygon]: ['https://polygon-rpc.com'],
+  [ChainId.Polygon]: ['https://polygon.drpc.org'],
   [ChainId.Moonbeam]: ['https://moonbeam.public.blastapi.io'],
   [ChainId.Mantle]: ['https://rpc.mantle.xyz'],
   [ChainId.Sonic]: ['https://rpc.soniclabs.com'],

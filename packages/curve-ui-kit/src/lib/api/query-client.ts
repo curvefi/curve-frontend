@@ -1,8 +1,8 @@
 import { hashFn } from 'wagmi/query'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import type { Persister } from '@tanstack/query-persist-client-core'
-import { QueryClient } from '@tanstack/react-query'
-import { mutationCache, queryCache } from './cache'
+import { QueryCache, QueryClient } from '@tanstack/react-query'
+import { mutationCache } from './cache'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,7 +12,7 @@ export const queryClient = new QueryClient({
       queryKeyHashFn: hashFn,
     },
   },
-  queryCache,
+  queryCache: new QueryCache(),
   mutationCache,
 })
 

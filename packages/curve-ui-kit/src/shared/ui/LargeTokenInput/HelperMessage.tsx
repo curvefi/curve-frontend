@@ -18,7 +18,7 @@ type HelperMessageProps = {
 }
 
 /** Matches decimal numbers with optional minus sign and optional fractional part. */
-const NUMBER_REGEX = /-?\d+(?:\.\d+)?/g
+const NUMBER_REGEX = /-?\b\d+(?:\.\d+)?\b/g
 
 const getTextColor = (t: Theme, isError?: boolean) =>
   isError ? t.design.Text.TextColors.FilledFeedback.Alert.Primary : t.design.Text.TextColors.Tertiary

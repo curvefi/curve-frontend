@@ -13,7 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const MIN_HEIGHT = 300 // (default) min height of charts when not in fullscreen
+export const MIN_HEIGHT = 300 // (default) min height of charts when not in fullscreen
 
 type ChartCardProps = {
   /** Card title */
@@ -44,8 +44,9 @@ export const EChartsCard = ({
 }: ChartCardProps) => (
   <WithWrapper shouldWrap={fullscreen} Wrapper={DialogFullscreen} onClose={() => onCloseFullscreen?.()}>
     {/** A lot of flex and height code is to make sure the chart expands correctly in fullscreen mode */}
-    <Card sx={{ '&.MuiPaper-root': { display: 'flex', flexDirection: 'column', height: '100%' } }}>
+    <Card component={Stack} height="100%">
       <CardHeader
+        {...(!fullscreen && { size: 'small' })}
         title={title}
         action={
           <Stack direction="row" gap={Spacing.xs}>
@@ -54,23 +55,21 @@ export const EChartsCard = ({
         }
       />
 
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-        <Stack gap={Spacing.md} flexGrow={1}>
-          <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
-            {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
-            <ReactECharts
-              notMerge
-              option={option}
-              style={{
-                height: '100%',
-                ...(!fullscreen && { minHeight: MIN_HEIGHT }),
-                ...(loading && { opacity: 0.5 }),
-              }}
-            />
-          </Box>
+      <CardContent component={Stack} gap={Spacing.md} flexGrow={1} {...(!fullscreen && { size: 'small' })}>
+        <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
+          {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
+          <ReactECharts
+            notMerge
+            option={option}
+            style={{
+              height: '100%',
+              ...(!fullscreen && { minHeight: MIN_HEIGHT }),
+              ...(loading && { opacity: 0.5 }),
+            }}
+          />
+        </Box>
 
-          {children}
-        </Stack>
+        {children}
       </CardContent>
     </Card>
   </WithWrapper>

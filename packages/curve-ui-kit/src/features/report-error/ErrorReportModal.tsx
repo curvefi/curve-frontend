@@ -37,14 +37,13 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
   } = useErrorReportForm(context, onClose)
   const { label, placeholder } = contactCopyByMethod[contactMethod]
   useEffect(() => {
-    if (isOpen && userAddress) updateForm(form, { address: userAddress })
+    if (isOpen && userAddress) updateForm(form, { address: userAddress }, { automated: true })
   }, [form, isOpen, userAddress])
   return (
     <ModalDialog
       open={isOpen}
       onClose={onClose}
       title={t`Submit error report`}
-      titleColor="textSecondary"
       compact
       footer={
         <Button

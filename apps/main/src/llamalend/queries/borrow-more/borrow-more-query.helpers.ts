@@ -1,6 +1,8 @@
 import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { ILeverageV1 } from '@curvefi/llamalend-api/lib/lendMarkets/interfaces/v1'
+import type { ILeverageV2 } from '@curvefi/llamalend-api/lib/lendMarkets/interfaces/v2'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
@@ -13,7 +15,7 @@ export function getBorrowMoreImplementation(
   marketId: string | LlamaMarketTemplate,
   leverageEnabled: boolean | null | undefined,
 ) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const market = getLlamaMarket(marketId)
   leverageEnabled ??= true // until we know if leverage is supported, use the latest implementation available
   return market instanceof MintMarketTemplate
     ? leverageEnabled && hasV2Leverage(market)
@@ -23,7 +25,7 @@ export function getBorrowMoreImplementation(
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
         : (['V1', market.leverage] as const)
-      : (['unleveraged', market] as const)
+      : (['unleveraged', market.loan] as const)
 }
 
 /**
@@ -56,11 +58,13 @@ export function getBorrowMoreImplementationArgs(
       userBorrowed,
       dDebt: debt,
       debt,
-      ...parseMutationRoute(routeId, +(slippage ?? 0)),
+      ...parseMutationRoute(routeId, slippage ?? '0', impl),
     }
     return [type, impl, [routerArgs]] as const
   }
-  return [type, impl, [userCollateral, userBorrowed, debt]] as const
+  const args = [userCollateral, userBorrowed, debt] as const
+  if (type == 'V1') return [type, impl as ILeverageV1, args] as const
+  return [type, impl as ILeverageV2, args] as const
 }
 
 /**

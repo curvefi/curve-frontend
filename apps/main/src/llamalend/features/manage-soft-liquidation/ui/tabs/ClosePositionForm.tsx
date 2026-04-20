@@ -22,13 +22,11 @@ export const ClosePositionForm = ({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onSuccess?: () => void
 }) => {
   const network = networks[chainId]
   const {
@@ -44,13 +42,11 @@ export const ClosePositionForm = ({
     canClose: { data: canClose, error: canCloseError },
     isDisabled,
     isPending,
-    isClosed,
     closeError,
-    txHash,
     isApproved,
     onSubmit,
     formErrors,
-  } = useClosePositionForm({ market, network, onSuccess, enabled })
+  } = useClosePositionForm({ market, network, enabled })
   const { amount: debtToRepay } = debtTokenData ?? {}
   return (
     <Form
@@ -97,16 +93,16 @@ export const ClosePositionForm = ({
       </Stack>
 
       <AlertClosePosition />
-      {canClose?.canClose === false && debtTokenData?.symbol && (
+      {canClose?.canClose === false && (
         <AlertAdditionalCrvUsd
-          debtTokenSymbol={debtTokenData.symbol}
+          debtTokenSymbol={debtTokenData?.symbol}
           missing={canClose.missing}
           balance={canClose.balance}
         />
       )}
 
       <Stack gap={Spacing.xs}>
-        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit">
+        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
           {isPending
             ? t`Processing...`
             : joinButtonText(isApproved?.data === false && t`Approve`, t`Repay debt`, t`close position`)}
@@ -116,13 +112,9 @@ export const ClosePositionForm = ({
       </Stack>
 
       <FormAlerts
-        network={network}
-        isSuccess={isClosed}
         error={closeError ?? debtTokenError ?? collateralToRecoverError ?? canCloseError ?? null}
-        txHash={txHash}
         formErrors={formErrors}
         handledErrors={[]}
-        successTitle={t`Position closed`}
       />
     </Form>
   )

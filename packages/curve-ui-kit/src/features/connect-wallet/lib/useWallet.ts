@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
+import { ConnectorAlreadyConnectedError } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Provider } from '@ui-kit/lib/ethers'
 import { isCypress } from '@ui-kit/utils/env'
@@ -20,9 +21,7 @@ export const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { wallet, provider, connectState } = useCurve()
   const connectors = useConnectors()
-  // eslint-disable-next-line react-hooks/immutability
   state.wallet = wallet ?? null
-  // eslint-disable-next-line react-hooks/immutability
   state.provider = provider ?? null
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
@@ -42,6 +41,7 @@ export const useWallet = () => {
         await connectAsync({ connector: connector ?? connectors[0] })
         setShowModal(false)
       } catch (err) {
+        if (err instanceof ConnectorAlreadyConnectedError) return setShowModal(false)
         console.error('Error connecting wallet:', err)
         throw err
       }

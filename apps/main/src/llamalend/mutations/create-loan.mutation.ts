@@ -11,7 +11,6 @@ import type { Address } from '@primitives/address.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
@@ -25,7 +24,6 @@ export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutat
 export type CreateLoanOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onSuccess: OnTransactionSuccess<CreateLoanMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -59,7 +57,7 @@ const create = async (
         userBorrowed,
         debt,
         range,
-        ...parseMutationRoute(routeId, slippage),
+        ...parseMutationRoute(routeId, slippage, impl),
       })) as Address
     case 'V2':
     case 'V1':
@@ -74,13 +72,12 @@ export const useCreateLoanMutation = ({
   network,
   network: { chainId },
   marketId,
-  onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: CreateLoanOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<CreateLoanMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<CreateLoanMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
@@ -97,11 +94,10 @@ export const useCreateLoanMutation = ({
     validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback((data: CreateLoanForm) => mutate(data as CreateLoanMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess, reset }
+  return { onSubmit, error, isPending }
 }

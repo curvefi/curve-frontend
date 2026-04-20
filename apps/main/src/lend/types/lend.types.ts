@@ -1,10 +1,7 @@
-import type { ReactNode } from 'react'
-import { TITLE } from '@/lend/constants'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
-import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
@@ -87,7 +84,6 @@ export type PageContentProps<T = UrlParams> = {
   isLoaded: boolean
   api: LlamaApi | null
   market: OneWayMarketTemplate | undefined
-  titleMapper: TitleMapper
 }
 export type LiqRange = {
   prices: string[]
@@ -120,7 +116,7 @@ export type MarketStatBands = {
   error: string
 }
 export type MarketsStatsBandsMapper = { [owmId: string]: MarketStatBands }
-export type MarketStatCapAndAvailable = { cap: string; available: string; error: string }
+export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
 export type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
 export type MarketMaxLeverage = { maxLeverage: string; error: string }
 export type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }
@@ -189,7 +185,7 @@ export type UserLoanDetails = {
     loss?: UserLoss
     prices: string[]
     range: number | null
-    state: { collateral: string; borrowed: string; debt: string; N: string }
+    state: { collateral: string; borrowed: string; debt: string; N: string; isSoftLiquidation: boolean }
     status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
   } | null
@@ -212,7 +208,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type MarketDetailsView = 'user' | 'market' | ''
-export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 
 export enum FormWarning {
   // loan deleverage

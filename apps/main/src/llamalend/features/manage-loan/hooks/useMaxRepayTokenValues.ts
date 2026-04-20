@@ -4,23 +4,21 @@ import { getTokens } from '@/llamalend/llama.utils'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
-import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
-import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 
-export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
+export function useMaxRepayTokenValues(
   {
     collateralToken,
     borrowToken,
     params,
     form,
   }: Partial<ReturnType<typeof getTokens>> & {
-    params: RepayIsFullParams<ChainId>
-    form: UseFormReturn<RepayForm>
+    params: RepayParams
+    form: UseFormReturn<RepayFormData>
   },
   enabled?: boolean,
 ) {
@@ -36,7 +34,7 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     tokenAddress: borrowToken?.address,
   })
   const userState = useUserState(params, enabled)
-  useRepayExpectedBorrowed(params) // required for isFull query
+  // required for isFull query
   const isFull = useRepayIsFull(params, enabled)
 
   const maxBorrowed = useQueryMinimum(
@@ -44,13 +42,13 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     mapQuery(userState, (d) => d.debt),
   )
 
-  useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
-  useEffect(() => updateForm(form, { maxBorrowed: maxBorrowed.data }), [form, maxBorrowed.data])
-  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
+  useFormSync(form, { maxCollateral: maxUserCollateral.data })
+  useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
-    () => updateForm(form, { maxStateCollateral: userState.data?.collateral }),
-    [form, userState.data?.collateral],
+    () => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data }, { automated: true })),
+    [form, isFull.data],
   )
+  useFormSync(form, { maxStateCollateral: userState.data?.collateral })
 
   return {
     isFull,
@@ -58,6 +56,7 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
       userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
       userBorrowed: { ...maxBorrowed, field: 'maxBorrowed' as const },
       stateCollateral: { ...mapQuery(userState, (d) => d.collateral), field: 'maxStateCollateral' as const },
+      expected: useRepayExpectedBorrowed(params),
     },
   }
 }

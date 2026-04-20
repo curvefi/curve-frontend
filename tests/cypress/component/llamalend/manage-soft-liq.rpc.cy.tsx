@@ -9,6 +9,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
 import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 describe('Manage soft liquidation', () => {
@@ -34,7 +35,7 @@ describe('Manage soft liquidation', () => {
         networks={softLiqNetworks}
         chainId={chainId}
         enabled={isHydrated}
-        onPricesUpdated={cy.stub()}
+        collateralEvents={constQ(undefined)}
       />
     )
   }
@@ -48,7 +49,7 @@ describe('Manage soft liquidation', () => {
         app="llamalend"
         network={network}
         onChainUnavailable={console.error}
-        hydrate={{ llamalend: () => prefetchMarkets({}) }}
+        hydrate={{ llamalend: () => prefetchMarkets({ chainId, enableLLv2: true }) }}
       >
         {children}
       </CurveProvider>

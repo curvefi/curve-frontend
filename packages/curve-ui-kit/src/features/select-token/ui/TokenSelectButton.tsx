@@ -1,5 +1,5 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import Select from '@mui/material/Select'
+import { Select } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { TokenOption } from '../types'
@@ -21,6 +21,7 @@ export const TokenSelectButton = ({
 }: TokenSelectButtonProps & TokenSelectButtonCallbacks) => (
   <Select
     value=""
+    variant="ghost"
     onClick={disabled ? undefined : onClick}
     open={false}
     disabled={disabled}
@@ -40,10 +41,5 @@ export const TokenSelectButton = ({
       )
     }
     IconComponent={KeyboardArrowDownIcon}
-    // There's a Notion ticket to create a proper 'ghost' variant for MUI Select.
-    sx={{
-      '& .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-      '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
-    }}
   />
 )

@@ -9,7 +9,7 @@ export const DelayRender = ({ children, ms }: { ms?: number; children: ReactNode
     }, ms || 100)
 
     return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   return <>{showComponent ? children : null}</>

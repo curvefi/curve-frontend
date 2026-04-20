@@ -6,6 +6,7 @@ import { TokenIcon, DEFAULT_SIZE, type Size, type TokenIconProps } from './Token
 const { Spacing } = SizesAndSpaces
 
 const LABEL_SPACING = {
+  xs: 'xs',
   sm: 'sm',
   'mui-sm': 'sm',
   'mui-md': 'sm',

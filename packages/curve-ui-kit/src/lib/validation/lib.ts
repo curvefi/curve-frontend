@@ -11,11 +11,11 @@ extendEnforce(enforce)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ValidationSuite = Suite<any, any> | Suite<never, any>
 
-export const checkValidity = <D extends object, S extends ValidationSuite>(
+export const validate = <D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
-): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
+) => suite(data, fields).getErrors()
 
 export function assertValidity<D extends object, S extends ValidationSuite>(
   suite: S,

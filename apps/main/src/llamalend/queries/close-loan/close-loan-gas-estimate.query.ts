@@ -1,5 +1,5 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys, type UserMarketQuery } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
@@ -10,7 +10,7 @@ const { useQuery: useCloseLoanEstimateGas } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.selfLiquidate', { slippage }] as const,
   queryFn: async ({ marketId, slippage }: CloseLoanQuery): Promise<TGas> =>
-    await getLlamaMarket(marketId).estimateGas.selfLiquidate(Number(slippage)),
+    await getLoanImplementation(marketId).estimateGas.selfLiquidate(Number(slippage)),
   category: 'llamalend.closeLoan',
   validationSuite: closeLoanValidationSuite,
 })
@@ -19,7 +19,7 @@ const { useQuery: useCloseApproveGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: CloseLoanParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.selfLiquidateApprove'] as const,
   queryFn: async ({ marketId }: UserMarketQuery): Promise<TGas> =>
-    await getLlamaMarket(marketId).estimateGas.selfLiquidateApprove(),
+    await getLoanImplementation(marketId).estimateGas.selfLiquidateApprove(),
   category: 'llamalend.closeLoan',
   validationSuite: closeLoanValidationSuite,
 })

@@ -78,3 +78,23 @@ export async function getTotalOverview(
 
   return resp.data.map(Parsers.parseTotalOverview)
 }
+
+export async function getBadDebt(
+  {
+    endpoint,
+    ...params
+  }: {
+    endpoint: Endpoint
+    fetch_on_chain?: boolean
+  },
+  options?: Options,
+) {
+  params.fetch_on_chain ??= true
+
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetBadDebtResponse>(
+    `${host}/v1/${endpoint}/liquidations/bad_debt${addQueryString(params)}`,
+  )
+
+  return resp.data.map(Parsers.parseBadDebt)
+}

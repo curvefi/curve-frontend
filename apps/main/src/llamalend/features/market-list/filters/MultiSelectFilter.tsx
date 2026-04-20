@@ -3,7 +3,6 @@ import { Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -14,6 +13,7 @@ import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
+import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
@@ -109,7 +109,6 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           data-testid={`menu-${id}`}
           open={isOpen}
           onClose={close}
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{

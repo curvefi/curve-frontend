@@ -370,7 +370,7 @@ const GridContainer = styled(Box)`
   grid-template-columns: 1fr;
   min-height: 14.6875rem;
   @media (min-width: 75rem) {
-    grid-template-columns: 1fr 0.7fr;
+    grid-template-columns: 1fr 24rem;
   }
 `
 
@@ -547,6 +547,7 @@ const StatsData = styled.p`
 
 type SpanProps = ComponentPropsWithRef<'span'>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;

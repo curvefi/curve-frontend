@@ -5,12 +5,13 @@ import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultDepositMint/types'
 import { StyledDetailInfoWrapper } from '@/lend/components/styles'
-import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { DetailInfo } from '@ui/DetailInfo'
@@ -24,12 +25,13 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { decimal } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
   const isSubscribed = useRef(false)
-  const marketAlert = useMarketAlert(rChainId, rOwmId)
+  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const activeKey = useStore((state) => state.vaultDepositMint.activeKey)
   const formEstGas = useStore((state) => state.vaultDepositMint.formEstGas[activeKey])
@@ -165,7 +167,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
 
   useEffect(() => {
     if (isLoaded) updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -174,7 +176,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

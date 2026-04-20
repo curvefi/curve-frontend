@@ -5,22 +5,18 @@ import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/componen
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { useStore } from '@/loan/store/useStore'
-import { Card, CardHeader, Stack } from '@mui/material'
+import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { MaxWidth, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
-export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
+export const UserPosition = () => {
   const { address } = useConnection()
-  const {
-    design: { Layer },
-  } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
   const usdRateLoading = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus === 'loading')
@@ -39,18 +35,11 @@ export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolea
     : undefined
 
   return (
-    <Card sx={{ width: '100%', maxWidth: chartExpanded ? '100%' : MaxWidth.section }}>
-      <CardHeader title={t`Position Details`} />
-      <Stack padding={Spacing.md} gap={Spacing.md}>
-        <Grid
-          container
-          wrap="wrap"
-          columnGap={Spacing.lg}
-          rowGap={Spacing.md}
-          padding={Spacing.lg}
-          sx={{ backgroundColor: Layer[2].Fill, border: `2px solid ${Layer.Highlight.Outline}`, width: '100%' }}
-        >
-          <Grid flexGrow={1}>
+    <Card>
+      <CardHeader size="small" title={t`Position Details`} />
+      <CardContent component={Stack} gap={Spacing.md}>
+        <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
+          <Grid size={6}>
             <Metric
               size="large"
               label={t`Your crvUSD Staked`}
@@ -59,7 +48,7 @@ export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolea
               loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
             />
           </Grid>
-          <Grid flexGrow={1}>
+          <Grid size={6}>
             <Metric
               size="large"
               label={t`Your share of the vault`}
@@ -69,8 +58,9 @@ export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolea
             />
           </Grid>
         </Grid>
-        <Grid container columnGap={Spacing.lg} rowGap={Spacing.md} wrap="wrap">
-          <Grid flexGrow={1}>
+
+        <Grid container columnSpacing={Spacing.lg} rowSpacing={Spacing.md} wrap="wrap">
+          <Grid size={3}>
             <Metric
               size="small"
               label={t`30 Days Projection`}
@@ -82,7 +72,8 @@ export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolea
               }}
             />
           </Grid>
-          <Grid flexGrow={1}>
+
+          <Grid size={3}>
             <Metric
               size="small"
               label={t`1 Year Projection`}
@@ -94,7 +85,8 @@ export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolea
               }}
             />
           </Grid>
-          <Grid flexGrow={1}>
+
+          <Grid size={3}>
             <Metric
               size="small"
               label={t`Estimated APY`}
@@ -108,7 +100,7 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
             />
           </Grid>
         </Grid>
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

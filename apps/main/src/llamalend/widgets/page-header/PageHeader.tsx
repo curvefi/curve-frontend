@@ -1,24 +1,27 @@
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import Stack, { StackProps } from '@mui/material/Stack'
-import { useLayoutStore } from '@ui-kit/features/layout'
+import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { pageMargins } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { isDevelopment } from '@ui-kit/utils'
 import { type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
@@ -50,28 +53,6 @@ export const PageHeader = ({
   )
 }
 
-const pageHeaderPadding = { paddingBlockEnd: Spacing.sm, paddingInline: Spacing.md }
-
-/**
- * CSS rules for making the page header sticky.
- *
- * There is a gap between the navbar and the page title where scrolled content can briefly become visible. To prevent this,
- * a negative margin is applied and the same value is added as top padding so the header remains visually fixed in the intended position.
- *
- * An alternative approach would be using a ::before pseudo-element to mask the scrolling content.
- */
-const stickySx = (navHeight: number): StackProps['sx'] => ({
-  position: { tablet: 'sticky' },
-  top: { tablet: `${navHeight}px` },
-  marginBlockStart: { tablet: `calc(${pageMargins.marginBlockStart.tablet} * -1)` },
-  zIndex: (t) => t.zIndex.appBar - 1,
-  backgroundColor: (t) => t.palette.background.default,
-  paddingBlockStart: {
-    mobile: pageHeaderPadding.paddingBlockEnd.mobile,
-    tablet: `calc(${pageHeaderPadding.paddingBlockEnd.tablet} + ${pageMargins.marginBlockStart.tablet})`,
-  },
-})
-
 /** Separate view component in order to generate a good storybook example */
 export const PageHeaderView = ({
   isLoading,
@@ -89,7 +70,6 @@ export const PageHeaderView = ({
   availableLiquidity: AvailableLiquidity
 }) => {
   const push = useNavigate()
-  const navHeight = useLayoutStore((state) => state.navHeight)
 
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
   const { collateralToken, borrowToken } = market
@@ -104,8 +84,7 @@ export const PageHeaderView = ({
       flexWrap={{ tablet: 'wrap' }}
       justifyContent={{ tablet: 'space-between' }}
       gap={Spacing.md}
-      {...pageHeaderPadding}
-      sx={stickySx(navHeight)}
+      paddingBlock={Spacing.sm}
     >
       <Stack direction="row">
         <IconButton
@@ -145,6 +124,22 @@ export const PageHeaderView = ({
             </Stack>
           </Stack>
         </Stack>
+        {isDevelopment && (
+          <IconButton
+            size="extraSmall"
+            onClick={() =>
+              market &&
+              invalidateAllUserMarketDetails({
+                chainId: market.getLlamalend().chainId as IChainId,
+                marketId: market.id,
+                userAddress: market.getLlamalend().address as Address,
+              })
+            }
+            sx={{ alignSelf: 'center' }}
+          >
+            <ReloadIcon />
+          </IconButton>
+        )}
       </Stack>
       <MetricsRow
         borrowRate={borrowRate}

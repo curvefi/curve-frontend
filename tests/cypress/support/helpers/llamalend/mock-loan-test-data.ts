@@ -1,4 +1,5 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 
 export const TEST_PRIVATE_KEY = generatePrivateKey()
 export const TEST_ACCOUNT = privateKeyToAccount(TEST_PRIVATE_KEY)
@@ -16,3 +17,5 @@ export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({
   setCustomFeeData: async () => {},
   userState: async () => ({ collateral: '0', borrowed: '0', debt: '0', N: '0' }),
 })
+
+export const fakeCollateralEvents: UserCollateralEvents = { events: [], originalLeverage: `1` }

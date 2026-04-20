@@ -8,6 +8,7 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 
 type ChartAndActivityCompProps = {
@@ -19,6 +20,7 @@ type ChartAndActivityCompProps = {
 
 export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
+  const [isBandsVisible] = useBandsChartVisible()
   const collateralTokenAddress = market?.coinAddresses[1]
   const borrowedTokenAddress = market?.coinAddresses[0]
 
@@ -45,13 +47,12 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
     userBandsBalances,
     oraclePrice,
     isLoading: isBandsLoading,
-    isError: isBandsError,
+    error: bandsError,
   } = useBandsData({
     chainId,
     marketId,
     api,
-    collateralTokenAddress,
-    borrowedTokenAddress,
+    enabled: isBandsVisible,
   })
 
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateralSymbol) as Token | undefined
@@ -72,7 +73,7 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
         userBandsBalances: userBandsBalances ?? [],
         oraclePrice,
         isLoading: isBandsLoading,
-        isError: isBandsError,
+        error: bandsError,
         collateralToken,
         borrowToken,
       }}

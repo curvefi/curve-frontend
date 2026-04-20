@@ -31,7 +31,7 @@ export const BridgeInfoAlert = () => (
 
       <Stack direction="row" justifyContent="space-between">
         <ExternalLink href="https://curvefi.github.io/fast-bridge/" label={t`FastBridge Monitor`} />
-        <ExternalLink href="https://docs.curve.finance/fast-bridge/overview/" label={t`Learn More`} />
+        <ExternalLink href="https://docs.curve.finance/developer/fast-bridge/overview" label={t`Learn More`} />
       </Stack>
     </Stack>
   </Alert>

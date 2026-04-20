@@ -36,19 +36,20 @@ export const useDepositMutation = ({
   network: { chainId },
   marketId,
   onSuccess,
-  onReset,
   userAddress,
+  ...props
 }: DepositOptions) => {
   const config = useConfig()
 
-  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<DepositMutation>({
+  const { mutate, error, isPending } = useLlammaMutation<DepositMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
-        isApproved: async () => await fetchDepositIsApproved({ chainId, marketId, ...variables }, { staleTime: 0 }),
+        isApproved: async () =>
+          await fetchDepositIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
         onApprove: async () => await approveDeposit(lendMarket, variables),
         message: t`Approved deposit`,
         config,
@@ -61,11 +62,13 @@ export const useDepositMutation = ({
       t`Depositing... ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Deposit successful! ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
+    mutationTokenAddresses: (_mutation, { market }) =>
+      [requireVault(market).borrowed_token.address, requireVault(market).addresses.vault] as Address[],
     onSuccess,
-    onReset,
+    ...props,
   })
 
   const onSubmit = useCallback(async (form: DepositForm) => mutate(form as DepositMutation), [mutate])
 
-  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, isPending }
 }

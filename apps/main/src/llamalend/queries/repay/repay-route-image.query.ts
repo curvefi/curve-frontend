@@ -1,6 +1,7 @@
+import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const {
@@ -34,10 +35,11 @@ export const {
       case 'zapV2':
         return null // todo: get image from api
       case 'deleverage':
-      case 'unleveraged':
+      case 'unleveragedLend':
+      case 'unleveragedMint':
         throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: true }),
+  validationSuite: repayValidationSuite({ leverageRequired: true, validateMax: false }),
 })

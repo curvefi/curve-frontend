@@ -54,6 +54,8 @@ function runMigration<T>({
   return true // migration ran
 }
 
+export const getStorageKey = (key: string, version: number | undefined) => `${key}${version ? `-v${version}` : ''}`
+
 /**
  * Hook for storage similar to useState, but allowing custom get/set functions.
  * Allows for migration of old values when version is increased.
@@ -67,7 +69,7 @@ export function useStoredState<T>({
   migrate,
   oldKey,
 }: StoredStateOptions<T>): GetAndSet<T> {
-  const fullKey = `${key}${version ? `-v${version}` : ''}`
+  const fullKey = getStorageKey(key, version)
   const [stateValue, setState] = useState<T>(get(fullKey, initialValue))
   const setStateValue = useCallback((value: T) => setState((old) => (isEqual(old, value) ? old : value)), [])
 

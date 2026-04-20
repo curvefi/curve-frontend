@@ -1,22 +1,23 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import {
-  ClaimableReward,
-  useClaimableCrv,
-  useClaimableRewards,
-} from '@/llamalend/queries/supply/supply-claimable-rewards.query'
+import type { Address } from 'viem'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
+import { hasClaimableRewards } from '@/llamalend/queries/supply/supply-query.helpers'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { CRV } from '@ui-kit/utils/address'
+import { MAINNET_CRV } from '@ui-kit/utils'
 
-export type ClaimableToken = ClaimableReward & {
-  notional?: number
-}
+const getCrvAddress = (market: LlamaMarketTemplate) =>
+  market?.getLlamalend().constants.ALIASES.crv as Address | undefined
 
-export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMarketParams<ChainId>, enabled = true) => {
+export const useClaimableTokens = <ChainId extends LlamaChainId>(
+  params: UserMarketParams<ChainId>,
+  market: LlamaMarketTemplate | undefined,
+  enabled = true,
+) => {
   const { chainId } = params
 
   const {
@@ -30,19 +31,20 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     error: claimableCrvError,
   } = useClaimableCrv(params, enabled)
 
-  const tokenAddresses = useMemo(
-    () => [CRV.address, ...(claimableRewards?.map((r) => r.token) ?? [])],
-    [claimableRewards],
-  )
+  const crvAddress = useMemo(() => market && getCrvAddress(market), [market])
+  const rewardsAddresses = useMemo(() => claimableRewards?.map((r) => r.token) ?? [], [claimableRewards])
+
   const {
     data: usdRates,
     isLoading: usdRateLoading,
     error: usdRateError,
-  } = useTokenUsdRates({ chainId, tokenAddresses })
+  } = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress, ...rewardsAddresses) })
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
-      claimableCrv && { amount: claimableCrv, token: CRV.address as Address, symbol: CRV.symbol as string },
+      crvAddress &&
+        claimableCrv &&
+        crvAddress && { amount: claimableCrv, token: crvAddress, symbol: MAINNET_CRV.symbol },
       ...(claimableRewards ?? []),
     )
     return tokens
@@ -51,7 +53,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
         ...item,
         ...(usdRates?.[item.token] != null && { notional: Number(item.amount) * usdRates[item.token] }),
       }))
-  }, [claimableCrv, claimableRewards, usdRates])
+  }, [crvAddress, claimableCrv, claimableRewards, usdRates])
 
   const totalNotionals = useMemo(() => {
     const notionals = notFalsy(...claimableTokens.map((item) => item.notional))
@@ -59,10 +61,15 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
   }, [claimableTokens])
 
   return {
+    claimableCrvError,
+    claimableRewardsError,
+    hasClaimableCrv: Number(claimableCrv) > 0,
+    hasClaimableRewards: hasClaimableRewards(claimableRewards),
+    crvTokenAddress: crvAddress,
+    rewardTokenAddresses: rewardsAddresses,
     claimableTokens,
     totalNotionals,
     isClaimablesLoading: [isClaimableCrvLoading, isClaimableRewardsLoading].some(Boolean),
-    claimablesError: [claimableCrvError, claimableRewardsError].find(Boolean) ?? null,
     usdRateLoading,
     usdRateError,
   }

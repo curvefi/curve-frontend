@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import type { ClaimOptions } from '@/llamalend/mutations/claim.mutation'
-import { useClaimMutation } from '@/llamalend/mutations/claim.mutation'
+import { useClaimCrvMutation, useClaimRewardsMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { CLAIM_TAB_COLUMNS } from '../components/columns'
@@ -13,12 +13,10 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onSuccess?: ClaimOptions['onSuccess']
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -33,8 +31,19 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     [chainId, marketId, userAddress],
   )
 
-  const { claimableTokens, totalNotionals, isClaimablesLoading, claimablesError, usdRateLoading, usdRateError } =
-    useClaimableTokens(params, enabled)
+  const {
+    claimableTokens,
+    totalNotionals,
+    isClaimablesLoading,
+    claimableCrvError,
+    claimableRewardsError,
+    usdRateLoading,
+    usdRateError,
+    hasClaimableCrv,
+    hasClaimableRewards,
+    crvTokenAddress,
+    rewardTokenAddresses,
+  } = useClaimableTokens(params, market, enabled)
 
   const tableData = useMemo(
     () => claimableTokens.map((token) => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
@@ -48,28 +57,30 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   })
 
   const {
-    onSubmit,
-    isPending: isClaiming,
-    isSuccess: isClaimed,
-    error: claimError,
-    data,
-  } = useClaimMutation({ marketId, network, onSuccess, userAddress })
+    onSubmit: onSubmitCrv,
+    isPending: isClaimCrvPending,
+    error: claimCrvError,
+  } = useClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress })
+  const {
+    onSubmit: onSubmitRewards,
+    isPending: isClaimRewardsPending,
+    error: claimRewardsError,
+  } = useClaimRewardsMutation({ marketId, network, userAddress, rewardTokenAddresses })
 
   return {
     params,
-    claimablesError: claimablesError ?? null,
     claimableTokens,
     totalNotionals,
     usdRateLoading,
-    usdRateError: usdRateError ?? null,
-    isDisabled: !!claimablesError || claimableTokens.length === 0,
+    isCrvDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0].some(Boolean),
+    isRewardsDisabled: [!hasClaimableRewards, !!claimableRewardsError, claimableTokens.length === 0].some(Boolean),
     isLoading: isClaimablesLoading,
-    isError: !!claimablesError,
+    isError: [!!claimableCrvError, !!claimableRewardsError].some(Boolean),
     table,
-    onSubmit,
-    isClaimed,
-    isPending: isClaiming,
-    claimError,
-    txHash: data?.hash,
+    onSubmitCrv,
+    onSubmitRewards,
+    isCrvPending: isClaimCrvPending,
+    isRewardsPending: isClaimRewardsPending,
+    errors: notFalsy(usdRateError, claimableCrvError, claimableRewardsError, claimRewardsError, claimCrvError),
   }
 }

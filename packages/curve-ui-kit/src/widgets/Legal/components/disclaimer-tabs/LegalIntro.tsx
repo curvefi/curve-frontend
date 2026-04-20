@@ -1,21 +1,15 @@
 import Typography from '@mui/material/Typography'
+import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { pushSearchParams } from '@ui-kit/utils/urls'
-import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Paragraph } from '../general/Section'
 
-export const LegalIntro = ({ currentApp, network }: TabProps) => (
+export const LegalIntro = () => (
   <>
     <Paragraph>
       {t`Use of this site and the Curve functionalities is subject to the`}{' '}
-      <RouterLink
-        color="textSecondary"
-        href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
-        onClick={(e) => pushSearchParams(e, { tab: 'terms' })}
-      >
+      <RouterLink color="textSecondary" href={getSearchString({ tab: 'terms' })}>
         {t`Terms and Conditions`}
       </RouterLink>
       {t`. The term “Curve Functionalities” has the meaning given in the Terms and Conditions.`}

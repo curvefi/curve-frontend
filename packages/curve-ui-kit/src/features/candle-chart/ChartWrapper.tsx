@@ -3,24 +3,10 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
+import { t } from '@ui-kit/lib/i18n'
+import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
-import { Spinner } from '@ui-kit/shared/ui/Spinner'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
-
-const { Spacing } = SizesAndSpaces
-
-const BoxSx = (chartHeight: number) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '100%',
-  minHeight: chartHeight,
-  gap: Spacing.md,
-})
 
 export type OhlcChartProps = {
   /**
@@ -44,6 +30,7 @@ export type OhlcChartProps = {
   refetchingCapped: boolean
   selectChartList: ChartSelections[]
   latestOraclePrice?: string
+  onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
 export const ChartWrapper = ({
@@ -65,71 +52,57 @@ export const ChartWrapper = ({
   refetchingCapped,
   selectChartList,
   latestOraclePrice,
+  onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
   const wrapperRef = useRef(null)
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
+  const isError = chartStatus === 'ERROR'
+  const errorMessage = t`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`
+  const error = useMemo(() => (isError ? new Error(errorMessage) : null), [isError, errorMessage]) // todo: pass correct error from query instead of creating new error with message
+
   return (
     <Stack direction="column">
-      {chartStatus === 'READY' && (
+      <ChartStateWrapper
+        height={chartHeight}
+        isLoading={chartStatus === 'LOADING'}
+        error={error}
+        errorMessage={errorMessage}
+        refetchFunction={refetchPricesData}
+      >
         <Box
           ref={wrapperRef}
           sx={{
-            ...BoxSx(chartHeight),
-            paddingBottom: Spacing.sm,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: chartHeight,
             position: 'relative',
           }}
         >
-          <ErrorBoundary
-            title="Chart Error"
-            inline
-            subtitle="Something went wrong when rendering the chart."
-            refreshData={refetchPricesData}
-          >
-            <CandleChart
-              hideCandleSeriesLabel={hideCandleSeriesLabel}
-              chartHeight={chartHeight}
-              ohlcData={clonedOhlcData}
-              oraclePriceData={oraclePriceData}
-              liquidationRange={liquidationRange}
-              timeOption={timeOption}
-              wrapperRef={wrapperRef}
-              colors={colors}
-              refetchingCapped={refetchingCapped}
-              fetchMoreChartData={fetchMoreChartData}
-              lastFetchEndTime={lastFetchEndTime}
-              liqRangeCurrentVisible={liqRangeCurrentVisible}
-              liqRangeNewVisible={liqRangeNewVisible}
-              oraclePriceVisible={oraclePriceVisible}
-              latestOraclePrice={latestOraclePrice}
-            />
-          </ErrorBoundary>
-        </Box>
-      )}
-      {chartStatus === 'LOADING' && (
-        <Box
-          sx={{
-            ...BoxSx(chartHeight),
-          }}
-        >
-          <Spinner />
-        </Box>
-      )}
-      {chartStatus === 'ERROR' && (
-        <Box
-          sx={{
-            ...BoxSx(chartHeight),
-          }}
-        >
-          <ErrorMessage
-            title="An error ocurred"
-            subtitle={`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`}
-            refreshData={refetchPricesData}
-            errorMessage={`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`}
+          <CandleChart
+            hideCandleSeriesLabel={hideCandleSeriesLabel}
+            chartHeight={chartHeight}
+            ohlcData={clonedOhlcData}
+            oraclePriceData={oraclePriceData}
+            liquidationRange={liquidationRange}
+            timeOption={timeOption}
+            wrapperRef={wrapperRef}
+            colors={colors}
+            refetchingCapped={refetchingCapped}
+            fetchMoreChartData={fetchMoreChartData}
+            lastFetchEndTime={lastFetchEndTime}
+            liqRangeCurrentVisible={liqRangeCurrentVisible}
+            liqRangeNewVisible={liqRangeNewVisible}
+            oraclePriceVisible={oraclePriceVisible}
+            latestOraclePrice={latestOraclePrice}
+            onVisiblePriceRangeChange={onVisiblePriceRangeChange}
           />
         </Box>
-      )}
+      </ChartStateWrapper>
     </Stack>
   )
 }

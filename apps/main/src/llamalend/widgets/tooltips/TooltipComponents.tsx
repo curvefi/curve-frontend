@@ -1,6 +1,7 @@
-import React, { Children, ReactNode } from 'react'
+import { Children, ReactNode } from 'react'
 import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import Stack from '@mui/material/Stack'
+import { SxProps } from '@mui/material/styles'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -40,7 +41,7 @@ const titleTypographyColor: Record<ItemVariant, TypographyProps['color']> = {
 }
 
 const valueTypographyColor: Record<ItemVariant, TypographyProps['color']> = {
-  default: 'textSecondary',
+  default: 'textPrimary',
   primary: 'primary',
   subItem: 'textPrimary',
   independent: 'textPrimary',
@@ -52,17 +53,26 @@ export const TooltipItem = ({
   loading = false,
   variant = 'default',
   titleIcon, // used for token icons
+  titleAdornment, // optional custom element rendered before the title
   imageId, // used for campaign reward icons
+  sx,
 }: {
   title: ReactNode
   children?: ReactNode
   loading?: boolean // shows skeleton instead of children
   variant?: ItemVariant
   titleIcon?: { blockchainId: string; address: string; size: Size }
+  titleAdornment?: ReactNode
   imageId?: string
+  sx?: SxProps
 }) => (
-  <Stack direction="row" gap={Spacing.sm} justifyContent="space-between">
+  <Stack direction="row" gap={Spacing.sm} justifyContent="space-between" sx={sx}>
     <Stack direction="row" gap={Spacing.xxs} alignItems="center">
+      {titleAdornment && (
+        <Stack alignItems="center" sx={{ marginLeft: Spacing.md }}>
+          {titleAdornment}
+        </Stack>
+      )}
       {titleIcon && (
         <TokenIcon
           blockchainId={titleIcon.blockchainId}
@@ -78,6 +88,7 @@ export const TooltipItem = ({
         component="span"
         {...(variant === 'subItem' &&
           titleIcon == null &&
+          titleAdornment == null &&
           imageId == null && {
             sx: {
               marginLeft: Spacing.md,
@@ -88,11 +99,11 @@ export const TooltipItem = ({
       </Typography>
     </Stack>
     <WithSkeleton loading={loading}>
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={1} alignItems="baseline">
         {Children.map(children, (child, index) => {
           const isFirstChild = index === 0
-          const typographyVariant = isFirstChild ? valueTypographyVariant[variant] : 'bodySRegular'
-          const typographyColor = isFirstChild ? valueTypographyColor[variant] : 'textSecondary'
+          const typographyVariant = isFirstChild ? valueTypographyVariant[variant] : 'bodyXsRegular'
+          const typographyColor = isFirstChild ? valueTypographyColor[variant] : 'tertiary'
 
           return (
             <Typography
@@ -141,5 +152,11 @@ export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
 export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
   <Typography variant="bodySRegular" component="span">
     {text}
+  </Typography>
+)
+
+export const TooltipFooter = ({ children }: { children: ReactNode }) => (
+  <Typography variant="bodyXsRegular" component="span" fontStyle="italic">
+    {children}
   </Typography>
 )

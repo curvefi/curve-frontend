@@ -1,13 +1,12 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  type RemoveCollateralOptions,
-  useRemoveCollateralMutation,
-} from '@/llamalend/mutations/remove-collateral.mutation'
+import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
+import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   type CollateralForm,
@@ -15,10 +14,12 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { mapQuery, type Range } from '@ui-kit/types/util'
+import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -27,12 +28,12 @@ export const useRemoveCollateralForm = <
   market,
   network,
   enabled,
-  onSuccess,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
-  enabled?: boolean
-  onSuccess?: NonNullable<RemoveCollateralOptions['onSuccess']>
+  enabled: boolean
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -53,7 +54,7 @@ export const useRemoveCollateralForm = <
 
   const values = watchForm(form)
 
-  const params = useDebouncedValue(
+  const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): CollateralParams<ChainId> => ({
         chainId,
@@ -69,18 +70,15 @@ export const useRemoveCollateralForm = <
   const { onSubmit, ...action } = useRemoveCollateralMutation({
     marketId,
     network,
-    onSuccess,
     onReset: form.reset,
     userAddress,
   })
   const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
 
-  useCallbackAfterFormUpdate(form, action.reset)
+  useCallbackSync(useRemoveCollateralPrices(params, enabled), onPricesUpdated)
 
-  useEffect(() => {
-    updateForm(form, { maxCollateral: maxRemovable.data })
-  }, [form, maxRemovable.data])
+  useFormSync(form, { maxCollateral: maxRemovable.data })
 
   const isPending = formState.isSubmitting || action.isPending
   return {
@@ -88,13 +86,13 @@ export const useRemoveCollateralForm = <
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending,
+    isDisabled: !formState.isValid || isPending || isDebouncing,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,
+    positionCollateral: mapQuery(useUserState(params, enabled), (d) => d.collateral),
     collateralToken,
     borrowToken,
-    txHash: action.data?.hash,
     formErrors: useFormErrors(formState),
   }
 }

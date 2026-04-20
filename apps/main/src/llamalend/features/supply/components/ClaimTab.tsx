@@ -3,9 +3,11 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TotalNotionalRow } from '@ui-kit/shared/ui/DataTable/inline-cells/notional-cells'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
@@ -20,26 +22,26 @@ export type ClaimTabProps<ChainId extends IChainId> = {
 }
 
 const TEST_ID_PREFIX = 'supply-claim'
+const { Spacing } = SizesAndSpaces
 
 export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, enabled }: ClaimTabProps<ChainId>) => {
   const network = networks[chainId]
 
   const {
     params,
-    isPending,
-    isDisabled,
+    claimableTokens,
     isLoading,
     isError,
-    isClaimed,
-    claimableTokens,
+    isCrvDisabled,
+    isRewardsDisabled,
+    isCrvPending,
+    isRewardsPending,
     totalNotionals,
     usdRateLoading: isNotionalLoading,
     table,
-    txHash,
-    claimError,
-    claimablesError,
-    usdRateError,
-    onSubmit,
+    onSubmitCrv,
+    onSubmitRewards,
+    errors,
   } = useClaimTab({
     market,
     network,
@@ -47,21 +49,22 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
   })
   return (
     <>
-      <FormContent footer={<ClaimActionInfoList params={params} networks={networks} />}>
+      <FormContent
+        footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
+      >
         <DataTable<ClaimableToken>
           table={table}
           emptyState={
             !isError && (
-              <Alert severity="warning">
-                <AlertTitle>{t`No rewards`}</AlertTitle>
-                {t`There are currently no rewards to claim. Only markets with active gauge have rewards.`}
+              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
+                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
               </Alert>
             )
           }
           loading={isLoading}
           hideHeader
           footerRow={
-            claimableTokens.length > 1 &&
+            !!claimableTokens.length &&
             !isLoading && (
               <TotalNotionalRow
                 sx={{ backgroundColor: (t) => t.design.Table.Row.Hover }}
@@ -71,25 +74,31 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             )
           }
         />
-        <Button
-          type="submit"
-          loading={isPending || !market}
-          disabled={isDisabled}
-          data-testid={`${TEST_ID_PREFIX}-submit-button`}
-          onClick={onSubmit}
-        >
-          {isPending ? t`Processing...` : t`Claim`}
-        </Button>
+        <Stack flexDirection={'column'} gap={Spacing.xs}>
+          <Button
+            fullWidth
+            type="button"
+            loading={isCrvPending || !market}
+            disabled={isCrvDisabled}
+            data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
+            onClick={onSubmitCrv}
+          >
+            {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
+          </Button>
+          <Button
+            color="secondary"
+            fullWidth
+            type="button"
+            loading={isRewardsPending || !market}
+            disabled={isRewardsDisabled}
+            data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
+            onClick={onSubmitRewards}
+          >
+            {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
+          </Button>
+        </Stack>
 
-        <FormAlerts
-          isSuccess={isClaimed}
-          error={claimablesError ?? claimError ?? usdRateError}
-          txHash={txHash}
-          formErrors={[]}
-          network={network}
-          handledErrors={[]}
-          successTitle={t`Claimed successfully`}
-        />
+        <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} />
       </FormContent>
     </>
   )

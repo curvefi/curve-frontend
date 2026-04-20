@@ -2,8 +2,9 @@ import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { type MigrationOptions, useStoredState } from './useStoredState'
+import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
 
@@ -39,16 +40,29 @@ const useLocalStorage = <T>(key: string, initialValue: T, migration?: MigrationO
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 
-export const getReleaseChannel = () => getFromLocalStorage<ReleaseChannel>('release-channel') ?? defaultReleaseChannel
+const [ReleaseChannelKey, ReleaseChannelVersion] = ['release-channel', 1] as const
+export const getReleaseChannel = () =>
+  getFromLocalStorage<ReleaseChannel>(getStorageKey(ReleaseChannelKey, ReleaseChannelVersion)) ?? defaultReleaseChannel
 export const useReleaseChannel = () =>
-  useLocalStorage<ReleaseChannel>('release-channel', defaultReleaseChannel, {
-    version: 1,
+  useLocalStorage<ReleaseChannel>(ReleaseChannelKey, defaultReleaseChannel, {
+    version: ReleaseChannelVersion,
     migrate: (oldValue) => (oldValue ? ReleaseChannel.Beta : ReleaseChannel.Stable),
     oldKey: 'beta',
   })
 
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
+
+type RateType = 'borrow' | 'supply'
+
+export const useShowNetRate = (type: RateType) =>
+  useLocalStorage<Record<string, boolean>>(
+    {
+      borrow: 'showNetApr',
+      supply: 'showNetApy',
+    }[type],
+    useMemo(() => ({}), []),
+  )
 
 export const useCreateLoanPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
   useLocalStorage<T>('create-loan-preset', defaultValue)
@@ -64,24 +78,40 @@ export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
     migration,
   )
 
-export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
+const FavoriteMarketsKey = 'favoriteMarkets'
+export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>(FavoriteMarketsKey) ?? []
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
-  return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+  return useLocalStorage<Address[]>(FavoriteMarketsKey, initialValue)
 }
 
-export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
+export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-visible', false)
+
+/**
+ * Returns a tuple containing a boolean indicating whether the banner should be shown, and a function to dismiss the banner.
+ * Do NOT export this hook, as it directly exposes local storage keys!
+ */
+const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Banner = 'Monthly') => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
+  const expirationTime = Duration.Banner[frequency]
 
   const shouldShowBanner = useMemo(
-    // eslint-disable-next-line react-hooks/purity
     () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
     [dismissedAt, expirationTime],
   )
 
-  const dismissBanner = useCallback(() => {
-    setDismissedAt(Date.now())
-  }, [setDismissedAt])
+  const dismissBanner = useCallback(() => setDismissedAt(Date.now()), [setDismissedAt])
 
-  return { shouldShowBanner, dismissBanner }
+  return [shouldShowBanner, dismissBanner] as const
 }
+
+export const useDismissAaveBanner = () => useDismissBanner('aave-v2-frozen-avalanche-polygon')
+
+export const useDismissFastBridgeBanner = () => useDismissBanner('fast-bridge-paused', 'Daily')
+
+export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
+
+export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-dismissed')
+
+export const useDismissPoolBanner = (network: string, poolId: string) =>
+  useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')

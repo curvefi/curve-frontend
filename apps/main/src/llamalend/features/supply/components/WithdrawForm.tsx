@@ -1,13 +1,13 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { WithdrawOptions } from '@/llamalend/mutations/withdraw.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useWithdrawForm } from '../hooks/useWithdrawForm'
+import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 export type WithdrawFormProps<ChainId extends IChainId> = {
@@ -15,7 +15,6 @@ export type WithdrawFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onSuccess?: NonNullable<WithdrawOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
@@ -25,7 +24,6 @@ export const WithdrawForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onSuccess,
 }: WithdrawFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -36,12 +34,12 @@ export const WithdrawForm = <ChainId extends IChainId>({
     onSubmit,
     isDisabled,
     borrowToken,
-    isWithdrawn,
     withdrawError,
-    txHash,
     formErrors,
     max,
-  } = useWithdrawForm({ market, network, enabled, onSuccess })
+    maxStakedShares,
+    isFull,
+  } = useWithdrawForm({ market, network, enabled })
 
   return (
     <Form
@@ -55,14 +53,18 @@ export const WithdrawForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name="withdrawAmount"
         form={form}
-        max={q(max)}
+        max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
         positionBalance={{
-          position: q(max),
+          position: max,
           tooltip: t`Vault shares value`,
         }}
       />
+
+      {max.data && maxStakedShares.data && Number(max.data) === 0 && Number(maxStakedShares.data) > 0 && (
+        <AlertUnstakeFirst />
+      )}
 
       <Button
         type="submit"
@@ -70,18 +72,10 @@ export const WithdrawForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         data-testid={`${TEST_ID_PREFIX}-submit-button`}
       >
-        {isPending ? t`Processing...` : t`Withdraw`}
+        {isPending ? t`Processing...` : notFalsy(t`Withdraw`, isFull.data && t`All`).join(' ')}
       </Button>
 
-      <FormAlerts
-        isSuccess={isWithdrawn}
-        error={withdrawError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['withdrawAmount']}
-        successTitle={t`Withdrawn successfully`}
-      />
+      <FormAlerts error={withdrawError} formErrors={formErrors} handledErrors={['withdrawAmount']} />
     </Form>
   )
 }

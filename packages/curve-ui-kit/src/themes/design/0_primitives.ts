@@ -23,6 +23,7 @@ export const Grays = {
 } as const
 
 export const Greens = {
+  '50': '#f2fdf8',
   '100': '#d4f7e3',
   '200': '#a8efc6',
   '300': '#32ce79',
@@ -31,16 +32,22 @@ export const Greens = {
   '600': '#167d4a',
   '700': '#0f5c38',
   '800': '#0b3d26',
+  '900': '#044121',
+  '950': '#02351b',
 } as const
 
 export const Reds = {
-  '200': '#ffd88b',
-  '300': '#ffc300',
-  '400': '#f77f00',
+  '50': '#fcdcde',
+  '100': '#fab0b4',
+  '200': '#f67178',
+  '300': '#f3565f',
+  '400': '#f03d47',
   '500': '#ed242f',
-  '600': '#d41e26',
-  '700': '#b0151f',
-  '800': '#8c111c',
+  '600': '#c91821',
+  '700': '#a60e16',
+  '800': '#82070d',
+  '900': '#5f0207',
+  '950': '#311615',
 } as const
 
 export const Blues = {
@@ -103,7 +110,7 @@ export const Transparent = '#ffffff00' as const
 
 export const Spacing = {
   '0': '0rem',
-  '75': '0.062rem', // ~1px
+  '75': '0.0625rem', // 1px
   '100': '0.125rem', // 2px
   '200': '0.25rem', // 4px
   '300': '0.5rem', // 8px
@@ -117,7 +124,7 @@ export const Spacing = {
 } as const
 
 export const Sizing = {
-  '10': '0.062rem', // ~1px
+  '10': '0.0625rem', // 1px
   '25': '0.125rem', // 2px
   '50': '0.25rem', // 4px
   '100': '0.5rem', // 8px
@@ -137,6 +144,7 @@ export const Sizing = {
 } as const
 
 export const Duration = {
+  ChartFrame: 16, // 16ms = ~60fps
   Delay: 100,
   Flicker: 1000,
   Focus: 50,

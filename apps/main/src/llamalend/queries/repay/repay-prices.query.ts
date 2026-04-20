@@ -1,10 +1,10 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
-import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
-import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const {
@@ -20,6 +20,7 @@ export const {
     userBorrowed = '0',
     userAddress,
     routeId,
+    isFull,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -28,8 +29,18 @@ export const {
       { userCollateral },
       { userBorrowed },
       { routeId },
+      { isFull },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, routeId, userAddress }: RepayQuery) => {
+  queryFn: async ({
+    marketId,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    routeId,
+    userAddress,
+    isFull,
+  }: RepayQuery) => {
+    if (isFull) return null
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
@@ -54,11 +65,13 @@ export const {
         return (await impl.repayPrices(...args)) as Range<Decimal>
       case 'deleverage':
         return (await impl.repayPrices(...args)) as Range<Decimal>
-      case 'unleveraged':
+      case 'unleveragedMint':
+        return (await impl.repayPrices(...args)) as Range<Decimal>
+      case 'unleveragedLend':
         return (await impl.repayPrices(...args)) as Range<Decimal>
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })
