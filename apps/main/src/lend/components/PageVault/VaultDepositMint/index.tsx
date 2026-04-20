@@ -247,7 +247,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       {marketAlert?.message && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
       {/* actions */}
-      {!marketAlert?.isDisableDeposit && (
+      {!marketAlert?.isDepositDisabled && (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
           {formStatus.error ? <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset({})} /> : null}
           {txInfoBar}

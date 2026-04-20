@@ -21,7 +21,7 @@ function CreateLoanTab({ market, rChainId, onPricesUpdated }: CreateLoanProps) {
       chainId={rChainId}
       market={market}
       onPricesUpdated={onPricesUpdated}
-      borrowDisabledAlert={marketAlert?.isDisableBorrow && marketAlert}
+      borrowDisabledAlert={marketAlert?.isBorrowDisabled && marketAlert}
     />
   )
 }

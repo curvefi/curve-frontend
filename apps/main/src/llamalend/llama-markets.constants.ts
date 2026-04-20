@@ -11,8 +11,8 @@ import { Chain } from '@ui-kit/utils'
 
 type MarketAlert = TooltipProps & {
   alertType: AlertType
-  isDisableBorrow?: boolean // disallow user from creating new borrow positions
-  isDisableDeposit?: boolean // disallow user from supply deposit
+  isBorrowDisabled?: boolean // disallow user from creating new borrow positions
+  isDepositDisabled?: boolean // disallow user from supply deposit
   // banner message, related to the market situation
   banner?: Omit<BannerProps, 'children'> & { title: ReactNode }
   // action card message, related to action of user
@@ -30,15 +30,15 @@ export const MARKETS_ALERTS: Record<
       // one-way-market-30 - sDOLA/crvUSD
       '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
         alertType: 'danger',
-        isDisableBorrow: true,
-        isDisableDeposit: true,
+        isBorrowDisabled: true,
+        isDepositDisabled: true,
         message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
       },
       // one-way-market-3 - CRV/crvUSD
       '0xeda215b7666936ded834f76f3fbc6f323295110a': {
         alertType: 'danger',
-        isDisableBorrow: true,
-        isDisableDeposit: true,
+        isBorrowDisabled: true,
+        isDepositDisabled: true,
         message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
       },
     },
@@ -46,7 +46,7 @@ export const MARKETS_ALERTS: Record<
       // one-way-market-7 - FXN/crvUSD
       '0x7adcc491f0b7f9bc12837b8f5edf0e580d176f1f': {
         alertType: 'danger',
-        isDisableDeposit: true,
+        isBorrowDisabled: true,
         message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
       },
     },
