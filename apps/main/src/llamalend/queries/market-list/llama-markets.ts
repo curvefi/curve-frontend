@@ -115,6 +115,7 @@ const convertLendingVault = (
   userBorrows: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
+  const marketType = LlamaMarketType.Lend
   const hasBorrowed = userBorrows.has(controller)
   const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApy =
@@ -177,9 +178,9 @@ const convertLendingVault = (
           }))
         : [],
     },
-    type: LlamaMarketType.Lend,
+    type: marketType,
     url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
-    deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[controller]?.message ?? null,
+    deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? null,
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
@@ -223,6 +224,7 @@ const convertMintMarket = (
   userMintMarkets: Set<Address>,
   collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
 ): LlamaMarket => {
+  const marketType = LlamaMarketType.Mint
   const hasBorrow = userMintMarkets.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
@@ -271,8 +273,8 @@ const convertMintMarket = (
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
       incentives: [],
     },
-    type: LlamaMarketType.Mint,
-    deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[address]?.message ?? null,
+    type: marketType,
+    deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[address]?.message ?? null,
     url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
