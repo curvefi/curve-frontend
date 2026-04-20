@@ -14,6 +14,7 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -22,6 +23,7 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -31,12 +33,14 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     userCollateral,
     userBorrowed,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     switch (type) {

@@ -80,6 +80,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     userBorrowed = '0',
     userAddress,
     isFull,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -89,6 +90,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -98,13 +100,20 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     userBorrowed,
     isFull,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<TGas> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) {
       return await getLoanImplementation(marketId).estimateGas.fullRepayApprove(userAddress)
     }
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
+    const [type, impl] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+      slippage,
+    })
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })

@@ -17,6 +17,7 @@ export const {
     userBorrowed = '0',
     userAddress,
     isFull,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -26,6 +27,7 @@ export const {
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -35,11 +37,18 @@ export const {
     userBorrowed,
     isFull,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
     const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
     if (useFullRepay) return await getLoanImplementation(marketId).fullRepayIsApproved(userAddress)
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
+    const [type, impl] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      slippage,
+      routeId,
+    })
     switch (type) {
       case 'zapV2':
         return await impl.repayIsApproved({ userCollateral, userBorrowed })

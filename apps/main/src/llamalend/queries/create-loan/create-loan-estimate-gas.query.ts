@@ -1,3 +1,4 @@
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
@@ -14,41 +15,38 @@ import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 type CreateLoanEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
 type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
 
-const {
-  useQuery: useCreateLoanApproveEstimateGas,
-  invalidate: invalidateCreateLoanApproveEstimateGasQuery,
-  refetchQuery: refetchCreateLoanApproveEstimateGasQuery,
-} = queryFactory({
-  queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
-    [
-      ...rootKeys.market({ chainId, marketId }),
-      'estimateGas.createLoanApprove',
-      { userBorrowed },
-      { userCollateral },
-      { leverageEnabled },
-    ] as const,
-  queryFn: async ({
-    marketId,
-    userBorrowed = '0',
-    userCollateral = '0',
-    leverageEnabled,
-  }: CreateLoanEstimateGasQuery) => {
-    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
-    switch (type) {
-      case 'zapV2':
-        return await impl.estimateGas.createLoanApprove({ userCollateral, userBorrowed })
-      case 'V1':
-      case 'V2':
-        return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-      case 'V0':
-      case 'unleveraged':
-        return await impl.estimateGas.createLoanApprove(userCollateral)
-    }
-  },
-  category: 'llamalend.createLoan',
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
-  dependencies: (params) => [createLoanMaxReceiveKey(params)],
-})
+const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
+  queryFactory({
+    queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
+      [
+        ...rootKeys.market({ chainId, marketId }),
+        'estimateGas.createLoanApprove',
+        { userBorrowed },
+        { userCollateral },
+        { leverageEnabled },
+      ] as const,
+    queryFn: async ({
+      marketId,
+      userBorrowed = '0',
+      userCollateral = '0',
+      leverageEnabled,
+    }: CreateLoanEstimateGasQuery) => {
+      const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+      switch (type) {
+        case 'zapV2':
+          return await impl.estimateGas.createLoanApprove({ userCollateral, userBorrowed })
+        case 'V1':
+        case 'V2':
+          return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+        case 'V0':
+        case 'unleveraged':
+          return await impl.estimateGas.createLoanApprove(userCollateral)
+      }
+    },
+    category: 'llamalend.createLoan',
+    validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
+    dependencies: (params) => [createLoanMaxReceiveKey(params)],
+  })
 
 const {
   useQuery: useCreateLoanEstimateGasQuery,
@@ -87,7 +85,8 @@ const {
     slippage,
     routeId,
   }: CreateLoanEstimateGasQuery): Promise<TGas> => {
-    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    const market = getLlamaMarket(marketId)
+    const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.createLoan({
@@ -95,7 +94,7 @@ const {
           userBorrowed,
           debt,
           range,
-          ...parseMutationRoute(routeId, slippage, impl),
+          ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),
         })
       case 'V1':
       case 'V2':

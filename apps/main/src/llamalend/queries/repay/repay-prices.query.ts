@@ -15,6 +15,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
     isFull,
   }: RepayParams) =>
@@ -24,6 +25,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
       { isFull },
     ] as const,
@@ -32,6 +34,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     stateCollateral,
     userCollateral,
     userBorrowed,
+    slippage,
     routeId,
     userAddress,
     isFull,
@@ -41,6 +44,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     // it looks like all implementations have the same signature, but `args` is typed differently for each

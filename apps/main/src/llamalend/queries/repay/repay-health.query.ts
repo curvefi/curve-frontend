@@ -15,6 +15,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     userBorrowed = '0',
     userAddress,
     isHealthFull,
+    slippage,
     routeId,
   }: RepayHealthParams) =>
     [
@@ -24,6 +25,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
       { userCollateral },
       { userBorrowed },
       { isHealthFull },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -33,9 +35,16 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     userBorrowed,
     isHealthFull,
     userAddress,
+    slippage,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
+    const [type, impl] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+      slippage,
+    })
     switch (type) {
       case 'zapV2':
         return (

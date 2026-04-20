@@ -53,6 +53,7 @@ export const {
       stateCollateral,
       userBorrowed,
       routeId,
+      slippage,
     })
     switch (type) {
       case 'zapV2':

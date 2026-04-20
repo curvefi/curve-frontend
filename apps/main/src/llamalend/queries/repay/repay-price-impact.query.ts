@@ -16,6 +16,7 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -24,6 +25,7 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -32,12 +34,14 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     userCollateral,
     userBorrowed,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<Decimal | null> => {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     switch (type) {
