@@ -4,6 +4,6 @@ import { Banner } from '@ui-kit/shared/ui/Banner'
 
 export const DeprecatedMarketBanner = ({ message, url }: DeprecatedMarketAlert) => (
   <Banner severity="warning" subtitle={message} learnMoreUrl={url}>
-    {t`This market is deprecated`}
+    {t`Deprecated market`}
   </Banner>
 )
