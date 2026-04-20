@@ -55,23 +55,21 @@ export const EChartsCard = ({
         }
       />
 
-      <CardContent component={Stack} flexGrow={1} {...(!fullscreen && { size: 'small' })}>
-        <Stack gap={Spacing.md} flexGrow={1}>
-          <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
-            {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
-            <ReactECharts
-              notMerge
-              option={option}
-              style={{
-                height: '100%',
-                ...(!fullscreen && { minHeight: MIN_HEIGHT }),
-                ...(loading && { opacity: 0.5 }),
-              }}
-            />
-          </Box>
+      <CardContent component={Stack} gap={Spacing.md} flexGrow={1} {...(!fullscreen && { size: 'small' })}>
+        <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
+          {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
+          <ReactECharts
+            notMerge
+            option={option}
+            style={{
+              height: '100%',
+              ...(!fullscreen && { minHeight: MIN_HEIGHT }),
+              ...(loading && { opacity: 0.5 }),
+            }}
+          />
+        </Box>
 
-          {children}
-        </Stack>
+        {children}
       </CardContent>
     </Card>
   </WithWrapper>

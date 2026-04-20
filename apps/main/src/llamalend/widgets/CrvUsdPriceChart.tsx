@@ -1,7 +1,7 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
-import { Stack } from '@mui/material'
+import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
@@ -118,7 +118,7 @@ export const CrvUsdPriceChart = () => {
           />
         }
       />
-      <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <CardContent component={Stack} gap={Spacing.md} size="small">
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}
@@ -143,7 +143,7 @@ export const CrvUsdPriceChart = () => {
           legendSets={legendSets}
           description={t`This chart shows crvUSD's historical peg to $1. For mint market interest rates, the rate is a function of crvUSD's peg. When the price dips below $1, rates increase to incentivize loan repayment and reduce supply; when the price rises above $1, rates decrease to encourage borrowing — restoring balance to the system.`}
         />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

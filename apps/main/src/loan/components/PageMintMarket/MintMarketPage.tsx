@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
+import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -47,11 +46,6 @@ export const MintMarketPage = () => {
   const loanStatus = useUserLoanDetails(marketId ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
   const controllerAddress = getControllerAddress(market)
-  const { data: solvencyMarket } = useSolvencyMarket({
-    type: LlamaMarketType.Mint,
-    blockchainId: network.id,
-    controllerAddress,
-  })
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
     chainId: rChainId,
@@ -118,7 +112,7 @@ export const MintMarketPage = () => {
         <PageHeader chainId={rChainId} isLoading={!isHydrated} market={market} blockchainId={network.id as Chain} />
       }
     >
-      {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
+      <MarketBanners chainId={rChainId} market={market} />
       <PositionDetailsComposite
         hasPosition={loanExists}
         borrowPositionDetails={borrowPositionDetails}
