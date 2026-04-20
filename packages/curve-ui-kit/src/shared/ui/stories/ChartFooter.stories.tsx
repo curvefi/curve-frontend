@@ -291,9 +291,9 @@ const LineLegendsWrapper = () => {
   const theme = useTheme()
 
   const legendSets: LegendItem[] = [
-    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines.Line1, dash: 'none' } },
-    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines.Line2, dash: '4 2' } },
-    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines.Line3, dash: '2 2' } },
+    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1], dash: 'none' } },
+    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: '4 2' } },
+    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines[3], dash: '2 2' } },
   ]
 
   return (

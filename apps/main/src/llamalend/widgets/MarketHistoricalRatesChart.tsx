@@ -4,7 +4,7 @@ import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { Chain } from '@curvefi/prices-api'
-import { Stack } from '@mui/material'
+import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
@@ -131,7 +131,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
           />
         }
       />
-      <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <CardContent component={Stack} gap={Spacing.md} size="small">
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={isLoading || !market}
@@ -151,7 +151,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
           />
         </ChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

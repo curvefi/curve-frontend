@@ -1,4 +1,4 @@
-import { BadDebtBanner } from '@/llamalend/widgets/BadDebtBanner'
+import { BadDebtBanner } from '@/llamalend/widgets/banners/BadDebtBanner'
 import { oneFloat } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { oneMarketType } from '@cy/support/helpers/llamalend/mock-market.helpers'

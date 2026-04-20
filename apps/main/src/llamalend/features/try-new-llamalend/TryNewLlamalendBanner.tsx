@@ -9,7 +9,7 @@ export const TryNewLlamalendBanner = ({ isActive }: { isActive: boolean }) => {
       severity="info"
       onClick={() => setIsActive((prev) => !prev)}
       icon="llama"
-      buttonText={isActive ? t`Go Back` : t`OK`}
+      buttonText={isActive ? t`Go Back` : t`Let's do it`}
     >
       {isActive ? t`Trying the new Llamalend forms` : t`Try the new llamalend forms`}
     </Banner>

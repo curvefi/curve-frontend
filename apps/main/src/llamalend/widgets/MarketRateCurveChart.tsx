@@ -6,7 +6,7 @@ import { useMarketCapAndAvailable, useRateCurve } from '@/llamalend/queries/mark
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
-import { Stack } from '@mui/material'
+import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
@@ -115,7 +115,7 @@ export const MarketRateCurveChart = ({
   return (
     <Card>
       <CardHeader title={t`Interest Rate & Utilization`} size="small" />
-      <Stack gap={Spacing.md} sx={{ backgroundColor: (theme) => theme.design.Layer[1].Fill, padding: Spacing.md }}>
+      <CardContent component={Stack} gap={Spacing.md} size="small">
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={isLoading || !market}
@@ -140,7 +140,7 @@ export const MarketRateCurveChart = ({
           legendSets={legendSets}
           description={t`This chart illustrates the relationship between utilization and interest rates in this market. It reflects the market’s monetary policy—how rates adjust based on supply and demand dynamics.`}
         />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

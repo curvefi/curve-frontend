@@ -1,3 +1,5 @@
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
+import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { BridgeAmount, type BridgeAmountProps } from './BridgeAmount'
 import { BridgeButton, type BridgeButtonProps } from './BridgeButton'
 import { BridgeTargets, type BridgeTargetsProps } from './BridgeTargets'
@@ -8,6 +10,7 @@ export type BridgeFormContentParams = Omit<
 > &
   Pick<BridgeTargetsProps, 'networks' | 'fromChainId' | 'onNetworkSelected'> &
   Pick<BridgeAmountProps, 'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd'> & {
+    bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
     loading: boolean
     amountError: BridgeAmountProps['error']
   }
@@ -19,6 +22,7 @@ export const BridgeFormContent = ({
   amountError,
   walletBalance,
   inputBalanceUsd,
+  bridgeDisabledAlert,
   loading,
   isPending,
   isApproved,
@@ -49,18 +53,22 @@ export const BridgeFormContent = ({
       onAmount={onAmount}
     />
 
-    <BridgeButton
-      disableConnect={loading || isConnecting}
-      disableChangeNetwork={loading}
-      disableBridge={!!amountError || !amount || loading || isApproved == null}
-      isPending={isPending}
-      isApproved={isApproved}
-      isConnected={isConnected}
-      isConnecting={isConnecting}
-      isWrongNetwork={isWrongNetwork}
-      onSubmit={onSubmit}
-      onConnect={onConnect}
-      onChangeNetwork={onChangeNetwork}
-    />
+    {bridgeDisabledAlert ? (
+      <AlertDisableForm>{bridgeDisabledAlert.message}</AlertDisableForm>
+    ) : (
+      <BridgeButton
+        disableConnect={loading || isConnecting}
+        disableChangeNetwork={loading}
+        disableBridge={!!amountError || !amount || loading || isApproved == null}
+        isPending={isPending}
+        isApproved={isApproved}
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        isWrongNetwork={isWrongNetwork}
+        onSubmit={onSubmit}
+        onConnect={onConnect}
+        onChangeNetwork={onChangeNetwork}
+      />
+    )}
   </>
 )
