@@ -41,6 +41,13 @@ export const MARKETS_ALERTS: Record<
         isDepositDisabled: true,
         message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
       },
+      // one-way-market-8 - UwU/crvUSD
+      '0x09dbdeb3b301a4753589ac6df8a178c7716ce16b': {
+        alertType: 'danger',
+        isBorrowDisabled: true,
+        isDepositDisabled: true,
+        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+      },
     },
     [Chain.Arbitrum]: {
       // one-way-market-7 - FXN/crvUSD
@@ -48,6 +55,22 @@ export const MARKETS_ALERTS: Record<
         alertType: 'danger',
         isBorrowDisabled: true,
         message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
+      },
+    },
+    [Chain.Fraxtal]: {
+      // one-way-market-4 - SQUID/crvUSD
+      '0xbf55bb9463bbbb6ad724061910a450939e248ea6': {
+        alertType: 'danger',
+        isBorrowDisabled: true,
+        isDepositDisabled: true,
+        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+      },
+      // one-way-market-2 - WFRAX/crvUSD
+      '0xf0922934f16dbe5df9f90f729b2023d5e1fc2f15': {
+        alertType: 'danger',
+        isBorrowDisabled: true,
+        isDepositDisabled: true,
+        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
       },
     },
   },
@@ -112,6 +135,8 @@ export const DEPRECATED_LLAMAS: Record<
         message: t`This market is deprecated, read the governance post to learn more.`,
         url: 'https://gov.curve.finance/t/crv-long-llamalend-market-next-steps/11045',
       },
+      // UwU-crvUSD
+      '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,
     },
     arbitrum: {
       // iBTC-crvUSD
@@ -170,6 +195,10 @@ export const DEPRECATED_LLAMAS: Record<
     fraxtal: {
       // CRV-crvUSD
       '0x99d5b47D431f1963940F72ffa6F25bC0B9849CbF': DEFAULT_DEPRECATE,
+      // SQUID-crvUSD
+      '0xBF55Bb9463bBbB6aD724061910a450939E248eA6': DEFAULT_DEPRECATE,
+      // WFRAX-crvUSD
+      '0xf0922934f16DbE5Df9f90F729b2023D5e1FC2F15': DEFAULT_DEPRECATE,
     },
   },
 
