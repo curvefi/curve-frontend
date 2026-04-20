@@ -17,7 +17,12 @@ const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultRele
 // const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = () => [useBetaChannel(), useTryNewLlamalend()[0]].some(Boolean)
+export const useManageLoanMuiForm = () => {
+  const isBeta = useBetaChannel()
+  const isStable = useStableChannel()
+  const [tryLlamalend] = useTryNewLlamalend()
+  return isBeta || (isStable && tryLlamalend)
+}
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
 export const useLendingMuiForm = useManageLoanMuiForm
