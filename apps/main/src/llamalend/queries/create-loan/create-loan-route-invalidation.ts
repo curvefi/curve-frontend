@@ -9,7 +9,7 @@ import { invalidateCreateLoanPriceImpact } from '@/llamalend/queries/create-loan
 import { invalidateCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import type { RouteResponse } from '@primitives/router.utils'
 
-export const invalidateOrRefetchCreateLoanRouteQueries = async (
+export const invalidateCreateLoanRouteQueries = async (
   route: RouteResponse | undefined,
   params: CreateLoanDebtParams,
 ) =>

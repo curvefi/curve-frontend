@@ -59,10 +59,7 @@ export function useMarketRoutes({
     data?.[0]
 
   const onChangeEffect = useEffectEvent(onChangeProp)
-  useEffect(() => {
-    void onChangeEffect(selectedRoute)
-    console.log('onChangeEffect', selectedRoute)
-  }, [selectedRoute])
+  useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
 
   const onChange = useCallback(
     async (option: RouteResponse | undefined) => {

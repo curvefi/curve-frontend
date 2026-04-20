@@ -29,7 +29,7 @@ const hashString = async (input: string, algorithm = 'SHA-256') =>
  */
 export const generateId = async (
   { chainId, tokenIn, tokenOut, amountIn, userAddress, slippage = 0.5 }: RoutesQuery,
-  { router }: RouterRouteResponse,
+  { router }: RouterRouteResponse, // todo: support multiple routeIds per provider
 ) =>
   `${router}:${await hashString(
     [chainId, tokenIn, tokenOut, amountIn, slippage, userAddress]

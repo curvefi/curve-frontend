@@ -48,11 +48,7 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
     dependencies: (params) => [createLoanMaxReceiveKey(params)],
   })
 
-const {
-  useQuery: useCreateLoanEstimateGasQuery,
-  invalidate: invalidateCreateLoanEstimateGasQuery,
-  refetchQuery: refetchCreateLoanEstimateGasQuery,
-} = queryFactory({
+const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoanEstimateGasQuery } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
