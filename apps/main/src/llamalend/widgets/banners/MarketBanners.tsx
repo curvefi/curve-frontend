@@ -40,7 +40,7 @@ export const MarketBanners = <ChainId extends IChainId>({
       {deprecatedMarket && <DeprecatedMarketBanner {...deprecatedMarket} />}
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && rewardsBanner}
-      {loanExists && <TryNewLlamalend />}
+      <TryNewLlamalend />
     </>
   )
 }
