@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { isAddressEqual } from 'viem'
-import { DEPRECATED_LLAMAS } from '@/llamalend/queries/market-list/constants'
+import { DEPRECATED_LLAMAS } from '@/llamalend/llama-markets.constants'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 

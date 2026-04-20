@@ -1,13 +1,66 @@
-import { type Chain } from '@curvefi/prices-api'
+import { ReactNode } from 'react'
+import { type Chain as ApiChain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
+import { AlertType } from '@ui/AlertBox/types'
+import type { TooltipProps } from '@ui/Tooltip/types'
 import { t } from '@ui-kit/lib/i18n'
+import type { BannerProps } from '@ui-kit/shared/ui/Banner'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { Chain } from '@ui-kit/utils'
 
-export type DeprecatedMarket = { message: string; url?: string }
+type MarketAlert = TooltipProps & {
+  alertType: AlertType
+  isDisableBorrow?: boolean // disallow user from creating new borrow positions
+  isDisableDeposit?: boolean // disallow user from supply deposit
+  // banner message, related to the market situation
+  banner?: Omit<BannerProps, 'children'> & { title: ReactNode }
+  // action card message, related to action of user
+  message?: ReactNode
+}
 
-const DEFAULT_DEPRECATE: DeprecatedMarket = { message: t`This market is deprecated.` }
+// Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
+export const MARKETS_ALERTS: Record<
+  LlamaMarketType,
+  { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
+> = {
+  /** LEND MARKET ALERTS */
+  Lend: {
+    [Chain.Ethereum]: {
+      // one-way-market-30 - sDOLA/crvUSD
+      '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
+        alertType: 'danger',
+        isDisableBorrow: true,
+        isDisableDeposit: true,
+        message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
+      },
+      // one-way-market-3 - CRV/crvUSD
+      '0xeda215b7666936ded834f76f3fbc6f323295110a': {
+        alertType: 'danger',
+        isDisableBorrow: true,
+        isDisableDeposit: true,
+        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+      },
+    },
+    [Chain.Arbitrum]: {
+      // one-way-market-7 - FXN/crvUSD
+      '0x7adcc491f0b7f9bc12837b8f5edf0e580d176f1f': {
+        alertType: 'danger',
+        isDisableDeposit: true,
+        message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
+      },
+    },
+  },
 
-export const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, DeprecatedMarket>> = {
+  /** MINT MARKET ALERTS */
+  Mint: {},
+}
+
+export type DeprecatedMarketAlert = { message: string; url?: string }
+const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
+
+// Deprecated markets are hidden from market list for new users but remain accessible to users with existing positions.
+export const DEPRECATED_LLAMAS: PartialRecord<ApiChain, Record<Address, DeprecatedMarketAlert>> = {
   ethereum: {
     // sfrxETH v1 mint market
     '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76': {
@@ -145,7 +198,7 @@ export const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, DeprecatedM
  *   .map((market) => [market.id, market.addresses.controller])
  * ```
  */
-export const NO_LEVERAGE_LEND: PartialRecord<Chain, Address[]> = {
+export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
   ethereum: [
     '0x1E0165DbD2019441aB7927C018701f3138114D71',
     '0xaade9230AA9161880E13a38C83400d3D1995267b',

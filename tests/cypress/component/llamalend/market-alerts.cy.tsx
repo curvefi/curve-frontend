@@ -1,5 +1,6 @@
 import { zeroAddress } from 'viem'
-import { useMarketAlert, MARKETS_ALERTS } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { MARKETS_ALERTS } from '@/llamalend/llama-markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'

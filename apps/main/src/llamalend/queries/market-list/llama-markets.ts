@@ -17,7 +17,7 @@ import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { useMappedQuery } from '@ui-kit/types/util'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from './constants'
+import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
   getLendingVaultsOptions,
