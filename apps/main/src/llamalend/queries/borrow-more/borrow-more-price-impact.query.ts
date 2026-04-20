@@ -5,11 +5,7 @@ import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validatio
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
 
-export const {
-  useQuery: useBorrowMorePriceImpact,
-  invalidate: invalidateBorrowMorePriceImpact,
-  refetchQuery: refetchBorrowMorePriceImpact,
-} = queryFactory({
+export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowMorePriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -18,6 +14,7 @@ export const {
     debt = '0',
     maxDebt,
     leverageEnabled,
+    slippage,
     routeId,
   }: BorrowMoreParams) =>
     [
@@ -27,6 +24,7 @@ export const {
       { debt },
       { maxDebt },
       { leverageEnabled },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -35,6 +33,7 @@ export const {
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
+    slippage,
     routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
@@ -43,6 +42,7 @@ export const {
       debt,
       leverageEnabled,
       routeId,
+      slippage,
     })
     if (type === 'unleveraged') return '0' // there is no price impact, user repays debt directly
     const priceImpact =

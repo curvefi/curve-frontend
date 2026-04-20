@@ -7,11 +7,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayPrices,
-  invalidate: invalidateRepayPrices,
-  refetchQuery: refetchRepayPrices,
-} = queryFactory({
+export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

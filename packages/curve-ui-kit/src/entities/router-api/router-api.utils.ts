@@ -3,6 +3,7 @@ import { ILeverageZapV2 } from '@curvefi/llamalend-api/lib/lendMarkets/interface
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
+import { formatUnits } from '@ui-kit/utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
 
@@ -31,7 +32,8 @@ export const parseMutationRoute = (
   zapv2: ILeverageZapV2,
 ): RouteMutationMeta => {
   const route = parseRoute(routeId)
-  return { ...route, minRecv: zapv2.calcMinRecv(route.quote.outAmount, Number(slippage)) }
+  const expected = formatUnits(BigInt(route.quote.outAmount), 18)
+  return { ...route, minRecv: zapv2.calcMinRecv(expected, Number(slippage)) }
 }
 
 /**

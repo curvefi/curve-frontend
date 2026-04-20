@@ -7,11 +7,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 
-export const {
-  useQuery: useBorrowMorePrices,
-  invalidate: invalidateBorrowMorePrices,
-  refetchQuery: refetchBorrowMorePrices,
-} = queryFactory({
+export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -21,6 +17,7 @@ export const {
     debt = '0',
     maxDebt,
     leverageEnabled,
+    slippage,
     routeId,
   }: BorrowMoreParams) =>
     [
@@ -31,6 +28,7 @@ export const {
       { debt },
       { maxDebt },
       { leverageEnabled },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -39,6 +37,7 @@ export const {
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
+    slippage,
     routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
@@ -47,6 +46,7 @@ export const {
       debt,
       leverageEnabled,
       routeId,
+      slippage,
     })
     switch (type) {
       case 'zapV2':

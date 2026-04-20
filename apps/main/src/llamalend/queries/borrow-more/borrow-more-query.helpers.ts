@@ -42,9 +42,8 @@ export function getBorrowMoreImplementationArgs(
     leverageEnabled,
     routeId,
     slippage,
-  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'routeId'> & {
+  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'routeId' | 'slippage'> & {
     leverageEnabled?: boolean | null
-    slippage?: BorrowMoreQuery['slippage']
   },
 ) {
   const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)

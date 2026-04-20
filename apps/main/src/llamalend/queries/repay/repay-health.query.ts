@@ -6,11 +6,7 @@ import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  getQueryOptions: getRepayHealthOptions,
-  invalidate: invalidateRepayHealth,
-  refetchQuery: refetchRepayHealth,
-} = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRepayHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

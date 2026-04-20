@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
+import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouterRouteResponse } from '@primitives/router.utils'
 import type { RoutesQuery } from './routes/routes.schemas'
 
 /**
@@ -21,12 +23,16 @@ const hashString = async (input: string, algorithm = 'SHA-256') =>
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('')
 
+/**
+ * The ID generated here aims to be stable for the same route parameters, so it can be used for caching and identifying
+ * routes across the app.
+ */
 export const generateId = async (
-  prefix: string,
   { chainId, tokenIn, tokenOut, amountIn, userAddress, slippage = 0.5 }: RoutesQuery,
+  { router }: RouterRouteResponse,
 ) =>
-  `${prefix}:${await hashString(
+  `${router}:${await hashString(
     [chainId, tokenIn, tokenOut, amountIn, slippage, userAddress]
-      .map((v) => (Array.isArray(v) ? v.join(',') : (v ?? '')))
+      .map((v) => toArray<number | string>(v).join(','))
       .join('-'),
   )}`

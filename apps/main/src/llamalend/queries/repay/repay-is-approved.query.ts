@@ -8,7 +8,6 @@ export const {
   useQuery: useRepayIsApproved,
   fetchQuery: fetchRepayIsApproved,
   invalidate: invalidateRepayIsApproved,
-  refetchQuery: refetchRepayIsApproved,
 } = queryFactory({
   queryKey: ({
     chainId,

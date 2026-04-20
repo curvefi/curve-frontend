@@ -43,11 +43,7 @@ function castFieldsToDecimal(foo: {
   }
 }
 
-export const {
-  useQuery: useBorrowMoreMaxReceive,
-  invalidate: invalidateBorrowMoreMaxReceive,
-  refetchQuery: refetchBorrowMoreMaxReceive,
-} = queryFactory({
+export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMoreMaxReceive } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

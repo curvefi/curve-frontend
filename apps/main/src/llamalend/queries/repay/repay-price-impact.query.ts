@@ -8,11 +8,7 @@ import { decimal } from '@ui-kit/utils'
 import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayPriceImpact,
-  invalidate: invalidateRepayPriceImpact,
-  refetchQuery: refetchRepayPriceImpact,
-} = queryFactory({
+export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

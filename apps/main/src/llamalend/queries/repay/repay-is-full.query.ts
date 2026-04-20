@@ -6,11 +6,7 @@ import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 /** Returns whether the planned repay fully closes the loan, whether repayment comes from debt token, wallet collateral, or position collateral. */
-export const {
-  useQuery: useRepayIsFull,
-  invalidate: invalidateRepayIsFull,
-  refetchQuery: refetchRepayIsFull,
-} = queryFactory({
+export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
