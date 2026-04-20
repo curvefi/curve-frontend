@@ -121,11 +121,8 @@ export const useBorrowPositionDetails = ({
     )
     // Band numbers go up as prices go down (e.g. band 20 = 100-200, band 21 = 50-100), so the
     // higher band number (userBandsValue[1]) is the lower price boundary of the user's range.
-    const [upperBoundary, lowerBoundary] = userBandsValue
-    const isUserBelowRange =
-      oraclePriceBand != null && upperBoundary != null && lowerBoundary != null
-        ? oraclePriceBand > lowerBoundary
-        : false
+    const [, lowerBoundary] = userBandsValue
+    const isUserBelowRange = oraclePriceBand != null && lowerBoundary != null && oraclePriceBand > lowerBoundary
     return getLiquidationStatus(healthNotFullValue, isCloseToSoftLiquidation, isUserBelowRange, collateral, borrowed)
   }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, collateral, borrowed])
 

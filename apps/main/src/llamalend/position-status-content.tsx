@@ -33,7 +33,7 @@ export const getPositionStatusContent = (
         You cannot add collateral while in the range. Close your position to recover current collateral. You can also
         monitor health closely and repay debt to keep the position open.
         <br />
-        If health reaches 0, your position is hard-liquidated.
+        If health reaches 0, your position can be hard-liquidated.
       </Trans>
     ),
     severity: 'warning',
@@ -43,7 +43,7 @@ export const getPositionStatusContent = (
     title: t`Position can be hard-liquidated`,
     description: (
       <Trans>
-        Health has reached 0. Your position can be liquidated at any time — all collateral will be lost. <br />
+        Health has reached 0. Your position can be liquidated at any time - all collateral will be lost. <br />
         Repay debt and close immediately to recover remaining collateral.
       </Trans>
     ),
@@ -66,7 +66,7 @@ export const getPositionStatusContent = (
     hasMarketAlert: true,
   },
   incompleteConversion: {
-    title: t`Position at risk — incomplete conversion`,
+    title: t`Position at risk - incomplete conversion`,
     description: (
       <Trans>
         Price is below your liquidation range but your {collateralSymbol} was not fully converted. Your position is

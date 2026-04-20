@@ -221,8 +221,8 @@ export function getLiquidationStatus(
   if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
   const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
   if (+healthNotFull < 0) return 'hardLiquidation' as const
-  if (userIsBelowRange && +userStateCollateral > threshold) return 'incompleteConversion' as const
-  if (userIsBelowRange && +userStateCollateral <= threshold) return 'fullyConverted' as const
+  if (userIsBelowRange && +userStateCollateral > 0) return 'incompleteConversion' as const // will replace with current band check when available on the API
+  if (userIsBelowRange && +userStateCollateral <= 0) return 'fullyConverted' as const // will replace with current band check when available on the API
   if (+userStateBorrowed > threshold) return 'softLiquidation' as const
   return 'healthy' as const
 }
