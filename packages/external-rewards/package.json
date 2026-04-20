@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "eslint": "*",
+    "eslint-config-custom": "*",
     "typescript": "*"
   }
 }
