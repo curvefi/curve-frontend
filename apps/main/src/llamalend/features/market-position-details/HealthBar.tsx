@@ -14,8 +14,6 @@ type HealthBarProps = {
 type HealthLevel = 'hardLiquidation' | 'liquidationProtection' | 'risky' | 'good' | 'pristine'
 
 const BAR_HEIGHT = '2rem' // 36px
-/** padding necesarry to mimic Metric components inherent line-height padding */
-const TRACK_BOTTOM_PADDING = '0.1875rem' // 3px
 /** Inset from the container border so labels sit inside the filled portion of the bar */
 const LABEL_INSET = '0.125rem' // 2px
 
@@ -49,7 +47,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
       />
     )
   ) : (
-    <Stack paddingBottom={TRACK_BOTTOM_PADDING} sx={sx}>
+    <Stack sx={sx}>
       <Stack
         sx={{
           position: 'relative',
