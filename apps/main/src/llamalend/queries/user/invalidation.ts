@@ -1,6 +1,6 @@
 import { invalidateUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@ui-kit/lib/model'
@@ -17,7 +17,7 @@ export const invalidateAllUserMarketDetails = ({
   userAddress,
   chainId,
   contractAddress,
-}: UserMarketQuery<IChainId> & UserContractQuery<INetworkName>) => {
+}: UserMarketQuery<IChainId> & UserContractQuery) => {
   ;(getLlamaMarket(marketId) as LendMarketTemplate)?.userPosition?.clearCache?.()
   return Promise.all([
     queryClient.invalidateQueries({ queryKey: rootKeys.market({ chainId, marketId }) }),

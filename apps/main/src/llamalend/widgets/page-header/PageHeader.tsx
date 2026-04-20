@@ -128,16 +128,12 @@ export const PageHeaderView = ({
           <IconButton
             size="extraSmall"
             onClick={() => {
-              const {
-                chainId,
-                constants: { NETWORK_NAME },
-                signerAddress,
-              } = market.getLlamalend()
+              const { chainId, signerAddress } = market.getLlamalend()
               return invalidateAllUserMarketDetails({
                 chainId: chainId as IChainId,
                 marketId: market.id,
                 userAddress: signerAddress as Address,
-                blockchainId: NETWORK_NAME,
+                blockchainId,
                 contractAddress: getControllerAddress(market),
               })
             }}
