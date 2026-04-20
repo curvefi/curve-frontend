@@ -22,8 +22,8 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
     collateralValue?.collateral?.usdRate,
   )
 
-  const crvUSDValueFormatted = formatMetricValue(collateralValue?.borrow?.value)
-  const crvUSDPercentage = formatPercentage(
+  const borrowValueFormatted = formatMetricValue(collateralValue?.borrow?.value)
+  const borrowPercentage = formatPercentage(
     collateralValue?.borrow?.value,
     collateralValue?.totalValue,
     collateralValue?.borrow?.usdRate,
@@ -37,7 +37,7 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include crvUSD due to liquidation protection.`}
+        text={t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include ${collateralValue?.borrow.symbol} due to liquidation protection.`}
       />
 
       <Stack>
@@ -47,8 +47,8 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol}`}
-            {crvUSDPercentage && ` (${crvUSDPercentage})`}
+            {`${borrowValueFormatted} ${collateralValue?.borrow?.symbol}`}
+            {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
