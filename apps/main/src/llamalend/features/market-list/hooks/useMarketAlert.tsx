@@ -18,36 +18,41 @@ export type MarketAlert = TooltipProps & {
   message?: ReactNode
 }
 
-export type Alerts = { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
+export const MARKETS_ALERTS: Record<
+  LlamaMarketType,
+  { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
+> = {
+  /** LEND MARKET ALERTS */
+  Lend: {
+    [Chain.Ethereum]: {
+      // one-way-market-30 - sDOLA/crvUSD
+      '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
+        alertType: 'danger',
+        isDisableBorrow: true,
+        isDisableDeposit: true,
+        message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
+      },
+      // one-way-market-3 - CRV/crvUSD
+      '0xeda215b7666936ded834f76f3fbc6f323295110a': {
+        alertType: 'danger',
+        isDisableBorrow: true,
+        isDisableDeposit: true,
+        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+      },
+    },
+    [Chain.Arbitrum]: {
+      // one-way-market-7 - FXN/crvUSD
+      '0x7adcc491f0b7f9bc12837b8f5edf0e580d176f1f': {
+        alertType: 'danger',
+        isDisableDeposit: true,
+        message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
+      },
+    },
+  },
 
-export const LEND_MARKETS_ALERTS: Alerts = {
-  [Chain.Ethereum]: {
-    // one-way-market-30 - sDOLA/crvUSD
-    '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
-      alertType: 'danger',
-      isDisableBorrow: true,
-      isDisableDeposit: true,
-      message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
-    },
-    // one-way-market-3 - CRV/crvUSD
-    '0xeda215b7666936ded834f76f3fbc6f323295110a': {
-      alertType: 'danger',
-      isDisableBorrow: true,
-      isDisableDeposit: true,
-      message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-    },
-  },
-  [Chain.Arbitrum]: {
-    // one-way-market-7 - FXN/crvUSD
-    '0x7adcc491f0b7f9bc12837b8f5edf0e580d176f1f': {
-      alertType: 'danger',
-      isDisableDeposit: true,
-      message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
-    },
-  },
+  /** MINT MARKET ALERTS */
+  Mint: {},
 }
-
-export const MINT_MARKETS_ALERTS: Alerts = {}
 
 export const useMarketAlert = <ChainId extends IChainId>(
   rChainId: ChainId,
@@ -57,7 +62,7 @@ export const useMarketAlert = <ChainId extends IChainId>(
   useMemo(
     () =>
       controllerAddress &&
-      (marketType === LlamaMarketType.Lend ? LEND_MARKETS_ALERTS : MINT_MARKETS_ALERTS)[rChainId]?.[
+      MARKETS_ALERTS[marketType][rChainId]?.[
         // we have tests to be sure that all controller addresses of the alerts are lowercase
         controllerAddress.toLowerCase() as Address
       ],
