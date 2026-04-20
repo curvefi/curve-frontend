@@ -97,6 +97,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     await fetchNetworks() // Pool ids have a dependency on networks
     const poolIds = await fetchPoolIds(curveApi, { chainId })
 
+    // invalidate any queries that depend on the list of pool ids
     await Promise.all([invalidatePoolVolumes({ chainId }), invalidatePoolTvls({ chainId })])
     await state.pools.fetchPools(curveApi, poolIds)
 
