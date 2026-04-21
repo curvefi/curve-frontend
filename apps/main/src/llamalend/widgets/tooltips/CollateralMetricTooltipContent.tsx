@@ -22,8 +22,8 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
     collateralValue?.collateral?.usdRate,
   )
 
-  const crvUSDValueFormatted = formatMetricValue(collateralValue?.borrow?.value)
-  const crvUSDPercentage = formatPercentage(
+  const borrowValueFormatted = formatMetricValue(collateralValue?.borrow?.value)
+  const borrowPercentage = formatPercentage(
     collateralValue?.borrow?.value,
     collateralValue?.totalValue,
     collateralValue?.borrow?.usdRate,
@@ -34,21 +34,24 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
       ? formatUsd(collateralValue.totalValue, { abbreviate: false })
       : UnavailableNotation
 
+  const collateralTokenSymbol = collateralValue?.collateral?.symbol ?? '?'
+  const borrowTokenSymbol = collateralValue?.borrow?.symbol ?? '?'
+
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include crvUSD due to liquidation protection.`}
+        text={t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include ${borrowTokenSymbol} due to liquidation protection.`}
       />
 
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${collateralValueFormatted} ${collateralValue?.collateral?.symbol}`}
+            {`${collateralValueFormatted} ${collateralTokenSymbol}`}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol}`}
-            {crvUSDPercentage && ` (${crvUSDPercentage})`}
+            {`${borrowValueFormatted} ${borrowTokenSymbol}`}
+            {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
