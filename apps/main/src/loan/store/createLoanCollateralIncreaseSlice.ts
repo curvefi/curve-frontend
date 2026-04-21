@@ -62,7 +62,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   step: '',
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
+const DEFAULT_FORM_VALUES: FormValues = {
   collateral: '',
   collateralError: '',
 }
@@ -234,6 +234,6 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
   },
 })
 
-export function getCollateralIncreaseActiveKey(llamma: Llamma, collateral: string) {
+function getCollateralIncreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${llamma.collateralSymbol}-${collateral}`
 }

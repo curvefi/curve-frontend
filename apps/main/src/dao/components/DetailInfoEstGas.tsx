@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
-export type StepProgress = {
+type StepProgress = {
   active: number
   total: number
 }

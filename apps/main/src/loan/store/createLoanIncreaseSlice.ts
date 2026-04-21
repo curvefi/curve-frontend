@@ -65,7 +65,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   step: '',
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
+const DEFAULT_FORM_VALUES: FormValues = {
   collateral: '',
   collateralError: '',
   debt: '',
@@ -272,7 +272,7 @@ export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: Store
   },
 })
 
-export function getLoanIncreaseActiveKey(llamma: Llamma, { collateral, debt }: FormValues) {
+function getLoanIncreaseActiveKey(llamma: Llamma, { collateral, debt }: FormValues) {
   return `${llamma.id}-${collateral}-${debt}`
 }
 

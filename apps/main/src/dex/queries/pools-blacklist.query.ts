@@ -9,7 +9,7 @@ import { mapQuery } from '@ui-kit/types/util'
 // List for core api https://github.com/curvefi/curve-api-core/blob/ab4080c816438c9c97d0baab82ad939aabb9bc85/routes/v1/getHiddenPools.js
 
 // We allow blocking more than just the chains supported by prices api.
-export type ChainBlacklist =
+type ChainBlacklist =
   | Chain
   | 'avalanche'
   | 'moonbeam'

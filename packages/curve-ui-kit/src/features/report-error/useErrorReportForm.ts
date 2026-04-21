@@ -10,7 +10,7 @@ export type ErrorContext = {
   subtitle: string
 }
 
-export type ErrorReportFormValues = {
+type ErrorReportFormValues = {
   address: string
   contactMethod: ContactMethod
   contact: string

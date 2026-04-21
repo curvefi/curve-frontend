@@ -23,7 +23,7 @@ import { Chain } from '@ui-kit/utils/network'
 import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
 import { StackBanners } from './StackBanners'
 
-export type GlobalBannerProps = {
+type GlobalBannerProps = {
   networkId: string
   chainId: number
 }

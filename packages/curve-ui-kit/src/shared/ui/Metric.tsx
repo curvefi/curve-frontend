@@ -34,8 +34,7 @@ export const MetricSize = {
   extraLarge: 'highlightXxl',
 } as const satisfies Record<string, TypographyVariantKey>
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const MetricUnitSize = {
+const MetricUnitSize = {
   small: 'highlightXs',
   medium: 'highlightS',
   large: 'highlightM',

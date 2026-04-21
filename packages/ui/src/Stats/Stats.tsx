@@ -29,8 +29,7 @@ export const Stats = ({ className, description, isAlignRight, isBorderBottom, is
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const Description: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
+const Description: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
   font-size: var(--font-size-2);
   font-weight: 500;
 `

@@ -106,7 +106,7 @@ export type SlippageSettingsCallbacks = {
   onSave: (slippage: Decimal) => void
 }
 
-export type Props = SlippageSettingsProps & SlippageSettingsCallbacks
+type Props = SlippageSettingsProps & SlippageSettingsCallbacks
 
 /**
  * Modal component for configuring slippage settings

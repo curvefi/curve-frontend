@@ -14,9 +14,9 @@ import { type QueryProp } from '@ui-kit/types/util'
 import { formatPercent, getErrorMessage } from '@ui-kit/utils'
 import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
-export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
+type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
-export type FormAlertProps<Field extends string> = {
+type FormAlertProps<Field extends string> = {
   error: Error | null
   formErrors: FormErrors<Field> // list of all form errors
   handledErrors: Field[] // list of fields that have their errors already handled/displayed elsewhere

@@ -1,7 +1,7 @@
 import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { PoolDataCacheMapper } from '@/dex/types/main.types'
-import { sleep } from '@/dex/utils'
+import { sleep } from '@ui-kit/utils/time.utils'
 
 export type SwapFormValuesCache = {
   fromAddress: string

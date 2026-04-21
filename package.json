@@ -27,9 +27,7 @@
     "check-supply-chain": "node .github/check-supply-chain.mjs"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
-    "@commitlint/load": "20.5.0",
     "@eslint/eslintrc": "*",
     "@eslint/js": "*",
     "@types/react": "*",
@@ -54,7 +52,7 @@
     "vitest": "*",
     "zustand": "*"
   },
-  "packageManager": "yarn@4.14.0",
+  "packageManager": "yarn@4.14.1",
   "lint-staged": {
     "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",

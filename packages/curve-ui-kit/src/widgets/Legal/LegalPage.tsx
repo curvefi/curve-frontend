@@ -19,7 +19,7 @@ import type { Tab, DisclaimerTab } from './types/tabs'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-export type LegalPageProps = {
+type LegalPageProps = {
   currentApp: AppName
 }
 

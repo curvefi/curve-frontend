@@ -24,11 +24,7 @@ export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: 
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
   })
 
-export const gaugeDepositRewardApproveValidationGroup = ({
-  rewardTokenId,
-  amount,
-  userBalance,
-}: DepositRewardApproveParams) =>
+const gaugeDepositRewardApproveValidationGroup = ({ rewardTokenId, amount, userBalance }: DepositRewardApproveParams) =>
   group('gaugeDepositRewardApproveValidationGroup', () => {
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
     test('amount', () => validateAmount({ rewardTokenId, amount, userBalance }))

@@ -16,7 +16,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 import { getCreateLoanImplementation } from '../create-loan/create-loan-query.helpers'
 
-export const createLoanFormValidationGroup = (
+const createLoanFormValidationGroup = (
   {
     userBorrowed,
     userCollateral,

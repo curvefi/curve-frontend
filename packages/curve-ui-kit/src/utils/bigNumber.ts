@@ -35,7 +35,7 @@ export function isGreaterThanOrEqualTo(inputVal: bigint | string, compareValue: 
   return biInputValue >= biCompareValue
 }
 
-export function parseUnits(val: string | bigint, unit: number | undefined = 18) {
+function parseUnits(val: string | bigint, unit: number | undefined = 18) {
   if (typeof val === 'bigint') return val
 
   // parseUnits will throw error if value is empty string

@@ -1,2 +1,2 @@
 export { useChainId } from './chain-info'
-export { useOneWayMarket, useOneWayMarketMapping } from './chain-hooks'
+export { useOneWayMarket } from './chain-hooks'

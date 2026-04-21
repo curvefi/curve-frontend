@@ -7,7 +7,7 @@ import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { RoutesQuery } from './router-api.types'
 
-export const validateRouter = ({
+const validateRouter = ({
   router,
   isRequired,
 }: {

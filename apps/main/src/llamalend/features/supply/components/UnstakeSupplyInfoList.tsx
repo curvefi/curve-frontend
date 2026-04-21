@@ -13,7 +13,7 @@ import { decimalMinus } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
-export type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
+type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: UnstakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }

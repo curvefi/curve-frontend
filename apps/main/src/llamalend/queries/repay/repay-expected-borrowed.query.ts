@@ -6,7 +6,7 @@ import { decimal } from '@ui-kit/utils'
 import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export type RepayExpectedBorrowedResult = {
+type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
   borrowedFromStateCollateral?: Decimal
   borrowedFromUserCollateral?: Decimal

@@ -5,7 +5,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 
-export type LlammaEventsParams = FieldsOf<GetEventsParams>
+type LlammaEventsParams = FieldsOf<GetEventsParams>
 
 export const { useQuery: useLlammaEvents } = queryFactory({
   queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaEventsParams) =>

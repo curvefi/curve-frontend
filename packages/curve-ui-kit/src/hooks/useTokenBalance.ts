@@ -69,7 +69,7 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         .then((results) => convertBalance(parseERC20Results(results)))
 
 /** Invalidate a specific token balance query  */
-export const invalidateTokenBalance = (config: Config, query: TokenBalanceQuery) => {
+const invalidateTokenBalance = (config: Config, query: TokenBalanceQuery) => {
   const { queryKey } = isNative(query)
     ? getNativeBalanceQueryOptions(config, query)
     : readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) })

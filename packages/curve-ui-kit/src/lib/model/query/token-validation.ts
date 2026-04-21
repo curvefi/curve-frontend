@@ -1,6 +1,5 @@
 import { enforce, group, test } from 'vest'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { createValidationSuite } from '@ui-kit/lib/validation'
 import type { TokenParams } from './root-keys'
 
 export const tokenValidationGroup = ({ chainId, tokenAddress }: TokenParams) =>
@@ -14,5 +13,3 @@ export const tokenValidationGroup = ({ chainId, tokenAddress }: TokenParams) =>
         .isAddress()
     })
   })
-
-export const tokenValidationSuite = createValidationSuite(tokenValidationGroup)

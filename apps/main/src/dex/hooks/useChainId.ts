@@ -3,7 +3,7 @@ import { type ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/ma
 import { useParams } from '@ui-kit/hooks/router'
 import { useNetworks } from '../entities/networks'
 
-export const useNetwork = (networkId: string) => {
+const useNetwork = (networkId: string) => {
   const { data: networks } = useNetworks()
   return useMemo(
     () => Object.values(networks).find((network) => network.networkId === networkId),

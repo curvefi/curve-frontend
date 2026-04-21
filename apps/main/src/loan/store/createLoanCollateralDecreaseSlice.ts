@@ -55,7 +55,7 @@ export type LoanCollateralDecreaseSlice = {
   }
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
+const DEFAULT_FORM_VALUES: FormValues = {
   collateral: '',
   collateralError: '',
 }
@@ -215,6 +215,6 @@ export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], 
   },
 })
 
-export function getCollateralDecreaseActiveKey(llamma: Llamma, collateral: string) {
+function getCollateralDecreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${getTokenName(llamma).collateral}-${collateral}`
 }

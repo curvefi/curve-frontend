@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@curvefi/llamalend-api": "2.0.18",
-    "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@supercharge/promise-pool": "^3.3.0",
@@ -52,7 +51,6 @@
   },
   "devDependencies": {
     "@curvefi/api": "*",
-    "@eslint/js": "*",
     "@sentry/vite-plugin": "^4.5.0",
     "@types/lodash": "^4.17.23",
     "@types/memoizee": "^0.4.12",
@@ -60,10 +58,7 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "*",
-    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "*",
-    "eslint-config-custom": "*",
-    "globals": "^17.4.0",
     "pinst": "^3.0.0",
     "typescript": "*",
     "typescript-eslint": "^8.58.2",

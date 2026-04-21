@@ -18,7 +18,7 @@ const ALERT_FORM_ERROR_KEYS = {
   'error-liquidation-mode': 'error-liquidation-mode',
 } as const
 
-export type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
+type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: AlertFormErrorKey | string

@@ -19,7 +19,6 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
-    "@mui/utils": "^7.3.7",
     "@safe-global/safe-apps-provider": "~0.18.6",
     "@safe-global/safe-apps-sdk": "~9.1.0",
     "@sentry/react": "^10.48.0",
@@ -44,8 +43,6 @@
     "zustand": "*"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.6",
-    "@babel/runtime": "^7.28.6",
     "@chromatic-com/storybook": "^5.1.1",
     "@storybook/addon-a11y": "10.3.5",
     "@storybook/addon-docs": "10.3.5",

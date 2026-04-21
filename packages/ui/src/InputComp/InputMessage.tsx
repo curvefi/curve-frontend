@@ -4,7 +4,7 @@ import { Icon } from '@ui/Icon/Icon'
 import { useInputContext } from './InputContext'
 import type { InputVariant } from './types'
 
-export interface InputMessageProps {
+interface InputMessageProps {
   message?: string
 }
 

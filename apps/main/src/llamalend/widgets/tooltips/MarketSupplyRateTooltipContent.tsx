@@ -19,7 +19,7 @@ type SupplyBoost = {
   totalApy: number | null | undefined
   totalAverageApy: number | null | undefined
 }
-export type MarketSupplyRateTooltipContentProps = {
+type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | null | undefined
   averageSupplyApy: number | null | undefined
   periodLabel: string

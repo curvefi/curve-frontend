@@ -203,7 +203,7 @@ export function _isWithdraw(formType: FormType) {
   return formType === 'withdraw'
 }
 
-export function _getActiveKey(
+function _getActiveKey(
   rChainId: ChainId,
   formType: FormType,
   market: OneWayMarketTemplate | undefined,
