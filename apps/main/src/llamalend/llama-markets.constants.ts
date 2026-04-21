@@ -144,6 +144,7 @@ export const DEPRECATED_LLAMAS: Record<
       },
       // UwU-crvUSD
       '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,
+      // UNIT0-crvUSD
       '0xd15d9797c4ECBf1c97c010327602bC51A09Dfb95': DEFAULT_DEPRECATE,
     },
     arbitrum: {
