@@ -18,7 +18,6 @@ export const {
   useQuery: useRepayExpectedBorrowed,
   queryKey: repayExpectedBorrowedQueryKey,
   invalidate: invalidateRepayExpectedBorrowed,
-  refetchQuery: refetchRepayExpectedBorrowed,
 } = queryFactory({
   queryKey: ({
     chainId,
@@ -54,6 +53,7 @@ export const {
       stateCollateral,
       userBorrowed,
       routeId,
+      slippage,
     })
     switch (type) {
       case 'zapV2':

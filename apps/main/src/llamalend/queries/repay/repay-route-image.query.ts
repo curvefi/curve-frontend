@@ -4,11 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayRouteImage,
-  invalidate: invalidateRepayRouteImage,
-  refetchQuery: refetchRepayRouteImage,
-} = queryFactory({
+export const { invalidate: invalidateRepayRouteImage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -16,6 +12,7 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -24,10 +21,17 @@ export const {
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, routeId }: RepayQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
+    const [type, impl] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      slippage,
+      routeId,
+    })
     switch (type) {
       case 'V1':
       case 'V2':

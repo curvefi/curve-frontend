@@ -23,7 +23,7 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
-import { invalidateOrRefetchCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
+import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
@@ -148,8 +148,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteResponse | undefined) => {
+        await invalidateCreateLoanRouteQueries(route, params)
         updateForm(form, { routeId: route?.id })
-        await invalidateOrRefetchCreateLoanRouteQueries(route, { ...params, routeId: route?.id })
       },
     }),
   }
