@@ -20,16 +20,16 @@ const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultRele
 export const useCreateLoanMuiForm = useStableChannel
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
-export const useLendingMuiForm = useBetaChannel
+export const useLendingMuiForm = useStableChannel
 
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = useBetaChannel
+export const useManageLoanMuiForm = useStableChannel
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
 
 /** New card for managing soft liquidations */
-export const useManageSoftLiquidation = useBetaChannel
+export const useManageSoftLiquidation = useStableChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useStableChannel
@@ -42,7 +42,7 @@ export const useLLv2 = useBetaChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** New market page layout with forms on the right  */
-export const useRightFormTabsLayout = useBetaChannel
+export const useRightFormTabsLayout = useStableChannel
 
 /** New market historical rates chart */
 export const useMarketHistoricalRatesChart = useBetaChannel
