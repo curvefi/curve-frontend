@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -23,9 +25,11 @@ export const FormContent = ({
   <WithWrapper shouldWrap={footer} Wrapper={Stack} gap={Spacing.sm}>
     <WithWrapper shouldWrap={header} Wrapper={Stack} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       {header}
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }} gap={Spacing.md} padding={Spacing.md}>
-        {children}
-      </Stack>
+      <Card>
+        <CardContent component={Stack} size="small" gap={Spacing.md}>
+          {children}
+        </CardContent>
+      </Card>
     </WithWrapper>
     {footer}
   </WithWrapper>

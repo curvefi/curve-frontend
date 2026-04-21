@@ -5,7 +5,7 @@ import { Chain } from '@ui-kit/utils'
 
 export type BridgeAlert = {
   alertType: AlertType
-  isDisableBridge?: boolean // disallow user from bridging
+  isBridgeDisabled?: boolean // disallow user from bridging
   message?: ReactNode
 }
 
@@ -13,7 +13,7 @@ type Alerts = { [chainId: number]: BridgeAlert }
 
 const RSETH_ALERT: BridgeAlert = {
   alertType: 'danger',
-  isDisableBridge: true,
+  isBridgeDisabled: true,
   message: t`FastBridge is temporarily paused as a precaution pending further clarity from a recent third-party incident. No issue has been identified with Curve.`,
 }
 

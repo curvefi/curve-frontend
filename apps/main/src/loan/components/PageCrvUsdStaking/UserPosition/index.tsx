@@ -37,71 +37,69 @@ export const UserPosition = () => {
   return (
     <Card>
       <CardHeader size="small" title={t`Position Details`} />
-      <CardContent>
-        <Stack gap={Spacing.md}>
-          <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
-            <Grid size={6}>
-              <Metric
-                size="large"
-                label={t`Your crvUSD Staked`}
-                value={userScrvUsdBalanceInCrvUsd}
-                valueOptions={{ unit: CRVUSD_OPTIONS }}
-                loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
-              />
-            </Grid>
-            <Grid size={6}>
-              <Metric
-                size="large"
-                label={t`Your share of the vault`}
-                value={userShareOfTotalScrvUsdSupply}
-                valueOptions={{ unit: 'percentage' }}
-                loading={isStatisticsLoading}
-              />
-            </Grid>
+      <CardContent component={Stack} gap={Spacing.md}>
+        <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
+          <Grid size={6}>
+            <Metric
+              size="large"
+              label={t`Your crvUSD Staked`}
+              value={userScrvUsdBalanceInCrvUsd}
+              valueOptions={{ unit: CRVUSD_OPTIONS }}
+              loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
+            />
+          </Grid>
+          <Grid size={6}>
+            <Metric
+              size="large"
+              label={t`Your share of the vault`}
+              value={userShareOfTotalScrvUsdSupply}
+              valueOptions={{ unit: 'percentage' }}
+              loading={isStatisticsLoading}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container columnSpacing={Spacing.lg} rowSpacing={Spacing.md} wrap="wrap">
+          <Grid size={3}>
+            <Metric
+              size="small"
+              label={t`30 Days Projection`}
+              value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              valueOptions={{ unit: 'dollar' }}
+              loading={isStatisticsLoading || userBalanceLoading}
+              labelTooltip={{
+                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
+            />
           </Grid>
 
-          <Grid container columnSpacing={Spacing.lg} rowSpacing={Spacing.md} wrap="wrap">
-            <Grid size={3}>
-              <Metric
-                size="small"
-                label={t`30 Days Projection`}
-                value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
-                valueOptions={{ unit: 'dollar' }}
-                loading={isStatisticsLoading || userBalanceLoading}
-                labelTooltip={{
-                  title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-                }}
-              />
-            </Grid>
+          <Grid size={3}>
+            <Metric
+              size="small"
+              label={t`1 Year Projection`}
+              value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              valueOptions={{ unit: 'dollar' }}
+              loading={isStatisticsLoading || userBalanceLoading}
+              labelTooltip={{
+                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
+            />
+          </Grid>
 
-            <Grid size={3}>
-              <Metric
-                size="small"
-                label={t`1 Year Projection`}
-                value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
-                valueOptions={{ unit: 'dollar' }}
-                loading={isStatisticsLoading || userBalanceLoading}
-                labelTooltip={{
-                  title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-                }}
-              />
-            </Grid>
-
-            <Grid size={3}>
-              <Metric
-                size="small"
-                label={t`Estimated APY`}
-                value={scrvUsdApy}
-                valueOptions={{ unit: 'percentage' }}
-                loading={isStatisticsLoading}
-                labelTooltip={{
-                  title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
+          <Grid size={3}>
+            <Metric
+              size="small"
+              label={t`Estimated APY`}
+              value={scrvUsdApy}
+              valueOptions={{ unit: 'percentage' }}
+              loading={isStatisticsLoading}
+              labelTooltip={{
+                title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-                }}
-              />
-            </Grid>
+              }}
+            />
           </Grid>
-        </Stack>
+        </Grid>
       </CardContent>
     </Card>
   )

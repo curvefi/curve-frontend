@@ -11,7 +11,7 @@ export type BridgeFormParams = {
 
 const BridgeTab = (params: BridgeFormParams) => {
   const bridgeAlert = useBridgeAlert(params.chainId)
-  const bridgeDisabledAlert = bridgeAlert?.isDisableBridge
+  const bridgeDisabledAlert = bridgeAlert?.isBridgeDisabled
     ? { message: bridgeAlert.message, alertType: bridgeAlert.alertType }
     : undefined
 

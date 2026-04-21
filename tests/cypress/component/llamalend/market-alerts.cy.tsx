@@ -1,12 +1,10 @@
 import { zeroAddress } from 'viem'
-import {
-  useMarketAlert,
-  LEND_MARKETS_ALERTS,
-  MINT_MARKETS_ALERTS,
-} from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { MARKETS_ALERTS } from '@/llamalend/llama-markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { oneOf } from '@cy/support/generators'
+import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
+import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
@@ -34,14 +32,18 @@ const mountMarketAlert = ({
   marketType: LlamaMarketType
 }) => cy.mount(<MarketAlertHookTest chainId={chainId} controllerAddress={controllerAddress} marketType={marketType} />)
 
-const ALL_MARKET_ALERTS = [LEND_MARKETS_ALERTS, MINT_MARKETS_ALERTS] as const
+const ALL_MARKET_ALERTS = recordValues(MARKETS_ALERTS)
 
-const LEND_ALERT_CASES = Object.entries(LEND_MARKETS_ALERTS).flatMap(([chainId, chainAlerts]) =>
-  Object.entries(chainAlerts).map(([controllerAddress, alert]) => ({
-    chainId: Number(chainId) as IChainId,
-    controllerAddress: controllerAddress as Address,
-    alertType: alert.alertType,
-  })),
+/** Get a list of all alerts for each market type, and chain */
+const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAlerts]) =>
+  recordEntries(marketAlerts).flatMap(([chainId, chainAlerts]) =>
+    recordEntries(chainAlerts).map(([controllerAddress, alert]) => ({
+      marketType,
+      chainId: Number(chainId) as IChainId,
+      controllerAddress,
+      alertType: alert.alertType,
+    })),
+  ),
 )
 
 describe('useMarketAlert', () => {
@@ -57,12 +59,12 @@ describe('useMarketAlert', () => {
     }
   })
 
-  it(`returns the correct alert for lend checksummed addresses`, () => {
-    const alert = oneOf(...LEND_ALERT_CASES)
+  it(`returns the correct alert for checksummed addresses`, () => {
+    const alert = oneOf(...ALERT_CASES)
     mountMarketAlert({
       chainId: alert.chainId,
       controllerAddress: alert.controllerAddress.toUpperCase() as Address,
-      marketType: LlamaMarketType.Lend,
+      marketType: alert.marketType,
     })
 
     cy.get('[data-testid="market-alert-state"]').should('have.text', alert.alertType)
@@ -72,7 +74,7 @@ describe('useMarketAlert', () => {
     mountMarketAlert({
       chainId: Chain.Avalanche as IChainId,
       controllerAddress: zeroAddress,
-      marketType: LlamaMarketType.Lend,
+      marketType: oneValueOf(LlamaMarketType),
     })
 
     cy.get('[data-testid="market-alert-state"]').should('have.text', 'missing')

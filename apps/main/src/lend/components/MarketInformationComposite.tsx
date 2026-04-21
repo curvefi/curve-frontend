@@ -63,16 +63,14 @@ export const MarketInformationComposite = ({
       {market && (
         <Card>
           <CardHeader title={t`Advanced Details`} size="small" />
-          <CardContent>
-            <Stack>
-              <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
-              <MarketInfoLayout
-                chainId={rChainId}
-                marketType={LlamaMarketType.Lend}
-                market={market}
-                network={networks[rChainId]}
-              />
-            </Stack>
+          <CardContent component={Stack}>
+            <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
+            <MarketInfoLayout
+              chainId={rChainId}
+              marketType={LlamaMarketType.Lend}
+              market={market}
+              network={networks[rChainId]}
+            />
           </CardContent>
         </Card>
       )}
