@@ -1,6 +1,6 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { MARKETS_ALERTS } from '@/llamalend/llama-markets.constants'
+import { DEPRECATED_LLAMAS, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/llama-markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
@@ -33,6 +33,7 @@ const mountMarketAlert = ({
 }) => cy.mount(<MarketAlertHookTest chainId={chainId} controllerAddress={controllerAddress} marketType={marketType} />)
 
 const ALL_MARKET_ALERTS = recordValues(MARKETS_ALERTS)
+const ALL_DEPRECATED_LLAMAS = recordValues(DEPRECATED_LLAMAS)
 
 /** Get a list of all alerts for each market type, and chain */
 const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAlerts]) =>
@@ -46,7 +47,7 @@ const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAl
   ),
 )
 
-describe('useMarketAlert', () => {
+describe('llama market constants', () => {
   it('keeps every configured market alert key checksummed', () => {
     for (const alerts of ALL_MARKET_ALERTS) {
       for (const chainAlerts of Object.values(alerts)) {
@@ -56,7 +57,26 @@ describe('useMarketAlert', () => {
       }
     }
   })
+  it('keeps every deprecated llama address checksummed', () => {
+    for (const deprecatedMarkets of ALL_DEPRECATED_LLAMAS) {
+      for (const chainMarkets of Object.values(deprecatedMarkets)) {
+        for (const controllerAddress of Object.keys(chainMarkets)) {
+          expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
+        }
+      }
+    }
+  })
 
+  it('keeps every no leverage lend address checksummed', () => {
+    for (const chainMarkets of recordValues(NO_LEVERAGE_LEND)) {
+      for (const controllerAddress of chainMarkets) {
+        expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
+      }
+    }
+  })
+})
+
+describe('useMarketAlert', () => {
   it(`returns the correct alert for checksummed addresses`, () => {
     const alert = oneOf(...ALERT_CASES)
     mountMarketAlert({
