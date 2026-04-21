@@ -19,7 +19,18 @@ type MarketAlert = TooltipProps & {
   message?: ReactNode
 }
 
-// Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
+const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
+const DEFAULT_ALERT: MarketAlert = {
+  alertType: 'danger',
+  isBorrowDisabled: true,
+  isDepositDisabled: true,
+  message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+}
+
+/**
+ * Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
+ * Addresses must be lowercase. Tests have been added to enforce this.
+ */
 export const MARKETS_ALERTS: Record<
   LlamaMarketType,
   { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
@@ -29,25 +40,13 @@ export const MARKETS_ALERTS: Record<
     [Chain.Ethereum]: {
       // one-way-market-30 - sDOLA/crvUSD
       '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
+        ...DEFAULT_ALERT,
         message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
       },
       // one-way-market-3 - CRV/crvUSD
-      '0xeda215b7666936ded834f76f3fbc6f323295110a': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0xeda215b7666936ded834f76f3fbc6f323295110a': DEFAULT_ALERT,
       // one-way-market-8 - UwU/crvUSD
-      '0x09dbdeb3b301a4753589ac6df8a178c7716ce16b': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0x09dbdeb3b301a4753589ac6df8a178c7716ce16b': DEFAULT_ALERT,
     },
     [Chain.Arbitrum]: {
       // one-way-market-7 - FXN/crvUSD
@@ -56,22 +55,29 @@ export const MARKETS_ALERTS: Record<
         isBorrowDisabled: true,
         message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
       },
+      // one-way-market-47 - iBTC/crvUSD
+      '0x3e293db65c81742e32b74e21a0787d2936beedf7': {
+        ...DEFAULT_ALERT,
+        message: t`iBTC is undergoing systematic unwinding. New borrow positions and deposits are disabled.`,
+      },
     },
     [Chain.Fraxtal]: {
       // one-way-market-4 - SQUID/crvUSD
-      '0xbf55bb9463bbbb6ad724061910a450939e248ea6': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0xbf55bb9463bbbb6ad724061910a450939e248ea6': DEFAULT_ALERT,
       // one-way-market-2 - WFRAX/crvUSD
-      '0xf0922934f16dbe5df9f90f729b2023d5e1fc2f15': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0xf0922934f16dbe5df9f90f729b2023d5e1fc2f15': DEFAULT_ALERT,
+    },
+    [Chain.Optimism]: {
+      // one-way-market-4 - CRV/crvUSD
+      '0x88aa928b906b745009b53a31034701fc377b7c89': DEFAULT_ALERT,
+      // one-way-market-3 - OP/crvUSD
+      '0xc5cd9f6a1fb88bed782f475f72ff686ed35b7e8e': DEFAULT_ALERT,
+    },
+    [Chain.Sonic]: {
+      // one-way-market-3 - scETH/crvUSD
+      '0x7547e577b3ddc23c02e10792457f8e51a225692e': DEFAULT_ALERT,
+      // one-way-market-0 - wS/crvUSD
+      '0x5ed490a9b71fa797231d2c5d9be25bf91a953c19': DEFAULT_ALERT,
     },
   },
 
@@ -80,7 +86,6 @@ export const MARKETS_ALERTS: Record<
 }
 
 export type DeprecatedMarketAlert = { message: string; url?: string }
-const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
 
 // Deprecated markets are hidden from market list for new users but remain accessible to users with existing positions.
 export const DEPRECATED_LLAMAS: Record<
