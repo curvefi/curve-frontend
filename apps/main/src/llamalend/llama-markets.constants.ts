@@ -48,6 +48,13 @@ export const MARKETS_ALERTS: Record<
         isDepositDisabled: true,
         message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
       },
+      // one-way-market-44 - UNIT0/crvUSD
+      '0xd15d9797c4ecbf1c97c010327602bc51a09dfb95': {
+        alertType: 'danger',
+        isBorrowDisabled: true,
+        isDepositDisabled: true,
+        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+      },
     },
     [Chain.Arbitrum]: {
       // one-way-market-7 - FXN/crvUSD
@@ -137,6 +144,7 @@ export const DEPRECATED_LLAMAS: Record<
       },
       // UwU-crvUSD
       '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,
+      '0xd15d9797c4ECBf1c97c010327602bC51A09Dfb95': DEFAULT_DEPRECATE,
     },
     arbitrum: {
       // iBTC-crvUSD
