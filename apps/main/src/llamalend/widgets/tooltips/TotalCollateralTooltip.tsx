@@ -31,8 +31,8 @@ export const TotalCollateralTooltip = ({
   const collateralValueFormatted = formatMetricValue(totalCollateral)
   const collateralPercentage = formatPercentage(totalCollateral, combinedCollateralUsdValue, collateralUsdRate)
 
-  const crvUSDValueFormatted = formatMetricValue(totalBorrowed)
-  const crvUSDPercentage = formatPercentage(totalBorrowed, combinedCollateralUsdValue, borrowedUsdRate)
+  const borrowValueFormatted = formatMetricValue(totalBorrowed)
+  const borrowPercentage = formatPercentage(totalBorrowed, combinedCollateralUsdValue, borrowedUsdRate)
 
   const totalValueFormatted =
     combinedCollateralUsdValue != null
@@ -50,12 +50,12 @@ export const TotalCollateralTooltip = ({
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${collateralValueFormatted} ${collateralSymbol}`}
+            {`${collateralValueFormatted} ${collateralSymbol ?? '?'}`}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${crvUSDValueFormatted} ${borrowedSymbol}`}
-            {crvUSDPercentage && ` (${crvUSDPercentage})`}
+            {`${borrowValueFormatted} ${borrowedSymbol ?? '?'}`}
+            {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>

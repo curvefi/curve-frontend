@@ -100,7 +100,7 @@ export const BorrowInformation = ({
         label={t`Total debt`}
         value={totalDebt?.value}
         loading={totalDebt?.loading}
-        valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
+        valueOptions={{ unit: { symbol: collateralValue?.borrow?.symbol ?? '?', position: 'suffix' } }}
         valueTooltip={{
           title: t`Total Debt`,
           body: <TotalDebtTooltipContent />,

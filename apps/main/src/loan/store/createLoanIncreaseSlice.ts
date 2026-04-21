@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
@@ -215,12 +215,13 @@ export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: Store
         step: 'BORROW',
       })
       const chainId = curve.chainId as ChainId
+      const network = networks[chainId]
       const { collateral, debt } = formValues
-      const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
+      const borrowMoreFn = network.api.loanIncrease.borrowMore
 
       // re-fetch max
       const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
-      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
+      updateUserEventsApi(wallet, network, llamma, resp.hash)
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 
       // re-fetch loan info
@@ -232,6 +233,8 @@ export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: Store
         chainId,
         marketId: llamma.id,
         userAddress: wallet?.address,
+        contractAddress: getControllerAddress(llamma),
+        blockchainId: network.id,
       })
 
       if (activeKey === get()[sliceKey].activeKey) {
