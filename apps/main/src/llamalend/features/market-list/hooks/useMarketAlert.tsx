@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { getAddress } from 'viem'
 import { MARKETS_ALERTS } from '@/llamalend/llama-markets.constants'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
@@ -10,11 +11,6 @@ export const useMarketAlert = <ChainId extends IChainId>(
   marketType: LlamaMarketType,
 ) =>
   useMemo(
-    () =>
-      controllerAddress &&
-      MARKETS_ALERTS[marketType][rChainId]?.[
-        // we have tests to be sure that all controller addresses of the alerts are lowercase
-        controllerAddress.toLowerCase() as Address
-      ],
+    () => controllerAddress && MARKETS_ALERTS[marketType][rChainId]?.[getAddress(controllerAddress)],
     [rChainId, controllerAddress, marketType],
   )
