@@ -212,10 +212,8 @@ const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (user
  * number (n2, or `userBandsValue[1]` after `reverseBands`). If the active/oracle-price band has
  * moved past it, the price is below the user's range and their collateral has fully converted.
  */
-export const isBelowRange = (
-  activeBand: number | null | undefined,
-  lowerBoundBand: number | null | undefined,
-) => activeBand != null && lowerBoundBand != null && activeBand > lowerBoundBand
+export const isBelowRange = (activeBand: number | null | undefined, lowerBoundBand: number | null | undefined) =>
+  activeBand != null && lowerBoundBand != null && activeBand > lowerBoundBand
 
 /**
  * healthNotFull is needed here because:
