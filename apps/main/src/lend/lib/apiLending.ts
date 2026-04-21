@@ -30,7 +30,7 @@ import {
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
-import PromisePool from '@supercharge/promise-pool'
+import { PromisePool } from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'

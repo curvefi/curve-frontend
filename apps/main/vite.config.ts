@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
-import vercel from 'vite-plugin-vercel'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const {
@@ -38,7 +37,6 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     svgr(),
-    vercel(),
     ...(shouldUploadSourcemaps
       ? [
           sentryVitePlugin({
@@ -66,14 +64,5 @@ export default defineConfig(({ command }) => ({
   define: {
     'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
     'process.env.PUBLIC_MAINTENANCE_MESSAGE': JSON.stringify(process.env.PUBLIC_MAINTENANCE_MESSAGE),
-  },
-  vercel: {
-    buildCommand: 'yarn build',
-    rewrites: [
-      { source: '/favicon', destination: '/favicon.ico' },
-      { source: '/api/(.*)', destination: '/api/router' },
-      { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
-      { source: '/(.*)', destination: '/index.html' },
-    ],
   },
 }))

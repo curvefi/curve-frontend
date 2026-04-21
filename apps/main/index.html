@@ -95,7 +95,34 @@
     </div>
   </div>
 </div>
-<script type="module" src="./src/eip-6963.ts"></script>
+<script>
+  /**
+   * EIP-6963: Multi Injected Provider Discovery
+   * @see https://eips.ethereum.org/EIPS/eip-6963
+   *
+   * Must be a plain (non-module) script so the browser executes it synchronously
+   * before any module scripts run, ensuring window.eip6963Connectors is initialized
+   * before the app bundle evaluates.
+   * 
+   * This used to be a separate file, but was inlined with the upgrade from Vite 7 to 8.
+   * Vite 8 (Rolldown) merges all <script type="module"> entries into a single bundle,
+   * breaking the execution order guarantee that existed in Vite 7. A plain <script> tag
+   * is the only reliable way to run code before any module script.
+   */
+  window.eip6963Connectors = []
+
+  window.addEventListener('eip6963:announceProvider', (event) => {
+    const { provider, info } = event.detail
+    // Deduplicate by uuid in case a provider announces itself multiple times
+    window.eip6963Connectors = [
+      ...window.eip6963Connectors.filter((c) => c.uuid !== info.uuid),
+      { id: info.rdns, ...info, provider },
+    ]
+  })
+
+  // Request all installed wallet extensions to announce themselves
+  window.dispatchEvent(new Event('eip6963:requestProvider'))
+</script>
 <script type="module" src="./src/main.tsx"></script>
 </body>
 </html>

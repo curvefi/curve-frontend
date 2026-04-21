@@ -165,7 +165,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
+      files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/api/*.ts'],
       rules: {
         'import/no-default-export': 'off',
       },

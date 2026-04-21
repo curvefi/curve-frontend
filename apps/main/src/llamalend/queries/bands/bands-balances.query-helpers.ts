@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
-import PromisePool from '@supercharge/promise-pool'
+import { PromisePool } from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 import { decimal } from '@ui-kit/utils/decimal'
 
