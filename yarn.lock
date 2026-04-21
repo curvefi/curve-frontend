@@ -358,19 +358,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.38":
-  version: 2.68.38
-  resolution: "@curvefi/api@npm:2.68.38"
+"@conventional-changelog/git-client@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "@conventional-changelog/git-client@npm:2.6.0"
   dependencies:
-    "@curvefi/ethcall": "npm:^6.0.16"
-    bignumber.js: "npm:^10.0.2"
-    ethers: "npm:^6.16.0"
-    memoizee: "npm:^0.4.17"
-  checksum: 10c0/aa17a98cce4f971c4e1d5be25ea88d16ee8178eb5e8338bad651d51671cfc54f71852f938197538496786db33376d1e49d6760767679d740d04d604c175f4c22
+    "@simple-libs/child-process-utils": "npm:^1.0.0"
+    "@simple-libs/stream-utils": "npm:^1.2.0"
+    semver: "npm:^7.5.2"
+  peerDependencies:
+    conventional-commits-filter: ^5.0.0
+    conventional-commits-parser: ^6.3.0
+  peerDependenciesMeta:
+    conventional-commits-filter:
+      optional: true
+    conventional-commits-parser:
+      optional: true
+  checksum: 10c0/7f0582858c5a2ecd481e9c3cfd4d87aeecc2ae5894b968a58b692e2a085b80345f069ba33274c77292b64e29af07a98531accb46d7902e93b7c6dce11aee1eb1
   languageName: node
   linkType: hard
 
-"@curvefi/ethcall@npm:6.0.16, @curvefi/ethcall@npm:^6.0.16":
+"@curvefi/api@npm:2.68.42":
+  version: 2.68.42
+  resolution: "@curvefi/api@npm:2.68.42"
+  dependencies:
+    "@curvefi/ethcall": "npm:6.0.20"
+    bignumber.js: "npm:^10.0.2"
+    ethers: "npm:^6.16.0"
+    memoizee: "npm:^0.4.17"
+  checksum: 10c0/f9e17769f5836da68be2aa888e218663ba338c10dc77ae0a9f397e5ed15c4690cb9652b5b2c4308589d748a4af04d1b4f0d214588ffbd5553da68d363c22a591
+  languageName: node
+  linkType: hard
+
+"@curvefi/ethcall@npm:6.0.16":
   version: 6.0.16
   resolution: "@curvefi/ethcall@npm:6.0.16"
   dependencies:
@@ -379,6 +398,18 @@ __metadata:
   peerDependencies:
     ethers: ^6.0.0
   checksum: 10c0/3bd41b3d84f0ed0654279a88920ad7ce38507804008fc8caa86fb2763520f594ef62953a260cb07661f6d71afd5467e41249fdda9eb3b71d10623a496679880e
+  languageName: node
+  linkType: hard
+
+"@curvefi/ethcall@npm:6.0.20":
+  version: 6.0.20
+  resolution: "@curvefi/ethcall@npm:6.0.20"
+  dependencies:
+    "@types/node": "npm:^22.12.0"
+    abi-coder: "npm:^5.0.0"
+  peerDependencies:
+    ethers: ^6.0.0
+  checksum: 10c0/59a255ec9b4139cce840c114eae3decbc24319dbf7d41829357d6ab17a87aa8b5f2a34749649e86b961a3b0100e134c874c1e3138909463020876589a769b2b4
   languageName: node
   linkType: hard
 
