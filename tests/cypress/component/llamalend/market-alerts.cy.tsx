@@ -1,4 +1,4 @@
-import { zeroAddress } from 'viem'
+import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { MARKETS_ALERTS } from '@/llamalend/llama-markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -47,13 +47,11 @@ const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAl
 )
 
 describe('useMarketAlert', () => {
-  it('keeps every configured market alert key lowercase', () => {
+  it('keeps every configured market alert key checksummed', () => {
     for (const alerts of ALL_MARKET_ALERTS) {
       for (const chainAlerts of Object.values(alerts)) {
         for (const controllerAddress of Object.keys(chainAlerts)) {
-          expect(controllerAddress, `expected ${controllerAddress} to be lowercase`).to.eq(
-            controllerAddress.toLowerCase(),
-          )
+          expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
         }
       }
     }
@@ -63,7 +61,7 @@ describe('useMarketAlert', () => {
     const alert = oneOf(...ALERT_CASES)
     mountMarketAlert({
       chainId: alert.chainId,
-      controllerAddress: alert.controllerAddress.toUpperCase() as Address,
+      controllerAddress: alert.controllerAddress,
       marketType: alert.marketType,
     })
 
