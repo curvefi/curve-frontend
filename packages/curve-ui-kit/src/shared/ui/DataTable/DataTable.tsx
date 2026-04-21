@@ -162,7 +162,7 @@ export const DataTable = <T extends TableItem>({
         </TableBody>
         {showFooter && (
           <TableFooter>
-            {footerRow && <TableRow>{footerRow}</TableRow>}
+            {footerRow && <TableRow sx={{ verticalAlign: rowProps.verticalAlign }}>{footerRow}</TableRow>}
             {showViewAllButton && (
               <TableRow>
                 <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
