@@ -50,11 +50,11 @@ export const TotalCollateralTooltip = ({
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${collateralValueFormatted} ${collateralSymbol}`}
+            {`${collateralValueFormatted} ${collateralSymbol ?? '?'}`}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${borrowValueFormatted} ${borrowedSymbol}`}
+            {`${borrowValueFormatted} ${borrowedSymbol ?? '?'}`}
             {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
