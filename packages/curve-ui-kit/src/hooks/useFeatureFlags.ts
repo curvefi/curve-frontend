@@ -26,7 +26,7 @@ export const useLendingMuiForm = useBetaChannel
 export const useManageLoanMuiForm = useBetaChannel
 
 /** New bands chart (BandsChart) */
-export const useNewBandsChart = useBetaChannel
+export const useNewBandsChart = useStableChannel
 
 /** New card for managing soft liquidations */
 export const useManageSoftLiquidation = useBetaChannel
