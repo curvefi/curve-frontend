@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
-import { calculateLtv, getLiquidationStatus } from '@/llamalend/llama.utils'
+import { calculateLtv, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
@@ -74,7 +74,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     ? getLiquidationStatus(
         decimal(stats.health),
         stats.softLiquidation,
-        !stats.softLiquidation && borrowedAmount > 0,
+        isBelowRange(stats.activeBand, stats.n2),
         decimal(stats.collateral),
         decimal(borrowedAmount),
       )

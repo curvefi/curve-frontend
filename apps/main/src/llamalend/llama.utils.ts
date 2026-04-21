@@ -207,6 +207,17 @@ export const updateUserEventsApi = (
 const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (userIsCloseToLiquidation ? 0 : 0.1)
 
 /**
+ * Whether the oracle price has dropped below the user's band range.
+ * Band numbers go up as prices go down, so the user's lower price boundary is the higher band
+ * number (n2, or `userBandsValue[1]` after `reverseBands`). If the active/oracle-price band has
+ * moved past it, the price is below the user's range and their collateral has fully converted.
+ */
+export const isBelowRange = (
+  activeBand: number | null | undefined,
+  lowerBoundBand: number | null | undefined,
+) => activeBand != null && lowerBoundBand != null && activeBand > lowerBoundBand
+
+/**
  * healthNotFull is needed here because:
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
@@ -221,8 +232,8 @@ export function getLiquidationStatus(
   if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
   const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
   if (+healthNotFull < 0) return 'hardLiquidation' as const
-  if (userIsBelowRange && +userStateCollateral > 0) return 'incompleteConversion' as const // will replace with current band check when available on the API
-  if (userIsBelowRange && +userStateCollateral <= 0) return 'fullyConverted' as const // will replace with current band check when available on the API
+  if (userIsBelowRange && +userStateCollateral > 0) return 'incompleteConversion' as const
+  if (userIsBelowRange && +userStateCollateral <= 0) return 'fullyConverted' as const
   if (+userStateBorrowed > threshold) return 'softLiquidation' as const
   return 'healthy' as const
 }

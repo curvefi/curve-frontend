@@ -4,7 +4,12 @@ import {
   calculateRangeToLiquidation,
   type BorrowPositionDetailsProps,
 } from '@/llamalend/features/market-position-details'
-import { getIsUserCloseToSoftLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
+import {
+  getIsUserCloseToSoftLiquidation,
+  getLiquidationStatus,
+  hasV2Leverage,
+  isBelowRange,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -119,11 +124,14 @@ export const useBorrowPositionDetails = ({
       liquidationBand ?? null,
       oraclePriceBand,
     )
-    // Band numbers go up as prices go down (e.g. band 20 = 100-200, band 21 = 50-100), so the
-    // higher band number (userBandsValue[1]) is the lower price boundary of the user's range.
     const [, lowerBoundary] = userBandsValue
-    const isUserBelowRange = oraclePriceBand != null && lowerBoundary != null && oraclePriceBand > lowerBoundary
-    return getLiquidationStatus(healthNotFullValue, isCloseToSoftLiquidation, isUserBelowRange, collateral, borrowed)
+    return getLiquidationStatus(
+      healthNotFullValue,
+      isCloseToSoftLiquidation,
+      isBelowRange(oraclePriceBand, lowerBoundary),
+      collateral,
+      borrowed,
+    )
   }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, collateral, borrowed])
 
   return {
