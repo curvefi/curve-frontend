@@ -88,7 +88,7 @@ const oneLendingPool = (
 
 export const HighTVLAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
-export const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
+const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(15, 20)

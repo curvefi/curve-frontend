@@ -16,7 +16,7 @@ type MarketBandsBalancesQuery = MarketQuery & {
 }
 type MarketBandsBalancesParams = FieldsOf<MarketBandsBalancesQuery>
 
-export const marketBandsBalancesValidationSuite = createValidationSuite((params: MarketBandsBalancesParams) => {
+const marketBandsBalancesValidationSuite = createValidationSuite((params: MarketBandsBalancesParams) => {
   marketIdValidationSuite(params)
   liquidationBandValidationGroup(params)
 })

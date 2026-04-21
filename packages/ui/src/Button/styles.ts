@@ -2,7 +2,7 @@ import { css } from 'styled-components'
 import type { ButtonProps } from '@ui/Button/types'
 import { focusVisible } from '@ui/utils/sharedStyles'
 
-export const buttonFilledStyles = css`
+const buttonFilledStyles = css`
   color: var(--button--color);
   background-color: var(--button--background-color);
   border: 1px solid var(--nav_button--border-color);
@@ -33,7 +33,7 @@ export const buttonFilledStyles = css`
   }
 `
 
-export const buttonSelectStyles = css`
+const buttonSelectStyles = css`
   border: 1px solid var(--nav_button--border-color);
   box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
   background: var(--layout--home--background-color);

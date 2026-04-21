@@ -4,7 +4,7 @@ import type { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Link, LinkProps } from './Link'
 
-export type SectionProps = {
+type SectionProps = {
   title: string
   links: Omit<LinkProps, 'networkId' | 'appName'>[]
   networkId: string

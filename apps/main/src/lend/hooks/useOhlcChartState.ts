@@ -20,7 +20,7 @@ import type { Range } from '@ui-kit/types/util'
 
 const { Height } = SizesAndSpaces
 
-export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
+type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId

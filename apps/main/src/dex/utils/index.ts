@@ -32,9 +32,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export const sleep = (ms: number = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)) =>
-  new Promise((resolve) => setTimeout(resolve, ms))
-
 // curve.finance url
 export function getCurvefiUrl(poolId: string, host: string) {
   const v2Key = 'factory-v2-'

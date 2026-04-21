@@ -36,7 +36,7 @@ export interface LiquidationRangeData {
   newLabel?: string
 }
 
-export interface ChartLiquidationRangeProps {
+interface ChartLiquidationRangeProps {
   data: LiquidationRangeData[]
   healthColorKey: HealthColorKey | undefined
   height?: number
@@ -46,7 +46,7 @@ export interface ChartLiquidationRangeProps {
   tooltipContent?: (params: TooltipContentProps) => ReactNode
 }
 
-export interface TooltipContentProps {
+interface TooltipContentProps {
   active?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any[]

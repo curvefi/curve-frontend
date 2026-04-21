@@ -14,7 +14,7 @@ export const TOKEN_F = 'tokenF'
 export const TOKEN_G = 'tokenG'
 export const TOKEN_H = 'tokenH'
 
-export type PRESETS = {
+type PRESETS = {
   [index: number]: {
     name: string
     descriptionName: string

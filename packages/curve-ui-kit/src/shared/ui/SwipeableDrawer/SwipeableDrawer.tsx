@@ -41,7 +41,7 @@ export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Pr
   </Box>
 )
 
-export const Puller = () => (
+const Puller = () => (
   <Box
     sx={{
       width: 80,

@@ -36,7 +36,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
+type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
 
 export const LoanBorrowMore = ({
   rChainId,

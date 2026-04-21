@@ -12,7 +12,7 @@ import { UserMarketParams } from '@ui-kit/lib/model'
 import { ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { q } from '@ui-kit/types/util'
 
-export type ClaimActionInfoListProps<ChainId extends IChainId> = {
+type ClaimActionInfoListProps<ChainId extends IChainId> = {
   params: UserMarketParams<ChainId>
   networks: NetworkDict<ChainId>
   isOpen?: boolean

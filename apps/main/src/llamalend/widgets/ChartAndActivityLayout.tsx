@@ -41,7 +41,7 @@ const EMPTY_ARRAY: never[] = []
 // This keeps the layout from re-rendering when the visible range is effectively unchanged.
 const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
 
-export type ChartAndActivityLayoutProps = {
+type ChartAndActivityLayoutProps = {
   chart: {
     ohlcDataUnavailable: boolean
     isLoading: boolean

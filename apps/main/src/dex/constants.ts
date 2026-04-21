@@ -2,7 +2,7 @@ import { DEX_ROUTES } from '@ui-kit/shared/routes'
 
 export const LARGE_APY = 5000
 
-export const MAIN_ROUTE = {
+const MAIN_ROUTE = {
   ...DEX_ROUTES,
   PAGE_DEPLOY_GAUGE: '/deploy-gauge',
   PAGE_LOCKER: '/locker',

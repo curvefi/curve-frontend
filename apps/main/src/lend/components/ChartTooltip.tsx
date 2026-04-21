@@ -14,8 +14,7 @@ export const ChartTooltip = ({ children }: { children: ReactNode }) => (
 type DivProps = ComponentPropsWithRef<'div'>
 type BoxComponentProps = ComponentProps<typeof Box>
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const Wrapper: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
+const Wrapper: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   background-color: var(--tooltip--background-color);
   color: var(--tooltip--color);
   font-size: var(--font-size-2);

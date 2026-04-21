@@ -7,13 +7,13 @@ import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 
-export type Item<T> = {
+type Item<T> = {
   label: string
   value: T
   icon: ReactNode
 }
 
-export type MenuItemProps<T, RootComponent extends ElementType> = Item<T> & {
+type MenuItemProps<T, RootComponent extends ElementType> = Item<T> & {
   labelVariant?: TypographyVariantKey
   onSelected?: (value: T) => void
   isSelected?: boolean

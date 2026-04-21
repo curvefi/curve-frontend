@@ -13,7 +13,7 @@ import { Slider, type SliderProps } from './Slider'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-export type RangeValue = [number, number]
+type RangeValue = [number, number]
 export type DecimalRangeValue = [Decimal, Decimal]
 
 export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {

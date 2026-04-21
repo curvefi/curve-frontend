@@ -52,7 +52,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   collateralError: '',
 }
 
-export const DEFAULT_FORM_STATUS: FormStatus = {
+const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
   step: '',
 }
@@ -200,6 +200,6 @@ export const createLoanCollateralRemove = (
   },
 })
 
-export function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
+function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
   return `${_parseActiveKey(api, market)}-${collateral}`
 }

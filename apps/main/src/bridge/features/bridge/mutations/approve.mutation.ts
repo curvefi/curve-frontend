@@ -13,7 +13,7 @@ type BridgeApproveMutation = {
   amount: Decimal
 }
 
-export type BridgeApproveOptions = {
+type BridgeApproveOptions = {
   chainId: number
   onApproved: OnTransactionSuccess<BridgeApproveMutation>
   onReset: () => void

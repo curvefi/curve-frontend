@@ -12,7 +12,7 @@ const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
 const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse, odos: buildOdosRouteResponse }
 
-export const sortByMaxAmountOutDescending = (a: RouteResponse, b: RouteResponse) =>
+const sortByMaxAmountOutDescending = (a: RouteResponse, b: RouteResponse) =>
   decimalCompare(decimalMax(...a.amountOut) ?? '0', decimalMax(...b.amountOut) ?? '0')
 
 /**

@@ -8,7 +8,7 @@ const ALERT_FORM_WARNING_KEYS = {
   'warning-exchange-rate-low': 'warning-exchange-rate-low',
 } as const
 
-export type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
+type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: AlertFormWarningKey | string

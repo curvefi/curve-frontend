@@ -6,7 +6,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 
-export type SearchFieldProps = TextFieldProps & {
+type SearchFieldProps = TextFieldProps & {
   value?: string
   onSearch: (search: string) => void
   inputRef?: RefObject<HTMLInputElement | null>

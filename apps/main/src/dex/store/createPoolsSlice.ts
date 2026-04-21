@@ -484,7 +484,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
   }, {} as TokensMapper)
 }
 
-export function parsedTokensNameMapper(poolDatas: PoolData[]) {
+function parsedTokensNameMapper(poolDatas: PoolData[]) {
   const tokensNameMapper: { [address: string]: string } = {}
 
   for (const idx in poolDatas) {

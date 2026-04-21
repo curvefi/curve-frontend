@@ -7,7 +7,7 @@ import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 
-export type LeverageInfoFieldsOptions = {
+type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
   leverageValue: Query<Decimal | null>
   prevLeverageValue: Query<Decimal | null>

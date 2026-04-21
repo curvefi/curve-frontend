@@ -49,7 +49,7 @@ const resolveMarket = (marketType: LlamaMarketType, market: LlamaMarketTemplate 
     ? fromLend(market as LendMarketTemplate | undefined)
     : fromMint(market as MintMarketTemplate | undefined)
 
-export type UseBorrowPositionDetailsParams = {
+type UseBorrowPositionDetailsParams = {
   marketType: LlamaMarketType
   chainId: number
   marketId: string

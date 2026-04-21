@@ -559,7 +559,7 @@ function getReservesBalanceError(currencyReserves: CurrencyReserves, address: st
   return ''
 }
 
-export function getActiveKey({ fromAddress, fromAmount, toAddress }: FormValues, maxSlippage: string) {
+function getActiveKey({ fromAddress, fromAmount, toAddress }: FormValues, maxSlippage: string) {
   const parsedFromAddress = fromAddress ? fromAddress.slice(fromAddress.length - 4) : ''
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
   return `${parsedFromAddress}-${fromAmount}-${parsedToAddress}-${maxSlippage}`

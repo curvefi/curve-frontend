@@ -8,15 +8,15 @@ import type { TokenOption } from '../../types'
 
 const { Spacing } = SizesAndSpaces
 
-export type FavoriteTokenCallbacks<T extends TokenOption> = {
+type FavoriteTokenCallbacks<T extends TokenOption> = {
   onToken: (token: T) => void
 }
 
-export type FavoriteTokenProps<T extends TokenOption> = {
+type FavoriteTokenProps<T extends TokenOption> = {
   tokens: T[]
 }
 
-export type Props<T extends TokenOption> = FavoriteTokenCallbacks<T> & FavoriteTokenProps<T>
+type Props<T extends TokenOption> = FavoriteTokenCallbacks<T> & FavoriteTokenProps<T>
 
 export const FavoriteTokens = <T extends TokenOption>({ tokens, onToken }: Props<T>) => (
   <Stack gap={Spacing.xs} sx={{ paddingBlock: Spacing.xs }}>

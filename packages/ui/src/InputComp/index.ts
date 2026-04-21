@@ -1,6 +1,5 @@
 export * from './Input'
 export * from './InputDebounced'
-export * from './InputField'
 export * from './InputLabel'
 export * from './InputMaxButton'
 export * from './InputMessage'

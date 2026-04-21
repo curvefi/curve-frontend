@@ -9,7 +9,7 @@ export type SnapshotRange = { kind: 'timeRange'; timeOption: TimeOption } | { ki
 
 type TimeOptionParams = { timeOption: TimeOption }
 
-export const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
+const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
   group('timeOptionValidation', () => {
     test('timeOption', 'Time option is required', () => {
       enforce(timeOption).isNotEmpty()

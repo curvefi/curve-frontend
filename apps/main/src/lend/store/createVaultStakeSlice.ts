@@ -178,7 +178,7 @@ export const createVaultStake = (
   },
 })
 
-export function _getActiveKey(
+function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
   market: OneWayMarketTemplate | undefined,

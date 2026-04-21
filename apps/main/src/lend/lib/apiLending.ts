@@ -1760,7 +1760,7 @@ export const apiLending = {
   vaultClaim,
 }
 
-export async function fetchChartBandBalancesData(
+async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,

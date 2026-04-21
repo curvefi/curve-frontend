@@ -63,7 +63,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   step: '',
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
+const DEFAULT_FORM_VALUES: FormValues = {
   debt: '',
   debtError: '',
   isFullRepay: false,
@@ -263,6 +263,6 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
   },
 })
 
-export function getLoanDecreaseActiveKey(llamma: Llamma, debt: string, isFullRepay: boolean) {
+function getLoanDecreaseActiveKey(llamma: Llamma, debt: string, isFullRepay: boolean) {
   return `${llamma.collateralSymbol}-${debt}-${isFullRepay}`
 }

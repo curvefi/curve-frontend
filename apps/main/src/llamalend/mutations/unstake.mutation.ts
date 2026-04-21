@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { formatTokenAmounts } from '../llama.utils'
 
-export type UnstakeOptions = {
+type UnstakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

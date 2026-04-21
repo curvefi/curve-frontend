@@ -5,27 +5,6 @@ import type { BoxProps } from '@ui/Box/types'
 import { breakpoints } from '@ui/utils'
 
 // PAGE STYLES WITH FORMS
-type AppPageFormContainerProps = { isAdvanceMode: boolean }
-
-export const AppPageFormContainer: IStyledComponent<'web', AppPageFormContainerProps & ComponentPropsWithRef<'div'>> =
-  styled.div<AppPageFormContainerProps>`
-    @media (min-width: 425px) {
-      margin-top: var(--spacing-normal);
-      margin-left: 1rem;
-      margin-right: 1rem;
-    }
-    @media (min-width: 650px) {
-      margin-left: 3rem;
-      margin-right: 3rem;
-    }
-    @media (min-width: ${breakpoints.md}rem) {
-      margin-left: 1rem;
-      margin-right: 1rem;
-      ${({ isAdvanceMode }) => (isAdvanceMode ? `align-items: flex-start;` : `justify-content: center;`)};
-      display: flex;
-    }
-  `
-
 export const AppPageFormTitleWrapper: IStyledComponent<'web', ComponentPropsWithRef<'header'>> = styled.header`
   align-items: center;
   color: var(--page--text-color);

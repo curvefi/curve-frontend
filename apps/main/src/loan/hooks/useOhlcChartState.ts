@@ -18,7 +18,7 @@ import type { Range } from '@ui-kit/types/util'
 
 const { Height } = SizesAndSpaces
 
-export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
+type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
 type OhlcChartStateProps = {
   chainId: ChainId

@@ -14,7 +14,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/compone
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
-import { fulfilledValue, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
+import { fulfilledValue, getStorageValue, setStorageValue } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import { PromisePool } from '@supercharge/promise-pool'
@@ -22,6 +22,7 @@ import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain, getErrorMessage } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { sleep } from '@ui-kit/utils/time.utils'
 import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
@@ -407,7 +408,7 @@ export const createDashboardSlice = (
   },
 })
 
-export function getActiveKey(chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) {
+function getActiveKey(chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) {
   return `${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}${sortBy}${sortByOrder}`
 }
 

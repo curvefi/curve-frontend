@@ -14,7 +14,7 @@ import { decimalSum } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
-export type StakeSupplyInfoListProps<ChainId extends IChainId> = {
+type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
