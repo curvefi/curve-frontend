@@ -110,12 +110,12 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
       )}
       {showFastBridgeBanner && currentApp === 'bridge' && (
         <Banner
-          severity="info"
-          subtitle={t`FastBridge is temporarily paused as a precaution pending further clarity from a recent third-party incident. No issue has been identified with Curve.`}
+          severity="warning"
+          subtitle={t`Fastbridge has been temporarily paused as a precaution following the rsETH inscident. No issues have been identified for Curve's applications.`}
           onClick={dismissFastBridgeBanner}
           learnMoreUrl="https://x.com/CurveFinance/status/2045868949892378783?s=20"
         >
-          {t`FastBridge paused`}
+          {t`Fastbridge is paused`}
         </Banner>
       )}
     </StackBanners>
