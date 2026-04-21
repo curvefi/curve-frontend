@@ -10,7 +10,7 @@ import {
   useTransactionMutation,
   type TransactionMutationOptions,
 } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { getLlamaMarket, getTokens, updateUserEventsApi } from '../llama.utils'
+import { getControllerAddress, getLlamaMarket, getTokens, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
 
 /** Context created in onMutate, extends the base transaction context with llamma market and api */
@@ -63,7 +63,13 @@ export function useLlammaMutation<TVariables extends object>({
       updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
 
       await Promise.all([
-        invalidateAllUserMarketDetails({ chainId, marketId: market.id, userAddress }),
+        invalidateAllUserMarketDetails({
+          chainId,
+          marketId: market.id,
+          userAddress,
+          contractAddress: getControllerAddress(market),
+          blockchainId: networkId,
+        }),
         invalidateTokenBalances(config, {
           chainId,
           userAddress,

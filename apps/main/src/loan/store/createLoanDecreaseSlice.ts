@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDecrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
@@ -208,9 +208,10 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
         step: 'PAY',
       })
       const chainId = curve.chainId as ChainId
-      const repayFn = networks[chainId].api.loanDecrease.repay
+      const network = networks[chainId]
+      const repayFn = network.api.loanDecrease.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
-      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
+      updateUserEventsApi(wallet, network, llamma, resp.hash)
 
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
@@ -224,6 +225,8 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
           chainId,
           marketId: llamma.id,
           userAddress: wallet?.address,
+          contractAddress: getControllerAddress(llamma),
+          blockchainId: network.id,
         })
 
         get()[sliceKey].setStateByKey('formStatus', {
