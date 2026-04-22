@@ -6,12 +6,13 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { t } from '@ui-kit/lib/i18n'
+import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
-import { GearIcon } from '../../icons/GearIcon'
-import { ReloadIcon } from '../../icons/ReloadIcon'
-import { TableButton } from './TableButton'
-import { TableSearchField } from './TableSearchField'
+import { GridChip } from './chips/GridChip'
+import { NewTableButton } from './NewTableButton'
+import { NewTableSearchField } from './NewTableSearchField'
 import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
 import type { VisibilityGroup } from './visibility.types'
 
@@ -23,11 +24,8 @@ const { Spacing } = SizesAndSpaces
 export const NewTableFilters = <ColumnIds extends string>({
   header,
   filterExpandedKey,
-  loading,
-  onReload,
   visibilityGroups,
   toggleVisibility,
-  hasSearchBar,
   collapsible,
   chips,
   searchText,
@@ -36,11 +34,8 @@ export const NewTableFilters = <ColumnIds extends string>({
 }: {
   header: ReactNode
   filterExpandedKey: string
-  loading: boolean
-  onReload?: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
-  hasSearchBar?: boolean
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   searchText: string // text to search for, only used for mobile
@@ -52,54 +47,42 @@ export const NewTableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
-  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
   const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
 
   return (
-    <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }}>
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       {header}
-      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
-        <Grid
-          size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
-          display="flex"
-          justifyContent="flex-end"
-          gap={Spacing.xs}
-          flexWrap="wrap"
-        >
-          {hasSearchBar && (
-            <TableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
-              testId={filterExpandedKey}
-              {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
-              isExpanded={isExpandedOrValue}
-              disableAutoFocus={disableSearchAutoFocus}
-            />
-          )}
-          {!isMobile && toggleVisibility && (
-            <TableButton
+      <Grid container spacing={Spacing.lg} justifyContent="space-between" alignItems="center">
+        <Grid size={{ mobile: 12, tablet: 7 }} padding={Spacing.sm} display="flex">
+          <GridChip
+            label={t`Filters`}
+            selectableChipSize="large"
+            selected={filterExpanded}
+            icon={<FilterIcon />}
+            toggle={() => setFilterExpanded((prev) => !prev)}
+            data-testid="btn-expand-filters"
+          />
+
+          <NewTableSearchField
+            value={searchValue}
+            onChange={setSearchValue}
+            testId={filterExpandedKey}
+            disableAutoFocus={disableSearchAutoFocus}
+          />
+        </Grid>
+        {!isMobile && (
+          <Grid container size="grow" spacing={Spacing.sm} justifyContent="flex-end">
+            {chips}
+            <NewTableButton
               ref={settingsRef}
               onClick={openVisibilitySettings}
               icon={GearIcon}
               testId="btn-visibility-settings"
               active={visibilitySettingsOpen}
             />
-          )}
-          {isCollapsible && !isMobile && (
-            <TableButton
-              onClick={() => setFilterExpanded((prev) => !prev)}
-              active={filterExpanded}
-              icon={FilterIcon}
-              testId="btn-expand-filters"
-            />
-          )}
-          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
-        </Grid>
-        <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
-          {chips}
-        </Grid>
+          </Grid>
+        )}
       </Grid>
       {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
 

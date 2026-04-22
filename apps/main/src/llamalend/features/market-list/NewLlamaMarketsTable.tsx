@@ -5,15 +5,16 @@ import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { NewDataTable } from '@ui-kit/shared/ui/DataTable/NewDataTable'
+import { NewTableButton } from '@ui-kit/shared/ui/DataTable/NewTableButton'
 import { NewTableFilters } from '@ui-kit/shared/ui/DataTable/NewTableFilters'
 import { NewTableFiltersHeader } from '@ui-kit/shared/ui/DataTable/NewTableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
-import { LlamaListChips } from './chips/LlamaListChips'
+import { NewLlamaListChips } from './chips/NewLlamaListChips'
 import { DEFAULT_SORT } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
@@ -86,29 +87,28 @@ export const NewLlamaMarketsTable = ({
     >
       <NewTableFilters<LlamaMarketColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        loading={loading}
-        onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
-        hasSearchBar
         disableSearchAutoFocus
         searchText={globalFilter}
         onSearch={setGlobalFilter}
-        header={<NewTableFiltersHeader title={t`Markets`} />}
+        header={
+          <NewTableFiltersHeader
+            title={t`Markets`}
+            rightChildren={<NewTableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
+          />
+        }
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
         chips={
-          <>
-            <LlamaChainFilterChips data={data} {...filterProps} />
-            <LlamaListChips
-              hiddenCount={getHiddenCount(table)}
-              resetFilters={resetFilters}
-              hasFavorites={hasFavorites}
-              onSortingChange={onSortingChange}
-              sortField={sortField}
-              data={data}
-              {...filterProps}
-            />
-          </>
+          <NewLlamaListChips
+            hiddenCount={getHiddenCount(table)}
+            resetFilters={resetFilters}
+            hasFavorites={hasFavorites}
+            onSortingChange={onSortingChange}
+            sortField={sortField}
+            data={data}
+            {...filterProps}
+          />
         }
       />
     </NewDataTable>

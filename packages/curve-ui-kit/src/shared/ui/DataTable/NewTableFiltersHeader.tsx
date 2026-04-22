@@ -9,6 +9,7 @@ export const NewTableFiltersHeader = ({ title, rightChildren }: { title: string;
   <Stack
     direction="row"
     justifyContent="space-between"
+    alignItems="end"
     // background needed because table head has a dfault color, and transparent is not possible because table head is sticky
     sx={{ backgroundColor: (t) => t.design.Layer.App.Background }}
     // cannot use Stack + gap because the background color need to be this one and not the default
