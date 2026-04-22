@@ -31,14 +31,14 @@ export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol: debtToken = t`
       <Typography variant="bodySRegular" color="textSecondary">
         <Trans>
           A minimum balance of <strong>{formatTokens({ symbol: debtToken, amount: missing })}</strong> is required in
-          your wallet to close the position
+          your wallet to close the position.
         </Trans>
-        <Typography variant="bodyXsRegular" color="textTertiary" component="span">
-          <Trans>
-            (You currently have <strong>{formatTokens({ symbol: debtToken, amount: balance })}</strong> in your wallet)
-          </Trans>
-        </Typography>
-        .
+      </Typography>
+
+      <Typography variant="bodyXsRegular" color="textTertiary" component="span">
+        <Trans>
+          (You currently have <strong>{formatTokens({ symbol: debtToken, amount: balance })}</strong> in your wallet)
+        </Trans>
       </Typography>
     </Stack>
   </Alert>
