@@ -91,7 +91,7 @@ export const ClosePositionForm = ({
         />
       </Stack>
 
-      <AlertClosePosition />
+      <AlertClosePosition badDebt={Number(totalCollateralToRecoverUsd) <= 0} />
       {canClose?.canClose === false && (
         <AlertAdditionalCrvUsd
           debtTokenSymbol={debtTokenData?.symbol}
