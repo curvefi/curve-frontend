@@ -6,11 +6,11 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { NewDataTable } from '@ui-kit/shared/ui/DataTable/NewDataTable'
+import { NewTableFilters } from '@ui-kit/shared/ui/DataTable/NewTableFilters'
+import { NewTableFiltersHeader } from '@ui-kit/shared/ui/DataTable/NewTableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
@@ -26,7 +26,7 @@ const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
-export const LlamaMarketsTable = ({
+export const NewLlamaMarketsTable = ({
   onReload,
   result,
   isError,
@@ -65,7 +65,7 @@ export const LlamaMarketsTable = ({
   })
 
   return (
-    <DataTable
+    <NewDataTable
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
@@ -84,7 +84,7 @@ export const LlamaMarketsTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
     >
-      <TableFilters<LlamaMarketColumnId>
+      <NewTableFilters<LlamaMarketColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         loading={loading}
         onReload={onReload}
@@ -94,7 +94,7 @@ export const LlamaMarketsTable = ({
         disableSearchAutoFocus
         searchText={globalFilter}
         onSearch={setGlobalFilter}
-        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
+        header={<NewTableFiltersHeader title={t`Markets`} />}
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
         chips={
           <>
@@ -111,6 +111,6 @@ export const LlamaMarketsTable = ({
           </>
         }
       />
-    </DataTable>
+    </NewDataTable>
   )
 }

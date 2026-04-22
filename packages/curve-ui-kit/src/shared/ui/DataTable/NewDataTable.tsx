@@ -15,8 +15,8 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
-import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+import { NewFilterRow } from './NewFilterRow'
 import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
 import { useTableRowLimit } from './useTableRowLimit'
@@ -111,7 +111,6 @@ export const NewDataTable = <T extends TableItem>({
     position: 'sticky',
     top: maxHeight ? 0 : top,
     zIndex: t.zIndex.tableHeader,
-    backgroundColor: t.design.Table.Header.Fill,
     marginBlock: Sizing['sm'],
   })
   const showFooter = showPagination || showViewAllButton || footerRow
@@ -120,14 +119,13 @@ export const NewDataTable = <T extends TableItem>({
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
         sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
         }}
         data-testid={!loading && 'data-table'}
       >
         {!hideHeader && (
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
-            {children && <FilterRow table={table}>{children}</FilterRow>}
+            {children && <NewFilterRow table={table}>{children}</NewFilterRow>}
 
             {headerGroups.map((headerGroup) => (
               <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>

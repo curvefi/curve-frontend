@@ -1,13 +1,11 @@
 import { ReactNode, useRef } from 'react'
 import Collapse from '@mui/material/Collapse'
-import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
 import { GearIcon } from '../../icons/GearIcon'
@@ -23,7 +21,7 @@ const { Spacing } = SizesAndSpaces
  * A component that wraps a table and provides a title, subtitle, and filter controls.
  */
 export const NewTableFilters = <ColumnIds extends string>({
-  leftChildren,
+  header,
   filterExpandedKey,
   loading,
   onReload,
@@ -36,7 +34,7 @@ export const NewTableFilters = <ColumnIds extends string>({
   disableSearchAutoFocus,
   onSearch,
 }: {
-  leftChildren: ReactNode
+  header: ReactNode
   filterExpandedKey: string
   loading: boolean
   onReload?: () => void
@@ -58,16 +56,11 @@ export const NewTableFilters = <ColumnIds extends string>({
   const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
-  const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
 
   return (
-    <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
+    <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }}>
+      {header}
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
-        <Fade in={!hideTitle} timeout={Duration.Transition} mountOnEnter unmountOnExit>
-          <Grid size={{ mobile: 'grow', tablet: 6 }} sx={{ position: hideTitle ? 'absolute' : 'relative' }}>
-            {leftChildren}
-          </Grid>
-        </Fade>
         <Grid
           size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
           display="flex"

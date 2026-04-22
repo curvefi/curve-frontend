@@ -46,3 +46,6 @@ export const useRightFormTabsLayout = useStableChannel
 
 /** New market historical rates chart */
 export const useMarketHistoricalRatesChart = useBetaChannel
+
+/** New market list and search layout */
+export const useNewMarketListLayout = useBetaChannel
