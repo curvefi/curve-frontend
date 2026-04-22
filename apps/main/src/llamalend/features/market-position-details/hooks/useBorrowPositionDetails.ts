@@ -5,6 +5,7 @@ import {
   type BorrowPositionDetailsProps,
 } from '@/llamalend/features/market-position-details'
 import {
+  getDisplayHealth,
   getIsUserCloseToSoftLiquidation,
   getLiquidationStatus,
   hasV2Leverage,
@@ -112,10 +113,10 @@ export const useBorrowPositionDetails = ({
     return +collateral * +collateralUsdRate + +borrowed
   }, [collateral, borrowed, collateralUsdRate])
 
-  const healthValue = useMemo(() => {
-    if (!hasLoan || !healthFullValue || !healthNotFullValue) return null
-    return +(+healthNotFullValue < 0 ? healthNotFullValue : healthFullValue)
-  }, [hasLoan, healthFullValue, healthNotFullValue])
+  const healthValue = useMemo(
+    () => (hasLoan ? getDisplayHealth(healthFullValue, healthNotFullValue) : null),
+    [hasLoan, healthFullValue, healthNotFullValue],
+  )
 
   const positionStatus = useMemo(() => {
     if (!hasLoan || !healthNotFullValue || !userBandsValue) return undefined
