@@ -13,7 +13,7 @@ export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
 
 export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 
-export type UserPositionStatus = NonNullable<ReturnType<typeof getLiquidationStatus>>
+export type UserPositionStatus = ReturnType<typeof getLiquidationStatus>
 
 export type HealthMode = {
   percent: string

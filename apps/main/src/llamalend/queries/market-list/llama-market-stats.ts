@@ -70,20 +70,16 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
 
   const borrowedAmount = stats ? ('borrowed' in stats ? stats.borrowed : stats.stablecoin) : 0
 
-  const status = stats
-    ? getLiquidationStatus(
-        decimal(stats.health),
-        stats.softLiquidation,
-        isBelowRange(stats.activeBand, stats.n2),
-        decimal(stats.collateral),
-        decimal(borrowedAmount),
-      )
-    : undefined
-
   return {
     ...(stats && {
       data: {
-        status,
+        status: getLiquidationStatus(
+          decimal(stats.health),
+          stats.softLiquidation,
+          isBelowRange(stats.activeBand, stats.n2),
+          decimal(stats.collateral),
+          decimal(borrowedAmount),
+        ),
         health: stats.healthFull,
         borrowed: stats.debt,
         collateral: {
