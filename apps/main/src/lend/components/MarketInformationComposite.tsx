@@ -12,7 +12,11 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { useNewBandsChart, useMarketHistoricalRatesChart } from '@ui-kit/hooks/useFeatureFlags'
+import {
+  useNewBandsChart,
+  useMarketHistoricalRatesChart,
+  useMarketInterestRatesAndUtilizationChart,
+} from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -56,8 +60,11 @@ export const MarketInformationComposite = ({
         <>
           {isBorrow && <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />}
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="supply" />
-          <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
         </>
+      )}
+
+      {useMarketInterestRatesAndUtilizationChart() && (
+        <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
       )}
 
       {market && (
