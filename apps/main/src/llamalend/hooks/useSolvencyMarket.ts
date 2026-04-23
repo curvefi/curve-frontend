@@ -17,7 +17,8 @@ type BadDebtParams = {
  * Returns solvency and insolvency data for a single market.
  */
 export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: BadDebtParams) => {
-  const enabled = !!blockchainId && !!controllerAddress
+  // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
+  const enabled = !!blockchainId && !!controllerAddress && type === LlamaMarketType.Lend
   const badDebtMarkets = useBadDebtMarkets({ type }, enabled)
   const llamaMarketQuery = useLlamaMarket({ blockchainId, controllerAddress })
   const market = llamaMarketQuery?.data
