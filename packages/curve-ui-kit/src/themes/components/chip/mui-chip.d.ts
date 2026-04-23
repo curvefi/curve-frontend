@@ -16,7 +16,7 @@ declare module '@mui/material/Chip' {
 
   export interface ChipPropsSizeOverrides extends ChipSizeOverrides {}
 
-  /** The "outlined" variant is disabled on purpuse because it overrides the custom style of the Chips in the mui-chips.ts file  */
+  /** The "outlined" variant is disabled on purpose because it overrides the custom style of the Chips in the mui-chips.ts file  */
   export interface ChipPropsVariantOverrides {
     filled: false
     outlined: false

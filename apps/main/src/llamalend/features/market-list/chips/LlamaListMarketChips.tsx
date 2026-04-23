@@ -12,7 +12,6 @@ export const LlamaListMarketChips = (props: FilterProps<LlamaMarketColumnId>) =>
     <>
       <GridChip
         label={t`Mint Markets`}
-        onDelete={toggleMarkets.Mint}
         selected={marketTypes.Mint}
         toggle={toggleMarkets.Mint}
         data-testid="chip-mint"
@@ -20,7 +19,6 @@ export const LlamaListMarketChips = (props: FilterProps<LlamaMarketColumnId>) =>
       />
       <GridChip
         label={t`Lend Markets`}
-        onDelete={toggleMarkets.Lend}
         selected={marketTypes.Lend}
         toggle={toggleMarkets.Lend}
         data-testid="chip-lend"
