@@ -1,64 +1,70 @@
 import { fn } from 'storybook/test'
 import CheckIcon from '@mui/icons-material/Check'
 import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
-import type { ChipProps } from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { type SelectableChipProps, SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 
 type ChipStoryProps = {
-  color: ChipProps['color']
-  clickable: boolean
-  variant?: ChipProps['variant']
+  color: 'selected' | 'unselected'
+  variant?: SelectableChipProps['variant']
 }
 
-const sizes = ['extraSmall', 'small', 'medium', 'large', 'extraLarge'] satisfies ChipProps['size'][]
+const sizes = ['extraSmall', 'small', 'medium', 'large', 'extraLarge'] satisfies SelectableChipProps['size'][]
 
-const ChipStories = ({ clickable, color, variant }: ChipStoryProps) => (
+const ChipStories = ({ color, variant }: ChipStoryProps) => (
   <Stack spacing={7} flexGrow={0} marginBlock={9}>
-    <Typography variant="headingXxl">
-      {clickable ? 'Chips' : 'Badges'}: {color} color
-    </Typography>
+    <Typography variant="headingXxl">Chips: {color} color</Typography>
     {sizes.map((size) => (
       <Box key={size} display="flex" flexDirection="row" gap={5} justifyContent="space-evenly">
         {/* simple one */}
-        <Chip label={size} size={size} color={color} clickable={clickable} variant={variant} />
+        <SelectableChip label={size} size={size} selected={color === 'selected'} toggle={fn()} variant={variant} />
 
         {/* with icon */}
-        <Chip label={size} size={size} color={color} icon={<CheckIcon />} clickable={clickable} variant={variant} />
+        <SelectableChip
+          label={size}
+          size={size}
+          color={color}
+          icon={<CheckIcon />}
+          selected={color === 'selected'}
+          toggle={fn()}
+          variant={variant}
+        />
 
         {/* only icon */}
-        <Chip size={size} color={color} icon={<CheckIcon />} clickable={clickable} variant={variant} />
+        <SelectableChip
+          size={size}
+          color={color}
+          icon={<CheckIcon />}
+          selected={color === 'selected'}
+          toggle={fn()}
+          variant={variant}
+        />
 
-        {/* with icon and delete icon only for clickable chips */}
-        {clickable && (
-          <Chip
-            label={size}
-            size={size}
-            color={color}
-            icon={<CheckIcon />}
-            clickable
-            onDelete={fn()}
-            variant={variant}
-          />
-        )}
+        {/* with icon and delete icon */}
+        <SelectableChip
+          label={size}
+          size={size}
+          color={color}
+          icon={<CheckIcon />}
+          selected={color === 'selected'}
+          toggle={fn()}
+          onDelete={fn()}
+          variant={variant}
+        />
       </Box>
     ))}
   </Stack>
 )
 
 const meta: Meta<typeof ChipStories> = {
-  title: 'UI Kit/Primitives/Chips and loose badges',
+  title: 'UI Kit/Primitives/Chips',
   component: ChipStories,
   argTypes: {
-    clickable: {
-      control: 'boolean',
-      description: 'Whether the chip is clickable',
-    },
     color: {
       control: 'select',
-      options: ['alert', 'default', 'active', 'highlight', 'warning', 'accent', 'selected', 'unselected'],
+      options: ['selected', 'unselected'],
       description: 'The color of the component',
     },
     variant: {
@@ -67,19 +73,9 @@ const meta: Meta<typeof ChipStories> = {
       description: 'The variant of the component (not used)',
     },
   },
-  args: {
-    clickable: false,
-  },
 }
 
-export const AlertBadge: StoryObj<typeof ChipStories> = { args: { color: 'alert' } }
-export const DefaultBadge: StoryObj<typeof ChipStories> = { args: { color: 'default' } }
-export const ActiveBadge: StoryObj<typeof ChipStories> = { args: { color: 'active' } }
-export const HighlightBadge: StoryObj<typeof ChipStories> = { args: { color: 'highlight' } }
-export const WarningBadge: StoryObj<typeof ChipStories> = { args: { color: 'warning' } }
-export const AccentBadge: StoryObj<typeof ChipStories> = { args: { color: 'accent' } }
-
-export const UnselectedChip: StoryObj<typeof ChipStories> = { args: { clickable: true, color: 'unselected' } }
-export const SelectedChip: StoryObj<typeof ChipStories> = { args: { clickable: true, color: 'selected' } }
+export const UnselectedChip: StoryObj<typeof ChipStories> = { args: { color: 'unselected' } }
+export const SelectedChip: StoryObj<typeof ChipStories> = { args: { color: 'selected' } }
 
 export default meta

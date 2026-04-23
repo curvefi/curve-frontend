@@ -1,11 +1,11 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -32,7 +32,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
       <ChainIcon size="sm" blockchainId={chain} />
 
       <Tooltip title={poolTypeTooltips[type]()}>
-        <Chip
+        <Badge
           size="extraSmall"
           color="default"
           label={
@@ -49,7 +49,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
           {isMobile ? (
             <Typography variant="bodyXsRegular">🔥</Typography>
           ) : (
-            <Chip
+            <Badge
               size="extraSmall"
               color="highlight"
               label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`}
