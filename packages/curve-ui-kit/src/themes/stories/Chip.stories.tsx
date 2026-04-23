@@ -12,10 +12,9 @@ const sizes = ['extraSmall', 'small', 'medium', 'large', 'extraLarge'] satisfies
 type Story = StoryObj<typeof SelectableChip>
 
 const PROPS_ROWS = [
-  { id: 'default', label: 'Label', icon: undefined, toggle: fn(), onDelete: undefined },
-  { id: 'with-icon', label: 'Label', icon: <CheckIcon />, toggle: fn(), onDelete: undefined },
-  { id: 'icon-only', label: undefined, icon: <CheckIcon />, toggle: fn(), onDelete: undefined },
-  { id: 'selected', label: 'Label', icon: undefined, toggle: fn(), onDelete: fn() },
+  { id: 'default', label: 'Label', icon: undefined, toggle: fn() },
+  { id: 'with-icon', label: 'Label', icon: <CheckIcon />, toggle: fn() },
+  { id: 'icon-only', label: undefined, icon: <CheckIcon />, toggle: fn() },
 ] as const
 
 const VariantStory = ({
@@ -65,10 +64,6 @@ const meta: Meta<typeof SelectableChip> = {
     icon: {
       control: false,
       description: 'Optional icon rendered before the label.',
-    },
-    onDelete: {
-      control: false,
-      description: 'Optional delete action shown when the chip is selected.',
     },
     toggle: {
       control: false,

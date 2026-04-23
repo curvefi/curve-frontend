@@ -1,4 +1,3 @@
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
@@ -15,7 +14,6 @@ export const LlamaListUserChips = ({
 } & FilterProps<LlamaMarketColumnId>) => {
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
-  const isMobile = useIsMobile()
   return (
     <>
       <GridChip
@@ -25,7 +23,6 @@ export const LlamaListUserChips = ({
         icon={<HeartIcon />}
         data-testid="chip-favorites"
         disabled={!hasFavorites}
-        selectableChipSize={isMobile ? 'large' : 'small'}
       />
       <GridChip
         label={t`Points`}
@@ -33,7 +30,6 @@ export const LlamaListUserChips = ({
         toggle={toggleRewards}
         icon={<PointsIcon />}
         data-testid="chip-rewards"
-        selectableChipSize={isMobile ? 'large' : 'small'}
       />
     </>
   )

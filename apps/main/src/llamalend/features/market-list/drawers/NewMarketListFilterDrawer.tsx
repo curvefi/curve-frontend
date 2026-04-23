@@ -42,7 +42,6 @@ export const NewMarketListFilterDrawer = ({
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
       button={
         <SelectableChip
-          size="large"
           selected={open}
           icon={<FilterIcon />}
           toggle={toggleDrawer}

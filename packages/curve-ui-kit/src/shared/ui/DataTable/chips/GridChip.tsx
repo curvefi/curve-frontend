@@ -5,7 +5,7 @@ import { ChipGridItem } from './ChipGridItem'
 /** A <GridItem> with a SelectableChip inside */
 export const GridChip = ({
   size,
-  selectableChipSize = 'small',
+  selectableChipSize = 'medium',
   ...props
 }: Omit<SelectableChipProps, 'size'> & {
   size?: GridProps['size']

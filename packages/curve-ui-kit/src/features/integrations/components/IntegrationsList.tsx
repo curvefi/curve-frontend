@@ -110,7 +110,6 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
           {Object.values(tags).map((tag) => (
             <SelectableChip
               key={tag.id}
-              size="small"
               label={
                 <Stack direction="row" alignItems="center" gap={Spacing.sm}>
                   {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}

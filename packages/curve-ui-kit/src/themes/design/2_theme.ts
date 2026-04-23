@@ -267,7 +267,7 @@ export const createLightDesign = (
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Grays[100],
+      Fill: Layer[1].Fill,
       Stroke: Text.TextColors.Primary,
     },
     Hover: {
@@ -735,7 +735,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Color.Neutral[75],
+      Fill: Layer[1].Fill,
       Stroke: Text.TextColors.Primary,
     },
     Hover: {
