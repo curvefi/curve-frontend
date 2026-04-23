@@ -39,7 +39,8 @@ export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): 
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
     .toFixed() as Decimal
 
-export const decimalNegate = (value: Decimal): Decimal => new BigNumber(value).negated().toFixed() as Decimal
+export const decimalNegate = (value: Decimal | undefined) =>
+  value != null ? (new BigNumber(value).negated().toFixed() as Decimal) : undefined
 
 export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first).isEqualTo(second)
 
