@@ -23,8 +23,8 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
   const isOddCount = totalCount % 2 === 1
   const iconsPerRow = totalCount > 4 ? 3 : 2
   const rowCount = Math.ceil(totalCount / iconsPerRow)
-  const marginTop = { default: 6, icon: { 1: 4, 2: -8, 3: -11 }[rowCount] }[variant]
-  const marginLeft = { default: 4, icon: { 1: -12, 2: -8, 3: -11 }[rowCount] }[variant]
+  const marginTop = { default: -6, icon: { 1: 4, 2: -8, 3: -11 }[rowCount] }[variant]
+  const marginLeft = { default: -4, icon: { 1: -12, 2: -8, 3: -11 }[rowCount] }[variant]
   const lastRowOffset = { default: 8, icon: 3 }[variant]
   return (
     <Box
