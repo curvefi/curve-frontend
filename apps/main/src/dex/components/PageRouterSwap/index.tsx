@@ -395,7 +395,7 @@ export const QuickSwap = ({
   useEffect(() => {
     if (isReady) updateFormValues({}, false, storeMaxSlippage)
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [storeMaxSlippage])
+  }, [cryptoMaxSlippage, stableMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {
