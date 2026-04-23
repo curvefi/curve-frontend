@@ -61,7 +61,7 @@ export const BorrowPositionDetails = ({
   return (
     <Stack padding={Spacing.md} gap={Spacing.xs}>
       {statusContent?.hasMarketAlert && (
-        <Alert variant="outlined" severity={statusContent.severity}>
+        <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
           <AlertTitle>{statusContent.title}</AlertTitle>
           <Stack>
             <Typography variant="bodyXsRegular">{statusContent.description}</Typography>
