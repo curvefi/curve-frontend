@@ -91,13 +91,14 @@ export const ClosePositionForm = ({
         />
       </Stack>
 
-      <AlertClosePosition badDebt={Number(totalCollateralToRecoverUsd) <= 0} />
-      {canClose?.canClose === false && (
+      {canClose?.canClose === false ? (
         <AlertAdditionalDebtToken
           debtTokenSymbol={debtTokenData?.symbol}
           missing={canClose.missing}
           balance={canClose.balance}
         />
+      ) : (
+        <AlertClosePosition badDebt={Number(totalCollateralToRecoverUsd) <= 0} />
       )}
 
       <Stack gap={Spacing.xs}>
