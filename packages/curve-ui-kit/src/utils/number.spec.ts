@@ -408,6 +408,19 @@ describe('formatNumber', () => {
       expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1k')
     })
 
+    it('places the negative sign before the prefix unit symbol, but not before suffix units', () => {
+      // Prefix units: negative sign should appear before the symbol
+      expect(formatNumber(-5, { abbreviate: false, unit: { symbol: '$', position: 'prefix' } })).toBe('-$5')
+      expect(formatNumber(-5, { abbreviate: false, unit: 'dollar' })).toBe('-$5')
+      expect(formatNumber(-1000, { abbreviate: true, unit: 'dollar' })).toBe('-$1k')
+      expect(formatNumber(-1500000, { abbreviate: true, unit: { symbol: '£', position: 'prefix' } })).toBe('-£1.50m')
+
+      // Suffix units: negative sign stays with the number (before it), suffix stays at end
+      expect(formatNumber(-5, { abbreviate: false, unit: { symbol: '%', position: 'suffix' } })).toBe('-5%')
+      expect(formatNumber(-5, { abbreviate: false, unit: 'percentage' })).toBe('-5%')
+      expect(formatNumber(-50, { abbreviate: false, unit: 'multiplier' })).toBe('-50x')
+    })
+
     it('formats with percentage suffix', () => {
       expect(formatNumber(50, { unit: { symbol: '%', position: 'suffix' }, abbreviate: false })).toBe('50%')
       expect(formatNumber(50, { unit: 'percentage', abbreviate: false })).toBe('50%')
