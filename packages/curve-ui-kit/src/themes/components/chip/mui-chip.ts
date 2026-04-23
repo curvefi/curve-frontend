@@ -3,7 +3,7 @@ import type { Components } from '@mui/material'
 // eslint-disable-next-line no-restricted-imports
 import type { ChipProps } from '@mui/material/Chip'
 import type { TypographyVariantsOptions } from '@mui/material/styles'
-import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
+import { fixedResponsive, handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -17,7 +17,7 @@ const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: Design
   props: { color: color.toLowerCase() as ChipProps['color'] },
 })
 
-const { Sizing, Spacing, IconSize, LineHeight } = SizesAndSpaces
+const { Sizing, Spacing, IconSize, LineHeight, ButtonSize } = SizesAndSpaces
 
 type ChipSizeDefinition = {
   font: TypographyVariantKey
@@ -68,46 +68,53 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
 }
 
 // overrides for clickable chips
-export const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
+export const chipSizeClickable: Record<
+  ChipSizes,
+  ChipSizeDefinition & { deleteIconSize: Responsive; paddingBlock?: Responsive }
+> = {
   extraSmall: {
-    font: 'buttonXs',
-    height: Sizing.sm,
-    iconSize: IconSize.md,
+    font: 'buttonXxs',
+    height: fixedResponsive(ButtonSize.xxs),
+    iconSize: IconSize.xs,
     paddingInline: Spacing.xs,
     lineHeight: LineHeight.xs,
-    deleteIconSize: IconSize.sm,
+    deleteIconSize: IconSize.xs,
   },
   small: {
     font: 'buttonXs',
-    height: Sizing.md,
-    iconSize: IconSize.md,
+    height: fixedResponsive(ButtonSize.xs),
+    iconSize: IconSize.sm,
     paddingInline: Spacing.sm,
+    paddingBlock: Spacing.xs,
     lineHeight: LineHeight.xs,
-    deleteIconSize: IconSize.sm,
+    deleteIconSize: IconSize.xs,
   },
   medium: {
     font: 'buttonS',
-    height: Sizing.md,
+    height: fixedResponsive(ButtonSize.sm),
     iconSize: IconSize.md,
     paddingInline: Spacing.sm,
+    paddingBlock: Spacing.xs,
     lineHeight: LineHeight.md,
-    deleteIconSize: IconSize.md,
+    deleteIconSize: IconSize.sm,
   },
   large: {
     font: 'buttonS',
-    height: Sizing.lg,
+    height: fixedResponsive(ButtonSize.md),
     iconSize: IconSize.md,
     paddingInline: Spacing.sm,
+    paddingBlock: Spacing.xs,
     lineHeight: LineHeight.md,
-    deleteIconSize: IconSize.md,
+    deleteIconSize: IconSize.sm,
   },
   extraLarge: {
     font: 'buttonM',
-    height: Sizing.xl,
+    height: fixedResponsive(ButtonSize.md),
     iconSize: IconSize.lg,
     paddingInline: Spacing.sm,
-    lineHeight: LineHeight.xl,
-    deleteIconSize: IconSize.md,
+    paddingBlock: Spacing.xs,
+    lineHeight: LineHeight.md,
+    deleteIconSize: IconSize.sm,
   },
 }
 
@@ -130,9 +137,10 @@ export const defineMuiChip = (
       borderRadius: Chips.BorderRadius.NonClickable,
       color: TextColors.Primary,
       backgroundColor: 'transparent',
-      '&:has(.MuiChip-icon)': {
+      '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
+        '& .MuiChip-deleteIcon': { marginInline: 0 },
       },
       // Mui has default paddings set this to 12px, override with our custom paddingInline per size
       '& .MuiChip-label': {
@@ -150,13 +158,20 @@ export const defineMuiChip = (
         borderRadius: Chips.BorderRadius.Clickable,
         borderColor: Chips.Default.Stroke,
         cursor: 'pointer',
-        '& .MuiChip-deleteIcon': { margin: 0 },
+        '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
+          ...handleBreakpoints({ gap: Spacing.xxs }),
+        },
+        '& .MuiChip-icon': { marginInline: 0, color: 'inherit' },
+        '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit' },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
           color: Chips.Hover.Label,
+          '& .MuiChip-icon': {
+            color: Chips.Hover.Label,
+          },
           '& .MuiChip-deleteIcon': {
-            fill: Chips.Hover.Label,
+            color: Chips.Hover.Label,
           },
         },
       },
@@ -177,8 +192,11 @@ export const defineMuiChip = (
         backgroundColor: Chips.Current.Fill,
         color: Chips.Current.Label,
         borderColor: Chips.Current.Outline,
+        '& .MuiChip-icon': {
+          color: Chips.Current.Label,
+        },
         '& .MuiChip-deleteIcon': {
-          fill: Chips.Current.Label,
+          color: Chips.Current.Label,
         },
       },
     },
@@ -188,8 +206,11 @@ export const defineMuiChip = (
         color: Chips.Default.Label,
         backgroundColor: Chips.Default.Fill,
         borderColor: Chips.Default.Stroke,
+        '& .MuiChip-icon': {
+          color: Chips.Default.Label,
+        },
         '& .MuiChip-deleteIcon': {
-          fill: Chips.Default.Label,
+          color: Chips.Default.Label,
         },
       },
     },
@@ -208,23 +229,26 @@ export const defineMuiChip = (
         },
       },
     })),
-    ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, height: heightOverride, ...rest }]) => ({
-      props: {
-        size: size as ChipSizes,
-        clickable: true,
-      },
-      style: {
-        ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
-        ...(heightOverride && {
-          height: heightOverride.desktop, // constant height override for clickable chips
-          // Target clickable chips with empty labels (icon-only chips)
-          '&:has(.MuiChip-label:empty)': {
-            width: heightOverride.desktop, // constant width for icon-only clickable chips (perfect square)
-            height: heightOverride.desktop,
-          },
-        }),
-        '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
-      },
-    })),
+    ...Object.entries(chipSizeClickable).map(
+      ([size, { font, deleteIconSize, height: heightOverride, iconSize, ...rest }]) => ({
+        props: {
+          size: size as ChipSizes,
+          clickable: true,
+        },
+        style: {
+          ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+          ...(heightOverride && {
+            height: heightOverride.desktop, // constant height override for clickable chips
+            '& .MuiChip-icon': handleBreakpoints({ width: iconSize.desktop, height: iconSize.desktop }),
+            // Target clickable chips with empty labels (icon-only chips)
+            '&:has(.MuiChip-label:empty)': {
+              width: heightOverride.desktop, // constant width for icon-only clickable chips (perfect square)
+              height: heightOverride.desktop,
+            },
+          }),
+          '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
+        },
+      }),
+    ),
   ],
 })

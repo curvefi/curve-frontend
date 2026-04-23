@@ -312,7 +312,7 @@ export const LargeTokenInput = ({
                       </WithSkeleton>
                     }
                     data-testid={!chipDisabled && `input-chip-${chip.label}`}
-                    size="extraSmall"
+                    size="small"
                     disabled={chipDisabled}
                     toggle={() => {
                       const newBalance = chip.newBalance(maxBalance?.balance)
