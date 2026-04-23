@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Chip, { ChipProps } from '@mui/material/Chip'
 import { CancelIcon } from '@ui-kit/shared/icons/CancelIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'

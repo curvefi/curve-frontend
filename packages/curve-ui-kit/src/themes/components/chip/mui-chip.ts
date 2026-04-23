@@ -1,5 +1,6 @@
 /// <reference types="./mui-chip.d.ts" />
 import type { Components } from '@mui/material'
+// eslint-disable-next-line no-restricted-imports
 import type { ChipProps } from '@mui/material/Chip'
 import type { TypographyVariantsOptions } from '@mui/material/styles'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'

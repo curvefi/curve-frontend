@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Chip, { type ChipProps } from '@mui/material/Chip'
 
 export type BadgeProps = Omit<ChipProps, 'clickable' | 'onClick' | 'onDelete' | 'deleteIcon'>
