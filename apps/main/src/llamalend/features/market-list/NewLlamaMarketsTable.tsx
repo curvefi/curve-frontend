@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
-import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -14,10 +15,12 @@ import { NewTableButton } from '@ui-kit/shared/ui/DataTable/NewTableButton'
 import { NewTableFilters } from '@ui-kit/shared/ui/DataTable/NewTableFilters'
 import { NewTableFiltersHeader } from '@ui-kit/shared/ui/DataTable/NewTableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { NewFilterChip } from './chips/NewFilterChip'
 import { NewLlamaListChips } from './chips/NewLlamaListChips'
 import { DEFAULT_SORT } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
+import { NewMarketSortDrawer } from './drawers/NewMarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
@@ -40,6 +43,8 @@ export const NewLlamaMarketsTable = ({
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
   const data = useMemo(() => markets ?? [], [markets])
+  const [filterExpanded, setFilterExpanded] = useFilterExpanded(LOCAL_STORAGE_KEY)
+  const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
     { columns: LlamaMarketColumnId },
@@ -87,6 +92,7 @@ export const NewLlamaMarketsTable = ({
     >
       <NewTableFilters<LlamaMarketColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
+        filterExpanded={filterExpanded}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         disableSearchAutoFocus
@@ -99,17 +105,19 @@ export const NewLlamaMarketsTable = ({
           />
         }
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
-        chips={
-          <NewLlamaListChips
+        filterChip={
+          <NewFilterChip
+            filterExpanded={filterExpanded}
+            setFilterExpanded={setFilterExpanded}
             hiddenCount={getHiddenCount(table)}
             resetFilters={resetFilters}
             hasFavorites={hasFavorites}
-            onSortingChange={onSortingChange}
-            sortField={sortField}
             data={data}
             {...filterProps}
           />
         }
+        sortChip={isMobile && <NewMarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
+        chips={<NewLlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
       />
     </NewDataTable>
   )
