@@ -61,7 +61,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
   return (
     <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
       <Metric
-        size="small"
+        size="medium"
         label={t`Utilization`}
         value={utilization}
         loading={availableLiquidity?.loading}
@@ -74,7 +74,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         }}
       />
       <Metric
-        size="small"
+        size="medium"
         label={t`Total collateral`}
         value={collateral?.combinedCollateralUsdValue}
         loading={collateral?.loading}
@@ -97,7 +97,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         }}
       />
       <Metric
-        size="small"
+        size="medium"
         label={t`Solvency`}
         value={solvency?.value}
         loading={solvency?.loading}
@@ -110,7 +110,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       />
       {maxLeverage && (
         <Metric
-          size="small"
+          size="medium"
           label={t`Max leverage`}
           value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
           loading={maxLeverage?.loading}
