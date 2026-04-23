@@ -3,7 +3,6 @@ import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayL
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-soft-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
-import { ButtonGetCrvUsd } from '@/llamalend/features/manage-soft-liquidation/ui/ButtonGetCrvUsd'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -19,6 +18,7 @@ import { joinButtonText } from '@primitives/string.utils'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
@@ -26,6 +26,7 @@ import { CRVUSD } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useCrvSwapUrl } from '../../manage-soft-liquidation/hooks/useCrvSwapUrl'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
@@ -113,6 +114,8 @@ export const RepayForm = <ChainId extends IChainId>({
     t`Max repay amount:`,
   ).join(' ')
 
+  const crvSwapUrl = useCrvSwapUrl()
+
   useEffect(
     () => () => {
       // Reset when selectedField changes and the field is dirty (unmounting the field)
@@ -184,7 +187,9 @@ export const RepayForm = <ChainId extends IChainId>({
               )}
         </Button>
 
-        {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && <ButtonGetCrvUsd />}
+        {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
+          <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
+        )}
       </Stack>
 
       <FormAlerts

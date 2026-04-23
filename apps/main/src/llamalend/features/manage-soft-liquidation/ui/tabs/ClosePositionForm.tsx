@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
-import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
+import { AlertAdditionalDebtToken } from '../alerts/AlertAdditionalDebtToken'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
 
 const { Spacing } = SizesAndSpaces
@@ -93,7 +93,7 @@ export const ClosePositionForm = ({
 
       <AlertClosePosition badDebt={Number(totalCollateralToRecoverUsd) <= 0} />
       {canClose?.canClose === false && (
-        <AlertAdditionalCrvUsd
+        <AlertAdditionalDebtToken
           debtTokenSymbol={debtTokenData?.symbol}
           missing={canClose.missing}
           balance={canClose.balance}
