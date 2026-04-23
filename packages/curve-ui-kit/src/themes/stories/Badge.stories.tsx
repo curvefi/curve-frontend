@@ -7,24 +7,23 @@ import { type BadgeProps, Badge } from '@ui-kit/shared/ui/Badge'
 
 type BadgeStoryProps = {
   color: BadgeProps['color']
-  variant?: BadgeProps['variant']
 }
 
 const sizes = ['extraSmall', 'small', 'medium', 'large', 'extraLarge'] satisfies BadgeProps['size'][]
 
-const BadgeStories = ({ color, variant }: BadgeStoryProps) => (
+const BadgeStories = ({ color }: BadgeStoryProps) => (
   <Stack spacing={7} flexGrow={0} marginBlock={9}>
     <Typography variant="headingXxl">Badges: {color} color</Typography>
     {sizes.map((size) => (
       <Box key={size} display="flex" flexDirection="row" gap={5} justifyContent="space-evenly">
         {/* simple one */}
-        <Badge label={size} size={size} color={color} variant={variant} />
+        <Badge label={size} size={size} color={color} />
 
         {/* with icon */}
-        <Badge label={size} size={size} color={color} icon={<CheckIcon />} variant={variant} />
+        <Badge label={size} size={size} color={color} icon={<CheckIcon />} />
 
         {/* only icon */}
-        <Badge size={size} color={color} icon={<CheckIcon />} variant={variant} />
+        <Badge size={size} color={color} icon={<CheckIcon />} />
       </Box>
     ))}
   </Stack>
@@ -38,11 +37,6 @@ const meta: Meta<typeof BadgeStories> = {
       control: 'select',
       options: ['alert', 'default', 'active', 'highlight', 'warning', 'accent'],
       description: 'The color of the component',
-    },
-    variant: {
-      control: 'select',
-      options: ['filled', 'outlined'],
-      description: 'The variant of the component (not used)',
     },
   },
 }

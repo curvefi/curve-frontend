@@ -18,12 +18,18 @@ const PROPS_ROWS = [
   { id: 'selected', label: 'Label', icon: undefined, toggle: fn(), onDelete: fn() },
 ] as const
 
-const OutlinedStory = ({ selected = false }: { selected?: boolean }) => (
+const VariantStory = ({
+  selected = false,
+  variant = 'outlined',
+}: {
+  selected?: boolean
+  variant?: SelectableChipProps['variant']
+}) => (
   <Grid container spacing={Spacing.lg.desktop}>
     {PROPS_ROWS.map(({ id, ...props }) =>
       sizes.map((size) => (
         <Grid key={`${id}-${size}-${selected}`} size={(1 / sizes.length) * 12}>
-          <SelectableChip size={size} selected={selected} {...props} />
+          <SelectableChip size={size} selected={selected} variant={variant} {...props} />
         </Grid>
       )),
     )}
@@ -36,7 +42,7 @@ const meta: Meta<typeof SelectableChip> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['filled', 'outlined'],
+      options: ['outlined', 'ghost'],
       description: 'The variant of the component.',
     },
     label: {
@@ -75,11 +81,13 @@ const meta: Meta<typeof SelectableChip> = {
     selected: false,
     disabled: false,
     toggle: fn(),
+    variant: 'outlined',
   },
   parameters: {
     docs: {
       description: {
-        component: 'Selectable chip component with support for sizes, icons, and selected state.',
+        component:
+          'Selectable chip component with support for outlined and ghost variants, sizes, icons, and selected state.',
       },
     },
   },
@@ -96,7 +104,7 @@ export const Chip: Story = {
 }
 
 export const Outlined: Story = {
-  render: () => <OutlinedStory />,
+  render: () => <VariantStory />,
   parameters: {
     docs: {
       description: {
@@ -107,11 +115,39 @@ export const Outlined: Story = {
 }
 
 export const SelectedOutlined: Story = {
-  render: () => <OutlinedStory selected />,
+  render: () => <VariantStory selected />,
   parameters: {
     docs: {
       description: {
         story: 'Displays the selected chip variant across all available sizes.',
+      },
+    },
+  },
+}
+
+export const Ghost: Story = {
+  render: () => <VariantStory variant="ghost" />,
+  args: {
+    variant: 'ghost',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Displays the ghost chip variant across all available sizes.',
+      },
+    },
+  },
+}
+
+export const SelectedGhost: Story = {
+  render: () => <VariantStory selected variant="ghost" />,
+  args: {
+    variant: 'ghost',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Displays the selected ghost chip variant across all available sizes.',
       },
     },
   },

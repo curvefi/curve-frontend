@@ -2,7 +2,8 @@
 import type { Components } from '@mui/material'
 // eslint-disable-next-line no-restricted-imports
 import type { ChipProps } from '@mui/material/Chip'
-import type { TypographyVariantsOptions } from '@mui/material/styles'
+import type { CSSObject, TypographyVariantsOptions } from '@mui/material/styles'
+import { mapRecord, recordValues } from '@primitives/objects.utils'
 import { fixedResponsive, handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -26,8 +27,51 @@ type ChipSizeDefinition = {
   paddingInline: Responsive
   lineHeight: Responsive
 }
-
 type ChipSizes = NonNullable<ChipProps['size']>
+type ClickableChipVariant = NonNullable<ChipProps['variant']>
+type ClickableChipColor = Extract<NonNullable<ChipProps['color']>, 'selected' | 'unselected'>
+
+// Builds the shared color style for clickable chips
+const clickableChipColorStyle = (color: string, backgroundColor: string, borderColor = 'transparent'): CSSObject => ({
+  color,
+  backgroundColor,
+  borderColor,
+  '& .MuiChip-icon': {
+    color,
+  },
+  '& .MuiChip-deleteIcon': {
+    color,
+  },
+})
+
+// Returns the base and per-color styles for each clickable chip variant
+const buildClickableChipVariantStyle = ({
+  TextColors,
+  Chips,
+}: {
+  TextColors: DesignSystem['Text']['TextColors']
+  Chips: DesignSystem['Chips']
+}) => {
+  const outlined = {
+    variant: undefined,
+    base: clickableChipColorStyle(TextColors.Primary, 'transparent', Chips.Default.Stroke),
+    colors: {
+      selected: clickableChipColorStyle(Chips.Current.Label, Chips.Current.Fill, Chips.Current.Outline),
+      unselected: clickableChipColorStyle(Chips.Default.Label, Chips.Default.Fill, Chips.Default.Stroke),
+    },
+  } as const
+  const variants: Record<ClickableChipVariant, { base: CSSObject; colors: Record<ClickableChipColor, CSSObject> }> = {
+    ghost: {
+      base: clickableChipColorStyle(TextColors.Primary, 'transparent'),
+      colors: {
+        selected: clickableChipColorStyle(Chips.Current.Label, Chips.Current.Fill),
+        unselected: clickableChipColorStyle(Chips.Default.Label, 'transparent'),
+      },
+    },
+  }
+
+  return [outlined, ...recordValues(mapRecord(variants, (variant, style) => ({ variant, ...style })))]
+}
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
   extraSmall: {
@@ -123,7 +167,7 @@ export const chipSizeClickable: Record<
  * In Figma we have two different components "Badge" and "Chip" that are implemented here.
  * - Figma's Badge component is the non-clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
  * - As we share colors between components, Figma's Chip active color is implemented as "selected" color. inactive is "unselected"
- * - We do not use the "variant" prop (at the time of writing).
+ * - clickable chips use the variant prop to switch between outlined and ghost styles.
  */
 export const defineMuiChip = (
   { Chips, Text: { TextColors }, Badges }: DesignSystem,
@@ -156,7 +200,6 @@ export const defineMuiChip = (
       props: { clickable: true },
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
-        borderColor: Chips.Default.Stroke,
         cursor: 'pointer',
         '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
           ...handleBreakpoints({ gap: Spacing.xxs }),
@@ -185,35 +228,16 @@ export const defineMuiChip = (
     createColor('Warning', Badges),
     createColor('Accent', Badges),
 
-    // chip colors taken from design system variables
-    {
-      props: { color: 'selected' },
-      style: {
-        backgroundColor: Chips.Current.Fill,
-        color: Chips.Current.Label,
-        borderColor: Chips.Current.Outline,
-        '& .MuiChip-icon': {
-          color: Chips.Current.Label,
-        },
-        '& .MuiChip-deleteIcon': {
-          color: Chips.Current.Label,
-        },
+    ...buildClickableChipVariantStyle({ TextColors, Chips }).flatMap(({ variant, base, colors }) => [
+      {
+        props: { clickable: true, variant },
+        style: base,
       },
-    },
-    {
-      props: { color: 'unselected' },
-      style: {
-        color: Chips.Default.Label,
-        backgroundColor: Chips.Default.Fill,
-        borderColor: Chips.Default.Stroke,
-        '& .MuiChip-icon': {
-          color: Chips.Default.Label,
-        },
-        '& .MuiChip-deleteIcon': {
-          color: Chips.Default.Label,
-        },
-      },
-    },
+      ...Object.entries(colors).map(([color, style]) => ({
+        props: { clickable: true, variant, color },
+        style,
+      })),
+    ]),
 
     ...Object.entries(chipSizes).map(([size, { font, iconSize, height, paddingInline, lineHeight }]) => ({
       props: { size: size as ChipSizes },
