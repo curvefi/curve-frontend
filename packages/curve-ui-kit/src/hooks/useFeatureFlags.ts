@@ -44,5 +44,8 @@ export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel 
 /** New market page layout with forms on the right  */
 export const useRightFormTabsLayout = useStableChannel
 
-/** New market historical rates chart */
-export const useMarketHistoricalRatesChart = useBetaChannel
+/** New market historical borrow and supply rate charts */
+export const useMarketHistoricalRatesChart = useStableChannel
+
+/** New market historical interest rate and utilization chart */
+export const useMarketInterestRatesAndUtilizationChart = useBetaChannel
