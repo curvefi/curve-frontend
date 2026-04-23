@@ -10,7 +10,7 @@ const { Spacing } = SizesAndSpaces
 export type LiquidationAlert = {
   softLiquidation: boolean
   hardLiquidation: boolean
-  status: UserPositionStatus | undefined
+  status: UserPositionStatus
 }
 export type Health = { value: number | undefined | null; loading: boolean }
 export type LiquidationRange = {

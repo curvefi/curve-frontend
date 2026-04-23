@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { UserPositionStatus } from '@/llamalend/llamalend.types'
+import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -30,7 +30,7 @@ const flickerEffect = (
 type ColorEffect = (set: (value: (prev: ColorState) => ColorState) => void) => void | (() => void)
 
 const setInfo: ColorEffect = (set) => set(() => 'info')
-const statusColorEffect: Record<UserPositionStatus, ColorEffect> = {
+const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
   healthy: setInfo,
   softLiquidation: flickerEffect,
   incompleteConversion: flickerEffect,

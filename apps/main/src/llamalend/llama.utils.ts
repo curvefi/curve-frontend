@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -255,7 +255,7 @@ export function getLiquidationStatus(
   userIsBelowRange: boolean,
   userStateCollateral: Decimal | undefined,
   userStateBorrowed: Decimal | undefined,
-) {
+): UserPositionStatus {
   if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
   const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
   if (+healthNotFull < 0) return 'hardLiquidation' as const

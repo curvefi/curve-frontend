@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { UserPositionStatus } from '@/llamalend/llamalend.types'
+import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
 export type PositionStatusContent = {
@@ -13,7 +13,7 @@ export type PositionStatusContent = {
 export const getPositionStatusContent = (
   collateralSymbol: string | undefined,
   borrowSymbol: string | undefined,
-): Record<UserPositionStatus, PositionStatusContent> => ({
+): Record<UserPositionStatusKey, PositionStatusContent> => ({
   healthy: {
     title: t`Position is healthy`,
     description: (
