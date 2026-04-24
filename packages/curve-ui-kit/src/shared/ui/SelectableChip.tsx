@@ -21,7 +21,7 @@ const VARIANT_MAP: Record<SelectableChipVariant, ChipProps['variant']> = {
  */
 export const SelectableChip = ({ selected, toggle, variant = 'outlined', ...props }: SelectableChipProps) => (
   <Chip
-    size="medium"
+    size="small"
     clickable
     variant={VARIANT_MAP[variant]}
     color={selected ? 'selected' : 'unselected'}

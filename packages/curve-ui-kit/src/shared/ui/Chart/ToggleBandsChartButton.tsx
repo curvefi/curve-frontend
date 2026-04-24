@@ -17,7 +17,6 @@ export const ToggleBandsChartButton = ({
 }) => (
   // todo: refactor chip to button
   <SelectableChip
-    size="small"
     toggle={toggle}
     label={
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>

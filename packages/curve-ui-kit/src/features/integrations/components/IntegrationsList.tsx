@@ -6,9 +6,11 @@ import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { BLOCKCHAIN_LEGACY_NAMES } from '@ui/utils'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 import { PartnerCard, type Partner } from '@ui-kit/shared/ui/PartnerCard'
+import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.utils'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -53,6 +55,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
   const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
   const isLoading = integrationsLoading || integrationsTagsLoading
+  const isMobile = useIsMobile()
 
   // Collect the unique list of networks from the integrations response
   const networks = useMemo(
@@ -109,6 +112,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
         <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">
           {Object.values(tags).map((tag) => (
             <SelectableChip
+              size={getDefaultSelectableChipSize(isMobile)}
               key={tag.id}
               label={
                 <Stack direction="row" alignItems="center" gap={Spacing.sm}>

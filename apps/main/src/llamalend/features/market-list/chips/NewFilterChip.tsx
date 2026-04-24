@@ -43,6 +43,7 @@ export const NewFilterChip = ({
   ) : (
     <GridChip
       label={t`Filters`}
+      selectableChipSize="medium"
       selected={filterExpanded}
       icon={<FilterIcon />}
       toggle={() => setFilterExpanded((prev) => !prev)}
