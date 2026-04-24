@@ -96,18 +96,20 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           ...TooltipOptions,
         }}
       />
-      <Metric
-        size="medium"
-        label={t`Solvency`}
-        value={solvency?.value}
-        loading={solvency?.loading}
-        valueOptions={{ unit: 'percentage' }}
-        valueTooltip={{
-          title: t`Solvency`,
-          body: <SolvencyTooltip marketType={marketType} />,
-          ...TooltipOptions,
-        }}
-      />
+      {solvency && (
+        <Metric
+          size="medium"
+          label={t`Solvency`}
+          value={solvency?.value}
+          loading={solvency?.loading}
+          valueOptions={{ unit: 'percentage' }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip marketType={marketType} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {maxLeverage && (
         <Metric
           size="medium"

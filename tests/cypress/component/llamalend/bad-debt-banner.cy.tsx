@@ -1,14 +1,12 @@
 import { BadDebtBanner } from '@/llamalend/widgets/banners/BadDebtBanner'
 import { oneFloat } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { oneMarketType } from '@cy/support/helpers/llamalend/mock-market.helpers'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 
-const mountBanner = ({ solvencyPercent, marketType }: { solvencyPercent: number; marketType: LlamaMarketType }) =>
+const mountBanner = ({ solvencyPercent }: { solvencyPercent: number }) =>
   cy.mount(
     <ComponentTestWrapper>
-      <BadDebtBanner solvencyPercent={solvencyPercent} marketType={marketType} />
+      <BadDebtBanner solvencyPercent={solvencyPercent} />
     </ComponentTestWrapper>,
   )
 
@@ -29,20 +27,18 @@ const BANNER_PREFIX_ID = 'bad-debt-banner-'
 
 describe('BadDebtBanner', () => {
   it('does not render for solvent markets', () => {
-    mountBanner({ solvencyPercent: oneFloat(99.9, 101), marketType: oneMarketType() })
+    mountBanner({ solvencyPercent: oneFloat(99.9, 101) })
     cy.get(`[data-testid^=${BANNER_PREFIX_ID}]`).should('not.exist')
   })
 
   visibleCases.forEach(({ name, range: [min, max], id }) => {
     it(name, () => {
       const solvencyPercent = oneFloat(min, max)
-      const marketType = oneMarketType()
 
-      mountBanner({ solvencyPercent, marketType })
+      mountBanner({ solvencyPercent })
 
       cy.get(`[data-testid="${BANNER_PREFIX_ID}${id}"]`).should('be.visible')
       cy.contains(formatPercent(solvencyPercent)).should('be.visible')
-      cy.contains('supplied funds').should(marketType === LlamaMarketType.Lend ? 'be.visible' : 'not.exist')
     })
   })
 })
