@@ -149,6 +149,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   n: x.n,
   n1: x.n1,
   n2: x.n2,
+  activeBand: x.active_band,
   debt: x.debt,
   collateral: x.collateral,
   collateralUp: x.collateral_up,

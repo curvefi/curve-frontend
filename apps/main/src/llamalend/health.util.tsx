@@ -2,7 +2,7 @@ import type { HealthMode } from '@/llamalend/llamalend.types'
 import { Icon } from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { getIsUserCloseToLiquidation } from './llama.utils'
+import { getIsUserCloseToSoftLiquidation } from './llama.utils'
 
 export const DEFAULT_BORROW_TOKEN_SYMBOL = 'crvUSD' as const
 
@@ -30,7 +30,7 @@ export function getHealthMode(
     warning: '',
   }
 
-  if (getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
+  if (getIsUserCloseToSoftLiquidation(bands?.[0], null, oraclePriceBand)) {
     let message = ''
 
     if (newColorKey === 'close_to_liquidation') {
