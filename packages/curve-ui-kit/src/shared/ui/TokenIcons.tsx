@@ -26,6 +26,9 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
   const marginTop = { default: -6, icon: { 1: 4, 2: -8, 3: -11 }[rowCount] }[variant]
   const marginLeft = { default: -4, icon: { 1: -12, 2: -8, 3: -11 }[rowCount] }[variant]
   const lastRowOffset = { default: 8, icon: 3 }[variant]
+  const isIconVariant = variant === 'icon'
+  const displayTokens = isIconVariant ? tokens.toReversed() : tokens
+
   return (
     <Box
       data-testid="token-icons"
@@ -36,11 +39,13 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
         [`& > *:nth-of-type(${iconsPerRow}n-1):nth-last-of-type(1)`]: { gridColumn: `span ${isOddCount ? 2 : 1}` },
       }}
     >
-      {tokens.toReversed().map(({ address, symbol }, index) => {
-        const isLast = index === totalCount - 1
-        const isFirstRow = index < iconsPerRow && !(variant == 'icon' && isLast)
+      {displayTokens.map(({ address, symbol }, index) => {
+        const tokenCount = index + 1
+        const isLast = isIconVariant ? index === totalCount - 1 : tokenCount === totalCount
+        const isFirstRow = isIconVariant ? index < iconsPerRow && !isLast : tokenCount <= iconsPerRow
         const isFirstInRow = index % iconsPerRow === 0
         const shouldOffsetLastRowToken = isOddCount && !isLast && totalCount < 6 && !isFirstRow
+
         return (
           <TokenIcon
             key={`${address}${index}`}
@@ -49,9 +54,12 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
             tooltip={symbol}
             size={({ default: 'sm', icon: rowCount > 1 ? 'xs' : 'mui-sm' } as const)[variant]}
             sx={{
-              // put the item back in their original place, since we used reverse to keep the first icons on top
-              gridRow: Math.floor(index / iconsPerRow) + 1,
-              gridColumn: (index % iconsPerRow) + 1,
+              zIndex: isIconVariant ? index : totalCount - index, // first token renders on top for default, reverse order for icon
+              ...(isIconVariant && {
+                // put the item back in their original place, since we used reverse to keep the first icons on top
+                gridRow: Math.floor(index / iconsPerRow) + 1,
+                gridColumn: (index % iconsPerRow) + 1,
+              }),
               ...(!isFirstRow && { marginTop: `${marginTop}px` }),
               ...(!isFirstInRow && { marginLeft: `${marginLeft}px` }),
               ...(shouldOffsetLastRowToken && { position: 'relative', left: `${lastRowOffset}px` }),
