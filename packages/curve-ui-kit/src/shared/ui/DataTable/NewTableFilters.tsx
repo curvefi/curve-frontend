@@ -1,4 +1,5 @@
 import { ReactNode, useRef } from 'react'
+import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -55,15 +56,25 @@ export const NewTableFilters = <ColumnIds extends string>({
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       {header}
       <Grid container spacing={Spacing.lg} padding={Spacing.sm} justifyContent="space-between" alignItems="center">
-        <Grid size={{ mobile: 12, tablet: 7 }} display="flex">
-          {filterChip}
-          <NewTableSearchField
-            value={searchValue}
-            onChange={setSearchValue}
-            testId={filterExpandedKey}
-            disableAutoFocus={disableSearchAutoFocus}
-          />
-          {sortChip}
+        <Grid
+          size={{ mobile: 12, tablet: 7 }}
+          sx={{
+            display: 'flex',
+            // overlap adjacent component to avoid duplicate border width
+            '& > .tableControl + .tableControl': { ml: '-1px' },
+          }}
+        >
+          {/* Box wrapper needed for applying style */}
+          {filterChip && <Box className="tableControl">{filterChip}</Box>}
+          <Box className="tableControl" sx={{ flex: 1, minWidth: 0 }}>
+            <NewTableSearchField
+              value={searchValue}
+              onChange={setSearchValue}
+              testId={filterExpandedKey}
+              disableAutoFocus={disableSearchAutoFocus}
+            />
+          </Box>
+          {sortChip && <Box className="tableControl">{sortChip}</Box>}
         </Grid>
         {!isMobile && (
           <Grid container size="grow" spacing="none" justifyContent="flex-end">
