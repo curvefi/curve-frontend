@@ -96,7 +96,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           ...TooltipOptions,
         }}
       />
-      {solvency && (
+      {solvency && marketType === LlamaMarketType.Lend && (
         <Metric
           size="medium"
           label={t`Solvency`}
