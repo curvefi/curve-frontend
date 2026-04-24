@@ -70,9 +70,6 @@ export function useClosePositionForm({
 
   const { collateral, debt, stablecoin } = userState ?? {}
 
-  // Loading and error state, which are derived from token data hooks above
-  const isLoading =
-    userStateLoading || userBalancesLoading || borrowTokenUsdRateLoading || collateralTokenUsdRateLoading
   const error = userStateError || userBalancesError || borrowTokenUsdRateError || collateralTokenUsdRateError
 
   // Form state
@@ -216,9 +213,9 @@ export function useClosePositionForm({
   return {
     form,
     values,
-    isLoading,
+    isLoading: userStateLoading || userBalancesLoading || borrowTokenUsdRateLoading || collateralTokenUsdRateLoading,
     isPending,
-    isDisabled: isPending || isLoading || !!error || Number(missing) > 0,
+    isDisabled: isPending || !!error || Number(missing) > 0,
     table,
     debtTokenSymbol: borrowToken?.symbol,
     /**
