@@ -113,6 +113,7 @@ export type UserMarketStats = {
   n1: number
   n2: number
   n: number
+  activeBand: number
   /** The amount of borrow token borrowed by the user, so what you'd normally expect as 'borrowed' */
   debt: number
   collateral: number

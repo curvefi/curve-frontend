@@ -1,4 +1,5 @@
 import { HealthBar } from '@/llamalend/features/market-position-details'
+import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
@@ -14,14 +15,17 @@ import { ErrorCell } from './ErrorCell'
 const { Spacing } = SizesAndSpaces
 
 export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
+  const { assets } = row.original
   const { data, error } = useUserMarketStats(row.original, LlamaMarketColumnId.UserHealth)
-  const { health, softLiquidation } = data ?? {}
+  const { health, status } = data ?? {}
+  const softLiquidation = status === 'softLiquidation'
+  const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
   return health == null ? (
     error && <ErrorCell error={error} />
   ) : (
     <Tooltip
-      title={softLiquidation ? 'Liquidation Protection On' : 'Position active'}
-      body={<HealthTooltipContent softLiquidation={!!softLiquidation} />}
+      title={content?.title ?? t`Position active`}
+      body={<TooltipDescription text={content?.description ?? t`You have an active position in this market.`} />}
       placement="top"
     >
       <Stack gap={Spacing.xs}>
@@ -31,21 +35,3 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
     </Tooltip>
   )
 }
-
-const HealthTooltipContent = ({ softLiquidation }: { softLiquidation: boolean }) => (
-  <>
-    {softLiquidation ? (
-      <>
-        <TooltipDescription text={t`Liquidation protection enabled.`} />
-        <TooltipDescription
-          text={[
-            t`This position is protected against full liquidation.`,
-            t`Soft-liquidation still applies, and collateral may still be partially converted within the liquidation band.`,
-          ].join(' ')}
-        />
-      </>
-    ) : (
-      <TooltipDescription text={t`You have an active position in this market.`} />
-    )}
-  </>
-)

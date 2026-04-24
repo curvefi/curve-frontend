@@ -249,6 +249,9 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
  * formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
  * // Returns "2.5B%"
  *
+ * formatNumber(-1000, { abbreviate: true, unit: 'dollar' })
+ * // Returns "-$1k" (negative sign precedes the prefix symbol)
+ *
  * formatNumber(1234567.89, { useGrouping: true, abbreviate: false })
  * // Returns "1,234,567.89"
  *
@@ -260,7 +263,10 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
  */
 export const formatNumber = (value: Amount, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)
-  return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
+  const isNegative = decomposed.mainValue.startsWith('-')
+  const sign = isNegative ? '-' : ''
+  const mainValue = isNegative ? decomposed.mainValue.slice(1) : decomposed.mainValue
+  return [sign, decomposed.prefix, mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
 
 /** Common percentage formatter across the board for most llamalend percentages */

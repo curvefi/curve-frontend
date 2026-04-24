@@ -61,7 +61,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
   return (
     <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
       <Metric
-        size="small"
+        size="medium"
         label={t`Utilization`}
         value={utilization}
         loading={availableLiquidity?.loading}
@@ -74,7 +74,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         }}
       />
       <Metric
-        size="small"
+        size="medium"
         label={t`Total collateral`}
         value={collateral?.combinedCollateralUsdValue}
         loading={collateral?.loading}
@@ -96,21 +96,23 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           ...TooltipOptions,
         }}
       />
-      <Metric
-        size="small"
-        label={t`Solvency`}
-        value={solvency?.value}
-        loading={solvency?.loading}
-        valueOptions={{ unit: 'percentage' }}
-        valueTooltip={{
-          title: t`Solvency`,
-          body: <SolvencyTooltip marketType={marketType} />,
-          ...TooltipOptions,
-        }}
-      />
+      {solvency && (
+        <Metric
+          size="medium"
+          label={t`Solvency`}
+          value={solvency?.value}
+          loading={solvency?.loading}
+          valueOptions={{ unit: 'percentage' }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip marketType={marketType} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {maxLeverage && (
         <Metric
-          size="small"
+          size="medium"
           label={t`Max leverage`}
           value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
           loading={maxLeverage?.loading}
