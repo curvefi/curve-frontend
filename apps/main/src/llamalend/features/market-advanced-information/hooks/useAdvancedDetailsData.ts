@@ -66,10 +66,12 @@ export const useAdvancedDetailsData = ({
       totalAssets: capAndAvailable?.totalAssets,
       loading: !market || capAndAvailableLoading,
     },
-    solvency: {
-      value: solvencyData?.solvencyPercent,
-      badDebtUsd: solvencyData?.badDebtUsd,
-      loading: !market || solvencyLoading,
-    },
+    ...(marketType === LlamaMarketType.Lend && {
+      solvency: {
+        value: solvencyData?.solvencyPercent,
+        badDebtUsd: solvencyData?.badDebtUsd,
+        loading: !market || solvencyLoading,
+      },
+    }),
   }
 }
