@@ -1,12 +1,9 @@
-import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 
 type Props = {
   solvencyPercent: number | undefined
-  marketType: LlamaMarketType
 }
 
 const SOLVENCY_THRESHOLDS = {
@@ -29,7 +26,7 @@ const BANNER_CONFIG = [
   },
 ] as const
 
-export const BadDebtBanner = ({ solvencyPercent, marketType }: Props) => {
+export const BadDebtBanner = ({ solvencyPercent }: Props) => {
   const banner =
     solvencyPercent != null &&
     solvencyPercent < SOLVENCY_THRESHOLDS.solvent &&
@@ -38,10 +35,7 @@ export const BadDebtBanner = ({ solvencyPercent, marketType }: Props) => {
     banner && (
       <Banner
         severity={banner.severity}
-        subtitle={notFalsy(
-          t`Market solvency is ${formatPercent(solvencyPercent)}.`,
-          marketType === LlamaMarketType.Lend && t`Part of the supplied funds is no longer fully covered.`,
-        ).join(' ')}
+        subtitle={t`Market solvency is ${formatPercent(solvencyPercent)}. Part of the supplied funds is no longer fully covered.`}
         testId={`bad-debt-banner-${banner.id}`}
       >
         {t`Low Market Solvency`}
