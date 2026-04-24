@@ -21,6 +21,7 @@ export const NewLlamaListChips = ({ hasFavorites, ...filterProps }: LlamaListChi
         label={t`Favorites`}
         selected={favorites}
         selectableChipSize="medium"
+        variant="ghost"
         toggle={toggleFavorites}
         icon={<HeartIcon />}
         data-testid="chip-favorites"
