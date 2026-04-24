@@ -86,7 +86,7 @@ export type PoolDepositSlice = {
       chainId: ChainId,
       formType: FormType,
       pool: Pool,
-      maxSlippage?: string,
+      maxSlippage: string,
     ): Promise<FnStepEstGasApprovalResponse>
     fetchStepApprove(
       activeKey: string,
@@ -383,7 +383,7 @@ export const createPoolDepositSlice = (
     },
 
     // steps
-    fetchEstGasApproval: async (activeKey, chainId, formType, pool, maxSlippage = '0') => {
+    fetchEstGasApproval: async (activeKey, chainId, formType, pool, maxSlippage) => {
       const cFormValues = cloneDeep(get()[sliceKey].formValues)
       const { amounts, isWrapped, lpToken } = cFormValues
       const resp =
@@ -584,7 +584,7 @@ export const createPoolDepositSlice = (
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas and approval
-          await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+          await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool, '')
         }
 
         return resp
