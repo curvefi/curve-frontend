@@ -8,6 +8,7 @@ type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
+  showDeprecatedMarkets: boolean
 }
 
 type Action = {
@@ -29,6 +30,7 @@ type Action = {
    * setMaxSlippage(null, "1-0x123...")
    */
   setMaxSlippage: (slippage: string | null, key?: string) => boolean
+  setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => void
 }
 
 type Store = UserProfileState & Action
@@ -43,6 +45,7 @@ const INITIAL_THEME =
 const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
   maxSlippage: { crypto: '0.1', stable: '0.03' },
+  showDeprecatedMarkets: false,
 }
 
 const store: StateCreator<Store> = (set) => ({
@@ -83,6 +86,7 @@ const store: StateCreator<Store> = (set) => ({
 
     return true
   },
+  setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => set((state) => ({ ...state, showDeprecatedMarkets })),
 })
 
 const cache: PersistOptions<Store> = {

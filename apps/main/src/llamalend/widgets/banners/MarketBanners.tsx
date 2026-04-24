@@ -6,6 +6,7 @@ import { getControllerAddress } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import Stack from '@mui/material/Stack'
 import { AlertType } from '@ui/AlertBox/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { BlockchainIds } from '@ui-kit/utils/network'
@@ -32,11 +33,11 @@ export const MarketBanners = <ChainId extends IChainId>({
   const deprecatedMarket = useDeprecatedMarket({ blockchainId, controllerAddress, marketType })
   const { data: solvencyMarket } = useSolvencyMarket({ type: marketType, blockchainId, controllerAddress })
   return (
-    <>
+    <Stack>
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {deprecatedMarket && <DeprecatedMarketBanner {...deprecatedMarket} />}
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && rewardsBanner}
-    </>
+    </Stack>
   )
 }

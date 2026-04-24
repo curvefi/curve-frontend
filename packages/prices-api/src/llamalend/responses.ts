@@ -167,6 +167,7 @@ type UserMarketStats = {
   n1: number
   n2: number
   n: number
+  active_band: number
   debt: number
   collateral: number
   borrowed: number
