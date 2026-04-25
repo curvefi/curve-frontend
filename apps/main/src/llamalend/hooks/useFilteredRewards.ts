@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
 const RewardsActionMap = {
   [MarketRateType.Borrow]: {
-    [LlamaMarketType.Mint]: 'loan',
+    [LlamaMarketType.Mint]: 'borrow',
     [LlamaMarketType.Lend]: 'borrow',
   },
   [MarketRateType.Supply]: {
@@ -13,11 +13,7 @@ const RewardsActionMap = {
   },
 } as const
 
-export const useFilteredRewards = (
-  rewards: CampaignPoolRewards[],
-  marketType: LlamaMarketType,
-  rateType: MarketRateType,
-) =>
+export const useFilteredRewards = (rewards: CampaignRewards[], marketType: LlamaMarketType, rateType: MarketRateType) =>
   useMemo(
     () => rewards.filter(({ action }) => action == RewardsActionMap[rateType][marketType]),
     [rewards, marketType, rateType],

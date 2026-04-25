@@ -2,10 +2,10 @@ import { styled } from 'styled-components'
 import { TooltipMessage } from '@ui/CampaignRewards/TooltipMessage'
 import { Icon } from '@ui/Icon'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 
 type CampaignRewardsCompProps = {
-  rewardsPool: CampaignPoolRewards
+  rewardsPool: CampaignRewards
   highContrast?: boolean
   mobile?: boolean
   banner?: boolean

@@ -5,7 +5,7 @@ import {
   TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
@@ -18,7 +18,7 @@ export type MarketNetBorrowAprTooltipContentProps = {
   totalBorrowApr: number | null | undefined
   totalAverageBorrowApr: number | null | undefined
   periodLabel: string // e.g. "7D", "30D"
-  extraRewards: CampaignPoolRewards[]
+  extraRewards: CampaignRewards[]
   rebasingYieldApr: number | null | undefined
   collateralSymbol: string | null | undefined
   isLoading?: boolean
@@ -28,11 +28,6 @@ const messages: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
   [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
 }
-
-const rewardActionByMarketType = {
-  [LlamaMarketType.Lend]: 'borrow',
-  [LlamaMarketType.Mint]: 'loan',
-} as const
 
 export const MarketNetBorrowAprTooltipContent = ({
   marketType,
@@ -67,7 +62,7 @@ export const MarketNetBorrowAprTooltipContent = ({
         <TooltipItems secondary>
           <RewardsTooltipItems
             title={t`Borrowing incentives`}
-            tooltipType={rewardActionByMarketType[marketType]}
+            tooltipType={'borrow'}
             extraRewards={extraRewards}
             extraIncentives={[]}
           />

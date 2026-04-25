@@ -1,25 +1,25 @@
 import { styled } from 'styled-components'
 import { RCPointsIcon } from '@ui/images'
 import { ExternalLink } from '@ui/Link'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { RewardsCompSmall } from './CampaignRewardsComp'
 
 type CampaignRewardsBannerCompProps = {
-  campaignRewardsPool: CampaignPoolRewards[]
+  campaignRewards: CampaignRewards[]
   message: string
 }
 
-export const CampaignBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
+export const CampaignBannerComp = ({ campaignRewards, message }: CampaignRewardsBannerCompProps) => (
   <Wrapper>
     <StyledPointsIcon />
     <RewardsMessage>
       {message}
-      <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
+      <ExternalLink $noStyles href={campaignRewards[0].dashboardLink}>
         Learn more
       </ExternalLink>
     </RewardsMessage>
     <RewardsIconsWrapper>
-      {campaignRewardsPool.map((rewardItem, index) => (
+      {campaignRewards.map((rewardItem, index) => (
         <RewardsCompSmall key={`${rewardItem.address}-${index}`} rewardsPool={rewardItem} highContrast banner />
       ))}
     </RewardsIconsWrapper>
