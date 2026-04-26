@@ -405,19 +405,25 @@ export const useLlamaMarkets = (
     ),
   })
 
-export const useLlamaMarket = ({
-  blockchainId,
-  controllerAddress,
-}: {
-  blockchainId: Chain | undefined
-  controllerAddress: Address | undefined
-}) =>
+export const useLlamaMarket = (
+  {
+    blockchainId,
+    controllerAddress,
+  }: {
+    blockchainId: Chain | undefined
+    controllerAddress: Address | undefined
+  },
+  enabled = true,
+) =>
   useMappedQuery(
-    useLlamaMarkets({
-      userAddress: useConnection().address,
-      enableLLv2: useLLv2(),
-      showDeprecatedMarkets: useUserProfileStore((state) => state.showDeprecatedMarkets),
-    }),
+    useLlamaMarkets(
+      {
+        userAddress: useConnection().address,
+        enableLLv2: useLLv2(),
+        showDeprecatedMarkets: useUserProfileStore((state) => state.showDeprecatedMarkets),
+      },
+      enabled,
+    ),
     useCallback(
       ({ markets }) =>
         blockchainId &&

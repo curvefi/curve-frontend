@@ -20,7 +20,7 @@ export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: Bad
   // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
   const enabled = !!blockchainId && !!controllerAddress && type === LlamaMarketType.Lend
   const badDebtMarkets = useBadDebtMarkets({ type }, enabled)
-  const llamaMarketQuery = useLlamaMarket({ blockchainId, controllerAddress })
+  const llamaMarketQuery = useLlamaMarket({ blockchainId, controllerAddress }, enabled)
   const market = llamaMarketQuery?.data
 
   const badDebtData = useMemo(() => {
