@@ -4,12 +4,17 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps, type SxProps } from '@ui-kit/utils'
+import { BadgeIcon } from './BadgeIcon'
+import { TokenBadge } from './TokenBadge'
 import { TokenChainIcon } from './TokenChainIcon'
 import { WithWrapper } from './WithWrapper'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
 const { IconSize } = SizesAndSpaces
+
+const getTokenImageUrl = (blockchainId: string, address?: string | null) =>
+  address ? `${getImageBaseUrl(blockchainId)}${address.toLowerCase()}.png` : DEFAULT_IMAGE
 
 // TODO: For another time, we should infer the size type from `keyof typeof IconSize` and generate
 // the corresponding size classes programmatically. This component is also used in legacy UI,
@@ -29,6 +34,8 @@ export type TokenIconProps = {
   size?: Size
   /** Token contract address used for fetching the icon image */
   address?: string | null
+  /** Secondary token contract address used for fetching the bottom-right badge image */
+  secondaryAddress?: string | null
   /** Whether the icon should appear disabled (greyed out) */
   disabled?: boolean
   /** Whether the chain icon should be displayed */
@@ -37,9 +44,9 @@ export type TokenIconProps = {
 }
 
 /**
- * Displays a token icon with optional blockchain chain badge overlay.
+ * Displays a token icon with optional blockchain chain and secondary token badge overlays.
  * Uses WithWrapper to conditionally wrap the icon in a relative-positioned Box only when
- * the chain icon is shown, preventing absolute positioning conflicts with other components.
+ * an overlay is shown, preventing absolute positioning conflicts with other components.
  */
 export const TokenIcon = ({
   className = '',
@@ -47,15 +54,16 @@ export const TokenIcon = ({
   tooltip = '',
   size = DEFAULT_SIZE,
   address,
+  secondaryAddress,
   disabled,
   showChainIcon = false,
   sx,
 }: TokenIconProps) => (
   <WithWrapper
-    shouldWrap={showChainIcon}
+    shouldWrap={showChainIcon || !!secondaryAddress}
     Wrapper={Box}
     sx={{
-      position: 'relative', // to position the chain icon on top of the token icon
+      position: 'relative', // to position overlay icons on top of the token icon
     }}
   >
     <Tooltip title={tooltip} placement="top">
@@ -67,7 +75,7 @@ export const TokenIcon = ({
         onError={({ currentTarget }) => {
           currentTarget.src = DEFAULT_IMAGE
         }}
-        src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
+        src={getTokenImageUrl(blockchainId, address)}
         loading="lazy"
         sx={applySxProps(
           (theme) => ({
@@ -90,12 +98,24 @@ export const TokenIcon = ({
           }),
           sx,
           disabled && {
-            opacity: 0.5,
             filter: 'saturate(0)',
           },
         )}
       />
     </Tooltip>
-    {showChainIcon && <TokenChainIcon chain={blockchainId} />}
+    {showChainIcon && <TokenChainIcon disabled={disabled} chain={blockchainId} />}
+    {secondaryAddress && (
+      <TokenBadge tooltipTitle={secondaryAddress} position="br">
+        <BadgeIcon
+          testId={`token-secondary-icon-${blockchainId}-${secondaryAddress}`}
+          alt={blockchainId}
+          src={getTokenImageUrl(blockchainId, secondaryAddress)}
+          disabled={disabled}
+          onError={({ currentTarget }) => {
+            currentTarget.src = DEFAULT_IMAGE
+          }}
+        />
+      </TokenBadge>
+    )}
   </WithWrapper>
 )

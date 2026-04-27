@@ -117,7 +117,7 @@ export const PageHeaderView = ({
               <WithSkeleton loading={isLoading} width={24} height={24}>
                 {/* 3px custom padding bottom to align with text baseline */}
                 <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem" alignItems="flex-end">
-                  <ChainIcon size="sm" blockchainId={blockchainId} />
+                  <ChainIcon blockchainId={blockchainId} />
                   <Chip size="extraSmall" color="default" label={t`${marketType}`} />
                 </Stack>
               </WithSkeleton>

@@ -17,6 +17,10 @@ const meta: Meta<typeof TokenIcon> = {
       control: 'text',
       description: 'Token contract address',
     },
+    secondaryAddress: {
+      control: 'text',
+      description: 'Secondary token contract address shown as a bottom-right badge',
+    },
     disabled: {
       control: 'boolean',
       description: 'Whether the icon belongs to a disabled element or not',
@@ -71,13 +75,6 @@ export const WithFallback: Story = {
   },
 }
 
-export const Disabled: Story = {
-  args: {
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    disabled: true,
-  },
-}
-
 export const WithChainIcon: Story = {
   args: {
     showChainIcon: true,
@@ -88,6 +85,41 @@ export const WithChainIcon: Story = {
         story: 'Token icon with blockchain chain badge overlay.',
       },
     },
+  },
+}
+
+export const WithSecondaryIcon: Story = {
+  args: {
+    secondaryAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token icon with a secondary token badge overlay in the bottom-right corner.',
+      },
+    },
+  },
+}
+
+export const WithChainAndSecondaryIcon: Story = {
+  args: {
+    secondaryAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    showChainIcon: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token icon with a secondary token badge overlay and blockchain chain badge',
+      },
+    },
+  },
+}
+
+export const Disabled: Story = {
+  args: {
+    secondaryAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    showChainIcon: true,
+    disabled: true,
   },
 }
 
