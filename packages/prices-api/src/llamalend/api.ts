@@ -1,5 +1,6 @@
 import { fetchJson as fetch, addQueryString } from '@primitives/fetch.utils'
 import { getHost, type Options, type Chain } from '..'
+import { Endpoint } from '../llamma'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
@@ -102,6 +103,15 @@ export async function getUserMarketStats(userAddr: string, chain: Chain, marketC
     `${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/stats`,
   )
   return Parsers.parseUserMarketStats(resp)
+}
+
+export async function getMarketUsers(endpoint: Endpoint, chain: Chain, controller: string, options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetMarketUsersResponse>(
+    `${host}/v1/${endpoint}/users/${chain}/${controller}/users`,
+  )
+
+  return Parsers.parseMarketUsers(resp)
 }
 
 export async function getUserMarketEarnings(

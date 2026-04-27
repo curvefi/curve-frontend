@@ -56,7 +56,7 @@ export async function getLiqHealthDeciles(endpoint: Endpoint, chain: Chain, mark
     `${host}/v1/${endpoint}/liquidations/${chain}/${marketAddr}/health/distribution`,
   )
 
-  return resp.data.map(Parsers.parseLiqHealthDeciles)
+  return Parsers.parseLiqHealthDeciles(resp)
 }
 
 export async function getTotalOverview(

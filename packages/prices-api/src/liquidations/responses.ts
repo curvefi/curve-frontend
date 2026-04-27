@@ -64,13 +64,22 @@ export type GetLiqLossesResponse = {
   }[]
 }
 
+type LiquidationHealthDistributionDecileResponse = {
+  health_decile: string
+  collateral: number
+  borrowed?: number
+  /** crvusd endpoint returns "stablecoin" instead of "borrowed" */
+  stablecoin?: number
+  debt: number
+}
+
 export type GetLiqHealthDecilesResponse = {
-  data: {
-    health_decile: string
-    collateral: number
-    stablecoin: number
-    debt: number
-  }[]
+  median: number
+  mean: number
+  std: number
+  min: number
+  max: number
+  data: LiquidationHealthDistributionDecileResponse[]
 }
 
 type TotalOverview = {

@@ -96,10 +96,10 @@ export const FormDepositStake = ({
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
+    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => {
       const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, 'DEPOSIT_STAKE', pool, formValues)
+      await fetchStepApprove(activeKey, curve, 'DEPOSIT_STAKE', pool, formValues, maxSlippage)
       if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepApprove],
@@ -144,7 +144,7 @@ export const FormDepositStake = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
+          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues, maxSlippage),
         },
         DEPOSIT_STAKE: {
           key: 'DEPOSIT_STAKE',
