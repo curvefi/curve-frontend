@@ -83,6 +83,8 @@ export const MARKETS_ALERTS: Record<
       '0xFA4f65B3Dc477738ce8618e9145E1f0Ad9E29034': DEFAULT_ALERT,
       // one-way-market-16 - ezETH-crvUSD
       '0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3': DEFAULT_ALERT,
+      // one-way-market-26 - RCH-crvUSD
+      '0xf8C27436B277734AAA726A8fD5e6D7daDe0296c5': DEFAULT_ALERT,
     },
     [Chain.Arbitrum]: {
       // one-way-market-7 - FXN/crvUSD
@@ -217,6 +219,8 @@ export const DEPRECATED_LLAMAS: Record<
       '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,
       // UNIT0-crvUSD
       '0xd15d9797c4ECBf1c97c010327602bC51A09Dfb95': DEFAULT_DEPRECATE,
+      // RCH-crvUSD
+      '0xf8C27436B277734AAA726A8fD5e6D7daDe0296c5': DEFAULT_DEPRECATE,
     },
     arbitrum: {
       // iBTC-crvUSD
