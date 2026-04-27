@@ -3,7 +3,6 @@ import { MarketTypeSuffix } from '@/llamalend/constants'
 import { formatCollateralNotional, getUtilizationPercent } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
-  AverageHealthTooltip,
   MaxLeverageTooltip,
   SolvencyTooltip,
   TotalCollateralTooltip,
@@ -61,7 +60,11 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
-    <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
+    <Box
+      display="grid"
+      gap={Spacing.lg}
+      gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
+    >
       <Metric
         size="medium"
         label={t`Utilization`}
@@ -88,11 +91,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         value={averageHealth?.value}
         loading={averageHealth?.loading}
         valueOptions={{ decimals: 1 }}
-        valueTooltip={{
-          title: t`Average Health`,
-          body: <AverageHealthTooltip distribution={averageHealth?.distribution} />,
-          ...TooltipOptions,
-        }}
       />
       <Metric
         size="medium"
