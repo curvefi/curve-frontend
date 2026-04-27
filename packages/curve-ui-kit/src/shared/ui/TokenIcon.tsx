@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
+import type { Address } from '@primitives/address.utils'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
@@ -52,9 +53,9 @@ export type TokenIconProps = {
   /** Size variant for the token icon */
   size?: Size
   /** Token contract address used for fetching the icon image */
-  address?: string | null
-  /** Secondary token contract address used for fetching the bottom-right badge image */
-  secondaryAddress?: string | null
+  address?: Address | null
+  /** Secondary token contract address used for fetching the badge image */
+  badgeAddress?: Address | null
   /** Whether the icon should appear disabled (greyed out) */
   disabled?: boolean
   /** Whether the chain icon should be displayed */
@@ -73,13 +74,13 @@ export const TokenIcon = ({
   tooltip = '',
   size = DEFAULT_SIZE,
   address,
-  secondaryAddress,
+  badgeAddress,
   disabled,
   showChainIcon = false,
   sx,
 }: TokenIconProps) => (
   <WithWrapper
-    shouldWrap={showChainIcon || !!secondaryAddress}
+    shouldWrap={showChainIcon || !!badgeAddress}
     Wrapper={Box}
     sx={{
       position: 'relative', // to position overlay icons on top of the token icon
@@ -109,12 +110,12 @@ export const TokenIcon = ({
       />
     </Tooltip>
     {showChainIcon && <TokenChainIcon disabled={disabled} chain={blockchainId} />}
-    {secondaryAddress && (
-      <TokenBadge tooltipTitle={secondaryAddress} position="br">
+    {badgeAddress && (
+      <TokenBadge tooltipTitle={badgeAddress} position="br">
         <BadgeIcon
-          testId={`token-secondary-icon-${blockchainId}-${secondaryAddress}`}
+          testId={`token-secondary-icon-${blockchainId}-${badgeAddress}`}
           alt={blockchainId}
-          src={getTokenImageUrl(blockchainId, secondaryAddress)}
+          src={getTokenImageUrl(blockchainId, badgeAddress)}
           disabled={disabled}
           onError={({ currentTarget }) => {
             currentTarget.src = DEFAULT_IMAGE

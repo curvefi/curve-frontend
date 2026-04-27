@@ -17,7 +17,7 @@ const meta: Meta<typeof TokenIcon> = {
       control: 'text',
       description: 'Token contract address',
     },
-    secondaryAddress: {
+    badgeAddress: {
       control: 'text',
       description: 'Secondary token contract address shown as a bottom-right badge',
     },
@@ -90,7 +90,7 @@ export const WithChainIcon: Story = {
 
 export const WithSecondaryIcon: Story = {
   args: {
-    secondaryAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    badgeAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   },
   parameters: {
     docs: {
@@ -103,7 +103,7 @@ export const WithSecondaryIcon: Story = {
 
 export const WithChainAndSecondaryIcon: Story = {
   args: {
-    secondaryAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    badgeAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     showChainIcon: true,
   },
   parameters: {
@@ -117,7 +117,7 @@ export const WithChainAndSecondaryIcon: Story = {
 
 export const Disabled: Story = {
   args: {
-    secondaryAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    badgeAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     showChainIcon: true,
     disabled: true,
   },

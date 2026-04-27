@@ -22,7 +22,7 @@ const ABSOLUTE_POSITIONS: Record<NonNullable<SecondaryIconBadgeProps['position']
 
 /** Positions a badge in one corner of a TokenIcon and shows its tooltip on hover. */
 export const TokenBadge = ({ children, tooltipTitle, position = 'tl' }: SecondaryIconBadgeProps) => (
-  <Tooltip title={tooltipTitle} placement="top" slotProps={{ popper: { sx: { textTransform: 'capitalize' } } }}>
+  <Tooltip title={tooltipTitle} placement="top">
     <Box sx={{ position: 'absolute', ...ABSOLUTE_POSITIONS[position] }}>{children}</Box>
   </Tooltip>
 )
