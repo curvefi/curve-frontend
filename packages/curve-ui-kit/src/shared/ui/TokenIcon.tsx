@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
-import type { Address } from '@primitives/address.utils'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
@@ -53,9 +52,9 @@ export type TokenIconProps = {
   /** Size variant for the token icon */
   size?: Size
   /** Token contract address used for fetching the icon image */
-  address?: Address | null
+  address?: string | null
   /** Secondary token contract address used for fetching the badge image */
-  badgeAddress?: Address | null
+  badgeAddress?: string | null
   /** Whether the icon should appear disabled (greyed out) */
   disabled?: boolean
   /** Whether the chain icon should be displayed */

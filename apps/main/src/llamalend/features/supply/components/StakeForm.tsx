@@ -1,5 +1,6 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { LoanTokenLabel } from '@/llamalend/widgets/action-card/LoanTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
@@ -26,6 +27,7 @@ export const StakeForm = <ChainId extends IChainId>({
   enabled,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
+  const blockchainId = network.id
 
   const {
     form,
@@ -35,6 +37,7 @@ export const StakeForm = <ChainId extends IChainId>({
     isDisabled,
     vaultToken,
     borrowToken,
+    collateralToken,
     stakeError,
     formErrors,
     isApproved,
@@ -51,12 +54,19 @@ export const StakeForm = <ChainId extends IChainId>({
       <LoanFormTokenInput
         label={t`Amount to stake`}
         token={vaultToken}
-        blockchainId={network.id}
+        blockchainId={blockchainId}
         name="stakeAmount"
         form={form}
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
+        tokenSelector={
+          <LoanTokenLabel
+            blockchainId={blockchainId}
+            token={borrowToken}
+            badgeAddress={collateralToken?.address ?? null}
+          />
+        }
       />
 
       {hasGauge ? (

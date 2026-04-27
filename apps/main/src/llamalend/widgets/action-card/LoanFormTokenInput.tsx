@@ -11,36 +11,18 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
+import { LoanTokenLabel } from './LoanTokenLabel'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
-/**
- * A large token input field for loan forms, with balance and max handling.
- */
-export const LoanFormTokenInput = <
+export type LoanFormTokenInputProps<
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
   TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
->({
-  label,
-  token,
-  blockchainId,
-  name,
-  max,
-  form,
-  testId,
-  message,
-  network,
-  positionBalance,
-  tokenSelector,
-  hideBalance,
-  onValueChange,
-  onMessageNumberClick,
-}: {
+> = {
   label: string
   token: { address: Address; symbol?: string } | undefined
   blockchainId: INetworkName | undefined
@@ -72,7 +54,31 @@ export const LoanFormTokenInput = <
    */
   onValueChange?: (value: Decimal | undefined) => void
   onMessageNumberClick?: (value: Decimal | undefined) => void
-}) => {
+}
+
+/**
+ * A large token input field for loan forms, with balance and max handling.
+ */
+export const LoanFormTokenInput = <
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+>({
+  label,
+  token,
+  blockchainId,
+  name,
+  max,
+  form,
+  testId,
+  message,
+  network,
+  positionBalance,
+  tokenSelector,
+  hideBalance,
+  onValueChange,
+  onMessageNumberClick,
+}: LoanFormTokenInputProps<TFieldValues, TFieldName, TMaxFieldName>) => {
   const { address: userAddress } = useConnection()
   const {
     data: balance,
@@ -122,16 +128,7 @@ export const LoanFormTokenInput = <
       name={name}
       label={label}
       testId={testId}
-      tokenSelector={
-        tokenSelector ?? (
-          <TokenLabel
-            blockchainId={blockchainId}
-            tooltip={token?.symbol}
-            address={token?.address ?? null}
-            label={token?.symbol ?? '?'}
-          />
-        )
-      }
+      tokenSelector={tokenSelector ?? <LoanTokenLabel blockchainId={blockchainId} token={token} />}
       balance={value}
       onBalance={onBalance}
       isError={!!error}
