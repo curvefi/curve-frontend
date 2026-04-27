@@ -11,10 +11,10 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
-import { LoanTokenLabel } from './LoanTokenLabel'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
@@ -128,7 +128,16 @@ export const LoanFormTokenInput = <
       name={name}
       label={label}
       testId={testId}
-      tokenSelector={tokenSelector ?? <LoanTokenLabel blockchainId={blockchainId} token={token} />}
+      tokenSelector={
+        tokenSelector ?? (
+          <TokenLabel
+            blockchainId={blockchainId}
+            tooltip={token?.symbol}
+            address={token?.address ?? null}
+            label={token?.symbol ?? '?'}
+          />
+        )
+      }
       balance={value}
       onBalance={onBalance}
       isError={!!error}

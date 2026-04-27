@@ -1,6 +1,6 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
-import { LoanTokenLabel } from '@/llamalend/widgets/action-card/LoanTokenLabel'
+import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
@@ -62,10 +62,11 @@ export const UnstakeForm = <ChainId extends IChainId>({
           tooltip: t`Staked vault shares`,
         }}
         tokenSelector={
-          <LoanTokenLabel
+          <StakeTokenLabel
             blockchainId={blockchainId}
-            token={borrowToken}
-            badgeAddress={collateralToken?.address ?? null}
+            vaultTokenLabel={vaultToken?.symbol}
+            collateralTokenAddress={collateralToken?.address}
+            borrowTokenAddress={borrowToken?.address}
           />
         }
       />

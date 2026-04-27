@@ -1,6 +1,6 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
-import { LoanTokenLabel } from '@/llamalend/widgets/action-card/LoanTokenLabel'
+import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
@@ -61,10 +61,11 @@ export const StakeForm = <ChainId extends IChainId>({
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
         tokenSelector={
-          <LoanTokenLabel
+          <StakeTokenLabel
             blockchainId={blockchainId}
-            token={borrowToken}
-            badgeAddress={collateralToken?.address ?? null}
+            vaultTokenLabel={vaultToken?.symbol}
+            collateralTokenAddress={collateralToken?.address}
+            borrowTokenAddress={borrowToken?.address}
           />
         }
       />
