@@ -133,7 +133,7 @@ const LendManageSoftLiquidationMenu = [
       },
       {
         value: 'close-position',
-        label: t`Close position`,
+        label: t`Close`,
         component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
           <ClosePositionForm chainId={chainId} networks={networks} market={market} enabled={isLoaded} />
         ),
