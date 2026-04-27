@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import type { Theme } from '@mui/material/styles'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
@@ -13,8 +14,26 @@ const DEFAULT_IMAGE = '/images/default-crypto.png'
 
 const { IconSize } = SizesAndSpaces
 
+// Note: sm size is omitted because it has a custom size
+const MAIN_ICON_SIZE = {
+  xs: IconSize.xs,
+  'mui-sm': IconSize.sm,
+  'mui-md': IconSize.md,
+  lg: IconSize.lg,
+  xl: IconSize.xl,
+} as const
+
+const squareSize = <T,>(value: T) => ({ width: value, height: value })
+
 const getTokenImageUrl = (blockchainId: string, address?: string | null) =>
   address ? `${getImageBaseUrl(blockchainId)}${address.toLowerCase()}.png` : DEFAULT_IMAGE
+
+const getTokenIconSizeSx = (theme: Theme, size: Size) =>
+  // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
+  // I didn't want to break the existing interface as it's used everywhere.
+  size === 'sm'
+    ? { ...squareSize('1.75rem'), [theme.breakpoints.down(400)]: squareSize('1.5rem') }
+    : handleBreakpoints(squareSize(MAIN_ICON_SIZE[size]))
 
 // TODO: For another time, we should infer the size type from `keyof typeof IconSize` and generate
 // the corresponding size classes programmatically. This component is also used in legacy UI,
@@ -80,21 +99,7 @@ export const TokenIcon = ({
         sx={applySxProps(
           (theme) => ({
             borderRadius: '50%',
-            // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
-            // I didn't want to break the existing interface as it's used everywhere.
-            ...(size === 'sm' && {
-              width: '1.75rem',
-              height: '1.75rem',
-              [theme.breakpoints.down(400)]: {
-                width: '1.5rem',
-                height: '1.5rem',
-              },
-            }),
-            ...(size === 'xs' && handleBreakpoints({ width: IconSize['xs'], height: IconSize['xs'] })),
-            ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
-            ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
-            ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
-            ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
+            ...getTokenIconSizeSx(theme, size),
           }),
           sx,
           disabled && {
