@@ -358,19 +358,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.38":
-  version: 2.68.38
-  resolution: "@curvefi/api@npm:2.68.38"
+"@curvefi/api@npm:2.68.43":
+  version: 2.68.43
+  resolution: "@curvefi/api@npm:2.68.43"
   dependencies:
-    "@curvefi/ethcall": "npm:^6.0.16"
+    "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:^10.0.2"
     ethers: "npm:^6.16.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/aa17a98cce4f971c4e1d5be25ea88d16ee8178eb5e8338bad651d51671cfc54f71852f938197538496786db33376d1e49d6760767679d740d04d604c175f4c22
+  checksum: 10c0/142e69239c48d53db66ed4aeae4621c1807248c8155f636d155c9a917665a2e2fdaf5f3669e40b372961cd3ec6378c5616de7cfa7744e7871e34dfa4c8341a60
   languageName: node
   linkType: hard
 
-"@curvefi/ethcall@npm:6.0.16, @curvefi/ethcall@npm:^6.0.16":
+"@curvefi/ethcall@npm:6.0.16":
   version: 6.0.16
   resolution: "@curvefi/ethcall@npm:6.0.16"
   dependencies:
@@ -379,6 +379,18 @@ __metadata:
   peerDependencies:
     ethers: ^6.0.0
   checksum: 10c0/3bd41b3d84f0ed0654279a88920ad7ce38507804008fc8caa86fb2763520f594ef62953a260cb07661f6d71afd5467e41249fdda9eb3b71d10623a496679880e
+  languageName: node
+  linkType: hard
+
+"@curvefi/ethcall@npm:6.0.20":
+  version: 6.0.20
+  resolution: "@curvefi/ethcall@npm:6.0.20"
+  dependencies:
+    "@types/node": "npm:^22.12.0"
+    abi-coder: "npm:^5.0.0"
+  peerDependencies:
+    ethers: ^6.0.0
+  checksum: 10c0/59a255ec9b4139cce840c114eae3decbc24319dbf7d41829357d6ab17a87aa8b5f2a34749649e86b961a3b0100e134c874c1e3138909463020876589a769b2b4
   languageName: node
   linkType: hard
 
@@ -7426,25 +7438,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.2":
-  version: 1.13.6
-  resolution: "axios@npm:1.13.6"
-  dependencies:
-    follow-redirects: "npm:^1.15.11"
-    form-data: "npm:^4.0.5"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/51fb5af055c3b85662fa97df17d986ae2c37d13bf86d50b6bb36b6b3a2dec6966a1d3a14ab3774b71707b155ae3597ed9b7babdf1a1a863d1a31840cb8e7ec71
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "axios@npm:1.15.0"
+"axios@npm:^1.12.2, axios@npm:^1.15.0":
+  version: 1.15.2
+  resolution: "axios@npm:1.15.2"
   dependencies:
     follow-redirects: "npm:^1.15.11"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10c0/47e0f860e98d4d7aa145e89ce0cae00e1fb0f1d2485f065c21fce955ddb1dba4103a46bd0e47acd18a27208a7f62c96249e620db575521b92a968619ab133409
+  checksum: 10c0/4eeae0feeaa7fdc1ef24f81f8b378fdadedf4aebdd6bf224484675160f8744cf17b9b0d1c215279979940f7e8ce463beffa2f713099612e428eac238515c81d5
   languageName: node
   linkType: hard
 

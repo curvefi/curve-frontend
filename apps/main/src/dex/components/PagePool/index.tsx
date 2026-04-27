@@ -57,8 +57,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
+  const { pool } = poolDataCacheOrApi
 
-  const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
+  const poolMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
+  const poolTypeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
     {
@@ -79,7 +81,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
-  const { pool } = poolDataCacheOrApi
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
@@ -108,11 +109,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTab>('pool')
 
   const maxSlippage = useMemo(() => {
-    if (storeMaxSlippage) return storeMaxSlippage
-    if (!pool) return ''
-
-    return pool.isCrypto ? '0.1' : '0.03'
-  }, [storeMaxSlippage, pool])
+    const poolTypeDefaultMaxSlippage = pool.isCrypto ? '0.1' : '0.03'
+    return poolMaxSlippage || poolTypeMaxSlippage || poolTypeDefaultMaxSlippage
+  }, [pool.isCrypto, poolMaxSlippage, poolTypeMaxSlippage])
 
   usePageVisibleInterval(() => {
     if (curve && poolData) {

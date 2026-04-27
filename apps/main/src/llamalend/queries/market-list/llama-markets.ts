@@ -12,6 +12,7 @@ import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -314,7 +315,11 @@ type LlamaMarketsQueries = [
  * @param enabled - Whether the query is enabled
  */
 export const useLlamaMarkets = (
-  { userAddress, enableLLv2 }: { userAddress: Address | undefined; enableLLv2: boolean },
+  {
+    userAddress,
+    enableLLv2,
+    showDeprecatedMarkets,
+  }: { userAddress: Address | undefined; enableLLv2: boolean; showDeprecatedMarkets: boolean },
   enabled = true,
 ) =>
   useQueries({
@@ -390,13 +395,13 @@ export const useLlamaMarkets = (
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
                     (createdAt <= LLAMMALEND_V2_DATE.getTime() || enableLLv2) &&
-                    (!deprecatedMessage || userHasPositions),
+                    (!deprecatedMessage || showDeprecatedMarkets || userHasPositions),
                 ),
               }
             : undefined
         return { ...combineQueriesMeta(results), data }
       },
-      [enabled, userAddress, enableLLv2],
+      [enabled, userAddress, enableLLv2, showDeprecatedMarkets],
     ),
   })
 
@@ -408,7 +413,11 @@ export const useLlamaMarket = ({
   controllerAddress: Address | undefined
 }) =>
   useMappedQuery(
-    useLlamaMarkets({ userAddress: useConnection().address, enableLLv2: useLLv2() }),
+    useLlamaMarkets({
+      userAddress: useConnection().address,
+      enableLLv2: useLLv2(),
+      showDeprecatedMarkets: useUserProfileStore((state) => state.showDeprecatedMarkets),
+    }),
     useCallback(
       ({ markets }) =>
         blockchainId &&

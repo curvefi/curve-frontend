@@ -50,16 +50,21 @@ const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityVal
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { collateral, availableLiquidity, maxLeverage, solvency } = useAdvancedDetailsData({
-    chainId,
-    market,
-    marketId,
-    marketType,
-  })
+  const { collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
+    useAdvancedDetailsData({
+      chainId,
+      market,
+      marketId,
+      marketType,
+    })
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
-    <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
+    <Box
+      display="grid"
+      gap={Spacing.lg}
+      gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
+    >
       <Metric
         size="medium"
         label={t`Utilization`}
@@ -72,6 +77,20 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           body: <UtilizationTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
+      />
+      <Metric
+        size="medium"
+        label={t`Total borrowers`}
+        value={totalBorrowers?.value}
+        loading={totalBorrowers?.loading}
+        valueOptions={{ abbreviate: true }}
+      />
+      <Metric
+        size="medium"
+        label={t`Average health`}
+        value={averageHealth?.value}
+        loading={averageHealth?.loading}
+        valueOptions={{ decimals: 1 }}
       />
       <Metric
         size="medium"

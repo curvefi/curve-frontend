@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
@@ -59,7 +60,11 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const { data, isError, isLoading, isFetching } = useLlamaMarkets({ userAddress: address, enableLLv2: useLLv2() })
+  const showDeprecatedMarkets = useUserProfileStore((state) => state.showDeprecatedMarkets)
+  const { data, isError, isLoading, isFetching } = useLlamaMarkets(
+    { userAddress: address, enableLLv2: useLLv2(), showDeprecatedMarkets },
+    true,
+  )
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
   return (

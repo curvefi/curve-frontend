@@ -100,10 +100,17 @@ export const FormWithdraw = ({
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues) => {
+    async (
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      pool: Pool,
+      formValues: FormValues,
+      maxSlippage: string,
+    ) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues)
+      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues, maxSlippage)
       if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepApprove],
@@ -157,7 +164,7 @@ export const FormWithdraw = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues),
+          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
