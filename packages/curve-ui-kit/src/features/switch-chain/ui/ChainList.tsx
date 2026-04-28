@@ -13,6 +13,7 @@ import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
+import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 
 enum ChainType {
   test = 'test',
@@ -47,8 +48,17 @@ export function ChainList({
   }
 
   const entries = Object.entries(groupedOptions)
+  const missingWagmiChains = options.filter(({ isTestnet, chainId }) => !isTestnet && !wagmiChainsMap[chainId])
+
   return (
     <>
+      {missingWagmiChains.length > 0 && (
+        <Alert variant="filled" severity="error">
+          <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
+          {t`Missing wagmi chain configs in chains.ts for: `}
+          {missingWagmiChains.map(({ id }) => id).join(', ')}
+        </Alert>
+      )}
       <SearchField
         sx={{ marginBottom: 2 }}
         placeholder={t`Search Networks`}
