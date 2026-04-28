@@ -5,7 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -19,6 +19,7 @@ import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
+import { NewLlamaMarketsTable } from './NewLlamaMarketsTable'
 import { UserPositionsTable } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
@@ -87,7 +88,11 @@ export const LlamaMarketsList = () => {
         </Box>
       )}
 
-      <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      {useNewMarketListLayout() ? (
+        <NewLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      ) : (
+        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      )}
     </ListPageWrapper>
   )
 }

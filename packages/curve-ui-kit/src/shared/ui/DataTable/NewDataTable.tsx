@@ -1,0 +1,183 @@
+/// <reference types="./DataTable.d.ts" />
+import { type ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import Box from '@mui/material/Box'
+import { Theme } from '@mui/material/styles'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableFooter from '@mui/material/TableFooter'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import { useLayoutStore } from '@ui-kit/features/layout'
+import { t } from '@ui-kit/lib/i18n'
+import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { type TableItem, type TanstackTable } from './data-table.utils'
+import { DataRow, type DataRowProps } from './DataRow'
+import { HeaderCell } from './HeaderCell'
+import { NewFilterRow } from './NewFilterRow'
+import { SkeletonRows } from './SkeletonRows'
+import { TableViewAllCell } from './TableViewAllCell'
+import { useTableRowLimit } from './useTableRowLimit'
+
+/**
+ * Scrolls to the top of the window whenever the column filters change.
+ */
+function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
+  const { columnFilters } = table.getState()
+  useEffect(() => {
+    if (columnFilters.length) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [columnFilters])
+}
+
+/**
+ * Scrolls to the top of the table container whenever the page changes with manual pagination.
+ */
+function useScrollToTopOnPageChange<T extends TableItem>(
+  table: TanstackTable<T>,
+  containerRef: RefObject<HTMLElement | null>,
+) {
+  const { pageIndex } = table.getState().pagination
+  useEffect(() => {
+    containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [pageIndex, containerRef])
+}
+
+/**
+ * Resets the table pagination to the first page whenever the number of filtered results changes.
+ * Skipped for manual pagination since data changes on every page change.
+ */
+function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+  const isManualPagination = table.options.manualPagination
+  const resultCount = table.getFilteredRowModel().rows.length
+  const onPaginationChangeEvent = useEffectEvent(table.setPagination)
+  const lastResultCount = useRef<number>(resultCount)
+  useEffect(() => {
+    // Skip for manual pagination - data is expected to change on page change
+    if (isManualPagination) return
+    // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
+    if (lastResultCount.current && resultCount) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    lastResultCount.current = resultCount
+  }, [resultCount, isManualPagination])
+}
+
+const { Sizing } = SizesAndSpaces
+
+/**
+ * DataTable component to render the table with headers and rows.
+ */
+export const NewDataTable = <T extends TableItem>({
+  emptyState,
+  children,
+  loading,
+  maxHeight,
+  rowLimit,
+  viewAllLabel,
+  shouldStickFirstColumn = false,
+  hideHeader = false,
+  footerRow,
+  ...rowProps
+}: {
+  table: TanstackTable<T>
+  emptyState: ReactNode
+  children?: ReactNode // passed to <FilterRow />
+  loading: boolean
+  maxHeight?: `${number}rem` // also sets overflowY to 'auto'
+  rowLimit?: number
+  viewAllLabel?: string
+  hideHeader?: boolean
+  footerRow?: ReactNode
+} & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
+  const { table } = rowProps
+  const { rows } = table.getRowModel()
+  const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
+  // When number of rows are limited, show only rowLimit rows
+  const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
+  const showViewAllButton = isLimited && rows.length > rowLimit!
+  // pagination should bw shown if no rows limit and if needed
+  const showPagination = !isLimited && table.getPageCount() > 1
+
+  const headerGroups = table.getHeaderGroups()
+  const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
+  const top = useLayoutStore((state) => state.navHeight)
+  const containerRef = useRef<HTMLDivElement>(null)
+  useScrollToTopOnFilterChange(table)
+  useResetPageOnResultChange(table)
+  useScrollToTopOnPageChange(table, containerRef)
+  const tableHeaderSx = (t: Theme) => ({
+    position: 'sticky',
+    top: maxHeight ? 0 : top,
+    zIndex: t.zIndex.tableHeader,
+    marginBlock: Sizing['sm'],
+  })
+  const showFooter = showPagination || showViewAllButton || footerRow
+
+  return (
+    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
+      <Table
+        sx={{
+          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        }}
+        data-testid={!loading && 'data-table'}
+      >
+        {!hideHeader && (
+          <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+            {children && <NewFilterRow table={table}>{children}</NewFilterRow>}
+
+            {headerGroups.map((headerGroup) => (
+              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+                {headerGroup.headers.map((header, index) => (
+                  <HeaderCell
+                    key={header.id}
+                    header={header}
+                    isSticky={!index && shouldStickFirstColumn}
+                    width={`calc(100% / ${columnCount})`}
+                  />
+                ))}
+              </TableRow>
+            ))}
+          </TableHead>
+        )}
+        <TableBody>
+          {loading ? (
+            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
+          ) : rows.length === 0 ? (
+            emptyState
+          ) : (
+            visibleRows.map((row, index) => (
+              <DataRow<T>
+                key={row.id}
+                row={row}
+                isLast={index === visibleRows.length - 1}
+                shouldStickFirstColumn={shouldStickFirstColumn}
+                {...rowProps}
+              />
+            ))
+          )}
+        </TableBody>
+        {showFooter && (
+          <TableFooter>
+            {footerRow && <TableRow>{footerRow}</TableRow>}
+            {showViewAllButton && (
+              <TableRow>
+                <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
+                  {viewAllLabel || t`View all`}
+                </TableViewAllCell>
+              </TableRow>
+            )}
+            {showPagination && (
+              <TableRow>
+                <TableCell colSpan={columnCount}>
+                  <TablePagination table={table} />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableFooter>
+        )}
+      </Table>
+    </WithWrapper>
+  )
+}
