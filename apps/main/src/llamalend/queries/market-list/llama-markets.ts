@@ -9,9 +9,9 @@ import type { Address } from '@primitives/address.utils'
 import { recordValues } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
-import { type CampaignPoolRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
+import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
-import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
@@ -72,7 +72,7 @@ export type LlamaMarket = {
   }
   type: LlamaMarketType
   url: string
-  rewards: CampaignPoolRewards[]
+  rewards: CampaignRewards[]
   isFavorite: boolean
   leverage: number | null
   deprecatedMessage: string | null
@@ -112,7 +112,7 @@ const convertLendingVault = (
     createdAt,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
-  campaigns: Record<string, CampaignPoolRewards[]> = {},
+  campaigns: Record<string, CampaignRewards[]> = {},
   userBorrows: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
@@ -221,7 +221,7 @@ const convertMintMarket = (
     createdAt,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
-  campaigns: Record<string, CampaignPoolRewards[]> = {},
+  campaigns: Record<string, CampaignRewards[]> = {},
   userMintMarkets: Set<Address>,
   collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
 ): LlamaMarket => {
@@ -301,7 +301,7 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getLendingVaultsOptions>,
   ReturnType<typeof getMintMarketOptions>,
   ReturnType<typeof getCampaignsExternalOptions>,
-  ReturnType<typeof getCampaignsMerklOptions>,
+  ReturnType<typeof getCampaignsMarketsMerklOptions>,
   ReturnType<typeof getFavoriteMarketOptions>,
   ReturnType<typeof getUserLendingVaultsOptions>,
   ReturnType<typeof getUserLendingSuppliesOptions>,
@@ -328,7 +328,7 @@ export const useLlamaMarkets = (
         getLendingVaultsOptions({}, enabled),
         getMintMarketOptions({}, enabled),
         getCampaignsExternalOptions({}, enabled),
-        getCampaignsMerklOptions({}, enabled),
+        getCampaignsMarketsMerklOptions({}, enabled),
         getFavoriteMarketOptions({}, enabled),
         getUserLendingVaultsOptions({ userAddress }, enabled),
         getUserLendingSuppliesOptions({ userAddress }, enabled),
@@ -357,7 +357,7 @@ export const useLlamaMarkets = (
         const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
         const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
         const countMarket = createCountMarket(mintMarkets.data)
-        const campaigns = combineCampaigns(externalCampaigns.data, merklCampaigns.data)
+        const campaigns = combineCampaigns([externalCampaigns.data, merklCampaigns.data])
 
         // only render table when both lending and mint markets are ready, however show one of them if the other is in error
         const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError

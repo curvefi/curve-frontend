@@ -1,6 +1,6 @@
 import type { Campaign, CampaignPool } from '@external-rewards'
 
-export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
+export type CampaignRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
   Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {
     description: CampaignPool['description'] | null
     steps?: string[]
@@ -9,4 +9,4 @@ export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | '
     period?: readonly [Date, Date]
   }
 
-export type Campaigns = Record<string, CampaignPoolRewards[]>
+export type Campaigns = Record<string, CampaignRewards[]>

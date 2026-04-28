@@ -6,7 +6,8 @@ import { fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib'
 import { getCampaignsExternalOptions } from './campaigns-external'
-import { getCampaignsMerklOptions } from './campaigns-merkl'
+import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl'
+import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl'
 import type { Campaigns } from './types'
 
 /**
@@ -21,34 +22,39 @@ import type { Campaigns } from './types'
  * @param filter - Optional filter function to apply to individual campaigns before grouping
  * @returns Combined record with all campaigns merged by address
  */
-export const combineCampaigns = memoizee(
-  (external: Campaigns | undefined, merkl: Campaigns | undefined, network?: string): Campaigns => {
-    const campaigns = [external, merkl]
-    // Get all unique addresses from all campaign sources
-    const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
+export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], network?: string): Campaigns => {
+  // Get all unique addresses from all campaign sources
+  const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
 
-    // Combine campaigns by address, applying optional filter
-    return fromEntries(
-      [...allAddresses]
-        .map((address) => {
-          const allRewards = campaigns
-            .filter((record): record is Campaigns => record !== undefined)
-            .flatMap((record) => record[address] || [])
+  // Combine campaigns by address, applying optional filter
+  return fromEntries(
+    [...allAddresses]
+      .map((address) => {
+        const allRewards = campaigns
+          .filter((record): record is Campaigns => record !== undefined)
+          .flatMap((record) => record[address] || [])
 
-          const filteredRewards = network ? allRewards.filter((r) => r.network === network) : allRewards
+        const filteredRewards = network ? allRewards.filter((r) => r.network === network) : allRewards
 
-          return [address, filteredRewards] as const
-        })
-        // Only include campaigns that have rewards after filtering
-        .filter(([_, rewards]) => rewards.length > 0),
-    )
-  },
-)
+        return [address, filteredRewards] as const
+      })
+      // Only include campaigns that have rewards after filtering
+      .filter(([_, rewards]) => rewards.length > 0),
+  )
+})
 
 type UseCampaignsOptions = { blockchainId?: Chain; enabled?: boolean }
 
-type CampaignQueries = [ReturnType<typeof getCampaignsExternalOptions>, ReturnType<typeof getCampaignsMerklOptions>]
-const queries: CampaignQueries = [getCampaignsExternalOptions({}), getCampaignsMerklOptions({})]
+type CampaignQueries = [
+  ReturnType<typeof getCampaignsExternalOptions>,
+  ReturnType<typeof getCampaignsPoolsMerklOptions>,
+  ReturnType<typeof getCampaignsMarketsMerklOptions>,
+]
+const queries: CampaignQueries = [
+  getCampaignsExternalOptions({}),
+  getCampaignsPoolsMerklOptions({}),
+  getCampaignsMarketsMerklOptions({}),
+]
 
 /**
  * Hook for accessing all campaigns, optionally filtered by network.
@@ -73,10 +79,10 @@ const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
   useQueries({
     queries,
     combine: useCallback(
-      ([external, merkl]: QueriesResults<CampaignQueries>) => ({
-        ...combineQueriesMeta([external, merkl]),
+      ([external, merklPools, merklMarkets]: QueriesResults<CampaignQueries>) => ({
+        ...combineQueriesMeta([external, merklPools, merklMarkets]),
         // Combine campaigns with an optional network filter
-        data: combineCampaigns(external.data, merkl.data, blockchainId),
+        data: combineCampaigns([external.data, merklPools.data, merklMarkets.data], blockchainId),
       }),
       [blockchainId],
     ),

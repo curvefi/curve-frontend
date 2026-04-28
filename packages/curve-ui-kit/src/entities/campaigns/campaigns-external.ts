@@ -38,7 +38,7 @@ const REWARDS = groupBy(
 )
 
 /**
- * Base query for all external reward campaigns.
+ * Base query for all external reward campaigns, both pools and markets.
  *
  * Fetches all active campaigns across all networks and applies time-based filtering
  * to only include campaigns within their active period. Network filtering is intentionally
