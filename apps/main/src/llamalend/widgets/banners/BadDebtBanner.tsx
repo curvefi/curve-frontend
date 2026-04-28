@@ -3,7 +3,7 @@ import { Banner } from '@ui-kit/shared/ui/Banner'
 import { formatPercent } from '@ui-kit/utils'
 
 type Props = {
-  solvencyPercent: number | undefined
+  solvencyPercent: number
 }
 
 const SOLVENCY_THRESHOLDS = {
@@ -28,9 +28,7 @@ const BANNER_CONFIG = [
 
 export const BadDebtBanner = ({ solvencyPercent }: Props) => {
   const banner =
-    solvencyPercent != null &&
-    solvencyPercent < SOLVENCY_THRESHOLDS.solvent &&
-    BANNER_CONFIG.find((config) => solvencyPercent >= config.threshold)
+    solvencyPercent < SOLVENCY_THRESHOLDS.solvent && BANNER_CONFIG.find((config) => solvencyPercent >= config.threshold)
   return (
     banner && (
       <Banner
