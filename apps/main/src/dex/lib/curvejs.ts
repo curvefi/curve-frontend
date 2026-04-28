@@ -280,15 +280,23 @@ const router = {
     fromAddress: string,
     toAddress: string,
     fromAmount: string,
+    slippageTolerance: string,
     isApprovalCheckOnly?: boolean,
   ) => {
-    log('routerEstGasApproval', fromAddress, toAddress, fromAmount)
+    log('routerEstGasApproval', fromAddress, toAddress, fromAmount, slippageTolerance)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = await curve.router.isApproved(fromAddress, fromAmount)
       if (!isApprovalCheckOnly) {
         resp.estimatedGas = resp.isApproved
-          ? await curve.router.estimateGas.swap(fromAddress, toAddress, fromAmount)
+          ? await (
+              curve.router.estimateGas.swap as (
+                inputCoin: string,
+                outputCoin: string,
+                amount: string | number,
+                slippage?: number,
+              ) => Promise<EstimatedGas>
+            )(fromAddress, toAddress, fromAmount, +slippageTolerance)
           : await curve.router.estimateGas.approve(fromAddress, fromAmount)
       }
       void warnIncorrectEstGas(curve.chainId, resp.estimatedGas)
@@ -389,16 +397,17 @@ const poolDeposit = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
+    maxSlippage: string,
   ) => {
-    log('depositEstGasApproval', p.name, isWrapped, amounts)
+    log('depositEstGasApproval', p.name, isWrapped, amounts, maxSlippage)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = isWrapped ? await p.depositWrappedIsApproved(amounts) : await p.depositIsApproved(amounts)
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.depositWrapped(amounts)
-          : await p.estimateGas.deposit(amounts)
+          ? await p.estimateGas.depositWrapped(amounts, +maxSlippage)
+          : await p.estimateGas.deposit(amounts, +maxSlippage)
       } else {
         resp.estimatedGas = isWrapped
           ? await p.estimateGas.depositWrappedApprove(amounts)
@@ -480,8 +489,9 @@ const poolDeposit = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
+    maxSlippage: string,
   ) => {
-    log('depositAndStakeEstGasApproval', p.name, isWrapped, amounts)
+    log('depositAndStakeEstGasApproval', p.name, isWrapped, amounts, maxSlippage)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = isWrapped
@@ -490,8 +500,8 @@ const poolDeposit = {
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.depositAndStakeWrapped(amounts)
-          : await p.estimateGas.depositAndStake(amounts)
+          ? await p.estimateGas.depositAndStakeWrapped(amounts, +maxSlippage)
+          : await p.estimateGas.depositAndStake(amounts, +maxSlippage)
       } else {
         resp.estimatedGas = isWrapped
           ? await p.estimateGas.depositAndStakeWrappedApprove(amounts)
@@ -782,16 +792,17 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     lpTokenAmount: string,
+    maxSlippage: string,
   ) => {
-    log('withdrawEstGasApproval', p.name, lpTokenAmount)
+    log('withdrawEstGasApproval', p.name, lpTokenAmount, maxSlippage)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawIsApproved(lpTokenAmount)
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.withdrawWrapped(lpTokenAmount)
-          : await p.estimateGas.withdraw(lpTokenAmount)
+          ? await p.estimateGas.withdrawWrapped(lpTokenAmount, +maxSlippage)
+          : await p.estimateGas.withdraw(lpTokenAmount, +maxSlippage)
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawApprove(lpTokenAmount)
       }
@@ -863,16 +874,17 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
+    maxSlippage: string,
   ) => {
-    log('withdrawImbalanceEstGasApproval', p.name, isWrapped, amounts)
+    log('withdrawImbalanceEstGasApproval', p.name, isWrapped, amounts, maxSlippage)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawImbalanceIsApproved(amounts)
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.withdrawImbalanceWrapped(amounts)
-          : await p.estimateGas.withdrawImbalance(amounts)
+          ? await p.estimateGas.withdrawImbalanceWrapped(amounts, +maxSlippage)
+          : await p.estimateGas.withdrawImbalance(amounts, +maxSlippage)
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawImbalanceApprove(amounts)
       }
@@ -955,15 +967,16 @@ const poolWithdraw = {
     isWrapped: boolean,
     lpTokenAmount: string,
     tokenAddress: string,
+    maxSlippage: string,
   ) => {
-    log('withdrawOneCoinEstGasApproval', p.name, isWrapped, lpTokenAmount, tokenAddress)
+    log('withdrawOneCoinEstGasApproval', p.name, isWrapped, lpTokenAmount, tokenAddress, maxSlippage)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawOneCoinIsApproved(lpTokenAmount)
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.withdrawOneCoinWrapped(lpTokenAmount, tokenAddress)
-          : await p.estimateGas.withdrawOneCoin(lpTokenAmount, tokenAddress)
+          ? await p.estimateGas.withdrawOneCoinWrapped(lpTokenAmount, tokenAddress, +maxSlippage)
+          : await p.estimateGas.withdrawOneCoin(lpTokenAmount, tokenAddress, +maxSlippage)
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawOneCoinApprove(lpTokenAmount)
       }

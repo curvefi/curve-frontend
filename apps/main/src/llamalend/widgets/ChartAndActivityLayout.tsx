@@ -80,11 +80,12 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
+  const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
-      showBands
+      showBands && hasUserBands
         ? notFalsy<LegendItem>(
             ...chart.legendSets,
             collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
@@ -93,6 +94,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
         : chart.legendSets,
     [
       showBands,
+      hasUserBands,
       chart.legendSets,
       collateralSymbol,
       borrowSymbol,

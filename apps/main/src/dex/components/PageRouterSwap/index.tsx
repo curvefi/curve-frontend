@@ -393,9 +393,11 @@ export const QuickSwap = ({
 
   // maxSlippage
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, cryptoMaxSlippage)
+    if (isReady) updateFormValues({}, false, storeMaxSlippage)
+    // Intentionally depend on raw profile slippage values, not storeMaxSlippage.
+    // storeMaxSlippage also changes when route metadata resolves, which can trigger a slippage/activeKey refresh loop.
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [cryptoMaxSlippage])
+  }, [cryptoMaxSlippage, stableMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {

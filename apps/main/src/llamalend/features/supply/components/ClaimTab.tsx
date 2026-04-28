@@ -6,13 +6,13 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { TotalNotionalRow } from '@ui-kit/shared/ui/DataTable/inline-cells/notional-cells'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { type ClaimableToken } from './columns'
+import { TotalNotionalRow } from './columns/notional-cells'
 
 type ClaimTabProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined

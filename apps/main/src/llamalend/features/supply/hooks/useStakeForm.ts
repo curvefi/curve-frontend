@@ -44,7 +44,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const marketHasGauge = !!market && hasGauge(market)
 
   const vaultToken = getVaultToken(market)
-  const { borrowToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
   const maxUserStake = mapQuery(userBalances, (d) => d.depositedShares)
@@ -88,6 +88,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     isDisabled: !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
+    collateralToken,
     stakeError,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),

@@ -54,10 +54,19 @@ export type LiqLosses = {
 }
 
 export type LiqHealthDecile = {
-  decile: string
-  collateralUsdValue: number
+  healthDecile: string
+  collateral: number
   debt: number
-  stablecoin: number
+  borrowed: number
+}
+
+export type LiqHealthDeciles = {
+  meanHealth: number
+  medianHealth: number
+  stdHealth: number
+  minHealth: number
+  maxHealth: number
+  deciles: LiqHealthDecile[]
 }
 
 export type TotalOverview = {

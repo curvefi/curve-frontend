@@ -26,7 +26,7 @@ export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBanner
   return (
     supplyCampaigns.length + borrowCampaigns.length > 0 && (
       <CampaignBannerComp
-        campaignRewardsPool={[...supplyCampaigns, ...borrowCampaigns]}
+        campaignRewards={[...supplyCampaigns, ...borrowCampaigns]}
         message={
           supplyCampaigns.length && borrowCampaigns.length
             ? t`Supplying and borrowing in this pool earns points!`

@@ -187,6 +187,24 @@ export type UserMarketEarnings = {
 
 export type UserMarketSnapshots = UserMarketStats[]
 
+export type MarketUser = {
+  user: string
+  first: Date
+  last: Date
+  debt: number
+  health: number
+  healthFull: number
+  loss: number
+  borrowed: number
+  collateral: number
+  softLiquidation: boolean
+}
+
+export type MarketUsers = {
+  count: number
+  users: MarketUser[]
+}
+
 export type UserCollateralEvents = {
   controller: Address
   user: Address

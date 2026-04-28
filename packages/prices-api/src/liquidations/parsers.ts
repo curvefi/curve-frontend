@@ -56,13 +56,20 @@ export const parseLiqLosses = (x: Responses.GetLiqLossesResponse['data'][number]
   ratio: x.ratio,
 })
 
-export const parseLiqHealthDeciles = (
-  x: Responses.GetLiqHealthDecilesResponse['data'][number],
-): Models.LiqHealthDecile => ({
-  decile: x.health_decile,
-  collateralUsdValue: x.collateral,
+const parseLiqHealthDecile = (x: Responses.GetLiqHealthDecilesResponse['data'][number]): Models.LiqHealthDecile => ({
+  healthDecile: x.health_decile,
+  collateral: x.collateral,
   debt: x.debt,
-  stablecoin: x.stablecoin,
+  borrowed: x.stablecoin ?? x.borrowed ?? 0,
+})
+
+export const parseLiqHealthDeciles = (x: Responses.GetLiqHealthDecilesResponse): Models.LiqHealthDeciles => ({
+  meanHealth: x.mean,
+  medianHealth: x.median,
+  stdHealth: x.std,
+  minHealth: x.min,
+  maxHealth: x.max,
+  deciles: x.data.map(parseLiqHealthDecile),
 })
 
 export const parseTotalOverview = (

@@ -99,20 +99,41 @@ function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
  * @param columnFilterOptions - All options accepted by {@link useColumnFilters}.
  */
 export const useFilters = <TColumnId extends string>({
-  searchKey,
+  searchKey = DEFAULT_SEARCH_KEY,
   ...columnFilterOptions
 }: Parameters<typeof useColumnFilters<TColumnId>>[0] & { searchKey?: string }) => {
   const { resetGlobalFilter, ...globalFilter } = useGlobalFilter(searchKey)
   const { resetFilters: resetColumnFilters, ...columnFilters } = useColumnFilters(columnFilterOptions)
+
+  const searchParams = useSearchParams()
+  const searchNavigate = useSearchNavigate(searchParams)
+  const { columns, scope } = columnFilterOptions
 
   return {
     ...globalFilter,
     ...columnFilters,
     resetGlobalFilter,
     resetColumnFilters,
+    /**
+     * Clears all filters (both global search and column filters) in a single navigation.
+     *
+     * Calling `resetGlobalFilter` and `resetColumnFilters` sequentially would not work
+     * because each is backed by its own `searchNavigate` closure, which captures a
+     * snapshot of `URLSearchParams` at render time. The second call would navigate
+     * relative to that same stale snapshot, effectively re-adding whatever the first
+     * call had just cleared.
+     *
+     * To avoid this, `resetFilters` owns its own `searchNavigate` and merges all keys
+     * to clear into one update, so only a single navigation occurs.
+     */
     resetFilters: useCallback(() => {
-      resetGlobalFilter()
-      resetColumnFilters()
-    }, [resetColumnFilters, resetGlobalFilter]),
+      searchNavigate(
+        {
+          [searchKey]: null,
+          ...Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])),
+        },
+        { replace: true },
+      )
+    }, [searchNavigate, searchKey, columns, scope]),
   }
 }

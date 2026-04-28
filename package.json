@@ -60,7 +60,7 @@
     ]
   },
   "resolutions": {
-    "@curvefi/api": "2.68.38",
+    "@curvefi/api": "2.68.43",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
     "@types/node": "25.6.0",

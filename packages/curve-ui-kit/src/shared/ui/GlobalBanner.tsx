@@ -9,12 +9,7 @@ import {
 } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@ui-kit/hooks/router'
-import {
-  useDismissAaveBanner,
-  useDismissCurveLiteBanner,
-  useDismissFastBridgeBanner,
-  useReleaseChannel,
-} from '@ui-kit/hooks/useLocalStorage'
+import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { Banner } from '@ui-kit/shared/ui/Banner'
@@ -44,7 +39,6 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
 
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
-  const [showFastBridgeBanner, dismissFastBridgeBanner] = useDismissFastBridgeBanner()
 
   return (
     <StackBanners>
@@ -106,16 +100,6 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445"
         >
           {t`Aave V2 Frozen aTokens`}
-        </Banner>
-      )}
-      {showFastBridgeBanner && currentApp === 'bridge' && (
-        <Banner
-          severity="warning"
-          subtitle={t`Fastbridge has been temporarily paused as a precaution following the rsETH incident. No issues have been identified for Curve's applications.`}
-          onClick={dismissFastBridgeBanner}
-          learnMoreUrl="https://x.com/CurveFinance/status/2045868949892378783?s=20"
-        >
-          {t`Fastbridge is paused`}
         </Banner>
       )}
     </StackBanners>
