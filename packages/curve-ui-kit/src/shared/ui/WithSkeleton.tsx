@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { default as Skeleton, SkeletonProps } from '@mui/material/Skeleton'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 

@@ -13,6 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { TokenIcon, type TokenIconProps } from '@ui-kit/shared/ui/TokenIcon'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -40,7 +41,11 @@ const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: 
 
 export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
-  const { data: oracleAddress } = useMarketOracleAddress({ chainId, marketId: market?.id })
+  const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
+    chainId,
+    marketId: market?.id,
+  })
+  const loading = !network || !market || oracleAddressIsLoading
 
   const tokenItems: ContractItem[] = market
     ? [
@@ -99,11 +104,13 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
     <Stack gap={Spacing.md}>
       <Stack gap={Spacing.sm}>
         <CardHeader title={t`Contracts`} size="small" data-inline />
-        <Stack>
-          {tokenItems.map(({ key, label, address }) => (
-            <AddressActionInfo key={key} network={network} title={label} address={address} />
-          ))}
-        </Stack>
+        <WithSkeleton loading={loading} variant="rectangular" height={'4lh'} width="100%">
+          <Stack>
+            {tokenItems.map(({ key, label, address }) => (
+              <AddressActionInfo key={key} network={network} title={label} address={address} />
+            ))}
+          </Stack>
+        </WithSkeleton>
       </Stack>
 
       <Stack>
