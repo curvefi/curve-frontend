@@ -321,7 +321,7 @@ export const LargeTokenInput = ({
                         handleBalanceChange(newBalance)
                       }
                     }}
-                  ></Chip>
+                  />
                 ))}
               </Stack>
             )}

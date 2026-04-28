@@ -29,7 +29,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
   const isSmall = useMediaQuery('(max-width:1250px)')
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
-      <ChainIcon size="sm" blockchainId={chain} />
+      <ChainIcon blockchainId={chain} />
 
       <Tooltip title={poolTypeTooltips[type]()}>
         <Chip
