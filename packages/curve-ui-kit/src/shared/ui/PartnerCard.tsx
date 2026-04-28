@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,7 @@ import { CURVE_ASSETS_URL } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { GlobeIcon } from '../icons/GlobeIcon'
 import { XIcon } from '../icons/XIcon'
+import { Badge } from './Badge'
 import { StackedChainIcons } from './StackedChainIcons'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -95,7 +95,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
         {tags?.length && (
           <Stack direction="row" gap={Spacing.sm} alignItems="center">
             {tags.map((tag) => (
-              <Chip key={tag} label={tag} color="highlight" />
+              <Badge key={tag} label={tag} color="highlight" />
             ))}
           </Stack>
         )}

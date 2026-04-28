@@ -8,7 +8,6 @@ import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -17,6 +16,7 @@ import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -118,7 +118,7 @@ export const PageHeaderView = ({
                 {/* 3px custom padding bottom to align with text baseline */}
                 <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem" alignItems="flex-end">
                   <ChainIcon blockchainId={blockchainId} />
-                  <Chip size="extraSmall" color="default" label={t`${marketType}`} />
+                  <Badge size="extraSmall" color="default" label={t`${marketType}`} />
                 </Stack>
               </WithSkeleton>
             </Stack>

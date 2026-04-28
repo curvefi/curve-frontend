@@ -125,9 +125,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               isLoading={chart.isLoading}
               customButton={
                 newBandsChartEnabled &&
-                bands && (
-                  <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
-                )
+                bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} toggle={toggleBandsVisible} />
               }
             />
             <Stack

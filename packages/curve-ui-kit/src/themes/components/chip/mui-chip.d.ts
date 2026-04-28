@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
+// eslint-disable-next-line no-restricted-imports
 import '@mui/material/Chip'
 import { ChipColors } from './colors'
 
@@ -15,8 +16,10 @@ declare module '@mui/material/Chip' {
 
   export interface ChipPropsSizeOverrides extends ChipSizeOverrides {}
 
+  /** The "outlined" variant is disabled on purpose because it overrides the custom style of the Chips in the mui-chips.ts file  */
   export interface ChipPropsVariantOverrides {
     filled: false
     outlined: false
+    ghost: true
   }
 }

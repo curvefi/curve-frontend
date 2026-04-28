@@ -116,7 +116,7 @@ const LendLoanOhlcChartHeader = () => {
           <ToggleBandsChartButton
             label="Bands"
             isVisible={isBandsVisible}
-            onClick={() => setIsBandsVisible(!isBandsVisible)}
+            toggle={() => setIsBandsVisible(!isBandsVisible)}
           />
         }
       />

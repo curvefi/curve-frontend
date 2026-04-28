@@ -9,7 +9,6 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,6 +20,7 @@ import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, formatNumber } from '@ui-kit/utils'
+import { SelectableChip } from '../SelectableChip'
 import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'
@@ -303,7 +303,8 @@ export const LargeTokenInput = ({
                 }}
               >
                 {chips.map((chip) => (
-                  <Chip
+                  // todo: refactor chip to button
+                  <SelectableChip
                     key={`input-chip-${chip.label}`}
                     label={
                       <WithSkeleton loading={!!maxBalance?.isLoading}>
@@ -311,16 +312,14 @@ export const LargeTokenInput = ({
                       </WithSkeleton>
                     }
                     data-testid={!chipDisabled && `input-chip-${chip.label}`}
-                    size="extraSmall"
-                    color="default"
-                    clickable
                     disabled={chipDisabled}
-                    onClick={() => {
+                    toggle={() => {
                       const newBalance = chip.newBalance(maxBalance?.balance)
                       if (newBalance !== undefined) {
                         handleBalanceChange(newBalance)
                       }
                     }}
+                    selected={false}
                   />
                 ))}
               </Stack>

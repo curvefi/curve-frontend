@@ -42,7 +42,7 @@ export const NewMarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
       button={
         <SelectableChip
-          size="large"
+          size="medium"
           selected={open}
           icon={<CaretSortIcon />}
           toggle={toggleDrawer}

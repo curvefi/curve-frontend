@@ -72,10 +72,25 @@ module.exports = {
     'no-restricted-imports': [
       'warn',
       {
-        paths: ['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select'].map((component) => ({
-          name: `@mui/material/${component}`,
-          message: `Use \`import { ${component} } from '@ui-kit/shared/ui/${component}'\` instead.`,
-        })),
+        paths: [
+          'Accordion',
+          'Tabs',
+          'Slider',
+          'Tooltip',
+          'Select',
+          {
+            name: '@mui/material/Chip',
+            message:
+              "Use `import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'` or `import { Badge } from '@ui-kit/shared/ui/Badge'` instead.",
+          },
+        ].map((component) =>
+          typeof component === 'string'
+            ? {
+                name: `@mui/material/${component}`,
+                message: `Use \`import { ${component} } from '@ui-kit/shared/ui/${component}'\` instead.`,
+              }
+            : component,
+        ),
       },
     ],
 
