@@ -10,6 +10,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
@@ -397,3 +398,22 @@ export function calculateReturnToWallet({
     +returnBorrowed > 0 && { value: returnBorrowed, symbol: borrowedSymbol },
   )
 }
+
+export const getBadDebtMarketKey = (chain: Chain, controllerAddress: Address) =>
+  `${chain}:${controllerAddress.toLowerCase()}`
+
+export const createGetBadDebtMarket = (badDebtMarkets: BadDebt | undefined) => {
+  const badDebtByMarket = new Map(
+    (badDebtMarkets ?? []).map((market) => [getBadDebtMarketKey(market.chain, market.controllerAddress), market]),
+  )
+  return (chain: Chain, controllerAddress: Address) =>
+    badDebtByMarket.get(getBadDebtMarketKey(chain, controllerAddress))?.badDebt
+}
+
+export const calculateMarketSolvency = ({
+  totalAssetsUsd,
+  badDebtUsd,
+}: {
+  totalAssetsUsd: number
+  badDebtUsd: number | undefined
+}) => (totalAssetsUsd && badDebtUsd != null ? (Math.max(0, totalAssetsUsd - badDebtUsd) / totalAssetsUsd) * 100 : null)

@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { ethAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
+import { calculateMarketSolvency, createGetBadDebtMarket } from '@/llamalend/llama.utils'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -19,6 +20,7 @@ import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/route
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
+import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
   getLendingVaultsOptions,
@@ -56,6 +58,8 @@ export type LlamaMarket = {
   tvl: number
   totalDebtUsd: number
   totalCollateralUsd: number
+  solvencyPercent: number | null
+  badDebtUsd: number | undefined
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
     lendApy: number | null // base lend APY %
@@ -115,6 +119,7 @@ const convertLendingVault = (
   campaigns: Record<string, CampaignPoolRewards[]> = {},
   userBorrows: Set<Address>,
   userSupplied: Set<Address>,
+  badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = LlamaMarketType.Lend
   const hasBorrowed = userBorrows.has(controller)
@@ -151,6 +156,8 @@ const convertLendingVault = (
     },
     maxLtv,
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
+    solvencyPercent: calculateMarketSolvency({ totalAssetsUsd, badDebtUsd }),
+    badDebtUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     totalDebtUsd,
@@ -224,6 +231,7 @@ const convertMintMarket = (
   campaigns: Record<string, CampaignPoolRewards[]> = {},
   userMintMarkets: Set<Address>,
   collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
+  badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = LlamaMarketType.Mint
   const hasBorrow = userMintMarkets.has(address)
@@ -257,6 +265,9 @@ const convertMintMarket = (
     },
     maxLtv,
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
+    // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
+    solvencyPercent: null,
+    badDebtUsd,
     debtCeiling,
     liquidityUsd: borrowable,
     tvl: collateralAmountUsd,
@@ -300,6 +311,8 @@ function createCountMarket(data: MintMarket[] | undefined = []) {
 type LlamaMarketsQueries = [
   ReturnType<typeof getLendingVaultsOptions>,
   ReturnType<typeof getMintMarketOptions>,
+  ReturnType<typeof getBadDebtLendMarketsOptions>,
+  ReturnType<typeof getBadDebtMintMarketsOptions>,
   ReturnType<typeof getCampaignsExternalOptions>,
   ReturnType<typeof getCampaignsMerklOptions>,
   ReturnType<typeof getFavoriteMarketOptions>,
@@ -327,6 +340,8 @@ export const useLlamaMarkets = (
       () => [
         getLendingVaultsOptions({}, enabled),
         getMintMarketOptions({}, enabled),
+        getBadDebtLendMarketsOptions(enabled),
+        getBadDebtMintMarketsOptions(enabled),
         getCampaignsExternalOptions({}, enabled),
         getCampaignsMerklOptions({}, enabled),
         getFavoriteMarketOptions({}, enabled),
@@ -345,6 +360,8 @@ export const useLlamaMarkets = (
         const [
           lendingVaults,
           mintMarkets,
+          badDebtLendMarkets,
+          badDebtMintMarkets,
           externalCampaigns,
           merklCampaigns,
           favoriteMarkets,
@@ -358,6 +375,8 @@ export const useLlamaMarkets = (
         const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
         const countMarket = createCountMarket(mintMarkets.data)
         const campaigns = combineCampaigns(externalCampaigns.data, merklCampaigns.data)
+        const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
+        const getMintMarketBadDebt = createGetBadDebtMarket(badDebtMintMarkets.data)
 
         // only render table when both lending and mint markets are ready, however show one of them if the other is in error
         const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
@@ -387,10 +406,24 @@ export const useLlamaMarkets = (
                 hasFavorites: favoriteMarketsSet.size > 0,
                 markets: [
                   ...(lendingVaults.data ?? []).map((vault) =>
-                    convertLendingVault(vault, favoriteMarketsSet, campaigns, userBorrows, userSupplied),
+                    convertLendingVault(
+                      vault,
+                      favoriteMarketsSet,
+                      campaigns,
+                      userBorrows,
+                      userSupplied,
+                      getLendMarketBadDebt(vault.chain, vault.controller),
+                    ),
                   ),
                   ...(mintMarkets.data ?? []).map((market) =>
-                    convertMintMarket(market, favoriteMarketsSet, campaigns, userMints, countMarket(market)),
+                    convertMintMarket(
+                      market,
+                      favoriteMarketsSet,
+                      campaigns,
+                      userMints,
+                      countMarket(market),
+                      getMintMarketBadDebt(market.chain, market.address),
+                    ),
                   ),
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
