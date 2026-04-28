@@ -5,6 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
+import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
@@ -13,7 +14,6 @@ import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
-import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 
 enum ChainType {
   test = 'test',
