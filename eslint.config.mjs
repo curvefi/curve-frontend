@@ -4,7 +4,7 @@ import js from '@eslint/js'
 import eslintReact from '@eslint-react/eslint-plugin'
 import tanstack from '@tanstack/eslint-plugin-query'
 import prettier from 'eslint-config-prettier'
-import importPlugin from 'eslint-plugin-import'
+import { importX } from 'eslint-plugin-import-x'
 import noOnlyTests from 'eslint-plugin-no-only-tests'
 import { reactRefresh } from 'eslint-plugin-react-refresh'
 import storybook from 'eslint-plugin-storybook'
@@ -35,6 +35,8 @@ const config = [
   ...tanstack.configs['flat/recommended'],
   eslintReact.configs['recommended-typescript'],
   reactRefresh.configs.vite(),
+  importX.flatConfigs.recommended,
+  importX.flatConfigs.typescript,
   ...storybook.configs['flat/recommended'],
 
   // Project-wide rules + plugins
@@ -42,7 +44,6 @@ const config = [
     plugins: {
       'no-only-tests': noOnlyTests,
       'unused-imports': unusedImports,
-      import: importPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -55,13 +56,13 @@ const config = [
     },
     settings: {
       react: { version: 'detect' },
-      'import/resolver': {
+      'import-x/resolver': {
         typescript: {
           alwaysTryTypes: true,
           project: ['./tsconfig.json'],
         },
       },
-      'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
+      'import-x/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
     },
     rules: {
       // The follow react rules are turned off as they were not enabled or working properly in the old eslint react plugin
@@ -99,10 +100,10 @@ const config = [
       'arrow-parens': ['error', 'as-needed'],
       'no-only-tests/no-only-tests': 'error',
       'unused-imports/no-unused-imports': 'warn',
-      'import/no-default-export': 'error',
 
-      // rule to enforce that imports are only allowed from certain paths
-      'import/no-restricted-paths': [
+      'import-x/no-default-export': 'error',
+      'import-x/no-named-as-default': 'off',
+      'import-x/no-restricted-paths': [
         'error',
         {
           basePath: __dirname,
@@ -125,6 +126,23 @@ const config = [
               from: 'wagmi',
             },
           ],
+        },
+      ],
+
+      'import-x/order': [
+        'warn',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          pathGroups: [
+            // This will make all @-prefixed external imports come after non-@ imports
+            { pattern: '@*/**', group: 'external', position: 'after' },
+          ],
+          pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+          'newlines-between': 'never',
         },
       ],
 
@@ -190,22 +208,7 @@ const config = [
           allow: ['warn', 'error', 'info', 'trace', 'assert'],
         },
       ],
-      'import/order': [
-        'warn',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          pathGroups: [
-            // This will make all @-prefixed external imports come after non-@ imports
-            { pattern: '@*/**', group: 'external', position: 'after' },
-          ],
-          pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
-          'newlines-between': 'never',
-        },
-      ],
+
       'no-restricted-syntax': [
         'error',
         {
@@ -228,7 +231,7 @@ const config = [
   {
     files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
     rules: {
-      'import/no-default-export': 'off',
+      'import-x/no-default-export': 'off',
     },
   },
 

@@ -1,7 +1,6 @@
 import { MouseEvent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Address, isAddressEqual } from 'viem'
-import { ethAddress } from 'viem'
+import { Address, isAddressEqual, ethAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import {
   useDepositRewardApproveIsMutating,

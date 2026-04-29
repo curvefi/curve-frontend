@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { Box, SxProps, Theme } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
 type Props = {

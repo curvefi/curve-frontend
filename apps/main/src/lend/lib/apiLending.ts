@@ -19,6 +19,7 @@ import {
   MarketStatBands,
   MarketStatCapAndAvailable,
   MaxRecvLeverageResp,
+  OneWayMarketTemplate,
   ParsedBandsBalances,
   Provider,
   RewardCrv,
@@ -27,7 +28,6 @@ import {
   UserLoss,
   UserMarketBalances,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
 import {
   getIsUserCloseToSoftLiquidation,

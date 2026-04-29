@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useConnection } from 'wagmi'
-import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
-import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
+import { oneMonthProjectionYield, oneYearProjectionYield, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { useStore } from '@/loan/store/useStore'

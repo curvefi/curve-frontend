@@ -30,6 +30,5 @@ declare module '@mui/material/InputLabel' {
 }
 
 declare module '@mui/material/TextField' {
-  export interface TextFieldPropsSizeOverrides extends TextFieldClasses {}
-  export interface TextFieldPropsSizeOverrides extends InputSizeOverrides {}
+  export interface TextFieldPropsSizeOverrides extends TextFieldClasses, InputSizeOverrides {}
 }

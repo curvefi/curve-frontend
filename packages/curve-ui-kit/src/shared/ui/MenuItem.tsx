@@ -1,5 +1,4 @@
-import { type ReactNode, useRef } from 'react'
-import { type ElementType } from 'react'
+import { type ReactNode, type ElementType, useRef } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import MuiMenuItem, { type MenuItemProps as MuiMenuItemProps, type MenuItemTypeMap } from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
