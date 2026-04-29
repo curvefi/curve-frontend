@@ -19,6 +19,7 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
+import type { NetworkConfig } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
@@ -43,6 +44,22 @@ import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
+
+const TitleComp = ({
+  network,
+  poolAddress,
+  poolName,
+}: {
+  network: NetworkConfig
+  poolAddress: string
+  poolName: string
+}) => (
+  <AppPageFormTitleWrapper>
+    <StyledExternalLink href={scanAddressPath(network, poolAddress)}>
+      <Title as="h1">{poolName}</Title>
+    </StyledExternalLink>
+  </AppPageFormTitleWrapper>
+)
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
@@ -171,13 +188,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [isAvailableManageGauge, rFormType, toggleForm])
 
-  const TitleComp = () => (
-    <AppPageFormTitleWrapper>
-      <StyledExternalLink href={scanAddressPath(network, pool.address)}>
-        <Title as="h1">{pool?.name || ''}</Title>
-      </StyledExternalLink>
-    </AppPageFormTitleWrapper>
-  )
   return (
     <>
       {poolAlert?.banner && (
@@ -191,7 +201,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       <DetailPageLayout
         formTabs={
           <FormMargins>
-            {!isMdUp && <TitleComp />}
+            {!isMdUp && <TitleComp network={network} poolName={pool.name || ''} poolAddress={pool.address} />}
             <TabsSwitcher
               variant="contained"
               value={!rFormType ? 'deposit' : rFormType}
@@ -239,7 +249,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           </FormMargins>
         }
       >
-        {isMdUp && <TitleComp />}
+        {isMdUp && <TitleComp network={network} poolName={pool.name || ''} poolAddress={pool.address} />}
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">

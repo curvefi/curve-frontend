@@ -271,18 +271,6 @@ export const LoanDeleverage = ({
   const isReady = !!curve && !!llamma
   const isValid = !formValues.collateralError
 
-  const LeveragePriceImpactDetail = () => (
-    <DetailInfo
-      isBold={isValid && detailInfo.isHighImpact}
-      variant={isValid && detailInfo.isHighImpact ? 'error' : undefined}
-      label={isValid && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
-      loading={!isReady || detailInfo.loading}
-      loadingSkeleton={[70, 20]}
-    >
-      {isValid && detailInfo.priceImpact ? <strong>{detailInfo.priceImpact}%</strong> : '-'}
-    </DetailInfo>
-  )
-
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
@@ -329,7 +317,15 @@ export const LoanDeleverage = ({
           {...detailInfo}
           detailInfoLeverage={
             <DetailInfoLeverageWrapper>
-              <LeveragePriceImpactDetail />
+              <DetailInfo
+                isBold={isValid && detailInfo.isHighImpact}
+                variant={isValid && detailInfo.isHighImpact ? 'error' : undefined}
+                label={isValid && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
+                loading={!isReady || detailInfo.loading}
+                loadingSkeleton={[70, 20]}
+              >
+                {isValid && detailInfo.priceImpact ? <strong>{detailInfo.priceImpact}%</strong> : '-'}
+              </DetailInfo>
               <DetailInfoTradeRoutes
                 loading={detailInfo.loading}
                 routes={detailInfo.routeName}

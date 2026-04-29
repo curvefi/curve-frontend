@@ -62,7 +62,6 @@
     "eslint": "*",
     "pinst": "^3.0.0",
     "typescript": "*",
-    "typescript-eslint": "^8.58.2",
     "vite": "*"
   }
 }

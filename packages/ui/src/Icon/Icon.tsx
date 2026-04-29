@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { CarbonIconProps } from '@carbon/icons-react'
 import {
   ArrowUp,
@@ -95,11 +94,7 @@ export interface IconProps extends CarbonIconProps {
 }
 
 export const Icon = ({ className, name, size, ...props }: IconProps) => {
-  const IconSvg = useMemo(() => {
-    if (name && name in icon) {
-      return icon[name]
-    }
-  }, [name])
-
-  return IconSvg ? <IconSvg className={className} size={size} {...props} /> : <></>
+  if (!(name in icon)) return null
+  const IconSvg = icon[name]
+  return <IconSvg className={className} size={size} {...props} />
 }
