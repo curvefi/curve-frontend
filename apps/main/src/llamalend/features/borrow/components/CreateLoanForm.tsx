@@ -3,6 +3,7 @@ import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -42,27 +43,36 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  borrowDisabledAlert?: FormDisabledAlert | false
+  borrowDisabledAlert?: FormDisabledAlert
 }) => {
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
     borrowToken,
     collateralToken,
-    creationError,
+    error,
     form,
     formErrors,
     isApproved,
     isPending,
+    isLoading,
     isDisabled,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
+    disabledAlert,
+    lowSolvencyModalProps,
     params,
     routes,
     values,
     leverage,
     priceImpact,
-  } = useCreateLoanForm({ market, network, preset, onPricesUpdated, disabled: !!borrowDisabledAlert })
+  } = useCreateLoanForm({
+    market,
+    network,
+    preset,
+    onPricesUpdated,
+    borrowDisabledAlert,
+  })
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
@@ -139,20 +149,17 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
 
-      {borrowDisabledAlert ? (
-        <AlertDisableForm>{borrowDisabledAlert.message}</AlertDisableForm>
+      {disabledAlert ? (
+        <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (
-        <Button
-          type="submit"
-          loading={isPending || !market}
-          disabled={isDisabled}
-          data-testid="create-loan-submit-button"
-        >
+        <Button type="submit" loading={isLoading} disabled={isDisabled} data-testid="create-loan-submit-button">
           {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
         </Button>
       )}
 
-      <FormAlerts error={creationError} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
+      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
     </Form>
   )
 }

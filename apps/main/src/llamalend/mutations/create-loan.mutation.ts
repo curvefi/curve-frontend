@@ -97,7 +97,7 @@ export const useCreateLoanMutation = ({
     ...props,
   })
 
-  const onSubmit = useCallback((data: CreateLoanForm) => mutate(data as CreateLoanMutation), [mutate])
+  const onSubmit = useCallback(async (data: CreateLoanForm) => mutate(data as CreateLoanMutation), [mutate])
 
   return { onSubmit, error, isPending }
 }

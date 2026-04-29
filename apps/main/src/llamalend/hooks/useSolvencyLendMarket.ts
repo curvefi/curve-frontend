@@ -13,9 +13,9 @@ type BadDebtParams = {
 /**
  * Returns solvency data for a single lend market.
  */
-export const useSolvencyLendMarket = ({ blockchainId, controllerAddress }: BadDebtParams) =>
+export const useSolvencyLendMarket = ({ blockchainId, controllerAddress }: BadDebtParams, enabled = true) =>
   useMappedQuery(
-    useLlamaMarket({ blockchainId, controllerAddress }, !!blockchainId && !!controllerAddress),
+    useLlamaMarket({ blockchainId, controllerAddress }, !!blockchainId && !!controllerAddress && enabled),
     useCallback(
       (market) =>
         market.type === LlamaMarketType.Lend && market.solvencyPercent != null

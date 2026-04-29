@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { FormDisabledAlert, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
+import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -17,7 +18,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { cancelSubmit, updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
@@ -39,13 +40,13 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   network: { chainId },
   preset,
   onPricesUpdated,
-  disabled,
+  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   preset: LoanPreset
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  disabled: boolean
+  borrowDisabledAlert?: FormDisabledAlert
 }) {
   const { address: userAddress } = useConnection()
   const form = useForm<CreateLoanForm>({
@@ -109,6 +110,22 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     userAddress,
   })
 
+  const {
+    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
+    solvencyDisabledAlert,
+    handleSubmit,
+    handleConfirmLowSolvencyModal,
+    closeLowSolvencyModal,
+    isLowSolvencyModalOpen,
+  } = useLowSolvencyForm({
+    market,
+    chainId,
+    onSubmit,
+    handleFormSubmit: form.handleSubmit,
+  })
+
+  const disabledAlert = borrowDisabledAlert ?? solvencyDisabledAlert
+
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
   const maxTokenValues = useMaxTokenValues(collateralToken?.address, params, form)
@@ -120,18 +137,25 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const isPending = formState.isSubmitting || isCreating
   const isDisabled =
-    disabled || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params)
+    !!disabledAlert ||
+    !!solvencyError ||
+    !formState.isValid ||
+    isPending ||
+    isDebouncing ||
+    shouldBlockTransaction(priceImpact, params)
+
   return {
     form,
     values,
     params,
     isPending,
+    isLoading: isPending || !market || isSolvencyLoading,
     isDisabled,
-    onSubmit: isDisabled ? cancelSubmit : form.handleSubmit(onSubmit),
+    onSubmit: handleSubmit,
     maxTokenValues,
     borrowToken,
     collateralToken,
-    creationError,
+    error: creationError ?? solvencyError,
     leverage: {
       data: expectedCollateral.data?.leverage,
       // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
@@ -140,6 +164,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isApproved: useCreateLoanIsApproved(params),
     priceImpact,
     formErrors: useFormErrors(formState),
+    disabledAlert,
+    lowSolvencyModalProps: {
+      action: 'borrow',
+      onClose: closeLowSolvencyModal,
+      onConfirm: handleConfirmLowSolvencyModal,
+      open: isLowSolvencyModalOpen,
+      tokenSymbol: collateralToken?.symbol,
+    } as const,
     routes: useMarketRoutes({
       chainId,
       tokenIn: borrowToken,

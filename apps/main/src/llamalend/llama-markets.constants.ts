@@ -20,7 +20,7 @@ type MarketAlert = TooltipProps & {
 }
 
 const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
-const DEFAULT_ALERT: MarketAlert = {
+export const DEFAULT_ALERT: MarketAlert = {
   alertType: 'danger',
   isBorrowDisabled: true,
   isDepositDisabled: true,

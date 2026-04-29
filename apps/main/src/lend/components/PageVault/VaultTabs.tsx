@@ -21,9 +21,6 @@ type VaultProps = PageContentProps<MarketUrlParams>
 
 function DepositTab({ rChainId, market, isLoaded }: VaultProps) {
   const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
-  const depositDisabledAlert = marketAlert?.isDepositDisabled
-    ? { message: marketAlert.message, alertType: marketAlert.alertType }
-    : undefined
 
   return (
     <DepositForm
@@ -31,7 +28,7 @@ function DepositTab({ rChainId, market, isLoaded }: VaultProps) {
       chainId={rChainId}
       market={market}
       enabled={isLoaded}
-      depositDisabledAlert={depositDisabledAlert}
+      depositDisabledAlert={marketAlert?.isDepositDisabled ? marketAlert : undefined}
     />
   )
 }

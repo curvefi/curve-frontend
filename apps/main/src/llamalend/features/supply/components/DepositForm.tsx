@@ -1,5 +1,6 @@
 import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
@@ -28,16 +29,28 @@ export const DepositForm = <ChainId extends IChainId>({
   enabled,
   depositDisabledAlert,
 }: DepositFormProps<ChainId>) => {
-  const isDepositDisabled = !!depositDisabledAlert
   const network = networks[chainId]
 
-  const { form, params, isPending, onSubmit, isDisabled, borrowToken, depositError, formErrors, isApproved, max } =
-    useDepositForm({ market, network, enabled })
+  const {
+    form,
+    params,
+    isPending,
+    isLoading,
+    onSubmit,
+    isDisabled,
+    borrowToken,
+    error,
+    formErrors,
+    isApproved,
+    max,
+    disabledAlert,
+    lowSolvencyModalProps,
+  } = useDepositForm({ market, network, enabled, depositDisabledAlert })
 
   return (
     <Form
       {...form}
-      onSubmit={isDepositDisabled ? form.handleSubmit(() => undefined) : onSubmit}
+      onSubmit={onSubmit}
       footer={<DepositSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
@@ -51,19 +64,15 @@ export const DepositForm = <ChainId extends IChainId>({
         network={network}
       />
 
-      {isDepositDisabled ? (
-        <AlertDisableForm>{depositDisabledAlert.message}</AlertDisableForm>
+      {disabledAlert ? (
+        <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (
-        <Button
-          type="submit"
-          loading={isPending || !market}
-          disabled={isDisabled}
-          data-testid={`${TEST_ID_PREFIX}-submit-button`}
-        >
+        <Button type="submit" loading={isLoading} disabled={isDisabled} data-testid={`${TEST_ID_PREFIX}-submit-button`}>
           {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
         </Button>
       )}
-      <FormAlerts error={depositError} formErrors={formErrors} handledErrors={['depositAmount']} />
+      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )
 }
