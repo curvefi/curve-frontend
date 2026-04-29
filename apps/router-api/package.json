@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "tsx watch src/dev.ts",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-router-api.tsbuildinfo",
     "test": "vitest run",
     "test:watch": "vitest"

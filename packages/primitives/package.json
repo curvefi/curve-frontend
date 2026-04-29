@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint \"**/*.ts*\"",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content . --fix",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
   },
   "peerDependencies": {
