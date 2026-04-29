@@ -13,7 +13,6 @@ import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
@@ -328,7 +327,7 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getUserLendingSuppliesOptions>,
   ReturnType<typeof getUserMintMarketsOptions>,
 ]
-
+type LlamaMarketParams = { userAddress: Address | undefined; enableLLv2: boolean; enableDeprecatedMarkets: boolean }
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (without the details).
@@ -336,11 +335,7 @@ type LlamaMarketsQueries = [
  * @param enabled - Whether the query is enabled
  */
 export const useLlamaMarkets = (
-  {
-    userAddress,
-    enableLLv2,
-    showDeprecatedMarkets,
-  }: { userAddress: Address | undefined; enableLLv2: boolean; showDeprecatedMarkets: boolean },
+  { userAddress, enableLLv2, enableDeprecatedMarkets }: LlamaMarketParams,
   enabled = true,
 ) =>
   useQueries({
@@ -436,13 +431,13 @@ export const useLlamaMarkets = (
                 ].filter(
                   ({ createdAt, deprecatedMessage, userHasPositions }) =>
                     (createdAt <= LLAMMALEND_V2_DATE.getTime() || enableLLv2) &&
-                    (!deprecatedMessage || showDeprecatedMarkets || userHasPositions),
+                    (!deprecatedMessage || enableDeprecatedMarkets || userHasPositions),
                 ),
               }
             : undefined
         return { ...combineQueriesMeta(results), data }
       },
-      [enabled, userAddress, enableLLv2, showDeprecatedMarkets],
+      [enabled, userAddress, enableLLv2, enableDeprecatedMarkets],
     ),
   })
 
@@ -450,10 +445,11 @@ export const useLlamaMarket = (
   {
     blockchainId,
     controllerAddress,
+    ...llamaMarketsParams
   }: {
     blockchainId: Chain | undefined
     controllerAddress: Address | undefined
-  },
+  } & Partial<LlamaMarketParams>,
   enabled = true,
 ) =>
   useMappedQuery(
@@ -461,7 +457,8 @@ export const useLlamaMarket = (
       {
         userAddress: useConnection().address,
         enableLLv2: useLLv2(),
-        showDeprecatedMarkets: useUserProfileStore((state) => state.showDeprecatedMarkets),
+        enableDeprecatedMarkets: true,
+        ...llamaMarketsParams,
       },
       enabled,
     ),

@@ -63,11 +63,11 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const showDeprecatedMarkets = useUserProfileStore((state) => state.showDeprecatedMarkets)
+  const enableDeprecatedMarkets = useUserProfileStore((state) => state.showDeprecatedMarkets)
   const { data, isError, isLoading, isFetching } = useLlamaMarkets({
     userAddress: address,
     enableLLv2: useLLv2(),
-    showDeprecatedMarkets,
+    enableDeprecatedMarkets,
   })
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
