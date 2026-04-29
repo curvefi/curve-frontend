@@ -13,6 +13,7 @@ export const LabelCellDisplay = ({
   <Typography
     variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
     color={isFooter ? 'textPrimary' : 'textSecondary'}
+    whiteSpace="nowrap" // Aesthetics; it looks ugly if this column wraps
   >
     {label}
   </Typography>
@@ -22,8 +23,7 @@ export const LabelCell = ({ getValue }: CellContext<ClosePositionRow, ClosePosit
   const value = getValue()
   return (
     value != null && (
-      // Min width of 16ch so labels don't wrap (biggest one is 'Paid from collateral')
-      <BaseCell sx={{ minWidth: '16ch' }}>
+      <BaseCell>
         <LabelCellDisplay label={value} />
       </BaseCell>
     )
