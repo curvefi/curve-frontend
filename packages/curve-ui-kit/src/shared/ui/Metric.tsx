@@ -111,7 +111,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         onClick={copyValue}
         sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
-        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        title={tooltip?.title ?? (numberValue === null ? t`N/A` : numberValue.toLocaleString())}
         data-testid={`${testId}-value`}
         data-value={value}
       >

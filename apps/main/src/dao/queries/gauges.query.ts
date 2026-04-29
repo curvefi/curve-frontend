@@ -80,7 +80,7 @@ export const {
         {
           // effective_address is the sidechain gauge address
           ...gauge,
-          platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : '',
+          platform: gauge.market ? 'Lend' : gauge.pool ? 'AMM' : '',
           title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name ?? null, gauge.address),
           gauge_weight: +gauge.gauge_weight,
           gauge_relative_weight: +(gauge.gauge_relative_weight * 100),
