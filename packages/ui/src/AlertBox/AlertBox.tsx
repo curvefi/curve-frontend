@@ -18,11 +18,7 @@ export const AlertBox = ({
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
     alertType === '' ? null : (
-      <StyledIcon
-        className={handleBtnClose === undefined ? '' : 'extra-margin'}
-        name="InformationSquareFilled"
-        size={24}
-      />
+      <StyledIcon className={handleBtnClose == null ? '' : 'extra-margin'} name="InformationSquareFilled" size={24} />
     )
 
   const alertContentRef = useRef<HTMLDivElement>(null)
@@ -54,7 +50,7 @@ export const AlertBox = ({
           <ContentWrapper
             data-tag="content"
             grid
-            gridTemplateColumns={handleBtnClose === undefined ? 'auto 1fr' : 'auto 1fr auto'}
+            gridTemplateColumns={handleBtnClose == null ? 'auto 1fr' : 'auto 1fr auto'}
             gridColumnGap={1}
             flexAlignItems={'flex-start'}
             {...props}

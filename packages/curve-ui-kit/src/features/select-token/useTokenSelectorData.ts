@@ -50,20 +50,16 @@ export const useTokenSelectorData = (
     false, // disabled, rely on prefetchTokenBalances (only care for query observers, don't invoke queryFn for each token)
   )
 
-  const { data: tokenPrices } = useTokenUsdRates(
-    {
-      chainId,
-      // Only fetch prices for tokens the user has a balance of
-      tokenAddresses: useMemo(
-        () =>
-          recordEntries(balances ?? {})
-            .filter(([, balance]) => +balance > 0)
-            .map(([address]) => address),
-        [balances],
-      ),
-    },
-    enabled,
+  // Only fetch prices for tokens the user has a balance of
+  const tokenAddressesWithBalance = useMemo(
+    () =>
+      recordEntries(balances ?? {})
+        .filter(([, balance]) => +balance > 0)
+        .map(([address]) => address),
+    [balances],
   )
+
+  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
 
   return { balances, tokenPrices, isLoading }
 }
