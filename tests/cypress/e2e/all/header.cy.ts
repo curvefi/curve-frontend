@@ -1,4 +1,5 @@
 import {
+  APP_ROUTES,
   AppRoute,
   CRVUSD_PAGE_MARKETS_ROUTE,
   DEFAULT_PAGES,
@@ -232,6 +233,22 @@ describe('Header', () => {
       const fifteenDaysAgo = Date.now() - 15 * TIME_FRAMES.DAY_MS
       visitWithDismissedBanner(fifteenDaysAgo)
       cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
+    })
+  })
+
+  describe('chain selector', () => {
+    beforeEach(() => {
+      ;[width, height] = oneDesktopViewport()
+      cy.viewport(width, height)
+      const route = APP_ROUTES['dex']() as unknown as AppRoute
+      cy.visitWithoutTestConnector(route)
+      waitIsLoaded(route)
+    })
+
+    it('should have no missing wagmi chains alert', () => {
+      cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
+      cy.get(`[data-testid='btn-change-chain']`).click()
+      cy.get(`[data-testid='missing-wagmi-chain']`).should('not.exist')
     })
   })
 
