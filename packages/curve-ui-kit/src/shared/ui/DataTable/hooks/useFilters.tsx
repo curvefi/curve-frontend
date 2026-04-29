@@ -30,7 +30,7 @@ function parseFilters<TColumnId extends string>(
   columns: ColumnEnum<TColumnId>,
   scope?: string,
 ): ColumnFilters<TColumnId> {
-  const allowed = new Set(recordValues(columns).map((id) => scopedKey(scope, id)))
+  const allowed = new Set(recordValues(columns).map(id => scopedKey(scope, id)))
   const filterPrefix = scopedPrefix(scope)
   return Array.from(search.entries())
     .filter(([key, value]) => value && allowed.has(key))
@@ -56,13 +56,13 @@ function useColumnFilters<TColumnId extends string>({
 
   return {
     columnFilters,
-    columnFiltersById: useMemo(() => fromEntries(columnFilters.map((f) => [f.id, f.value])), [columnFilters]),
+    columnFiltersById: useMemo(() => fromEntries(columnFilters.map(f => [f.id, f.value])), [columnFilters]),
     setColumnFilter: useCallback(
       (id: TColumnId, value: string | null) => searchNavigate({ [scopedKey(scope, id)]: value }, { replace: true }),
       [scope, searchNavigate],
     ),
     resetFilters: useCallback(() => {
-      searchNavigate(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])), {
+      searchNavigate(Object.fromEntries(recordValues(columns).map(key => [scopedKey(scope, key), null])), {
         replace: true,
       })
     }, [columns, scope, searchNavigate]),
@@ -130,7 +130,7 @@ export const useFilters = <TColumnId extends string>({
       searchNavigate(
         {
           [searchKey]: null,
-          ...Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])),
+          ...Object.fromEntries(recordValues(columns).map(key => [scopedKey(scope, key), null])),
         },
         { replace: true },
       )

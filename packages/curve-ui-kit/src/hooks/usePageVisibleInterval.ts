@@ -24,7 +24,7 @@ type CallbackFunction = () => unknown
  * );
  */
 export function usePageVisibleInterval(callback: CallbackFunction, delay: number) {
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
   const callbackEvent = useEffectEvent(callback)
   useEffect(() => (isPageVisible ? setTimeoutInterval(callbackEvent, delay) : undefined), [delay, isPageVisible])
 }

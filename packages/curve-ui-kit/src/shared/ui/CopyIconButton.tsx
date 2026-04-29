@@ -34,7 +34,7 @@ export const CopyIconButton = ({
           return (
             navigator.clipboard?.writeText(copyText).then(
               () => showToast({ message: copyText, severity: 'info', title: confirmationText, testId }),
-              (e) => showToast({ title: e.message, severity: 'error', testId }),
+              e => showToast({ title: e.message, severity: 'error', testId }),
             ) ?? showToast({ title: t`Clipboard not available`, severity: 'warning', testId })
           )
         }}

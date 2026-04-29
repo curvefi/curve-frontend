@@ -36,7 +36,7 @@ const meta: Meta<typeof ToggleButtonGroup> = {
 type Story = StoryObj<typeof ToggleButtonGroup>
 
 export const Exclusive: Story = {
-  render: (args) => {
+  render: args => {
     // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [alignment, setAlignment] = useState('left')
 
@@ -69,7 +69,7 @@ export const Exclusive: Story = {
 }
 
 export const Multiple: Story = {
-  render: (args) => {
+  render: args => {
     // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [formats, setFormats] = useState(['bold', 'italic'])
 
@@ -109,7 +109,7 @@ export const Standalone: Story = {
     const [selected, setSelected] = useState(false)
 
     return (
-      <ToggleButton value="check" selected={selected} onChange={() => setSelected((prevSelected) => !prevSelected)}>
+      <ToggleButton value="check" selected={selected} onChange={() => setSelected(prevSelected => !prevSelected)}>
         <CheckIcon />
       </ToggleButton>
     )
@@ -117,7 +117,7 @@ export const Standalone: Story = {
 }
 
 export const Text: Story = {
-  render: (args) => {
+  render: args => {
     // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [alignment, setAlignment] = useState('left')
 

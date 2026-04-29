@@ -97,7 +97,7 @@ export const TokenIcon = ({
         src={getTokenImageUrl(blockchainId, address)}
         loading="lazy"
         sx={applySxProps(
-          (theme) => ({
+          theme => ({
             borderRadius: '50%',
             ...getTokenIconSizeSx(theme, size),
           }),

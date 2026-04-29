@@ -27,5 +27,5 @@ export const connectors: CreateConnectorFn[] = [
   ...assert(
     window.eip6963Connectors,
     'eip6963Connectors not initialized, make sure eip-6963.ts is loaded before this file',
-  ).map((target) => injected({ target })),
+  ).map(target => injected({ target })),
 ]

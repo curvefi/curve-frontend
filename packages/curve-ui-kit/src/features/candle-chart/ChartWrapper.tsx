@@ -59,7 +59,7 @@ export const ChartWrapper = ({
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   const isError = chartStatus === 'ERROR'
-  const errorMessage = t`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`
+  const errorMessage = t`Unable to fetch "${selectChartList?.find(c => c.key === selectedChartKey)?.label ?? ''}" data.`
   const error = useMemo(() => (isError ? new Error(errorMessage) : null), [isError, errorMessage]) // todo: pass correct error from query instead of creating new error with message
 
   return (

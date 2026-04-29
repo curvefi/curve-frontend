@@ -46,7 +46,7 @@ const Puller = () => (
     sx={{
       width: 80,
       height: 4,
-      backgroundColor: (t) => t.design.Color.Neutral[500],
+      backgroundColor: t => t.design.Color.Neutral[500],
       margin: '0 auto',
     }}
   />

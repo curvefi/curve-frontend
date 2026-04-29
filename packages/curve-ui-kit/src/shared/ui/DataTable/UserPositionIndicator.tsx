@@ -54,7 +54,7 @@ export const UserPositionIndicator = ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: ColorStates[colorState].bg,
-        marginInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
+        marginInlineStart: mapBreakpoints(Spacing.md, v => `-${v}`), // negative padding to offset the padding of the cell
         marginInlineEnd: Spacing.sm,
       }}
     >

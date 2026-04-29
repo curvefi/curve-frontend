@@ -23,7 +23,7 @@ export const FavoriteTokens = <T extends TokenOption>({ tokens, onToken }: Props
     <Typography variant="headingXsBold">{t`Favorite tokens`}</Typography>
 
     <Stack direction="row" gap={Spacing.xs} flexWrap="wrap">
-      {tokens.map((token) => (
+      {tokens.map(token => (
         // todo: handle the selected token case
         <SelectableChip
           key={token.address}

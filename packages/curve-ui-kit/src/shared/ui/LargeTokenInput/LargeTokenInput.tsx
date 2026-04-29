@@ -37,10 +37,10 @@ type InputChip = {
 
 export type ChipsPreset = 'max' | 'range'
 const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
-  max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
-  range: [25, 50, 75, 100].map((p) => ({
+  max: [{ label: t`Max`, newBalance: maxBalance => maxBalance }],
+  range: [25, 50, 75, 100].map(p => ({
     label: `${p}%`,
-    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}`),
+    newBalance: maxBalance => maxBalance && calculateNewBalance(maxBalance, `${p}`),
   })),
 }
 
@@ -266,8 +266,8 @@ export const LargeTokenInput = ({
       id={componentId}
       data-testid={testId}
       sx={{
-        backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-        outline: (t) =>
+        backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+        outline: t =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
@@ -302,7 +302,7 @@ export const LargeTokenInput = ({
                   [`#${componentId}:hover &`]: { opacity: 1 },
                 }}
               >
-                {chips.map((chip) => (
+                {chips.map(chip => (
                   // todo: refactor chip to button
                   <SelectableChip
                     key={`input-chip-${chip.label}`}
@@ -359,7 +359,7 @@ export const LargeTokenInput = ({
               name={name}
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={(value) => handlePercentageChange(value as Decimal)}
+              onChange={value => handlePercentageChange(value as Decimal)}
               sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
               min={MIN_PERCENTAGE}
               max={MAX_PERCENTAGE}

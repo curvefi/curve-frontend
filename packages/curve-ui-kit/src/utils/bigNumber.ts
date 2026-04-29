@@ -7,7 +7,7 @@ export function getPercentage(val: bigint, percentage: bigint) {
 export function sum(values: (string | bigint)[], unit: number | undefined = 18) {
   let sum = 0n
 
-  values.forEach((val) => {
+  values.forEach(val => {
     sum += parseUnits(val, unit)
   })
 

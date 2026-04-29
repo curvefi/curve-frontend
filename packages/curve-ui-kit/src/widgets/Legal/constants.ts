@@ -16,8 +16,8 @@ export const DISCLAIMER_TABS: TabOption<DisclaimerTab>[] = [
   { value: 'scrvusd', label: t`Savings crvUSD` },
 ]
 
-export const VALID_TABS = new Set(TABS.map((tab) => tab.value))
-export const VALID_DISCLAIMER_TABS = new Set(DISCLAIMER_TABS.map((tab) => tab.value))
+export const VALID_TABS = new Set(TABS.map(tab => tab.value))
+export const VALID_DISCLAIMER_TABS = new Set(DISCLAIMER_TABS.map(tab => tab.value))
 
 export const DEFAULT_DISCLAIMERS_TABS: Record<AppName, DisclaimerTab> = {
   dao: 'dex',

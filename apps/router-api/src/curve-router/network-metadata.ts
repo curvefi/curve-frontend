@@ -37,7 +37,7 @@ export async function resolveRpc(
   }
   const liteNetworks = await curve.getCurveLiteNetworks() // note: this is already memoized inside curvejs
   const { id, rpcUrl } = assert(
-    liteNetworks.find((n) => n.chainId === chainId),
+    liteNetworks.find(n => n.chainId === chainId),
     `Unsupported chain ${chainId}`,
   )
   return { id, url: resolveEnv(id, rpcUrl) }

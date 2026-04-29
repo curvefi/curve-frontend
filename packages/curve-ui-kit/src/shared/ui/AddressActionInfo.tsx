@@ -23,7 +23,7 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
     sx={{
       alignItems: 'center',
       ...(isBorderBottom && {
-        borderBottom: (t) => `1px solid ${t.palette.divider}`,
+        borderBottom: t => `1px solid ${t.palette.divider}`,
       }),
     }}
     link={network && address ? scanAddressPath(network, address) : undefined}

@@ -54,7 +54,7 @@ export const AllSeverities: Story = {
         variant="outlined"
         color="primary"
         onClick={() =>
-          withPendingToast(new Promise((resolve) => setTimeout(() => resolve(null), 30000)), 'This operation takes 30s')
+          withPendingToast(new Promise(resolve => setTimeout(() => resolve(null), 30000)), 'This operation takes 30s')
         }
       >
         Pending

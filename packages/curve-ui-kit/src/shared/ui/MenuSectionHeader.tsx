@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 export const MenuSectionHeader = ({ children }: { children: ReactNode }) => (
   <Typography
     variant="headingXsBold"
-    sx={(t) => ({
+    sx={t => ({
       position: 'sticky',
       top: 0,
       backgroundColor: 'background.paper',

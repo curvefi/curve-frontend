@@ -60,7 +60,7 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
 
 function getPriceFormat(ohlcData: LpPriceOhlcDataFormatted[] | undefined) {
   const delta = ohlcData?.length
-    ? Math.max(...ohlcData.map((x) => x.high)) - Math.min(...ohlcData.map((x) => x.low))
+    ? Math.max(...ohlcData.map(x => x.high)) - Math.min(...ohlcData.map(x => x.low))
     : 1
 
   return {
@@ -377,7 +377,7 @@ export const CandleChart = ({
     }
 
     const removeHistoricalSeries = () => {
-      historicalRangeSeriesRefs.current.forEach((series) => {
+      historicalRangeSeriesRefs.current.forEach(series => {
         if (series) {
           chartRef.current?.removeSeries(series)
         }
@@ -485,12 +485,12 @@ export const CandleChart = ({
         }
 
         // Collect all price points (high and low) from visible bars
-        const allPrices = visibleBars.flatMap((item) => [item.high, item.low])
+        const allPrices = visibleBars.flatMap(item => [item.high, item.low])
 
         // Get the latest 5 candles to always include in range (current price action)
         const recentCandleCount = Math.min(5, visibleBars.length)
         const recentCandles = visibleBars.slice(-recentCandleCount)
-        const recentPrices = recentCandles.flatMap((item) => [item.high, item.low])
+        const recentPrices = recentCandles.flatMap(item => [item.high, item.low])
 
         // Calculate robust price range excluding outliers but always including recent prices
         const robustRange = calculateRobustPriceRange(allPrices, recentPrices)
@@ -610,7 +610,7 @@ export const CandleChart = ({
       ...historicalRangeSeriesRefs.current,
     ]
 
-    watchedSeries.forEach((series) => {
+    watchedSeries.forEach(series => {
       series?.subscribeDataChanged(scheduleEmitPriceRange)
     })
 
@@ -619,7 +619,7 @@ export const CandleChart = ({
     }
 
     return () => {
-      watchedSeries.forEach((series) => {
+      watchedSeries.forEach(series => {
         series?.unsubscribeDataChanged(scheduleEmitPriceRange)
       })
     }
@@ -647,7 +647,7 @@ export const CandleChart = ({
     if (!liquidationRange || (!liquidationRange.current && !liquidationRange.new && !liquidationRange.historical)) {
       currentRangeSeriesRef.current?.setData([])
       newRangeSeriesRef.current?.setData([])
-      historicalRangeSeriesRefs.current.forEach((series) => series?.setData([]))
+      historicalRangeSeriesRefs.current.forEach(series => series?.setData([]))
       scheduleEmitPriceRange()
       return
     }
@@ -726,7 +726,7 @@ export const CandleChart = ({
     }
 
     const historicalAppearance = getSeriesAppearance('historical')
-    historicalRangeSeriesRefs.current.forEach((series) => {
+    historicalRangeSeriesRefs.current.forEach(series => {
       applySeriesOptions(series, historicalAppearance.seriesOptions)
     })
   }, [liqRangeCurrentVisible, liqRangeNewVisible, getSeriesAppearance, liquidationRange?.historical])
@@ -771,7 +771,7 @@ export const CandleChart = ({
     ]
 
     // Set order for all series that exist
-    allSeries.forEach((series) => {
+    allSeries.forEach(series => {
       if (series) {
         series.setSeriesOrder(order++)
       }

@@ -10,7 +10,7 @@ const { Spacing } = SizesAndSpaces
 export const SubNav = ({ testId, children }: { testId: string; children: ReactNode }) => (
   <Toolbar
     sx={{
-      backgroundColor: (t) => t.design.Layer[1].Fill,
+      backgroundColor: t => t.design.Layer[1].Fill,
       justifyContent: 'space-around',
       borderTop: getHeaderBorder,
       boxSizing: 'border-box',

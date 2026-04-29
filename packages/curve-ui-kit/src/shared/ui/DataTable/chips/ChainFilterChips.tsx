@@ -36,7 +36,7 @@ type ChainFilterChipsProps = {
 const useSortedChains = ({ chains, selectedChains = [], toggleChain }: ChainFilterChipsProps) =>
   useMemo(
     () =>
-      [...notFalsy(chains.find((c) => c === ethereum)), ...chains.filter((c) => c !== ethereum)].map((chain) => ({
+      [...notFalsy(chains.find(c => c === ethereum)), ...chains.filter(c => c !== ethereum)].map(chain => ({
         chain,
         label: capitalize(chain),
         onClick: () => toggleChain(chain),

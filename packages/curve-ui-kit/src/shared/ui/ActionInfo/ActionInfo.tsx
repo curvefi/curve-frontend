@@ -172,7 +172,7 @@ export const ActionInfo = ({
             </Typography>
             {prevValue != null && (
               <ArrowForwardIcon
-                sx={{ color: (t) => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
+                sx={{ color: t => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
               />
             )}
 

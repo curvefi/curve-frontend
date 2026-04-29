@@ -131,7 +131,7 @@ describe('Position status logic', () => {
       const statuses = Object.keys(expectedAlertMetadata) as UserPositionStatusKey[]
       expect(Object.keys(content)).to.have.members(statuses)
 
-      statuses.forEach((status) => {
+      statuses.forEach(status => {
         expect(content[status].hasMarketAlert).to.eq(expectedAlertMetadata[status].hasMarketAlert)
         expect(content[status].severity).to.eq(expectedAlertMetadata[status].severity)
       })
@@ -143,9 +143,9 @@ describe('Position status logic', () => {
       expect(contentAltSymbols.fullyConverted.title).to.include('USDC')
 
       const symbolInvariantStatuses = (Object.keys(expectedAlertMetadata) as UserPositionStatusKey[]).filter(
-        (status) => status !== 'fullyConverted',
+        status => status !== 'fullyConverted',
       )
-      symbolInvariantStatuses.forEach((status) => {
+      symbolInvariantStatuses.forEach(status => {
         expect(content[status].title).to.eq(contentAltSymbols[status].title)
       })
     })
@@ -158,7 +158,7 @@ describe('BorrowPositionDetails status alerts', () => {
     cy.get(ALERT_TEST_ID).should('not.exist')
   })
 
-  statusCases.forEach((testCase) => {
+  statusCases.forEach(testCase => {
     it(`${testCase.hasAlert ? 'renders' : 'hides'} market alert for ${testCase.status} status`, () => {
       mountPositionDetails(withSymbols(testCase.status))
 
@@ -192,10 +192,10 @@ describe('BorrowPositionDetails status alerts', () => {
       cy.get(ALERT_TEST_ID)
         .should('be.visible')
         .within(() => {
-          expectedTokens.forEach((token) => {
+          expectedTokens.forEach(token => {
             cy.contains(token).should('be.visible')
           })
-          unexpectedTokens.forEach((token) => {
+          unexpectedTokens.forEach(token => {
             cy.contains(token).should('not.exist')
           })
         })

@@ -82,7 +82,7 @@ const notionalsToString = (notionals: MetricProps['notional']) =>
   typeof notionals === 'string'
     ? notionals
     : toArray(typeof notionals === 'number' ? { value: notionals, abbreviate: true } : notionals)
-        .map((notional) => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
+        .map(notional => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
         .join(' + ')
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */

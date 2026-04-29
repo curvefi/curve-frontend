@@ -36,7 +36,7 @@ export const SkeletonRows = <T extends TableItem>({
 }) => {
   const [length, setLength] = useState(initialLength)
   useEffect(
-    () => setTimeoutInterval(() => setLength((prevLength) => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
+    () => setTimeoutInterval(() => setLength(prevLength => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
     [increaseEveryMs, maxLength],
   )
 
@@ -47,7 +47,7 @@ export const SkeletonRows = <T extends TableItem>({
         <TableRow key={`loading-row-${rowIndex}-${length}`} data-testid={`data-table-loading-${rowIndex}`}>
           {table
             .getHeaderGroups()
-            .flatMap((headerGroup) => headerGroup.headers)
+            .flatMap(headerGroup => headerGroup.headers)
             .map(({ column }, columnIndex) => (
               <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
             ))}

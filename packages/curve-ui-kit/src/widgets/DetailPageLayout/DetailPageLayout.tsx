@@ -25,8 +25,8 @@ const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
   position: { tablet: 'sticky' },
   top: { tablet: `${navHeight}px` },
   marginBlockStart: { tablet: `calc(${PAGE_MARGIN.marginBlockStart.tablet} * -1)` },
-  zIndex: (t) => t.zIndex.appBar - 1,
-  backgroundColor: (t) => t.palette.background.default,
+  zIndex: t => t.zIndex.appBar - 1,
+  backgroundColor: t => t.palette.background.default,
   paddingBlockStart: {
     tablet: PAGE_MARGIN.marginBlockStart.tablet,
   },
@@ -61,7 +61,7 @@ export const DetailPageLayout = ({
   children?: ReactNode
   footer?: ReactNode
 }) => {
-  const navHeight = useLayoutStore((state) => state.navHeight)
+  const navHeight = useLayoutStore(state => state.navHeight)
   const isNewLayout = useRightFormTabsLayout()
   const isMobile = useIsMobile()
   // header ref needed to compute the top position of the sticky forms

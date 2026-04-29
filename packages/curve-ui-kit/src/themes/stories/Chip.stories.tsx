@@ -26,7 +26,7 @@ const VariantStory = ({
 }) => (
   <Grid container spacing={Spacing.lg.desktop}>
     {PROPS_ROWS.map(({ id, ...props }) =>
-      sizes.map((size) => (
+      sizes.map(size => (
         <Grid key={`${id}-${size}-${selected}`} size={(1 / sizes.length) * 12}>
           <SelectableChip size={size} selected={selected} variant={variant} {...props} />
         </Grid>

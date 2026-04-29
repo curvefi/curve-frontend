@@ -30,7 +30,7 @@ export const initSentry = () =>
   init({
     dsn: SENTRY_DSN,
     environment,
-    integrations: (integrations) => integrations.filter((i) => i.name !== 'BrowserSession'), // we don't use session tracking
+    integrations: integrations => integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
     sendClientReports: false, // prevents client_report envelopes for dropped events
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
     // Filter out noise
@@ -57,7 +57,7 @@ export const initSentry = () =>
  */
 export const captureError = (error: Error, context?: Extras) =>
   context
-    ? withScope((scope) => {
+    ? withScope(scope => {
         scope.setExtras(context)
         captureException(error)
       })
@@ -68,7 +68,7 @@ export const captureError = (error: Error, context?: Extras) =>
  */
 export const captureString = (message: string, context?: Extras) =>
   context
-    ? withScope((scope) => {
+    ? withScope(scope => {
         scope.setExtras(context)
         captureMessage(message)
       })

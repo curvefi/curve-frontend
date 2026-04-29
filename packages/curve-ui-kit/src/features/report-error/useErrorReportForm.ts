@@ -26,7 +26,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
   return {
     form,
     values: watchForm(form),
-    onSubmit: form.handleSubmit(async (formData) => {
+    onSubmit: form.handleSubmit(async formData => {
       const body = {
         formData,
         url: window.location.href,

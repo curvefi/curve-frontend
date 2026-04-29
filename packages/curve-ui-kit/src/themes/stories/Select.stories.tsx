@@ -29,7 +29,7 @@ const SimpleSelect = ({ options, placeholder }: { options: string[]; placeholder
   return (
     <Select
       value={value}
-      onChange={(e) => setValue(e.target.value as string)}
+      onChange={e => setValue(e.target.value as string)}
       size="small"
       displayEmpty
       renderValue={() => <Typography>{value || placeholder}</Typography>}
@@ -72,7 +72,7 @@ const MultiSelect = <T extends string>({
   const handleItemClick = useCallback(
     ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
       const value = currentTarget.getAttribute('value') as T
-      const newOptions = selected?.includes(value) ? selected.filter((v) => v !== value) : [...(selected ?? []), value]
+      const newOptions = selected?.includes(value) ? selected.filter(v => v !== value) : [...(selected ?? []), value]
 
       setSelected(newOptions)
     },
@@ -118,7 +118,7 @@ const MultiSelect = <T extends string>({
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
+          <Box borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
             <Button
               color="ghost"
               size="extraSmall"
@@ -129,7 +129,7 @@ const MultiSelect = <T extends string>({
               Clear Selection
             </Button>
           </Box>
-          {options.map((option) => (
+          {options.map(option => (
             <InvertOnHover hoverRef={menuRef} key={option}>
               <MenuItem
                 ref={menuRef}
@@ -177,7 +177,7 @@ const addresses = {
 export const CustomRendering: Story = {
   render: () => (
     <MultiSelect
-      options={options.map((x) => x)}
+      options={options.map(x => x)}
       placeholder="Select tokens"
       renderItem={(symbol: (typeof options)[number]) => (
         <TokenLabel blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} label={symbol} size="mui-sm" />

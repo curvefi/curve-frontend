@@ -74,7 +74,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
             fullWidth
             placeholder={t`0xab4ed...`}
             value={address}
-            onChange={(event) => updateForm(form, { address: event.target.value })}
+            onChange={event => updateForm(form, { address: event.target.value })}
             slotProps={{ htmlInput: { 'data-testid': 'submit-error-report-address' } }}
           />
           <FormHelperText>{t`Submit your address so we can reproduce the issue`}</FormHelperText>
@@ -102,7 +102,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
             fullWidth
             placeholder={placeholder}
             value={contact}
-            onChange={(event) => updateForm(form, { contact: event.target.value })}
+            onChange={event => updateForm(form, { contact: event.target.value })}
             slotProps={{
               htmlInput: {
                 'data-testid': 'submit-error-report-contact',
@@ -121,7 +121,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
             minRows={8}
             placeholder={t`I clicked on "X" and then hit "confirm"...`}
             value={description}
-            onChange={(event) => updateForm(form, { description: event.target.value })}
+            onChange={event => updateForm(form, { description: event.target.value })}
             slotProps={{ htmlInput: { 'data-testid': 'submit-error-report-description' } }}
           />
         </FormControl>

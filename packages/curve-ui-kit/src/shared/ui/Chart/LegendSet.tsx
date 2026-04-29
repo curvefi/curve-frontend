@@ -42,7 +42,7 @@ export const LegendSet = ({ label, line, box, toggled = true, onToggle }: Legend
       {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} opacity={toggled ? 1 : 0.7} />}
       <Typography
         variant="bodySRegular"
-        sx={(theme) => ({
+        sx={theme => ({
           color: toggled ? undefined : theme.palette.text.disabled,
           transition: `color ${TransitionFunction}`,
           'button:hover &': { color: theme.palette.text.highlight },

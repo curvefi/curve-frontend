@@ -53,7 +53,7 @@ export const NewTableFilters = <ColumnIds extends string>({
   const isCollapsible = collapsible || (isMobile && chips)
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       {header}
       <Grid container spacing={Spacing.lg} padding={Spacing.sm} justifyContent="space-between" alignItems="center">
         <Grid

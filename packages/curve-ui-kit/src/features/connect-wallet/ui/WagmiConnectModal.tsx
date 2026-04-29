@@ -31,7 +31,7 @@ const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
 
 const WalletIcon = ({ connector }: { connector: Connector }) =>
-  ((Icon) =>
+  (Icon =>
     Icon ? (
       <Icon sx={WALLET_ICON_SIZE} />
     ) : connector.icon ? (
@@ -120,13 +120,13 @@ export const WagmiConnectModal = () => {
         {connectors
           // Safe connector only works inside Safe applications, which are loaded in iframes
           .filter(
-            (connector) => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
+            connector => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
           )
           // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
           .toReversed()
           // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
           .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
-          .map((connector) => (
+          .map(connector => (
             <WalletListItem
               key={connector.id}
               connector={connector}

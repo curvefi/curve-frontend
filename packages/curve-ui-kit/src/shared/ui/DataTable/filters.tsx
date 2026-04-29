@@ -2,14 +2,14 @@ import type { FilterFn } from '@tanstack/react-table'
 import { Range } from '@ui-kit/types/util'
 
 export const serializeRangeFilter = <T extends string | number>(range: Range<T | null> | null) =>
-  range?.some((v) => v != null) ? range.join('~') : null
+  range?.some(v => v != null) ? range.join('~') : null
 
 export const parseRangeFilter = (serialized: string | undefined) =>
-  serialized?.split('~').map((v) => (v && !isNaN(+v) ? +v : null)) as [number | null, number | null] | undefined
+  serialized?.split('~').map(v => (v && !isNaN(+v) ? +v : null)) as [number | null, number | null] | undefined
 
 export const serializeListFilter = (list: string[] | null | undefined) => list?.join(',') || null
 
-export const parseListFilter = (serialized: string | undefined) => serialized?.split(',').filter((v) => v)
+export const parseListFilter = (serialized: string | undefined) => serialized?.split(',').filter(v => v)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FilterFunction = FilterFn<any>

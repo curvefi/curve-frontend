@@ -22,7 +22,7 @@ export const APP_ROUTES = {
   dex: () => `dex/${DEFAULT_NETWORK}${oneValueOf(DEX_ROUTES)}`,
   lend: () =>
     `lend/${DEFAULT_NETWORK}${oneOf(
-      ...recordValues(LEND_ROUTES).map((r) =>
+      ...recordValues(LEND_ROUTES).map(r =>
         r == LEND_ROUTES.PAGE_MARKETS
           ? // use market detail page, the list page redirects to the llamalend app
             `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(LEND_MARKET_ROUTES)}`
@@ -31,7 +31,7 @@ export const APP_ROUTES = {
     )}`,
   crvusd: () =>
     `crvusd/${DEFAULT_NETWORK}${oneOf(
-      ...recordValues(CRVUSD_ROUTES).map((r) =>
+      ...recordValues(CRVUSD_ROUTES).map(r =>
         // use market detail page, the list page redirects to the llamalend app
         r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
       ),
@@ -41,7 +41,7 @@ export const APP_ROUTES = {
     `dao/${DEFAULT_NETWORK}${oneOf(
       ...recordValues({ ...DAO_ROUTES, PAGE_USER: `${DAO_ROUTES.PAGE_USER}/${oneAddress()}` }).filter(
         // exclude external links, hide the integrations page which redirects to the dex app
-        (route) => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),
+        route => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),
       ),
     )}`,
 }

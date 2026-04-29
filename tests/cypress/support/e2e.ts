@@ -5,7 +5,7 @@ import type { AppRoute } from './routes'
 /** Global Cypress exception handler to ignore specific known errors. */
 Cypress.on(
   'uncaught:exception',
-  (error) =>
+  error =>
     // Reverted transaction errors are passed as a prop, React DevTools tries to serialize that and fails.
     !error?.message?.includes('Do not know how to serialize a BigInt'),
 )

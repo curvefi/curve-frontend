@@ -92,7 +92,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <Stack
               direction={'row'}
               justifyContent="space-between"
-              sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+              sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
             >
               <TabsSwitcher
                 variant="underlined"
@@ -105,7 +105,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
                 sx={{
                   flexGrow: 1,
                   borderBottom: '1px solid',
-                  borderColor: (t) => t.design.Color.Neutral[200],
+                  borderColor: t => t.design.Color.Neutral[200],
                   display: 'block',
                 }}
               />

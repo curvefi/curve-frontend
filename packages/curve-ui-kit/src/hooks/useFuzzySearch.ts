@@ -20,7 +20,7 @@ const MIN_ADDRESS_LENGTH = 4
  */
 const splitSearchTerms = (input: string) => {
   const terms = input.trim().split(/[, ]+/).filter(Boolean)
-  const [addresses, text] = partition(terms, (t) => /^0x/i.test(t) && t.length >= MIN_ADDRESS_LENGTH)
+  const [addresses, text] = partition(terms, t => /^0x/i.test(t) && t.length >= MIN_ADDRESS_LENGTH)
   return { text, addresses }
 }
 
@@ -64,15 +64,15 @@ function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: stri
       rest
         .reduce(
           (results, term) => {
-            const hits = new Set(fuse.search(term).map((r) => r.item))
-            return results.filter((item) => hits.has(item))
+            const hits = new Set(fuse.search(term).map(r => r.item))
+            return results.filter(item => hits.has(item))
           },
-          fuse.search(first).map((r) => r.item),
+          fuse.search(first).map(r => r.item),
         )
-        .forEach((item) => matched.add(item))
+        .forEach(item => matched.add(item))
     }
 
-    addresses.flatMap((addr) => fuse.search(addr)).forEach((r) => matched.add(r.item))
+    addresses.flatMap(addr => fuse.search(addr)).forEach(r => matched.add(r.item))
 
     return matched
   }, [fuse, filterValue])
@@ -90,5 +90,5 @@ export function useFuzzyFilterFn<T>(data: readonly T[], filterValue: string, key
  */
 export function useFuzzySearch<T>(data: readonly T[], filterValue: string, keys: string[]) {
   const resultSet = useFuseResultSet(data, filterValue, keys)
-  return useMemo(() => (resultSet ? data.filter((item) => resultSet.has(item)) : data), [data, resultSet])
+  return useMemo(() => (resultSet ? data.filter(item => resultSet.has(item)) : data), [data, resultSet])
 }

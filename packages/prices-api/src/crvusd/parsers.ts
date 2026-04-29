@@ -87,7 +87,7 @@ export const parseKeeper = (x: Responses.GetKeepersResponse['keepers'][number]):
   address: x.address,
   pool: x.pool,
   poolAddress: x.pool_address,
-  pair: x.pair.map((p) => ({
+  pair: x.pair.map(p => ({
     symbol: p.symbol,
     address: p.address,
   })),
@@ -104,7 +104,7 @@ export const parseSupply = (x: Responses.GetSupplyResponse['data'][number]): Mod
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarkets =>
-  x.markets.map((market) => ({
+  x.markets.map(market => ({
     collateral: market.collateral,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
@@ -150,7 +150,7 @@ export const parseUserCollateralEvents = (
   totalDepositFromUserPrecise: x.total_deposit_from_user_precise,
   totalDepositFromUserUsdValue: x.total_deposit_from_user_usd_value,
   totalDepositUsdValue: x.total_deposit_usd_value,
-  events: x.data.map((y) => ({
+  events: x.data.map(y => ({
     timestamp: toDate(y.dt),
     txHash: y.transaction_hash,
     type: y.type,

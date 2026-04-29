@@ -50,11 +50,11 @@ export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds 
   /** toggle visibility of a column by its id */
   const toggleVisibility = useCallback(
     (columns: string[]): void =>
-      setVisibilitySettings((prev) => ({
+      setVisibilitySettings(prev => ({
         ...prev,
-        [variant]: prev[variant].map((group) => ({
+        [variant]: prev[variant].map(group => ({
           ...group,
-          options: group.options.map((option) =>
+          options: group.options.map(option =>
             isEqual(option.columns, columns) ? { ...option, active: !option.active } : option,
           ),
         })),
@@ -68,7 +68,7 @@ export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds 
     () =>
       ({
         ...flatten(columnSettings),
-        ...Object.fromEntries(columns.filter((c) => c.meta?.hidden).map((c) => [c.id, false])),
+        ...Object.fromEntries(columns.filter(c => c.meta?.hidden).map(c => [c.id, false])),
       }) as Record<ColumnIds, boolean>,
     [columnSettings, columns],
   )

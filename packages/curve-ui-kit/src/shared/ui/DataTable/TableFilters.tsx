@@ -96,7 +96,7 @@ export const TableFilters = <ColumnIds extends string>({
           )}
           {isCollapsible && !isMobile && (
             <TableButton
-              onClick={() => setFilterExpanded((prev) => !prev)}
+              onClick={() => setFilterExpanded(prev => !prev)}
               active={filterExpanded}
               icon={FilterIcon}
               testId="btn-expand-filters"

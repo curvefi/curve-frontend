@@ -54,5 +54,5 @@ export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, netw
 export const createTransportFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls) =>
   fallback([
     unstable_connector(injected),
-    ...getRpcUrls(network.chainId, network.rpcUrl).map((url) => http(url, WAGMI_HTTP_OPTIONS)),
+    ...getRpcUrls(network.chainId, network.rpcUrl).map(url => http(url, WAGMI_HTTP_OPTIONS)),
   ])

@@ -176,7 +176,7 @@ describe('GET routes integration', () => {
 
         const payload = json() as RouteResponse[]
         expect(payload).toHaveLength(expectedRoutes)
-        payload.forEach((route) => {
+        payload.forEach(route => {
           expect(route.id).toBeTypeOf('string')
           expect(route.id.length).toBeGreaterThan(0)
           expect(route.router).toBe(router)
@@ -185,7 +185,7 @@ describe('GET routes integration', () => {
           expect(route.createdAt).toBeTypeOf('number')
           expect(route.route.length).toBeGreaterThan(0)
 
-          route.route.forEach((step) => {
+          route.route.forEach(step => {
             if (router === 'curve') {
               expect(step.protocol).toBe('curve')
             }

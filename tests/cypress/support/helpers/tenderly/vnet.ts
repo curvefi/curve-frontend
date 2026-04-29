@@ -28,8 +28,8 @@ import { createTenderlyWagmiConfig } from './wagmi'
 export const getRpcUrls = (
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse,
 ) => ({
-  adminRpcUrl: vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')!.url,
-  publicRpcUrl: vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')!.url,
+  adminRpcUrl: vnet.rpcs.find(rpc => rpc.name === 'Admin RPC')!.url,
+  publicRpcUrl: vnet.rpcs.find(rpc => rpc.name === 'Public RPC')!.url,
 })
 
 export type TenderlyWagmiConfigFromVNet = {
@@ -78,8 +78,8 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
   let vnet: GetVirtualTestnetResponse
 
   before(() => {
-    loadTenderlyAccount().then((tenderlyAccount) =>
-      getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then((fetched) => (vnet = fetched)),
+    loadTenderlyAccount().then(tenderlyAccount =>
+      getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then(fetched => (vnet = fetched)),
     )
   })
 
@@ -123,9 +123,9 @@ export function createVirtualTestnet(
       sync_state_config: { enabled: false },
     }
 
-    loadTenderlyAccount().then((account) =>
+    loadTenderlyAccount().then(account =>
       createVirtualTestnetRequest(Cypress._.merge(account, defaultOptions, givenOptions)).then(
-        (created) => (vnet = created),
+        created => (vnet = created),
       ),
     )
   })
@@ -171,9 +171,9 @@ export function forkVirtualTestnet(
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
     const defaultOpts = { wait: true }
-    loadTenderlyAccount().then((tenderlyAccount) => {
+    loadTenderlyAccount().then(tenderlyAccount => {
       const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
-      forkVirtualTestnetRequest(finalOpts).then((forked) => (vnet = forked))
+      forkVirtualTestnetRequest(finalOpts).then(forked => (vnet = forked))
     })
   })
 

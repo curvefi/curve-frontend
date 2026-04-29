@@ -17,7 +17,7 @@ export const TxInfoBar = ({ description, txHash, onClose }: Props) => (
   <StyledInfoBar grid gridTemplateColumns="1fr auto" gridColumnGap="3" flexAlignItems="center" fillWidth>
     <InfoTitle>
       {description}{' '}
-      {toArray(txHash).map((tx) => (
+      {toArray(txHash).map(tx => (
         <StyledExternalLink href={tx} key={tx}>
           <RCExternal />
         </StyledExternalLink>

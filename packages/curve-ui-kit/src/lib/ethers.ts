@@ -12,7 +12,7 @@ export const waitForTransaction = async (hash: string, provider: Provider) => {
 }
 
 export const waitForTransactions = async (hashes: string[], provider: Provider) => {
-  const { results, errors } = await PromisePool.for(hashes).process((hash) => waitForTransaction(hash, provider))
+  const { results, errors } = await PromisePool.for(hashes).process(hash => waitForTransaction(hash, provider))
   if (Array.isArray(errors) && errors.length > 0) {
     throw errors
   }

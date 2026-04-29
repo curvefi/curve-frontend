@@ -71,7 +71,7 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) > 0)
+    const balanceTokens = tokensSearched.filter(token => +(balances?.[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
@@ -125,13 +125,13 @@ export const TokenList = ({
    */
   const allTokens = useMemo(() => {
     const allTokensBase = notFalsy(
-      disableMyTokens ? tokensSearched : tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) === 0),
+      disableMyTokens ? tokensSearched : tokensSearched.filter(token => +(balances?.[token.address] ?? 0) === 0),
 
       showPreviewMy &&
         // Add tokens that have balance but aren't in the preview (dust tokens)
         // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
         // When showPreviewMy is false, those dust tokens should be in the myTokens section
-        myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address)),
+        myTokens.filter(token => !previewMy.some(previewToken => previewToken.address === token.address)),
     ).flat()
     return disableSorting
       ? allTokensBase
@@ -152,7 +152,7 @@ export const TokenList = ({
       {!disableSearch && (
         <SearchField
           name="tokenName"
-          onSearch={(val) => {
+          onSearch={val => {
             setSearch(val)
             onSearch?.(val)
           }}

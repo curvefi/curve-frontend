@@ -31,11 +31,11 @@ export const decimalMax = (...data: Decimal[]) =>
   data.length ? (BigNumber.max(...data)!.toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
-  data.filter((d) => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
+  data.filter(d => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
 
 export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): Decimal =>
   rest
-    .filter((d) => d != null)
+    .filter(d => d != null)
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
     .toFixed() as Decimal
 

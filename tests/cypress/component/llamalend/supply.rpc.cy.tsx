@@ -64,7 +64,7 @@ testCases.forEach(
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
-      const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+      const getVirtualNetwork = createVirtualTestnet(uuid => ({
         slug: `supply-integration-${uuid}`,
         display_name: `SupplyIntegration (${uuid})`,
         chain_id: chainId,
@@ -141,7 +141,7 @@ testCases.forEach(
 
       it('stakes into the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="stake" />)
-        readStakeAvailableAmount().then((stakeAmount) => {
+        readStakeAvailableAmount().then(stakeAmount => {
           writeStakeForm({ amount: stakeAmount })
           checkStakeDetailsLoaded({
             vaultShares: stakeAmount,
@@ -180,7 +180,7 @@ testCases.forEach(
 
       it('unstakes from the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="unstake" />)
-        readUnstakeAvailableAmount().then((unstakeAmount) => {
+        readUnstakeAvailableAmount().then(unstakeAmount => {
           writeUnstakeForm({ amount: unstakeAmount })
           checkUnstakeDetailsLoaded({
             vaultShares: '0',

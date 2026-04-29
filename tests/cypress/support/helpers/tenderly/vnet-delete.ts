@@ -23,7 +23,7 @@ export const deleteVirtualTestnet = ({
       },
       failOnStatusCode: false,
     })
-    .then((response) => {
+    .then(response => {
       if (!response.isOkStatusCode) {
         throw new Error(
           `Failed to delete virtual testnet '${JSON.stringify(vnetId)}': ${response.status} ${response.statusText}`,

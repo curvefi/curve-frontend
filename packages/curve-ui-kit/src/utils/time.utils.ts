@@ -10,7 +10,7 @@ const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string
     promise.then(resolve, reject).finally(() => clearTimeout(id))
   })
 
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 /**
  * Waits for a callback to return a truthy value, polling at specified intervals, with a timeout.

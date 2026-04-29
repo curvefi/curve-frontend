@@ -48,7 +48,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
       component={Stack}
       flexGrow={1}
       gap={Spacing.md}
-      sx={{ backgroundColor: (t) => t.design.Layer[2].Fill }}
+      sx={{ backgroundColor: t => t.design.Layer[2].Fill }}
     >
       <Stack direction="row" gap={Spacing.md}>
         {imageId && (
@@ -61,7 +61,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
         <Stack justifyContent="center">
           <Typography variant="headingSBold">{name}</Typography>
 
-          {networks && Object.values(networks).some((x) => x) && (
+          {networks && Object.values(networks).some(x => x) && (
             <StackedChainIcons
               blockchainIds={Object.entries(networks)
                 .filter(([, enabled]) => enabled)
@@ -94,7 +94,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
 
         {tags?.length && (
           <Stack direction="row" gap={Spacing.sm} alignItems="center">
-            {tags.map((tag) => (
+            {tags.map(tag => (
               <Badge key={tag} label={tag} color="highlight" />
             ))}
           </Stack>
