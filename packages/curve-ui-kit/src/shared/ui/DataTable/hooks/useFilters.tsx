@@ -61,11 +61,6 @@ function useColumnFilters<TColumnId extends string>({
       (id: TColumnId, value: string | null) => searchNavigate({ [scopedKey(scope, id)]: value }, { replace: true }),
       [scope, searchNavigate],
     ),
-    resetFilters: useCallback(() => {
-      searchNavigate(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])), {
-        replace: true,
-      })
-    }, [columns, scope, searchNavigate]),
   }
 }
 
@@ -87,7 +82,6 @@ function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
       (value: string) => searchNavigate({ [key]: value || null }, { replace: true }),
       [key, searchNavigate],
     ),
-    resetGlobalFilter: useCallback(() => searchNavigate({ [key]: null }, { replace: true }), [key, searchNavigate]),
   }
 }
 
