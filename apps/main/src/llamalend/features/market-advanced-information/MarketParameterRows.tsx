@@ -35,21 +35,21 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: Mar
         label={t`Base price`}
         value={formatNumber(basePrice)}
         valueTooltip={basePrice == null ? undefined : formatNumber(basePrice, { decimals: 5 })}
-        loading={isLoadingBasePrice}
+        loading={isLoadingBasePrice || !marketId}
         error={errorBasePrice}
       />
       <ActionInfo
         label={t`Oracle price`}
         value={formatNumber(oraclePrice)}
         valueTooltip={oraclePrice == null ? undefined : formatNumber(oraclePrice, { decimals: 5 })}
-        loading={isLoadingOraclePrice}
+        loading={isLoadingOraclePrice || !marketId}
         error={errorOraclePrice}
       />
       {enablePricePerShare && (
         <ActionInfo
           label={t`Price per share`}
           value={formatNumber(pricePerShare, { decimals: 5 })}
-          loading={isLoadingPricePerShare}
+          loading={isLoadingPricePerShare || !marketId}
           error={errorPricePerShare}
         />
       )}

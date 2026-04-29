@@ -5,6 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
+import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
@@ -47,8 +48,17 @@ export function ChainList({
   }
 
   const entries = Object.entries(groupedOptions)
+  const missingWagmiChains = options.filter(({ isTestnet, chainId }) => !isTestnet && !wagmiChainsMap[chainId])
+
   return (
     <>
+      {missingWagmiChains.length > 0 && (
+        <Alert variant="filled" severity="error" data-testid="missing-wagmi-chain">
+          <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
+          {t`Missing wagmi chain configs in chains.ts for: `}
+          {missingWagmiChains.map(({ id }) => id).join(', ')}
+        </Alert>
+      )}
       <SearchField
         sx={{ marginBottom: 2 }}
         placeholder={t`Search Networks`}
