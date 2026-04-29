@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 export type Event = {
   type: 'deposit' | 'withdraw'
@@ -8,11 +9,11 @@ export type Event = {
   assets: bigint
   supply: bigint
   blockNumber: number
-  timestamp: Date
+  timestamp: Timestamp
   txHash: Address
 }
 
-export type Yield = { timestamp: Date; assets: number; supply: number; apyProjected: number }
+export type Yield = { timestamp: Timestamp; assets: number; supply: number; apyProjected: number }
 
 export type Revenue = {
   strategy: Address
@@ -23,10 +24,10 @@ export type Revenue = {
   feesTotal: bigint
   feesProtocol: bigint
   txHash: Address
-  timestamp: Date
+  timestamp: Timestamp
 }
 
-export type Statistics = { lastUpdated: Date; lastUpdatedBlock: number; apyProjected: number; supply: number }
+export type Statistics = { lastUpdated: Timestamp; lastUpdatedBlock: number; apyProjected: number; supply: number }
 
 export type UserStats = {
   totalDeposited: bigint

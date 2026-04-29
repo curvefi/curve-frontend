@@ -1,13 +1,14 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type SoftLiqRatio = {
-  timestamp: Date
+  timestamp: Timestamp
   proportion: number
 }
 
 export type LiquidationDetails = {
-  timestamp: Date
+  timestamp: Timestamp
   user: Address
   liquidator: Address
   self: boolean
@@ -23,7 +24,7 @@ export type LiquidationDetails = {
 }
 
 export type LiquidationAggregate = {
-  timestamp: Date
+  timestamp: Timestamp
   selfCount: number
   hardCount: number
   selfValue: number
@@ -43,7 +44,7 @@ export type LiqOverview = {
 }
 
 export type LiqLosses = {
-  timestamp: Date
+  timestamp: Timestamp
   pctLossMedian: number
   pctLossAverage: number
   absoluteLossMedian: number

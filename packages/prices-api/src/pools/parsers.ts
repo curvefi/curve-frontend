@@ -1,4 +1,3 @@
-import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -27,13 +26,13 @@ export const parsePool = (x: Responses.GetPoolsResponse['data'][number]): Models
 })
 
 export const parseVolume = (x: Responses.GetVolumeResponse['data'][number]): Models.Volume => ({
-  timestamp: toDate(x.timestamp),
+  timestamp: x.timestamp,
   volume: x.volume,
   fees: x.fees,
 })
 
 export const parseTvl = (x: Responses.GetTvlResponse['data'][number]): Models.Tvl => ({
-  timestamp: toDate(x.timestamp),
+  timestamp: x.timestamp,
   tvlUSD: x.tvl_usd ?? 0,
   balances: [...x.balances],
   tokenPrices: [...x.token_prices],
@@ -58,7 +57,7 @@ export const parsePoolTrade = (x: Responses.GetPoolTradesResponse['data'][number
   tokensBought: x.tokens_bought,
   tokensBoughtUsd: x.tokens_bought_usd,
   blockNumber: x.block_number,
-  time: toDate(x.time),
+  time: x.time,
   txHash: x.transaction_hash,
   buyer: x.buyer,
   usdFee: x.usd_fee,
@@ -73,7 +72,7 @@ export const parseAllPoolTrade = (x: Responses.GetAllPoolTradesResponse['data'][
   tokensBoughtUsd: x.tokens_bought_usd,
   price: x.price,
   blockNumber: x.block_number,
-  time: toDate(x.time),
+  time: x.time,
   txHash: x.transaction_hash,
   buyer: x.buyer,
   fee: x.fee,
@@ -91,7 +90,7 @@ export const parsePoolLiquidityEvent = (
   fees: x.fees ? [...x.fees] : [],
   tokenSupply: x.token_supply,
   blockNumber: x.block_number,
-  time: toDate(x.time),
+  time: x.time,
   txHash: x.transaction_hash,
   provider: x.provider,
 })
@@ -150,6 +149,6 @@ export const parsePoolMetadata = (x: Responses.GetPoolMetadataResponse): Models.
   vyperVersion: x.vyper_version,
   deploymentTx: x.deployment_tx,
   deploymentBlock: x.deployment_block,
-  deploymentDate: x.deployment_date ? toDate(x.deployment_date) : null,
+  deploymentDate: x.deployment_date ? x.deployment_date : null,
   hasDonations: x.has_donations,
 })

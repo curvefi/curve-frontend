@@ -1,5 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type GetOraclesResponse = {
   last_recorded_block: number
@@ -12,7 +13,7 @@ export type GetOraclesResponse = {
       parent_hash: Address
       state_root: Address
       block_number: number
-      timestamp: number
+      timestamp: Timestamp
     }
     last_updated: number
   }[]

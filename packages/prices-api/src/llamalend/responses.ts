@@ -1,5 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain, PaginationMeta } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type GetChainsResponse = {
   data: Chain[]
@@ -62,7 +63,7 @@ export type GetMarketsResponse = {
       symbol: string
       apr: number
     }[]
-    created_at: string
+    created_at: Timestamp
     max_ltv: number
   }[]
 }
@@ -122,7 +123,7 @@ export type GetSnapshotsResponse = {
         rebasing_yield: number | null
         rebasing_yield_apr: number | null
       }
-      timestamp: string
+      timestamp: Timestamp
       max_ltv: number
     },
   ]
@@ -133,8 +134,8 @@ export type GetUserMarketsResponse = PaginationMeta & {
   markets: {
     market_name: string
     controller: Address
-    first_snapshot: string
-    last_snapshot: string
+    first_snapshot: Timestamp
+    last_snapshot: Timestamp
   }[]
 }
 
@@ -148,8 +149,8 @@ export type GetUserLendingPositionsResponse = PaginationMeta & {
   markets: {
     market_name: string
     vault_address: Address
-    first_deposit: string
-    last_activity: string
+    first_deposit: Timestamp
+    last_activity: Timestamp
     current_shares: string
     current_shares_in_gauge: string
     boost_multiplier: number
@@ -178,7 +179,7 @@ type UserMarketStats = {
   collateral_up: number
   oracle_price: number
   block_number: number
-  timestamp: string
+  timestamp: Timestamp
 }
 
 export type GetUserMarketStatsResponse = UserMarketStats
@@ -233,7 +234,7 @@ export type GetUserCollateralEventsResponse = {
   pagination: number
   page: number
   data: {
-    dt: string
+    dt: Timestamp
     transaction_hash: Address
     type: 'Borrow' | 'Deposit'
     user: Address
@@ -273,8 +274,8 @@ export type GetUserCollateralEventsResponse = {
 export type GetMarketUsersResponse = PaginationMeta & {
   data: {
     user: string
-    first: string
-    last: string
+    first: Timestamp
+    last: Timestamp
     debt: string
     health: string
     health_full: string

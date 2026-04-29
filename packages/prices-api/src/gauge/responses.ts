@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 type Gauge = {
   address: Address
@@ -33,8 +34,8 @@ type Gauge = {
   gauge_relative_weight_7d_delta: number | null
   gauge_relative_weight_60d_delta: number | null
   creation_tx: Address
-  creation_date: string
-  last_vote_date: string | null
+  creation_date: Timestamp
+  last_vote_date: Timestamp | null
   last_vote_tx: Address | null
 }
 
@@ -49,7 +50,7 @@ export type GetVotesResponse = {
     user: Address
     weight: number
     block_number: number
-    timestamp: string
+    timestamp: Timestamp
     transaction: Address
   }[]
 }
@@ -71,7 +72,7 @@ export type GetDeploymentResponse = {
   decoded_calldata: string | null
   transaction_hash: Address
   block_number: number
-  dt: string
+  dt: Timestamp
 }
 
 export type GetUserGaugeVotesResponse = {
@@ -80,7 +81,7 @@ export type GetUserGaugeVotesResponse = {
     gauge_name: string
     weight: number
     block_number: number
-    timestamp: string
+    timestamp: Timestamp
     transaction: Address
   }[]
 }

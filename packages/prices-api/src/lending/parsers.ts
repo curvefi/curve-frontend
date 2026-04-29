@@ -1,4 +1,3 @@
-import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -22,7 +21,7 @@ export const parseOracle = (x: Responses.GetOracleResponse): Models.Oracle => ({
     collateralAddress: pool.collateral_address,
   })),
   ohlc: x.data.map(ohlc => ({
-    time: toDate(ohlc.time),
+    time: ohlc.time,
     open: ohlc.open,
     close: ohlc.close,
     high: ohlc.high,
@@ -46,7 +45,7 @@ export const parseUserCollateralEvents = (
   totalDepositUsdValue: x.total_deposit_usd_value,
   totalBorrowedUsdValue: x.total_deposit_from_user_usd_value,
   events: x.data.map(y => ({
-    timestamp: toDate(y.dt),
+    timestamp: y.dt,
     txHash: y.transaction_hash,
     type: y.type,
     user: y.user,

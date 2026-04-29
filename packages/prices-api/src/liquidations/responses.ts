@@ -1,9 +1,10 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type GetSoftLiqRatiosResponse = {
   data: {
-    timestamp: string
+    timestamp: Timestamp
     proportion: number
   }[]
 }
@@ -20,7 +21,7 @@ export type GetLiqsDetailedResponse = {
     debt: number
     n1: number
     n2: number
-    dt: string
+    dt: Timestamp
     tx: Address
     block: number
   }[]
@@ -28,7 +29,7 @@ export type GetLiqsDetailedResponse = {
 
 export type GetLiqsAggregateResponse = {
   data: {
-    timestamp: string
+    timestamp: Timestamp
     self_count: number
     hard_count: number
     self_value: number
@@ -53,7 +54,7 @@ export type GetLiqOverviewResponse = {
 
 export type GetLiqLossesResponse = {
   data: {
-    timestamp: string
+    timestamp: Timestamp
     median_pct_loss: number
     avg_pct_loss: number
     median_abs_loss: number

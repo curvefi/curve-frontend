@@ -1,14 +1,13 @@
-import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
 export const parseSoftLiqRatio = (x: Responses.GetSoftLiqRatiosResponse['data'][number]): Models.SoftLiqRatio => ({
-  timestamp: toDate(x.timestamp),
+  timestamp: x.timestamp,
   proportion: x.proportion / 100,
 })
 
 export const parseLiqsDetailed = (x: Responses.GetLiqsDetailedResponse['data'][number]): Models.LiquidationDetails => ({
-  timestamp: toDate(x.dt),
+  timestamp: x.dt,
   user: x.user,
   liquidator: x.liquidator,
   self: x.self,
@@ -26,7 +25,7 @@ export const parseLiqsDetailed = (x: Responses.GetLiqsDetailedResponse['data'][n
 export const parseLiqsAggregate = (
   x: Responses.GetLiqsAggregateResponse['data'][number],
 ): Models.LiquidationAggregate => ({
-  timestamp: toDate(x.timestamp),
+  timestamp: x.timestamp,
   selfCount: x.self_count,
   hardCount: x.hard_count,
   selfValue: x.self_value,
@@ -46,7 +45,7 @@ export const parseLiqOverview = (x: Responses.GetLiqOverviewResponse): Models.Li
 })
 
 export const parseLiqLosses = (x: Responses.GetLiqLossesResponse['data'][number]): Models.LiqLosses => ({
-  timestamp: toDate(x.timestamp),
+  timestamp: x.timestamp,
   pctLossAverage: x.avg_pct_loss,
   pctLossMedian: x.median_pct_loss,
   absoluteLossAverage: x.avg_abs_loss,

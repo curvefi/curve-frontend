@@ -1,3 +1,24 @@
+declare const TimestampBrand: unique symbol
+
+/**
+ * A serialized timestamp that can indicate many of the timestamp variants
+ * as returned by the Prices API.
+ *
+ * Branded so it can't be used directly as a `number` or `string`. To read
+ * the value, pass it through `toDate(...)`. This is intentional: it forces
+ * a single, consistent parsing path and prevents accidental arithmetic
+ * (e.g. `timestamp * 1000`) or string concatenation on values whose unit
+ * (seconds vs. ms) and format (unix vs. ISO) are not guaranteed.
+ *
+ * Underlying shape is one of:
+ * - unix seconds as `number` (e.g. `1704067200`)
+ * - unix seconds as `string` (e.g. `"1704067200"`)
+ * - ISO 8601 date string (e.g. `"2024-01-01T00:00:00.000Z"`)
+ */
+export type Timestamp = (number | `${number}` | `${number}-${number}-${number}T${string}`) & {
+  readonly [TimestampBrand]: true
+}
+
 const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
 
 /**
@@ -11,7 +32,7 @@ const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
  * toDate("2024-01-01T00:00:00.000+01:00") // ISO with timezone
  * toDate("2024-01-01T00:00:00") // ISO without timezone (assumes UTC)
  */
-export function toDate(timestamp: string | number): Date {
+export function toDate(timestamp: Timestamp): Date {
   // Convert actual unix timestamp numbers to Date.
   if (typeof timestamp === 'number') {
     return new Date(timestamp * 1000)

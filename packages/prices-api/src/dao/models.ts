@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 export type LockType = 'CREATE_LOCK' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME' | 'WITHDRAW'
 
@@ -11,21 +12,21 @@ export type VotesOverview = {
 }
 
 export type LocksDaily = {
-  day: Date
+  day: Timestamp
   amount: bigint
 }
 
 export type UserLock = {
-  timestamp: Date
+  timestamp: Timestamp
   amount: bigint
-  unlockTime: Date
+  unlockTime: Timestamp
   lockType: LockType
   lockedBalance: bigint
   txHash: string
 }
 
 export type Supply = {
-  timestamp: Date
+  timestamp: Timestamp
   veCrvTotal: bigint
   crvEscrowed: bigint
   crvSupply: bigint
@@ -44,5 +45,5 @@ export type Locker = {
   locked: bigint
   weight: bigint
   weightRatio: number
-  unlockTime: Date | null
+  unlockTime: Timestamp | null
 }

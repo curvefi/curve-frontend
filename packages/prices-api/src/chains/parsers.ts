@@ -1,5 +1,4 @@
 import { chains, type Chain } from '..'
-import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -21,7 +20,7 @@ export const parseTxs = (x: Responses.GetTransactionsResponse): Models.Transacti
   x.data.flatMap(data =>
     data.transactions.map(tx => ({
       chain: data.chain,
-      timestamp: toDate(tx.timestamp),
+      timestamp: tx.timestamp,
       type: tx.type,
       transactions: tx.transactions,
     })),
@@ -29,7 +28,7 @@ export const parseTxs = (x: Responses.GetTransactionsResponse): Models.Transacti
 
 export const parseUsers = (x: Responses.GetUsersResponse): Models.Users[] =>
   x.data.flatMap(data =>
-    data.users.map(tx => ({ chain: data.chain, timestamp: toDate(tx.timestamp), type: tx.type, users: tx.users })),
+    data.users.map(tx => ({ chain: data.chain, timestamp: tx.timestamp, type: tx.type, users: tx.users })),
   )
 
 export const parsePoolFilters = (x: Responses.GetPoolFilters): Models.PoolFilter[] =>

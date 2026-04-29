@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 export type PoolCoin = {
   poolIndex: number
@@ -31,13 +32,13 @@ export type Pool = {
 }
 
 export type Volume = {
-  timestamp: Date
+  timestamp: Timestamp
   volume: number
   fees: number
 }
 
 export type Tvl = {
-  timestamp: Date
+  timestamp: Timestamp
   tvlUSD: number
   balances: number[]
   tokenPrices: number[]
@@ -62,7 +63,7 @@ export type PoolTrade = {
   tokensBought: number
   tokensBoughtUsd: number
   blockNumber: number
-  time: Date
+  time: Timestamp
   txHash: Address
   buyer: Address
   usdFee: number
@@ -77,7 +78,7 @@ export type AllPoolTrade = {
   tokensBoughtUsd: number
   price: number
   blockNumber: number
-  time: Date
+  time: Timestamp
   txHash: Address
   buyer: Address
   fee: number
@@ -99,7 +100,7 @@ export type PoolLiquidityEvent = {
   fees: number[]
   tokenSupply: number
   blockNumber: number
-  time: Date
+  time: Timestamp
   txHash: Address
   provider: Address
 }
@@ -166,6 +167,6 @@ export type PoolMetadata = {
   vyperVersion: string | null
   deploymentTx: string | null
   deploymentBlock: number | null
-  deploymentDate: Date | null
+  deploymentDate: Timestamp | null
   hasDonations: boolean
 }
