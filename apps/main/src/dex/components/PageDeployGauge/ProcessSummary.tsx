@@ -24,7 +24,7 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
   const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
 
   const push = useNavigate()
-  const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
+  const sidechain: ChainId = currentSidechain === null ? 1 : currentSidechain
 
   const { data: network } = useNetworkByChain({ chainId })
   const { data: networkSidechain } = useNetworkByChain({ chainId: sidechain })

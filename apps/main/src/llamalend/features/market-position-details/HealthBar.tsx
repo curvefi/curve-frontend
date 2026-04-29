@@ -64,7 +64,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
                 ? `${health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION ? 100 : clampPercentage(health)}%`
                 : '0%',
             height: '100%',
-            backgroundColor: health != null ? getHealthTrackColor({ health, softLiquidation, theme }) : 'transparent',
+            backgroundColor: health == null ? 'transparent' : getHealthTrackColor({ health, softLiquidation, theme }),
             transition: `width ${TransitionFunction}, background-color ${TransitionFunction}`,
           }}
         />

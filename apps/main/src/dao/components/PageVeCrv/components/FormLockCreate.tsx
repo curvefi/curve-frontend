@@ -46,7 +46,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
   const maxUtcDate = dayjs.utc().add(4, 'year')
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+    (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
@@ -67,15 +67,12 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
       const calcdUtcDate = fn(curve, 'create', null, days)
 
-      updateFormValues(
-        {
-          utcDate: toCalendarDate(utcDate),
-          utcDateError,
-          calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
-          days,
-        },
-        false,
-      )
+      updateFormValues({
+        utcDate: toCalendarDate(utcDate),
+        utcDateError,
+        calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
+        days,
+      })
     },
     [currUtcDate, haveSigner, maxUtcDate, minUtcDate, rChainId, updateFormValues],
   )
@@ -87,7 +84,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUtcDate, 'd')
         const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
-        updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' }, false)
+        updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
@@ -95,7 +92,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       const days = utcDate.diff(currUtcDate, 'd')
       const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
 
-      updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' }, false)
+      updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
       return utcDate
     },
     [currUtcDate, maxUtcDate, rChainId, updateFormValues],
@@ -185,7 +182,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    updateFormValues({}, true)
+    updateFormValues({}, { isFullReset: true })
 
     return () => {
       isSubscribed.current = false
@@ -203,7 +200,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
   }, [curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
 
   // interval
-  usePageVisibleInterval(() => updateFormValues({}, false), REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(() => updateFormValues({}), REFRESH_INTERVAL['5m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const loading = typeof vecrvInfo === 'undefined'
@@ -223,7 +220,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           haveSigner={haveSigner}
           formType={rFormType}
           vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={useCallback(lockedAmt => updateFormValues({ lockedAmt }, false), [updateFormValues])}
+          handleInpLockedAmt={useCallback(lockedAmt => updateFormValues({ lockedAmt }), [updateFormValues])}
           {...formValues}
         />
 
@@ -253,9 +250,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       </div>
 
       <FormActions haveSigner={haveSigner} loading={loading}>
-        {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
-        )}
+        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
         {txInfoBar}
         <Stepper steps={steps} />
       </FormActions>

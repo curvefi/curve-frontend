@@ -55,13 +55,13 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
         </TitleRow>
       </Box>
       <PoolPresetButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
-        {poolPresetIndex !== null ? (
+        {poolPresetIndex === null ? (
           <LabelTextWrapper>
-            <SelectedLabelText>{POOL_PRESETS[poolPresetIndex].name}</SelectedLabelText>
+            <PlaceholderSelectedLabelText>{t`Select preset`}</PlaceholderSelectedLabelText>
           </LabelTextWrapper>
         ) : (
           <LabelTextWrapper>
-            <PlaceholderSelectedLabelText>{t`Select preset`}</PlaceholderSelectedLabelText>
+            <SelectedLabelText>{POOL_PRESETS[poolPresetIndex].name}</SelectedLabelText>
           </LabelTextWrapper>
         )}
       </PoolPresetButton>

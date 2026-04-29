@@ -97,7 +97,7 @@ export const DeploySidechain = ({ chainId }: Props) => {
                   {chainId === 1 ? (
                     <DialogSelect
                       label={t`Select Network`}
-                      currentData={currentSidechain !== null ? curveNetworks[currentSidechain].name : null}
+                      currentData={currentSidechain === null ? null : curveNetworks[currentSidechain].name}
                       data={networksList}
                       setCurrentData={setCurrentSidechain}
                       isDisabled={false}
