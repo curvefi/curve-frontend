@@ -1,16 +1,10 @@
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { formatPercent } from '@ui-kit/utils'
 
 type Props = {
   solvencyPercent: number
-}
-
-const SOLVENCY_THRESHOLDS = {
-  // Market above this threshold are considered fully solvent, and the banner should not be displayed
-  solvent: 99.9,
-  low: 90,
-  insolvent: 0,
 }
 
 const BANNER_CONFIG = [

@@ -347,3 +347,10 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
     '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D',
   ],
 }
+/** Solvency thresholds for the llamalend markets to handle deprecation, banner and gate keeping forms */
+export const SOLVENCY_THRESHOLDS = {
+  // Market above this threshold are considered fully solvent
+  solvent: 99.9,
+  low: 90,
+  insolvent: 0,
+}

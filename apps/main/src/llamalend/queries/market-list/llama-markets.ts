@@ -16,10 +16,11 @@ import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/camp
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { useMappedQuery } from '@ui-kit/types/util'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
+import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND, SOLVENCY_THRESHOLDS } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
@@ -91,6 +92,11 @@ export type LlamaMarketsResult = {
   hasFavorites: boolean
 }
 
+const deprecateLowSolvency = (solvencyPercent: number | null) =>
+  solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
+    ? t`This market is deprecated due to low solvency`
+    : null
+
 const convertLendingVault = (
   {
     controller,
@@ -133,6 +139,7 @@ const convertLendingVault = (
     rebasingYieldApy: borrowedToken?.rebasingYield,
     extraIncentivesApy: totalExtraRewardApy,
   })
+  const solvencyPercent = calculateMarketSolvency({ totalAssetsUsd, badDebtUsd })
 
   return {
     chain,
@@ -156,7 +163,7 @@ const convertLendingVault = (
     },
     maxLtv,
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
-    solvencyPercent: calculateMarketSolvency({ totalAssetsUsd, badDebtUsd }),
+    solvencyPercent,
     badDebtUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
@@ -188,7 +195,8 @@ const convertLendingVault = (
     },
     type: marketType,
     url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
-    deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? null,
+    deprecatedMessage:
+      DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? deprecateLowSolvency(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
