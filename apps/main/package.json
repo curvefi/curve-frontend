@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content .",
-    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content . --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content . --fix",
     "start": "vite preview",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-main.tsbuildinfo",
     "commit": "commit",

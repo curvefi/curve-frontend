@@ -9,8 +9,8 @@
     "build:js": "vite build",
     "build:types": "tsc -p tsconfig.build-types.json --emitDeclarationOnly",
     "prepublishOnly": "yarn run build",
-    "lint": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content .",
-    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint --cache-strategy content . --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/prices-api --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/prices-api --cache-strategy content . --fix",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-prices-api.tsbuildinfo"
   },
   "peerDependencies": {
