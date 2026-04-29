@@ -18,11 +18,7 @@ export const Bridges = () => {
 
   const tabs = useMemo(
     () => [
-      ...TABS.map(({ value, ...props }) => ({
-        ...props,
-        value,
-        href: getSearchString({ tab: value }, searchParams),
-      })),
+      ...TABS.map(({ value, ...props }) => ({ ...props, value, href: getSearchString({ tab: value }, searchParams) })),
     ],
     [searchParams],
   )

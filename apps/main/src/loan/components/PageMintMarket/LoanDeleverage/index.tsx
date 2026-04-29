@@ -57,20 +57,20 @@ export const LoanDeleverage = ({
   const isSubscribed = useRef(false)
   const push = useNavigate()
 
-  const activeKey = useStore((state) => state.loanDeleverage.activeKey)
-  const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
-  const formEstGas = useStore((state) => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
-  const formStatus = useStore((state) => state.loanDeleverage.formStatus)
-  const formValues = useStore((state) => state.loanDeleverage.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const activeKey = useStore(state => state.loanDeleverage.activeKey)
+  const detailInfo = useStore(state => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
+  const formEstGas = useStore(state => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
+  const formStatus = useStore(state => state.loanDeleverage.formStatus)
+  const formValues = useStore(state => state.loanDeleverage.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
-  const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
-  const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
-  const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
+  const userWalletBalances = useStore(state => state.loans.userWalletBalancesMapper[llammaId])
+  const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
+  const fetchStepRepay = useStore(state => state.loanDeleverage.fetchStepRepay)
+  const setFormValues = useStore(state => state.loanDeleverage.setFormValues)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -174,7 +174,7 @@ export const LoanDeleverage = ({
                     <DialogHighPriceImpactWarning
                       priceImpact={detailInfo?.priceImpact}
                       confirmed={confirmHighPriceImpact}
-                      setConfirmed={(val) => setConfirmHighPriceImpact(val)}
+                      setConfirmed={val => setConfirmHighPriceImpact(val)}
                     />
                   ),
                   isDismissable: false,
@@ -193,7 +193,7 @@ export const LoanDeleverage = ({
         },
       }
 
-      return ['REPAY'].map((k) => stepsObj[k])
+      return ['REPAY'].map(k => stepsObj[k])
     },
     [userState?.collateral, confirmHighPriceImpact, maxSlippage, handleBtnClickRepay],
   )

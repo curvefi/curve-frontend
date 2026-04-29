@@ -26,14 +26,14 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.lockedCrv.activeKey)
+  const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
-  const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.lockedCrv.formStatus)
-  const formValues = useStore((state) => state.lockedCrv.formValues)
-  const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.lockedCrv.formStatus)
+  const formValues = useStore(state => state.lockedCrv.formValues)
+  const fetchStepIncreaseTime = useStore(state => state.lockedCrv.fetchStepIncreaseTime)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -152,7 +152,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       }
 
       const stepsKey: StepKey[] = ['INCREASE_TIME']
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleBtnClickIncrease],
   )
@@ -187,7 +187,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
     <>
       <StyledForm
         autoComplete="off"
-        onSubmit={(evt) => {
+        onSubmit={evt => {
           evt.preventDefault()
         }}
       >

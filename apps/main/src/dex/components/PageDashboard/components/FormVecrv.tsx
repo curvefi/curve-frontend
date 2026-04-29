@@ -37,10 +37,10 @@ export const FormVecrv = () => {
 
   const isSubscribed = useRef(false)
 
-  const dashboardVecrvInfo = useStore((state) => state.dashboard.vecrvInfo[activeKey])
-  const formStatus = useStore((state) => state.dashboard.formStatus)
-  const setFormStatusVecrv = useStore((state) => state.dashboard.setFormStatusVecrv)
-  const fetchStepWithdraw = useStore((state) => state.dashboard.fetchStepWithdrawVecrv)
+  const dashboardVecrvInfo = useStore(state => state.dashboard.vecrvInfo[activeKey])
+  const formStatus = useStore(state => state.dashboard.formStatus)
+  const setFormStatusVecrv = useStore(state => state.dashboard.setFormStatusVecrv)
+  const fetchStepWithdraw = useStore(state => state.dashboard.fetchStepWithdrawVecrv)
   const { data: networks } = useNetworks()
   const network = (curve && networks[curve.chainId]) || null
 
@@ -99,7 +99,7 @@ export const FormVecrv = () => {
           },
         },
       }
-      return ['WITHDRAW'].map((key) => stepsObj[key])
+      return ['WITHDRAW'].map(key => stepsObj[key])
     },
     [handleBtnClickWithdraw],
   )

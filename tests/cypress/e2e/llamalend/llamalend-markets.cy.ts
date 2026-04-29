@@ -177,10 +177,12 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
         cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
         cy.get(`@slider`)
-          .then($el =>
-            // With log slider a click from the left is not enough to filter
-            // Click 20px from the right edge and vertically centered
-            [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
+          .then(
+            (
+              $el, // With log slider a click from the left is not enough to filter
+            ) =>
+              // Click 20px from the right edge and vertically centered
+              [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
           )
           .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
         closeSlider(breakpoint)

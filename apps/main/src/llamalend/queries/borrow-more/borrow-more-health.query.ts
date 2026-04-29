@@ -61,6 +61,6 @@ export const {
   },
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false }),
-  dependencies: (params) =>
+  dependencies: params =>
     isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],
 })

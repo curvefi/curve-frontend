@@ -27,7 +27,7 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
   },
   category: 'llamalend.removeCollateral',
   validationSuite: collateralValidationSuite,
-  dependencies: (params) => [maxRemovableCollateralKey(params)],
+  dependencies: params => [maxRemovableCollateralKey(params)],
 })
 
 export const useRemoveCollateralEstimateGas = <ChainId extends IChainId>(

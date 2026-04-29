@@ -46,9 +46,9 @@ export function ChartCrvUsdPrice() {
   const chartData = useMemo(
     () =>
       llama(data)
-        .map((x) => ({ time: new Date(x.timestamp).getTime(), price: x.price }))
+        .map(x => ({ time: new Date(x.timestamp).getTime(), price: x.price }))
         .uniqWith((x, y) => x.time === y.time)
-        .orderBy((c) => c.time, 'asc')
+        .orderBy(c => c.time, 'asc')
         .value(),
     [data],
   )
@@ -59,7 +59,7 @@ export function ChartCrvUsdPrice() {
         legendSets,
         options: {
           tooltip: createTooltip(formatUsd),
-          xAxis: { data: chartData.map((x) => x.time).map(timeToCategory) },
+          xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
           yAxis: {
             axisLabel: {
               formatter: (v: number) =>
@@ -70,12 +70,12 @@ export function ChartCrvUsdPrice() {
                 }),
             },
             // 0.95 and 1.05 cover 99% of a stablecoin's price range. And you don't want spikes to cause the chart to become unreadable.
-            min: Math.max(Math.min(...chartData.map((x) => x.price)), 0.95),
-            max: Math.min(Math.max(...chartData.map((x) => x.price)), 1.05),
+            min: Math.max(Math.min(...chartData.map(x => x.price)), 0.95),
+            max: Math.min(Math.max(...chartData.map(x => x.price)), 1.05),
           },
           series: {
             name: PRICE_LABEL,
-            data: chartData.map((x) => x.price),
+            data: chartData.map(x => x.price),
             type: 'line',
           },
         },
@@ -96,7 +96,7 @@ export function ChartCrvUsdPrice() {
           <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           <ButtonExport
             filename="crvusd_price"
-            data={{ price: chartData.map((x) => ({ time: x.time, value: x.price })) }}
+            data={{ price: chartData.map(x => ({ time: x.time, value: x.price })) }}
             fullscreen={fullscreen}
           />
           <ButtonFullscreen onToggle={toggleFullscreen} fullscreen={fullscreen} />

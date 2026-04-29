@@ -28,8 +28,8 @@ const tabs: TabOption<Tab>[] = [
 export const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
 
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const searchedWalletAddresses = useStore((state) => state.dashboard.searchedWalletAddresses)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const searchedWalletAddresses = useStore(state => state.dashboard.searchedWalletAddresses)
 
   const networkHaveLockedCrv = rChainId === 1
 
@@ -59,11 +59,11 @@ export const Summary = () => {
             defaultInputValue={formValues.walletAddress}
             inputValue={formValues.walletAddress}
             placeholder="0x..."
-            onInputChange={(walletAddress) => updateFormValues({ walletAddress })}
-            onSelectionChange={(val) => updateFormValues({ walletAddress: val as string })}
+            onInputChange={walletAddress => updateFormValues({ walletAddress })}
+            onSelectionChange={val => updateFormValues({ walletAddress: val as string })}
           >
             <Section title={t`Recently viewed addresses`}>
-              {searchedWalletAddresses.map((address) => (
+              {searchedWalletAddresses.map(address => (
                 <Item key={address} textValue={address}>
                   {shortenAccount(address)}
                 </Item>

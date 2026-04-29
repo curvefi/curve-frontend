@@ -45,7 +45,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={mapQuery(userBalances, (d) => d.totalShares)}
+      prevVaultShares={mapQuery(userBalances, d => d.totalShares)}
       vaultShares={{
         data:
           userBalances.data.totalShares &&
@@ -53,13 +53,13 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
           decimalSum(userBalances.data.totalShares, additionalVaultShares.data),
         ...combineQueryState(userBalances, additionalVaultShares),
       }}
-      prevAmountSupplied={mapQuery(userBalances, (d) => d.totalSharesAmount)}
+      prevAmountSupplied={mapQuery(userBalances, d => d.totalSharesAmount)}
       amountSupplied={mapQuery(
         userBalances,
-        (d) => depositAmount && d.totalSharesAmount && decimalSum(d.totalSharesAmount, depositAmount),
+        d => depositAmount && d.totalSharesAmount && decimalSum(d.totalSharesAmount, depositAmount),
       )}
-      prevSupplyApy={mapQuery(prevRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(rates, (d) => d.lendApy)}
+      prevSupplyApy={mapQuery(prevRates, d => d.lendApy)}
+      supplyApy={mapQuery(rates, d => d.lendApy)}
       prevNetSupplyApy={prevNetSupplyApy}
       netSupplyApy={netSupplyApy}
       gas={q(useDepositEstimateGas(networks, params, isOpen))}

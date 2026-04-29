@@ -25,7 +25,7 @@ export function useShouldShowNetRate({
   const result = isDiff || isPrevDiff
 
   useEffect(() => {
-    if (result != null && tokenSymbol != null) setDefaultValue((value) => ({ ...value, [tokenSymbol]: result }))
+    if (result != null && tokenSymbol != null) setDefaultValue(value => ({ ...value, [tokenSymbol]: result }))
   }, [result, setDefaultValue, tokenSymbol])
 
   return result ?? (tokenSymbol != null ? defaultValue[tokenSymbol] : false)

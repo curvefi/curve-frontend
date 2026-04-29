@@ -138,7 +138,7 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm(form, { slippage: value })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
           routes={routes}

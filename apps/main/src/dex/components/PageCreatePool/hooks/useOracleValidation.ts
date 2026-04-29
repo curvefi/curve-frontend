@@ -15,7 +15,7 @@ type UseOracleValidationParams = {
  * This hook validates oracle configuration, syncs results to store, and returns them
  */
 export const useOracleValidation = ({ token, tokenId }: UseOracleValidationParams) => {
-  const updateOracleState = useStore((state) => state.createPool.updateOracleState)
+  const updateOracleState = useStore(state => state.createPool.updateOracleState)
 
   const oracleAddress = token.oracle.address
   const oracleFunction = token.oracle.functionName

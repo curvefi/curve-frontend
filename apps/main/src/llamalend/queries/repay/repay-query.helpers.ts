@@ -31,7 +31,7 @@ export function getRepayImplementation(
 ) {
   const market = getLlamaMarket(marketId)
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
-    (v) => !!+v,
+    v => !!+v,
   )
   if (market instanceof MintMarketTemplate) {
     if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const

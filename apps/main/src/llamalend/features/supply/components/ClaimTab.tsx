@@ -67,7 +67,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             !!claimableTokens.length &&
             !isLoading && (
               <TotalNotionalRow
-                sx={{ backgroundColor: (t) => t.design.Table.Row.Hover }}
+                sx={{ backgroundColor: t => t.design.Table.Row.Hover }}
                 totalNotionals={totalNotionals}
                 isNotionalLoading={isNotionalLoading}
               />

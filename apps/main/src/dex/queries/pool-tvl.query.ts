@@ -32,7 +32,7 @@ const { useQuery: usePoolTvlsQuery, refetchQuery: refetchPoolTvls } = queryFacto
     const poolIds = requireLib('curveApi').getPoolList()
     const { results } = await PromisePool.withConcurrency(10)
       .for(poolIds)
-      .process(async (poolId) => [poolId, await getPoolTvlFromLib({ poolId })] as const)
+      .process(async poolId => [poolId, await getPoolTvlFromLib({ poolId })] as const)
 
     return Object.fromEntries(results)
   },

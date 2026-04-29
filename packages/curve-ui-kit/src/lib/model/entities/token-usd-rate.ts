@@ -138,10 +138,7 @@ export const useTokenUsdRates = (
   return useQueries({
     queries: useMemo(
       (): UseTokenOptions[] =>
-        uniqueAddresses.map(tokenAddress => ({
-          ...getTokenUsdRateQueryOptions({ chainId, tokenAddress }),
-          enabled,
-        })),
+        uniqueAddresses.map(tokenAddress => ({ ...getTokenUsdRateQueryOptions({ chainId, tokenAddress }), enabled })),
       [chainId, uniqueAddresses, enabled],
     ),
     combine: useCallback(

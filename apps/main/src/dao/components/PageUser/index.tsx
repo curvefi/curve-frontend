@@ -26,8 +26,8 @@ type UserPageProps = {
 }
 
 export const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
+  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
   const [tab, setTab] = useState<Tab>('proposals')
 
   const { allHolders, fetchStatus } = veCrvHolders

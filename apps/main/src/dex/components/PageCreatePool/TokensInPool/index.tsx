@@ -39,17 +39,17 @@ import { t } from '@ui-kit/lib/i18n'
 type BasePool = QueryData<typeof useBasePools>[number]
 
 const checkMetaPool = (address: string, basePools: BasePool[]) =>
-  address === '' ? false : basePools.some((item) => item.token === address)
+  address === '' ? false : basePools.some(item => item.token === address)
 
 const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
   let basePoolCoins: string[] = []
   if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
     if (checkMetaPool(value, basePools)) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
     } else if (tokenA.basePool) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
     } else if (tokenB.basePool) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
     }
   }
   return basePoolCoins
@@ -62,16 +62,16 @@ type Props = {
 }
 
 export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
-  const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
-  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
-  const resetPoolPresetIndex = useStore((state) => state.createPool.resetPoolPresetIndex)
-  const swapType = useStore((state) => state.createPool.swapType)
-  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
-  const initialPrice = useStore((state) => state.createPool.initialPrice)
-  const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
-  const updateTokenAmount = useStore((state) => state.createPool.updateTokenAmount)
-  const updateSwapType = useStore((state) => state.createPool.updateSwapType)
-  const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
+  const userAddedTokens = useStore(state => state.createPool.userAddedTokens)
+  const poolPresetIndex = useStore(state => state.createPool.poolPresetIndex)
+  const resetPoolPresetIndex = useStore(state => state.createPool.resetPoolPresetIndex)
+  const swapType = useStore(state => state.createPool.swapType)
+  const tokensInPool = useStore(state => state.createPool.tokensInPool)
+  const initialPrice = useStore(state => state.createPool.initialPrice)
+  const updateTokensInPool = useStore(state => state.createPool.updateTokensInPool)
+  const updateTokenAmount = useStore(state => state.createPool.updateTokenAmount)
+  const updateSwapType = useStore(state => state.createPool.updateSwapType)
+  const updateNgAssetType = useStore(state => state.createPool.updateNgAssetType)
   const { data: basePools = [] } = useBasePools({ chainId })
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
@@ -86,25 +86,25 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
-    const tokensArray = Object.entries(tokensMapper).map((token) => ({
+    const tokensArray = Object.entries(tokensMapper).map(token => ({
       ...token[1]!,
       userAddedToken: false,
-      basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
+      basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
     }))
 
     if (haveSigner && Object.keys(tokensArray || {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
-        .filter((token) => token.symbol !== '' && token.address !== '')
+        .filter(token => token.symbol !== '' && token.address !== '')
         .sort((a, b) => Number(b.volume) - Number(a.volume))
 
       // adds userAddedTokens at the top of the list
-      return lodash.uniqBy([...userAddedTokens, ...volumeSortedTokensArray], (o) => o.address)
+      return lodash.uniqBy([...userAddedTokens, ...volumeSortedTokensArray], o => o.address)
     }
     const balanceSortedTokensArray = tokensArray
-      .filter((token) => token.symbol !== '' && token.address !== '')
+      .filter(token => token.symbol !== '' && token.address !== '')
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
-    return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
+    return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], o => o.address)
   }, [tokensMapper, haveSigner, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
@@ -112,7 +112,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       if (address !== '') {
         if (tokensMapper[address]) return tokensMapper[address]!.symbol
         //search through user added tokens
-        const addedToken = userAddedTokens.find((userToken) => userToken.address === address)
+        const addedToken = userAddedTokens.find(userToken => userToken.address === address)
         if (addedToken) return addedToken.symbol
       }
       return ''
@@ -188,7 +188,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         } else if (
           swapType === STABLESWAP &&
           checkMetaPool(value, basePools) &&
-          basePoolCoins.some((token) => token === tokensInPoolState.tokenB.address)
+          basePoolCoins.some(token => token === tokensInPoolState.tokenB.address)
         ) {
           updatedFormValues = {
             ...updatedFormValues,
@@ -208,7 +208,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         } else if (
           swapType === STABLESWAP &&
           tokensInPoolState.tokenB.basePool &&
-          basePoolCoins.some((token) => token === value)
+          basePoolCoins.some(token => token === value)
         ) {
           updatedFormValues = {
             ...updatedFormValues,
@@ -262,7 +262,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         } else if (
           swapType === STABLESWAP &&
           checkMetaPool(value, basePools) &&
-          basePoolCoins.some((token) => token === tokensInPoolState.tokenA.address)
+          basePoolCoins.some(token => token === tokensInPoolState.tokenA.address)
         ) {
           updatedFormValues = {
             ...updatedFormValues,
@@ -282,7 +282,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         } else if (
           swapType === STABLESWAP &&
           tokensInPoolState.tokenA.basePool &&
-          basePoolCoins.some((token) => token === value)
+          basePoolCoins.some(token => token === value)
         ) {
           updatedFormValues = {
             ...updatedFormValues,
@@ -595,12 +595,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     const tokenIds: TokenId[] = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H]
 
     // Filter out tokens with empty addresses or zero initial price
-    const validTokens = tokenIds.filter(
-      (tokenId) => tokensInPool[tokenId].address !== '' && initialPrice[tokenId] !== 0,
-    )
+    const validTokens = tokenIds.filter(tokenId => tokensInPool[tokenId].address !== '' && initialPrice[tokenId] !== 0)
 
     // Skip threshold check for tokens with special asset types (they have their own rate mechanisms)
-    const hasSpecialAssetType = tokenIds.some((tokenId) => {
+    const hasSpecialAssetType = tokenIds.some(tokenId => {
       const assetType = tokensInPool[tokenId].ngAssetType
       return (
         assetType === NG_ASSET_TYPE.ERC4626 ||

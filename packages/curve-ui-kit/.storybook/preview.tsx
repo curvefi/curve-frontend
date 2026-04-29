@@ -24,7 +24,7 @@ export const decorators: Decorator[] = [
     Provider: ThemeProvider,
     GlobalStyles: CssBaseline,
   }),
-  (Story) => {
+  Story => {
     const router = createRouter({
       routeTree: createRootRoute({ component: Story }),
       history: createMemoryHistory({ initialEntries: ['/'] }),

@@ -11,23 +11,23 @@ type SeriesData = Record<string, { time: number; value: number }[]>
  * it's not expected to be part of an actual value.
  */
 function createCsvData(data: SeriesData): string {
-  const columns = llama(Object.keys(data)).orderBy((x) => x)
+  const columns = llama(Object.keys(data)).orderBy(x => x)
 
   const rows = columns
-    .flatMap((column) =>
-      data[column].map((point) => ({
+    .flatMap(column =>
+      data[column].map(point => ({
         column,
         time: Math.floor(point.time / 1000), // Convert ms to UTC seconds
         value: point.value,
       })),
     )
-    .groupBy((x) => x.time)
+    .groupBy(x => x.time)
     .entries()
     .orderBy(([time]) => Number(time))
     .map(([time, points]) => {
       const xs = llama(points)
-        .orderBy((x) => x.column)
-        .map((x) => x.value)
+        .orderBy(x => x.column)
+        .map(x => x.value)
         .value()
         .join(';')
 

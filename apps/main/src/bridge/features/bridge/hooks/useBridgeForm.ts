@@ -39,17 +39,7 @@ const useBridgeParams = ({
 }: BridgeForm & {
   chainId: number | undefined
   userAddress: Address | undefined
-}) =>
-  useDebouncedValue(
-    useMemo(
-      () => ({
-        chainId,
-        userAddress,
-        amount,
-      }),
-      [chainId, userAddress, amount],
-    ),
-  )
+}) => useDebouncedValue(useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]))
 
 const emptyBridgeForm = () =>
   ({
@@ -80,14 +70,11 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   const bridgeNetworks = useMemo(() => curve?.fastBridge.getSupportedNetworks() ?? [], [curve?.fastBridge])
   const { data: crvUsdBalance, isLoading: crvUsdBalanceLoading } = useTokenBalance({
     ...params,
-    tokenAddress: bridgeNetworks.find((network) => network.chainId === chainId)?.crvUsdAddress as Address,
+    tokenAddress: bridgeNetworks.find(network => network.chainId === chainId)?.crvUsdAddress as Address,
   })
 
   const walletBalance = useMemo(
-    () => ({
-      balance: crvUsdBalance,
-      loading: crvUsdBalanceLoading,
-    }),
+    () => ({ balance: crvUsdBalance, loading: crvUsdBalanceLoading }),
     [crvUsdBalance, crvUsdBalanceLoading],
   )
 
@@ -129,7 +116,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     [networks, bridgeNetworks],
   )
 
-  const network = supportedNetworks.find((network) => network.chainId === chainId)
+  const network = supportedNetworks.find(network => network.chainId === chainId)
   useFormSync(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId })
 
   // Form errors

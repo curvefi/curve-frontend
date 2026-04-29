@@ -31,9 +31,10 @@ export const APP_ROUTES = {
     )}`,
   crvusd: () =>
     `crvusd/${DEFAULT_NETWORK}${oneOf(
-      ...recordValues(CRVUSD_ROUTES).map(r =>
-        // use market detail page, the list page redirects to the llamalend app
-        r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
+      ...recordValues(CRVUSD_ROUTES).map(
+        (
+          r, // use market detail page, the list page redirects to the llamalend app
+        ) => (r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r),
       ),
     )}`,
   llamalend: () => `llamalend/${DEFAULT_NETWORK}${oneValueOf(LLAMALEND_ROUTES)}`,

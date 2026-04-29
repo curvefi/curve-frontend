@@ -59,9 +59,7 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
 }
 
 function getPriceFormat(ohlcData: LpPriceOhlcDataFormatted[] | undefined) {
-  const delta = ohlcData?.length
-    ? Math.max(...ohlcData.map(x => x.high)) - Math.min(...ohlcData.map(x => x.low))
-    : 1
+  const delta = ohlcData?.length ? Math.max(...ohlcData.map(x => x.high)) - Math.min(...ohlcData.map(x => x.low)) : 1
 
   return {
     type: 'custom' as const,

@@ -22,9 +22,9 @@ export const WithdrawModule = () => {
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
   })
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const preview = useStore((state) => state.scrvusd.preview)
-  const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const preview = useStore(state => state.scrvusd.preview)
+  const setInputAmount = useStore(state => state.scrvusd.setInputAmount)
 
   const hasWallet = !!address
 

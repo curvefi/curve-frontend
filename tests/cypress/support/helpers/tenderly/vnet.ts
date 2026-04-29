@@ -94,8 +94,7 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
  *
  * @example
  * ```typescript
- * const getVirtualNetwork = withVirtualTestnet((uuid) => ({
- *   display_name: `Custom Testnet ${uuid}`,
+ * const getVirtualNetwork = withVirtualTestnet((uuid) => ({ *   display_name: `Custom Testnet ${uuid}`,
  *   fork_config: { network_id: 137 }
  * }))
  *
@@ -152,8 +151,7 @@ export function createVirtualTestnet(
  *
  * @example
  * ```typescript
- * const getVirtualNetwork = forkVirtualTestnet((uuid) => ({
- *   vnet_id: 'parent-vnet-id',
+ * const getVirtualNetwork = forkVirtualTestnet((uuid) => ({ *   vnet_id: 'parent-vnet-id',
  *   display_name: `Forked Testnet ${uuid}`
  * }))
  *

@@ -30,12 +30,8 @@ export type UserPositionIndicatorProps = {
   tooltipBody?: TooltipProps['body']
 }
 
-export const UserPositionIndicator = ({
-  colorState = 'info',
-  tooltipTitle,
-  tooltipBody,
-}: UserPositionIndicatorProps) => (
-  /**
+export const UserPositionIndicator = (
+  { colorState = 'info', tooltipTitle, tooltipBody }: UserPositionIndicatorProps /**
    * Frustratingly, there's a known issue with MUI where tooltips don't render when
    * this component only exports a Box and is wrapped with a Tooltip by the parent.
    *
@@ -46,7 +42,8 @@ export const UserPositionIndicator = ({
    *
    * It's also not straightforward to make the Tooltip optional via `WithWrapper`, due to
    * additional complex type inference issues that arise.
-   */
+   */,
+) => (
   <Tooltip title={tooltipTitle} body={tooltipBody}>
     <Box
       sx={{

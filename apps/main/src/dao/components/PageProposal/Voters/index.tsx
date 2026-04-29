@@ -48,7 +48,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
             <SubTitle>{t`Power`}</SubTitle>
           </Box>
           <VotesContainer>
-            {pricesProposal.votes.map((vote) => (
+            {pricesProposal.votes.map(vote => (
               <DataRow key={`${vote.txHash}-${vote.supports}`}>
                 <Box flex>
                   {vote.supports ? (

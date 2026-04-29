@@ -15,8 +15,8 @@ export const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
   const { curveApi: { chainId } = {} } = useCurve()
-  const veCrvFees = useStore((state) => state.analytics.veCrvFees)
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const veCrvFees = useStore(state => state.analytics.veCrvFees)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
 
   // protect against trying to load data on non-mainnet networks
@@ -32,7 +32,7 @@ export const CrvStats = () => {
         : {
             current: calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
             fourDayAverage: calculateFourWeekAverageApr(
-              veCrvFees.fees.slice(1, 5).map((fee) => fee.feesUsd),
+              veCrvFees.fees.slice(1, 5).map(fee => fee.feesUsd),
               veCrvData.totalVeCrv.fromWei(),
               crv,
             ),
@@ -107,7 +107,7 @@ const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) =>
   (((fees / totalVeCrv) * 52) / crvPrice) * 100
 
 const calculateFourWeekAverageApr = (fees: number[], totalVeCrv: number, crvPrice: number) =>
-  lodash.meanBy(fees, (fee) => calculateApr(fee, totalVeCrv, crvPrice))
+  lodash.meanBy(fees, fee => calculateApr(fee, totalVeCrv, crvPrice))
 
 const Wrapper = styled(Box)`
   display: flex;

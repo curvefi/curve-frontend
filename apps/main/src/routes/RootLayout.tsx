@@ -77,7 +77,7 @@ const NetworkAwareLayout = () => {
 }
 
 export const RootLayout = () => {
-  const theme = useUserProfileStore((state) => state.theme)
+  const theme = useUserProfileStore(state => state.theme)
   const devTools = !isCypress
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>

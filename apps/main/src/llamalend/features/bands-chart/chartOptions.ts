@@ -6,7 +6,7 @@ import { generateMarkLines } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
 const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
-  const min = Math.min(...chartData.map((d) => d.p_down))
+  const min = Math.min(...chartData.map(d => d.p_down))
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
   // if oraclePrice is outside of range of bands, set min to oraclePrice - bandDelta to make sure it's visible
@@ -17,7 +17,7 @@ const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefine
 }
 
 const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
-  const max = Math.max(...chartData.map((d) => d.p_up))
+  const max = Math.max(...chartData.map(d => d.p_up))
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
   // if oraclePrice is outside of range of bands, set max to oraclePrice + bandDelta to make sure it's visible
@@ -265,7 +265,7 @@ export const getChartOptions = (
               animationDurationUpdate: 0,
               symbol: 'none',
               label: { show: false },
-              data: markLines.map((line) => {
+              data: markLines.map(line => {
                 const [startPoint, endPoint] = line
                 return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
               }),

@@ -53,11 +53,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     rebasingYieldApr: x.borrowed_token.rebasing_yield_apr,
   },
   leverage: x.leverage,
-  extraRewardApr: x.extra_reward_apr.map(y => ({
-    address: y.address,
-    symbol: y.symbol,
-    rate: y.apr,
-  })),
+  extraRewardApr: x.extra_reward_apr.map(y => ({ address: y.address, symbol: y.symbol, rate: y.apr })),
   createdAt: toDate(x.created_at),
   maxLtv: x.max_ltv,
 })
@@ -96,11 +92,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   maxBand: parseFloat(x.max_band),
   ammA: parseFloat(x.amm_a),
   sumDebtSquared: parseFloat(x.sum_debt_squared),
-  extraRewardApr: x.extra_rewards_apr.map(y => ({
-    address: y.address,
-    symbol: y.symbol,
-    rate: y.apr,
-  })),
+  extraRewardApr: x.extra_rewards_apr.map(y => ({ address: y.address, symbol: y.symbol, rate: y.apr })),
   collateralToken: {
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,

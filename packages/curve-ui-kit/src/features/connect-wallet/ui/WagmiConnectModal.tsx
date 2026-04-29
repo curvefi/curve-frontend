@@ -119,9 +119,7 @@ export const WagmiConnectModal = () => {
       <MenuList>
         {connectors
           // Safe connector only works inside Safe applications, which are loaded in iframes
-          .filter(
-            connector => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
-          )
+          .filter(connector => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent))
           // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
           .toReversed()
           // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases

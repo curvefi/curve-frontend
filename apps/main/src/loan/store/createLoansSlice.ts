@@ -63,14 +63,14 @@ export const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
 
     fetchLoansDetails: async (curve: LlamaApi, markets: MintMarketTemplate[]) => {
       const chainId = curve.chainId as ChainId
-      log('fetchLoansDetails', chainId, markets.map((market) => market.id).join(','))
+      log('fetchLoansDetails', chainId, markets.map(market => market.id).join(','))
 
       // TODO: handle errors
       const { results } = await PromisePool.for(markets)
         .handleError((error, market) => {
           log(`Unable to get details ${market.id}, ${error}`)
         })
-        .process(async (market) => await networks[chainId].api.detailInfo.loanPartialInfo(market))
+        .process(async market => await networks[chainId].api.detailInfo.loanPartialInfo(market))
 
       // mapper
       const loansDetailsMapper = lodash.cloneDeep(get()[sliceKey].detailsMapper ?? {})

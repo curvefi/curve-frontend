@@ -28,7 +28,7 @@ export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: Bad
 
     const badDebtUsd =
       badDebtMarkets.data.find(
-        (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
+        item => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
       )?.badDebt ?? 0
     const exposureUsd = market.liquidityUsd + market.totalDebtUsd
     const solvencyPercent = exposureUsd ? (Math.max(0, exposureUsd - badDebtUsd) / exposureUsd) * 100 : undefined

@@ -169,7 +169,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
-        const partialPoolDatas = Object.keys(poolsMapper).map((poolId) => poolsMapper[poolId])
+        const partialPoolDatas = Object.keys(poolsMapper).map(poolId => poolsMapper[poolId])
 
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
@@ -206,11 +206,11 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const [balancesResp] = await Promise.all([
         curvejsApi.pool.poolBalances(pool, isWrapped),
         // Fetching the token prices now, used later with getTokenUsdRateQueryData
-        ...tokenAddresses.map((tokenAddress) => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0)),
+        ...tokenAddresses.map(tokenAddress => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0)),
       ])
 
       const { balances } = balancesResp
-      const isEmpty = !balances?.length || balances.every((b) => +b === 0)
+      const isEmpty = !balances?.length || balances.every(b => +b === 0)
       const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
@@ -239,7 +239,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         if (isEmpty) {
           cr.percentShareInPool = '0'
           // Only use USD balances for currency reserves if all tokens have a usd balance (and pool isn't empty)
-        } else if (crTokens.every((cr) => cr.balanceUsd > 0)) {
+        } else if (crTokens.every(cr => cr.balanceUsd > 0)) {
           cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
         } else {
           cr.percentShareInPool = ((cr.balance / total) * 100).toFixed(2)
@@ -267,10 +267,10 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       // retrieve data in chunks so that the data can already be displayed in the UI
       for (const part of chunk(poolIds, 200)) {
-        const { results } = await PromisePool.for(part).process((poolData) => poolAllRewardsApy(network, poolData.pool))
+        const { results } = await PromisePool.for(part).process(poolData => poolAllRewardsApy(network, poolData.pool))
         rewardsApyMapper = {
           ...rewardsApyMapper,
-          ...Object.fromEntries(results.map((rewardsApy) => [rewardsApy.poolId, rewardsApy])),
+          ...Object.fromEntries(results.map(rewardsApy => [rewardsApy.poolId, rewardsApy])),
         }
       }
 
@@ -329,7 +329,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       set(
-        produce((state) => {
+        produce(state => {
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
@@ -338,7 +338,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.pools.poolsMapper[chainId][poolId] = updatedPoolData
         }),
       )
@@ -373,8 +373,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         const response = await fetch(url)
         const responseData: LpPriceApiResponse = await response.json()
         const filteredData = responseData.data
-          .filter((item) => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
-          .map((item) => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
+          .filter(item => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
+          .map(item => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
 
         set(
           produce((state: State) => {
@@ -415,8 +415,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         const response = await fetch(url)
         const responseData: LpPriceApiResponse = await response.json()
         const filteredData = responseData.data
-          .filter((item) => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
-          .map((item) => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
+          .filter(item => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
+          .map(item => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
 
         const updatedData = [...filteredData, ...get().pools.pricesApiState.chartOhlcData]
 
@@ -465,10 +465,10 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 })
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const grouped = groupBy(tokensMapper, (v) => v!.symbol)
+  const grouped = groupBy(tokensMapper, v => v!.symbol)
   const duplicatedTokenNames = Object.entries(grouped)
     .filter(([_, v]) => v.length > 1)
-    .map((v) => v[0])
+    .map(v => v[0])
 
   if (duplicatedTokenNames.length === 0) return tokensMapper
 

@@ -75,14 +75,14 @@ async function fetchChartBandBalancesData(
 ) {
   // filter out bands that doesn't have stablecoin and collaterals
   const ns = bandBalancesArr
-    .filter((b) => {
+    .filter(b => {
       const { stablecoin, collateral } = bandBalances[b.band] ?? {}
       return +stablecoin > 0 || +collateral > 0
     })
-    .map((b) => b.band)
+    .map(b => b.band)
 
   // TODO: handle errors
-  const { results } = await PromisePool.for(ns).process(async (n) => {
+  const { results } = await PromisePool.for(ns).process(async n => {
     const { collateral, stablecoin } = bandBalances[n]
     const [p_up, p_down] = await llamma.calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()

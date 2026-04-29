@@ -15,15 +15,16 @@ type CopyIconBUttonProps = {
   children?: ReactNode
 } & IconButtonProps
 
-export const CopyIconButton = ({
-  copyText,
-  label,
-  confirmationText,
-  children = <CopyIcon />,
-  size = 'extraSmall',
-  ...iconProps
-}: CopyIconBUttonProps) => (
-  // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
+export const CopyIconButton = (
+  {
+    copyText,
+    label,
+    confirmationText,
+    children = <CopyIcon />,
+    size = 'extraSmall',
+    ...iconProps
+  }: CopyIconBUttonProps, // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
+) => (
   <InvertTheme inverted={false}>
     <Tooltip title={label} placement="top">
       <IconButton

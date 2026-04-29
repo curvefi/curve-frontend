@@ -33,10 +33,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const hasUserData = !!(data.userBandCollateralValueUsd || data.userBandBorrowedValueUsd)
 
   return (
-    <Box
-      sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}
-      onClick={(e) => e.stopPropagation()}
-    >
+    <Box sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }} onClick={e => e.stopPropagation()}>
       <TooltipWrapper>
         <Typography variant="bodyMBold" color="textPrimary">
           {t`LLAMMA Band ${data.n}`}

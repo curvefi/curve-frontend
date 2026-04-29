@@ -45,7 +45,7 @@ export const DetailInfoLiqRange = ({
   handleLiqRangesEdit?: () => void
 }) => {
   const { prices: currPrices, bands: currBands } = useUserLoanDetails(userActiveKey)
-  const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
+  const loanPricesResp = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const { prices: loanPrices } = loanPricesResp ?? {}
   const selectedBands = selectedLiqRange?.bands
   const { parsedNewBands, parsedNewPrices } = useMemo(

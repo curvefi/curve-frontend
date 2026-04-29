@@ -149,15 +149,15 @@ export const createAnalyticsSlice = (
 
       try {
         const lockers = await getLockers()
-        const allHolders = Object.fromEntries(lockers.map((holder) => [holder.user.toLowerCase(), holder]))
+        const allHolders = Object.fromEntries(lockers.map(holder => [holder.user.toLowerCase(), holder]))
 
         const totalHolders = Object.keys(allHolders).length
-        const canCreateVote = Object.values(allHolders).filter((holder) => holder.weight > 2500).length
+        const canCreateVote = Object.values(allHolders).filter(holder => holder.weight > 2500).length
 
         const topHolders = Object.values(allHolders)
           .sort((a, b) => b.weightRatio - a.weightRatio)
           .slice(0, 100)
-          .filter((holder) => holder.weightRatio > 0.3)
+          .filter(holder => holder.weightRatio > 0.3)
 
         const totalValues = topHolders.reduce(
           (acc, item) => ({
@@ -196,7 +196,7 @@ export const createAnalyticsSlice = (
       const { topHolders } = get()[sliceKey].veCrvHolders
 
       set(
-        produce((state) => {
+        produce(state => {
           state[sliceKey].topHoldersSortBy = sortBy
           state[sliceKey].veCrvHolders.topHolders = [...topHolders].sort(
             (a, b) => Number(b[sortBy]) - Number(a[sortBy]),
@@ -215,7 +215,7 @@ export const createAnalyticsSlice = (
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             const reversedEntries = Object.entries(allHolders).reverse()
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(reversedEntries)
             state[sliceKey].allHoldersSortBy.order = order
@@ -225,7 +225,7 @@ export const createAnalyticsSlice = (
         const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => Number(b[sortBy]) - Number(a[sortBy]))
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].allHoldersSortBy.key = sortBy
             state[sliceKey].allHoldersSortBy.order = 'desc'
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(sortedEntries)
@@ -240,7 +240,7 @@ export const createAnalyticsSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

@@ -302,26 +302,29 @@ export const LargeTokenInput = ({
                   [`#${componentId}:hover &`]: { opacity: 1 },
                 }}
               >
-                {chips.map(chip => (
-                  // todo: refactor chip to button
-                  <SelectableChip
-                    key={`input-chip-${chip.label}`}
-                    label={
-                      <WithSkeleton loading={!!maxBalance?.isLoading}>
-                        <span>{chip.label}</span>
-                      </WithSkeleton>
-                    }
-                    data-testid={!chipDisabled && `input-chip-${chip.label}`}
-                    disabled={chipDisabled}
-                    toggle={() => {
-                      const newBalance = chip.newBalance(maxBalance?.balance)
-                      if (newBalance !== undefined) {
-                        handleBalanceChange(newBalance)
+                {chips.map(
+                  (
+                    chip, // todo: refactor chip to button
+                  ) => (
+                    <SelectableChip
+                      key={`input-chip-${chip.label}`}
+                      label={
+                        <WithSkeleton loading={!!maxBalance?.isLoading}>
+                          <span>{chip.label}</span>
+                        </WithSkeleton>
                       }
-                    }}
-                    selected={false}
-                  />
-                ))}
+                      data-testid={!chipDisabled && `input-chip-${chip.label}`}
+                      disabled={chipDisabled}
+                      toggle={() => {
+                        const newBalance = chip.newBalance(maxBalance?.balance)
+                        if (newBalance !== undefined) {
+                          handleBalanceChange(newBalance)
+                        }
+                      }}
+                      selected={false}
+                    />
+                  ),
+                )}
               </Stack>
             )}
           </Stack>

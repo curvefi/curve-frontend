@@ -41,7 +41,7 @@ export const MintMarketPage = () => {
   const marketId = market?.id ?? ''
 
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
-  const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
+  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]

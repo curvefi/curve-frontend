@@ -27,11 +27,11 @@ export const PageRouterSwap = () => {
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
-  const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerCachedFromAddress = useStore((state) => state.storeCache.routerFormValues[rChainId]?.fromAddress)
-  const routerCachedToAddress = useStore((state) => state.storeCache.routerFormValues[rChainId]?.toAddress)
+  const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
+  const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
+  const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
@@ -42,10 +42,7 @@ export const PageRouterSwap = () => {
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams?.get('slippage')
   const searchedParams = useMemo(
-    () => ({
-      fromAddress: paramsFromAddress,
-      toAddress: paramsToAddress,
-    }),
+    () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
     [paramsFromAddress, paramsToAddress],
   )
 

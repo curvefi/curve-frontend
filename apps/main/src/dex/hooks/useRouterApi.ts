@@ -113,8 +113,8 @@ export function useRouterApi(
   data: RoutesAndOutput | undefined
   isLoading: boolean
 } {
-  const formValues = useStore((state) => state.quickSwap.formValues) as FormValues
-  const tokensMapper = useStore((state) => state.tokens.tokensMapper[chainId])
+  const formValues = useStore(state => state.quickSwap.formValues) as FormValues
+  const tokensMapper = useStore(state => state.tokens.tokensMapper[chainId])
   const fromDecimals = tokensMapper?.[fromAddress]?.decimals
   const toDecimals = tokensMapper?.[toAddress]?.decimals
 

@@ -11,7 +11,7 @@ export const VaultSharesTooltipContent = () => (
     <TooltipDescription
       text={t`Shares represent your proportional ownership of the pool and accrue interest and rewards over time.`}
     />
-    <Stack padding={Spacing.sm} sx={{ bgcolor: (t) => t.design.Layer[2].Fill }}>
+    <Stack padding={Spacing.sm} sx={{ bgcolor: t => t.design.Layer[2].Fill }}>
       <TooltipDescription
         text={t`⚠️ Share value increases with yield — so your balance grows even if share count stays constant.`}
       />

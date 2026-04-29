@@ -16,7 +16,7 @@ export interface AppSlice {
 export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<State>['getState']): AppSlice => ({
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValues = state[sliceKey][key]
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
@@ -35,7 +35,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValue = state[sliceKey][key]
         if (!lodash.isEqual(storedValue, value)) {
           state[sliceKey][key] = value
@@ -47,7 +47,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
-        produce((state) => {
+        produce(state => {
           if (!lodash.isEqual(state[sliceKey][key], value)) {
             state[sliceKey][key] = value
           }
@@ -57,7 +57,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<
   },
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[sliceKey] = {
           ...state[sliceKey],
           ...defaultState,

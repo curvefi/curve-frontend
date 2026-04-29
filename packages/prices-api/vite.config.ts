@@ -29,15 +29,15 @@ export default defineConfig({
         index: resolve(srcDir, 'index.ts'),
         ...Object.fromEntries(
           readdirSync(srcDir, { withFileTypes: true })
-            .filter((entry) => entry.isDirectory() && existsSync(resolve(srcDir, entry.name, 'index.ts')))
-            .map((entry) => entry.name)
-            .map((name) => [`${name}/index`, resolve(srcDir, name, 'index.ts')]),
+            .filter(entry => entry.isDirectory() && existsSync(resolve(srcDir, entry.name, 'index.ts')))
+            .map(entry => entry.name)
+            .map(name => [`${name}/index`, resolve(srcDir, name, 'index.ts')]),
         ),
       },
       output: {
         entryFileNames: '[name].js',
         chunkFileNames: 'chunks/[name]-[hash].js',
-        sourcemapPathTransform: (relativeSourcePath) =>
+        sourcemapPathTransform: relativeSourcePath =>
           rewritePrimitivesPath(relativeSourcePath.replace(/\\/g, '/') /* remove windows markers if applicable */),
       },
     },

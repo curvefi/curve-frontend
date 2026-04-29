@@ -14,10 +14,10 @@ type UseAutoDetectErc4626Params = {
  * This hook is used to automatically detect if a token is an ERC4626 token and set the asset type to ERC4626
  */
 export const useAutoDetectErc4626 = ({ tokenId, address }: UseAutoDetectErc4626Params) => {
-  const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
-  const updateTokenErc4626Status = useStore((state) => state.createPool.updateTokenErc4626Status)
+  const updateNgAssetType = useStore(state => state.createPool.updateNgAssetType)
+  const updateTokenErc4626Status = useStore(state => state.createPool.updateTokenErc4626Status)
   // check if the status is already set to avoid overriding the user's choice when switching the order of tokens
-  const statusAlreadySet = useStore((state) => state.createPool.tokensInPool[tokenId].erc4626.isSuccess)
+  const statusAlreadySet = useStore(state => state.createPool.tokensInPool[tokenId].erc4626.isSuccess)
   const { isErc4626, isLoading, error, isSuccess } = useIsErc4626({ address })
 
   useEffect(() => {

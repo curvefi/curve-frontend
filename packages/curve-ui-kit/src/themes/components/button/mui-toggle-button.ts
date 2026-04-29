@@ -10,10 +10,7 @@ const { Spacing, ButtonSize, FontSize, FontWeight, LineHeight, OutlineWidth } = 
 
 type ToggleStyle = { Label?: string; Fill?: string }
 
-const toggleStyle = ({ Label, Fill }: ToggleStyle) => ({
-  color: Label,
-  backgroundColor: Fill,
-})
+const toggleStyle = ({ Label, Fill }: ToggleStyle) => ({ color: Label, backgroundColor: Fill })
 
 const sizeBreakpoint = (
   breakpoint: Breakpoint,

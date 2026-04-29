@@ -3,9 +3,7 @@ import Typography from '@mui/material/Typography'
 import { responsiveTitleEllipsisSx } from '@ui-kit/shared/ui/titleTruncate'
 
 const isHighlighted = (symbol: string, address: string, searchedTerms: string[] | undefined) =>
-  searchedTerms?.some(
-    (searched) => symbol.toLowerCase().includes(searched) || address.toLowerCase().startsWith(searched),
-  )
+  searchedTerms?.some(searched => symbol.toLowerCase().includes(searched) || address.toLowerCase().startsWith(searched))
 
 export function PoolTokens({
   filterValue,
@@ -14,7 +12,7 @@ export function PoolTokens({
   filterValue: string | undefined
   tokenList: { symbol: string; address: string }[]
 }) {
-  const searchedTerms = filterValue?.split(/[\s,]+/)?.map((x) => x.toLowerCase())
+  const searchedTerms = filterValue?.split(/[\s,]+/)?.map(x => x.toLowerCase())
   return (
     <Stack direction="row" gap={2} sx={responsiveTitleEllipsisSx}>
       {tokenList.map(({ symbol, address }, index) => (

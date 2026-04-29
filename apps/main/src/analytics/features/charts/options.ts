@@ -23,8 +23,8 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
   gridLinesColor: theme.design.Color.Neutral[300],
   axisLabelsColor: theme.design.Text.TextColors.Tertiary,
 
-  colors: CHART_COLOR_INDICES.map((i) => theme.design.Chart.Lines[i]),
-  surfaceColors: CHART_COLOR_INDICES.map((i) => theme.design.Chart.Surfaces[i]),
+  colors: CHART_COLOR_INDICES.map(i => theme.design.Chart.Lines[i]),
+  surfaceColors: CHART_COLOR_INDICES.map(i => theme.design.Chart.Surfaces[i]),
 })
 
 type ChartPalette = ReturnType<typeof createPalette>
@@ -45,7 +45,7 @@ export const createTooltip = (formatter: (v: number) => string) => ({
     `<strong>${(params as TooltipParam[])[0].axisValue}</strong>` +
     (params as TooltipParam[])
       .map(
-        (item) =>
+        item =>
           `<div style="display:flex;justify-content:space-between;gap:1rem;font-variant-numeric:tabular-nums">` +
           `<span>${item.marker}${item.seriesName}</span>` +
           `<span>${formatter(item.value)}</span>` +

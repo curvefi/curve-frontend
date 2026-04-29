@@ -38,7 +38,7 @@ export const LiquidationRangeSlider = ({
       <Grid size={12}>
         <SliderInput
           name="range"
-          onChange={(val) => setRange(parseInt(val))}
+          onChange={val => setRange(parseInt(val))}
           aria-label={t`Bands`}
           value={decimal(range) ?? `${minValue}`}
           min={minValue}

@@ -44,12 +44,7 @@ export type Partner = {
 
 export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl, twitterUrl }: Partner) => (
   <Card sx={{ display: 'flex', height: '100%' }}>
-    <CardContent
-      component={Stack}
-      flexGrow={1}
-      gap={Spacing.md}
-      sx={{ backgroundColor: t => t.design.Layer[2].Fill }}
-    >
+    <CardContent component={Stack} flexGrow={1} gap={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[2].Fill }}>
       <Stack direction="row" gap={Spacing.md}>
         {imageId && (
           <Box

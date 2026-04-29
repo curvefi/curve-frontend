@@ -35,7 +35,7 @@ export const ExpectedLabel = ({
         type="button"
         $isOpen={showDetails}
         variant="outlined"
-        onClick={() => toggleShowDetails((prev) => !prev)}
+        onClick={() => toggleShowDetails(prev => !prev)}
       >
         {t`Details` + ' '}
         <RotatableIcon rotated={showDetails} icon={ChevronDownIcon} fontSize={16} />

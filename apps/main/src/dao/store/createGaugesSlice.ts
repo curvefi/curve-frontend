@@ -99,7 +99,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
       const address = gaugeAddress.toLowerCase()
 
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].gaugeVotesMapper[gaugeAddress] = {
             fetchingState: 'LOADING',
             votes: [],
@@ -111,13 +111,10 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const response = await fetch(`https://prices.curve.finance/v1/dao/gauges/${address}/votes`)
         const data: GaugeVotesResponse = await response.json()
 
-        const formattedData = data.votes.map((vote) => ({
-          ...vote,
-          timestamp: new Date(vote.timestamp).getTime(),
-        }))
+        const formattedData = data.votes.map(vote => ({ ...vote, timestamp: new Date(vote.timestamp).getTime() }))
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeVotesMapper[gaugeAddress] = {
               fetchingState: 'SUCCESS',
               votes: formattedData,
@@ -127,7 +124,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
       } catch (error) {
         console.error('Error fetching gauge votes:', error)
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeVotesMapper[gaugeAddress].fetchingState = 'ERROR'
           }),
         )
@@ -135,7 +132,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
     },
     getHistoricGaugeWeights: async (gaugeAddress: string) => {
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
             loadingState: 'LOADING',
             data: [],
@@ -157,7 +154,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
           .sort((a: GaugeWeightHistoryData, b: GaugeWeightHistoryData) => a.epoch - b.epoch)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
               loadingState: 'SUCCESS',
               data: formattedWeightsData,
@@ -166,7 +163,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         )
       } catch (error) {
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress].loadingState = 'ERROR'
           }),
         )
@@ -211,7 +208,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
@@ -220,7 +217,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].gaugeVotesSortBy.key = sortBy
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
@@ -228,7 +225,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         )
       }
     },
-    setSearchValue: (filterValue) => {
+    setSearchValue: filterValue => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
     },
     setGaugeListSortBy: (sortByKey: SortByFilterGaugesKeys) => {
@@ -255,7 +252,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
       }
       get()[sliceKey].setStateByKey('selectGaugeListResult', result)
     },
-    setSelectedGauge: (gauge) => {
+    setSelectedGauge: gauge => {
       if (!gauge) {
         get()[sliceKey].setStateByKey('selectedGauge', null)
         return
@@ -274,7 +271,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
       const { dismiss: dismissConfirm } = notify(t`Please confirm cast vote.`, 'pending')
 
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].txCastVoteState = {
             state: 'CONFIRMING',
             hash: '',
@@ -287,7 +284,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const res = await curve.dao.voteForGauge(address, voteWeight * 100)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].txCastVoteState = {
               state: 'LOADING',
               hash: '',
@@ -303,7 +300,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         await helpers.waitForTransaction(res, provider!)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].txCastVoteState = {
               state: 'SUCCESS',
               hash: res,
@@ -326,14 +323,14 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         })
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].selectedGauge = null
           }),
         )
 
         setTimeout(() => {
           set(
-            produce(get(), (state) => {
+            produce(get(), state => {
               state[sliceKey].txCastVoteState = null
             }),
           )
@@ -342,7 +339,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         dismissConfirm()
         console.error('Error casting vote:', error)
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].txCastVoteState = {
               state: 'ERROR',
               hash: '',
@@ -357,7 +354,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -375,7 +372,7 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
 
   const result = fuse.search(filterValue)
 
-  return result.map((r) => r.item)
+  return result.map(r => r.item)
 }
 
 const selectGaugeFilterFn = (filterValue: string, gauges: GaugeFormattedData[], { endsWith }: FilterOptions) => {
@@ -388,9 +385,9 @@ const selectGaugeFilterFn = (filterValue: string, gauges: GaugeFormattedData[], 
   const result = fuse.search(filterValue)
 
   if (result.length > 0) {
-    return result.map((r) => r.item)
+    return result.map(r => r.item)
   } else {
-    return gauges.filter((item) => endsWith(item.address, filterValue))
+    return gauges.filter(item => endsWith(item.address, filterValue))
   }
 }
 

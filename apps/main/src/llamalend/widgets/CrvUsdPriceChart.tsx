@@ -56,39 +56,26 @@ export const CrvUsdPriceChart = () => {
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
     const sorted = sortBy(
       uniqBy(
-        priceHistory.map((item) => ({
-          timestamp: new Date(item.timestamp).getTime(),
-          price: item.price,
-        })),
+        priceHistory.map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
         'timestamp',
       ),
-      (item) => item.timestamp,
+      item => item.timestamp,
     )
 
     return addMovingAverages(
       sorted,
-      (d) => d.price,
-      (d) => d.timestamp,
+      d => d.price,
+      d => d.timestamp,
     )
   }, [priceHistory])
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
-    () => ({
-      price: Color.Primary[500],
-      movingAverage: Color.Secondary[500],
-      totalAverage: Color.Tertiary[400],
-    }),
+    () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
     [Color.Primary, Color.Secondary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<PriceSeriesKey>[] = useMemo(
-    () =>
-      SERIES_CONFIG.map(({ key, label, dash }) => ({
-        key,
-        label,
-        color: seriesColors[key],
-        dash,
-      })),
+    () => SERIES_CONFIG.map(({ key, label, dash }) => ({ key, label, color: seriesColors[key], dash })),
     [seriesColors],
   )
 
@@ -98,8 +85,7 @@ export const CrvUsdPriceChart = () => {
         label,
         line: { lineStroke: seriesColors[key], dash },
         toggled: visibleSeries.includes(key),
-        onToggle: () =>
-          setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
+        onToggle: () => setVisibleSeries(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])),
       })),
     [seriesColors, visibleSeries],
   )
@@ -132,7 +118,7 @@ export const CrvUsdPriceChart = () => {
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | number | string) => formatDate(value)}
-            yTickFormatter={(value) =>
+            yTickFormatter={value =>
               formatNumber(+value, { unit: 'dollar', abbreviate: false, decimals: 4, minimumFractionDigits: 4 })
             }
             yPaddingRatio={0.25}

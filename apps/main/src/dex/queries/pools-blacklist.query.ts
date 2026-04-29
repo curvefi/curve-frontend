@@ -223,10 +223,10 @@ const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist
   [
     ...(blacklist[blockchainId] ?? []),
     ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),
-  ].map((address) => getAddress(address)) // just to be sure there's no missing checksums from the prices api
+  ].map(address => getAddress(address)) // just to be sure there's no missing checksums from the prices api
 
 export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
-  mapQuery(usePricesApiBlacklist({}), (blacklist) => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
+  mapQuery(usePricesApiBlacklist({}), blacklist => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
 
 export const fetchPoolsBlacklist = async ({ blockchainId }: ChainNameParams) =>
   blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : []

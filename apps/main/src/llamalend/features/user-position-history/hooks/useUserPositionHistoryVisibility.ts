@@ -9,7 +9,7 @@ import { UserPositionHistoryColumnId } from '../columns'
  */
 const createUserPositionHistoryMobileColumns = () =>
   fromEntries(
-    recordValues(UserPositionHistoryColumnId).map((key) => [
+    recordValues(UserPositionHistoryColumnId).map(key => [
       key,
       key === UserPositionHistoryColumnId.Type || key === UserPositionHistoryColumnId.Time,
     ]),

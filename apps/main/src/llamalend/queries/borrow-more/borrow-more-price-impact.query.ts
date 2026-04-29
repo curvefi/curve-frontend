@@ -53,5 +53,5 @@ export const {
   },
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreLeverageValidationSuite,
-  dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
+  dependencies: params => [getBorrowMoreExpectedCollateralKey(params)],
 })

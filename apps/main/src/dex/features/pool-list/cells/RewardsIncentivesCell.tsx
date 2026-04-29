@@ -19,7 +19,7 @@ export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolDa
 
   return hasIncentives ? (
     <Stack alignItems="end">
-      {other?.map((o) => (
+      {other?.map(o => (
         <Typography
           fontWeight={isSortedBy(table, PoolColumnId.RewardsIncentives) ? 'bold' : 'normal'}
           key={o.tokenAddress}

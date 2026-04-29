@@ -87,10 +87,7 @@ export const parseKeeper = (x: Responses.GetKeepersResponse['keepers'][number]):
   address: x.address,
   pool: x.pool,
   poolAddress: x.pool_address,
-  pair: x.pair.map(p => ({
-    symbol: p.symbol,
-    address: p.address,
-  })),
+  pair: x.pair.map(p => ({ symbol: p.symbol, address: p.address })),
   active: x.active,
   totalDebt: x.total_debt,
   totalProfit: x.total_profit,
@@ -179,7 +176,4 @@ export const parseUserCollateralEvents = (
   })),
 })
 
-export const parseCrvUsdTvl = (x: Responses.GetCrvUsdTvlResponse): Models.CrvUsdTvl => ({
-  chain: x.chain,
-  tvl: x.tvl,
-})
+export const parseCrvUsdTvl = (x: Responses.GetCrvUsdTvlResponse): Models.CrvUsdTvl => ({ chain: x.chain, tvl: x.tvl })

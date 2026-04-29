@@ -12,7 +12,7 @@ export const MaxLeverageTooltip = () => (
     />
     <TooltipDescription text={t`Calculated as: 1 / (1 - Max LTV)`} />
     <TooltipDescription text={t`For example, with a Max LTV of 90%, the max leverage is ~10x.`} />
-    <Stack padding={Spacing.sm} sx={{ bgcolor: (t) => t.design.Layer[2].Fill }}>
+    <Stack padding={Spacing.sm} sx={{ bgcolor: t => t.design.Layer[2].Fill }}>
       <TooltipDescription
         text={t`⚠️ Higher leverage increases risk — especially in volatile markets or when collateral enters the liquidation band.`}
       />

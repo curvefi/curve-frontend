@@ -24,7 +24,7 @@ export const PageCompensation = () => {
 
   const fetchData = useCallback(async (provider: Provider) => {
     const signer = await provider.getSigner()
-    const contracts = await import('@/dex/components/PageCompensation/abis').then((modules) =>
+    const contracts = await import('@/dex/components/PageCompensation/abis').then(modules =>
       Object.values(modules).map(({ contractAddress, abi, ...rest }) => ({
         ...rest,
         contractAddress,
