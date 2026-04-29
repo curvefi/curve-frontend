@@ -53,7 +53,7 @@ export function ChainList({
   return (
     <>
       {missingWagmiChains.length > 0 && (
-        <Alert variant="filled" severity="error">
+        <Alert variant="filled" severity="error" data-testid="missing-wagmi-chain">
           <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
           {t`Missing wagmi chain configs in chains.ts for: `}
           {missingWagmiChains.map(({ id }) => id).join(', ')}
