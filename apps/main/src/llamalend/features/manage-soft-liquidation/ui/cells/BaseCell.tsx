@@ -6,7 +6,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 export const BaseCell = ({ sx, children }: { sx?: SxProps<Theme>; children: ReactNode }) => (
-  <Stack paddingBlock={Spacing.md} sx={{ cursor: 'pointer', ...sx }}>
+  <Stack paddingBlock={Spacing.md} sx={sx}>
     {children}
   </Stack>
 )
