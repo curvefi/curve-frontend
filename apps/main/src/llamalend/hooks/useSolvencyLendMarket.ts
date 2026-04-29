@@ -17,7 +17,7 @@ export const useSolvencyLendMarket = ({ blockchainId, controllerAddress }: BadDe
   useMappedQuery(
     useLlamaMarket({ blockchainId, controllerAddress }, !!blockchainId && !!controllerAddress && enabled),
     useCallback(
-      (market) =>
+      market =>
         market.type === LlamaMarketType.Lend && market.solvencyPercent != null
           ? {
               solvencyPercent: market.solvencyPercent,

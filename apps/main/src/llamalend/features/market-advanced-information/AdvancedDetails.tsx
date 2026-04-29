@@ -71,7 +71,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         value={utilization}
         loading={availableLiquidity?.loading}
         valueOptions={{ unit: 'percentage' }}
-        notional={utilization != null ? utilizationBreakdown : undefined}
+        notional={utilization == null ? undefined : utilizationBreakdown}
         valueTooltip={{
           title: t`Utilization ${MarketTypeSuffix[marketType]}`,
           body: <UtilizationTooltip marketType={marketType} />,

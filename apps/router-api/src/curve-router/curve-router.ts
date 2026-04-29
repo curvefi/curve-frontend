@@ -38,7 +38,7 @@ async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAddress: 
   const pool = curve.getPool(poolId)
   const storedRates = await pool.getStoredRates()
   return storedRates[
-    pool.underlyingCoinAddresses.findIndex((r) => r.toLowerCase() === toAddress.toLowerCase())
+    pool.underlyingCoinAddresses.findIndex(r => r.toLowerCase() === toAddress.toLowerCase())
   ] as Decimal
 }
 
@@ -61,7 +61,7 @@ function getWarnings(
 }
 
 const getDecimals = (tokens: Address[], decimals: IDict<number>) =>
-  tokens.map((t) => decimals[t] ?? decimals[t.toLowerCase()] ?? DEFAULT_DECIMALS)
+  tokens.map(t => decimals[t] ?? decimals[t.toLowerCase()] ?? DEFAULT_DECIMALS)
 
 const buildCurveRouteId = (routes: IRouteStep[]) => `curve:${routes.map(({ poolId }) => poolId).join('-')}`
 

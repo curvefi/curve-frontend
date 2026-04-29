@@ -86,7 +86,7 @@ export class NoRetryError extends Error {
  * // → { chainId: 1, poolId: 'abc' }
  */
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
-  Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+  Object.fromEntries(queryKey.flatMap(i => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
 async function runQuery<TKey extends QueryKey, TData, TQuery>(
   queryKey: TKey,
@@ -140,7 +140,7 @@ export function queryFactory<
       enabled:
         enabled &&
         isEmpty(validate(validationSuite, params)) &&
-        !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
+        !dependencies?.(params).some(key => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
         !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)

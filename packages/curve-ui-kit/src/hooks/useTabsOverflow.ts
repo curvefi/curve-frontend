@@ -31,7 +31,7 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
     const node = visibleTabsRef.current
     if (node && isKebabMode && tabsContainerWidth) {
       const widths = Array.from(node.querySelectorAll<HTMLElement>(MUI_TAB_SELECTOR)).map(
-        (tabNode) => tabNode.getBoundingClientRect().width,
+        tabNode => tabNode.getBoundingClientRect().width,
       )
       setTabWidths(widths)
     }
@@ -41,7 +41,7 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
     if (!isKebabMode) {
       return { renderedOptions: options, visibleOptions: options, hiddenOptions: [] }
     }
-    const [alwaysInKebabOptions, standardOptions] = partition(options, (option) => option.alwaysInKebab)
+    const [alwaysInKebabOptions, standardOptions] = partition(options, option => option.alwaysInKebab)
 
     if (tabsContainerWidth && tabWidths.length) {
       const standardOptionsWithWidth = standardOptions.map((option, index) => ({
@@ -55,7 +55,7 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
         const currentWidth = sumBy(
           standardOptionsWithWidth.slice(0, index + 1),
           // contained tabs have an additional margin to the right. Actually the selected tab and the last one do not have this margin, but it's ignored here
-          (option) => option.width + CONTAINED_TABS_MARGIN_RIGHT,
+          option => option.width + CONTAINED_TABS_MARGIN_RIGHT,
         )
         return currentWidth - tabsContainerWidth >= OVERFLOW_THRESHOLD
       })

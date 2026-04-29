@@ -64,7 +64,7 @@ export const ClosePositionForm = ({
           chainId={network.chainId}
           networks={networks}
           values={values}
-          onSlippageChange={(slippage) => updateForm(form, { slippage })}
+          onSlippageChange={slippage => updateForm(form, { slippage })}
         />
       }
     >

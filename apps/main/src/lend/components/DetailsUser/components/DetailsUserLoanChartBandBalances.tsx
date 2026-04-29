@@ -18,8 +18,8 @@ export const DetailsUserLoanChartBandBalances = ({
 }: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'market'> & {
   selectorMenu?: ReactNode
 }) => {
-  const loansPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
-  const loansStatsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
+  const loansPrices = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId])
+  const loansStatsBands = useStore(state => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
   const userActiveKey = helpers.getUserActiveKey(api, market!)
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({

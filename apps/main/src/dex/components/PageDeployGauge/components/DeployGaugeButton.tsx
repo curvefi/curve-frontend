@@ -33,12 +33,12 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
   const push = useNavigate()
-  const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
-  const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
-  const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)
-  const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
-  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
-  const deployGauge = useStore((state) => state.deployGauge.deployGauge)
+  const lpTokenAddress = useStore(state => state.deployGauge.lpTokenAddress)
+  const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
+  const sidechainGauge = useStore(state => state.deployGauge.sidechainGauge)
+  const sidechainNav = useStore(state => state.deployGauge.sidechainNav)
+  const deploymentStatus = useStore(state => state.deployGauge.deploymentStatus)
+  const deployGauge = useStore(state => state.deployGauge.deployGauge)
   const { connectState, connect: connectWallet } = useWallet()
   const isLoadingApi = !pageLoaded
   const restFullPathname = useRestFullPathname()

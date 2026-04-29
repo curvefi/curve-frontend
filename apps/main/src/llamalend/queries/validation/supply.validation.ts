@@ -146,7 +146,7 @@ const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketPa
   validateHasVault(params.marketId)
 }
 
-export const supplyUserValidationSuite = createValidationSuite<UserMarketParams>((params) => {
+export const supplyUserValidationSuite = createValidationSuite<UserMarketParams>(params => {
   supplyUserValidationGroup(params)
 })
 

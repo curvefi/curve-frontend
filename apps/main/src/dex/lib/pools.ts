@@ -22,7 +22,7 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
   const tokens = isWrappedOnly
     ? tokensWrapped
     : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx])!)
-  const tokensLowercase = tokens.map((c) => c.toLowerCase())
+  const tokensLowercase = tokens.map(c => c.toLowerCase())
   const tokensAll = isWrappedOnly ? tokensWrapped : [...tokens, ...tokensWrapped]
   const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
   const tokenAddressesAll = isWrappedOnly

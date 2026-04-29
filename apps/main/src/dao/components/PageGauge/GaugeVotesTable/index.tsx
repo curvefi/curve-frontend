@@ -20,10 +20,10 @@ interface GaugeVotesTableProps {
 const weightBpsToPercentage = (weight: number) => weight / 100
 
 export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
-  const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
-  const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
-  const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
-  const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
+  const getGaugeVotes = useStore(state => state.gauges.getGaugeVotes)
+  const gaugeVotesMapper = useStore(state => state.gauges.gaugeVotesMapper)
+  const gaugeVotesSortBy = useStore(state => state.gauges.gaugeVotesSortBy)
+  const setGaugeVotesSortBy = useStore(state => state.gauges.setGaugeVotesSortBy)
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '7rem 1fr 1fr'
 
@@ -55,7 +55,7 @@ export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTable
       columns={GAUGE_VOTES_TABLE_LABELS}
       sortBy={gaugeVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={(key) => {
+      setSortBy={key => {
         setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)
       }}
       getData={() => getGaugeVotes(gaugeAddress)}

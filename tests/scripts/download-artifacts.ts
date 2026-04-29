@@ -145,7 +145,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
  *  cd tests && BRANCH=main WORKFLOW=rpc-tests.yaml DEST_DIR=tests/artifacts \
  *    node --experimental-strip-types scripts/download-artifacts.ts --skip-cleanup
  */
-downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch((error) => {
+downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch(error => {
   console.error(error instanceof Error ? error.message : error)
   process.exitCode = 1
 })

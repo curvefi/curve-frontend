@@ -24,7 +24,7 @@ export const Page = () => (
       <Statistics />
 
       <Box display="grid" columnGap={Column_Spacing} gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))">
-        {PEG_KEEPERS.map((pegkeeper) => (
+        {PEG_KEEPERS.map(pegkeeper => (
           <PegKeeper
             key={pegkeeper.address}
             {...pegkeeper}

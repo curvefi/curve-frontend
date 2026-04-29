@@ -7,7 +7,7 @@ export function useSortFromQueryString(defaultSort: SortingState, fieldName = 's
   const searchNavigate = useSearchNavigate(searchParams)
   const sort = useMemo(() => parseSort(searchParams, defaultSort, fieldName), [defaultSort, fieldName, searchParams])
   const onChange: OnChangeFn<SortingState> = useCallback(
-    (newSort) =>
+    newSort =>
       searchNavigate(
         {
           [fieldName]: (typeof newSort == 'function' ? newSort(sort) : newSort).map(
@@ -24,6 +24,6 @@ export function useSortFromQueryString(defaultSort: SortingState, fieldName = 's
 function parseSort(search: URLSearchParams, defaultSort: SortingState, fieldName: string) {
   const sort = search
     .getAll(fieldName)
-    .map((id) => (id.startsWith('-') ? { id: id.slice(1), desc: true } : { id, desc: false }))
+    .map(id => (id.startsWith('-') ? { id: id.slice(1), desc: true } : { id, desc: false }))
   return sort?.length ? sort : defaultSort.map(({ id, desc }) => ({ id: id.replace(/\./g, '_'), desc }))
 }

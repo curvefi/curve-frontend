@@ -57,7 +57,7 @@ export const Default: Story = {
 export const AllSizes: Story = {
   render: () => (
     <Stack direction="row" gap={2} alignItems="center">
-      {sizes.map((size) => (
+      {sizes.map(size => (
         <IconButton key={size} size={size}>
           <LlamaIcon />
         </IconButton>
@@ -76,7 +76,7 @@ export const AllSizes: Story = {
 export const AllColors: Story = {
   render: () => (
     <Stack direction="row" gap={2} alignItems="center">
-      {colors.map((color) => (
+      {colors.map(color => (
         <IconButton key={color} color={color} size="small">
           <LlamaIcon />
         </IconButton>

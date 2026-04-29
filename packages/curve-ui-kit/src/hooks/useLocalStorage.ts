@@ -46,7 +46,7 @@ export const getReleaseChannel = () =>
 export const useReleaseChannel = () =>
   useLocalStorage<ReleaseChannel>(ReleaseChannelKey, defaultReleaseChannel, {
     version: ReleaseChannelVersion,
-    migrate: (oldValue) => (oldValue ? ReleaseChannel.Beta : ReleaseChannel.Stable),
+    migrate: oldValue => (oldValue ? ReleaseChannel.Beta : ReleaseChannel.Stable),
     oldKey: 'beta',
   })
 

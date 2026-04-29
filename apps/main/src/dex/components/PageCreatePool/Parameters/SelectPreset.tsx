@@ -23,10 +23,10 @@ type Props = {
 }
 
 export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) => {
-  const swapType = useStore((state) => state.createPool.swapType)
-  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
-  const updatePoolPresetIndex = useStore((state) => state.createPool.updatePoolPresetIndex)
-  const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
+  const swapType = useStore(state => state.createPool.swapType)
+  const poolPresetIndex = useStore(state => state.createPool.poolPresetIndex)
+  const updatePoolPresetIndex = useStore(state => state.createPool.updatePoolPresetIndex)
+  const tokenAmount = useStore(state => state.createPool.tokensInPool.tokenAmount)
 
   const overlayTriggerState = useOverlayTriggerState({})
 
@@ -55,13 +55,13 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
         </TitleRow>
       </Box>
       <PoolPresetButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
-        {poolPresetIndex !== null ? (
+        {poolPresetIndex === null ? (
           <LabelTextWrapper>
-            <SelectedLabelText>{POOL_PRESETS[poolPresetIndex].name}</SelectedLabelText>
+            <PlaceholderSelectedLabelText>{t`Select preset`}</PlaceholderSelectedLabelText>
           </LabelTextWrapper>
         ) : (
           <LabelTextWrapper>
-            <PlaceholderSelectedLabelText>{t`Select preset`}</PlaceholderSelectedLabelText>
+            <SelectedLabelText>{POOL_PRESETS[poolPresetIndex].name}</SelectedLabelText>
           </LabelTextWrapper>
         )}
       </PoolPresetButton>
@@ -349,7 +349,7 @@ const StyledModalDialog = styled(ModalDialog)`
 
 const SelectPresetWrapper = styled.div<{ clickDisabled: boolean }>`
   margin: var(--spacing-3) var(--spacing-4) var(--spacing-4);
-  ${(props) =>
+  ${props =>
     props.clickDisabled &&
     `
     pointer-events: none;

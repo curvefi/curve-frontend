@@ -122,7 +122,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas(networks, params, isOpen))}
-      health={q(useHealthQueries((isHealthFull) => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       isFullRepay={isFull}
       debt={q(debt)}
@@ -153,7 +153,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         leverageValue: useRepayFutureLeverage(params, isOpen),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen && !!hasLeverage),
         prevCollateral,
-        leverageTotalCollateral: mapQuery(prevCollateral, (prev) =>
+        leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
         ),
         expected: useRepayExpectedBorrowed(params, isOpen),

@@ -131,7 +131,7 @@ const convertLendingVault = (
   const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, (reward) => aprToApy(reward.rate) as number) : null
+    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate) as number) : null
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
     crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],
@@ -331,8 +331,6 @@ type LlamaMarketParams = { userAddress: Address | undefined; enableLLv2: boolean
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (without the details).
- * @param userAddress - The user's address
- * @param enabled - Whether the query is enabled
  */
 export const useLlamaMarkets = (
   { userAddress, enableLLv2, enableDeprecatedMarkets }: LlamaMarketParams,
@@ -408,7 +406,7 @@ export const useLlamaMarkets = (
                     : null,
                 hasFavorites: favoriteMarketsSet.size > 0,
                 markets: [
-                  ...(lendingVaults.data ?? []).map((vault) =>
+                  ...(lendingVaults.data ?? []).map(vault =>
                     convertLendingVault(
                       vault,
                       favoriteMarketsSet,
@@ -418,7 +416,7 @@ export const useLlamaMarkets = (
                       getLendMarketBadDebt(vault.chain, vault.controller),
                     ),
                   ),
-                  ...(mintMarkets.data ?? []).map((market) =>
+                  ...(mintMarkets.data ?? []).map(market =>
                     convertMintMarket(
                       market,
                       favoriteMarketsSet,
@@ -466,9 +464,7 @@ export const useLlamaMarket = (
       ({ markets }) =>
         blockchainId &&
         controllerAddress &&
-        markets?.find(
-          (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
-        ),
+        markets?.find(item => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress)),
       [blockchainId, controllerAddress],
     ),
   )

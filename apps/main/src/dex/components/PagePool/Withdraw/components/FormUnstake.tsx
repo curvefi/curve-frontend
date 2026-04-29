@@ -24,13 +24,13 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolWithdraw.activeKey)
-  const formEstGas = useStore((state) => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolWithdraw.formStatus)
-  const formValues = useStore((state) => state.poolWithdraw.formValues)
-  const fetchStepUnstake = useStore((state) => state.poolWithdraw.fetchStepUnstake)
-  const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const activeKey = useStore(state => state.poolWithdraw.activeKey)
+  const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formStatus = useStore(state => state.poolWithdraw.formStatus)
+  const formValues = useStore(state => state.poolWithdraw.formValues)
+  const fetchStepUnstake = useStore(state => state.poolWithdraw.fetchStepUnstake)
+  const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
@@ -98,7 +98,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
         },
       }
 
-      return ['UNSTAKE'].map((key) => stepsObj[key])
+      return ['UNSTAKE'].map(key => stepsObj[key])
     },
     [handleUnstakeClick],
   )
@@ -153,7 +153,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
         balanceLoading={gaugeTokenLoading}
         balance={gaugeTokenBalance ?? ''}
         hasError={+formValues.stakedLpToken > +(gaugeTokenBalance ?? '')}
-        handleAmountChange={useCallback((stakedLpToken) => updateFormValues({ stakedLpToken }), [updateFormValues])}
+        handleAmountChange={useCallback(stakedLpToken => updateFormValues({ stakedLpToken }), [updateFormValues])}
         disabled={isDisabled}
       />
 

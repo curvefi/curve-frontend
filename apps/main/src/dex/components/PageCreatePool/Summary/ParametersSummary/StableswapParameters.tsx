@@ -15,11 +15,11 @@ type Props = {
 }
 
 export const StableswapParameters = ({ chainId }: Props) => {
-  const advanced = useStore((state) => state.createPool.advanced)
-  const stableSwapFee = useStore((state) => state.createPool.parameters.stableSwapFee)
-  const stableA = useStore((state) => state.createPool.parameters.stableA)
-  const maExpTime = useStore((state) => state.createPool.parameters.maExpTime)
-  const offpegFeeMultiplier = useStore((state) => state.createPool.parameters.offpegFeeMultiplier)
+  const advanced = useStore(state => state.createPool.advanced)
+  const stableSwapFee = useStore(state => state.createPool.parameters.stableSwapFee)
+  const stableA = useStore(state => state.createPool.parameters.stableA)
+  const maExpTime = useStore(state => state.createPool.parameters.maExpTime)
+  const offpegFeeMultiplier = useStore(state => state.createPool.parameters.offpegFeeMultiplier)
   const {
     data: { stableswapFactory },
   } = useNetworkByChain({ chainId })

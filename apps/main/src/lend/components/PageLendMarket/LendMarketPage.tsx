@@ -37,11 +37,11 @@ export const LendMarketPage = () => {
   const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
   const { llamaApi: api = null, provider } = useCurve()
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
-  const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
+  const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
 
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const userActiveKey = helpers.getUserActiveKey(api, market!)

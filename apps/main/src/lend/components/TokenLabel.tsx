@@ -48,7 +48,7 @@ export const TokenLabel = ({
           <StyledExternalLink href={scanTokenPath(networks[rChainId], address)}>{TokenIconComp}</StyledExternalLink>
           <StyledIconButton
             size="medium"
-            onClick={(evt) => {
+            onClick={evt => {
               evt.stopPropagation()
               void copyToClipboard(address)
             }}

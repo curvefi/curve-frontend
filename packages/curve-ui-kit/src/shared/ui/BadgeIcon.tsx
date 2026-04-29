@@ -33,10 +33,10 @@ export const BadgeIcon = ({ border, size = 'sm', sx, testId, disabled = false, .
           width: IconSize[size],
           height: IconSize[size],
           ...(border && {
-            border: (t) => `1px solid ${t.design.Badges.Border.Highlight}`,
+            border: t => `1px solid ${t.design.Badges.Border.Highlight}`,
             padding: '1px',
             borderRadius: '100%',
-            backgroundColor: (t) => t.design.Badges.Fill.Highlight,
+            backgroundColor: t => t.design.Badges.Fill.Highlight,
           }),
           ...(disabled && {
             filter: 'saturate(0)',

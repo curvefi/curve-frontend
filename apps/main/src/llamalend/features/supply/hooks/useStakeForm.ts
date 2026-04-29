@@ -16,10 +16,7 @@ import { mapQuery } from '@ui-kit/types/util'
 import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const emptyStakeForm = (): StakeForm => ({
-  stakeAmount: undefined,
-  maxStakeAmount: undefined,
-})
+const emptyStakeForm = (): StakeForm => ({ stakeAmount: undefined, maxStakeAmount: undefined })
 
 const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Address; symbol: string } | undefined =>
   market && hasVault(market)
@@ -47,7 +44,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
-  const maxUserStake = mapQuery(userBalances, (d) => d.depositedShares)
+  const maxUserStake = mapQuery(userBalances, d => d.depositedShares)
 
   const form = useForm<StakeForm>({
     ...formDefaultOptions,
@@ -59,12 +56,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      (): StakeParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        stakeAmount: values.stakeAmount,
-      }),
+      (): StakeParams<ChainId> => ({ chainId, marketId, userAddress, stakeAmount: values.stakeAmount }),
       [chainId, marketId, userAddress, values.stakeAmount],
     ),
   )

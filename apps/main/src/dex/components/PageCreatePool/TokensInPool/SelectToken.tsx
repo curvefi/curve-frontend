@@ -58,10 +58,10 @@ export const SelectToken = ({
   handleInpChange,
   removeToken,
 }: Props) => {
-  const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
-  const swapType = useStore((state) => state.createPool.swapType)
-  const clearToken = useStore((state) => state.createPool.clearToken)
-  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
+  const updateNgAssetType = useStore(state => state.createPool.updateNgAssetType)
+  const swapType = useStore(state => state.createPool.swapType)
+  const clearToken = useStore(state => state.createPool.clearToken)
+  const tokensInPool = useStore(state => state.createPool.tokensInPool)
   const { data: network } = useNetworkByChain({ chainId })
   void useAutoDetectErc4626({
     tokenId,

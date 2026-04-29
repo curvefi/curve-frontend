@@ -43,7 +43,7 @@ function UseDebounceTest({
 
   return (
     <div>
-      <input data-testid="input" value={value} onChange={(e) => setValue(e.target.value)} />
+      <input data-testid="input" value={value} onChange={e => setValue(e.target.value)} />
       <div data-testid="current-value">{value}</div>
       <button data-testid="cancel" onClick={cancel}>
         Cancel
@@ -93,7 +93,7 @@ function UseUniqueDebounceTest({
 
   return (
     <div>
-      <input data-testid="input" value={value} onChange={(e) => setValue(e.target.value)} />
+      <input data-testid="input" value={value} onChange={e => setValue(e.target.value)} />
       <div data-testid="current-value">{value}</div>
       <button data-testid="cancel" onClick={cancel}>
         Cancel

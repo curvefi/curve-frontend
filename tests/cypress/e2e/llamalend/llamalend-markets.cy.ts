@@ -111,7 +111,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should show charts on ' + [breakpoint, [width, height].join('x')].join('/'), () => {
-      const vaultCount = sum(recordValues(vaultData).map((d) => d.data.length))
+      const vaultCount = sum(recordValues(vaultData).map(d => d.data.length))
 
       filterByMarketType([width, height])
       if (breakpoint == 'mobile') {
@@ -121,7 +121,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       }
       checkLineGraphColor(MarketRateType.Borrow, '#ed242f')
 
-      cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
+      cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
         expect(calls1.length).to.be.greaterThan(0).lessThan(vaultCount) // make sure we have some calls before scrolling, but not all
         cy.wait(repeat('@lend-snapshots', calls1.length), LOAD_TIMEOUT)
 
@@ -136,7 +136,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get('[data-testid^="data-table-row"]').last().should('be.visible')
         cy.wait(`@lend-snapshots`, LOAD_TIMEOUT) // wait for an extra request
         cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
-        cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls2) =>
+        cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls2 =>
           expect(calls2.length).to.be.greaterThan(calls1.length),
         )
       })
@@ -177,10 +177,12 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
         cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
         cy.get(`@slider`)
-          .then(($el) =>
-            // With log slider a click from the left is not enough to filter
-            // Click 20px from the right edge and vertically centered
-            [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
+          .then(
+            (
+              $el, // With log slider a click from the left is not enough to filter
+            ) =>
+              // Click 20px from the right edge and vertically centered
+              [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
           )
           .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
         closeSlider(breakpoint)
@@ -310,7 +312,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     }
 
     function checkCoinSelection(type: TokenType) {
-      const symbol = oneOf(...vaultData.ethereum.data.map((d) => d[`${type}_token`].symbol))
+      const symbol = oneOf(...vaultData.ethereum.data.map(d => d[`${type}_token`].symbol))
       const columnId = `assets_${type}_symbol`
       cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
       cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens

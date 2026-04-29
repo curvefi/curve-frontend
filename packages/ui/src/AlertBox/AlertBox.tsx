@@ -18,11 +18,7 @@ export const AlertBox = ({
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
     alertType === '' ? null : (
-      <StyledIcon
-        className={handleBtnClose !== undefined ? 'extra-margin' : ''}
-        name="InformationSquareFilled"
-        size={24}
-      />
+      <StyledIcon className={handleBtnClose == null ? '' : 'extra-margin'} name="InformationSquareFilled" size={24} />
     )
 
   const alertContentRef = useRef<HTMLDivElement>(null)
@@ -54,7 +50,7 @@ export const AlertBox = ({
           <ContentWrapper
             data-tag="content"
             grid
-            gridTemplateColumns={handleBtnClose !== undefined ? 'auto 1fr auto' : 'auto 1fr'}
+            gridTemplateColumns={handleBtnClose == null ? 'auto 1fr' : 'auto 1fr auto'}
             gridColumnGap={1}
             flexAlignItems={'flex-start'}
             {...props}
@@ -102,13 +98,13 @@ const Header = styled.header`
 const Content = styled(Box)<{ showFullHeight: boolean; limitHeight?: boolean }>`
   height: 100%;
   align-items: center;
-  ${(props) => props.showFullHeight && props.limitHeight && 'padding-bottom: var(--spacing-4);'}
+  ${props => props.showFullHeight && props.limitHeight && 'padding-bottom: var(--spacing-4);'}
 `
 
 const Wrapper = styled(Box)<Pick<AlertBoxProps, 'alertType'> & { enabledHeightToggle: boolean }>`
   position: relative;
   padding: var(--spacing-2);
-  ${(props) => props.enabledHeightToggle && 'display: flex;'}
+  ${props => props.enabledHeightToggle && 'display: flex;'}
 
   color: var(--white);
   word-break: break-word;

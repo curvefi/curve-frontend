@@ -48,19 +48,19 @@ export const FormDepositStake = ({
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const activeKey = useStore(state => state.poolDeposit.activeKey)
+  const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formLpTokenExpected = useStore(
-    (state) => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
+    state => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
   )
-  const formStatus = useStore((state) => state.poolDeposit.formStatus)
-  const formValues = useStore((state) => state.poolDeposit.formValues)
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
-  const slippage = useStore((state) => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepApprove)
-  const fetchStepDepositStake = useStore((state) => state.poolDeposit.fetchStepDepositStake)
-  const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
+  const formStatus = useStore(state => state.poolDeposit.formStatus)
+  const formValues = useStore(state => state.poolDeposit.formValues)
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
+  const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
+  const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
+  const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
+  const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
@@ -133,7 +133,7 @@ export const FormDepositStake = ({
       steps: Step[],
       maxSlippage: string,
     ) => {
-      const haveFormValues = formValues.amounts.some((a) => Number(a.value) > 0)
+      const haveFormValues = formValues.amounts.some(a => Number(a.value) > 0)
       const isValid = haveFormValues && !formStatus.error
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'DEPOSIT_STAKE'
@@ -183,12 +183,12 @@ export const FormDepositStake = ({
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['DEPOSIT_STAKE'] : ['APPROVAL', 'DEPOSIT_STAKE']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleApproveClick, handleDepositStakeClick],
   )

@@ -23,11 +23,11 @@ export const PagePool = () => {
   const rChainId = useChainId(networkId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
 
-  const hasDepositAndStake = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
-  const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
-  const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
-  const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId ?? ''])
-  const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
+  const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
+  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
+  const fetchNewPool = useStore(state => state.pools.fetchNewPool)
+  const poolDataCache = useStore(state => state.storeCache.poolsMapper[rChainId]?.[poolId ?? ''])
+  const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const [poolNotFound, setPoolNotFound] = useState(false)
 
@@ -36,7 +36,7 @@ export const PagePool = () => {
   useEffect(() => {
     if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
     fetchNewPool(curveApi, poolId)
-      .then((found) => setPoolNotFound(!found))
+      .then(found => setPoolNotFound(!found))
       .catch(() => setPoolNotFound(true))
   }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
 
@@ -58,7 +58,7 @@ export const PagePool = () => {
   const isBlacklisted = useMemo(
     () =>
       isAddress(rPoolIdOrAddress, { strict: false /* address comes from URL which might be lowercase */ }) &&
-      blacklist?.some((badPool) => isAddressEqual(badPool, rPoolIdOrAddress)),
+      blacklist?.some(badPool => isAddressEqual(badPool, rPoolIdOrAddress)),
     [blacklist, rPoolIdOrAddress],
   )
 

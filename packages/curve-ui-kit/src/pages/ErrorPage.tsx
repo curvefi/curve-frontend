@@ -29,7 +29,7 @@ export const ErrorPage = ({
   continueUrl?: string
   error?: Error | string
 }) => {
-  const navHeight = useLayoutStore((state) => state.navHeight)
+  const navHeight = useLayoutStore(state => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
   const onRetry = useCallback(() => {
@@ -52,7 +52,7 @@ export const ErrorPage = ({
           objectFit: 'cover',
           opacity: 0.8,
           position: 'absolute',
-          top: (t) => `calc(${t.spacing(4)} + ${navHeight}px)`,
+          top: t => `calc(${t.spacing(4)} + ${navHeight}px)`,
           width: '100%',
           maxWidth: MaxWidth.banner,
           zIndex: -1,

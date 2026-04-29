@@ -34,9 +34,9 @@ export const SmallScreenCard = ({
   addUserVote = false,
 }: Props) => {
   const { address: userAddress } = useConnection()
-  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
-  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
-  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
+  const gaugeWeightHistoryMapper = useStore(state => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore(state => state.gauges.getHistoricGaugeWeights)
+  const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
 
@@ -113,7 +113,7 @@ export const SmallScreenCard = ({
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
-              <ErrorWrapper onClick={(e) => e.stopPropagation()}>
+              <ErrorWrapper onClick={e => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
                   onClick={(e?: MouseEvent) => {

@@ -27,10 +27,10 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId: chainId, rPoolIdOrAddress: poolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[chainId]?.[poolId ?? ''])
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId ?? ''])
 
   const { curveApi } = useCurve()
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
 
   const risksPathname = getPath(useParams<UrlParams>(), `/disclaimer`)
 

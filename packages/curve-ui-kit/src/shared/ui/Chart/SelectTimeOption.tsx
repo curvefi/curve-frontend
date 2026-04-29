@@ -19,7 +19,7 @@ export const SelectTimeOption = <TTimeOption extends string = string>({
   <Select
     variant="ghost"
     value={activeOption}
-    onChange={(event) => {
+    onChange={event => {
       if (event.target.value != null) setActiveOption(event.target.value as TTimeOption)
     }}
     size="tiny"
@@ -30,7 +30,7 @@ export const SelectTimeOption = <TTimeOption extends string = string>({
       transformOrigin: { vertical: 'top', horizontal: 'right' },
     }}
   >
-    {options.map((option) => (
+    {options.map(option => (
       <MenuItem value={option} key={option}>
         <Typography variant="bodySBold" sx={{ textTransform: 'uppercase' }}>
           {option}

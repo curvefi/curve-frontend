@@ -7,8 +7,8 @@ import { useStore } from '../store/useStore'
  * Might get rewritten when we refactor out the pool stores and its mappers for a tanstack query.
  */
 export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: number; poolIdOrAddress: string }) {
-  const poolData = useStore((state) => state.pools.poolsMapper[chainId])
-  const poolDataCache = useStore((state) => state.storeCache.poolsMapper[chainId])
+  const poolData = useStore(state => state.pools.poolsMapper[chainId])
+  const poolDataCache = useStore(state => state.storeCache.poolsMapper[chainId])
 
   return useMemo(() => {
     // If not an address format, assume it's already a pool ID

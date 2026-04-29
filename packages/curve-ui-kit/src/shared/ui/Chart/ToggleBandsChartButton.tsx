@@ -6,16 +6,17 @@ import { SelectableChip } from '../SelectableChip'
 
 const { Spacing } = SizesAndSpaces
 
-export const ToggleBandsChartButton = ({
-  label,
-  isVisible,
-  toggle,
-}: {
-  label: string
-  isVisible: boolean
-  toggle: () => void
-}) => (
-  // todo: refactor chip to button
+export const ToggleBandsChartButton = (
+  {
+    label,
+    isVisible,
+    toggle,
+  }: {
+    label: string
+    isVisible: boolean
+    toggle: () => void
+  }, // todo: refactor chip to button
+) => (
   <SelectableChip
     toggle={toggle}
     label={

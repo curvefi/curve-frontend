@@ -8,7 +8,7 @@ export const { useQuery: usePoolsPricesApi } = queryFactory({
     [...rootKeys.chainName({ blockchainId }), 'pools-prices-api'] as const,
   queryFn: async ({ blockchainId }: ChainNameQuery) => {
     const { pools } = await getPools(blockchainId)
-    return fromEntries(pools.map((pool) => [pool.address.toLocaleLowerCase(), pool]))
+    return fromEntries(pools.map(pool => [pool.address.toLocaleLowerCase(), pool]))
   },
   validationSuite: pricesApiChainValidationSuite,
   category: 'dex.pools',

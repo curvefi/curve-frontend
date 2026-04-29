@@ -37,7 +37,7 @@ type OracleInputProps = {
 }
 
 export const SetOracle = () => {
-  const tokens = useStore((state) => state.createPool.tokensInPool)
+  const tokens = useStore(state => state.createPool.tokensInPool)
 
   const oracleTokens: { token: TokenState; tokenId: TokenId; title: string }[] = [
     { token: tokens.tokenA, tokenId: TOKEN_A as TokenId, title: t`Token A` },
@@ -60,8 +60,8 @@ export const SetOracle = () => {
 }
 
 const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
-  const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
-  const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
+  const updateOracleAddress = useStore(state => state.createPool.updateOracleAddress)
+  const updateOracleFunction = useStore(state => state.createPool.updateOracleFunction)
 
   const oracleFunction = token.oracle.functionName
   const oracleAddress = token.oracle.address
@@ -83,7 +83,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={oracleAddress}
-        onChange={lodash.debounce((value) => updateOracleAddress(tokenId, value), 300)}
+        onChange={lodash.debounce(value => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
@@ -93,7 +93,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={oracleFunction}
-        onChange={lodash.debounce((value) => updateOracleFunction(tokenId, value), 300)}
+        onChange={lodash.debounce(value => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />

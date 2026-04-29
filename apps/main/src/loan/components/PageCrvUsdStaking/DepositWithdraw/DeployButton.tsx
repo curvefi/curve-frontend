@@ -12,14 +12,14 @@ type DeployButtonProps = { className?: string }
 export const DeployButton = ({ className }: DeployButtonProps) => {
   const { address } = useConnection()
   const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address })
-  const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
-  const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
-  const depositApprove = useStore((state) => state.scrvusd.deploy.depositApprove)
-  const deposit = useStore((state) => state.scrvusd.deploy.deposit)
-  const redeem = useStore((state) => state.scrvusd.deploy.redeem)
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)
+  const depositApproved = useStore(state => state.scrvusd.depositApproval.approval)
+  const depositFetchStatus = useStore(state => state.scrvusd.depositApproval.fetchStatus)
+  const depositApprove = useStore(state => state.scrvusd.deploy.depositApprove)
+  const deposit = useStore(state => state.scrvusd.deploy.deposit)
+  const redeem = useStore(state => state.scrvusd.deploy.redeem)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const stakingModule = useStore(state => state.scrvusd.stakingModule)
+  const getInputAmountApproved = useStore(state => state.scrvusd.getInputAmountApproved)
 
   const userBalance = useMemo(() => userScrvUsdBalance ?? { crvUSD: '0', scrvUSD: '0' }, [userScrvUsdBalance])
 

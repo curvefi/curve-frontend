@@ -22,7 +22,7 @@ const BANNER_CONFIG = [
 
 export const BadDebtBanner = ({ solvencyPercent }: Props) => {
   const banner =
-    solvencyPercent < SOLVENCY_THRESHOLDS.solvent && BANNER_CONFIG.find((config) => solvencyPercent >= config.threshold)
+    solvencyPercent < SOLVENCY_THRESHOLDS.solvent && BANNER_CONFIG.find(config => solvencyPercent >= config.threshold)
   return (
     banner && (
       <Banner

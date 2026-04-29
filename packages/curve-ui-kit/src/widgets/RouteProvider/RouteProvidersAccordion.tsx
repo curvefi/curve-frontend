@@ -49,7 +49,7 @@ export const RouteProvidersAccordion = ({
   onToggle,
   onRefresh,
 }: RouteProviderProps) => {
-  const maxAmountOut = useMemo(() => routes && decimalMax(...routes.flatMap((route) => route.amountOut)), [routes])
+  const maxAmountOut = useMemo(() => routes && decimalMax(...routes.flatMap(route => route.amountOut)), [routes])
   const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.router] : null
   return (
     <Accordion
@@ -105,7 +105,7 @@ export const RouteProvidersAccordion = ({
           </Typography>
         </Stack>
         <Stack gap={Spacing.xs}>
-          {routes?.map((route) => (
+          {routes?.map(route => (
             <RouteProviderCard
               key={route.id}
               tokenOut={tokenOut}

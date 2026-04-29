@@ -107,7 +107,7 @@ export const createTokensSlice = (
 
       return Object.keys(parsedPartialTokensMapper)
     },
-    setEmptyPoolListDefault: async (curve) => {
+    setEmptyPoolListDefault: async curve => {
       const { [sliceKey]: sliceState } = get()
       const chainId = curve.chainId
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
@@ -144,7 +144,7 @@ export const createTokensSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

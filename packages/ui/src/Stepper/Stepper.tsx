@@ -71,7 +71,7 @@ const Number = styled(Box)<{ status: StepStatus }>`
   font-weight: var(--button--font-weight);
 
   color: var(--button--color);
-  background-color: ${(props) => statusColorMap(props.status)};
+  background-color: ${props => statusColorMap(props.status)};
   transition: all 0.5s ease;
 
   svg:not(.check) {

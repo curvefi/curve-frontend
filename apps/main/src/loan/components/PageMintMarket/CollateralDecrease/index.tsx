@@ -42,23 +42,23 @@ export const CollateralDecrease = ({
   const llammaId = llamma?.id ?? ''
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanCollateralDecrease.activeKey)
-  const detailInfo = useStore((state) => state.loanCollateralDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
-  const formEstGas = useStore((state) => state.loanCollateralDecrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanCollateralDecrease.formStatus)
-  const formValues = useStore((state) => state.loanCollateralDecrease.formValues)
-  const maxRemovable = useStore((state) => state.loanCollateralDecrease.maxRemovable)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const activeKey = useStore(state => state.loanCollateralDecrease.activeKey)
+  const detailInfo = useStore(state => state.loanCollateralDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
+  const formEstGas = useStore(state => state.loanCollateralDecrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanCollateralDecrease.formStatus)
+  const formValues = useStore(state => state.loanCollateralDecrease.formValues)
+  const maxRemovable = useStore(state => state.loanCollateralDecrease.maxRemovable)
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
+    state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
-  const init = useStore((state) => state.loanCollateralDecrease.init)
-  const fetchStepDecrease = useStore((state) => state.loanCollateralDecrease.fetchStepDecrease)
-  const setFormValues = useStore((state) => state.loanCollateralDecrease.setFormValues)
-  const setStateByKey = useStore((state) => state.loanCollateralDecrease.setStateByKey)
-  const resetState = useStore((state) => state.loanCollateralDecrease.resetState)
+  const init = useStore(state => state.loanCollateralDecrease.init)
+  const fetchStepDecrease = useStore(state => state.loanCollateralDecrease.fetchStepDecrease)
+  const setFormValues = useStore(state => state.loanCollateralDecrease.setFormValues)
+  const setStateByKey = useStore(state => state.loanCollateralDecrease.setStateByKey)
+  const resetState = useStore(state => state.loanCollateralDecrease.resetState)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -155,7 +155,7 @@ export const CollateralDecrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) => setConfirmHealthWarning(val)}
+                      setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
@@ -176,7 +176,7 @@ export const CollateralDecrease = ({
 
       const stepsKey: StepKey[] = ['REMOVE']
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [healthMode, handleBtnClickRemove],
   )

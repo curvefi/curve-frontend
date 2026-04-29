@@ -48,10 +48,10 @@ const INITIAL_STATE: UserProfileState = {
   showDeprecatedMarkets: false,
 }
 
-const store: StateCreator<Store> = (set) => ({
+const store: StateCreator<Store> = set => ({
   ...INITIAL_STATE,
   reset: () => set(INITIAL_STATE),
-  setTheme: (theme) => set((state) => ({ ...state, theme })),
+  setTheme: theme => set(state => ({ ...state, theme })),
   setMaxSlippage: (maxSlippage: string | null, key?: string) => {
     // Check if we want to delete a slippage value first.
     if (maxSlippage === null) {
@@ -59,7 +59,7 @@ const store: StateCreator<Store> = (set) => ({
       if (key === 'crypto' || key === 'stable') return false
 
       set(
-        produce((state) => {
+        produce(state => {
           delete state.maxSlippage[key]
         }),
       )
@@ -73,7 +73,7 @@ const store: StateCreator<Store> = (set) => ({
 
     // Set slippage for a key, but if none given all existing keys will be overwritten.
     set(
-      produce((state) => {
+      produce(state => {
         if (key) {
           state.maxSlippage[key] = maxSlippage
         } else {
@@ -86,7 +86,7 @@ const store: StateCreator<Store> = (set) => ({
 
     return true
   },
-  setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => set((state) => ({ ...state, showDeprecatedMarkets })),
+  setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => set(state => ({ ...state, showDeprecatedMarkets })),
 })
 
 const cache: PersistOptions<Store> = {

@@ -26,14 +26,14 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
-  const activeKey = useStore((state) => state.poolWithdraw.activeKey)
-  const formStatus = useStore((state) => state.poolWithdraw.formStatus)
-  const formValues = useStore((state) => state.poolWithdraw.formValues)
-  const fetchClaimable = useStore((state) => state.poolWithdraw.fetchClaimable)
-  const fetchStepClaim = useStore((state) => state.poolWithdraw.fetchStepClaim)
-  const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
-  const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const activeKey = useStore(state => state.poolWithdraw.activeKey)
+  const formStatus = useStore(state => state.poolWithdraw.formStatus)
+  const formValues = useStore(state => state.poolWithdraw.formValues)
+  const fetchClaimable = useStore(state => state.poolWithdraw.fetchClaimable)
+  const fetchStepClaim = useStore(state => state.poolWithdraw.fetchStepClaim)
+  const setStateByKey = useStore(state => state.poolWithdraw.setStateByKey)
+  const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
@@ -71,7 +71,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const claimedLabel = formStatus.isClaimCrv
           ? 'CRV'
-          : `${formValues.claimableRewards.map((r) => r.symbol).join(', ')} rewards`
+          : `${formValues.claimableRewards.map(r => r.symbol).join(', ')} rewards`
         const TxDescription = `Claimed ${claimedLabel}`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -94,7 +94,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isValid =
         !isSeed &&
         !formStatus.error &&
-        (+formValues.claimableCrv > 0 || formValues.claimableRewards.some((r) => +r.amount > 0))
+        (+formValues.claimableCrv > 0 || formValues.claimableRewards.some(r => +r.amount > 0))
       const isClaimedCRV = formStatus.formTypeCompleted === 'CLAIM_CRV'
       const isClaimedRewards = formStatus.formTypeCompleted === 'CLAIM_REWARDS'
       const isComplete = isClaimedCRV || isClaimedRewards
@@ -117,7 +117,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
         },
       }
 
-      return ['CLAIM'].map((key) => stepsObj[key])
+      return ['CLAIM'].map(key => stepsObj[key])
     },
     [handleClaimClick],
   )

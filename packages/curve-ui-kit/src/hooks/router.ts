@@ -37,7 +37,7 @@ export const getSearchString = (update: SearchParamsUpdate, previous?: URLSearch
   const params = new URLSearchParams(previous ?? '')
   Object.entries(update).forEach(([key, value]) => {
     params.delete(key)
-    if (Array.isArray(value)) value.forEach((item) => params.append(key, item))
+    if (Array.isArray(value)) value.forEach(item => params.append(key, item))
     else if (value != null) params.set(key, value)
   })
   return params.size ? `?${params}`.replaceAll('%2C', ',') : ''

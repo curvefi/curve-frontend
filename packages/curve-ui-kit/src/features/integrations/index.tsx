@@ -27,7 +27,7 @@ export const Integrations = () => {
       data-testid="integrations-page"
       gap={Spacing.sm}
       sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+        backgroundColor: t => t.design.Layer[1].Fill,
         marginInline: 'auto',
         marginBlockStart: Spacing.xl,
         paddingBlockEnd: Spacing.lg,

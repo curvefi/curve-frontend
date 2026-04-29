@@ -37,7 +37,7 @@ function calculateBalancedValues(
   { tokens, totalUsd }: CurrencyReserves,
 ): Amount[] {
   const reserves = Object.fromEntries(
-    tokens.map((t) => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
+    tokens.map(t => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
   )
   const { reserveRatio: changedRatio, usdPrice: changedUsdPrice } = reserves[tokenAddresses[changedIndex]] ?? {}
   return lodash.zip(oldAmounts, tokenAddresses).map((tuple, index) => {
@@ -82,10 +82,10 @@ export const FieldsDeposit = ({
   ) => void
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
+  const maxLoading = useStore(state => state.poolDeposit.maxLoading)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const reserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
+  const reserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = useCallback(
@@ -177,7 +177,7 @@ export const FieldsDeposit = ({
           <Checkbox
             isDisabled={isDisabled}
             isSelected={!!formValues.isBalancedAmounts}
-            onChange={(isBalancedAmounts) =>
+            onChange={isBalancedAmounts =>
               updateFormValues({ isBalancedAmounts: isBalancedAmounts ? 'by-wallet' : false }, null, null)
             }
           >
@@ -191,7 +191,7 @@ export const FieldsDeposit = ({
           <Checkbox
             isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly?.[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
-            onChange={(isWrapped) => {
+            onChange={isWrapped => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
                 const cFormValues = lodash.cloneDeep(formValues)

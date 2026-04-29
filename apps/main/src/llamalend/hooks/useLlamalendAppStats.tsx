@@ -54,7 +54,7 @@ export function useLlamalendAppStats(
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
   const isMarketPage = useMatchRoute({ to: `${currentApp}/$network${LLAMALEND_ROUTES.PAGE_MARKETS}/$id` })
-  const enableDeprecatedMarkets = useUserProfileStore((state) => state.showDeprecatedMarkets)
+  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
 
   enabled &&= !isDesktop || !isMarketPage // hide header stats on lend/crvusd market pages only on desktop
 
@@ -62,7 +62,7 @@ export function useLlamalendAppStats(
     { userAddress: address, enableLLv2: useLLv2(), enableDeprecatedMarkets },
     enabled,
   )
-  const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
+  const tvl = useMemo(() => sum((marketData?.markets ?? []).map(m => m.tvl)), [marketData])
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
   const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)

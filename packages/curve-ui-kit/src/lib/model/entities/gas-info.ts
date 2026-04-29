@@ -36,7 +36,7 @@ export type GasInfo = {
 const L2_NETWORKS_WITH_GAS_PRICE = [Chain.Arbitrum, Chain.XLayer, Chain.Mantle] as const
 
 /** Small utility function to immediately convert fetch results into a JSON response. */
-const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
+const httpFetcher = (uri: string) => fetch(uri).then(res => res.json())
 
 const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
   const curveApi = getLib('curveApi')
@@ -249,7 +249,7 @@ function parsePolygonGasInfo(gasInfo: {
         base,
         max,
         priority,
-        basePlusPriority: priority.map((p) => base + p),
+        basePlusPriority: priority.map(p => base + p),
       },
       label: ['fast', 'medium', 'slow'],
     }

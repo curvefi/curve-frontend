@@ -44,18 +44,18 @@ export const LoanSelfLiquidation = ({
   params,
 }: PageContentProps<MarketUrlParams>) => {
   const isSubscribed = useRef(false)
-  const formEstGas = useStore((state) => state.loanSelfLiquidation.formEstGas)
-  const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)
-  const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
-  const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
+  const formEstGas = useStore(state => state.loanSelfLiquidation.formEstGas)
+  const formStatus = useStore(state => state.loanSelfLiquidation.formStatus)
+  const futureRates = useStore(state => state.loanSelfLiquidation.futureRates)
+  const liquidationAmt = useStore(state => state.loanSelfLiquidation.liquidationAmt)
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
-  const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
-  const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
-  const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchDetails = useStore(state => state.loanSelfLiquidation.fetchDetails)
+  const fetchStepApprove = useStore(state => state.loanSelfLiquidation.fetchStepApprove)
+  const fetchStepLiquidate = useStore(state => state.loanSelfLiquidation.fetchStepLiquidate)
+  const resetState = useStore(state => state.loanSelfLiquidation.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -154,12 +154,12 @@ export const LoanSelfLiquidation = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['SELF_LIQUIDATE'] : ['APPROVAL', 'SELF_LIQUIDATE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, fetchStepLiquidate, params, reset, userBalances],
   )

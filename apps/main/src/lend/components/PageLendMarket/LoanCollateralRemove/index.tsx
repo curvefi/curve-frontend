@@ -37,17 +37,17 @@ import { decimal } from '@ui-kit/utils'
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const detailInfo = useStore((state) => state.loanCollateralRemove.detailInfo[activeKey])
-  const formEstGas = useStore((state) => state.loanCollateralRemove.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanCollateralRemove.formStatus)
-  const formValues = useStore((state) => state.loanCollateralRemove.formValues)
-  const maxRemovable = useStore((state) => state.loanCollateralRemove.maxRemovable)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const activeKey = useStore(state => state.loanCollateralRemove.activeKey)
+  const detailInfo = useStore(state => state.loanCollateralRemove.detailInfo[activeKey])
+  const formEstGas = useStore(state => state.loanCollateralRemove.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanCollateralRemove.formStatus)
+  const formValues = useStore(state => state.loanCollateralRemove.formValues)
+  const maxRemovable = useStore(state => state.loanCollateralRemove.maxRemovable)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
-  const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
-  const resetState = useStore((state) => state.loanCollateralRemove.resetState)
+  const fetchStepDecrease = useStore(state => state.loanCollateralRemove.fetchStepDecrease)
+  const setFormValues = useStore(state => state.loanCollateralRemove.setFormValues)
+  const resetState = useStore(state => state.loanCollateralRemove.resetState)
 
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -146,9 +146,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
                     <DialogFormWarning
                       health={healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) =>
-                        setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
-                      }
+                      setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   isDismissable: false,
@@ -169,7 +167,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
 
       const stepsKey: StepKey[] = ['REMOVE']
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [handleBtnClickRemove, userBalances, userState],
   )

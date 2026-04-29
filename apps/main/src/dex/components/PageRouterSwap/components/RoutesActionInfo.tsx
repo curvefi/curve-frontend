@@ -50,19 +50,19 @@ export const RoutesActionInfo = ({
             sx={{
               marginBlock: '8px 10px', // align to bottom and top
               opacity: '0.7',
-              borderLeft: (t) => `2px solid ${t.design.Color.Neutral[700]}`,
+              borderLeft: t => `2px solid ${t.design.Color.Neutral[700]}`,
             }}
           ></Box>
           <Stack direction="column">
             {routes.map((_, index) => (
               <Box key={index} sx={{ width: 16, height: 20 }}>
-                <IndicatorIcon sx={{ width: 12, height: 12, color: (t) => t.design.Color.Neutral[700] }} />
+                <IndicatorIcon sx={{ width: 12, height: 12, color: t => t.design.Color.Neutral[700] }} />
               </Box>
             ))}
           </Stack>
         </Stack>
         <Stack direction="column" width="100%">
-          {routes.map((route) => (
+          {routes.map(route => (
             <DetailInfoTradeRouteRoute
               key={`${route.poolId}-${route.outputCoinAddress}`}
               params={params}

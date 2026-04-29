@@ -36,8 +36,8 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
   } = useUserProposalVotesQuery({
     userAddress,
   })
-  const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
-  const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
+  const userProposalVotesSortBy = useStore(state => state.user.userProposalVotesSortBy)
+  const setUserProposalVotesSortBy = useStore(state => state.user.setUserProposalVotesSortBy)
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'
 
@@ -53,7 +53,7 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
       columns={VOTES_LABELS}
       sortBy={userProposalVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={(key) => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
+      setSortBy={key => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
       getData={() => invalidateUserProposalVotesQuery({ userAddress })}
       gridTemplateColumns={gridTemplateColumns}
       noDataMessage={t`No proposal votes found for this user.`}

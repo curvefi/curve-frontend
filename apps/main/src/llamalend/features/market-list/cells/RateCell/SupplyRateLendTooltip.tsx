@@ -36,7 +36,7 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
       periodLabel={AVERAGE_CATEGORIES[averageCategory].period}
       extraRewards={poolRewards}
       extraIncentives={formatSupplyExtraIncentives({
-        incentives: rates.incentives.map((incentive) => ({
+        incentives: rates.incentives.map(incentive => ({
           ...incentive,
           percentage: aprToApy(incentive.percentage) as number,
         })),

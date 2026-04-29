@@ -20,7 +20,7 @@ export const advanceVirtualNetworkClock = ({
       url: adminRpcUrl,
       body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
     })
-    .then((response) => {
+    .then(response => {
       expect(response.isOkStatusCode).to.equal(true, response.body.error)
       return cy.request({
         method: 'POST',
@@ -28,5 +28,5 @@ export const advanceVirtualNetworkClock = ({
         body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
       })
     })
-    .then((response) => expect(response.isOkStatusCode).to.equal(true, response.body.error))
+    .then(response => expect(response.isOkStatusCode).to.equal(true, response.body.error))
 }

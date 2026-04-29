@@ -32,14 +32,14 @@ const buildClickableMessage = (
   isError: boolean | undefined,
   onNumberClick: (balance: Decimal | undefined) => void,
 ) => {
-  const matches = (message.match(NUMBER_REGEX) ?? []).map((m) => decimal(m))
+  const matches = (message.match(NUMBER_REGEX) ?? []).map(m => decimal(m))
   return message.split(NUMBER_REGEX).flatMap((part, index) => [
     part,
     matches[index] && (
       <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
         <BalanceAmount
           testId={`helper-message-number-${index}`}
-          sx={{ ...(isError && { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary }) }}
+          sx={{ ...(isError && { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary }) }}
         >
           {matches[index]}
         </BalanceAmount>
@@ -53,11 +53,11 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
     sx={{
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: (t) => t.design.Layer[1].Fill,
+      backgroundColor: t => t.design.Layer[1].Fill,
       paddingBlock: Spacing.xs,
       paddingInline: Spacing.sm,
       minHeight: Sizing.sm,
-      ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
+      ...(isError && { backgroundColor: t => t.design.Layer.Feedback.Error }),
     }}
   >
     {typeof message === 'string' ? (
@@ -66,7 +66,7 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
         component="div"
         // todo: replace with alert component and add filledfeedback colors to alert component.
         sx={{
-          color: (t) => getTextColor(t, isError),
+          color: t => getTextColor(t, isError),
         }}
         data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >

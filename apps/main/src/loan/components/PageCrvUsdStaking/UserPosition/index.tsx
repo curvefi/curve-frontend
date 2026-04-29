@@ -19,9 +19,9 @@ export const UserPosition = () => {
   const { address } = useConnection()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
-  const usdRateLoading = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus === 'loading')
-  const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
-  const scrvUsdRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate.value)
+  const usdRateLoading = useStore(state => state.scrvusd.scrvUsdExchangeRate.fetchStatus === 'loading')
+  const scrvUsdExchangeRateFetchStatus = useStore(state => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
+  const scrvUsdRate = useStore(state => state.scrvusd.scrvUsdExchangeRate.value)
 
   const userScrvUsdBalance = Number(userBalance?.scrvUSD)
   const userScrvUsdBalanceInCrvUsd = userScrvUsdBalance / Number(scrvUsdRate)

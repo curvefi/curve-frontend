@@ -18,7 +18,7 @@ describe(`Peg Stability Reserves`, () => {
 
     cy.viewport(width, height)
     cy.visit('/crvusd/ethereum/psr/', {
-      onBeforeLoad: (window) => window.localStorage.clear(),
+      onBeforeLoad: window => window.localStorage.clear(),
       ...LOAD_TIMEOUT,
     })
     cy.get('[data-testid="pegkeepers"]', LOAD_TIMEOUT).should('be.visible')
@@ -26,7 +26,7 @@ describe(`Peg Stability Reserves`, () => {
 
   it('should render all pegkeepers', () => {
     getPegkeeperCards('root').as('cards').should('have.length', PEG_KEEPERS.length)
-    cy.get('@cards').each(($el) => {
+    cy.get('@cards').each($el => {
       cy.wrap($el).should('be.visible')
     })
   })
@@ -40,7 +40,7 @@ describe(`Peg Stability Reserves`, () => {
     getPegkeeperCards('action-info-pool').as('infos').should('have.length.greaterThan', 0)
     cy.get('@infos')
       .find('a')
-      .each(($el) => {
+      .each($el => {
         cy.wrap($el)
           .should('have.attr', 'href')
           .and('match', /\/dex\/ethereum\/pools\/.*\//)
@@ -51,7 +51,7 @@ describe(`Peg Stability Reserves`, () => {
     getPegkeeperCards('action-info-contract').as('infos').should('have.length.greaterThan', 0)
     cy.get('@infos')
       .find('a')
-      .each(($el) => {
+      .each($el => {
         cy.wrap($el)
           .should('have.attr', 'href')
           .and('match', /https:\/\/etherscan\.io\/address\/.*/)

@@ -17,18 +17,18 @@ type Props = {
 }
 
 export const CryptoswapParameters = ({ chainId }: Props) => {
-  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
-  const initialPrice = useStore((state) => state.createPool.initialPrice)
-  const advanced = useStore((state) => state.createPool.advanced)
-  const midFee = useStore((state) => state.createPool.parameters.midFee)
-  const outFee = useStore((state) => state.createPool.parameters.outFee)
-  const maHalfTime = useStore((state) => state.createPool.parameters.maHalfTime)
-  const gamma = useStore((state) => state.createPool.parameters.gamma)
-  const feeGamma = useStore((state) => state.createPool.parameters.feeGamma)
-  const allowedExtraProfit = useStore((state) => state.createPool.parameters.allowedExtraProfit)
-  const cryptoA = useStore((state) => state.createPool.parameters.cryptoA)
-  const adjustmentStep = useStore((state) => state.createPool.parameters.adjustmentStep)
-  const swapType = useStore((state) => state.createPool.swapType)
+  const tokensInPool = useStore(state => state.createPool.tokensInPool)
+  const initialPrice = useStore(state => state.createPool.initialPrice)
+  const advanced = useStore(state => state.createPool.advanced)
+  const midFee = useStore(state => state.createPool.parameters.midFee)
+  const outFee = useStore(state => state.createPool.parameters.outFee)
+  const maHalfTime = useStore(state => state.createPool.parameters.maHalfTime)
+  const gamma = useStore(state => state.createPool.parameters.gamma)
+  const feeGamma = useStore(state => state.createPool.parameters.feeGamma)
+  const allowedExtraProfit = useStore(state => state.createPool.parameters.allowedExtraProfit)
+  const cryptoA = useStore(state => state.createPool.parameters.cryptoA)
+  const adjustmentStep = useStore(state => state.createPool.parameters.adjustmentStep)
+  const swapType = useStore(state => state.createPool.swapType)
   const { data: network } = useNetworkByChain({ chainId })
 
   return (

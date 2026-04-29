@@ -160,13 +160,13 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
         input: {
           endAdornment: '%',
           sx: {
-            color: (t) => (selected === 'custom' ? 'inherit' : t.design.Text.TextColors.Disabled),
+            color: t => (selected === 'custom' ? 'inherit' : t.design.Text.TextColors.Disabled),
             paddingLeft: '1ch', // TODO: rely on input styling in different PR
           },
         },
       }}
       error={!!error}
-      onChange={(e) =>
+      onChange={e =>
         setFormValues({
           selected: 'custom',
           customValue: e.target.value,
@@ -178,7 +178,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
       sx={{
         flexGrow: 1,
         '& .MuiInputBase-adornedEnd': {
-          color: (t) => (selected === 'custom' ? 'inherit' : t.design.Text.TextColors.Disabled),
+          color: t => (selected === 'custom' ? 'inherit' : t.design.Text.TextColors.Disabled),
           paddingRight: '1ch', // TODO: rely on input styling in different PR
         },
       }}
@@ -214,7 +214,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
             <RadioGroup
               row
               value={formValues.selected}
-              onChange={(e) => setFormValues({ ...formValues, selected: e.target.value as Decimal })}
+              onChange={e => setFormValues({ ...formValues, selected: e.target.value as Decimal })}
               sx={{
                 flexGrow: 1,
                 justifyContent: { mobile: 'space-between', tablet: 'start' },

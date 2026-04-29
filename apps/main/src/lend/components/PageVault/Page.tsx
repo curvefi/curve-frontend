@@ -31,10 +31,10 @@ export const Page = () => {
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const network = networks[rChainId]
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
-  const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
 
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)

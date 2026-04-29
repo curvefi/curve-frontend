@@ -43,7 +43,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
     if (isUserVotes) {
       return (
-        userGaugeWeightVotes?.gauges.map((gauge) => ({
+        userGaugeWeightVotes?.gauges.map(gauge => ({
           ...gauge,
           title: gaugeMapper?.[gauge.gaugeAddress]?.title ?? '',
         })) ?? []
@@ -51,7 +51,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
     }
 
     return Object.values(gaugeMapper ?? {})
-      .filter((gauge) => gauge.gauge_relative_weight > 0.5)
+      .filter(gauge => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
   }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])
 

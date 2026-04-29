@@ -51,7 +51,7 @@ const BandsChartComponent = ({
   const derived = useDerivedChartData(chartData)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const theme = useTheme()
-  const tooltipFormatter = useEChartsTooltip(chartData, theme, (data) => (
+  const tooltipFormatter = useEChartsTooltip(chartData, theme, data => (
     <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
   ))
   const option: EChartsOption = useMemo(

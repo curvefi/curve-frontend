@@ -29,17 +29,17 @@ import { t } from '@ui-kit/lib/i18n'
 export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanCollateralAdd.activeKey)
-  const detailInfo = useStore((state) => state.loanCollateralAdd.detailInfo[activeKey])
-  const formEstGas = useStore((state) => state.loanCollateralAdd.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanCollateralAdd.formStatus)
-  const formValues = useStore((state) => state.loanCollateralAdd.formValues)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const activeKey = useStore(state => state.loanCollateralAdd.activeKey)
+  const detailInfo = useStore(state => state.loanCollateralAdd.detailInfo[activeKey])
+  const formEstGas = useStore(state => state.loanCollateralAdd.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanCollateralAdd.formStatus)
+  const formValues = useStore(state => state.loanCollateralAdd.formValues)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const fetchStepApprove = useStore((state) => state.loanCollateralAdd.fetchStepApprove)
-  const fetchStepIncrease = useStore((state) => state.loanCollateralAdd.fetchStepIncrease)
-  const setFormValues = useStore((state) => state.loanCollateralAdd.setFormValues)
-  const resetState = useStore((state) => state.loanCollateralAdd.resetState)
+  const fetchStepApprove = useStore(state => state.loanCollateralAdd.fetchStepApprove)
+  const fetchStepIncrease = useStore(state => state.loanCollateralAdd.fetchStepIncrease)
+  const setFormValues = useStore(state => state.loanCollateralAdd.setFormValues)
+  const resetState = useStore(state => state.loanCollateralAdd.resetState)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -132,12 +132,12 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['ADD'] : ['APPROVAL', 'ADD']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleBtnClickAdd, userBalances, userState],
   )
@@ -185,7 +185,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(collateral) => updateFormValues({ collateral })}
+          handleInpChange={collateral => updateFormValues({ collateral })}
           handleMaxClick={() => updateFormValues({ collateral: userBalances?.collateral ?? '' })}
         />
       </div>

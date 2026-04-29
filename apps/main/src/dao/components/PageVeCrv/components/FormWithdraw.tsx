@@ -22,8 +22,8 @@ import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 const { IconSize } = SizesAndSpaces
 
 export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
-  const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
-  const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
+  const withdrawLockedCrv = useStore(state => state.lockedCrv.withdrawLockedCrv)
+  const withdrawLockedCrvStatus = useStore(state => state.lockedCrv.withdrawLockedCrvStatus)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
 
   const { address } = useConnection()

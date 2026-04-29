@@ -36,23 +36,27 @@ export const SkeletonRows = <T extends TableItem>({
 }) => {
   const [length, setLength] = useState(initialLength)
   useEffect(
-    () => setTimeoutInterval(() => setLength((prevLength) => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
+    () => setTimeoutInterval(() => setLength(prevLength => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
     [increaseEveryMs, maxLength],
   )
 
   return (
     <>
-      {Array.from({ length }).map((_, rowIndex) => (
-        // note: length is part of the key, so all rows are recreated and the skeleton animation is restarted
-        <TableRow key={`loading-row-${rowIndex}-${length}`} data-testid={`data-table-loading-${rowIndex}`}>
-          {table
-            .getHeaderGroups()
-            .flatMap((headerGroup) => headerGroup.headers)
-            .map(({ column }, columnIndex) => (
-              <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
-            ))}
-        </TableRow>
-      ))}
+      {Array.from({ length }).map(
+        (
+          _,
+          rowIndex, // note: length is part of the key, so all rows are recreated and the skeleton animation is restarted
+        ) => (
+          <TableRow key={`loading-row-${rowIndex}-${length}`} data-testid={`data-table-loading-${rowIndex}`}>
+            {table
+              .getHeaderGroups()
+              .flatMap(headerGroup => headerGroup.headers)
+              .map(({ column }, columnIndex) => (
+                <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
+              ))}
+          </TableRow>
+        ),
+      )}
     </>
   )
 }

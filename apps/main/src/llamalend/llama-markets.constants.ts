@@ -305,8 +305,7 @@ export const DEPRECATED_LLAMAS: Record<
  * to filter out those markets:
  *
  * ```typescript
- * private hasLeverage = (): boolean => {
-     return this.llamalend.constants.ALIASES.leverage_zap !== this.llamalend.constants.ZERO_ADDRESS &&
+ * private hasLeverage = (): boolean => {     return this.llamalend.constants.ALIASES.leverage_zap !== this.llamalend.constants.ZERO_ADDRESS &&
        this._getMarketId() >= Number(this.llamalend.constants.ALIASES["leverage_markets_start_id"]);
  * }
  * ```

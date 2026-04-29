@@ -18,10 +18,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
-const emptyDepositForm = (): DepositForm => ({
-  depositAmount: undefined,
-  maxDepositAmount: undefined,
-})
+const emptyDepositForm = (): DepositForm => ({ depositAmount: undefined, maxDepositAmount: undefined })
 
 export const useDepositForm = <ChainId extends LlamaChainId>({
   market,
@@ -50,12 +47,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      (): DepositParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        depositAmount,
-      }),
+      (): DepositParams<ChainId> => ({ chainId, marketId, userAddress, depositAmount }),
       [chainId, marketId, userAddress, depositAmount],
     ),
   )

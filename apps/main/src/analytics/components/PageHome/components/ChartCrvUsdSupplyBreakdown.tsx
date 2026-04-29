@@ -35,7 +35,7 @@ const MARKETS = {
 
 type MarketName = keyof typeof MARKETS
 
-const MARKET_NAMES_SET = new Set<string>(Object.values(MARKETS).map((m) => m.name))
+const MARKET_NAMES_SET = new Set<string>(Object.values(MARKETS).map(m => m.name))
 
 const MARKET_LABELS = fromEntries(
   recordEntries(MARKETS)
@@ -67,22 +67,22 @@ export function ChartCrvUsdSupplyBreakdown() {
   // Not using switch hook for the non mint markets as otherwise it's a lot of boilerplate
   const [mintMarketsVisible, , , toggleMintMarketsVisible] = useSwitch(true)
   const [visibility, setVisibility] = useState<Record<MarketName, boolean>>(() => mapRecord(MARKETS, () => true))
-  const toggleVisibility = (key: MarketName) => setVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
+  const toggleVisibility = (key: MarketName) => setVisibility(prev => ({ ...prev, [key]: !prev[key] }))
 
   const chartData = useMemo(
     () =>
       llama(data)
-        .groupBy((x) => new Date(x.timestamp).getTime())
+        .groupBy(x => new Date(x.timestamp).getTime())
         .entries()
         .map(([, x]) => ({
           time: new Date(x[0].timestamp).getTime(),
           mintMarkets: llama(x)
-            .filter((y) => !MARKET_NAMES_SET.has(y.market))
-            .sumBy((y) => y.supply),
-          ...mapRecord(MARKETS, (_, { name }) => x.find((y) => y.market === name)?.supply ?? 0),
+            .filter(y => !MARKET_NAMES_SET.has(y.market))
+            .sumBy(y => y.supply),
+          ...mapRecord(MARKETS, (_, { name }) => x.find(y => y.market === name)?.supply ?? 0),
         }))
         .uniqWith((x, y) => x.time === y.time)
-        .orderBy((c) => c.time, 'asc')
+        .orderBy(c => c.time, 'asc')
         .value(),
     [data],
   )
@@ -111,19 +111,19 @@ export function ChartCrvUsdSupplyBreakdown() {
         legendSets,
         options: {
           tooltip: createTooltip(formatUsd),
-          xAxis: { data: chartData.map((x) => x.time).map(timeToCategory) },
+          xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
           yAxis: { axisLabel: { formatter: (v: number) => formatUsd(v) } },
           series: [
             {
               name: MINT_MARKETS_LABEL,
-              data: chartData.map((x) => x.mintMarkets),
+              data: chartData.map(x => x.mintMarkets),
               type: 'line',
               stack: 'supply',
               areaStyle: {},
             },
             ...recordEntries(MARKET_LABELS).map(([key, name]) => ({
               name,
-              data: chartData.map((x) => x[key]),
+              data: chartData.map(x => x[key]),
               type: 'line' as const,
               stack: 'supply',
               areaStyle: {},
@@ -148,8 +148,8 @@ export function ChartCrvUsdSupplyBreakdown() {
           <ButtonExport
             filename="crvusd_supply"
             data={{
-              mintMarkets: chartData.map((x) => ({ time: x.time, value: x.mintMarkets })),
-              ...mapRecord(MARKET_LABELS, (key) => chartData.map((x) => ({ time: x.time, value: x[key] }))),
+              mintMarkets: chartData.map(x => ({ time: x.time, value: x.mintMarkets })),
+              ...mapRecord(MARKET_LABELS, key => chartData.map(x => ({ time: x.time, value: x[key] }))),
             }}
             fullscreen={fullscreen}
           />

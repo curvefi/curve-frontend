@@ -29,7 +29,7 @@ export const UserProfile = () => {
               minWidth: Width.modal.lg,
               paddingInline: Spacing.md,
               paddingBlock: Spacing.lg,
-              backgroundColor: (t) => t.design.Layer[1].Fill,
+              backgroundColor: t => t.design.Layer[1].Fill,
             },
           },
         }}

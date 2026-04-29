@@ -8,8 +8,8 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
 
 export const DailyLocks = () => {
-  const getVeCrvLocks = useStore((state) => state.analytics.getVeCrvLocks)
-  const veCrvLocks = useStore((state) => state.analytics.veCrvLocks)
+  const getVeCrvLocks = useStore(state => state.analytics.getVeCrvLocks)
+  const veCrvLocks = useStore(state => state.analytics.veCrvLocks)
 
   const locksFetchSuccess = veCrvLocks.fetchStatus === 'SUCCESS'
   const locksFetchError = veCrvLocks.fetchStatus === 'ERROR'

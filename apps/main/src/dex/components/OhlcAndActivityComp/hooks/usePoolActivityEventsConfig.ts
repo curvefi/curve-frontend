@@ -59,7 +59,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const liquidityWithUrls: PoolLiquidityRow[] = useMemo(
     () =>
       (network &&
-        liquidityData?.events.map((event) => ({
+        liquidityData?.events.map(event => ({
           ...event,
           txUrl: scanTxPath(networkConfig, event.txHash),
           network,

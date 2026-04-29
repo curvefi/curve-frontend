@@ -26,7 +26,7 @@ export const TransferActions = ({
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
+  const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
 
   const { address: userAddress } = useConnection()
   const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({

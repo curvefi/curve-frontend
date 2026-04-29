@@ -22,16 +22,16 @@ type DepositWithdrawProps = {
 }
 
 const ScrvUsdDepositFormTab = () => {
-  const setStakingModule = useStore((state) => state.scrvusd.setStakingModule)
-  const previewAction = useStore((state) => state.scrvusd.previewAction)
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const setPreviewReset = useStore((state) => state.scrvusd.setPreviewReset)
-  const approveDepositTransaction = useStore((state) => state.scrvusd.approveDepositTransaction)
-  const depositTransaction = useStore((state) => state.scrvusd.depositTransaction)
-  const depositApproval = useStore((state) => state.scrvusd.depositApproval)
-  const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)
-  const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
-  const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
+  const setStakingModule = useStore(state => state.scrvusd.setStakingModule)
+  const previewAction = useStore(state => state.scrvusd.previewAction)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const setPreviewReset = useStore(state => state.scrvusd.setPreviewReset)
+  const approveDepositTransaction = useStore(state => state.scrvusd.approveDepositTransaction)
+  const depositTransaction = useStore(state => state.scrvusd.depositTransaction)
+  const depositApproval = useStore(state => state.scrvusd.depositApproval)
+  const getInputAmountApproved = useStore(state => state.scrvusd.getInputAmountApproved)
+  const estimateGasDepositApprove = useStore(state => state.scrvusd.estimateGas.depositApprove)
+  const estimateGasDeposit = useStore(state => state.scrvusd.estimateGas.deposit)
   const { llamaApi: curve = null } = useCurve()
   const { address } = useConnection()
 
@@ -77,12 +77,12 @@ const ScrvUsdDepositFormTab = () => {
 }
 
 const ScrvUsdWithdrawFormTab = () => {
-  const setStakingModule = useStore((state) => state.scrvusd.setStakingModule)
-  const previewAction = useStore((state) => state.scrvusd.previewAction)
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const setPreviewReset = useStore((state) => state.scrvusd.setPreviewReset)
-  const withdrawTransaction = useStore((state) => state.scrvusd.withdrawTransaction)
-  const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
+  const setStakingModule = useStore(state => state.scrvusd.setStakingModule)
+  const previewAction = useStore(state => state.scrvusd.previewAction)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const setPreviewReset = useStore(state => state.scrvusd.setPreviewReset)
+  const withdrawTransaction = useStore(state => state.scrvusd.withdrawTransaction)
+  const estimateGasWithdraw = useStore(state => state.scrvusd.estimateGas.withdraw)
   const { llamaApi: curve = null } = useCurve()
   const { address } = useConnection()
 

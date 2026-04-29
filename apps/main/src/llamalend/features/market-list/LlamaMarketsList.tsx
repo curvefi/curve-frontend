@@ -63,7 +63,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const enableDeprecatedMarkets = useUserProfileStore((state) => state.showDeprecatedMarkets)
+  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
   const { data, isError, isLoading, isFetching } = useLlamaMarkets({
     userAddress: address,
     enableLLv2: useLLv2(),
@@ -78,7 +78,7 @@ export const LlamaMarketsList = () => {
           <UserPositionsTable onReload={onReload} result={data} isError={isError} loading={loading} />
         )
       ) : (
-        <Box paddingBlock={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <Box paddingBlock={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
             action={
               <ConnectWalletButton

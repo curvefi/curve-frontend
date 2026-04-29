@@ -136,8 +136,8 @@ export const TooltipItems = ({
     padding={Spacing.sm}
     gap={Spacing.xs}
     marginTop={extraMargin ? Spacing.sm : 0}
-    {...(borderTop && { borderTop: (t) => `1px solid ${t.design.Layer[3].Outline}` })}
-    {...(secondary && { bgcolor: (t) => t.design.Layer[2].Fill })}
+    {...(borderTop && { borderTop: t => `1px solid ${t.design.Layer[3].Outline}` })}
+    {...(secondary && { bgcolor: t => t.design.Layer[2].Fill })}
   >
     {children}
   </Stack>

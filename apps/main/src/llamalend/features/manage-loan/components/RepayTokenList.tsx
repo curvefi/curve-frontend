@@ -44,7 +44,7 @@ export function RepayTokenList<ChainId extends IChainId>({
   const { data: tokenPrices } = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
 
   const [[stateCollateralToken], walletTokens] = useMemo(
-    () => partition(tokens, (token) => token.field === 'stateCollateral'),
+    () => partition(tokens, token => token.field === 'stateCollateral'),
     [tokens],
   )
 

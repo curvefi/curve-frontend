@@ -42,7 +42,7 @@ export const SlippageToleranceActionInfo = ({
   stateKey?: string
   size?: ActionInfoSize
 }) => {
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   return (
     <SlippageToleranceActionInfoPure

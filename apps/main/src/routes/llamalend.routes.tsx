@@ -25,9 +25,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets',
     component: LlamaMarketsList,
-    head: () => ({
-      meta: [{ title: 'Llamalend Markets - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Llamalend Markets - Curve' }] }),
     ...layoutProps,
   }),
 ])

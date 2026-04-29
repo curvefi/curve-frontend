@@ -41,7 +41,7 @@ export const DesktopHeader = ({
 
     <Toolbar
       sx={{
-        backgroundColor: (t) => t.design.Layer[2].Fill,
+        backgroundColor: t => t.design.Layer[2].Fill,
         justifyContent: 'space-around',
         paddingY: 0,
       }}

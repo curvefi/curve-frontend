@@ -31,16 +31,16 @@ export const decimalMax = (...data: Decimal[]) =>
   data.length ? (BigNumber.max(...data)!.toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
-  data.filter((d) => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
+  data.filter(d => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
 
 export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): Decimal =>
   rest
-    .filter((d) => d != null)
+    .filter(d => d != null)
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
     .toFixed() as Decimal
 
 export const decimalNegate = (value: Decimal | undefined) =>
-  value != null ? (new BigNumber(value).negated().toFixed() as Decimal) : undefined
+  value == null ? undefined : (new BigNumber(value).negated().toFixed() as Decimal)
 
 export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first).isEqualTo(second)
 
@@ -49,8 +49,6 @@ export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
-
-export const decimalAbs = (value: Decimal) => new BigNumber(value).abs().toFixed() as Decimal
 
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

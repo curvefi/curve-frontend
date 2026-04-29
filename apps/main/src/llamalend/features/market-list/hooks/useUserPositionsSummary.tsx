@@ -59,10 +59,7 @@ const createMetric = (
   data: number,
   isLoading: boolean,
   error: Error | null,
-): UserPositionSummaryMetric => ({
-  label,
-  metric: { data, isLoading, error },
-})
+): UserPositionSummaryMetric => ({ label, metric: { data, isLoading, error } })
 
 const getSupplyEntry = (market: LlamaMarket, userAddress: Address | undefined): PositionQueryEntry | null => {
   if (!market.userHasPositions?.Supply || !market.vaultAddress) return null
@@ -109,7 +106,7 @@ const getBorrowEntry = (market: LlamaMarket, userAddress: Address | undefined): 
 
 /** Deduplicate token price lookup entries by chain and address. */
 const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
-  uniqBy(items.flatMap(getEntries), (entry) => `${entry.chainId}:${entry.tokenAddress.toLowerCase()}`)
+  uniqBy(items.flatMap(getEntries), entry => `${entry.chainId}:${entry.tokenAddress.toLowerCase()}`)
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
   entries.map(({ chainId, tokenAddress }) => getTokenUsdRateQueryOptions({ chainId, tokenAddress }))
@@ -150,15 +147,15 @@ export const useUserPositionsSummary = ({
   const userPositionQueries = useMemo(() => {
     if (!markets) return { borrow: [], supply: [] }
 
-    const positionEntries = markets.flatMap((market) => {
+    const positionEntries = markets.flatMap(market => {
       const isSupply = market.userHasPositions?.Supply
       if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return []
 
       return notFalsy<PositionQueryEntry>(getSupplyEntry(market, userAddress), getBorrowEntry(market, userAddress))
     })
 
-    const [borrow, supply] = partition(positionEntries, (entry) => entry.kind === 'borrow').map((entries) =>
-      entries.map((entry) => entry.value),
+    const [borrow, supply] = partition(positionEntries, entry => entry.kind === 'borrow').map(entries =>
+      entries.map(entry => entry.value),
     ) as [BorrowPositionQuery[], SupplyPositionQuery[]]
 
     return { borrow, supply }
@@ -188,7 +185,7 @@ export const useUserPositionsSummary = ({
       ...userPositionQueries.borrow.map(({ query }) => query),
       ...createTokenPriceQueries(tokenPriceEntries.borrow),
     ],
-    combine: (results) => {
+    combine: results => {
       const [positionResults, priceResults] = splitAt(results, userPositionQueries.borrow.length) as [
         UseQueryResult<BorrowStatsData>[],
         UseQueryResult<TokenPriceData>[],
@@ -238,7 +235,7 @@ export const useUserPositionsSummary = ({
       ...userPositionQueries.supply.map(({ query }) => query),
       ...createTokenPriceQueries(tokenPriceEntries.supply),
     ],
-    combine: (results) => {
+    combine: results => {
       const [positionResults, priceResults] = splitAt(results, userPositionQueries.supply.length) as [
         UseQueryResult<SupplyStatsData>[],
         UseQueryResult<TokenPriceData>[],

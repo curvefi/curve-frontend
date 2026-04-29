@@ -64,10 +64,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         slippage,
         onSlippageChange,
         priceImpact: q(useCreateLoanPriceImpact(params, isOpen)),
-        leverageValue: mapQuery(expectedCollateral, (data) => data.leverage),
+        leverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevLeverageValue: constQ('0'),
         prevCollateral: constQ('0'),
-        leverageTotalCollateral: mapQuery(expectedCollateral, (data) => data.totalCollateral),
+        leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),
         expected: expectedCollateral,
       })}
       {...useBorrowRates({ params, market, debtDelta: debt }, isOpen)}

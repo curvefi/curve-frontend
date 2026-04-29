@@ -88,15 +88,12 @@ export const MarketRateCurveChart = ({
   )
 
   const seriesColors: Record<RateCurveSeriesKey, string> = useMemo(
-    () => ({
-      borrowApr: Color.Primary[500],
-      supplyApy: Color.Tertiary[400],
-    }),
+    () => ({ borrowApr: Color.Primary[500], supplyApy: Color.Tertiary[400] }),
     [Color.Primary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<RateCurveSeriesKey>[] = useMemo(
-    () => SERIES_CONFIG.map((serie) => ({ ...serie, color: seriesColors[serie.key] })),
+    () => SERIES_CONFIG.map(serie => ({ ...serie, color: seriesColors[serie.key] })),
     [seriesColors],
   )
 
@@ -107,7 +104,7 @@ export const MarketRateCurveChart = ({
         line: { lineStroke: seriesColors[key], dash },
         toggled: visibleSeries.includes(key),
         onToggle: () =>
-          setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key])),
+          setVisibleSeries(prev => (prev.includes(key) ? prev.filter(item => item !== key) : [...prev, key])),
       })),
     [seriesColors, visibleSeries],
   )
@@ -130,8 +127,8 @@ export const MarketRateCurveChart = ({
             visibleSeries={visibleSeries}
             xAxisType="value"
             markLines={markLines}
-            xTickFormatter={(value) => formatPercent(+value)}
-            yTickFormatter={(value) => formatPercent(+value)}
+            xTickFormatter={value => formatPercent(+value)}
+            yTickFormatter={value => formatPercent(+value)}
             yPaddingRatio={0.05}
             renderTooltip={RateCurveTooltip}
           />

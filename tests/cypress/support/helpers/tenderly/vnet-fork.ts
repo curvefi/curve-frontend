@@ -49,7 +49,7 @@ export const forkVirtualTestnet = ({
       body: forkOptions,
       failOnStatusCode: false,
     })
-    .then((response) => {
+    .then(response => {
       if (!response.isOkStatusCode) {
         throw new Error(
           `Failed to fork virtual testnet '${forkOptions.vnet_id}': ${response.status} ${response.statusText}`,

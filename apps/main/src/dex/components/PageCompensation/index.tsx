@@ -26,12 +26,12 @@ export const FormCompensation = ({
   const [balances, setBalances] = useState<Balances>({})
   const [vestedTotals, setVestedTotals] = useState<VestedTotals>({})
 
-  const groupedContracts = useMemo(() => lodash.groupBy(contracts, (c) => c.poolId), [contracts])
+  const groupedContracts = useMemo(() => lodash.groupBy(contracts, c => c.poolId), [contracts])
 
   const getBalances = useCallback(async (signerAddress: string, contracts: EtherContract[]) => {
     try {
       setError('')
-      const balances = await Promise.all(contracts.map((c) => c.contract.balanceOf(signerAddress)))
+      const balances = await Promise.all(contracts.map(c => c.contract.balanceOf(signerAddress)))
       const mappedBalances = contracts.map(({ poolId }, idx) => ({ poolId, balance: Number(balances[idx]) / 1e18 }))
       const groupedBalances = lodash.groupBy(mappedBalances, ({ poolId }) => poolId)
       setBalances(groupedBalances)
@@ -75,10 +75,8 @@ export const FormCompensation = ({
     async (signerAddress: string, contracts: EtherContract[]) => {
       try {
         const signer = await provider.getSigner()
-        const vestAddresses = await Promise.all(contracts.map((c) => c.contract.vest()))
-        const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(
-          (module) => module.default,
-        )
+        const vestAddresses = await Promise.all(contracts.map(c => c.contract.vest()))
+        const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(module => module.default)
         const iface = new Interface(abi as InterfaceAbi)
         const vestedTotals = await Promise.all(
           vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),

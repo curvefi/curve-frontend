@@ -48,7 +48,7 @@ export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleToken
   useEffect(() => {
     if (isLoading || selectChartList.length === 0) return
 
-    const isCurrentInList = selectChartList.some((s) => s.key === selectedChartKey)
+    const isCurrentInList = selectChartList.some(s => s.key === selectedChartKey)
     if (!isCurrentInList) {
       setSelectedChartKey(selectChartList[0].key as ChartKey)
     }

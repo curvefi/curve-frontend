@@ -24,7 +24,7 @@ const validateRouter = ({
     test('router', `Router must be one of ${RouteProviders.join(', ')}`, () => {
       enforce(routers).isArray().isNotEmpty()
       enforce(routers.length).isPositive().message(`At least one router must be provided.`)
-      routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
+      routers.forEach(r => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
     })
   })
 }

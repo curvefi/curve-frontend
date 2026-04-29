@@ -8,7 +8,7 @@ const { Spacing } = SizesAndSpaces
 // Usually they're used inside a grid or tab panel with a different background color,
 // which makes it a bit more readable.
 const PartnerCardWrapper = (args: Parameters<typeof PartnerCard>[0]) => (
-  <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.xl }}>
+  <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.xl }}>
     <PartnerCard {...args} />
   </Box>
 )

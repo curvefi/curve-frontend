@@ -25,7 +25,7 @@ export const useTokenSelectorData = (
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
 ): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
   const config = useConfig()
-  const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
+  const tokenAddresses = useMemo(() => tokens.map(token => token.address), [tokens])
 
   /*
    * Prefetch balances eagerly so they're cached before the modal opens.
@@ -47,18 +47,15 @@ export const useTokenSelectorData = (
 
   const { data: balances, isLoading } = useTokenBalances(
     { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
-    // We only care for query observers and don't want to invoke queryFn for each token balance separately, so we disable the query and rely on prefetchTokenBalances.
-    false,
+    false, // disabled, rely on prefetchTokenBalances (only care for query observers, don't invoke queryFn for each token)
   )
 
   // Only fetch prices for tokens the user has a balance of
   const tokenAddressesWithBalance = useMemo(
     () =>
-      Object.keys(balances ?? {}).length
-        ? recordEntries(balances)
-            .filter(([, balance]) => +balance > 0)
-            .map(([address]) => address)
-        : [],
+      recordEntries(balances ?? {})
+        .filter(([, balance]) => +balance > 0)
+        .map(([address]) => address),
     [balances],
   )
 

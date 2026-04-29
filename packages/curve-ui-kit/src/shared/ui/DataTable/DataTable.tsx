@@ -59,7 +59,7 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
     // Skip for manual pagination - data is expected to change on page change
     if (isManualPagination) return
     // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCount.current && resultCount) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    if (lastResultCount.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
     lastResultCount.current = resultCount
   }, [resultCount, isManualPagination])
 }
@@ -102,7 +102,7 @@ export const DataTable = <T extends TableItem>({
 
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
   const containerRef = useRef<HTMLDivElement>(null)
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
@@ -120,7 +120,7 @@ export const DataTable = <T extends TableItem>({
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
         sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
+          backgroundColor: t => t.design.Layer[1].Fill,
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
         }}
         data-testid={!loading && 'data-table'}
@@ -129,7 +129,7 @@ export const DataTable = <T extends TableItem>({
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
             {children && <FilterRow table={table}>{children}</FilterRow>}
 
-            {headerGroups.map((headerGroup) => (
+            {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell

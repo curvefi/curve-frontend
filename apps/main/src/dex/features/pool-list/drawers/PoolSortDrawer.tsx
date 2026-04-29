@@ -33,7 +33,7 @@ export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const sortOptions = useDexPoolSortOptions()
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const selectedOption = useMemo(() => sortOptions.find((option) => option.id === sortField), [sortOptions, sortField])
+  const selectedOption = useMemo(() => sortOptions.find(option => option.id === sortField), [sortOptions, sortField])
 
   const handleSort = useCallback(
     (id: PoolColumnId) => {
