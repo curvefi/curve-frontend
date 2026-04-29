@@ -1,11 +1,14 @@
 import { sumBy } from 'lodash'
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import type { CellContext } from '@tanstack/react-table'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { formatTokens } from '../action-infos/util'
 import type { ClosePositionRow } from '../columns/columns.definitions'
-import { BaseCell } from './BaseCell'
+
+const { Spacing } = SizesAndSpaces
 
 const formatNotional = (notional: Amount) =>
   formatNumber(notional, { unit: 'dollar', abbreviate: false, useGrouping: false })
@@ -70,9 +73,9 @@ export const ValueCell = ({ getValue, row }: CellContext<ClosePositionRow, Close
   const { testId } = row.original
   return (
     value && (
-      <BaseCell>
+      <Box paddingBlock={Spacing.md}>
         <ValueCellDisplay tokens={value} testId={testId} />
-      </BaseCell>
+      </Box>
     )
   )
 }

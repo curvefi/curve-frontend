@@ -1,7 +1,10 @@
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ClosePositionRow } from '../columns/columns.definitions'
-import { BaseCell } from './BaseCell'
+
+const { Spacing } = SizesAndSpaces
 
 export const LabelCellDisplay = ({
   label,
@@ -13,6 +16,7 @@ export const LabelCellDisplay = ({
   <Typography
     variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
     color={isFooter ? 'textPrimary' : 'textSecondary'}
+    whiteSpace="nowrap" // Aesthetics; it looks ugly if this column wraps
   >
     {label}
   </Typography>
@@ -22,10 +26,9 @@ export const LabelCell = ({ getValue }: CellContext<ClosePositionRow, ClosePosit
   const value = getValue()
   return (
     value != null && (
-      // Min width of 16ch so labels don't wrap (biggest one is 'Paid from collateral')
-      <BaseCell sx={{ minWidth: '16ch' }}>
+      <Box paddingBlock={Spacing.md}>
         <LabelCellDisplay label={value} />
-      </BaseCell>
+      </Box>
     )
   )
 }
