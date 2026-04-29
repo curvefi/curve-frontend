@@ -8316,7 +8316,7 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-import-resolver-typescript: "npm:4.4.4"
     eslint-plugin-import: "npm:2.32.0"
-    eslint-plugin-no-only-tests: "npm:3.3.0"
+    eslint-plugin-no-only-tests: "npm:3.4.0"
     eslint-plugin-react-refresh: "npm:0.5.2"
     eslint-plugin-storybook: "npm:10.3.5"
     eslint-plugin-unused-imports: "npm:4.3.0"
@@ -9565,10 +9565,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-no-only-tests@npm:3.3.0":
-  version: 3.3.0
-  resolution: "eslint-plugin-no-only-tests@npm:3.3.0"
-  checksum: 10c0/a04425d9d3bcd745267168782eb12a3a712b8357264ddd4e204204318975c2c21e2c1efe68113181de908548a85762205b61d8f92ec9dc5e0a5ae54c0240a24d
+"eslint-plugin-no-only-tests@npm:3.4.0":
+  version: 3.4.0
+  resolution: "eslint-plugin-no-only-tests@npm:3.4.0"
+  checksum: 10c0/7c2163ab71cce74bb276025463910ea760888290cc9a3fb3e8ed4058055fd69cc7c145beca2f809232488b62c331e17a7b9271a025ef462e87d706298fb6f87a
   languageName: node
   linkType: hard
 
