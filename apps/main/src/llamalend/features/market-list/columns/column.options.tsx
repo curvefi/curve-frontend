@@ -10,9 +10,7 @@ import { LlamaMarketColumnId } from './columns.enum'
  * On mobile that is just the market title and the column that is currently sorted.
  */
 export const createLlamaMarketsMobileColumns = (sortBy: LlamaMarketColumnId) =>
-  fromEntries(
-    recordValues(LlamaMarketColumnId).map((key) => [key, key === LlamaMarketColumnId.Assets || key === sortBy]),
-  )
+  fromEntries(recordValues(LlamaMarketColumnId).map(key => [key, key === LlamaMarketColumnId.Assets || key === sortBy]))
 
 /**
  * Create a map of column visibility for the Llama markets table that can be customized by the user.

@@ -46,10 +46,10 @@ type StatisticsProps = {
 }
 
 export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
-  const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
-  const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
-  const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
-  const setRevenueChartTimeOption = useStore((state) => state.scrvusd.setRevenueChartTimeOption)
+  const selectedStatisticsChart = useStore(state => state.scrvusd.selectedStatisticsChart)
+  const setSelectedStatisticsChart = useStore(state => state.scrvusd.setSelectedStatisticsChart)
+  const revenueChartTimeOption = useStore(state => state.scrvusd.revenueChartTimeOption)
+  const setRevenueChartTimeOption = useStore(state => state.scrvusd.setRevenueChartTimeOption)
 
   const {
     data: yieldData,
@@ -77,7 +77,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
       dash,
     },
     toggled: visibleSeries.includes(key),
-    onToggle: () => setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
+    onToggle: () => setVisibleSeries(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])),
   }))
 
   return (

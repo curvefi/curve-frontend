@@ -26,7 +26,7 @@ export const TableButton = forwardRef<
       ref={ref}
       size="small"
       data-testid={testId}
-      sx={(t) => ({
+      sx={t => ({
         /** The IconButton component is being used in the codebase as a Button component (with only the icon) or as a Chip component (like here)
          * These are represented by two different components in Figma, therefore we should properly handle both variants from mui-icon-button.ts.
          * TODO: refactor the IconButton's style from mui-icon-button.ts */

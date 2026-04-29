@@ -52,7 +52,7 @@ const RouteProviderStory = ({
         data={routes}
         selectedRoute={selectedRoute}
         isLoading={isLoading}
-        onChange={useCallback((route) => setSelectedRoute(route), [])}
+        onChange={useCallback(route => setSelectedRoute(route), [])}
         isExpanded={isExpanded}
         onToggle={toggle}
         onRefresh={useCallback(() => {
@@ -68,20 +68,20 @@ const RouteProviderStory = ({
 }
 
 export const Collapsed: Story = {
-  render: (args) => <RouteProviderStory {...args} />,
+  render: args => <RouteProviderStory {...args} />,
 }
 
 export const Expanded: Story = {
   args: { isExpanded: true },
-  render: (args) => <RouteProviderStory {...args} />,
+  render: args => <RouteProviderStory {...args} />,
 }
 
 export const SingleRoute: Story = {
   args: { data: [mockRoutes[0]] },
-  render: (args) => <RouteProviderStory {...args} />,
+  render: args => <RouteProviderStory {...args} />,
 }
 
 export const Loading: Story = {
   args: { isLoading: true },
-  render: (args) => <RouteProviderStory {...args} />,
+  render: args => <RouteProviderStory {...args} />,
 }

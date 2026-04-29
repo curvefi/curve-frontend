@@ -18,8 +18,8 @@ const tabs: TabOption<Tab>[] = [
 ]
 
 export const Analytics = () => {
-  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const [tab, setTab] = useState<Tab>('fees')
 
   useEffect(() => {

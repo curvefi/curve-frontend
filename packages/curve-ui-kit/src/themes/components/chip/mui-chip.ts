@@ -233,10 +233,7 @@ export const defineMuiChip = (
         props: { clickable: true, variant },
         style: base,
       },
-      ...Object.entries(colors).map(([color, style]) => ({
-        props: { clickable: true, variant, color },
-        style,
-      })),
+      ...Object.entries(colors).map(([color, style]) => ({ props: { clickable: true, variant, color }, style })),
     ]),
 
     ...Object.entries(chipSizes).map(([size, { font, iconSize, height, paddingInline, lineHeight }]) => ({

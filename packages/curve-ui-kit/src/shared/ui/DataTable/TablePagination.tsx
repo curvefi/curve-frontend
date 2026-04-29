@@ -45,9 +45,9 @@ const Spacer = () => (
  * and the last pages are the last two pages.
  */
 const getPageOptions = (pageIndex: number, pageCount: number): [number[], number[], number[]] => [
-  range(0, 2).filter((p) => p < pageIndex - 1),
-  range(pageIndex - 1, 3).filter((p) => p >= 0 && p < pageCount),
-  range(pageCount - 2, 2).filter((p) => p > pageIndex + 1),
+  range(0, 2).filter(p => p < pageIndex - 1),
+  range(pageIndex - 1, 3).filter(p => p >= 0 && p < pageCount),
+  range(pageCount - 2, 2).filter(p => p > pageIndex + 1),
 ]
 
 /**
@@ -76,15 +76,15 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
       <NeighborButton table={table} type="previous" />
 
       <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive data-testid="page-buttons">
-        {firstPages.map((o) => (
+        {firstPages.map(o => (
           <PageButton key={o} page={o} table={table} />
         ))}
         {firstPages.length > 0 && last(firstPages) !== aroundPages[0] - 1 && <Spacer />}
-        {aroundPages.map((o) => (
+        {aroundPages.map(o => (
           <PageButton key={o} page={o} table={table} />
         ))}
         {lastPages.length > 0 && lastPages[0] - 1 !== last(aroundPages) && <Spacer />}
-        {lastPages.map((o) => (
+        {lastPages.map(o => (
           <PageButton key={o} page={o} table={table} />
         ))}
       </ToggleButtonGroup>

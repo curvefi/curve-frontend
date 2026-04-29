@@ -73,7 +73,7 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
         width: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
         height: SLIDER_HEIGHT_PLUS_BORDERS,
       },
-      getImages: (design) => ({
+      getImages: design => ({
         default: design.Sliders.default.SliderThumbImage,
         hover: design.Sliders.hover.SliderThumbImage,
       }),
@@ -113,7 +113,7 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
         width: SLIDER_HEIGHT_PLUS_BORDERS,
         height: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
       },
-      getImages: (design) => ({
+      getImages: design => ({
         default: design.Sliders.default.SliderThumbImageVertical,
         hover: design.Sliders.hover.SliderThumbImageVertical,
       }),

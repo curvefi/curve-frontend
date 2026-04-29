@@ -75,7 +75,7 @@ export const {
     const { gauges } = await fetchJson<PricesGaugeOverviewResponse>(GAUGES_URL)
 
     return fromEntries(
-      gauges.map((gauge) => [
+      gauges.map(gauge => [
         gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase(),
         {
           // effective_address is the sidechain gauge address

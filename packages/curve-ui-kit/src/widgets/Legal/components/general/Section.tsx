@@ -9,7 +9,7 @@ export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
     justifyContent="end"
     sx={{
-      borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+      borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`,
       paddingBlockStart: Spacing.lg,
       paddingInline: Spacing.md,
     }}
@@ -44,8 +44,8 @@ export const Bold = ({ children }: { children: ReactNode }) => (
 
 export const Section = ({ children }: { children?: ReactNode }) => {
   const childArray = Children.toArray(children)
-  const title = childArray.find((child) => isValidElement(child) && child.type === Title)
-  const content = childArray.filter((child) => isValidElement(child) && child.type !== Title)
+  const title = childArray.find(child => isValidElement(child) && child.type === Title)
+  const content = childArray.filter(child => isValidElement(child) && child.type !== Title)
 
   return (
     <Stack

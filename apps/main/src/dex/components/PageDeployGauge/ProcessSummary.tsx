@@ -19,9 +19,9 @@ type Props = {
 }
 
 export const ProcessSummary = ({ chainId, isLite }: Props) => {
-  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
-  const linkPoolAddress = useStore((state) => state.deployGauge.linkPoolAddress)
-  const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
+  const deploymentStatus = useStore(state => state.deployGauge.deploymentStatus)
+  const linkPoolAddress = useStore(state => state.deployGauge.linkPoolAddress)
+  const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
 
   const push = useNavigate()
   const sidechain: ChainId = currentSidechain === null ? 1 : currentSidechain

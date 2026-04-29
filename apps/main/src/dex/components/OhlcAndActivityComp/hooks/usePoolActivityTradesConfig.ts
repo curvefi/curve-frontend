@@ -59,11 +59,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const tradesWithUrls: PoolTradeRow[] = useMemo(
     () =>
       (network &&
-        tradesData?.trades.map((trade) => ({
-          ...trade,
-          txUrl: scanTxPath(networkConfig, trade.txHash),
-          network,
-        }))) ??
+        tradesData?.trades.map(trade => ({ ...trade, txUrl: scanTxPath(networkConfig, trade.txHash), network }))) ??
       [],
     [tradesData?.trades, networkConfig, network],
   )

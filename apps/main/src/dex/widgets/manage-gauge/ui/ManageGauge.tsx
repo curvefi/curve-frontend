@@ -23,9 +23,7 @@ export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: Chai
     () =>
       !!rewardDistributors &&
       !!signerAddress &&
-      Object.values(rewardDistributors).some((distributorId) =>
-        isAddressEqual(distributorId as Address, signerAddress),
-      ),
+      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId as Address, signerAddress)),
     [rewardDistributors, signerAddress],
   )
 

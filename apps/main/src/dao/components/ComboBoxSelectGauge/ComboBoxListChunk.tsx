@@ -27,7 +27,7 @@ export const SelectGaugeListChunk = ({
       ref={ref}
       count={gauges.length}
       className={entry.isIntersecting ? 'visible' : ''}
-      onKeyDown={(evt) => {
+      onKeyDown={evt => {
         // scroll up/down list
         const activeElement = document.activeElement
 
@@ -49,7 +49,7 @@ export const SelectGaugeListChunk = ({
       }}
     >
       {entry.isIntersecting &&
-        gauges.map((item) => (
+        gauges.map(item => (
           <SelectGaugeListItem
             key={item.address}
             testId={testId}

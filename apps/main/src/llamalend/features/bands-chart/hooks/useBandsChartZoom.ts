@@ -39,7 +39,7 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
     const patchedSeries =
       xMax === undefined
         ? option.series
-        : (option.series as { markLine?: { data?: MarklineData } }[]).map((series) => ({
+        : (option.series as { markLine?: { data?: MarklineData } }[]).map(series => ({
             ...series,
             ...(series.markLine && {
               markLine: {

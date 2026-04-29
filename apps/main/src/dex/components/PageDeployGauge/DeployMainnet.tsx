@@ -23,10 +23,10 @@ type Props = {
 const mainnet = 1
 
 export const DeployMainnet = ({ chainId }: Props) => {
-  const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
-  const setCurrentPoolType = useStore((state) => state.deployGauge.setCurrentPoolType)
-  const poolAddress = useStore((state) => state.deployGauge.poolAddress)
-  const setPoolAddress = useStore((state) => state.deployGauge.setPoolAddress)
+  const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
+  const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
+  const poolAddress = useStore(state => state.deployGauge.poolAddress)
+  const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
 
   const { data: network } = useNetworkByChain({ chainId: mainnet })
 

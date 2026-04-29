@@ -25,7 +25,7 @@ const TokenIconsStory = (props: Omit<TokenIconsProps, 'variant'>) => {
     const interval = setInterval(
       () =>
         setSizes(
-          Array.from(ref.current?.querySelectorAll('[data-testid="token-icons"]') ?? []).map((el) =>
+          Array.from(ref.current?.querySelectorAll('[data-testid="token-icons"]') ?? []).map(el =>
             el.getBoundingClientRect(),
           ),
         ),

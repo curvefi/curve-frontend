@@ -33,9 +33,9 @@ export const ComboBoxGauges = ({
   const overlayTriggerState = useOverlayTriggerState({})
 
   const { address: userAddress } = useConnection()
-  const selectedGauge = useStore((state) => state.gauges.selectedGauge)
-  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
-  const setStateByKey = useStore((state) => state.gauges.setStateByKey)
+  const selectedGauge = useStore(state => state.gauges.selectedGauge)
+  const setSelectedGauge = useStore(state => state.gauges.setSelectedGauge)
+  const setStateByKey = useStore(state => state.gauges.setStateByKey)
   const isMobile = useIsMobile()
 
   const { data: gaugeMapper } = useGauges({})
@@ -46,9 +46,9 @@ export const ComboBoxGauges = ({
   })
   const gauges = Object.values(gaugeMapper ?? {})
     .filter(
-      (gauge) =>
+      gauge =>
         !userGaugeWeightVotes?.gauges.some(
-          (userGauge) =>
+          userGauge =>
             userGauge.gaugeAddress.toLowerCase() ===
             (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),
         ),
@@ -134,8 +134,8 @@ function _filter(filterValue: string, endsWith: EndsWith, gauges: GaugeFormatted
   const result = fuse.search(filterValue)
 
   if (result.length > 0) {
-    return result.map((r) => r.item)
+    return result.map(r => r.item)
   } else {
-    return gauges.filter((item) => endsWith(item.address, filterValue))
+    return gauges.filter(item => endsWith(item.address, filterValue))
   }
 }

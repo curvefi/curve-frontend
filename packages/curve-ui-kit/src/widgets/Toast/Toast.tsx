@@ -30,7 +30,7 @@ function useToastItems() {
   useEffect(() => {
     const timeouts: number[] = []
     const dismiss = (notification: ToastItem): void =>
-      setItems((prevNotifications: ToastItem[]) => prevNotifications.filter((n) => n !== notification))
+      setItems((prevNotifications: ToastItem[]) => prevNotifications.filter(n => n !== notification))
     const add = (notification: ToastItem): void => {
       setItems((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
       if (!notification.keepAlive) {
@@ -48,7 +48,7 @@ function useToastItems() {
 }
 
 export const Toast = () => {
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
   const items = useToastItems()
   return (
     <Snackbar

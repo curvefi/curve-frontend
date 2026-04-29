@@ -57,7 +57,7 @@ export const FieldLockedAmt = ({
           <>
             Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
             <RouterLink
-              sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary }}
+              sx={{ color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary }}
               href={getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}
             >
               here

@@ -80,15 +80,15 @@ export const checkPoolInfo = (stableswapNg: boolean, swapType: SwapType, poolSym
 export const validateOracleFunction = (functionName: string) => functionName.endsWith('()')
 
 export const oraclesReady = (tokens: TokenState[]) => {
-  const oracleTokens = tokens.filter((token) => token.ngAssetType === NG_ASSET_TYPE.ORACLE)
-  const addressesValid = oracleTokens.every((token) => isAddress(token.oracle.address))
-  const functionsValid = oracleTokens.every((token) => validateOracleFunction(token.oracle.functionName))
-  const ratesValid = oracleTokens.every((token) => token.oracle.rate !== undefined)
+  const oracleTokens = tokens.filter(token => token.ngAssetType === NG_ASSET_TYPE.ORACLE)
+  const addressesValid = oracleTokens.every(token => isAddress(token.oracle.address))
+  const functionsValid = oracleTokens.every(token => validateOracleFunction(token.oracle.functionName))
+  const ratesValid = oracleTokens.every(token => token.oracle.rate !== undefined)
   return addressesValid && functionsValid && ratesValid
 }
 
 export const containsOracle = (tokens: TokenState[]) =>
-  tokens.some((token) => token.ngAssetType === NG_ASSET_TYPE.ORACLE && token.address !== '')
+  tokens.some(token => token.ngAssetType === NG_ASSET_TYPE.ORACLE && token.address !== '')
 
 export const checkFormReady = (
   poolTypeValid: boolean,

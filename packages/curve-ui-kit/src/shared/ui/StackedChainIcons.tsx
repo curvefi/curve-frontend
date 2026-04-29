@@ -39,7 +39,7 @@ export const StackedChainIcons = ({
     // margin to counter the marginLeft of the ChainIcon at the beginning of each row
     sx={applySxProps({ marginLeft: handleBreakpoints({ marginLeft: overlapBySize('right', overlap)[size] }) }, sx)}
   >
-    {blockchainIds.map((blockchainId) => (
+    {blockchainIds.map(blockchainId => (
       <ChainIcon
         key={blockchainId}
         blockchainId={blockchainId}

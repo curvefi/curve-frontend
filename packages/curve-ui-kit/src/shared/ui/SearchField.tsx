@@ -42,7 +42,7 @@ export const SearchField = ({
   return (
     <TextField
       fullWidth
-      onChange={(e) => setSearch(e.target.value)}
+      onChange={e => setSearch(e.target.value)}
       slotProps={{
         htmlInput: { ref },
         input: {

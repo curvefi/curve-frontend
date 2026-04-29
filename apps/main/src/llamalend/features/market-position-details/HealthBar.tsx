@@ -53,7 +53,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           position: 'relative',
           width: '100%',
           height: BAR_HEIGHT,
-          backgroundColor: (t) => t.design.Color.Neutral[300],
+          backgroundColor: t => t.design.Color.Neutral[300],
           transition: `background-color ${TransitionFunction}`,
         }}
       >
@@ -85,7 +85,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
               position: 'absolute',
               bottom: LABEL_INSET,
               left: LABEL_INSET,
-              color: (t) =>
+              color: t =>
                 health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION || health >= HEALTH_THRESHOLDS.GOOD
                   ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
                   : health < HEALTH_THRESHOLDS.CRITICAL
@@ -108,7 +108,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           >
             <Typography
               variant="bodyXsRegular"
-              sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
+              sx={{ color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
             >
               {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
             </Typography>

@@ -26,7 +26,7 @@ export function calculateAverageRates<
   const cutoffDate = new Date()
   cutoffDate.setDate(cutoffDate.getDate() - daysBack)
 
-  const recentSnapshots = snapshots.filter((snapshot) => new Date(snapshot.timestamp) > cutoffDate)
+  const recentSnapshots = snapshots.filter(snapshot => new Date(snapshot.timestamp) > cutoffDate)
 
   if (recentSnapshots.length === 0) return null
 

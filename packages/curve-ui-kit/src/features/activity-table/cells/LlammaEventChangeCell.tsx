@@ -29,7 +29,7 @@ const AmountRow = ({ amount, amountUsd, token, chain }: AmountRowProps) => (
     <Stack gap={Spacing.sm}>
       <Typography variant="tableCellMBold">{formatNumber(amount, { abbreviate: false })}</Typography>
       {amountUsd != null && (
-        <Typography variant="bodySRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
+        <Typography variant="bodySRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>
           {formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}
         </Typography>
       )}

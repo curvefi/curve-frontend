@@ -30,8 +30,8 @@ export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
   const options = useMemo(
     () =>
       lodash.sortBy(
-        Object.values(networks).filter((networkConfig) => networkConfig.showInSelectNetwork),
-        (n) => n.name,
+        Object.values(networks).filter(networkConfig => networkConfig.showInSelectNetwork),
+        n => n.name,
       ),
     [networks],
   )

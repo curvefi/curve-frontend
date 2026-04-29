@@ -41,4 +41,4 @@ const invalidate = [
 export const invalidateOrRefetchBorrowMoreRouteQueries = async (
   route: RouteResponse | undefined,
   params: BorrowMoreParams,
-) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))
+) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map(run => run(params))))

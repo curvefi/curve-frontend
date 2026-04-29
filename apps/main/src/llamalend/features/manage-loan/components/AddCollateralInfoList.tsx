@@ -44,7 +44,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       gas={q(useAddCollateralEstimateGas(networks, params, isOpen))}
-      health={q(useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(useHealthQueries(isFull => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(
@@ -62,7 +62,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       )}
       collateral={mapQuery(
         prevCollateral,
-        (stateCollateral) => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
+        stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
       )}
       prices={q(useAddCollateralPrices(params, isOpen))}
       {...useLeverageInfoFields({

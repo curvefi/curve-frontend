@@ -56,7 +56,7 @@ export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: Po
   }
 
   return {
-    selectList: lodash.sortBy(swapTokensMapper, (t) => t.symbol),
+    selectList: lodash.sortBy(swapTokensMapper, t => t.symbol),
     swapTokensMapper,
   }
 }

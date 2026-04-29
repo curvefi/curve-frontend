@@ -32,7 +32,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
   } = useClaimableCrv(params, enabled)
 
   const crvAddress = useMemo(() => market && getCrvAddress(market), [market])
-  const rewardsAddresses = useMemo(() => claimableRewards?.map((r) => r.token) ?? [], [claimableRewards])
+  const rewardsAddresses = useMemo(() => claimableRewards?.map(r => r.token) ?? [], [claimableRewards])
 
   const {
     data: usdRates,
@@ -49,14 +49,14 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     )
     return tokens
       .filter(({ amount }) => Number(amount) > 0)
-      .map((item) => ({
+      .map(item => ({
         ...item,
         ...(usdRates?.[item.token] != null && { notional: Number(item.amount) * usdRates[item.token] }),
       }))
   }, [crvAddress, claimableCrv, claimableRewards, usdRates])
 
   const totalNotionals = useMemo(() => {
-    const notionals = notFalsy(...claimableTokens.map((item) => item.notional))
+    const notionals = notFalsy(...claimableTokens.map(item => item.notional))
     return notionals.length > 0 ? sum(notionals) : undefined
   }, [claimableTokens])
 

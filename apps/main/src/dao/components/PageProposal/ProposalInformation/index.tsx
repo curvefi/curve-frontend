@@ -19,9 +19,7 @@ export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
   const timestamp = proposal?.timestamp
   const [createdDate, endDate] = useMemo(
     () =>
-      timestamp
-        ? [0, TIME_FRAMES.WEEK].map((offset) => formatDateFromTimestamp(timestamp + offset, 'long'))
-        : ['-', '-'],
+      timestamp ? [0, TIME_FRAMES.WEEK].map(offset => formatDateFromTimestamp(timestamp + offset, 'long')) : ['-', '-'],
     [timestamp],
   )
 

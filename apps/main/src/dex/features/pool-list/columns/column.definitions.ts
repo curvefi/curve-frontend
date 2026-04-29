@@ -51,7 +51,7 @@ export const POOL_LIST_COLUMNS = [
     header: t`Pool`,
     cell: PoolTitleCell,
   }),
-  columnHelper.accessor((row) => (row.rewards?.base ? +row.rewards.base.day : null), {
+  columnHelper.accessor(row => (row.rewards?.base ? +row.rewards.base.day : null), {
     id: PoolColumnId.RewardsBase,
     header: headers[PoolColumnId.RewardsBase],
     cell: RewardsBaseCell,
@@ -73,7 +73,7 @@ export const POOL_LIST_COLUMNS = [
     enableMultiSort: false, // that's done in the separate columns RewardsCrv and RewardsIncentives
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
-  columnHelper.accessor((row) => (row.volume ? +row.volume : null), {
+  columnHelper.accessor(row => (row.volume ? +row.volume : null), {
     id: PoolColumnId.Volume,
     header: headers[PoolColumnId.Volume],
     cell: UsdCell,
@@ -81,7 +81,7 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  columnHelper.accessor((row) => (row.tvl ? +row.tvl : null), {
+  columnHelper.accessor(row => (row.tvl ? +row.tvl : null), {
     id: PoolColumnId.Tvl,
     header: headers[PoolColumnId.Tvl],
     cell: UsdCell,
@@ -90,19 +90,19 @@ export const POOL_LIST_COLUMNS = [
     filterFn: rangeFilterFn,
   }),
   hidden(PoolColumnId.UserHasPositions, { id: PoolColumnId.UserHasPositions, filterFn: boolFilterFn }),
-  hidden((p) => p.tags, { id: PoolColumnId.PoolTags, filterFn: inListFilterFn }),
-  hidden((row) => row.rewards, {
+  hidden(p => p.tags, { id: PoolColumnId.PoolTags, filterFn: inListFilterFn }),
+  hidden(row => row.rewards, {
     id: PoolColumnId.RewardsCrv,
     header: headers[PoolColumnId.RewardsCrv],
     cell: RewardsCrvCell,
     filterFn: multiFilterFn,
-    sortingFn: sortByReward((row) => row.rewards?.crv[0]),
+    sortingFn: sortByReward(row => row.rewards?.crv[0]),
   }),
-  hidden((row) => row.rewards, {
+  hidden(row => row.rewards, {
     id: PoolColumnId.RewardsIncentives,
     header: headers[PoolColumnId.RewardsIncentives],
     cell: RewardsIncentivesCell,
     filterFn: multiFilterFn,
-    sortingFn: sortByReward((row) => row.rewards && sumBy(row.rewards.other, (r) => r.apy)),
+    sortingFn: sortByReward(row => row.rewards && sumBy(row.rewards.other, r => r.apy)),
   }),
 ] satisfies PoolColumn[]

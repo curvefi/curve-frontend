@@ -36,4 +36,4 @@ const invalidate = [
   invalidateRepayFutureLeverage,
 ]
 export const invalidateOrRefetchRepayRouteQueries = async (route: RouteResponse | undefined, params: RepayParams) =>
-  route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))
+  route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map(run => run(params))))

@@ -14,8 +14,8 @@ interface Props {
 }
 
 export const TCellRewards = ({ isHighlightBase, isHighlightCrv, isHighlightOther, poolData, rewardsApy }: Props) => {
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const isXSmDown = useLayoutStore(state => state.isXSmDown)
   if (typeof rewardsApy === 'undefined') {
     return <>-</>
   } else {

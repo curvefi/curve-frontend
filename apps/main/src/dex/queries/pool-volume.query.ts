@@ -47,7 +47,7 @@ const {
     const poolIds = requireLib('curveApi').getPoolList()
     const { results } = await PromisePool.withConcurrency(10)
       .for(poolIds)
-      .process(async (poolId) => [poolId, await getPoolVolumeFromLib({ poolId })] as const)
+      .process(async poolId => [poolId, await getPoolVolumeFromLib({ poolId })] as const)
 
     return Object.fromEntries(results)
   },

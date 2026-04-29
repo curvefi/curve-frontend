@@ -13,5 +13,5 @@ export const { useQuery: useRemoveCollateralPrices } = queryFactory({
     (await getLoanImplementation(marketId).removeCollateralPrices(userCollateral)) as Range<Decimal>,
   category: 'llamalend.removeCollateral',
   validationSuite: collateralValidationSuite,
-  dependencies: (params) => [maxRemovableCollateralKey(params)],
+  dependencies: params => [maxRemovableCollateralKey(params)],
 })

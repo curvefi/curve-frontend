@@ -13,7 +13,7 @@ export const SelectableCard = ({
   <ButtonBase
     component={Card}
     sx={applySxProps(
-      (t) => ({
+      t => ({
         backgroundColor: isSelected ? t.design.Layer.TypeAction.Selected : t.design.Layer[1].Fill,
         outlineStyle: 'solid',
         outlineWidth: Sizing[10],

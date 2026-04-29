@@ -13,8 +13,8 @@ type Props = {
 }
 
 export const ParametersSummary = ({ chainId }: Props) => {
-  const swapType = useStore((state) => state.createPool.swapType)
-  const validation = useStore((state) => state.createPool.validation)
+  const swapType = useStore(state => state.createPool.swapType)
+  const validation = useStore(state => state.createPool.validation)
   const Parameters = swapType === STABLESWAP ? StableswapParameters : CryptoswapParameters
   return (
     <CategoryColumn>

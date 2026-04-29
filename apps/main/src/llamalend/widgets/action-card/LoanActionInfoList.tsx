@@ -103,9 +103,9 @@ export const LoanActionInfoList = ({
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
     prevNetRate: prevNetBorrowApr,
-    prevRate: prevRates && mapQuery(prevRates, (d) => d?.borrowApr),
+    prevRate: prevRates && mapQuery(prevRates, d => d?.borrowApr),
     netRate: netBorrowApr,
-    rate: rates && mapQuery(rates, (d) => d?.borrowApr),
+    rate: rates && mapQuery(rates, d => d?.borrowApr),
     defaultValue: useShowNetRate('borrow'),
   })
 
@@ -184,8 +184,8 @@ export const LoanActionInfoList = ({
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
-              value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
-              prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
+              value={prices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
+              prevValue={prevPrices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               {...combineActionInfoState(prices, prevPrices)}
               size="small"

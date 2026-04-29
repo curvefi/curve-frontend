@@ -34,10 +34,9 @@ export const PoolLabel = ({
   const { pool } = poolData ?? {}
   const tokens = useMemo(
     () =>
-      lodash.zip(poolData?.tokens, poolData?.tokenAddresses).map(([symbol, address]) => ({
-        symbol: symbol!,
-        address: address!,
-      })),
+      lodash
+        .zip(poolData?.tokens, poolData?.tokenAddresses)
+        .map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
     [poolData?.tokens, poolData?.tokenAddresses],
   )
 

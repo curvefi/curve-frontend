@@ -38,7 +38,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
-const testCases = recordValues(LlamaMarketType).map((marketType) => ({ marketType, ...oneLoanTestMarket(marketType) }))
+const testCases = recordValues(LlamaMarketType).map(marketType => ({ marketType, ...oneLoanTestMarket(marketType) }))
 
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
@@ -79,7 +79,7 @@ testCases.forEach(
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
-      const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+      const getVirtualNetwork = createVirtualTestnet(uuid => ({
         slug: `loan-integration-${uuid}`,
         display_name: `LoanIntegration (${uuid})`,
         fork_config: { block_number: 'latest' },

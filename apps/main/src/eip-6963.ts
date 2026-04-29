@@ -21,10 +21,10 @@ window.eip6963Connectors = []
  * Global declaration to store EIP-6963 connectors.
  * This allows multiple wallet providers to announce themselves to the application.
  */
-window.addEventListener('eip6963:announceProvider', (event) => {
+window.addEventListener('eip6963:announceProvider', event => {
   const { provider, info } = (event as CustomEvent<Eip6963ProviderDetail>).detail
   window.eip6963Connectors = [
-    ...window.eip6963Connectors.filter((c) => c.uuid !== info.uuid),
+    ...window.eip6963Connectors.filter(c => c.uuid !== info.uuid),
     { id: info.rdns, ...info, provider },
   ]
 })

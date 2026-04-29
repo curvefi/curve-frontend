@@ -34,9 +34,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets/$market',
     component: LendMarketPage,
-    head: ({ params }) => ({
-      meta: [{ title: `${params.market} - Curve Llamalend` }],
-    }),
+    head: ({ params }) => ({ meta: [{ title: `${params.market} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
   createRoute({
@@ -59,9 +57,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets/$market/vault',
     component: PageVault,
-    head: ({ params }) => ({
-      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
-    }),
+    head: ({ params }) => ({ meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
 ])

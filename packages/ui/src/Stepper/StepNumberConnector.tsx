@@ -15,10 +15,10 @@ export const StepNumberConnector: IStyledComponent<'web', StepNumberConnectorPro
     width: 5px;
     flex-grow: 1;
     margin-right: 20px;
-    visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
+    visibility: ${props => (props.visible ? 'visible' : 'hidden')};
     transition: all 0.5s ease;
 
-    ${(props) =>
+    ${props =>
       props.direction === 'down'
         ? css`
             background: linear-gradient(

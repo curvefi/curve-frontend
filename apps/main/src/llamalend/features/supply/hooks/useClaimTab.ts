@@ -23,11 +23,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   const marketId = market?.id
 
   const params = useMemo(
-    (): UserMarketParams<ChainId> => ({
-      chainId,
-      marketId,
-      userAddress,
-    }),
+    (): UserMarketParams<ChainId> => ({ chainId, marketId, userAddress }),
     [chainId, marketId, userAddress],
   )
 
@@ -46,7 +42,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   } = useClaimableTokens(params, market, enabled)
 
   const tableData = useMemo(
-    () => claimableTokens.map((token) => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
+    () => claimableTokens.map(token => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
     [claimableTokens, network.id, usdRateLoading],
   )
 

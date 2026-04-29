@@ -4,7 +4,7 @@ import type * as Models from './models'
 import type * as Responses from './responses'
 
 export const parseSupportedChains = (x: Responses.GetSupportedChainsResponse): Chain[] =>
-  x.data.map((y) => y.name as Chain).filter((y) => chains.includes(y))
+  x.data.map(y => y.name as Chain).filter(y => chains.includes(y))
 
 export const parseChainInfo = (x: Responses.GetChainInfoResponse): Models.ChainInfo => ({
   chain: x.chain,
@@ -18,8 +18,8 @@ export const parseChainInfo = (x: Responses.GetChainInfoResponse): Models.ChainI
 })
 
 export const parseTxs = (x: Responses.GetTransactionsResponse): Models.Transactions[] =>
-  x.data.flatMap((data) =>
-    data.transactions.map((tx) => ({
+  x.data.flatMap(data =>
+    data.transactions.map(tx => ({
       chain: data.chain,
       timestamp: toDate(tx.timestamp),
       type: tx.type,
@@ -28,19 +28,9 @@ export const parseTxs = (x: Responses.GetTransactionsResponse): Models.Transacti
   )
 
 export const parseUsers = (x: Responses.GetUsersResponse): Models.Users[] =>
-  x.data.flatMap((data) =>
-    data.users.map((tx) => ({
-      chain: data.chain,
-      timestamp: toDate(tx.timestamp),
-      type: tx.type,
-      users: tx.users,
-    })),
+  x.data.flatMap(data =>
+    data.users.map(tx => ({ chain: data.chain, timestamp: toDate(tx.timestamp), type: tx.type, users: tx.users })),
   )
 
 export const parsePoolFilters = (x: Responses.GetPoolFilters): Models.PoolFilter[] =>
-  x.data.flatMap((data) =>
-    data.pools.map((pool) => ({
-      chain: data.chain,
-      address: pool.address,
-    })),
-  )
+  x.data.flatMap(data => data.pools.map(pool => ({ chain: data.chain, address: pool.address })))

@@ -71,12 +71,12 @@ function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApp
   amountValidationFn(amount)
   if (!rewardTokenId || !amount) return
 
-  enforce(userBalance).condition((userBalance) => ({
+  enforce(userBalance).condition(userBalance => ({
     pass: userBalance != null && +userBalance > 0,
     message: t`Wallet balance is zero for the selected reward token`,
   }))
 
-  enforce(amount).condition((amount) => ({
+  enforce(amount).condition(amount => ({
     pass: +amount <= +userBalance!,
     message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(userBalance, { decimals: 5 })}`,
   }))

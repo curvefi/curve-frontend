@@ -12,8 +12,8 @@ type Props = {
 }
 
 export const PoolType = ({ chainId }: Props) => {
-  const swapType = useStore((state) => state.createPool.swapType)
-  const updateSwapType = useStore((state) => state.createPool.updateSwapType)
+  const swapType = useStore(state => state.createPool.swapType)
+  const updateSwapType = useStore(state => state.createPool.updateSwapType)
   const {
     data: { stableswapFactory, tricryptoFactory, twocryptoFactory, fxswapFactory },
   } = useNetworkByChain({ chainId })

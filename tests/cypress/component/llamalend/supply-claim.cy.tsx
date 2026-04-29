@@ -42,7 +42,7 @@ describe('ClaimTab (mocked)', () => {
       const { market, llamaApi, expected, stubs } = createClaimScenario({
         chainId,
         claimableCrv,
-        claimableRewards: claimableRewards.map((reward) => ({ ...reward, token: oneAddress() })),
+        claimableRewards: claimableRewards.map(reward => ({ ...reward, token: oneAddress() })),
       })
 
       setLlamaApi(llamaApi)

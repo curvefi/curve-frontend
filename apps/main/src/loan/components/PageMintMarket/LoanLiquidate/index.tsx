@@ -38,19 +38,19 @@ export const LoanLiquidate = ({
   const { chainId, haveSigner } = curveProps(curve)
   const isSubscribed = useRef(false)
 
-  const formEstGas = useStore((state) => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanLiquidate.formStatus)
-  const liquidationAmt = useStore((state) => state.loanLiquidate.liquidationAmt)
+  const formEstGas = useStore(state => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanLiquidate.formStatus)
+  const liquidationAmt = useStore(state => state.loanLiquidate.liquidationAmt)
   const userLoanDetails = useUserLoanDetails(llammaId)
-  const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
+  const userWalletBalances = useStore(state => state.loans.userWalletBalancesMapper[llammaId])
 
-  const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
-  const fetchStepApprove = useStore((state) => state.loanLiquidate.fetchStepApprove)
-  const fetchStepLiquidate = useStore((state) => state.loanLiquidate.fetchStepLiquidate)
-  const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
-  const resetState = useStore((state) => state.loanLiquidate.resetState)
+  const fetchTokensToLiquidate = useStore(state => state.loanLiquidate.fetchTokensToLiquidate)
+  const fetchStepApprove = useStore(state => state.loanLiquidate.fetchStepApprove)
+  const fetchStepLiquidate = useStore(state => state.loanLiquidate.fetchStepLiquidate)
+  const setStateByKey = useStore(state => state.loanLiquidate.setStateByKey)
+  const resetState = useStore(state => state.loanLiquidate.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -151,12 +151,12 @@ export const LoanLiquidate = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['LIQUIDATE'] : ['APPROVAL', 'LIQUIDATE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, fetchStepLiquidate, params, reset],
   )

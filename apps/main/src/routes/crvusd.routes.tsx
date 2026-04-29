@@ -55,9 +55,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '$network/psr',
     component: PegKeepersPage,
-    head: () => ({
-      meta: [{ title: 'Peg Stability Reserves - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Peg Stability Reserves - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
@@ -68,9 +66,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '$network/scrvUSD',
     component: CrvStaking,
-    head: () => ({
-      meta: [{ title: 'Savings crvUSD - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Savings crvUSD - Curve' }] }),
     ...layoutProps,
   }),
 ])

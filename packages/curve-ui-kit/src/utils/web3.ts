@@ -47,7 +47,7 @@ async function waitForTransaction({
   const results = await onExecute()
   const txHashes = toArray(results)
   if (txHashes.length > 0) {
-    await Promise.all(txHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
+    await Promise.all(txHashes.map(hash => waitForTransactionReceipt(config, { hash })))
     if (onSatisfiedMessage) notify(onSatisfiedMessage, 'success')
     await waitFor(isSatisfied, { timeout })
     return txHashes

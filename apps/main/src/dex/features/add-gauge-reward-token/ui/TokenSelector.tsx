@@ -53,21 +53,21 @@ export const TokenSelector = ({
               zeroAddress,
               ethAddress,
               aliasesCrv,
-            ].some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
+            ].some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
         )
         .map(toTokenOption(network?.networkId)),
     [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId],
   )
 
-  const selectedToken = filteredTokens.find((x) => x.address === rewardTokenId)
+  const selectedToken = filteredTokens.find(x => x.address === rewardTokenId)
 
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
 
     const rewardTokenId = getValues('rewardTokenId')
 
-    const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(
-      (gaugeRewardToken) => isAddressEqual(gaugeRewardToken as Address, rewardTokenId as Address),
+    const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(gaugeRewardToken =>
+      isAddressEqual(gaugeRewardToken as Address, rewardTokenId as Address),
     )
     if (filteredTokens.length > 0 && (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress)) {
       setValue('rewardTokenId', filteredTokens[0].address, { shouldValidate: true })
@@ -86,7 +86,7 @@ export const TokenSelector = ({
       >
         <TokenList
           tokens={filteredTokens}
-          onToken={(token) => setValue('rewardTokenId', token.address, { shouldValidate: true })}
+          onToken={token => setValue('rewardTokenId', token.address, { shouldValidate: true })}
         />
       </TokenSelectorUIKit>
     </FlexItemToken>

@@ -84,7 +84,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           routes={routes}
-          onSlippageChange={(value) => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
         />
       }

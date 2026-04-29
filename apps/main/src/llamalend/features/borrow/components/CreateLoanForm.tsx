@@ -84,7 +84,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           borrowToken={borrowToken}
           networks={networks}
           routes={routes}
-          onSlippageChange={(value) => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm(form, { slippage: value })}
         />
       }
       data-testid="create-loan-form"

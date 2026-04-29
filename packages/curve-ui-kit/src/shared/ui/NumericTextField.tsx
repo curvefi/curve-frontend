@@ -153,7 +153,7 @@ export const NumericTextField = ({
       value={inputValue}
       inputMode="decimal"
       autoComplete="off"
-      onFocus={(e) => {
+      onFocus={e => {
         setIsFocused(true)
         /**
          * Select all content when clicked.
@@ -164,7 +164,7 @@ export const NumericTextField = ({
         ;(e.target as HTMLInputElement).select()
         onFocus?.(e)
       }}
-      onChange={(e) => {
+      onChange={e => {
         const sanitizedValue = sanitize(e.target.value, inputValue)
         setInputValue(sanitizedValue)
         onChange?.(sanitizedValue)

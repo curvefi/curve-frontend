@@ -10,7 +10,7 @@ const getHeight = (testId: string, subelement?: string) =>
   cy
     .get(notFalsy(`[data-testid="${testId}"]`, subelement).join(' '))
     .should('be.visible')
-    .then(($element) => $element[0].getBoundingClientRect().height)
+    .then($element => $element[0].getBoundingClientRect().height)
 
 const routes = {
   data: mockRoutes,

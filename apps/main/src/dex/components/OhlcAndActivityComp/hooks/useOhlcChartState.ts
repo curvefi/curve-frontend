@@ -16,12 +16,12 @@ type UseOhlcChartStateArgs = {
 }
 
 export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
-  const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
-  const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
-  const refetchingCapped = useStore((state) => state.pools.pricesApiState.refetchingCapped)
-  const lastFetchEndTime = useStore((state) => state.pools.pricesApiState.lastFetchEndTime)
-  const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
-  const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
+  const chartOhlcData = useStore(state => state.pools.pricesApiState.chartOhlcData)
+  const chartStatus = useStore(state => state.pools.pricesApiState.chartStatus)
+  const refetchingCapped = useStore(state => state.pools.pricesApiState.refetchingCapped)
+  const lastFetchEndTime = useStore(state => state.pools.pricesApiState.lastFetchEndTime)
+  const fetchPricesApiCharts = useStore(state => state.pools.fetchPricesApiCharts)
+  const fetchMorePricesApiCharts = useStore(state => state.pools.fetchMorePricesApiCharts)
 
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
     useDexChartList({

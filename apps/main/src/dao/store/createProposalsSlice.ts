@@ -74,7 +74,7 @@ export const createProposalsSlice = (
 ): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    setSearchValue: (filterValue) => {
+    setSearchValue: filterValue => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
     },
     setActiveFilter: (filter: ProposalListFilter) => {
@@ -269,7 +269,7 @@ export const createProposalsSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

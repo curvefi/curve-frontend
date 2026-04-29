@@ -50,7 +50,7 @@ export const LendingMarketsFilters = ({
   // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
   const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
   const markets = useMemo(
-    () => (selectedChains?.length ? data.filter((market) => selectedChains.includes(market.chain)) : data),
+    () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
     [data, selectedChains],
   )
 
@@ -59,8 +59,8 @@ export const LendingMarketsFilters = ({
   const tokens = useMemo(
     () =>
       keyBy(
-        data.flatMap((market) => [market.assets.collateral, market.assets.borrowed]),
-        (i) => i.symbol,
+        data.flatMap(market => [market.assets.collateral, market.assets.borrowed]),
+        i => i.symbol,
       ),
     [data],
   )
@@ -76,8 +76,8 @@ export const LendingMarketsFilters = ({
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
-          renderItem={(symbol) => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
+          renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
           defaultText={t`All`}
           defaultTextMobile={t`All Collateral Tokens`}
           data={markets}
@@ -89,8 +89,8 @@ export const LendingMarketsFilters = ({
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
-          renderItem={(symbol) => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
+          renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
           defaultText={t`All`}
           defaultTextMobile={t`All Debt Tokens`}
           data={markets}

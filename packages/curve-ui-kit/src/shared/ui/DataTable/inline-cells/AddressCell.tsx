@@ -22,7 +22,7 @@ type AddressCellProps = {
 export const AddressCell = ({ address, label, justifyContent = 'flex-start' }: AddressCellProps) => (
   <InlineTableCell>
     {label && (
-      <Typography variant="bodyXsRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
+      <Typography variant="bodyXsRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>
         {label}
       </Typography>
     )}

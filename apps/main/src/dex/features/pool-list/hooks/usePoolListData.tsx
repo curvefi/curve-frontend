@@ -33,13 +33,13 @@ const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) 
   filter
     .toLowerCase()
     .split(/\s+/)
-    .every((filterWord) => fields.some((field) => get(data, field)?.toLowerCase?.().includes(filterWord)))
+    .every(filterWord => fields.some(field => get(data, field)?.toLowerCase?.().includes(filterWord)))
 
 const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
   notFalsy<PoolTag>(
     hasPosition && 'user',
     ...(['btc', 'kava', 'eth', 'usd', 'crypto', 'crvusd'] as const).filter(
-      (asset) => referenceAsset.toLowerCase() === asset || matchText({ pool }, POOL_TEXT_FIELDS, asset),
+      asset => referenceAsset.toLowerCase() === asset || matchText({ pool }, POOL_TEXT_FIELDS, asset),
     ),
     id.startsWith('factory-crvusd') && 'crvusd',
     (id.startsWith('factory-tricrypto') || id.startsWith('tricrypto')) && 'tricrypto',
@@ -51,9 +51,9 @@ const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, re
 export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig) {
   const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
-  const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
-  const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
-  const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
+  const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[chainId])
+  const fetchPoolsRewardsApy = useStore(state => state.pools.fetchPoolsRewardsApy)
+  const fetchMissingPoolsRewardsApy = useStore(state => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
 
   const { address: userAddress } = useConnection()
@@ -95,10 +95,10 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
                   notFalsy<string | number>(
                     rewards?.base?.day,
                     ...(rewards?.crv ?? []),
-                    ...(rewards?.other?.map((r) => r.apy) ?? []),
+                    ...(rewards?.other?.map(r => r.apy) ?? []),
                   )
                     .map(Number)
-                    .filter((v) => !isNaN(v)),
+                    .filter(v => !isNaN(v)),
                 ),
                 rewards,
                 volume: decimal(volumes?.[item.pool.id]),

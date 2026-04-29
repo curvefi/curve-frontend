@@ -55,10 +55,7 @@ const headers = {
 } as const
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-const createTooltip = (id: keyof typeof headers, body: ReactNode): Tooltip => ({
-  title: headers[id],
-  body,
-})
+const createTooltip = (id: keyof typeof headers, body: ReactNode): Tooltip => ({ title: headers[id], body })
 
 /** Define a hidden column. */
 const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn: FilterFnOption<LlamaMarket>) =>
@@ -157,7 +154,7 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor('rates.borrowApr', {
     id: LlamaMarketColumnId.BorrowChart,
     header: headers[LlamaMarketColumnId.BorrowChart],
-    cell: (c) => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
+    cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
   columnHelper.accessor(LlamaMarketColumnId.MaxLtv, {
     header: headers[LlamaMarketColumnId.MaxLtv],

@@ -18,7 +18,7 @@ export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedT
 
 const hashString = async (input: string, algorithm = 'SHA-256') =>
   Array.from(new Uint8Array(await crypto.subtle.digest(algorithm, new TextEncoder().encode(input))))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .map(byte => byte.toString(16).padStart(2, '0'))
     .join('')
 
 export const generateId = async (
@@ -27,6 +27,6 @@ export const generateId = async (
 ) =>
   `${prefix}:${await hashString(
     [chainId, tokenIn, tokenOut, amountIn, slippage, userAddress]
-      .map((v) => (Array.isArray(v) ? v.join(',') : (v ?? '')))
+      .map(v => (Array.isArray(v) ? v.join(',') : (v ?? '')))
       .join('-'),
   )}`

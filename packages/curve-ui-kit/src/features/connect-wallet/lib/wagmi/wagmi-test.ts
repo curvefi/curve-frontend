@@ -65,7 +65,7 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     chain,
     transport: fallback([
       (transport ?? cypressTransport)(account, chain),
-      ...chain.rpcUrls.default.http.map((url) => http(url, WAGMI_HTTP_OPTIONS)),
+      ...chain.rpcUrls.default.http.map(url => http(url, WAGMI_HTTP_OPTIONS)),
     ]),
   })
 

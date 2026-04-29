@@ -35,41 +35,31 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   createRoute({
     path: '$network/compensation',
     component: PageCompensation,
-    head: () => ({
-      meta: [{ title: 'Compensation - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Compensation - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/create-pool',
     component: PageCreatePool,
-    head: () => ({
-      meta: [{ title: 'Create Pool - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Create Pool - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/dashboard',
     component: PageDashboard,
-    head: () => ({
-      meta: [{ title: 'Dashboard - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Dashboard - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/deploy-gauge',
     component: PageDeployGauge,
-    head: () => ({
-      meta: [{ title: 'Deploy Gauge - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Deploy Gauge - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/pools',
     component: PagePoolList,
-    head: () => ({
-      meta: [{ title: 'Pools - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Pools - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
@@ -81,17 +71,13 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   createRoute({
     path: '$network/pools/$poolIdOrAddress/$formType',
     component: PagePool,
-    head: ({ params }) => ({
-      meta: [{ title: `Curve - Pool - ${params.poolIdOrAddress} - Curve` }],
-    }),
+    head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolIdOrAddress} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/swap',
     component: PageRouterSwap,
-    head: () => ({
-      meta: [{ title: 'Swap - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Swap - Curve' }] }),
     ...layoutProps,
   }),
 ])

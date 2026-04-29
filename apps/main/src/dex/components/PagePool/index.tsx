@@ -53,14 +53,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolAlert = usePoolAlert(poolData)
   const { tokensMapper } = useTokensMapper(rChainId)
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
+  const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { pool } = poolDataCacheOrApi
 
-  const poolMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
-  const poolTypeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
+  const poolMaxSlippage = useUserProfileStore(state => state.maxSlippage[chainIdPoolId])
+  const poolTypeMaxSlippage = useUserProfileStore(state => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
     {
@@ -134,9 +134,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       !!rewardDistributors &&
       !!signerAddress &&
-      Object.values(rewardDistributors).some((distributorId) =>
-        isAddressEqual(distributorId as Address, signerAddress),
-      ),
+      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId as Address, signerAddress)),
     [rewardDistributors, signerAddress],
   )
 
@@ -197,7 +195,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             <TabsSwitcher
               variant="contained"
               value={!rFormType ? 'deposit' : rFormType}
-              onChange={(key) => toggleForm(key as TransferFormType)}
+              onChange={key => toggleForm(key as TransferFormType)}
               options={tabs}
               testIdPrefix="pool-form-tab"
             />

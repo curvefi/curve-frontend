@@ -51,7 +51,7 @@ export const MarketInformationComposite = ({
     <Stack gap={PAGE_SPACING}>
       {isBorrow && <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />}
       {isBorrow && !newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}

@@ -27,7 +27,7 @@ const CheckboxFieldStory = ({ checked: initialChecked = false, onChange, ...prop
       <CheckboxField
         {...props}
         checked={checked}
-        onChange={(event) => {
+        onChange={event => {
           setChecked(event.target.checked)
           onChange?.(event)
         }}
@@ -50,7 +50,7 @@ const SliderContent = () => {
         step={1}
         onChange={setValue}
         inputProps={{
-          format: (value) => formatNumber(Number(value), { abbreviate: true }),
+          format: value => formatNumber(Number(value), { abbreviate: true }),
           adornment: 'percentage',
         }}
       />

@@ -28,7 +28,7 @@ export const DetailsBandsChart = ({
   market: Llamma | null
   selectorMenu?: ReactNode
 }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[marketId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,

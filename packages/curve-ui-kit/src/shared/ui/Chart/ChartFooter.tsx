@@ -35,7 +35,7 @@ export const ChartFooter = <T extends string>({
         justifyContent={hasToggle ? 'space-between' : undefined}
       >
         <Stack direction="row" alignItems="center" gap={Spacing.sm} flexWrap="wrap">
-          {legendSets.map((legendSet) => (
+          {legendSets.map(legendSet => (
             <LegendSet
               key={`chart-footer-${legendSet.label}`}
               label={legendSet.label}
@@ -48,7 +48,7 @@ export const ChartFooter = <T extends string>({
         </Stack>
         {hasToggle && (
           <ToggleButtonGroup exclusive value={activeToggleOption} onChange={onToggleChange}>
-            {toggleOptions.map((option) => (
+            {toggleOptions.map(option => (
               <ToggleButton value={option} key={`chart-footer-toggle-${option}`} size="extraSmall">
                 {option}
               </ToggleButton>

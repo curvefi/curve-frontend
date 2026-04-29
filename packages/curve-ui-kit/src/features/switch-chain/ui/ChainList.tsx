@@ -36,8 +36,8 @@ export function ChainList({
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
-        options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
-        (o) => (o.isTestnet ? ChainType.test : ChainType.main),
+        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        o => (o.isTestnet ? ChainType.test : ChainType.main),
       ),
     [options, searchValue],
   )
@@ -73,7 +73,7 @@ export function ChainList({
               <Fragment key={key}>
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
-                  {networks.map((network) => (
+                  {networks.map(network => (
                     <MenuItem<string, typeof Link>
                       data-testid={`menu-item-chain-${network.id}`}
                       key={network.id}

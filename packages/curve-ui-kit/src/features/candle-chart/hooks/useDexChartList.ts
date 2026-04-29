@@ -29,7 +29,7 @@ const combinations = <T>(collection: T[], n: number): T[][] => {
     array = array.slice()
     while (array.length - n) {
       const value = array.shift()!
-      recur(array, n).forEach((combination) => {
+      recur(array, n).forEach(combination => {
         combination.unshift(value)
         combinations.push(combination)
       })
@@ -41,7 +41,7 @@ const combinations = <T>(collection: T[], n: number): T[][] => {
 
 const buildChartCombinations = (coins: PoolCoin[], nCoins: number): PoolCoin[][] => {
   const baseCoins = coins.slice(0, nCoins)
-  const extraCombinations = coins.slice(nCoins).map((item) => [item, baseCoins[0]])
+  const extraCombinations = coins.slice(nCoins).map(item => [item, baseCoins[0]])
   return [...extraCombinations, ...combinations(baseCoins, 2)]
 }
 
@@ -119,7 +119,7 @@ export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartList
   const flipChart = useMemo(() => {
     if (selectedChart.type !== 'pair') return undefined
     return () =>
-      setSelectedChart((prev) =>
+      setSelectedChart(prev =>
         prev.type === 'pair' ? { type: 'pair', mainToken: prev.refToken, refToken: prev.mainToken } : prev,
       )
   }, [selectedChart.type])

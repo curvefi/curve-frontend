@@ -28,8 +28,10 @@ const squareSize = <T,>(value: T) => ({ width: value, height: value })
 const getTokenImageUrl = (blockchainId: string, address?: string | null) =>
   address ? `${getImageBaseUrl(blockchainId)}${address.toLowerCase()}.png` : DEFAULT_IMAGE
 
-const getTokenIconSizeSx = (theme: Theme, size: Size) =>
-  // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
+const getTokenIconSizeSx = (
+  theme: Theme,
+  size: Size, // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
+) =>
   // I didn't want to break the existing interface as it's used everywhere.
   size === 'sm'
     ? { ...squareSize('1.75rem'), [theme.breakpoints.down(400)]: squareSize('1.5rem') }
@@ -97,10 +99,7 @@ export const TokenIcon = ({
         src={getTokenImageUrl(blockchainId, address)}
         loading="lazy"
         sx={applySxProps(
-          (theme) => ({
-            borderRadius: '50%',
-            ...getTokenIconSizeSx(theme, size),
-          }),
+          theme => ({ borderRadius: '50%', ...getTokenIconSizeSx(theme, size) }),
           sx,
           disabled && {
             filter: 'saturate(0)',

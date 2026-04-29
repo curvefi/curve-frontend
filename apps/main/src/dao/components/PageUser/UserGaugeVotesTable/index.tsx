@@ -31,8 +31,8 @@ const sortUserGaugeVotes = (
 
 export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {
   const { data: userGaugeVotes, isLoading, isError, isSuccess } = useUserGaugeVoteQuery({ userAddress })
-  const userGaugeVotesSortBy = useStore((state) => state.user.userGaugeVotesSortBy)
-  const setUserGaugeVotesSortBy = useStore((state) => state.user.setUserGaugeVotesSortBy)
+  const userGaugeVotesSortBy = useStore(state => state.user.userGaugeVotesSortBy)
+  const setUserGaugeVotesSortBy = useStore(state => state.user.setUserGaugeVotesSortBy)
 
   const gridTemplateColumns = '2fr 1fr 1fr 1fr'
 
@@ -51,7 +51,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
       columns={GAUGE_VOTES_LABELS}
       sortBy={userGaugeVotesSortBy}
       errorMessage={t`An error occurred while fetching user gauge votes.`}
-      setSortBy={(key) => setUserGaugeVotesSortBy(key as UserGaugeVotesSortBy)}
+      setSortBy={key => setUserGaugeVotesSortBy(key as UserGaugeVotesSortBy)}
       getData={() => invalidateUserGaugeVoteQuery({ userAddress })}
       noDataMessage={t`No gauge votes found for this user.`}
       gridTemplateColumns={gridTemplateColumns}

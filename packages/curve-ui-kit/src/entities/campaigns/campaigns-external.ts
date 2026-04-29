@@ -8,8 +8,8 @@ import { campaigns } from '@external-rewards'
 
 const REWARDS = groupBy(
   // Can't use Object.groupBy until we support ES2024
-  campaigns.flatMap((campaign) =>
-    campaign.pools.map((pool) => ({
+  campaigns.flatMap(campaign =>
+    campaign.pools.map(pool => ({
       // Campaign specific properties
       campaignName: campaign.campaignName,
       platform: campaign.platform,
@@ -34,7 +34,7 @@ const REWARDS = groupBy(
         }),
     })),
   ),
-  (x) => x.address,
+  x => x.address,
 )
 
 /**

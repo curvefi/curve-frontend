@@ -25,7 +25,7 @@ export const ReleaseChannelToggleButtons = () => {
         aria-label={t`Release channel selection`}
         size="small"
       >
-        {objectKeys(ReleaseChannel).map((channel) => (
+        {objectKeys(ReleaseChannel).map(channel => (
           <ToggleButton key={channel} value={channel} data-testid={`release-channel-button-${channel}`}>
             {t(channel)}
           </ToggleButton>

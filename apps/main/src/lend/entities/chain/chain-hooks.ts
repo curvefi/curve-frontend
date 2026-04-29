@@ -16,8 +16,8 @@ const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
       marketNames && api && chainId == apiChainId && isHydrated
         ? Object.fromEntries(
             marketNames
-              .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])
-              .map((name) => [name, api.getLendMarket(name)] as const)
+              .filter(marketName => !networks[chainId!].hideMarketsInUI[marketName])
+              .map(name => [name, api.getLendMarket(name)] as const)
               .flatMap(([name, market]) => [
                 [name, market],
                 [market.addresses.controller, market],

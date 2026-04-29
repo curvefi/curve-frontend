@@ -68,7 +68,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
       // Convert actual token reward data into the more generic data type we use all across the app.
       .map(({ token }) => ({
         campaignName: opp.name,
-        platform: opp.tags.map((tag) => capitalize(tag)).join(', '),
+        platform: opp.tags.map(tag => capitalize(tag)).join(', '),
         platformImageId: token.icon,
         dashboardLink: `https://app.merkl.xyz/opportunities/${network}/${opp.type}/${opp.identifier}`,
 
@@ -115,5 +115,5 @@ export const fetchMerklRewards = async (params: object) => {
   const campaigns = opportunities.flatMap(opportunityToCampaignRewards)
 
   // Can't use Object.groupBy until we support ES2024
-  return groupBy(campaigns, (x) => x.address)
+  return groupBy(campaigns, x => x.address)
 }

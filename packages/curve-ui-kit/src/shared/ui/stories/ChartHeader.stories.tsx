@@ -39,7 +39,7 @@ const DexOhlcChartHeader = () => {
     return [...dexSelections, { key: 'pair', label: pairLabel, activeTitle: pairLabel }]
   }, [isPairFlipped])
 
-  const flipChart = activeChart === 'pair' ? () => setIsPairFlipped((prev) => !prev) : undefined
+  const flipChart = activeChart === 'pair' ? () => setIsPairFlipped(prev => !prev) : undefined
 
   return (
     <Box sx={{ width: exampleWidths.normalWidth }}>
@@ -71,7 +71,7 @@ const DexOhlcChartHeaderNarrow = () => {
     return [...dexSelections, { key: 'pair', label: pairLabel, activeTitle: pairLabel }]
   }, [isPairFlipped])
 
-  const flipChart = activeChart === 'pair' ? () => setIsPairFlipped((prev) => !prev) : undefined
+  const flipChart = activeChart === 'pair' ? () => setIsPairFlipped(prev => !prev) : undefined
 
   return (
     <Box sx={{ width: exampleWidths.narrowWidth }}>
@@ -139,7 +139,7 @@ const ScrvUsdStatisticsHeaderExample = () => {
         }}
         expandChart={{
           isExpanded,
-          toggleChartExpanded: () => setIsExpanded((prev) => !prev),
+          toggleChartExpanded: () => setIsExpanded(prev => !prev),
         }}
       />
     </Box>

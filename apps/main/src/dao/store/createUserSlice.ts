@@ -79,13 +79,13 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
       } else {
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userLocksSortBy.key = sortBy
             state[sliceKey].userLocksSortBy.order = 'desc'
           }),
@@ -103,7 +103,7 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
       }
 
       set(
-        produce((state) => {
+        produce(state => {
           state[sliceKey].userProposalVotesSortBy.key = sortBy
           state[sliceKey].userProposalVotesSortBy.order = order
         }),
@@ -117,13 +117,13 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
       } else {
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVotesSortBy.key = sortBy
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
           }),
@@ -138,13 +138,13 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
       } else {
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
             state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
           }),
@@ -158,7 +158,7 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

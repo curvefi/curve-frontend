@@ -86,11 +86,11 @@ const InteractiveLegendsWrapper = () => {
 
   const toggleVisibility = (label: string) => {
     if (label === t`Oracle Price`) {
-      setVisibility((prev) => ({ ...prev, oraclePrice: !prev.oraclePrice }))
+      setVisibility(prev => ({ ...prev, oraclePrice: !prev.oraclePrice }))
     } else if (label === t`Conversion zone`) {
-      setVisibility((prev) => ({ ...prev, conversionZone: !prev.conversionZone }))
+      setVisibility(prev => ({ ...prev, conversionZone: !prev.conversionZone }))
     } else if (label === t`New conversion zone`) {
-      setVisibility((prev) => ({ ...prev, newConversionZone: !prev.newConversionZone }))
+      setVisibility(prev => ({ ...prev, newConversionZone: !prev.newConversionZone }))
     }
   }
 
@@ -233,11 +233,11 @@ const FullFeaturedWrapper = () => {
 
   const toggleVisibility = (label: string) => {
     if (label === t`Oracle Price`) {
-      setVisibility((prev) => ({ ...prev, oraclePrice: !prev.oraclePrice }))
+      setVisibility(prev => ({ ...prev, oraclePrice: !prev.oraclePrice }))
     } else if (label === t`Conversion zone`) {
-      setVisibility((prev) => ({ ...prev, conversionZone: !prev.conversionZone }))
+      setVisibility(prev => ({ ...prev, conversionZone: !prev.conversionZone }))
     } else if (label === t`New conversion zone`) {
-      setVisibility((prev) => ({ ...prev, newConversionZone: !prev.newConversionZone }))
+      setVisibility(prev => ({ ...prev, newConversionZone: !prev.newConversionZone }))
     }
   }
 

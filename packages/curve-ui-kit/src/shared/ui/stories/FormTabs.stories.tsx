@@ -16,7 +16,7 @@ type DemoParams = {
 }
 
 const Panel = ({ title, body }: { title: string; body: string }) => (
-  <Stack gap={1} sx={{ padding: 3, borderRadius: 2, border: (t) => `1px solid ${t.palette.divider}` }}>
+  <Stack gap={1} sx={{ padding: 3, borderRadius: 2, border: t => `1px solid ${t.palette.divider}` }}>
     <Typography variant="headingSBold">{title}</Typography>
     <Typography variant="bodyMRegular">{body}</Typography>
   </Stack>
@@ -227,7 +227,7 @@ export const KebabMenuAutoOverflow: Story = {
   },
   render: ({ shouldWrap, overflow, menu, ...params }) => (
     <Stack gap={4}>
-      {['40rem', '30rem', '20rem'].map((width) => (
+      {['40rem', '30rem', '20rem'].map(width => (
         <Grid key={width} width={width}>
           <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
         </Grid>

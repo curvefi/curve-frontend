@@ -85,7 +85,7 @@ class LlamaArray<T> {
    * @example [1, 2].zip(['a', 'b']) // [[1, 'a'], [2, 'b']]
    */
   zip<U>(...arrays: U[][]): LlamaArray<[T, ...U[]]> {
-    return new LlamaArray(this._value.map((item, index) => [item, ...arrays.map((arr) => arr[index])]))
+    return new LlamaArray(this._value.map((item, index) => [item, ...arrays.map(arr => arr[index])]))
   }
 
   /**
@@ -105,7 +105,7 @@ class LlamaArray<T> {
    */
   uniqWith(comparator: (a: T, b: T) => boolean): LlamaArray<T> {
     return new LlamaArray(
-      this._value.filter((element, index) => this._value.findIndex((step) => comparator(element, step)) === index),
+      this._value.filter((element, index) => this._value.findIndex(step => comparator(element, step)) === index),
     )
   }
 
@@ -185,7 +185,7 @@ class LlamaArray<T> {
    */
   difference(...arrays: T[][]): LlamaArray<T> {
     const otherSet = new Set(arrays.flat())
-    return new LlamaArray(this._value.filter((x) => !otherSet.has(x)))
+    return new LlamaArray(this._value.filter(x => !otherSet.has(x)))
   }
 
   // Passthrough methods to avoid needing to call .value() constantly

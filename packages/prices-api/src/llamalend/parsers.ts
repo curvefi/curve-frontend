@@ -53,11 +53,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     rebasingYieldApr: x.borrowed_token.rebasing_yield_apr,
   },
   leverage: x.leverage,
-  extraRewardApr: x.extra_reward_apr.map((y) => ({
-    address: y.address,
-    symbol: y.symbol,
-    rate: y.apr,
-  })),
+  extraRewardApr: x.extra_reward_apr.map(y => ({ address: y.address, symbol: y.symbol, rate: y.apr })),
   createdAt: toDate(x.created_at),
   maxLtv: x.max_ltv,
 })
@@ -96,11 +92,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   maxBand: parseFloat(x.max_band),
   ammA: parseFloat(x.amm_a),
   sumDebtSquared: parseFloat(x.sum_debt_squared),
-  extraRewardApr: x.extra_rewards_apr.map((y) => ({
-    address: y.address,
-    symbol: y.symbol,
-    rate: y.apr,
-  })),
+  extraRewardApr: x.extra_rewards_apr.map(y => ({ address: y.address, symbol: y.symbol, rate: y.apr })),
   collateralToken: {
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
@@ -117,7 +109,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
-  x.markets.map((market) => ({
+  x.markets.map(market => ({
     name: market.market_name,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
@@ -130,7 +122,7 @@ export const parseAllUserLendingPositions = (x: Responses.GetAllUserLendingPosit
 export const parseUserLendingPositions = (
   x: Pick<Responses.GetUserLendingPositionsResponse, 'markets'>,
 ): Models.UserLendingPosition[] =>
-  x.markets.map((market) => ({
+  x.markets.map(market => ({
     marketName: market.market_name,
     vaultAddress: market.vault_address,
     firstDeposit: toDate(market.first_deposit),
@@ -196,7 +188,7 @@ export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResp
 
 export const parseMarketUsers = (x: Responses.GetMarketUsersResponse): Models.MarketUsers => ({
   count: x.count,
-  users: x.data.map((y) => ({
+  users: x.data.map(y => ({
     user: y.user,
     first: toDate(y.first),
     last: toDate(y.last),
@@ -222,7 +214,7 @@ export const parseUserCollateralEvents = (
   totalDepositPrecise: x.total_deposit_precise,
   totalBorrowed: x.total_borrowed,
   totalBorrowedPrecise: x.total_borrowed_precise,
-  events: x.data.map((y) => ({
+  events: x.data.map(y => ({
     timestamp: toDate(y.dt),
     txHash: y.transaction_hash,
     type: y.type,

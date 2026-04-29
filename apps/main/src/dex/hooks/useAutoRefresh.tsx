@@ -9,7 +9,7 @@ import { useNetworks } from '../entities/networks'
 export const useAutoRefresh = (chainId: number | undefined) => {
   const { curveApi, isHydrated } = useCurve()
   const { data: networks } = useNetworks()
-  const fetchPools = useStore((state) => state.pools.fetchPools)
+  const fetchPools = useStore(state => state.pools.fetchPools)
   const poolIds = useMemo(
     () => isHydrated && curveApi?.chainId === chainId && curveApi?.getPoolList(),
     [chainId, curveApi, isHydrated],

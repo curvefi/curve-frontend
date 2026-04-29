@@ -25,7 +25,7 @@ export const useTokenSelectorData = (
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
 ): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
   const config = useConfig()
-  const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
+  const tokenAddresses = useMemo(() => tokens.map(token => token.address), [tokens])
 
   /*
    * Prefetch balances eagerly so they're cached before the modal opens.

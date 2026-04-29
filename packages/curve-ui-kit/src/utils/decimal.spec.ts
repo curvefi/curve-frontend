@@ -20,7 +20,7 @@ describe('decimal', () => {
     expect(decimal('5.')).toBe('5.') // trailing decimal still converts fine to numbers
   })
 
-  it.each(['Infinity', '-Infinity', undefined, null, '', '?', '-', NaN])('handles edge cases', (invalidCharacter) => {
+  it.each(['Infinity', '-Infinity', undefined, null, '', '?', '-', NaN])('handles edge cases', invalidCharacter => {
     expect(decimal(invalidCharacter as string | number | undefined | null)).toBe(undefined)
   })
 

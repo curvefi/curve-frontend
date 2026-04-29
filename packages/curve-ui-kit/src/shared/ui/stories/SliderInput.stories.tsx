@@ -22,7 +22,7 @@ const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }:
       <SliderInput
         {...rest}
         value={value}
-        onChange={(newValue) => {
+        onChange={newValue => {
           setValue(newValue)
           onChange?.(newValue)
         }}
@@ -34,7 +34,7 @@ const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }:
 const meta: Meta<typeof SliderInputComponent> = {
   title: 'UI Kit/Widgets/SliderInput',
   component: SliderInputComponent,
-  render: (args) => <SliderInputComponent {...(args as SliderInputStoryProps)} />,
+  render: args => <SliderInputComponent {...(args as SliderInputStoryProps)} />,
   args: {
     name: 'slider-story',
     layoutDirection: 'row',
@@ -131,7 +131,7 @@ export const TradingSlider: Story = {
       'data-rail-background': 'danger',
     },
     inputProps: {
-      format: (value) => formatNumber(Number(value), { abbreviate: true }),
+      format: value => formatNumber(Number(value), { abbreviate: true }),
       adornment: 'percentage',
     },
   },

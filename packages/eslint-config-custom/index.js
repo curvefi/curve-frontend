@@ -39,6 +39,7 @@ module.exports = {
 
     'object-shorthand': 'warn',
     'arrow-body-style': ['error', 'as-needed'],
+    'arrow-parens': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
     'unused-imports/no-unused-imports': 'warn',
     'import/no-default-export': 'error',

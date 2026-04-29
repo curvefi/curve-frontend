@@ -49,7 +49,7 @@ export const PoolListFilterChips = ({
       justifyContent="flex-end"
       size={{ mobile: 12, desktop: 'auto' }}
     >
-      {getFilterGroups({ isConnected }).map((group) => (
+      {getFilterGroups({ isConnected }).map(group => (
         <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
           {group.map(
             ({ key, label }) =>

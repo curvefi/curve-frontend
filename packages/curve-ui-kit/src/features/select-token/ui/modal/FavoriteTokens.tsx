@@ -23,16 +23,19 @@ export const FavoriteTokens = <T extends TokenOption>({ tokens, onToken }: Props
     <Typography variant="headingXsBold">{t`Favorite tokens`}</Typography>
 
     <Stack direction="row" gap={Spacing.xs} flexWrap="wrap">
-      {tokens.map((token) => (
-        // todo: handle the selected token case
-        <SelectableChip
-          key={token.address}
-          icon={<TokenIcon blockchainId={token.chain} tooltip={token.symbol} address={token.address} size="mui-md" />}
-          label={token.symbol}
-          toggle={() => onToken(token)}
-          selected={false}
-        />
-      ))}
+      {tokens.map(
+        (
+          token, // todo: handle the selected token case
+        ) => (
+          <SelectableChip
+            key={token.address}
+            icon={<TokenIcon blockchainId={token.chain} tooltip={token.symbol} address={token.address} size="mui-md" />}
+            label={token.symbol}
+            toggle={() => onToken(token)}
+            selected={false}
+          />
+        ),
+      )}
     </Stack>
   </Stack>
 )
