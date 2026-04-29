@@ -8,7 +8,7 @@ import { decimal } from '@ui-kit/utils/decimal'
 export const MAX_USD_VALUE = 400_000_000
 
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
-  maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
+  maxExclusive == null ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
 
 export const oneDecimal = (minOrMax = 1, maxExclusive?: number, maxDecimals = 6): Decimal =>
   decimal(new BigNumber(oneFloat(minOrMax, maxExclusive)).decimalPlaces(maxDecimals, BigNumber.ROUND_DOWN).toString())!

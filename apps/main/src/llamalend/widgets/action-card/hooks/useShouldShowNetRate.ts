@@ -28,5 +28,5 @@ export function useShouldShowNetRate({
     if (result != null && tokenSymbol != null) setDefaultValue((value) => ({ ...value, [tokenSymbol]: result }))
   }, [result, setDefaultValue, tokenSymbol])
 
-  return result ?? (tokenSymbol != null ? defaultValue[tokenSymbol] : false)
+  return result ?? (tokenSymbol == null ? false : defaultValue[tokenSymbol])
 }

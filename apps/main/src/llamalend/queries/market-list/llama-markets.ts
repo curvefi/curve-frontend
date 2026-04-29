@@ -311,8 +311,6 @@ type LlamaMarketsQueries = [
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (without the details).
- * @param userAddress - The user's address
- * @param enabled - Whether the query is enabled
  */
 export const useLlamaMarkets = (
   {
