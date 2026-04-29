@@ -10,7 +10,7 @@ import {
   type MockLendEstimateGas,
   type MockLendVault,
 } from '../mock-market.helpers'
-import { seedErc20BalanceForAddresses } from '../query-cache.helpers'
+import { seedErc20BalanceForAddresses, seedLendMarketSolvencyQueries } from '../query-cache.helpers'
 import { createIsApprovedStub, createStub, type TestStub } from '../test-scenarios.helpers'
 
 const seedSupplyMarketBalances = ({
@@ -137,10 +137,12 @@ export const createDepositScenario = ({
   chainId,
   approved,
   maxDeposit = '1000000',
+  solvencyPercent = 100,
 }: {
   chainId: number
   approved: boolean
   maxDeposit?: Decimal
+  solvencyPercent?: number
 }) => {
   const input = { amount: '12.5' as const, maxDeposit }
   const amount = input.amount
@@ -179,6 +181,8 @@ export const createDepositScenario = ({
       },
     },
   })
+
+  seedLendMarketSolvencyQueries({ chainId, market, solvencyPercent })
 
   return {
     input,

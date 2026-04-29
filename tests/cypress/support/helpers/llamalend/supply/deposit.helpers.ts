@@ -1,5 +1,6 @@
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
 import type { FormDisabledAlert } from '@/llamalend/llamalend.types'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkSupplyActionInfoValues,
@@ -9,7 +10,21 @@ import {
   writeSupplyInput,
 } from './supply.helpers'
 
-export const submitDepositForm = () => submitSupplyForm('deposit', 'Deposit successful!')
+export const submitDepositForm = ({ solvencyPercent = 100 }: { solvencyPercent?: number }) => {
+  if (solvencyPercent <= SOLVENCY_THRESHOLDS.solvent && solvencyPercent > SOLVENCY_THRESHOLDS.low) {
+    return confirmLowSolvencyDepositForm()
+  }
+  return submitSupplyForm('deposit', 'Deposit successful!')
+}
+
+export const confirmLowSolvencyDepositForm = () => {
+  cy.get('[data-testid="supply-deposit-submit-button"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="low-solvency-action-checkbox"]').click()
+  cy.get('[data-testid="low-solvency-action-submit-button"]').click()
+  return cy
+    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
+    .contains('Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
+}
 
 /**
  * Fill in the deposit form with the specified amount.
@@ -25,12 +40,14 @@ export function checkDepositSubmit({
   buttonText,
   depositAlert,
   maxDeposit,
+  solvencyPercent,
 }: {
   buttonText: string
   depositAlert?: FormDisabledAlert
   maxDeposit?: Decimal
+  solvencyPercent: number
 }) {
-  if (depositAlert) {
+  if (depositAlert || solvencyPercent < SOLVENCY_THRESHOLDS.low) {
     cy.get('[data-testid="supply-deposit-submit-button"]').should('not.exist')
     cy.get('[data-testid="alert-disable-form"]').should('exist')
     return
