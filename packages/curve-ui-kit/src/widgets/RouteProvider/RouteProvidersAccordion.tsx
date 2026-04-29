@@ -117,7 +117,7 @@ export const RouteProvidersAccordion = ({
               icon={RouteProviderIcons[route.router]()}
             />
           ))}
-          {isLoading && <Skeleton width="100%" height={ButtonSize.lg} />}
+          {!routes?.length && isLoading && <Skeleton width="100%" height={ButtonSize.lg} />}
           {error?.message && (
             <Alert severity="error">
               <AlertTitle>{error.message}</AlertTitle>
