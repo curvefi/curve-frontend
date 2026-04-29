@@ -102,8 +102,8 @@ export const useFilters = <TColumnId extends string>({
   searchKey = DEFAULT_SEARCH_KEY,
   ...columnFilterOptions
 }: Parameters<typeof useColumnFilters<TColumnId>>[0] & { searchKey?: string }) => {
-  const { resetGlobalFilter, ...globalFilter } = useGlobalFilter(searchKey)
-  const { resetFilters: resetColumnFilters, ...columnFilters } = useColumnFilters(columnFilterOptions)
+  const globalFilter = useGlobalFilter(searchKey)
+  const columnFilters = useColumnFilters(columnFilterOptions)
 
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
@@ -112,8 +112,6 @@ export const useFilters = <TColumnId extends string>({
   return {
     ...globalFilter,
     ...columnFilters,
-    resetGlobalFilter,
-    resetColumnFilters,
     /**
      * Clears all filters (both global search and column filters) in a single navigation.
      *
