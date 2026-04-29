@@ -18,6 +18,7 @@ import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -417,3 +418,8 @@ export const calculateMarketSolvency = ({
   totalAssetsUsd: number
   badDebtUsd: number | undefined
 }) => (totalAssetsUsd && badDebtUsd != null ? (Math.max(0, totalAssetsUsd - badDebtUsd) / totalAssetsUsd) * 100 : null)
+
+export const deprecateLowSolvency = (solvencyPercent: number | null) =>
+  solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
+    ? t`This market is deprecated due to low solvency`
+    : null

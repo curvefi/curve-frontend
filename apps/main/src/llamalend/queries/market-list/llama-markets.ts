@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { ethAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
-import { calculateMarketSolvency, createGetBadDebtMarket } from '@/llamalend/llama.utils'
+import { calculateMarketSolvency, createGetBadDebtMarket, deprecateLowSolvency } from '@/llamalend/llama.utils'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -15,11 +15,10 @@ import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaign
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { useMappedQuery } from '@ui-kit/types/util'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND, SOLVENCY_THRESHOLDS } from '../../llama-markets.constants'
+import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
@@ -90,11 +89,6 @@ export type LlamaMarketsResult = {
   userHasPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
   hasFavorites: boolean
 }
-
-const deprecateLowSolvency = (solvencyPercent: number | null) =>
-  solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
-    ? t`This market is deprecated due to low solvency`
-    : null
 
 const convertLendingVault = (
   {
