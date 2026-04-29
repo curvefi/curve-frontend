@@ -1,2 +1,2 @@
-export { combineCampaigns, useCampaignsByAddress } from './campaigns'
-export type { CampaignPoolRewards } from './types'
+export { useCampaignsByAddress, combineCampaigns } from './campaigns'
+export type { CampaignRewards } from './types'

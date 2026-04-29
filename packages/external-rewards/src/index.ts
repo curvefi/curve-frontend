@@ -24,7 +24,7 @@ export type CampaignPool = {
 }
 
 export type RewardsTags = 'points' | 'tokens'
-export type RewardsAction = 'supply' | 'borrow' | 'lp' | 'loan'
+export type RewardsAction = 'supply' | 'borrow' | 'lp'
 
 const parsedCampaignsJsons = campaignsJsons as Record<string, Campaign>
 

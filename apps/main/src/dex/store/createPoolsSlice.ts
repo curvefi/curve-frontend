@@ -235,19 +235,16 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         crTokens.push(crToken)
       }
 
-      // update percentShareInPool
-      crTokens.map((cr: CurrencyReservesToken) => {
+      for (const cr of crTokens) {
         if (isEmpty) {
           cr.percentShareInPool = '0'
-        } else if (poolData.pool.isCrypto && isNaN(cr.usdRate)) {
-          cr.percentShareInPool = 'NaN'
-        } else if (poolData.pool.isCrypto) {
+          // Only use USD balances for currency reserves if all tokens have a usd balance (and pool isn't empty)
+        } else if (crTokens.every((cr) => cr.balanceUsd)) {
           cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
         } else {
           cr.percentShareInPool = ((cr.balance / total) * 100).toFixed(2)
         }
-        return cr
-      })
+      }
 
       const result: CurrencyReserves = {
         poolId: pool.id,

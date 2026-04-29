@@ -1,6 +1,6 @@
 import type { PegStatus } from '@/loan/components/PagePegKeepers/components/peg-status.util'
-import Chip from '@mui/material/Chip'
 import { t } from '@ui-kit/lib/i18n'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 
 const pegChipLabels = {
   loading: '-',
@@ -18,4 +18,4 @@ type Props = {
  * @param status - PegStatus object containing label and color
  */
 export const PegChip = ({ status: { label, color } }: Props) =>
-  label !== 'loading' && <Chip label={pegChipLabels[label]} size="small" color={color} />
+  label !== 'loading' && <Badge label={pegChipLabels[label]} size="small" color={color} />

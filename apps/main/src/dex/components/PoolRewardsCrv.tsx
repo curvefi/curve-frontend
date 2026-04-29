@@ -29,6 +29,7 @@ export const PoolRewardsCrv = ({
     } else if (rewardsApy?.crv && (rewardsApy?.crv[0] !== 0 || rewardsApy?.crv[1] !== 0)) {
       const [base, boosted] = rewardsApy.crv
       if (!base && !boosted) return null
+      if (base < 0.01) return '< 0.01% CRV' // Anything less is basically not worth the time
       const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
 
       if (boosted) {

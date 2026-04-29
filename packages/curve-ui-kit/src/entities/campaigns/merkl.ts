@@ -1,13 +1,14 @@
-import { groupBy, capitalize } from 'lodash'
+import { capitalize, groupBy } from 'lodash'
+import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
-import type { Address } from '@primitives/address.utils'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model'
 import { formatPercent } from '@ui-kit/utils'
-import type { CampaignPoolRewards } from './types'
+import type { RewardsAction } from '@external-rewards'
+import type { CampaignRewards } from './types'
 
-type MerkleReward = {
+type MerklAction = 'POOL' | 'BORROW' | 'LEND'
+
+type MerklReward = {
   token: {
     /** Chain id of the token. Is a number, like '1' being Ethereum mainnet */
     chainId: number
@@ -34,6 +35,8 @@ type MerklOpportunity = {
   description: string
   /** More detailed steps on how to actually earn those rewards */
   howToSteps: string[]
+  /** The type of action that is rewarded, like providing liquidity in a pool, or borrowing or lending */
+  action: MerklAction
   /** APR for all campaigns together. Individual APR per reward token is not available from just the opportunity data */
   apr: number
   /** The contract address (*NOT* lowercased!) associated with the opportunity. For Curve DEX campaigns this is the pool address. */
@@ -45,11 +48,17 @@ type MerklOpportunity = {
     name: string
   }
   rewardsRecord: {
-    breakdowns: MerkleReward[]
+    breakdowns: MerklReward[]
   }
 }
 
-const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRewards[] => {
+const ACTIONS: Record<MerklAction, RewardsAction> = {
+  POOL: 'lp',
+  BORROW: 'borrow',
+  LEND: 'supply',
+}
+
+const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] => {
   const network = opp.chain.name.toLocaleLowerCase()
 
   return (
@@ -72,7 +81,7 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
         multiplier: opp.apr ? formatPercent(opp.apr) : token.symbol,
 
         tags: ['tokens'], // Merkl rewards are tokens only as far as I know; no points.
-        action: 'lp', // For now we focus on LP pool campaigns only.
+        action: ACTIONS[opp.action],
         network,
       }))
   )
@@ -86,35 +95,25 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
  *
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
-export const { getQueryOptions: getCampaignsMerklOptions } = queryFactory({
-  queryKey: () => ['campaigns-merkl'] as const,
-  queryFn: async () => {
-    const fetchPage = async (page: number, items: number) => {
-      const params = {
-        mainProtocolId: 'curve',
-        test: false,
-        status: 'LIVE',
-        action: 'POOL', // Only pool campaigns for now. Perhaps there will be lending campaigns in the future
-        items,
-        page,
-      }
+export const fetchMerklRewards = async (params: object) => {
+  const fetchPage = async (page: number, items: number) => {
+    const url = `https://api.merkl.xyz/v4/opportunities${addQueryString({
+      ...params,
+      items,
+      page,
+    })}`
+    const resp = await fetch(url, { method: 'GET' })
 
-      const url = `https://api.merkl.xyz/v4/opportunities${addQueryString(params)}`
-      const resp = await fetch(url, { method: 'GET' })
-
-      if (!resp.ok) {
-        throw new FetchError(resp.status, `Merkl fetch error ${resp.status} for URL: ${url}`)
-      }
-
-      return (await resp.json()) as MerklOpportunity[]
+    if (!resp.ok) {
+      throw new FetchError(resp.status, `Merkl fetch error ${resp.status} for URL: ${url}`)
     }
 
-    const opportunities = await paginate(fetchPage, 0, 100)
-    const campaigns = opportunities.flatMap(opportunityToCampaignPoolRewards)
+    return (await resp.json()) as MerklOpportunity[]
+  }
 
-    // Can't use Object.groupBy until we support ES2024
-    return groupBy(campaigns, (x) => x.address)
-  },
-  validationSuite: EmptyValidationSuite,
-  category: 'global.campaigns',
-})
+  const opportunities = await paginate(fetchPage, 0, 100)
+  const campaigns = opportunities.flatMap(opportunityToCampaignRewards)
+
+  // Can't use Object.groupBy until we support ES2024
+  return groupBy(campaigns, (x) => x.address)
+}

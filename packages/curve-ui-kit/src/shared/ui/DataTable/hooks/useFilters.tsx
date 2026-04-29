@@ -61,11 +61,6 @@ function useColumnFilters<TColumnId extends string>({
       (id: TColumnId, value: string | null) => searchNavigate({ [scopedKey(scope, id)]: value }, { replace: true }),
       [scope, searchNavigate],
     ),
-    resetFilters: useCallback(() => {
-      searchNavigate(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])), {
-        replace: true,
-      })
-    }, [columns, scope, searchNavigate]),
   }
 }
 
@@ -87,7 +82,6 @@ function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
       (value: string) => searchNavigate({ [key]: value || null }, { replace: true }),
       [key, searchNavigate],
     ),
-    resetGlobalFilter: useCallback(() => searchNavigate({ [key]: null }, { replace: true }), [key, searchNavigate]),
   }
 }
 
@@ -102,8 +96,8 @@ export const useFilters = <TColumnId extends string>({
   searchKey = DEFAULT_SEARCH_KEY,
   ...columnFilterOptions
 }: Parameters<typeof useColumnFilters<TColumnId>>[0] & { searchKey?: string }) => {
-  const { resetGlobalFilter, ...globalFilter } = useGlobalFilter(searchKey)
-  const { resetFilters: resetColumnFilters, ...columnFilters } = useColumnFilters(columnFilterOptions)
+  const globalFilter = useGlobalFilter(searchKey)
+  const columnFilters = useColumnFilters(columnFilterOptions)
 
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
@@ -112,8 +106,6 @@ export const useFilters = <TColumnId extends string>({
   return {
     ...globalFilter,
     ...columnFilters,
-    resetGlobalFilter,
-    resetColumnFilters,
     /**
      * Clears all filters (both global search and column filters) in a single navigation.
      *

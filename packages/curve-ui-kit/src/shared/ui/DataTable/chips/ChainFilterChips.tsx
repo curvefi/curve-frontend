@@ -3,8 +3,11 @@ import { capitalize } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { notFalsy } from '@primitives/objects.utils'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { ChainIcon, type ChainIconProps } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
+import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.utils'
+import { type SelectableChipProps } from '@ui-kit/shared/ui/SelectableChip'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain } from '@ui-kit/utils'
@@ -12,6 +15,13 @@ import { Chain } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 const ethereum = NETWORK_BASE_CONFIG[Chain.Ethereum].id
+const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
+  extraSmall: 'xs',
+  small: 'sm',
+  medium: 'md',
+  large: 'lg',
+  extraLarge: 'xl',
+}
 
 type ChainFilterChipsProps = {
   chains: string[]
@@ -42,27 +52,32 @@ const useSortedChains = ({ chains, selectedChains = [], toggleChain }: ChainFilt
  * On mobile devices, the chips scroll horizontally; on tablet and larger screens, they wrap.
  * Ethereum is always displayed first, followed by other chains in alphabetical order.
  */
-export const ChainFilterChips = (props: ChainFilterChipsProps) => (
-  <Grid
-    container
-    spacing={Spacing.xs}
-    size={{ mobile: 12, tablet: 'auto' }}
-    sx={{
-      flexWrap: { mobile: 'nowrap', tablet: 'wrap' },
-      overflowX: { mobile: 'auto', tablet: 'visible' },
-    }}
-  >
-    {useSortedChains(props).map(({ chain, label, onClick, isSelected }) => (
-      <Tooltip key={chain} title={label} arrow>
-        <GridChip
-          size="auto"
-          selected={isSelected}
-          toggle={onClick}
-          icon={<ChainIcon blockchainId={chain} size="md" />}
-          aria-label={label}
-          data-testid={`chip-chain-${chain}`}
-        />
-      </Tooltip>
-    ))}
-  </Grid>
-)
+export const ChainFilterChips = (props: ChainFilterChipsProps) => {
+  const isMobile = useIsMobile()
+  const selectableChipSize = getDefaultSelectableChipSize(isMobile)
+  return (
+    <Grid
+      container
+      spacing={Spacing.xs}
+      size={{ mobile: 12, tablet: 'auto' }}
+      sx={{
+        flexWrap: { mobile: 'nowrap', tablet: 'wrap' },
+        overflowX: { mobile: 'auto', tablet: 'visible' },
+      }}
+    >
+      {useSortedChains(props).map(({ chain, label, onClick, isSelected }) => (
+        <Tooltip key={chain} title={label} arrow>
+          <GridChip
+            size="auto"
+            selectableChipSize={selectableChipSize}
+            selected={isSelected}
+            toggle={onClick}
+            icon={<ChainIcon blockchainId={chain} size={CHAIN_ICON_FROM_CHIP_SIZE[selectableChipSize]} />}
+            aria-label={label}
+            data-testid={`chip-chain-${chain}`}
+          />
+        </Tooltip>
+      ))}
+    </Grid>
+  )
+}

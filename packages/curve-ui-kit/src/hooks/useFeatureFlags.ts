@@ -49,3 +49,6 @@ export const useMarketHistoricalRatesChart = useStableChannel
 
 /** New market historical interest rate and utilization chart */
 export const useMarketInterestRatesAndUtilizationChart = useBetaChannel
+
+/** New market list and search layout */
+export const useNewMarketListLayout = useBetaChannel

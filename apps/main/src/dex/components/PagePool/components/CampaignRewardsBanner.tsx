@@ -20,5 +20,5 @@ export const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBanne
   const message = campaigns.some((campaign) => campaign.tags.includes('points'))
     ? t`Liquidity providers in this pool also earn points!`
     : t`Liquidity providers in this pool also earn additional tokens!`
-  return campaigns.length > 0 && <CampaignBannerComp campaignRewardsPool={campaigns} message={message} />
+  return campaigns.length > 0 && <CampaignBannerComp campaignRewards={campaigns} message={message} />
 }
