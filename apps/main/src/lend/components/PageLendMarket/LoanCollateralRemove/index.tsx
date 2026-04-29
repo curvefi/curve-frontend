@@ -78,7 +78,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(network, resp.hash)
         setTxInfoBar(

@@ -31,6 +31,7 @@ const config = [
   // Recommended presets (flat-native)
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
   ...tanstack.configs['flat/recommended'],
   eslintReact.configs['recommended-typescript'],
   reactRefresh.configs.vite(),
@@ -174,6 +175,12 @@ const config = [
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/require-await': 'off',
+
+      // And the following ones are from tseslint.configs.stylisticTypeChecked
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@typescript-eslint/consistent-indexed-object-style': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
 
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 

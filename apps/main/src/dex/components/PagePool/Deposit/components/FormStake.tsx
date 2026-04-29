@@ -83,7 +83,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }

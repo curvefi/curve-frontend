@@ -27,12 +27,10 @@ export function useStatistics() {
     contracts: pegkeeperDebtContracts,
   })
 
-  const totalDebt =
-    debt &&
-    debt
-      .filter(x => x.status === 'success')
-      .map(x => x.result)
-      .reduce((acc, curr) => acc + curr, 0n)
+  const totalDebt = debt
+    ?.filter(x => x.status === 'success')
+    .map(x => x.result)
+    .reduce((acc, curr) => acc + curr, 0n)
 
   const {
     data: ceiling,
@@ -42,12 +40,10 @@ export function useStatistics() {
     contracts: pegkeeperDebtCeilingContracts,
   })
 
-  const totalCeiling =
-    ceiling &&
-    ceiling
-      .filter(x => x.status === 'success')
-      .map(x => x.result)
-      .reduce((acc, curr) => acc + curr, 0n)
+  const totalCeiling = ceiling
+    ?.filter(x => x.status === 'success')
+    .map(x => x.result)
+    .reduce((acc, curr) => acc + curr, 0n)
 
   return {
     totalDebt: totalDebt == null ? undefined : (formatEther(totalDebt) as Decimal),

@@ -111,7 +111,7 @@ export const NewDataTable = <T extends TableItem>({
     position: 'sticky',
     top: maxHeight ? 0 : top,
     zIndex: t.zIndex.tableHeader,
-    marginBlock: Sizing['sm'],
+    marginBlock: Sizing.sm,
   })
   const showFooter = showPagination || showViewAllButton || footerRow
 
@@ -128,7 +128,7 @@ export const NewDataTable = <T extends TableItem>({
             {children && <NewFilterRow table={table}>{children}</NewFilterRow>}
 
             {headerGroups.map(headerGroup => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}

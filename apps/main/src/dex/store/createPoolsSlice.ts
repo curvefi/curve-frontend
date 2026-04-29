@@ -475,7 +475,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
     const tokenObj = tokensMapper[key]
     if (!tokenObj) return prev
 
-    prev[key] = { ...tokenObj, haveSameTokenName: duplicatedTokenNames.indexOf(tokenObj.symbol) !== -1 }
+    prev[key] = { ...tokenObj, haveSameTokenName: duplicatedTokenNames.includes(tokenObj.symbol) }
     return prev
   }, {} as TokensMapper)
 }

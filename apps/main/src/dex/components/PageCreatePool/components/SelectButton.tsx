@@ -41,13 +41,12 @@ export const SelectButton = ({
     <Row>
       <ButtonDescription>{description}</ButtonDescription>
     </Row>
-    {subData &&
-      subData.map(item => (
-        <Row key={`${name}-${item.name}`}>
-          <ButtonSubName>{item.name}</ButtonSubName>
-          <ButtonSubData>{item.description}</ButtonSubData>
-        </Row>
-      ))}
+    {subData?.map(item => (
+      <Row key={`${name}-${item.name}`}>
+        <ButtonSubName>{item.name}</ButtonSubName>
+        <ButtonSubData>{item.description}</ButtonSubData>
+      </Row>
+    ))}
   </StyledButton>
 )
 

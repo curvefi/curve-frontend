@@ -120,7 +120,7 @@ export const LoanDeleverage = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txInfoBarMessage = resp.loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is paid-off and will no longer be manageable.`

@@ -124,7 +124,7 @@ export const LoanLiquidate = ({
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
 
-            if (isSubscribed.current && resp && resp.hash && !resp.loanExists) {
+            if (isSubscribed.current && resp?.hash && !resp.loanExists) {
               const TxDescription = (
                 <>
                   <Trans>

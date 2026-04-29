@@ -12,7 +12,7 @@ type Payload = Omit<Locker, 'weight' | 'locked'> & {
 }
 
 export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const { user, locked, weight, weightRatio, unlockTime } = payload[0].payload as Payload
 
     return (

@@ -109,7 +109,7 @@ const pool = {
       const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
       resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
       if (baseApyResult.status === 'rejected') {
-        if (p.inApi) resp.error['base'] = true
+        if (p.inApi) resp.error.base = true
       } else {
         resp.base.day = new BN(resp.base.day).toFixed(8)
         resp.base.week = new BN(resp.base.week).toFixed(8)
@@ -124,8 +124,8 @@ const pool = {
       const rewards = fulfilledValue(rewardsResult)
 
       if (rewardsResult.status === 'rejected') {
-        resp.error['others'] = true
-        resp.error['crv'] = true
+        resp.error.others = true
+        resp.error.crv = true
       }
 
       if (rewardsResult.status === 'fulfilled' && rewards) {
@@ -146,7 +146,7 @@ const pool = {
     // others rewards
     const others = fulfilledValue(otherResult) ?? []
     if (otherResult.status === 'rejected') {
-      resp.error['others'] = true
+      resp.error.others = true
     } else {
       for (const other of others) {
         if (chainId === 8453) {
@@ -161,7 +161,7 @@ const pool = {
 
     // crv rewards
     if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
-      resp.error['crv'] = true
+      resp.error.crv = true
     }
     if (crvResult.status === 'fulfilled' && !!crvResult.value) {
       const [baseApy] = crvResult.value

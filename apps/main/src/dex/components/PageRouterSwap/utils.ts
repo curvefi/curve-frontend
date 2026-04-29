@@ -43,7 +43,7 @@ export function parseRouterRoutes(
 
       const poolName = pool ? pool.name : route.poolId
 
-      if (pool && pool.isCrypto) {
+      if (pool?.isCrypto) {
         haveCryptoRoutes = true
       }
 

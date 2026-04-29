@@ -56,7 +56,7 @@ interface TooltipContentProps {
 }
 
 const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHealthColor }: TooltipContentProps) => {
-  if (!active || !payload || !payload.length || !oraclePrice) return null
+  if (!active || !payload?.length || !oraclePrice) return null
 
   const currPrices = isManage ? payload.find(p => p.name === 'curr') : undefined
   const newPrices = isManage ? payload.find(p => p.name === 'new') : payload[0]

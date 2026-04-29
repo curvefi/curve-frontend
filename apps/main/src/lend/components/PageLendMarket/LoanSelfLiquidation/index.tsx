@@ -128,7 +128,7 @@ export const LoanSelfLiquidation = ({
             const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
             const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)
 
-            if (isSubscribed.current && resp && resp.hash && !resp.loanExists && !resp.error) {
+            if (isSubscribed.current && resp?.hash && !resp.loanExists && !resp.error) {
               const TxDescription = (
                 <Trans>
                   Transaction completed. This loan will no longer exist. Click{' '}

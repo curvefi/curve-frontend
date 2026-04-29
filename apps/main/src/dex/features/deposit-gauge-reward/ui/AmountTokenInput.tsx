@@ -92,7 +92,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   })
 
   const rewardTokenBalance = useMemo(
-    () => rewardTokenId && tokenBalances && tokenBalances[rewardTokenId],
+    () => rewardTokenId && tokenBalances?.[rewardTokenId],
     [rewardTokenId, tokenBalances],
   )
 

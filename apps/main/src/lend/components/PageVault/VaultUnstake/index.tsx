@@ -70,7 +70,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
       const resp = await fetchStepUnstake(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)

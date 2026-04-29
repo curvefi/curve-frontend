@@ -11,7 +11,7 @@ export type IconStyles = { $svgTop?: string }
 /**
  * Hook to handle mobile tooltip behavior, using click events to open the tooltip
  */
-function useMobileTooltip(onClick: { (): void | undefined } | (() => void) | undefined) {
+function useMobileTooltip(onClick: (() => void | undefined) | (() => void) | undefined) {
   const isMobile = useIsMobile()
   const [open, setOpen] = useState(false)
   const [scrollY, setScrollY] = useState<number | null>(null)

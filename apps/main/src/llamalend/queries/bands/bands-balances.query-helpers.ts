@@ -41,8 +41,8 @@ export async function fetchChartBandBalancesData(
     const collateralUsd = new BN(collateral).multipliedBy(sqrt)
 
     return {
-      borrowed: decimal(borrowed) as Decimal,
-      collateral: decimal(collateral) as Decimal,
+      borrowed: decimal(borrowed)!,
+      collateral: decimal(collateral)!,
       collateralUsd: collateralUsd.toNumber(),
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand === +n,

@@ -676,7 +676,7 @@ const loanIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -935,7 +935,7 @@ const collateralIncrease = {
       return resp
     } catch (err) {
       console.error(err)
-      if (err?.message && err.message.includes('liquidation mode')) {
+      if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
@@ -991,7 +991,7 @@ const collateralIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-step-add-collateral')
@@ -1011,7 +1011,7 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -1068,7 +1068,7 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-step-remove-collateral')

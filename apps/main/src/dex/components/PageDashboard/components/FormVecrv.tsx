@@ -64,7 +64,7 @@ export const FormVecrv = () => {
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
-      if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress && network) {
+      if (isSubscribed.current && resp?.hash && resp.walletAddress === walletAddress && network) {
         const txDescription = t`Withdraw Complete`
         setTxInfoBar(
           <TxInfoBar

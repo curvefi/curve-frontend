@@ -37,10 +37,10 @@ export const SummaryClaimable = ({ title }: Props) => {
       (prev, { claimableCrv = [], claimableOthers, claimablesTotalUsd }) => {
         // crv
         claimableCrv.forEach(({ amount, price }) => {
-          if (typeof prev.tokens['crv'] === 'undefined') {
-            prev.tokens['crv'] = { symbol: 'CRV', total: Number(amount), price }
+          if (typeof prev.tokens.crv === 'undefined') {
+            prev.tokens.crv = { symbol: 'CRV', total: Number(amount), price }
           } else {
-            prev.tokens['crv'].total += Number(amount)
+            prev.tokens.crv.total += Number(amount)
           }
         })
 
