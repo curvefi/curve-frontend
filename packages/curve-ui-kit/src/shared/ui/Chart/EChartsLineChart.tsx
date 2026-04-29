@@ -14,12 +14,12 @@ export type LineSeriesConfig<TSeriesKey extends string> = {
   strokeWidth?: number
 }
 
-export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
+type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   datum: TData
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-export type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: string }
+type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: string }
 
 /** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
 const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(

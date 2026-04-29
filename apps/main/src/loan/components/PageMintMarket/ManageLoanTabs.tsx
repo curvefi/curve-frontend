@@ -143,7 +143,7 @@ const MintManageSoftLiquidationMenu = [
       },
       {
         value: 'close-position',
-        label: t`Close position`,
+        label: t`Close`,
         component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
           <ClosePositionForm
             chainId={rChainId}

@@ -9,7 +9,7 @@ import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
@@ -137,6 +137,7 @@ export const createVaultWithdrawRedeem = (
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
       if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
+      const network = networks[chainId]
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'WITHDRAW_REDEEM' }
@@ -152,7 +153,7 @@ export const createVaultWithdrawRedeem = (
         amount,
         vaultShares,
       )
-      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
+      updateUserEventsApi(wallet, network, market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         void Promise.all([
@@ -162,6 +163,8 @@ export const createVaultWithdrawRedeem = (
             chainId: api.chainId,
             marketId: market.id,
             userAddress: api.signerAddress,
+            contractAddress: getControllerAddress(market),
+            blockchainId: network.id,
           }),
         ])
         get()[sliceKey].setStateByKeys(
@@ -200,7 +203,7 @@ export function _isWithdraw(formType: FormType) {
   return formType === 'withdraw'
 }
 
-export function _getActiveKey(
+function _getActiveKey(
   rChainId: ChainId,
   formType: FormType,
   market: OneWayMarketTemplate | undefined,

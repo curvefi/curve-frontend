@@ -45,7 +45,7 @@ export type TransactionContext = {
   wallet: NonNullable<ReturnType<typeof useCurve>['wallet']>
 }
 
-export type TransactionResult = { hash: Hex }
+type TransactionResult = { hash: Hex }
 
 type TransactionMutationOptionsBase<
   TVariables extends object,

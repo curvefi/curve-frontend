@@ -18,7 +18,7 @@ import { hasClaimableRewards } from '../queries/supply/supply-query.helpers'
 
 type ClaimMutation = Record<string, never>
 
-export type ClaimOptions = {
+type ClaimOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   userAddress: Address | undefined

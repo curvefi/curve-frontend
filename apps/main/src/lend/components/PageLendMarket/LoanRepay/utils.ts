@@ -18,13 +18,13 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   isFullRepay: false,
 }
 
-export function _getIsSwapRequire({ stateCollateral, userCollateral }: FormValues) {
+function _getIsSwapRequire({ stateCollateral, userCollateral }: FormValues) {
   const haveStateCollateral = +stateCollateral > 0
   const haveUserCollateral = +userCollateral > 0
   return haveStateCollateral || haveUserCollateral
 }
 
-export function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: OneWayMarketTemplate) {
+function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: OneWayMarketTemplate) {
   const { userCollateral, stateCollateral, userBorrowed } = formValues
   const collateralTotal = +userCollateral + +stateCollateral
 

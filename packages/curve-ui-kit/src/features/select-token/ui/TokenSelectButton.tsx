@@ -4,11 +4,11 @@ import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { TokenOption } from '../types'
 
-export type TokenSelectButtonCallbacks = {
+type TokenSelectButtonCallbacks = {
   onClick: () => void
 }
 
-export type TokenSelectButtonProps = {
+type TokenSelectButtonProps = {
   token?: TokenOption
   disabled: boolean
 }

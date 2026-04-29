@@ -167,6 +167,7 @@ type UserMarketStats = {
   n1: number
   n2: number
   n: number
+  active_band: number
   debt: number
   collateral: number
   borrowed: number
@@ -266,5 +267,22 @@ export type GetUserCollateralEventsResponse = {
     n1: number
     n2: number
     oracle_price: number
+  }[]
+}
+
+export type GetMarketUsersResponse = PaginationMeta & {
+  data: {
+    user: string
+    first: string
+    last: string
+    debt: string
+    health: string
+    health_full: string
+    loss: string
+    borrowed?: string
+    /** crvusd endpoint returns "stablecoin" instead of "borrowed" */
+    stablecoin?: string
+    collateral: string
+    soft_liquidation: boolean
   }[]
 }

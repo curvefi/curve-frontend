@@ -14,7 +14,7 @@ import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib'
 import { shortenAddress } from '@ui-kit/utils'
 
-export const hasNoWrapped = (pool: Pool) => pool?.isPlain || pool?.isFake
+const hasNoWrapped = (pool: Pool) => pool?.isPlain || pool?.isFake
 
 const getPoolData = (p: Pool, network: NetworkConfig) => {
   const isWrappedOnly = network.poolIsWrappedOnly[p.id]

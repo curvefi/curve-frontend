@@ -44,7 +44,7 @@ const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   return epochs
 }
 
-export const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
+const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
   const pages = 1
   const dataPerPage = 300
 

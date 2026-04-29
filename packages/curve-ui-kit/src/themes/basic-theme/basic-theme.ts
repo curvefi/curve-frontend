@@ -70,3 +70,9 @@ export const mapBreakpoints = (
   values: Responsive,
   callback: (value: string, breakpoint: Breakpoint) => string,
 ): CSSObject => mapRecord(values, (breakpoint, value) => callback(value, breakpoint))
+
+export const fixedResponsive = <T extends string>(value: T): Responsive<T> => ({
+  mobile: value,
+  tablet: value,
+  desktop: value,
+})

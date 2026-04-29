@@ -1,5 +1,6 @@
 import { defineChain, type Chain } from 'viem'
 import type { NetworkDef } from '@ui/utils'
+import { defaultGetRpcUrls } from '@ui-kit/features/connect-wallet/lib/wagmi/transports'
 import { Chain as ChainId } from '@ui-kit/utils/network'
 import {
   arbitrum,
@@ -11,6 +12,7 @@ import {
   bsc,
   celo,
   corn,
+  etherlink,
   fantom,
   fraxtal,
   gnosis,
@@ -21,17 +23,20 @@ import {
   moonbeam,
   neonMainnet,
   optimism,
+  plasma,
   plumeMainnet,
   polygon,
   sonic,
+  stable,
   taiko,
+  unichain,
+  xdc,
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
 import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
-import type { defaultGetRpcUrls } from './rpc'
 
-export const wagmiChains = [
+const wagmiChains = [
   arbitrum,
   arbitrumSepolia,
   arcTestnet,
@@ -41,6 +46,7 @@ export const wagmiChains = [
   bsc,
   celo,
   corn,
+  etherlink,
   expchain,
   fantom,
   fraxtal,
@@ -55,12 +61,16 @@ export const wagmiChains = [
   moonbeam,
   neonMainnet,
   optimism,
+  plasma,
   plumeMainnet,
   polygon,
   sonic,
+  stable,
   strata,
   tac,
   taiko,
+  unichain,
+  xdc,
   xLayer,
   zksync,
 ] as const

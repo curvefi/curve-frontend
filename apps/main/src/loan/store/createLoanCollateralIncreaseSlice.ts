@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/CollateralIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
@@ -62,7 +62,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   step: '',
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
+const DEFAULT_FORM_VALUES: FormValues = {
   collateral: '',
   collateralError: '',
 }
@@ -181,9 +181,10 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
         step: 'ADD',
       })
       const chainId = curve.chainId as ChainId
-      const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
+      const network = networks[chainId]
+      const addCollateralFn = network.api.collateralIncrease.addCollateral
       const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
-      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
+      updateUserEventsApi(wallet, network, llamma, resp.hash)
 
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
@@ -197,6 +198,8 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
           chainId,
           marketId: llamma.id,
           userAddress: wallet?.address,
+          contractAddress: getControllerAddress(llamma),
+          blockchainId: network.id,
         })
 
         get()[sliceKey].setStateByKeys({
@@ -231,6 +234,6 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
   },
 })
 
-export function getCollateralIncreaseActiveKey(llamma: Llamma, collateral: string) {
+function getCollateralIncreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${llamma.collateralSymbol}-${collateral}`
 }

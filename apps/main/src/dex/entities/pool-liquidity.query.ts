@@ -4,7 +4,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 
-export type PoolLiquidityEventsParams = FieldsOf<GetPoolLiquidityEventsParams>
+type PoolLiquidityEventsParams = FieldsOf<GetPoolLiquidityEventsParams>
 
 export const { useQuery: usePoolLiquidityEvents } = queryFactory({
   queryKey: ({ chain, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>

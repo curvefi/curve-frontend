@@ -29,6 +29,7 @@ export type DataRowProps<T extends TableItem> = {
   isLast: boolean
   expandedPanel?: ExpandedPanel<T>
   shouldStickFirstColumn?: boolean
+  verticalAlign?: 'top' | 'center' | 'bottom'
 }
 
 export const DataRow = <T extends TableItem>({
@@ -37,6 +38,7 @@ export const DataRow = <T extends TableItem>({
   row,
   expandedPanel,
   shouldStickFirstColumn,
+  verticalAlign = 'center',
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -56,6 +58,7 @@ export const DataRow = <T extends TableItem>({
             () => ({
               marginBlock: 0,
               cursor: hasUrl ? 'pointer' : 'default',
+              verticalAlign,
               transition: `border-bottom ${TransitionFunction}`,
               [`& .${DesktopOnlyHoverClass}`]: {
                 opacity: { mobile: 1, desktop: 0 },
@@ -75,7 +78,7 @@ export const DataRow = <T extends TableItem>({
                 backgroundColor: (t) => t.design.Table.Row.Default,
               }),
             }),
-            [isLast, hasUrl],
+            [isLast, hasUrl, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

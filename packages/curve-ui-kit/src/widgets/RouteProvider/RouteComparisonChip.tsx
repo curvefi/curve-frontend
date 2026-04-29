@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import Chip from '@mui/material/Chip'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { formatPercent } from '@ui-kit/utils/number'
 
 const showPercentage = (toAmountOutput: Decimal, bestOutputAmount: Decimal) =>
@@ -14,7 +14,7 @@ export const RouteComparisonChip = ({
   maxAmountOut: Decimal | undefined
   amountOut: Decimal[]
 }) => (
-  <Chip
+  <Badge
     {...(maxAmountOut &&
       (amountOut.includes(maxAmountOut)
         ? { 'aria-label': t`Best price`, label: t`Best price`, color: 'active' }

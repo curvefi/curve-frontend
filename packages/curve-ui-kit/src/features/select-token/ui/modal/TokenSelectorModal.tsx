@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxHeight } = SizesAndSpaces
 
-export type TokenSelectorModalCallbacks = {
+type TokenSelectorModalCallbacks = {
   /** Callback when modal is closed */
   onClose: () => void
 }
@@ -21,7 +21,7 @@ export type TokenSelectorModalProps = {
   children: ReactNode
 }
 
-export type Props = TokenSelectorModalCallbacks & TokenSelectorModalProps
+type Props = TokenSelectorModalCallbacks & TokenSelectorModalProps
 
 export const TokenSelectorModal = ({ isOpen, compact, onClose, children, title = t`Select Token` }: Props) => (
   <ModalDialog

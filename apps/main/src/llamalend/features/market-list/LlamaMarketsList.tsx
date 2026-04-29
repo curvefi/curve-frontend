@@ -4,7 +4,8 @@ import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -18,6 +19,7 @@ import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
+import { NewLlamaMarketsTable } from './NewLlamaMarketsTable'
 import { UserPositionsTable } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
@@ -59,7 +61,12 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const { data, isError, isLoading, isFetching } = useLlamaMarkets({ userAddress: address, enableLLv2: useLLv2() })
+  const showDeprecatedMarkets = useUserProfileStore((state) => state.showDeprecatedMarkets)
+  const { data, isError, isLoading, isFetching } = useLlamaMarkets({
+    userAddress: address,
+    enableLLv2: useLLv2(),
+    showDeprecatedMarkets,
+  })
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
   return (
@@ -82,7 +89,11 @@ export const LlamaMarketsList = () => {
         </Box>
       )}
 
-      <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      {useNewMarketListLayout() ? (
+        <NewLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      ) : (
+        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      )}
     </ListPageWrapper>
   )
 }

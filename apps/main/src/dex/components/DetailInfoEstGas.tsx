@@ -11,7 +11,7 @@ import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { useNetworkByChain, useNetworks } from '../entities/networks'
 
-export type StepProgress = {
+type StepProgress = {
   active: number
   total: number
 }

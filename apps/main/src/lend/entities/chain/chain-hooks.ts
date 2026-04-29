@@ -6,7 +6,7 @@ import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { ChainParams } from '@ui-kit/lib/model/query'
 import { useOneWayMarketNames } from './chain-query'
 
-export const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
+const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
   const { data: marketNames, isSuccess, error } = useOneWayMarketNames({ chainId, enableLLv2: useLLv2() })
   const { llamaApi: api, isHydrated } = useCurve()
   const apiChainId = api?.chainId

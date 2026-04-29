@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -35,8 +35,7 @@ export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null 
   return marketId && lib && getLlamaMarket(marketId, lib)
 }
 
-export const isLendV2Market = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate && market.version === 'v2'
+const isLendV2Market = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && market.version === 'v2'
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
@@ -67,7 +66,7 @@ export const hasV1Leverage = (market: LlamaMarketTemplate) =>
 
 export const hasV2Leverage = (market: MintMarketTemplate) => !isLendV2Market(market) && market?.leverageV2.hasLeverage()
 
-export const hasV1Deleverage = (market: LlamaMarketTemplate) =>
+const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
 
 // hasV2Leverage works for deleverage as well
@@ -142,8 +141,14 @@ export const getTokens = (market: LlamaMarketTemplate) =>
         },
       }
 
-export const getControllerAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
-  (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as Address | undefined
+export function getControllerAddress(market: LlamaMarketTemplate): Address
+export function getControllerAddress(market: null | undefined): undefined
+export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined
+export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined {
+  return (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as
+    | Address
+    | undefined
+}
 
 /**
  * Calculates the loan-to-value ratio of a market.
@@ -207,11 +212,61 @@ export const updateUserEventsApi = (
 const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (userIsCloseToLiquidation ? 0 : 0.1)
 
 /**
+ * Whether the oracle price has dropped below the user's band range.
+ * Band numbers go up as prices go down, so the user's lower price boundary is the higher band
+ * number (n2, or `userBandsValue[1]` after `reverseBands`). If the active/oracle-price band has
+ * moved past it, the price is below the user's range and their collateral has fully converted.
+ */
+export const isBelowRange = (activeBand: number | null | undefined, lowerBoundBand: number | null | undefined) =>
+  activeBand != null && lowerBoundBand != null && activeBand > lowerBoundBand
+
+/**
+ * Picks the health value to display to the user. Health is the buffer before full liquidation,
+ * which happens at health = 0 (see the liquidation-protection docs).
+ *
+ * `healthNotFull` values collateral at each band's mid-price only — it's the buffer as measured
+ * inside the liquidation-protection range, ignoring any price cushion above the range.
+ * `healthFull` adds that above-range cushion on top, so above the range `healthFull >= healthNotFull`
+ * and inside/below the range they're equal.
+ *
+ * We display `healthFull` by default because it reflects the user's actual current buffer. But when
+ * `healthNotFull` is negative the band-valued collateral no longer covers the debt, meaning the user
+ * is one drop into the range away from full liquidation — so we surface that pessimistic value as a
+ * warning even if `healthFull` would still look positive.
+ *
+ * See https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works.
+ */
+export const getDisplayHealth = (
+  healthFull: Decimal | number | null | undefined,
+  healthNotFull: Decimal | number | null | undefined,
+): number | null => {
+  if (healthFull == null || healthNotFull == null) return null
+  return +(+healthNotFull < 0 ? healthNotFull : healthFull)
+}
+
+/**
  * healthNotFull is needed here because:
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
  */
 export function getLiquidationStatus(
+  healthNotFull: Decimal | undefined,
+  userIsCloseToSoftLiquidation: boolean,
+  userIsBelowRange: boolean,
+  userStateCollateral: Decimal | undefined,
+  userStateBorrowed: Decimal | undefined,
+): UserPositionStatus {
+  if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
+  const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
+  if (+healthNotFull < 0) return 'hardLiquidation' as const
+  if (userIsBelowRange && +userStateCollateral > 0) return 'incompleteConversion' as const
+  if (userIsBelowRange && +userStateCollateral <= 0) return 'fullyConverted' as const
+  if (+userStateBorrowed > threshold) return 'softLiquidation' as const
+  return 'healthy' as const
+}
+
+/** @deprecated Use {@link getLiquidationStatus} — this legacy version returns label/tooltip for the old forms. */
+export function getLiquidationStatusLegacy(
   healthNotFull: string,
   userIsCloseToLiquidation: boolean,
   userStateStablecoin: string,
@@ -242,7 +297,7 @@ export function getLiquidationStatus(
   return userStatus
 }
 
-export function getIsUserCloseToLiquidation(
+export function getIsUserCloseToSoftLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
   oraclePriceBand: number | null | undefined,

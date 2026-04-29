@@ -5,7 +5,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 
-export type LlammaTradesParams = FieldsOf<GetTradesParams>
+type LlammaTradesParams = FieldsOf<GetTradesParams>
 
 export const { useQuery: useLlammaTrades } = queryFactory({
   queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaTradesParams) =>

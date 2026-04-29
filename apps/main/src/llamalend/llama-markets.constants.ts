@@ -19,7 +19,18 @@ type MarketAlert = TooltipProps & {
   message?: ReactNode
 }
 
-// Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
+const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
+const DEFAULT_ALERT: MarketAlert = {
+  alertType: 'danger',
+  isBorrowDisabled: true,
+  isDepositDisabled: true,
+  message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
+}
+
+/**
+ * Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
+ * Addresses must be checksummed. Tests have been added to enforce this.
+ */
 export const MARKETS_ALERTS: Record<
   LlamaMarketType,
   { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
@@ -28,50 +39,120 @@ export const MARKETS_ALERTS: Record<
   Lend: {
     [Chain.Ethereum]: {
       // one-way-market-30 - sDOLA/crvUSD
-      '0xad444663c6c92b497225c6ce65fee2e7f78bfb86': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
+      '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86': {
+        ...DEFAULT_ALERT,
         message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
       },
       // one-way-market-3 - CRV/crvUSD
-      '0xeda215b7666936ded834f76f3fbc6f323295110a': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0xEdA215b7666936DEd834f76f3fBC6F323295110A': DEFAULT_ALERT,
       // one-way-market-8 - UwU/crvUSD
-      '0x09dbdeb3b301a4753589ac6df8a178c7716ce16b': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_ALERT,
+      // one-way-market-44 - UNIT0/crvUSD
+      '0xd15d9797c4ECBf1c97c010327602bC51A09Dfb95': DEFAULT_ALERT,
+      // one-way-market-34 - wstUSR/crvUSD
+      '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': DEFAULT_ALERT,
+      // one-way-market-21 - swBTC-crvUSD
+      '0x276B8C8873079eEACCF4Dd241De14be92D733b45': DEFAULT_ALERT,
+      // one-way-market-17 - sDOLA-crvUSD 2024-07-17
+      '0xCf3DF6C1B4A6b38496661B31170de9508b867C8E': DEFAULT_ALERT,
+      // one-way-market-5 - crvUSD-WETH old
+      '0xa5D9137d2A1Ee912469d911A8E74B6c77503bac8': DEFAULT_ALERT,
+      // one-way-market-6 - crvUSD-tBTC old
+      '0xe438658874b0acf4D81c24172E137F0eE00621b8': DEFAULT_ALERT,
+      // one-way-market-20 - USD0USD0++-crvUSD old
+      '0xDC8b1Caf2e10dE76fb67E82C2485E7d4fA098C53': DEFAULT_ALERT,
+      // one-way-market-22 - ynETH-crvUSD
+      '0xdC5D5EE1223D4C8b7eAc8e876793f2171e7e8dEb': DEFAULT_ALERT,
+      // one-way-market-24 - crvUSD-ynETH
+      '0x757C61d89bD0406BfcBB68178BBfaE79ECa46c0f': DEFAULT_ALERT,
+      // one-way-market-25 - LBTC-crvUSD
+      '0xC28C2FD809FC1795f90de1C9dA2131434A77721d': DEFAULT_ALERT,
+      // one-way-market-33 - sUSDf-crvUSD
+      '0xD961B0Da2B0Fb04439c96B552777720B5FC551A0': DEFAULT_ALERT,
+      // one-way-market-36 - yvUSDC-1-crvUSD
+      '0xB62B9272679d7A495d7e9698d8663F217224408a': DEFAULT_ALERT,
+      // one-way-market-37 - yvUSDS-1-crvUSD
+      '0xE786af7faef857C8D850d648723Eec0A27cd8581': DEFAULT_ALERT,
+      // one-way-market-38 - yvWETH-1-crvUSD
+      '0x5bfEE37053d711F49A0aCf5afEd6496fA68dCE32': DEFAULT_ALERT,
+      // one-way-market-42 - zkBTC-crvUSD
+      '0xbe0f8c48776c0433B2b778AE9c076C21683ebe7B': DEFAULT_ALERT,
+      // one-way-market-43 - zkBTC-crvUSD (2)
+      '0xbCc9AcD2E7934bb8B5d734416737694AcDD9E25a': DEFAULT_ALERT,
+      // one-way-market-40 - sdeUSD-crvUSD
+      '0xFA4f65B3Dc477738ce8618e9145E1f0Ad9E29034': DEFAULT_ALERT,
+      // one-way-market-16 - ezETH-crvUSD
+      '0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3': DEFAULT_ALERT,
+      // one-way-market-26 - RCH-crvUSD
+      '0xf8C27436B277734AAA726A8fD5e6D7daDe0296c5': DEFAULT_ALERT,
     },
     [Chain.Arbitrum]: {
       // one-way-market-7 - FXN/crvUSD
-      '0x7adcc491f0b7f9bc12837b8f5edf0e580d176f1f': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
+      '0x7Adcc491f0B7f9BC12837B8F5Edf0e580d176F1f': {
+        ...DEFAULT_ALERT,
         message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
       },
+      // one-way-market-47 - iBTC/crvUSD
+      '0x3e293dB65c81742e32b74E21A0787d2936beeDf7': {
+        ...DEFAULT_ALERT,
+        message: t`iBTC is undergoing systematic unwinding. New borrow positions and deposits are disabled.`,
+      },
+      // one-way-market-21 - EYWA-crvUSD
+      '0x7a5A1c91dAF5A41942F90b3f8a9c4d3526294c16': DEFAULT_ALERT,
+      // one-way-market-6 - FXN-crvUSD
+      '0xAe659CE8f2f23649E09e92D164244AA127A7a2c7': DEFAULT_ALERT,
+      // one-way-market-12 - CRV-crvUSD
+      '0xF4e35f69D0BeE1AFC26EE73f12Fa7fA220F16F40': DEFAULT_ALERT,
+      // one-way-market-14 - IBTC-crvUSD
+      '0x991Bf50A34972227e681127D9127a1Dc54f67a3b': DEFAULT_ALERT,
+      // one-way-market-16 - tBTC-crvUSD
+      '0x4153532Eb32D57a1a08cD024c66E79635aFC8e3a': DEFAULT_ALERT,
+      // one-way-market-18 - stXAI-crvUSD
+      '0x5A2b666E6f36CB0a17CF03c9feb421855Ca9751D': DEFAULT_ALERT,
+      // one-way-market-20 - stXAI-crvUSD
+      '0x6c1cD25cC6320f992EDE07F6a6e93810e8855bc2': DEFAULT_ALERT,
+      // one-way-market-2 - WBTC-crvUSD old
+      '0x28c20590de7539C316191F413686dcF794d8898E': DEFAULT_ALERT,
+      // one-way-market-8 - gmUSDC-crvUSD
+      '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D': DEFAULT_ALERT,
+      // one-way-market-3 - gmUSDC-crvUSD
+      '0x5014AB37Fca7201baDEc3C0d0f28Dc7899cdC7D5': DEFAULT_ALERT,
+      // one-way-market-19 - stXAI-crvUSD
+      '0x398e6dd92Df9F792D0107668871e6F49ebdfE028': DEFAULT_ALERT,
+      // one-way-market-5 - ARB-crvUSD old
+      '0x76709bC0dA299Ab0234EEC51385E900922AE98f5': DEFAULT_ALERT,
     },
     [Chain.Fraxtal]: {
       // one-way-market-4 - SQUID/crvUSD
-      '0xbf55bb9463bbbb6ad724061910a450939e248ea6': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0xBF55Bb9463bBbB6aD724061910a450939E248eA6': DEFAULT_ALERT,
       // one-way-market-2 - WFRAX/crvUSD
-      '0xf0922934f16dbe5df9f90f729b2023d5e1fc2f15': {
-        alertType: 'danger',
-        isBorrowDisabled: true,
-        isDepositDisabled: true,
-        message: t`This market is deprecated. New borrow positions and deposits are disabled.`,
-      },
+      '0xf0922934f16DbE5Df9f90F729b2023D5e1FC2F15': DEFAULT_ALERT,
+      // one-way-market-3 - CRV-crvUSD
+      '0x99d5b47D431f1963940F72ffa6F25bC0B9849CbF': DEFAULT_ALERT,
+    },
+    [Chain.Optimism]: {
+      // one-way-market-4 - CRV/crvUSD
+      '0x88aa928B906b745009B53A31034701Fc377b7C89': DEFAULT_ALERT,
+      // one-way-market-3 - OP/crvUSD
+      '0xC5Cd9f6A1Fb88bed782f475F72fF686ED35b7e8e': DEFAULT_ALERT,
+      // one-way-market-2 - WBTC-crvUSD
+      '0x09cEd8b3392bED73B0358e39AaEC0A6e9b0e76DF': DEFAULT_ALERT,
+      // one-way-market-1 - wstETH-crvUSD
+      '0x6CE5B539367A29d48038A9F3108E6e0f226b83ed': DEFAULT_ALERT,
+      // one-way-market-0 - WETH-crvUSD
+      '0x9dba46e6a06FBf24CA11f8912B44338fe1b28Ea9': DEFAULT_ALERT,
+    },
+    [Chain.Sonic]: {
+      // one-way-market-3 - scETH/crvUSD
+      '0x7547E577B3DDC23c02E10792457f8e51a225692E': DEFAULT_ALERT,
+      // one-way-market-0 - wS/crvUSD
+      '0x5eD490a9B71fa797231d2c5D9bE25bf91a953C19': DEFAULT_ALERT,
+      // one-way-market-1 - sTS-crvUSD
+      '0xB8C93fb97884Ea07c2Eb0eA741f78D10e8C5aF9F': DEFAULT_ALERT,
+      // one-way-market-4 - scUSD-crvUSD
+      '0xbb7A0C558Fd34234Dc1608f4CD0a334E0075D73a': DEFAULT_ALERT,
+      // one-way-market-2 - wOS-crvUSD
+      '0xDC06056e208aB92bF173FF6DD662F1018ea0E483': DEFAULT_ALERT,
     },
   },
 
@@ -80,7 +161,6 @@ export const MARKETS_ALERTS: Record<
 }
 
 export type DeprecatedMarketAlert = { message: string; url?: string }
-const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
 
 // Deprecated markets are hidden from market list for new users but remain accessible to users with existing positions.
 export const DEPRECATED_LLAMAS: Record<
@@ -137,6 +217,10 @@ export const DEPRECATED_LLAMAS: Record<
       },
       // UwU-crvUSD
       '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,
+      // UNIT0-crvUSD
+      '0xd15d9797c4ECBf1c97c010327602bC51A09Dfb95': DEFAULT_DEPRECATE,
+      // RCH-crvUSD
+      '0xf8C27436B277734AAA726A8fD5e6D7daDe0296c5': DEFAULT_DEPRECATE,
     },
     arbitrum: {
       // iBTC-crvUSD

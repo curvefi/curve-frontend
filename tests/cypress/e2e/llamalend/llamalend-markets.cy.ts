@@ -1,13 +1,12 @@
-import lodash, { max, sum } from 'lodash'
+import { max, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
+import { oneOf, type TokenType } from '@cy/support/generators'
 import {
   closeDrawer,
   closeSlider,
   expandFilters,
   expandFirstRowOnMobile,
-  firstRow,
   openDrawer,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
@@ -25,14 +24,13 @@ import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
   assertInViewport,
   assertNotInViewport,
-  type Breakpoint,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
 import { range, recordValues, repeat } from '@primitives/objects.utils'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const sfrxEthMarket = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
@@ -45,21 +43,23 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     beforeEach(() => {
       vaultData = setupMocks()
-      visitAndWait([width, height, breakpoint])
+      visitAndWait([width, height])
     })
 
     it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      })
-      expandFirstRowOnMobile(breakpoint)
-      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-      })
+      if (breakpoint === 'mobile') {
+        withFilterChips(breakpoint, () => {
+          cy.get(`[data-testid="chip-rewards"]`).click()
+          return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+        })
+        expandFirstRowOnMobile(breakpoint)
+        cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
+        withFilterChips(breakpoint, () => {
+          cy.get(`[data-testid="chip-rewards"]`).click()
+          return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+        })
+      }
     })
 
     it('should have sticky headers', () => {
@@ -70,12 +70,9 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
-        // the height of the header changes depending on how often the description text wraps
-        mobile: [176, 144, 134],
-        // on tablet, we expect 3 rows until 900px, then 2 rows
-        tablet: [144, 112, 104],
-        // on desktop, we expect 2 rows always
-        desktop: [104],
+        mobile: [90],
+        tablet: [100],
+        desktop: [100],
       }[breakpoint]
       cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
       cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
@@ -87,11 +84,11 @@ testCases.forEach(([width, height, breakpoint]) => {
         .first()
         .find(`[data-testid="market-link-${HighTVLAddress}"]`)
         .should('exist')
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-lend"]`).click()
-        return cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
-      })
       if (breakpoint == 'mobile') {
+        withFilterChips(breakpoint, () => {
+          cy.get(`[data-testid="chip-lend"]`).click()
+          return cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+        })
         cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
         openDrawer(breakpoint, 'sort')
         cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
@@ -116,10 +113,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     it('should show charts on ' + [breakpoint, [width, height].join('x')].join('/'), () => {
       const vaultCount = sum(recordValues(vaultData).map((d) => d.data.length))
 
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-lend"]`).click()
-        return cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
-      })
+      filterByMarketType([width, height])
       if (breakpoint == 'mobile') {
         expandFirstRowOnMobile(breakpoint)
       } else {
@@ -149,13 +143,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should find markets by text', () => {
-      // only on mobile is the search not auto-expanded
-      if (breakpoint === 'mobile') {
-        cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
-        cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
-      } else {
-        cy.get("[data-testid^='table-text-search-'] input").click()
-      }
+      cy.get("[data-testid^='table-text-search-'] input").click()
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
@@ -228,21 +216,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.url().should('include', `${columnId}=`)
       })
     })
-
-    it('should allow filtering by chain', () => {
-      const chains = Object.keys(vaultData)
-      const chain = oneOf(...chains)
-      cy.get(`[data-testid="chip-chain-${chain}"]`).click()
-      cy.url().should('include', `chain=${chain}`)
-
-      cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
-
-      const otherChain = oneOf(...chains.filter((c) => c !== chain))
-      cy.get(`[data-testid="chip-chain-${otherChain}"]`).click()
-      ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c}"]`).should('be.visible'))
-      cy.url().should('include', chain)
-      cy.url().should('include', otherChain)
-    })
+    // todo: filter by chain
 
     it(`should allow filtering by token`, () => {
       if (breakpoint == 'mobile') {
@@ -266,26 +240,9 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
       cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
-      withFilterChips(breakpoint, () => cy.get(`[data-testid="reset-filter"]`).click())
-      cy.url().should('not.include', 'isFavorite=')
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
 
-    it(`should allow filtering by market type`, () =>
-      withFilterChips(breakpoint, () =>
-        cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-          const [type, otherType] = shuffle('Mint', 'Lend')
-          cy.get(`[data-testid="chip-${type.toLowerCase()}"]`).click()
-          cy.url().should('include', `type=${type}`)
-          cy.get(`[data-testid^="pool-type-"]`).each(($el) =>
-            expect($el.attr('data-testid')).equals(`pool-type-${type.toLowerCase()}`),
-          )
-          cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
-          cy.get(`[data-testid="chip-${otherType.toLowerCase()}"]`).click()
-          cy.url().should('include', `type=${type},${otherType}`)
-          cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
-        }),
-      ))
+    // todo: test reset fiter button yet to be implemented
 
     it(`should copy the market address`, RETRY_IN_CI, () => {
       expandFirstRowOnMobile(breakpoint)
@@ -301,13 +258,10 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it(`should navigate to market details`, () => {
       const [type, urlRegex] = oneOf(
-        ['mint', /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
-        ['lend', /\/lend\/\w+\/markets\/.+\/?$/],
+        [LlamaMarketType.Mint, /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
+        [LlamaMarketType.Lend, /\/lend\/\w+\/markets\/.+\/?$/],
       )
-      withFilterChips(breakpoint, () => {
-        cy.get(`[data-testid="chip-${type}"]`).click()
-        return firstRow().contains(lodash.capitalize(type))
-      })
+      filterByMarketType([width, height], type)
       cy.get(`[data-testid^="market-link-"]`).first().click()
       if (breakpoint === 'mobile') {
         cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
@@ -375,9 +329,13 @@ testCases.forEach(([width, height, breakpoint]) => {
   })
 })
 
-function visitAndWait([width, height]: [number, number, Breakpoint], options?: Partial<Cypress.VisitOptions>) {
+function visitAndWait(
+  [width, height]: [number, number],
+  path = '/llamalend/ethereum/markets/',
+  options?: Partial<Cypress.VisitOptions>,
+) {
   cy.viewport(width, height)
-  cy.visit('/llamalend/ethereum/markets/', { ...LOAD_TIMEOUT, ...options })
+  cy.visit(path, { ...LOAD_TIMEOUT, ...options })
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
 }
 
@@ -416,3 +374,12 @@ const getMaxTvl = (vaultData: Record<Chain, GetMarketsResponse>) =>
       ),
     ),
   ) ?? 0
+
+// no more chips to filter by market type for the new table
+const filterByMarketType = (size: [number, number], marketType: LlamaMarketType = LlamaMarketType.Lend) => {
+  visitAndWait(size, `/llamalend/ethereum/markets?type=${marketType}`)
+  cy.url().should('include', `type=${marketType}`)
+  cy.get(
+    `[data-testid="pool-type-${(marketType === LlamaMarketType.Lend ? LlamaMarketType.Mint : LlamaMarketType.Lend).toLowerCase()}"]`,
+  ).should('not.exist')
+}

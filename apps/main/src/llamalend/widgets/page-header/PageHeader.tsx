@@ -1,4 +1,4 @@
-import { getTokens } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
@@ -8,7 +8,6 @@ import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -17,6 +16,7 @@ import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -117,24 +117,26 @@ export const PageHeaderView = ({
               <WithSkeleton loading={isLoading} width={24} height={24}>
                 {/* 3px custom padding bottom to align with text baseline */}
                 <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem" alignItems="flex-end">
-                  <ChainIcon size="sm" blockchainId={blockchainId} />
-                  <Chip size="extraSmall" color="default" label={t`${marketType}`} />
+                  <ChainIcon blockchainId={blockchainId} />
+                  <Badge size="extraSmall" color="default" label={t`${marketType}`} />
                 </Stack>
               </WithSkeleton>
             </Stack>
           </Stack>
         </Stack>
-        {isDevelopment && (
+        {isDevelopment && market && (
           <IconButton
             size="extraSmall"
-            onClick={() =>
-              market &&
-              invalidateAllUserMarketDetails({
-                chainId: market.getLlamalend().chainId as IChainId,
+            onClick={() => {
+              const { chainId, signerAddress } = market.getLlamalend()
+              return invalidateAllUserMarketDetails({
+                chainId: chainId as IChainId,
                 marketId: market.id,
-                userAddress: market.getLlamalend().address as Address,
+                userAddress: signerAddress as Address,
+                blockchainId,
+                contractAddress: getControllerAddress(market),
               })
-            }
+            }}
             sx={{ alignSelf: 'center' }}
           >
             <ReloadIcon />

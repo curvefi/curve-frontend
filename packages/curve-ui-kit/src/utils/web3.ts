@@ -30,7 +30,7 @@ export function getDecimalLength(val: string) {
  * calls onExecute, waits for the transactions to be mined and then waits until
  * isSatisfied returns true.
  */
-export async function waitForTransaction({
+async function waitForTransaction({
   onExecute,
   config,
   isSatisfied,

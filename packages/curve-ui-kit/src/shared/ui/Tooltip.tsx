@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
 /**
  * This component is used to wrap the content of a tooltip to cancel any theme inversions during hover.
  */
-export const TooltipContent = ({ title, children }: { title: ReactNode; children?: ReactNode }) => (
+const TooltipContent = ({ title, children }: { title: ReactNode; children?: ReactNode }) => (
   // cancel any theme inversion as it's often applied on hover
   <InvertTheme inverted={false}>
     <Box

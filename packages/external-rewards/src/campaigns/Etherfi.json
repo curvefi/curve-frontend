@@ -127,7 +127,7 @@
     },
     {
       "id": "null",
-      "action": "loan",
+      "action": "borrow",
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",

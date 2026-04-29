@@ -13,14 +13,14 @@ import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
-export type GasInfoQuery<T = number> = ChainQuery<T> & {
+type GasInfoQuery<T = number> = ChainQuery<T> & {
   /** Network dependent url for fetching the latest gas prices */
   gasPricesUrl: string
   /** Network dependent url for fetching the latest gas prices for L2 prices (if network is an L2) */
   gasPricesUrlL2?: string
 }
 
-export type GasInfoParams<T = number> = FieldsOf<GasInfoQuery<T>>
+type GasInfoParams<T = number> = FieldsOf<GasInfoQuery<T>>
 
 export type GasInfo = {
   gasPrice: number | null
@@ -304,7 +304,7 @@ export type GasInfoQueryOptions<TChainId extends number = number> = {
 }
 
 /** Helper function to create required query options based on network configs. */
-export function createGasInfoQueryOptions<TChainId extends number>({
+function createGasInfoQueryOptions<TChainId extends number>({
   chainId,
   networks,
 }: GasInfoQueryOptions<TChainId>): GasInfoParams<TChainId> {
@@ -397,7 +397,7 @@ export function calculateGas(
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
 
-export type GasEstimateConversionResult = ReturnType<typeof calculateGas>
+type GasEstimateConversionResult = ReturnType<typeof calculateGas>
 
 export const useEstimateGas = (
   networks: Record<number, BaseConfig<string, number>>,

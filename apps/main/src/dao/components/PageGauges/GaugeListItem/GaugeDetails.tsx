@@ -14,8 +14,7 @@ import { convertToLocaleTimestamp, formatDate, formatNumber, scanAddressPath } f
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
+const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
   opacity: 0.4;
 
   &:hover {

@@ -17,7 +17,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   debtError: '',
 }
 
-export function _getStepTokensStr(
+function _getStepTokensStr(
   { userCollateral, userBorrowed }: FormValues,
   { collateral_token, borrowed_token }: OneWayMarketTemplate,
 ) {

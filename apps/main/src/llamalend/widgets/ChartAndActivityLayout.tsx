@@ -41,7 +41,7 @@ const EMPTY_ARRAY: never[] = []
 // This keeps the layout from re-rendering when the visible range is effectively unchanged.
 const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
 
-export type ChartAndActivityLayoutProps = {
+type ChartAndActivityLayoutProps = {
   chart: {
     ohlcDataUnavailable: boolean
     isLoading: boolean
@@ -80,11 +80,12 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   }, [])
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
+  const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
-      showBands
+      showBands && hasUserBands
         ? notFalsy<LegendItem>(
             ...chart.legendSets,
             collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
@@ -93,6 +94,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
         : chart.legendSets,
     [
       showBands,
+      hasUserBands,
       chart.legendSets,
       collateralSymbol,
       borrowSymbol,
@@ -123,9 +125,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               isLoading={chart.isLoading}
               customButton={
                 newBandsChartEnabled &&
-                bands && (
-                  <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
-                )
+                bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} toggle={toggleBandsVisible} />
               }
             />
             <Stack

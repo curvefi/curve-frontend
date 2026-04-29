@@ -149,6 +149,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   n: x.n,
   n1: x.n1,
   n2: x.n2,
+  activeBand: x.active_band,
   debt: x.debt,
   collateral: x.collateral,
   collateralUp: x.collateral_up,
@@ -192,6 +193,22 @@ export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsRespon
 
 export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>
   x.data.map(parseUserMarketStats)
+
+export const parseMarketUsers = (x: Responses.GetMarketUsersResponse): Models.MarketUsers => ({
+  count: x.count,
+  users: x.data.map((y) => ({
+    user: y.user,
+    first: toDate(y.first),
+    last: toDate(y.last),
+    debt: parseFloat(y.debt),
+    health: parseFloat(y.health),
+    healthFull: parseFloat(y.health_full),
+    loss: parseFloat(y.loss),
+    borrowed: parseFloat(y.borrowed ?? y.stablecoin ?? '0'),
+    collateral: parseFloat(y.collateral),
+    softLiquidation: y.soft_liquidation,
+  })),
+})
 
 export const parseUserCollateralEvents = (
   x: Responses.GetUserCollateralEventsResponse,

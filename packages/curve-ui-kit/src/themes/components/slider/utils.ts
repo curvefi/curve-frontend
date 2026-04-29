@@ -26,7 +26,7 @@ export const sliderSizes: Record<SliderSize, SliderSizeDefinition> = {
 }
 
 export const DEFAULT_SLIDER_SIZE = sliderSizes.small
-export const DEFAULT_ORIENTATION: NonNullable<SliderProps['orientation']> = 'horizontal'
+const DEFAULT_ORIENTATION: NonNullable<SliderProps['orientation']> = 'horizontal'
 export const SLIDER_RAIL_GRADIENT_STOPS_VAR = '--slider-rail-gradient-stops'
 /**
  * CSS custom property name for customizing the slider background color.
@@ -37,7 +37,7 @@ export const SLIDER_BACKGROUND_VAR = '--slider-background'
  * Number of sections to divide the bordered slider rail into.
  * Borders will be placed between sections.
  */
-export const BORDERED_SECTION_COUNT = 4
+const BORDERED_SECTION_COUNT = 4
 
 // Shared selector for single-thumb sliders. Only thumbs have [data-index="n"] attribute
 export const singleThumbSelector = ':not(:has([data-index="1"]))'
@@ -194,7 +194,7 @@ export const getGradientStopsForBackground = (
   return gradientStops[backgroundKey]
 }
 
-export const createGradientStopsString = (stops: GradientStopsDefinition) =>
+const createGradientStopsString = (stops: GradientStopsDefinition) =>
   sortBy(Object.entries(stops), ([percent]) => +percent)
     .map(([percent, color], index, entries) => `${color} ${entries[index - 1]?.[0] ?? 0}%, ${color} ${percent}%`)
     .join(', ')

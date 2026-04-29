@@ -4,7 +4,13 @@ import {
   calculateRangeToLiquidation,
   type BorrowPositionDetailsProps,
 } from '@/llamalend/features/market-position-details'
-import { getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
+import {
+  getDisplayHealth,
+  getIsUserCloseToSoftLiquidation,
+  getLiquidationStatus,
+  hasV2Leverage,
+  isBelowRange,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -44,7 +50,7 @@ const resolveMarket = (marketType: LlamaMarketType, market: LlamaMarketTemplate 
     ? fromLend(market as LendMarketTemplate | undefined)
     : fromMint(market as MintMarketTemplate | undefined)
 
-export type UseBorrowPositionDetailsParams = {
+type UseBorrowPositionDetailsParams = {
   marketType: LlamaMarketType
   chainId: number
   marketId: string
@@ -107,21 +113,33 @@ export const useBorrowPositionDetails = ({
     return +collateral * +collateralUsdRate + +borrowed
   }, [collateral, borrowed, collateralUsdRate])
 
-  const healthValue = useMemo(() => {
-    if (!hasLoan || !healthFullValue || !healthNotFullValue) return null
-    return +(+healthNotFullValue < 0 ? healthNotFullValue : healthFullValue)
-  }, [hasLoan, healthFullValue, healthNotFullValue])
+  const healthValue = useMemo(
+    () => (hasLoan ? getDisplayHealth(healthFullValue, healthNotFullValue) : null),
+    [hasLoan, healthFullValue, healthNotFullValue],
+  )
 
-  const status = useMemo(() => {
-    if (!hasLoan || !healthNotFullValue || !userBandsValue) return null
-    const isClose = getIsUserCloseToLiquidation(userBandsValue[0], liquidationBand ?? null, oraclePriceBand)
-    return getLiquidationStatus(healthNotFullValue, isClose, borrowed ?? '0')
-  }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, borrowed])
+  const positionStatus = useMemo(() => {
+    if (!hasLoan || !healthNotFullValue || !userBandsValue) return undefined
+    const isCloseToSoftLiquidation = getIsUserCloseToSoftLiquidation(
+      userBandsValue[0],
+      liquidationBand ?? null,
+      oraclePriceBand,
+    )
+    const [, lowerBoundary] = userBandsValue
+    return getLiquidationStatus(
+      healthNotFullValue,
+      isCloseToSoftLiquidation,
+      isBelowRange(oraclePriceBand, lowerBoundary),
+      collateral,
+      borrowed,
+    )
+  }, [hasLoan, healthNotFullValue, userBandsValue, liquidationBand, oraclePriceBand, collateral, borrowed])
 
   return {
     liquidationAlert: {
-      softLiquidation: status?.colorKey === 'soft_liquidation',
-      hardLiquidation: status?.colorKey === 'hard_liquidation',
+      softLiquidation: positionStatus === 'softLiquidation',
+      hardLiquidation: positionStatus === 'hardLiquidation',
+      status: positionStatus,
     },
     health: {
       value: healthValue,

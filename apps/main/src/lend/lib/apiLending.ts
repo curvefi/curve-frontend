@@ -29,7 +29,12 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
-import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
+import {
+  getIsUserCloseToSoftLiquidation,
+  getLiquidationStatusLegacy,
+  reverseBands,
+  sortBandsLend,
+} from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
@@ -272,7 +277,11 @@ const user = {
         const { liquidationBand } = resp ?? {}
 
         const reversedUserBands = reverseBands(bands)
-        const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
+        const isCloseToLiquidation = getIsUserCloseToSoftLiquidation(
+          reversedUserBands[0],
+          liquidationBand,
+          oraclePriceBand,
+        )
         const parsedBandsBalances = await fetchChartBandBalancesData(
           sortBandsLend(bandsBalances),
           liquidationBand,
@@ -294,7 +303,7 @@ const user = {
             prices,
             loss,
             leverage,
-            status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+            status: getLiquidationStatusLegacy(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',
         }
@@ -1751,7 +1760,7 @@ export const apiLending = {
   vaultClaim,
 }
 
-export async function fetchChartBandBalancesData(
+async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,

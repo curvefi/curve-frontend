@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/CollateralDecrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
@@ -55,7 +55,7 @@ export type LoanCollateralDecreaseSlice = {
   }
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
+const DEFAULT_FORM_VALUES: FormValues = {
   collateral: '',
   collateralError: '',
 }
@@ -163,10 +163,11 @@ export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], 
         step: 'REMOVE',
       })
       const chainId = curve.chainId as ChainId
-      const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
+      const network = networks[chainId]
+      const removeCollateralFn = network.api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
 
-      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
+      updateUserEventsApi(wallet, network, llamma, resp.hash)
 
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
@@ -177,6 +178,8 @@ export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], 
         chainId,
         marketId: llamma.id,
         userAddress: wallet?.address,
+        contractAddress: getControllerAddress(llamma),
+        blockchainId: network.id,
       })
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -212,6 +215,6 @@ export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], 
   },
 })
 
-export function getCollateralDecreaseActiveKey(llamma: Llamma, collateral: string) {
+function getCollateralDecreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${getTokenName(llamma).collateral}-${collateral}`
 }

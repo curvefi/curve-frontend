@@ -17,7 +17,6 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "eslint": "*",
-    "eslint-config-custom": "*",
     "typescript": "*"
   },
   "peerDependencies": {

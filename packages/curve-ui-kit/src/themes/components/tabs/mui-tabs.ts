@@ -51,7 +51,7 @@ export const TAB_TEXT_VARIANTS = {
   extraExtraLarge: 'headingMBold',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
-export const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
+const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
   extraExtraLarge: ButtonSize.md,

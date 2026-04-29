@@ -54,11 +54,11 @@ export const DAO_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
-export const ANALYTICS_ROUTES = {
+const ANALYTICS_ROUTES = {
   PAGE_HOME: '/home',
 }
 
-export const BRIDGE_ROUTES = {
+const BRIDGE_ROUTES = {
   PAGE_BRIDGES: '',
 }
 

@@ -15,7 +15,7 @@ const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<Pool
  * Create a map of column visibility for the pool list on mobile devices.
  * On mobile that is just the title and the column that is currently sorted.
  */
-export const createMobileColumns = (sortBy: PoolColumnId) =>
+const createMobileColumns = (sortBy: PoolColumnId) =>
   fromEntries(recordValues(PoolColumnId).map((key) => [key, key === PoolColumnId.PoolName || key === sortBy]))
 
 export function usePoolListVisibilitySettings(

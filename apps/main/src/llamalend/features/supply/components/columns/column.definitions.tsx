@@ -2,9 +2,9 @@ import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rew
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { NotionalCell } from '@ui-kit/shared/ui/DataTable/inline-cells/notional-cells'
 import { TokenBalanceCell } from '@ui-kit/shared/ui/DataTable/inline-cells/TokenBalanceCell'
 import { ClaimTabColumnId } from './columns.enum'
+import { NotionalCell } from './notional-cells'
 
 export type ClaimableToken = TableItem &
   ClaimableReward & {

@@ -51,20 +51,23 @@ export const MarketInformationComposite = ({
           <CrvUsdPriceChart />
         </>
       )}
-      {market && (
-        <Card>
-          <CardHeader title={t`Advanced Details`} size="small" />
-          <CardContent component={Stack}>
-            <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
-            <MarketInfoLayout
-              chainId={chainId}
-              marketType={LlamaMarketType.Mint}
-              market={market}
-              network={networks[chainId]}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader title={t`Advanced Details`} size="small" />
+        <CardContent component={Stack}>
+          <AdvancedDetails
+            chainId={chainId}
+            marketId={marketId}
+            market={market || undefined}
+            marketType={LlamaMarketType.Mint}
+          />
+          <MarketInfoLayout
+            chainId={chainId}
+            marketType={LlamaMarketType.Mint}
+            market={market || undefined}
+            network={networks[chainId]}
+          />
+        </CardContent>
+      </Card>
     </Stack>
   )
 }

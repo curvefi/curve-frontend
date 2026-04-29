@@ -17,7 +17,7 @@ export const Wrapper: IStyledComponent<'web', DivProps> = styled.div`
   flex-direction: column;
 `
 
-export const Step: IStyledComponent<'web', DivProps> = styled.div`
+const Step: IStyledComponent<'web', DivProps> = styled.div`
   padding: var(--spacing-2);
   display: flex;
   flex-direction: row;

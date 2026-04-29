@@ -21,7 +21,7 @@ import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
 
-export type AdvancedDetailsProps = {
+type AdvancedDetailsProps = {
   chainId: number | undefined | null
   marketId: string | undefined | null
   market: LlamaMarketTemplate | undefined
@@ -50,18 +50,23 @@ const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityVal
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { collateral, availableLiquidity, maxLeverage, solvency } = useAdvancedDetailsData({
-    chainId,
-    market,
-    marketId,
-    marketType,
-  })
+  const { collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
+    useAdvancedDetailsData({
+      chainId,
+      market,
+      marketId,
+      marketType,
+    })
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
-    <Box display="grid" gap={Spacing.lg} gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}>
+    <Box
+      display="grid"
+      gap={Spacing.lg}
+      gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
+    >
       <Metric
-        size="small"
+        size="medium"
         label={t`Utilization`}
         value={utilization}
         loading={availableLiquidity?.loading}
@@ -74,7 +79,21 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         }}
       />
       <Metric
-        size="small"
+        size="medium"
+        label={t`Total borrowers`}
+        value={totalBorrowers?.value}
+        loading={totalBorrowers?.loading}
+        valueOptions={{ abbreviate: true }}
+      />
+      <Metric
+        size="medium"
+        label={t`Average health`}
+        value={averageHealth?.value}
+        loading={averageHealth?.loading}
+        valueOptions={{ decimals: 1 }}
+      />
+      <Metric
+        size="medium"
         label={t`Total collateral`}
         value={collateral?.combinedCollateralUsdValue}
         loading={collateral?.loading}
@@ -96,21 +115,23 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           ...TooltipOptions,
         }}
       />
-      <Metric
-        size="small"
-        label={t`Solvency`}
-        value={solvency?.value}
-        loading={solvency?.loading}
-        valueOptions={{ unit: 'percentage' }}
-        valueTooltip={{
-          title: t`Solvency`,
-          body: <SolvencyTooltip marketType={marketType} />,
-          ...TooltipOptions,
-        }}
-      />
+      {solvency && (
+        <Metric
+          size="medium"
+          label={t`Solvency`}
+          value={solvency?.value}
+          loading={solvency?.loading}
+          valueOptions={{ unit: 'percentage' }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip marketType={marketType} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {maxLeverage && (
         <Metric
-          size="small"
+          size="medium"
           label={t`Max leverage`}
           value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
           loading={maxLeverage?.loading}

@@ -14,7 +14,6 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageR
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
-import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -22,6 +21,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { sleep } from '@ui-kit/utils/time.utils'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -40,19 +40,14 @@ const sliceKey = 'quickSwap'
 
 export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxAmount(
-      config: Config,
-      curve: CurveApi,
-      searchedParams: SearchedParams,
-      maxSlippage: string | undefined,
-    ): Promise<void>
+    fetchMaxAmount(config: Config, curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchRoutesAndOutput(
       config: Config,
       curve: CurveApi,
       searchedParams: SearchedParams,
       maxSlippage: string,
     ): Promise<void>
-    fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
+    fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     resetFormErrors(): void
     setFormValues(
       config: Config,
@@ -140,7 +135,14 @@ export const createQuickSwapSlice = (
             const poolsMapper = state.pools.poolsMapper[chainId]
             await curvejsApi.router.routesAndOutput(activeKey, curve, poolsMapper, cFormValues, searchedParams)
 
-            const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, userBalance)
+            const resp = await curvejsApi.router.estGasApproval(
+              activeKey,
+              curve,
+              fromAddress,
+              toAddress,
+              userBalance,
+              maxSlippage,
+            )
 
             if (resp.estimatedGas) {
               cFormValues.fromAmount = getMaxAmountMinusGas(resp.estimatedGas, firstBasePlusPriority, userBalance)
@@ -235,7 +237,7 @@ export const createQuickSwapSlice = (
         }
       }
     },
-    fetchEstGasApproval: async (curve, searchedParams) => {
+    fetchEstGasApproval: async (curve, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -247,7 +249,14 @@ export const createQuickSwapSlice = (
       if (+fromAmount <= 0 || !signerAddress) return
 
       // api call
-      const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, fromAmount)
+      const resp = await curvejsApi.router.estGasApproval(
+        activeKey,
+        curve,
+        fromAddress,
+        toAddress,
+        fromAmount,
+        maxSlippage,
+      )
 
       // set estimate gas state
       sliceState.setStateByKey('formEstGas', { [activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
@@ -343,7 +352,7 @@ export const createQuickSwapSlice = (
 
       // api calls
       await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
-      void sliceState.fetchEstGasApproval(curve, searchedParams)
+      void sliceState.fetchEstGasApproval(curve, searchedParams, maxSlippage)
     },
 
     // steps
@@ -382,7 +391,7 @@ export const createQuickSwapSlice = (
 
           // re-fetch est gas, approval, routes and output
           await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, globalMaxSlippage)
-          void sliceState.fetchEstGasApproval(curve, searchedParams)
+          void sliceState.fetchEstGasApproval(curve, searchedParams, globalMaxSlippage)
         }
 
         return resp
@@ -503,7 +512,7 @@ function getRouterActiveKey(
   return `${chainId}-${parsedSignerAddress}-${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
 }
 
-export function getRouterSwapsExchangeRate(
+function getRouterSwapsExchangeRate(
   [value]: [Decimal, Decimal],
   { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: { [p: string]: string },

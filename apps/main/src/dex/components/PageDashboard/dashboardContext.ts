@@ -18,7 +18,7 @@ type DashboardContextType = {
   updateFormValues: (updatedFormValues: Partial<FormValues>) => void
 }
 
-export const DashboardContext = createContext<DashboardContextType | null>(null)
+const DashboardContext = createContext<DashboardContextType | null>(null)
 export const DashboardContextProvider = DashboardContext.Provider
 
 export const useDashboardContext = () =>

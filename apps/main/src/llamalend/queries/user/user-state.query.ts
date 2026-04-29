@@ -12,7 +12,7 @@ export const { useQuery: useUserState, getQueryData: getUserState } = queryFacto
       /** The amount of collateral tokens the user's put in his loan */
       collateral: userState.collateral as Decimal,
       /**
-       * The amount of crvUSD is in the AMM.
+       * The amount of crvUSD that is in the AMM.
        * You can borrow 100 crvUSD with $1000 worth of ETH collateral,
        * and if you enter soft liquidation you can end up with 1100
        * in crvUSD even though your debt is still 100.
