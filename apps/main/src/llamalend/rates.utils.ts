@@ -91,7 +91,7 @@ export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[
   rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, (reward) => aprToApy(reward.apy) as number) : null
 
 const displayUserBoost = (userBoost: number | null | undefined) =>
-  userBoost != null ? ' (' + defaultNumberFormatter(userBoost) + 'x veCRV Boost)' : ''
+  userBoost == null ? '' : ' (' + defaultNumberFormatter(userBoost) + 'x veCRV Boost)'
 
 export const formatSupplyExtraIncentives = ({
   incentives,

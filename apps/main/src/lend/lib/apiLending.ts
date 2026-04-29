@@ -80,11 +80,12 @@ const market = {
         const maxMinBands = [maxBand, minBand]
 
         const bandBalances = liquidationBand ? await market.stats.bandBalances(liquidationBand) : null
+        const isMarket = true
         const parsedBandsBalances = await fetchChartBandBalancesData(
           sortBandsLend(bandsBalances),
           liquidationBand,
           market,
-          true,
+          isMarket,
         )
 
         results[market.id] = {

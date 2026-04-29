@@ -85,9 +85,9 @@ export const {
           gauge_weight: +gauge.gauge_weight,
           gauge_relative_weight: +(gauge.gauge_relative_weight * 100),
           gauge_relative_weight_7d_delta:
-            gauge.gauge_relative_weight_7d_delta != null ? +(gauge.gauge_relative_weight_7d_delta * 100) : null,
+            gauge.gauge_relative_weight_7d_delta == null ? null : +(gauge.gauge_relative_weight_7d_delta * 100),
           gauge_relative_weight_60d_delta:
-            gauge.gauge_relative_weight_60d_delta != null ? +(gauge.gauge_relative_weight_60d_delta * 100) : null,
+            gauge.gauge_relative_weight_60d_delta == null ? null : +(gauge.gauge_relative_weight_60d_delta * 100),
         },
       ]),
     )

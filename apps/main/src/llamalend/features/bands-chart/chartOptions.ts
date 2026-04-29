@@ -28,6 +28,7 @@ const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefine
 }
 
 const LINE_WIDTH = 0.5
+const [ENABLE_OUTLINE, DISABLE_OUTLINE] = [true, false]
 
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
@@ -254,7 +255,7 @@ export const getChartOptions = (
         palette.marketBandColor,
         palette.liquidationBandOutlineColor,
         marketSeriesData,
-        false,
+        DISABLE_OUTLINE,
         markAreas.length
           ? { silent: true, itemStyle: { color: palette.userRangeBackgroundColor }, data: markAreas }
           : undefined,
@@ -278,7 +279,7 @@ export const getChartOptions = (
         palette.userCollateralShareColor,
         palette.liquidationBandOutlineColor,
         userCollateralSeriesData,
-        false,
+        DISABLE_OUTLINE,
       )
 
       const userBorrowedSeries = createCustomRectSeries(
@@ -286,7 +287,7 @@ export const getChartOptions = (
         palette.userBorrowedShareColor,
         palette.liquidationBandOutlineColor,
         userBorrowedSeriesData,
-        false,
+        DISABLE_OUTLINE,
       )
 
       const outlineSeries = {
@@ -295,7 +296,7 @@ export const getChartOptions = (
           'transparent',
           palette.liquidationBandOutlineColor,
           outlineSeriesData,
-          true,
+          ENABLE_OUTLINE,
         ),
         silent: true,
         z: 2,
