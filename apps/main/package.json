@@ -32,7 +32,7 @@
     "react-hook-form": "7.72.1",
     "recharts": "2.15.4",
     "ui": "*",
-    "vest": "^5.4.6",
+    "vest": "^6.3.2",
     "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
   },

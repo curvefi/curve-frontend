@@ -8107,12 +8107,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"context@npm:^3.0.33, context@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "context@npm:3.1.0"
+"context@npm:^4.0.17":
+  version: 4.0.17
+  resolution: "context@npm:4.0.17"
   dependencies:
-    vest-utils: "npm:^1.5.0"
-  checksum: 10c0/a15ca839960a187bb4b8df1797658b68766056cd8bbded7fe5fca42746c6f6bb8014330e0a363e60be3c2525c474e2c3f9e48c850b86eda80b9a52c0a61241dc
+    vest-utils: "npm:^2.0.17"
+  checksum: 10c0/b0a467d0e21133db3f22e2d8b85a3f81617800672ce584fef9f4b68bf79df683c4b6903fcef93d08203787a782528c14497b5a818972bb9cbe64472532d41d63
   languageName: node
   linkType: hard
 
@@ -11919,7 +11919,7 @@ __metadata:
     typescript: "npm:*"
     typescript-eslint: "npm:^8.58.2"
     ui: "npm:*"
-    vest: "npm:^5.4.6"
+    vest: "npm:^6.3.2"
     vite: "npm:*"
     vite-plugin-svgr: "npm:*"
     vite-plugin-vercel: "npm:9.1.1"
@@ -12212,13 +12212,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"n4s@npm:^5.0.28":
-  version: 5.0.28
-  resolution: "n4s@npm:5.0.28"
+"n4s@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "n4s@npm:6.2.1"
   dependencies:
-    context: "npm:^3.0.33"
-    vest-utils: "npm:^1.3.3"
-  checksum: 10c0/d8c172b668c09fed7cfff17b1b7c6d0f7a541d2034c004b35807898b9f2ad07661c89bd17630816b514e77d90b540aea91701b48b4fb155eaa1893547677626a
+    context: "npm:^4.0.17"
+    vest-utils: "npm:^2.0.17"
+  checksum: 10c0/e39230e89036cff5c5397417e6af96da41a9c28037cdb8b2a1e273b295cbe4f000a255ffb016f15e8ad7886dcd40f55d6a80d999f22a1eba6456f1693b6a61bf
   languageName: node
   linkType: hard
 
@@ -15278,15 +15278,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vast@npm:^1.0.42":
-  version: 1.1.0
-  resolution: "vast@npm:1.1.0"
-  dependencies:
-    vest-utils: "npm:^1.5.0"
-  checksum: 10c0/cd48c744092720f08bc8a86707e0b9a859acdb915a99a071e0c6f7d5847f2e8b36d40d74f15a108880457644807cbe78403f99728faec01995f65cb523d94c4f
-  languageName: node
-  linkType: hard
-
 "verror@npm:1.10.0":
   version: 1.10.0
   resolution: "verror@npm:1.10.0"
@@ -15298,33 +15289,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vest-utils@npm:^1.3.3, vest-utils@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "vest-utils@npm:1.5.0"
-  checksum: 10c0/f8937ad80b19cc5d6535507050b0b2a093cc4773fa02d35a381d6f6c3dd32cbf56b60f80a8d2fbe2e793e373da02e4025e956d796bf3b671bb32e0e44a2a5090
+"vest-utils@npm:^2.0.17":
+  version: 2.0.17
+  resolution: "vest-utils@npm:2.0.17"
+  checksum: 10c0/9df0178da11478b4465bc533a642a2efa161e0d09a32b858ac17567583b98f7435824294bdf42c503dfe5b25a846e93bc91c7d4ded9efa9d1a78e4c57d67a39e
   languageName: node
   linkType: hard
 
-"vest@npm:^5.4.6":
-  version: 5.4.6
-  resolution: "vest@npm:5.4.6"
+"vest@npm:^6.3.2":
+  version: 6.3.2
+  resolution: "vest@npm:6.3.2"
   dependencies:
-    context: "npm:^3.0.33"
-    n4s: "npm:^5.0.28"
-    vast: "npm:^1.0.42"
-    vest-utils: "npm:^1.3.3"
-    vestjs-runtime: "npm:^1.5.1"
-  checksum: 10c0/99b118e39b74b820993f75124adc2add24c18dda642b257abcb94cbc31bddcfbd9c099752d445e35de4bad96d1b0bcd7da4b47d728b0e39fea597256c5e139ce
+    context: "npm:^4.0.17"
+    n4s: "npm:^6.2.1"
+    vest-utils: "npm:^2.0.17"
+    vestjs-runtime: "npm:^2.0.17"
+  checksum: 10c0/7f9d87ffdad4d9d82eb8c8f28ea02e596b3faef52530ae0cb68a0c6f34f1c6bdfcfc004e461662f4d9df06a5cb28ebc9ae642e98cf4327a1de4eaaeb11f58285
   languageName: node
   linkType: hard
 
-"vestjs-runtime@npm:^1.5.1":
-  version: 1.7.0
-  resolution: "vestjs-runtime@npm:1.7.0"
+"vestjs-runtime@npm:^2.0.17":
+  version: 2.0.17
+  resolution: "vestjs-runtime@npm:2.0.17"
   dependencies:
-    context: "npm:^3.1.0"
-    vest-utils: "npm:^1.5.0"
-  checksum: 10c0/7855544786cfbabd102cbea52295f820d48d5bf27295a0b3809b3628d48e17cd561ed4ffe3f4126d9393c0e4d511880a765833e80ddaad25ca431c4974037d22
+    context: "npm:^4.0.17"
+    vest-utils: "npm:^2.0.17"
+  checksum: 10c0/a7dc1596e25c4f89ef602c1bcfa9e85321675b0335bb1243fe88a39f21eed50518510f8c4754d3faf25976781ad2f2d80666af2a5a74daec7af49482e9c87ee7
   languageName: node
   linkType: hard
 
