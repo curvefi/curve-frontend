@@ -1,5 +1,5 @@
-import type { StorybookConfig } from '@storybook/react-vite'
 import { mergeConfig } from 'vite'
+import type { StorybookConfig } from '@storybook/react-vite'
 
 const config: StorybookConfig = {
   stories: [
@@ -83,4 +83,5 @@ const config: StorybookConfig = {
       build: { sourcemap: true },
     }),
 }
+// eslint-disable-next-line import/no-default-export
 export default config
