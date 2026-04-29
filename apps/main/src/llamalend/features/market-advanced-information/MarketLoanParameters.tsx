@@ -21,40 +21,42 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
     error: errorParameters,
   } = useMarketParameters({ chainId, marketId })
 
+  const loading = !marketId || isLoadingParameters
+
   return (
     <>
       <ActionInfo
         label={t`AMM swap fee`}
         value={formatPercent(parameters?.fee)}
-        loading={isLoadingParameters}
+        loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Admin fee`}
         value={formatPercent(parameters?.admin_fee)}
-        loading={isLoadingParameters}
+        loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Band width factor`}
         value={formatNumber(parameters?.A ?? 0, { abbreviate: false, useGrouping: false })}
-        loading={isLoadingParameters}
+        loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Loan discount`}
         value={formatPercent(parameters?.loan_discount)}
-        loading={isLoadingParameters}
+        loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Liquidation discount`}
         value={formatPercent(parameters?.liquidation_discount)}
-        loading={isLoadingParameters}
+        loading={loading}
         error={errorParameters}
       />
 
@@ -62,7 +64,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
         label={t`Max LTV`}
         value={formatPercent(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount))}
         valueTooltip={t`Max possible loan at N=4`}
-        loading={isLoadingParameters}
+        loading={loading}
         error={errorParameters}
       />
     </>
