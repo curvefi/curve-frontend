@@ -215,8 +215,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       let total = 0
       let totalUsd = 0
 
-      for (const idx in tokenAddresses) {
-        const tokenAddress = tokenAddresses[idx]
+      for (const [idx, tokenAddress] of tokenAddresses.entries()) {
         const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress }) ?? 0
         const usdRateError = isNaN(usdRate)
         const balance = Number(balances?.[idx])
@@ -484,6 +483,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
 function parsedTokensNameMapper(poolDatas: PoolData[]) {
   const tokensNameMapper: { [address: string]: string } = {}
 
+  // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const idx in poolDatas) {
     const { underlyingCoinAddresses, underlyingCoins, wrappedCoinAddresses, wrappedCoins, id, lpToken } =
       poolDatas[idx].pool

@@ -30,7 +30,7 @@ const config = [
 
   // Recommended presets (flat-native)
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
   ...tanstack.configs['flat/recommended'],
   eslintReact.configs['recommended-typescript'],
   reactRefresh.configs.vite(),
@@ -144,7 +144,6 @@ const config = [
         },
       ],
 
-      '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -158,6 +157,24 @@ const config = [
         },
       ],
       '@typescript-eslint/triple-slash-reference': 'off',
+
+      // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
+      '@typescript-eslint/no-base-to-string': 'off',
+      '@typescript-eslint/no-duplicate-type-constituents': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/require-await': 'off',
+
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
       'no-console': [

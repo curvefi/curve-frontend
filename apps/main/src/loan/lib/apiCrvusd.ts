@@ -105,9 +105,8 @@ async function fetchChartBandBalancesData(
   })
 
   const parsedBandBalances = []
-  for (const idx in results) {
-    const r = results[idx]
-    parsedBandBalances.unshift(r)
+  for (const result of results) {
+    parsedBandBalances.unshift(result)
   }
   return parsedBandBalances
 }

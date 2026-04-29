@@ -148,8 +148,7 @@ const pool = {
     if (otherResult.status === 'rejected') {
       resp.error['others'] = true
     } else {
-      for (const idx in others) {
-        const other = others[idx]
+      for (const other of others) {
         if (chainId === 8453) {
           if (other.symbol !== 'CRV' && +other.apy > 0) {
             resp.other.push(other)
@@ -856,8 +855,8 @@ const poolWithdraw = {
     const resp = { activeKey, expected: '', bonus: '', error: '' }
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
-        isWrapped ? await p.withdrawImbalanceWrappedExpected(amounts) : await p.withdrawImbalanceExpected(amounts),
-        isWrapped ? await p.withdrawImbalanceWrappedBonus(amounts) : await p.withdrawImbalanceBonus(amounts),
+        isWrapped ? p.withdrawImbalanceWrappedExpected(amounts) : p.withdrawImbalanceExpected(amounts),
+        isWrapped ? p.withdrawImbalanceWrappedBonus(amounts) : p.withdrawImbalanceBonus(amounts),
       ])
       resp.expected = fulfilledValue(expectedResult) ?? ''
       resp.bonus = fulfilledValue(bonusResult) ?? ''
@@ -945,11 +944,11 @@ const poolWithdraw = {
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
         isWrapped
-          ? await p.withdrawOneCoinWrappedExpected(lpTokenAmount, tokenAddress)
-          : await p.withdrawOneCoinExpected(lpTokenAmount, tokenAddress),
+          ? p.withdrawOneCoinWrappedExpected(lpTokenAmount, tokenAddress)
+          : p.withdrawOneCoinExpected(lpTokenAmount, tokenAddress),
         isWrapped
-          ? await p.withdrawOneCoinWrappedBonus(lpTokenAmount, tokenAddress)
-          : await p.withdrawOneCoinBonus(lpTokenAmount, tokenAddress),
+          ? p.withdrawOneCoinWrappedBonus(lpTokenAmount, tokenAddress)
+          : p.withdrawOneCoinBonus(lpTokenAmount, tokenAddress),
       ])
       resp.expected = fulfilledValue(expectedResult) ?? ''
       resp.bonus = fulfilledValue(bonusResult) ?? ''

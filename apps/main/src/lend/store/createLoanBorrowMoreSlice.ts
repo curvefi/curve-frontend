@@ -216,7 +216,7 @@ export const createLoanBorrowMore = (
       // validation - if in soft-liquidation mode, user cannot add more collateral
       if (signerAddress && +cFormValues.userCollateral > 0) {
         const userActiveKey = helpers.getUserActiveKey(api, market)
-        const state = await user.loansDetailsMapper[userActiveKey]?.details?.state
+        const state = user.loansDetailsMapper[userActiveKey]?.details?.state
 
         if (!state) return
 
