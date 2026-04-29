@@ -239,7 +239,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         if (isEmpty) {
           cr.percentShareInPool = '0'
           // Only use USD balances for currency reserves if all tokens have a usd balance (and pool isn't empty)
-        } else if (crTokens.every((cr) => cr.balanceUsd > 0)) {
+        } else if (crTokens.every((cr) => cr.balanceUsd)) {
           cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
         } else {
           cr.percentShareInPool = ((cr.balance / total) * 100).toFixed(2)
