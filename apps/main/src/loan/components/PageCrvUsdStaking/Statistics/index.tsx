@@ -89,8 +89,8 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
           : MaxWidth.section,
       }}
     >
-      <Card>
-        <CardHeader size="small" title={t`Statistics`} />
+      <Card size="small">
+        <CardHeader title={t`Statistics`} />
         <CardContent component={Stack} gap={Spacing.md}>
           <StatsStack />
 

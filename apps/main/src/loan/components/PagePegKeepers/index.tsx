@@ -20,10 +20,15 @@ export const Page = () => (
     }}
     data-testid="pegkeepers"
   >
-    <Stack>
+    <Stack gap={Spacing.md}>
       <Statistics />
 
-      <Box display="grid" columnGap={Column_Spacing} gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))">
+      <Box
+        display="grid"
+        columnGap={Column_Spacing}
+        rowGap={Spacing.sm}
+        gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))"
+      >
         {PEG_KEEPERS.map(pegkeeper => (
           <PegKeeper
             key={pegkeeper.address}

@@ -91,10 +91,9 @@ export const CrvUsdPriceChart = () => {
   )
 
   return (
-    <Card>
+    <Card size="small">
       <CardHeader
         title={t`Historical crvUSD Peg`}
-        size="small"
         action={
           <SelectTimeOption
             options={timeOptions}
@@ -104,7 +103,7 @@ export const CrvUsdPriceChart = () => {
           />
         }
       />
-      <CardContent component={Stack} gap={Spacing.md} size="small">
+      <CardContent component={Stack} gap={Spacing.md}>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}

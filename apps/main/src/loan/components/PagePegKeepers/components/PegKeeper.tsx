@@ -26,7 +26,7 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
   const { rate, debt, debtCeiling, estCallerProfit, rebalance, isRebalancing } = usePegkeeper(pegkeeper)
 
   return (
-    <Card sx={sx} data-testid={`${testId}-root`}>
+    <Card sx={sx} data-testid={`${testId}-root`} size="small">
       <PegKeeperHeader
         underlyingCoins={underlyingCoins}
         underlyingCoinAddresses={underlyingCoinAddresses}

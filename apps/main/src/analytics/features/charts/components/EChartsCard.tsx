@@ -44,18 +44,18 @@ export const EChartsCard = ({
 }: ChartCardProps) => (
   <WithWrapper shouldWrap={fullscreen} Wrapper={DialogFullscreen} onClose={() => onCloseFullscreen?.()}>
     {/** A lot of flex and height code is to make sure the chart expands correctly in fullscreen mode */}
-    <Card component={Stack} height="100%">
+    <Card component={Stack} height="100%" {...(!fullscreen && { size: 'small' })}>
       <CardHeader
-        {...(!fullscreen && { size: 'small' })}
         title={title}
         action={
           <Stack direction="row" gap={Spacing.xs}>
             {action}
           </Stack>
         }
+        sx={{ ...(fullscreen && { marginInlineStart: Spacing.md }) }}
       />
 
-      <CardContent component={Stack} gap={Spacing.md} flexGrow={1} {...(!fullscreen && { size: 'small' })}>
+      <CardContent component={Stack} gap={Spacing.md} flexGrow={1}>
         <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
           {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
           <ReactECharts

@@ -16,7 +16,6 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = '
   <Stack gap={Spacing.sm}>
     <Metric
       label={`${poolName} rate`}
-      size="large"
       loading={rate == null}
       value={Number(rate)}
       valueOptions={{ decimals: 5, unit: 'none' }}
@@ -26,6 +25,7 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = '
     <Stack direction="row" gap={Spacing.md}>
       <Metric
         label={t`Debt`}
+        size="small"
         loading={debt == null}
         value={Number(debt)}
         valueOptions={{ unit: CRVUSD_UNIT }}
@@ -35,6 +35,7 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = '
 
       <Metric
         label={t`Debt ceiling`}
+        size="small"
         loading={debtCeiling == null}
         value={Number(debtCeiling)}
         valueOptions={{ unit: CRVUSD_UNIT, abbreviate: true }}

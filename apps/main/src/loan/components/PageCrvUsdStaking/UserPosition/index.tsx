@@ -35,13 +35,12 @@ export const UserPosition = () => {
     : undefined
 
   return (
-    <Card>
-      <CardHeader size="small" title={t`Position Details`} />
+    <Card size="small">
+      <CardHeader title={t`Position Details`} />
       <CardContent component={Stack} gap={Spacing.md}>
         <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
           <Grid size={6}>
             <Metric
-              size="large"
               label={t`Your crvUSD Staked`}
               value={userScrvUsdBalanceInCrvUsd}
               valueOptions={{ unit: CRVUSD_OPTIONS }}
@@ -50,7 +49,6 @@ export const UserPosition = () => {
           </Grid>
           <Grid size={6}>
             <Metric
-              size="large"
               label={t`Your share of the vault`}
               value={userShareOfTotalScrvUsdSupply}
               valueOptions={{ unit: 'percentage' }}

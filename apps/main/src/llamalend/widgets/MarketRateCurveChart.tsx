@@ -110,9 +110,9 @@ export const MarketRateCurveChart = ({
   )
 
   return (
-    <Card>
-      <CardHeader title={t`Interest Rate & Utilization`} size="small" />
-      <CardContent component={Stack} gap={Spacing.md} size="small">
+    <Card size="small">
+      <CardHeader title={t`Interest Rate & Utilization`} />
+      <CardContent component={Stack} gap={Spacing.md}>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={isLoading || !market}
