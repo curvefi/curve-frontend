@@ -1,3 +1,4 @@
+import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
@@ -35,8 +36,8 @@ type PricesGaugeOverviewData = {
   gauge_relative_weight_7d_delta: number | null
   gauge_relative_weight_60d_delta: number | null
   creation_tx: string
-  creation_date: string
-  last_vote_date: string
+  creation_date: Timestamp
+  last_vote_date: Timestamp
   last_vote_tx: string
 }
 

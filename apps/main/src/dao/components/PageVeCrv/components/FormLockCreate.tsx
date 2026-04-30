@@ -70,7 +70,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       updateFormValues({
         utcDate: toCalendarDate(utcDate),
         utcDateError,
-        calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
+        calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(new Date(calcdUtcDate.valueOf())) : '',
         days,
       })
     },
@@ -111,7 +111,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
   const handleBtnClickCreate = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
-        const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
+        const localUtcDate = formValues.calcdUtcDate || formatDate(new Date(formValues.utcDate.toString()))
         const notifyMessage = t`Please confirm locking ${formatNumber(formValues.lockedAmt)} CRV until ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)

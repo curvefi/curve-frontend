@@ -19,14 +19,14 @@ const convertDate = (input: Date | number | string): Date => {
 /**
  * Formats a date into a human-readable string with two variant options.
  *
- * @param date - The date to format. Can be a Date object, a string representation of a date, or a timestamp in milliseconds.
+ * @param date - The date to format.
  * @param variant - The format variant to use. Defaults to 'short'.
  *   - 'short': Returns date in format "DD MMM YYYY" (e.g., "31 Jan 2025")
  *   - 'long': Returns date and time in format "MMM D, YYYY, H:MM AM/PM" (e.g., "Jan 31, 2025, 12:00 AM")
  *
  * @returns A formatted date string adjusted for the local timezone.
  */
-export const formatDate = (date: Date | string | number, variant: 'short' | 'long' = 'short') =>
+export const formatDate = (date: Date, variant: 'short' | 'long' = 'short') =>
   new Intl.DateTimeFormat(
     undefined,
     variant === 'short'
@@ -45,7 +45,7 @@ export const formatDate = (date: Date | string | number, variant: 'short' | 'lon
           minute: '2-digit',
           hour12: true,
         },
-  ).format(typeof date === 'object' ? date : new Date(date))
+  ).format(date)
 
 /**
  * Formats a timestamp into HH:MM:SS time format (24-hour clock).
@@ -101,4 +101,5 @@ export const formatLocaleDateFromTimestamp = (unixTime: number) =>
  * @param unixTimeMs - The Unix timestamp in milliseconds. If wished this can be easily expanded to accept Date or string types.
  * @returns A formatted date string adjusted for the local timezone
  */
-export const formatLocaleDate = (unixTimeMs: number) => formatDate(unixTimeMs - new Date().getTimezoneOffset() * 60000)
+export const formatLocaleDate = (unixTimeMs: number) =>
+  formatDate(new Date(unixTimeMs - new Date().getTimezoneOffset() * 60000))

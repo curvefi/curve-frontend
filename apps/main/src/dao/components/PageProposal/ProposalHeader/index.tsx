@@ -5,6 +5,7 @@ import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { networks } from '@/dao/networks'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { ExternalLink } from '@ui/Link'
 import { formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -43,7 +44,7 @@ export const ProposalHeader = ({ proposal, loading, voteId, proposalType }: Prop
           title={t`Executed On`}
           data={
             <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], executionTx)}>
-              <MetricsColumnData>{formatDate(executionDate)}</MetricsColumnData>
+              <MetricsColumnData>{formatDate(toDate(executionDate))}</MetricsColumnData>
             </StyledExternalLink>
           }
         />

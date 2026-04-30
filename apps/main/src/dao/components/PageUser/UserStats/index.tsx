@@ -1,6 +1,7 @@
 import { styled } from 'styled-components'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import type { Locker } from '@curvefi/prices-api/dao'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatNumber, formatDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
@@ -28,7 +29,9 @@ export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         loading={holdersLoading}
         title={t`Unlock Time`}
         data={
-          <MetricsColumnData>{veCrvHolder.unlockTime ? formatDate(veCrvHolder.unlockTime) : 'N/A'}</MetricsColumnData>
+          <MetricsColumnData>
+            {veCrvHolder.unlockTime ? formatDate(toDate(veCrvHolder.unlockTime)) : 'N/A'}
+          </MetricsColumnData>
         }
       />
       <MetricsComp

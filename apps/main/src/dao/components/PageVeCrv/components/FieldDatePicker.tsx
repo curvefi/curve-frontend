@@ -169,7 +169,7 @@ export const FieldDatePicker = ({
         <Chip size="xs">
           {t`Current unlock date:`}{' '}
           {vecrvInfo.lockedAmountAndUnlockTime.unlockTime
-            ? formatDate(vecrvInfo.lockedAmountAndUnlockTime.unlockTime)
+            ? formatDate(new Date(vecrvInfo.lockedAmountAndUnlockTime.unlockTime))
             : '-'}{' '}
           UTC
         </Chip>

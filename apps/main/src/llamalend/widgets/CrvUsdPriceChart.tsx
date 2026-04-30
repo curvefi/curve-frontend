@@ -117,7 +117,9 @@ export const CrvUsdPriceChart = () => {
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}
-            xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | number | string) => formatDate(value)}
+            xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | number | string) =>
+              formatDate(new Date(value))
+            }
             yTickFormatter={value =>
               formatNumber(+value, { unit: 'dollar', abbreviate: false, decimals: 4, minimumFractionDigits: 4 })
             }
