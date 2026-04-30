@@ -71,11 +71,7 @@ These alerts are distinct from `DEPRECATED_LLAMAS`. They can show a banner on th
 
 **Location:** [`apps/main/src/llamalend/llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts), [`apps/main/src/llamalend/widgets/banners/BadDebtBanner.tsx`](apps/main/src/llamalend/widgets/banners/BadDebtBanner.tsx), [`apps/main/src/llamalend/widgets/action-card/hooks/useLowSolvencyForm.ts`](apps/main/src/llamalend/widgets/action-card/hooks/useLowSolvencyForm.ts)
 
-LlamaLend lend markets now also apply automatic protections based on solvency thresholds defined in `SOLVENCY_THRESHOLDS`:
-
-- **Below `99.9%` solvency**: a bad-debt solvency banner is shown automatically on the market page.
-- **From `90%` up to `99.9%` solvency**: deposits and new borrow positions are still allowed, but the user must acknowledge a confirmation modal before submitting `Deposit` or `Create Loan`.
-- **Below `90%` solvency**: the market is treated as deprecated for new users, hidden from the market list unless the user already has a position, and both new deposits and new borrow positions are disabled.
+LlamaLend lend markets now also apply automatic protections based on solvency thresholds defined in [`SOLVENCY_THRESHOLDS`](apps/main/src/llamalend/llama-markets.constants.ts)
 
 These automatic protections only apply to **lend markets**. Mint markets keep using the existing static alert/deprecation mechanisms.
 

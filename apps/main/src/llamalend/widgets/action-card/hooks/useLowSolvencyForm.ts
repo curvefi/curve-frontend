@@ -19,8 +19,8 @@ type Props<T extends FieldValues, ChainId extends IChainId> = {
 const isLowSolvencyActionBlocked = (solvencyPercent: number | null | undefined) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
 
-const requiresLowSolvencyConfirmation = (solvencyPercent: number | null | undefined) =>
-  solvencyPercent != null && solvencyPercent >= SOLVENCY_THRESHOLDS.low && solvencyPercent < SOLVENCY_THRESHOLDS.solvent
+const requiresLowSolvencyModalConfirmation = (solvencyPercent: number | null | undefined) =>
+  solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.solvent
 
 export const useLowSolvencyForm = <T extends FieldValues, ChainId extends IChainId>({
   market,
@@ -29,33 +29,24 @@ export const useLowSolvencyForm = <T extends FieldValues, ChainId extends IChain
   handleFormSubmit,
 }: Props<T, ChainId>) => {
   const [isLowSolvencyModalOpen, openLowSolvencyModal, closeLowSolvencyModal] = useSwitch(false)
-  const isLendMarket = market instanceof LendMarketTemplate
   const solvency = useSolvencyLendMarket(
     {
       blockchainId: BlockchainIds[chainId],
       controllerAddress: getControllerAddress(market),
     },
-    isLendMarket,
+    market instanceof LendMarketTemplate,
   )
-  const solvencyDisabledAlert =
-    isLowSolvencyActionBlocked(solvency.data?.solvencyPercent) && isLendMarket ? DEFAULT_ALERT : undefined
-  const shouldConfirmLowSolvency =
-    !solvencyDisabledAlert && isLendMarket && requiresLowSolvencyConfirmation(solvency.data?.solvencyPercent)
-
-  const handleConfirmLowSolvencyModal = () => {
-    closeLowSolvencyModal()
-    void handleFormSubmit(onSubmit)()
-  }
-
-  const handleSubmit = shouldConfirmLowSolvency
-    ? handleFormSubmit(() => openLowSolvencyModal())
-    : handleFormSubmit(onSubmit)
 
   return {
     solvency: q(solvency),
-    solvencyDisabledAlert,
-    handleConfirmLowSolvencyModal,
-    handleSubmit,
+    solvencyDisabledAlert: isLowSolvencyActionBlocked(solvency.data?.solvencyPercent) ? DEFAULT_ALERT : undefined,
+    handleConfirmLowSolvencyModal: () => {
+      closeLowSolvencyModal()
+      void handleFormSubmit(onSubmit)()
+    },
+    handleSubmit: requiresLowSolvencyModalConfirmation(solvency.data?.solvencyPercent)
+      ? handleFormSubmit(() => openLowSolvencyModal())
+      : handleFormSubmit(onSubmit),
     closeLowSolvencyModal,
     isLowSolvencyModalOpen,
   }
