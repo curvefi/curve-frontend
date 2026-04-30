@@ -19,7 +19,6 @@ export const defineMuiCardHeader = (
     root: {
       padding: 0,
       ...handleBreakpoints({
-        paddingInlineStart: Spacing.sm,
         paddingBlockEnd: Spacing.xs,
         minHeight: ButtonSize.lg,
         gap: Spacing.xs,
