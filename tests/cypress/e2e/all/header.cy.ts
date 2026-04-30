@@ -240,7 +240,7 @@ describe('Header', () => {
     beforeEach(() => {
       ;[width, height] = oneDesktopViewport()
       cy.viewport(width, height)
-      const route = APP_ROUTES['dex']() as unknown as AppRoute
+      const route = APP_ROUTES.dex() as unknown as AppRoute
       cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })

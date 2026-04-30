@@ -13636,6 +13636,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:*"
     "@vitest/ui": "npm:^4.1.4"
     cypress: "npm:^15.13.1"
+    eslint: "npm:*"
     ethers: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"

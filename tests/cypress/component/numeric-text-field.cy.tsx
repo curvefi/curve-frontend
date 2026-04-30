@@ -86,7 +86,7 @@ describe('NumericTextField', () => {
     cy.mount(<TestComponent initialValue="12345" />)
     cy.get('input').click()
     cy.window().then(win => {
-      const input = win.document.querySelector('input') as HTMLInputElement
+      const input = win.document.querySelector('input')!
       expect(input.selectionStart).to.equal(0)
       expect(input.selectionEnd).to.equal(5)
     })
