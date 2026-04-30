@@ -6,7 +6,7 @@ import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/u
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { FormDisabledAlert, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
@@ -21,6 +21,7 @@ import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
+import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -92,12 +93,14 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   enabled,
   onPricesUpdated,
   collateralEvents,
+  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
+  borrowDisabledAlert?: FormDisabledAlert
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -124,6 +127,22 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
+  const {
+    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
+    solvencyDisabledAlert,
+    handleSubmit,
+    handleConfirmLowSolvencyModal,
+    closeLowSolvencyModal,
+    isLowSolvencyModalOpen,
+  } = useLowSolvencyForm({
+    market,
+    chainId,
+    onSubmit,
+    handleFormSubmit: form.handleSubmit,
+  })
+
+  const disabledAlert = borrowDisabledAlert ?? solvencyDisabledAlert
+
   useCallbackSync(useBorrowMorePrices(params, enabled), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
@@ -135,14 +154,29 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
+    isLoading: isPending || !market || isSolvencyLoading,
+    onSubmit: handleSubmit,
+    isDisabled:
+      !!disabledAlert ||
+      !!solvencyError ||
+      !formState.isValid ||
+      isPending ||
+      isDebouncing ||
+      shouldBlockTransaction(priceImpact, params),
     borrowToken,
     collateralToken,
-    borrowError,
+    error: borrowError ?? solvencyError,
     isApproved: useBorrowMoreIsApproved(params, enabled),
     priceImpact,
     formErrors: useFormErrors(formState),
+    disabledAlert,
+    lowSolvencyModalProps: {
+      action: 'borrow',
+      onClose: closeLowSolvencyModal,
+      onConfirm: handleConfirmLowSolvencyModal,
+      open: isLowSolvencyModalOpen,
+      tokenSymbol: collateralToken?.symbol,
+    } as const,
     routes: useMarketRoutes({
       chainId,
       tokenIn: borrowToken,

@@ -20,19 +20,20 @@ const getLowSolvencyModalCopy = ({
   tokenSymbol: string | null | undefined
 }) => {
   const token = tokenSymbol ?? t`this asset`
-  return action === 'deposit'
-    ? {
-        title: t`Confirm deposit`,
-        content: t`I understand that this market has bad debt and that depositing ${token} may result in delayed, restricted, or unavailable withdrawals.`,
-        checkboxLabel: t`I understand, let me deposit ${token}`,
-        cta: t`Deposit`,
-      }
-    : {
-        title: t`Confirm borrow`,
-        content: t`I understand that this market has bad debt and that opening a new borrow position with ${token} collateral in this market carries elevated risk.`,
-        checkboxLabel: t`I understand, let me borrow against ${token}`,
-        cta: t`Borrow`,
-      }
+  return {
+    deposit: {
+      title: t`Confirm deposit`,
+      content: t`I understand that this market has bad debt and that depositing ${token} may result in delayed, restricted, or unavailable withdrawals.`,
+      checkboxLabel: t`I understand, let me deposit ${token}`,
+      cta: t`Deposit`,
+    },
+    borrow: {
+      title: t`Confirm borrow`,
+      content: t`I understand that this market has bad debt and that opening a new borrow position with ${token} collateral in this market carries elevated risk.`,
+      checkboxLabel: t`I understand, let me borrow against ${token}`,
+      cta: t`Borrow`,
+    },
+  }[action]
 }
 
 export const LowSolvencyActionModal = ({

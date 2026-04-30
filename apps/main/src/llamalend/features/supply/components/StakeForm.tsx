@@ -1,10 +1,11 @@
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useStakeForm } from '../hooks/useStakeForm'
@@ -16,6 +17,7 @@ type StakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
+  depositDisabledAlert?: FormDisabledAlert
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
@@ -25,6 +27,7 @@ export const StakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
+  depositDisabledAlert,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
   const blockchainId = network.id
@@ -43,7 +46,8 @@ export const StakeForm = <ChainId extends IChainId>({
     isApproved,
     hasGauge,
     max,
-  } = useStakeForm({ market, network, enabled })
+    disabledAlert,
+  } = useStakeForm({ market, network, enabled, depositDisabledAlert })
 
   return (
     <Form
@@ -71,14 +75,18 @@ export const StakeForm = <ChainId extends IChainId>({
       />
 
       {hasGauge ? (
-        <Button
-          type="submit"
-          loading={isPending || !market}
-          disabled={isDisabled}
-          data-testid={`${TEST_ID_PREFIX}-submit-button`}
-        >
-          {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
-        </Button>
+        disabledAlert ? (
+          <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
+        ) : (
+          <Button
+            type="submit"
+            loading={isPending || !market}
+            disabled={isDisabled}
+            data-testid={`${TEST_ID_PREFIX}-submit-button`}
+          >
+            {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
+          </Button>
+        )
       ) : (
         <AlertNoGauge />
       )}

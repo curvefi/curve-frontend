@@ -33,6 +33,20 @@ function DepositTab({ rChainId, market, isLoaded }: VaultProps) {
   )
 }
 
+function StakeTab({ rChainId, market, isLoaded }: VaultProps) {
+  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
+
+  return (
+    <StakeForm
+      networks={networks}
+      chainId={rChainId}
+      market={market}
+      enabled={isLoaded}
+      depositDisabledAlert={marketAlert?.isDepositDisabled ? marketAlert : undefined}
+    />
+  )
+}
+
 const LegacyVaultMenu = [
   {
     value: 'deposit',
@@ -79,9 +93,7 @@ const NewVaultMenu = [
       {
         value: 'stake',
         label: t`Stake`,
-        component: ({ rChainId, market, isLoaded }: VaultProps) => (
-          <StakeForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-        ),
+        component: StakeTab,
       },
       {
         value: 'unstake',

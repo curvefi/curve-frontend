@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { FormDisabledAlert, LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
@@ -30,10 +30,12 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
+  depositDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
+  depositDisabledAlert?: FormDisabledAlert
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -69,6 +71,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
+  const disabledAlert = depositDisabledAlert
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking
   return {
@@ -77,7 +80,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || !marketHasGauge || isPending || isDebouncing,
+    isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     collateralToken,
@@ -86,5 +89,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     isApproved: useStakeIsApproved(params, enabled),
     hasGauge: marketHasGauge,
     formErrors: useFormErrors(formState),
+    disabledAlert,
   }
 }

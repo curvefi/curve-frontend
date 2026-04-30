@@ -4,8 +4,9 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { hasDeleverage } from '@/llamalend/llama.utils'
+import { getControllerAddress, hasDeleverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { CollateralDecrease } from '@/loan/components/PageMintMarket/CollateralDecrease'
 import { CollateralIncrease } from '@/loan/components/PageMintMarket/CollateralIncrease'
@@ -19,6 +20,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
@@ -29,16 +31,21 @@ type MintManageLoanProps = ManageLoanProps & {
   collateralEvents: QueryProp<UserCollateralEvents>
 }
 
-const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
-  <BorrowMoreForm
-    networks={networks}
-    chainId={rChainId}
-    market={market ?? undefined}
-    enabled={isReady}
-    onPricesUpdated={onPricesUpdated}
-    collateralEvents={collateralEvents}
-  />
-)
+const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => {
+  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Mint)
+
+  return (
+    <BorrowMoreForm
+      networks={networks}
+      chainId={rChainId}
+      market={market ?? undefined}
+      enabled={isReady}
+      onPricesUpdated={onPricesUpdated}
+      collateralEvents={collateralEvents}
+      borrowDisabledAlert={marketAlert?.isBorrowDisabled ? marketAlert : undefined}
+    />
+  )
+}
 
 const RepayTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
   <RepayForm
