@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
 import { useParams } from '@ui-kit/hooks/router'
-import { Chain } from '@ui-kit/utils'
 import { useNetworks } from '../entities/networks'
 
 const useNetwork = (networkId: string) => {
@@ -11,4 +10,5 @@ const useNetwork = (networkId: string) => {
 
 export const useNetworkFromUrl = () => useNetwork(useParams<NetworkUrlParams>().network)
 
-export const useChainId = (networkId: NetworkEnum): ChainId => useNetwork(networkId)?.chainId ?? Chain.Ethereum
+// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+export const useChainId = (networkId: NetworkEnum): ChainId => useNetwork(networkId)?.chainId!
