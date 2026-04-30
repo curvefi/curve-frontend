@@ -1,24 +1,19 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
-import { Card, CardHeader } from '@mui/material'
-import Stack from '@mui/material/Stack'
+import { Card, CardContent, CardHeader } from '@mui/material'
 import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
 
 export const AdvancedDetails = ({ network }: { network: BaseConfig | undefined }) => (
-  <Card>
-    <Stack gap={Spacing.sm}>
-      <CardHeader
-        size="small"
-        data-inline
-        title={t`Advanced Details`}
-        slotProps={{ title: { variant: 'small' }, root: { variant: 'small' } }}
-      />
+  <Card size="small">
+    <CardHeader
+      data-inline
+      title={t`Advanced Details`}
+      slotProps={{ title: { variant: 'small' }, root: { variant: 'small' } }}
+    />
 
+    <CardContent sx={{ paddingInline: '0 !important' }} /** no data-inline support yet like in header */>
       <AddressActionInfo network={network} title={t`Vault Contract Address`} address={SCRVUSD_VAULT_ADDRESS} />
-    </Stack>
+    </CardContent>
   </Card>
 )
