@@ -19,6 +19,11 @@ export type Timestamp = (number | `${number}` | `${number}-${number}-${number}T$
   readonly [TimestampBrand]: true
 }
 
+/** Create a `Timestamp` from a `Date`. */
+export function fromDate(date: Date) {
+  return Math.floor(date.getTime() / 1000) as Timestamp
+}
+
 const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
 
 /**
@@ -32,7 +37,7 @@ const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
  * toDate("2024-01-01T00:00:00.000+01:00") // ISO with timezone
  * toDate("2024-01-01T00:00:00") // ISO without timezone (assumes UTC)
  */
-export function toDate(timestamp: Timestamp): Date {
+export function toDate(timestamp: Timestamp) {
   // Convert actual unix timestamp numbers to Date.
   if (typeof timestamp === 'number') {
     return new Date(timestamp * 1000)

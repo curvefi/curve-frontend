@@ -2,6 +2,7 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import type { Distribution } from '@curvefi/prices-api/revenue'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,8 +17,8 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
             <TooltipData>
-              {formatDate(timestamp)}
-              {timestamp > new Date() && <strong> {t`(in progress)`}</strong>}
+              {formatDate(toDate(timestamp))}
+              {toDate(timestamp) > new Date() && <strong> {t`(in progress)`}</strong>}
             </TooltipData>
           </TooltipColumn>
         </Box>

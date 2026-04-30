@@ -2,6 +2,7 @@ import { Contract } from 'ethers'
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { getStatistics } from '@curvefi/prices-api/savings'
 import type { Statistics } from '@curvefi/prices-api/savings/models'
+import { fromDate } from '@curvefi/prices-api/timestamp'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -48,7 +49,7 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
     const apy = (1 + apr / 100 / 365.25) ** 365.25 - 1
 
     return {
-      lastUpdated: new Date(block?.timestamp ?? 0),
+      lastUpdated: fromDate(new Date(block?.timestamp ?? 0)),
       lastUpdatedBlock: block?.number ?? 0,
       apyProjected: apy * 100,
       supply: weiToEther(supplyNum),

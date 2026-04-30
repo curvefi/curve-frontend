@@ -7,6 +7,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import type { Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import type { Address } from '@primitives/address.utils'
 import type {
   FetchingStatus,
@@ -188,7 +189,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         const oraclePriceArray: OraclePriceData[] = []
 
         for (const item of ohlc) {
-          const time = item.time.getLocalTimestamp()
+          const time = toDate(item.time).getLocalTimestamp()
 
           if (item.basePrice) {
             baselinePriceArray.push({
@@ -216,7 +217,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         set(
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc.refetchingCapped = oraclePriceArray.length < 299
-            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
+            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = toDate(ohlc[0].time).getUTCTimestamp()
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
             state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartLlammaOhlc.baselinePriceData = baselinePriceArray
@@ -264,7 +265,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         const oraclePriceArray: OraclePriceData[] = []
 
         for (const item of ohlc) {
-          const time = item.time.getLocalTimestamp()
+          const time = toDate(item.time).getLocalTimestamp()
 
           if (item.basePrice) {
             baselinePriceArray.push({
@@ -285,7 +286,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
           oracleData: oraclePriceArray,
           baselineData: baselinePriceArray,
           refetchingCapped: oraclePriceArray.length < 299,
-          lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
+          lastFetchEndTime: toDate(ohlc[0].time).getUTCTimestamp(),
         }
       } catch (error) {
         console.warn(error)
@@ -349,7 +350,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
-          const time = item.time.getLocalTimestamp()
+          const time = toDate(item.time).getLocalTimestamp()
 
           if (item.basePrice) {
             baselinePriceArray.push({
@@ -388,7 +389,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
             state[sliceKey].chartOraclePoolOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartOraclePoolOhlc.baselinePriceData = baselinePriceArray
             state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
-            state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
+            state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = toDate(ohlc[0].time).getUTCTimestamp()
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'READY'
             state[sliceKey].chartOraclePoolOhlc.dataDisabled = false
           }),
@@ -439,7 +440,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
-          const time = item.time.getLocalTimestamp()
+          const time = toDate(item.time).getLocalTimestamp()
 
           if (item.basePrice) {
             baselinePriceArray.push({
@@ -469,7 +470,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
           oracleData: oraclePriceArray,
           baselineData: baselinePriceArray,
           refetchingCapped: ohlcDataArray.length < 299,
-          lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
+          lastFetchEndTime: toDate(ohlc[0].time).getUTCTimestamp(),
           collateralToken: {
             address: pools[0].collateralAddress,
             symbol: pools[0].collateralSymbol,

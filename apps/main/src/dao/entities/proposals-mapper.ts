@@ -1,6 +1,7 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getProposals } from '@curvefi/prices-api/proposal/api'
 import type { Proposal, ProposalType } from '@curvefi/prices-api/proposal/models'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -40,7 +41,7 @@ const getProposalStatus = (
 const parseProposalData = (proposal: Proposal) => {
   const quorumVeCrv = proposal.quorum * proposal.totalSupply
   const currentQuorumPercentage = (proposal.votesFor / proposal.totalSupply) * 100
-  const timestamp = proposal.timestamp.getTime() / 1000
+  const timestamp = toDate(proposal.timestamp).getTime() / 1000
 
   const status = getProposalStatus(timestamp, quorumVeCrv, proposal.votesFor, proposal.votesAgainst, proposal.support)
 

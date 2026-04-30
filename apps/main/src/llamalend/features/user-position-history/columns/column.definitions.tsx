@@ -1,3 +1,4 @@
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TimestampCell, DebtChangeCell, EventTypeCell, CollateralChangeCell } from '../cells'
@@ -37,7 +38,7 @@ export const USER_POSITION_HISTORY_COLUMNS = [
   columnHelper.accessor('timestamp', {
     id: UserPositionHistoryColumnId.Time,
     header: headers[UserPositionHistoryColumnId.Time],
-    cell: ({ row }) => <TimestampCell timestamp={row.original.timestamp} txUrl={row.original.url} />,
+    cell: ({ row }) => <TimestampCell timestamp={toDate(row.original.timestamp)} txUrl={row.original.url} />,
     meta: { type: 'numeric' },
   }),
 ]

@@ -1,6 +1,6 @@
 {
   "name": "@curvefi/prices-api",
-  "version": "1.1.23",
+  "version": "1.2.0",
   "license": "MIT",
   "type": "module",
   "scripts": {
