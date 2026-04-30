@@ -1,5 +1,6 @@
 import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -36,17 +37,19 @@ export const StakeForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
+    isLoading,
     onSubmit,
     isDisabled,
     vaultToken,
     borrowToken,
     collateralToken,
-    stakeError,
+    error,
     formErrors,
     isApproved,
     hasGauge,
     max,
     disabledAlert,
+    lowSolvencyModalProps,
   } = useStakeForm({ market, network, enabled, depositDisabledAlert })
 
   return (
@@ -80,7 +83,7 @@ export const StakeForm = <ChainId extends IChainId>({
         ) : (
           <Button
             type="submit"
-            loading={isPending || !market}
+            loading={isLoading}
             disabled={isDisabled}
             data-testid={`${TEST_ID_PREFIX}-submit-button`}
           >
@@ -91,7 +94,9 @@ export const StakeForm = <ChainId extends IChainId>({
         <AlertNoGauge />
       )}
 
-      <FormAlerts error={stakeError} formErrors={formErrors} handledErrors={['stakeAmount']} />
+      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAmount']} />
     </Form>
   )
 }

@@ -6,6 +6,7 @@ import type { FormDisabledAlert, LlamaMarketTemplate, LlamaNetwork } from '@/lla
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
+import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
@@ -69,9 +70,23 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     error: stakeError,
   } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
 
+  const {
+    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
+    solvencyDisabledAlert,
+    handleSubmit,
+    handleConfirmLowSolvencyModal,
+    closeLowSolvencyModal,
+    isLowSolvencyModalOpen,
+  } = useLowSolvencyForm({
+    market,
+    chainId,
+    onSubmit,
+    handleFormSubmit: form.handleSubmit,
+  })
+
   useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
-  const disabledAlert = depositDisabledAlert
+  const disabledAlert = depositDisabledAlert ?? solvencyDisabledAlert
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking
   return {
@@ -79,16 +94,25 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
+    isLoading: isPending || !market || isSolvencyLoading,
+    onSubmit: handleSubmit,
+    isDisabled:
+      !!disabledAlert || !!solvencyError || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     collateralToken,
-    stakeError,
+    error: stakeError ?? solvencyError,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
     hasGauge: marketHasGauge,
     formErrors: useFormErrors(formState),
     disabledAlert,
+    lowSolvencyModalProps: {
+      action: 'stake',
+      onClose: closeLowSolvencyModal,
+      onConfirm: handleConfirmLowSolvencyModal,
+      open: isLowSolvencyModalOpen,
+      tokenSymbol: vaultToken?.symbol,
+    } as const,
   }
 }

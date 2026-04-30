@@ -10,7 +10,7 @@ import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
 
 const { Spacing } = SizesAndSpaces
 
-type LowSolvencyAction = 'borrow' | 'deposit'
+type LowSolvencyAction = 'borrow' | 'deposit' | 'stake'
 
 const getLowSolvencyModalCopy = ({
   action,
@@ -26,6 +26,12 @@ const getLowSolvencyModalCopy = ({
       content: t`I understand that this market has bad debt and that depositing ${token} may result in delayed, restricted, or unavailable withdrawals.`,
       checkboxLabel: t`I understand, let me deposit ${token}`,
       cta: t`Deposit`,
+    },
+    stake: {
+      title: t`Confirm stake`,
+      content: t`I understand that this market has bad debt and that staking ${token} may result in delayed, restricted, or unavailable withdrawals.`,
+      checkboxLabel: t`I understand, let me stake ${token}`,
+      cta: t`Stake`,
     },
     borrow: {
       title: t`Confirm borrow`,
