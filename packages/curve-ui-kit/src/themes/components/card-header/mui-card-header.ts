@@ -6,6 +6,11 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
+export const cardHeaderSmallStyles = (typography: TypographyVariantsOptions) => ({
+  '& .MuiCardHeader-title': typography.headingXsBold,
+  ...handleBreakpoints({ minHeight: ButtonSize.sm }),
+})
+
 export const defineMuiCardHeader = (
   design: DesignSystem,
   typography: TypographyVariantsOptions,
@@ -29,10 +34,7 @@ export const defineMuiCardHeader = (
   variants: [
     {
       props: { size: 'small' },
-      style: {
-        '& .MuiCardHeader-title': typography.headingXsBold,
-        ...handleBreakpoints({ minHeight: ButtonSize.sm }),
-      },
+      style: cardHeaderSmallStyles(typography),
     },
     {
       props: { 'data-inline': true },
