@@ -52,6 +52,7 @@ export const EChartsCard = ({
             {action}
           </Stack>
         }
+        sx={{ ...(fullscreen && { marginInlineStart: Spacing.md }) }}
       />
 
       <CardContent component={Stack} gap={Spacing.md} flexGrow={1}>

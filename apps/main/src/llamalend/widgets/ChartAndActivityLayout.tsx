@@ -106,11 +106,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   return (
     <Stack>
       <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         {tab === 'events' && <LlammaActivityEvents {...activity} />}
         {tab === 'trades' && <LlammaActivityTrades {...activity} />}
         {tab === 'chart' && (
-          <Stack sx={{ gap: Spacing.sm }}>
+          <Stack sx={{ gap: Spacing.sm, padding: Spacing.sm }}>
             <ChartHeader
               chartOptionVariant="select"
               chartSelections={{
