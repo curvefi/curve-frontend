@@ -96,8 +96,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     isPending,
     isLoading: isPending || !market || isSolvencyLoading,
     onSubmit: handleSubmit,
-    isDisabled:
-      !!disabledAlert || !!solvencyError || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
+    isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     collateralToken,

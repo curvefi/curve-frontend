@@ -136,13 +136,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
 
   const isPending = formState.isSubmitting || isCreating
-  const isDisabled =
-    !!disabledAlert ||
-    !!solvencyError ||
-    !formState.isValid ||
-    isPending ||
-    isDebouncing ||
-    shouldBlockTransaction(priceImpact, params)
 
   return {
     form,
@@ -150,7 +143,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     params,
     isPending,
     isLoading: isPending || !market || isSolvencyLoading,
-    isDisabled,
+    isDisabled:
+      !!disabledAlert || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
     onSubmit: handleSubmit,
     maxTokenValues,
     borrowToken,
