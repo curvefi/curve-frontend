@@ -88,7 +88,7 @@ export const toNumberOrNull = (value: number | string | null | undefined) => (va
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy) as number) : null
+  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)!) : null
 
 const displayUserBoost = (userBoost: number | null | undefined) =>
   userBoost == null ? '' : ' (' + defaultNumberFormatter(userBoost) + 'x veCRV Boost)'
@@ -179,7 +179,7 @@ export const getSupplyApyAverageMetrics = ({
     crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost * 100,
     crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100),
     crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100),
-    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => aprToApy(reward.rate) as number),
+    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => aprToApy(reward.rate)!),
   })
 
   const averageTotalWithoutBoost = sumRates(

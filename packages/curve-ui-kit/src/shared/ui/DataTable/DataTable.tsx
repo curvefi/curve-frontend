@@ -112,7 +112,7 @@ export const DataTable = <T extends TableItem>({
     top: maxHeight ? 0 : top,
     zIndex: t.zIndex.tableHeader,
     backgroundColor: t.design.Table.Header.Fill,
-    marginBlock: Sizing['sm'],
+    marginBlock: Sizing.sm,
   })
   const showFooter = showPagination || showViewAllButton || footerRow
 
@@ -130,7 +130,7 @@ export const DataTable = <T extends TableItem>({
             {children && <FilterRow table={table}>{children}</FilterRow>}
 
             {headerGroups.map(headerGroup => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}

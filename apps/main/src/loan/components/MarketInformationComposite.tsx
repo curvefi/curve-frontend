@@ -51,8 +51,8 @@ export const MarketInformationComposite = ({
           <CrvUsdPriceChart />
         </>
       )}
-      <Card>
-        <CardHeader title={t`Advanced Details`} size="small" />
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
           <AdvancedDetails
             chainId={chainId}

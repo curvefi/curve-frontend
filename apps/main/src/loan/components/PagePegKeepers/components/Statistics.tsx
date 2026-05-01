@@ -15,8 +15,8 @@ export const Statistics = () => {
   const { totalDebt, totalCeiling, isFetchingDebt, isFetchingCeiling, isErrorDebt, isErrorCeiling } = useStatistics()
 
   return (
-    <Card>
-      <CardHeader size="small" title={t`Statistics`} />
+    <Card size="small">
+      <CardHeader title={t`Statistics`} />
 
       <CardContent>
         {isErrorDebt && (
@@ -32,7 +32,6 @@ export const Statistics = () => {
         <Stack direction="row" gap={Spacing.md}>
           <Metric
             loading={isFetchingDebt}
-            size="large"
             label={t`Peg stabilisation reserve`}
             value={totalDebt && Number(totalDebt)}
             valueOptions={{ unit: CRVUSD_UNIT }}
@@ -42,7 +41,6 @@ export const Statistics = () => {
 
           <Metric
             loading={isFetchingCeiling}
-            size="large"
             label={t`Total debt ceiling`}
             value={totalCeiling && Number(totalCeiling)}
             valueOptions={{ unit: CRVUSD_UNIT }}

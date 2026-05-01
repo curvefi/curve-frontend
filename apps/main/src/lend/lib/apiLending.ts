@@ -19,6 +19,7 @@ import {
   MarketStatBands,
   MarketStatCapAndAvailable,
   MaxRecvLeverageResp,
+  OneWayMarketTemplate,
   ParsedBandsBalances,
   Provider,
   RewardCrv,
@@ -27,7 +28,6 @@ import {
   UserLoss,
   UserMarketBalances,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
 import {
   getIsUserCloseToSoftLiquidation,
@@ -816,7 +816,7 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -1213,7 +1213,7 @@ const loanCollateralAdd = {
       return resp
     } catch (err) {
       console.error(err)
-      if (err?.message && err.message.includes('liquidation mode')) {
+      if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
@@ -1293,7 +1293,7 @@ const loanCollateralRemove = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -1801,9 +1801,8 @@ async function fetchChartBandBalancesData(
   })
 
   const parsedBandBalances = []
-  for (const idx in results) {
-    const r = results[idx]
-    parsedBandBalances.unshift(r)
+  for (const result of results) {
+    parsedBandBalances.unshift(result)
   }
   return parsedBandBalances
 }
@@ -1855,5 +1854,5 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 }
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
-  return (args.find(a => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
+  return args.find(a => a.status == 'rejected')?.reason.message
 }

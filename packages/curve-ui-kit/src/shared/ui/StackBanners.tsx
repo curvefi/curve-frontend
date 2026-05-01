@@ -1,5 +1,5 @@
 import { partition } from 'lodash'
-import React, { useMemo, type ReactNode, type ReactElement, Children, isValidElement } from 'react'
+import { useMemo, type ReactNode, type ReactElement, Children, isValidElement } from 'react'
 import Box from '@mui/material/Box'
 import { DEFAULT_SEVERITY, type BannerProps } from '@ui-kit/shared/ui/Banner'
 

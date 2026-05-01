@@ -170,7 +170,7 @@ export const Swap = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         setTxInfoBar(

@@ -8,7 +8,7 @@ import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const { feesUsd, timestamp } = payload[0].payload as Distribution
 
     return (

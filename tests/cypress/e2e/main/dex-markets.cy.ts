@@ -30,7 +30,7 @@ function visitAndWait(
   cy.viewport(width, height)
   cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
-  if (query?.['page']) {
+  if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
   }
 }

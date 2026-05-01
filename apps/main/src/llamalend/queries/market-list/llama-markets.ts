@@ -121,7 +121,7 @@ const convertLendingVault = (
   const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate) as number) : null
+    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)!) : null
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
     crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],

@@ -50,7 +50,7 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
         <TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} overflow="fullWidth" />
       }
     >
-      {poolAlert && poolAlert.isDisableDeposit ? (
+      {poolAlert?.isDisableDeposit ? (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       ) : (
         <>

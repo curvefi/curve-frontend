@@ -38,7 +38,7 @@ const createCustomRectSeries = (
   name: string,
   color: string,
   softLiquidationBandOutlineColor: string,
-  data: Array<[number, number, number, number, number, number, number]>,
+  data: [number, number, number, number, number, number, number][],
   enableSoftLiquidationOutline: boolean,
   markArea?: Record<string, unknown> | null,
   markLine?: Record<string, unknown> | null,
@@ -222,10 +222,10 @@ export const getChartOptions = (
       max: priceMax,
     },
     series: (() => {
-      const marketSeriesData: Array<[number, number, number, number, number, number, number]> = []
-      const userCollateralSeriesData: Array<[number, number, number, number, number, number, number]> = []
-      const userBorrowedSeriesData: Array<[number, number, number, number, number, number, number]> = []
-      const outlineSeriesData: Array<[number, number, number, number, number, number, number]> = []
+      const marketSeriesData: [number, number, number, number, number, number, number][] = []
+      const userCollateralSeriesData: [number, number, number, number, number, number, number][] = []
+      const userBorrowedSeriesData: [number, number, number, number, number, number, number][] = []
+      const outlineSeriesData: [number, number, number, number, number, number, number][] = []
       for (let i = 0; i < chartData.length; i++) {
         const d = chartData[i]
         const median = d.pUpDownMedian

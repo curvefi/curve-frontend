@@ -1,6 +1,5 @@
 import type { Address } from '@primitives/address.utils'
-import type { PaginationMeta } from '..'
-import type { Chain } from '../'
+import type { PaginationMeta, Chain } from '..'
 import type { Timestamp } from '../timestamp'
 
 type Coin = {

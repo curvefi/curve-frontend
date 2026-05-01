@@ -1,4 +1,4 @@
-import React, { type AnchorHTMLAttributes } from 'react'
+import type { AnchorHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
 import { Link as RouterLink } from '@tanstack/react-router'
 import type { LinkProps } from './styles'

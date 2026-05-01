@@ -119,7 +119,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
 
-        if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+        if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Lock date updated`
           setTxInfoBar(
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,

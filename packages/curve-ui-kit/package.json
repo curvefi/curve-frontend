@@ -7,8 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/curve-ui-kit --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/curve-ui-kit --cache-strategy content . --fix",
     "storybook": "storybook dev -p 6006 --no-open",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-curve-ui-kit.tsbuildinfo",
     "build:storybook": "storybook build"

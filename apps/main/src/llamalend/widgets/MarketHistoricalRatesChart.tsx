@@ -107,10 +107,9 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
   )
 
   return (
-    <Card>
+    <Card size="small">
       <CardHeader
         title={rateMode === 'borrow' ? t`Historical Borrow Rate` : t`Historical Supply Rate`}
-        size="small"
         action={
           <SelectTimeOption
             options={timeOptions}
@@ -120,7 +119,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
           />
         }
       />
-      <CardContent component={Stack} gap={Spacing.md} size="small">
+      <CardContent component={Stack} gap={Spacing.md}>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={isLoading || !market}

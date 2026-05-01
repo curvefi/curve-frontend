@@ -4,7 +4,6 @@ import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
-import type { NetworkEnum } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { Icon } from '@ui/Icon'
 import { TextEllipsis } from '@ui/TextEllipsis'
@@ -47,7 +46,7 @@ interface ChipPoolProps {
 }
 
 export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
-  const network = useCurve().network?.id as NetworkEnum
+  const network = useCurve().network?.id ?? 'ethereum'
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`

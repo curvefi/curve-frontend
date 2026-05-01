@@ -65,7 +65,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
 
-      if (isSubscribed.current && resp && resp.hash && resp.userActiveKey === userActiveKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar

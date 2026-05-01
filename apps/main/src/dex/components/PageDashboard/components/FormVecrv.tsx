@@ -16,14 +16,12 @@ import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { Chip } from '@ui/Typography'
-import { formatDate } from '@ui/utils'
-import { formatNumber } from '@ui/utils'
+import { formatDate, formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { NETWORK_BASE_CONFIG, scanTxPath } from '@ui/utils/utilsNetworks'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { getInternalUrl } from '@ui-kit/shared/routes'
+import { DAO_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
 import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
@@ -64,7 +62,7 @@ export const FormVecrv = () => {
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
-      if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress && network) {
+      if (isSubscribed.current && resp?.hash && resp.walletAddress === walletAddress && network) {
         const txDescription = t`Withdraw Complete`
         setTxInfoBar(
           <TxInfoBar

@@ -218,7 +218,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -502,7 +502,8 @@ export const QuickSwap = ({
         }
         message={
           formValues.fromError &&
-          t`Amount > wallet balance ${formatNumber(userFromBalance as Decimal, { abbreviate: false })}`
+          userFromBalance != null &&
+          t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
         }
       />
 

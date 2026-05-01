@@ -1,5 +1,4 @@
-import { styled } from '@mui/material/styles'
-import { keyframes } from '@mui/material/styles'
+import { styled, keyframes } from '@mui/material/styles'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
 import { createSvgIcon } from '@mui/material/utils'
 

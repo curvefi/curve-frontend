@@ -67,8 +67,8 @@ export const MarketInformationComposite = ({
         <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
       )}
 
-      <Card>
-        <CardHeader title={t`Advanced Details`} size="small" />
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
           <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
           <MarketInfoLayout

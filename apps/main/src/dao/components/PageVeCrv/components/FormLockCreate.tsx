@@ -116,7 +116,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
 
-        if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+        if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Successfully locked ${resp.lockedAmt} CRV until ${resp.lockedDate}`
           setTxInfoBar(
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,

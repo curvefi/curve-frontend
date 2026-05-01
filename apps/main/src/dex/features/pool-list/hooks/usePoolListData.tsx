@@ -84,8 +84,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
       () =>
         isLoading
           ? []
-          : poolsData &&
-            poolsData.map((item): PoolListItem => {
+          : poolsData?.map((item): PoolListItem => {
               const rewards = rewardsApyMapper?.[item.pool.id]
               const hasPosition = userPools?.includes(item.pool.id)
 

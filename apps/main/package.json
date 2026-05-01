@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content . --fix",
     "start": "vite preview",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-main.tsbuildinfo",
     "commit": "commit",
@@ -61,7 +62,6 @@
     "eslint": "*",
     "pinst": "^3.0.0",
     "typescript": "*",
-    "typescript-eslint": "^8.58.2",
     "vite": "*"
   }
 }

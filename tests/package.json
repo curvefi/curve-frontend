@@ -8,6 +8,8 @@
     "hoistingLimits": "dependencies"
   },
   "scripts": {
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/tests --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/tests --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
     "test": "vitest run",
     "test:ui": "vitest --ui",
@@ -27,6 +29,7 @@
     "@vitejs/plugin-react": "*",
     "@vitest/ui": "^4.1.4",
     "cypress": "^15.13.1",
+    "eslint": "*",
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
