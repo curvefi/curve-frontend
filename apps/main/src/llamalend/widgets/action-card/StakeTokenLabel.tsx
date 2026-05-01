@@ -1,5 +1,5 @@
-import type { FieldValues } from 'react-hook-form'
 import { Address } from '@primitives/address.utils'
+import type { FieldValues } from '@ui-kit/forms'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { LoanFormTokenInputProps } from './LoanFormTokenInput'
 

@@ -1,4 +1,3 @@
-import type { UseFormReturn } from 'react-hook-form'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
@@ -7,6 +6,7 @@ import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { UseFormReturn } from '@ui-kit/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'

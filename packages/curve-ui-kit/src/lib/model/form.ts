@@ -1,4 +1,4 @@
-import { FieldPathValue, type FieldPath, type FieldValues, type UseFormReturn } from 'react-hook-form'
+import { FieldPathValue, type FieldPath, type FieldValues, type UseFormReturn } from '@ui-kit/forms'
 
 /** Shared defaults for action forms. */
 export const formDefaultOptions = {

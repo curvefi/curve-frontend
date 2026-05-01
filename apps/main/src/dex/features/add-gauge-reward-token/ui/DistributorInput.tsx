@@ -1,7 +1,7 @@
-import { useFormContext } from 'react-hook-form'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import type { Address } from '@primitives/address.utils'
 import { InputDebounced, InputProvider } from '@ui/InputComp'
+import { useFormContext } from '@ui-kit/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { FlexItemDistributor, SubTitle } from './styled'
 

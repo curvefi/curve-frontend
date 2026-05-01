@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { UseFormReturn } from '@ui-kit/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal } from '@ui-kit/utils'
 import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
@@ -17,7 +17,7 @@ import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
  *
  * @param collateralToken - The collateral token object containing its address.
  * @param params - The parameters required to fetch max borrowable amounts, including chainId, marketId, and userAddress.
- * @param form - The react-hook-form instance managing the create loan form state.
+ * @param form - The form instance managing the create loan form state.
  */
 export function useMaxTokenValues(
   collateralToken: Address | undefined,

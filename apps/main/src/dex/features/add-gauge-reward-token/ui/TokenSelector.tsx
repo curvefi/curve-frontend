@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
@@ -11,6 +10,7 @@ import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { TokenList, TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
+import { useFormContext } from '@ui-kit/forms'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 

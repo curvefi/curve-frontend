@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
 import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -18,6 +17,7 @@ import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
+import { FormProvider, useForm } from '@ui-kit/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
 

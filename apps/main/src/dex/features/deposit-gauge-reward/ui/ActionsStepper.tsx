@@ -1,5 +1,4 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
 import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
@@ -10,6 +9,7 @@ import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
+import { useFormContext } from '@ui-kit/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 

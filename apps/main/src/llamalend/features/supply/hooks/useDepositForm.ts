@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -13,6 +12,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import { useForm } from '@ui-kit/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'

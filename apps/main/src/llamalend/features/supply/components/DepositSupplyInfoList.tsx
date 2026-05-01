@@ -1,4 +1,3 @@
-import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
@@ -8,6 +7,7 @@ import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyR
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
+import type { UseFormReturn } from '@ui-kit/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'

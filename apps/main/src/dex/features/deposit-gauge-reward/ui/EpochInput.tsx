@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { useFormContext } from 'react-hook-form'
 import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/dex/entities/gauge'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
 import { InputDebounced } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
+import { useFormContext } from '@ui-kit/forms'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {

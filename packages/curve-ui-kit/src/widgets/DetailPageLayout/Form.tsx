@@ -1,6 +1,6 @@
 import type { SubmitEventHandler, ReactNode } from 'react'
-import { FormProvider } from 'react-hook-form'
-import type { FieldValues, FormProviderProps } from 'react-hook-form'
+import { FormProvider } from '@ui-kit/forms'
+import type { FieldValues, FormProviderProps } from '@ui-kit/forms'
 import { FormContent } from './FormContent'
 
 type TContext = null // not used yet, we can make this generic later if needed

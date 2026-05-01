@@ -1,6 +1,6 @@
 import { type SubmitEventHandler, useEffect, useMemo } from 'react'
-import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
+import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from '@ui-kit/forms'
 import type { Query } from '@ui-kit/types/util'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{

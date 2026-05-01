@@ -1,4 +1,3 @@
-import type { UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
@@ -6,6 +5,7 @@ import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/use
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { UseFormReturn } from '@ui-kit/forms'
 import { constQ, mapQuery, q } from '@ui-kit/types/util'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'

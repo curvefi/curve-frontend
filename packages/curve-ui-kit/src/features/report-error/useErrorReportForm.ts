@@ -1,5 +1,5 @@
-import { useForm } from 'react-hook-form'
 import { captureError, captureString } from '@ui-kit/features/sentry'
+import { useForm } from '@ui-kit/forms'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
