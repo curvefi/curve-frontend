@@ -11,7 +11,7 @@ import {
   DepositParams,
   type DepositForm,
 } from '@/llamalend/queries/validation/supply.validation'
-import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
+import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
@@ -53,7 +53,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   )
 
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isDepositing,
     error: depositError,
   } = useDepositMutation({
@@ -66,14 +66,14 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
-    handleSubmit,
-    handleConfirmLowSolvencyModal,
-    closeLowSolvencyModal,
-    isLowSolvencyModalOpen,
-  } = useLowSolvencyForm({
+    onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
+  } = useFormLowSolvency({
     market,
     chainId,
-    onSubmit,
+    onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
@@ -86,7 +86,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     isLoading: isPending || !market || isSolvencyLoading,
-    onSubmit: handleSubmit,
+    onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     borrowToken,
     error: depositError ?? solvencyError,
@@ -94,12 +94,8 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     isApproved: useDepositIsApproved(params, enabled),
     formErrors: useFormErrors(formState),
     disabledAlert,
-    lowSolvencyModalProps: {
-      action: 'deposit',
-      onClose: closeLowSolvencyModal,
-      onConfirm: handleConfirmLowSolvencyModal,
-      open: isLowSolvencyModalOpen,
-      tokenSymbol: borrowToken?.symbol,
-    } as const,
+    onClose,
+    onConfirm,
+    isOpen,
   }
 }

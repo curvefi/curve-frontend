@@ -59,8 +59,10 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isDisabled,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
     disabledAlert,
-    lowSolvencyModalProps,
     params,
     routes,
     values,
@@ -157,7 +159,13 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         </Button>
       )}
 
-      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+      <LowSolvencyActionModal
+        action="borrow"
+        open={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        tokenSymbol={collateralToken?.symbol}
+      />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
     </Form>

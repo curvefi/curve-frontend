@@ -6,7 +6,7 @@ import type { FormDisabledAlert, LlamaMarketTemplate, LlamaNetwork } from '@/lla
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
-import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
+import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
@@ -65,7 +65,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   )
 
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isStaking,
     error: stakeError,
   } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
@@ -73,14 +73,14 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
-    handleSubmit,
-    handleConfirmLowSolvencyModal,
-    closeLowSolvencyModal,
-    isLowSolvencyModalOpen,
-  } = useLowSolvencyForm({
+    onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
+  } = useFormLowSolvency({
     market,
     chainId,
-    onSubmit,
+    onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
@@ -95,7 +95,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     isLoading: isPending || !market || isSolvencyLoading,
-    onSubmit: handleSubmit,
+    onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
@@ -106,12 +106,8 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     hasGauge: marketHasGauge,
     formErrors: useFormErrors(formState),
     disabledAlert,
-    lowSolvencyModalProps: {
-      action: 'stake',
-      onClose: closeLowSolvencyModal,
-      onConfirm: handleConfirmLowSolvencyModal,
-      open: isLowSolvencyModalOpen,
-      tokenSymbol: vaultToken?.symbol,
-    } as const,
+    onClose,
+    onConfirm,
+    isOpen,
   }
 }

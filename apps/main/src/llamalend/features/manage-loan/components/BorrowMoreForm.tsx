@@ -49,6 +49,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
     isDisabled,
     borrowToken,
     collateralToken,
@@ -61,7 +64,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isLeverageEnabled,
     priceImpact,
     disabledAlert,
-    lowSolvencyModalProps,
   } = useBorrowMoreForm({
     market,
     network,
@@ -177,7 +179,13 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         </Button>
       )}
 
-      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+      <LowSolvencyActionModal
+        action="borrow"
+        open={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        tokenSymbol={collateralToken?.symbol}
+      />
 
       <FormAlerts
         error={error}

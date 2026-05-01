@@ -39,6 +39,9 @@ export const StakeForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
     isDisabled,
     vaultToken,
     borrowToken,
@@ -49,7 +52,6 @@ export const StakeForm = <ChainId extends IChainId>({
     hasGauge,
     max,
     disabledAlert,
-    lowSolvencyModalProps,
   } = useStakeForm({ market, network, enabled, depositDisabledAlert })
 
   return (
@@ -94,7 +96,13 @@ export const StakeForm = <ChainId extends IChainId>({
         <AlertNoGauge />
       )}
 
-      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+      <LowSolvencyActionModal
+        action="stake"
+        open={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        tokenSymbol={vaultToken?.symbol}
+      />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAmount']} />
     </Form>

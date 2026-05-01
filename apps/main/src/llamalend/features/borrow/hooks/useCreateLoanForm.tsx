@@ -7,7 +7,7 @@ import type { FormDisabledAlert, LlamaMarketTemplate } from '@/llamalend/llamale
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
-import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
+import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -100,7 +100,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   )
 
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isCreating,
     error: creationError,
   } = useCreateLoanMutation({
@@ -113,14 +113,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
-    handleSubmit,
-    handleConfirmLowSolvencyModal,
-    closeLowSolvencyModal,
-    isLowSolvencyModalOpen,
-  } = useLowSolvencyForm({
+    onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
+  } = useFormLowSolvency({
     market,
     chainId,
-    onSubmit,
+    onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
@@ -145,7 +145,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isLoading: isPending || !market || isSolvencyLoading,
     isDisabled:
       !!disabledAlert || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
-    onSubmit: handleSubmit,
+    onSubmit,
     maxTokenValues,
     borrowToken,
     collateralToken,
@@ -159,13 +159,9 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     priceImpact,
     formErrors: useFormErrors(formState),
     disabledAlert,
-    lowSolvencyModalProps: {
-      action: 'borrow',
-      onClose: closeLowSolvencyModal,
-      onConfirm: handleConfirmLowSolvencyModal,
-      open: isLowSolvencyModalOpen,
-      tokenSymbol: collateralToken?.symbol,
-    } as const,
+    onClose,
+    onConfirm,
+    isOpen,
     routes: useMarketRoutes({
       chainId,
       tokenIn: borrowToken,

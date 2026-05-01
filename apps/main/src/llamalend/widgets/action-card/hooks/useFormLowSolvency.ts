@@ -22,13 +22,13 @@ const isLowSolvencyActionBlocked = (solvencyPercent: number | null | undefined) 
 const requiresLowSolvencyModalConfirmation = (solvencyPercent: number | null | undefined) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.solvent
 
-export const useLowSolvencyForm = <T extends FieldValues, ChainId extends IChainId>({
+export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChainId>({
   market,
   chainId,
   onSubmit,
   handleFormSubmit,
 }: Props<T, ChainId>) => {
-  const [isLowSolvencyModalOpen, openLowSolvencyModal, closeLowSolvencyModal] = useSwitch(false)
+  const [isOpen, openModal, closeModal] = useSwitch(false)
   const solvency = useSolvencyLendMarket(
     {
       blockchainId: BlockchainIds[chainId],
@@ -40,14 +40,14 @@ export const useLowSolvencyForm = <T extends FieldValues, ChainId extends IChain
   return {
     solvency: q(solvency),
     solvencyDisabledAlert: isLowSolvencyActionBlocked(solvency.data?.solvencyPercent) ? DEFAULT_ALERT : undefined,
-    handleConfirmLowSolvencyModal: () => {
-      closeLowSolvencyModal()
+    onConfirm: () => {
+      closeModal()
       void handleFormSubmit(onSubmit)()
     },
-    handleSubmit: requiresLowSolvencyModalConfirmation(solvency.data?.solvencyPercent)
-      ? handleFormSubmit(() => openLowSolvencyModal())
+    onSubmit: requiresLowSolvencyModalConfirmation(solvency.data?.solvencyPercent)
+      ? handleFormSubmit(() => openModal())
       : handleFormSubmit(onSubmit),
-    closeLowSolvencyModal,
-    isLowSolvencyModalOpen,
+    onClose: closeModal,
+    isOpen,
   }
 }

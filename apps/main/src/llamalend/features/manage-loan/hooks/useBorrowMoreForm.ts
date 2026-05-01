@@ -21,7 +21,7 @@ import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
-import { useLowSolvencyForm } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyForm'
+import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -117,7 +117,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const values = watchForm(form)
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isBorrowing,
     error: borrowError,
   } = useBorrowMoreMutation({
@@ -130,14 +130,14 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
-    handleSubmit,
-    handleConfirmLowSolvencyModal,
-    closeLowSolvencyModal,
-    isLowSolvencyModalOpen,
-  } = useLowSolvencyForm({
+    onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
+  } = useFormLowSolvency({
     market,
     chainId,
-    onSubmit,
+    onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
@@ -155,7 +155,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     isLoading: isPending || !market || isSolvencyLoading,
-    onSubmit: handleSubmit,
+    onSubmit,
     isDisabled:
       !!disabledAlert || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
     borrowToken,
@@ -165,13 +165,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     priceImpact,
     formErrors: useFormErrors(formState),
     disabledAlert,
-    lowSolvencyModalProps: {
-      action: 'borrow',
-      onClose: closeLowSolvencyModal,
-      onConfirm: handleConfirmLowSolvencyModal,
-      open: isLowSolvencyModalOpen,
-      tokenSymbol: collateralToken?.symbol,
-    } as const,
+    onClose,
+    onConfirm,
+    isOpen,
     routes: useMarketRoutes({
       chainId,
       tokenIn: borrowToken,

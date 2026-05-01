@@ -37,6 +37,9 @@ export const DepositForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
     isDisabled,
     borrowToken,
     error,
@@ -44,7 +47,6 @@ export const DepositForm = <ChainId extends IChainId>({
     isApproved,
     max,
     disabledAlert,
-    lowSolvencyModalProps,
   } = useDepositForm({ market, network, enabled, depositDisabledAlert })
 
   return (
@@ -71,7 +73,13 @@ export const DepositForm = <ChainId extends IChainId>({
           {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Deposit`).join(' & ')}
         </Button>
       )}
-      <LowSolvencyActionModal {...lowSolvencyModalProps} />
+      <LowSolvencyActionModal
+        action="deposit"
+        open={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        tokenSymbol={borrowToken?.symbol}
+      />
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )

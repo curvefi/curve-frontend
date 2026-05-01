@@ -69,7 +69,7 @@ These alerts are distinct from `DEPRECATED_LLAMAS`. They can show a banner on th
 
 ### Automatic Low-Solvency Protections
 
-**Location:** [`apps/main/src/llamalend/llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts), [`apps/main/src/llamalend/widgets/banners/BadDebtBanner.tsx`](apps/main/src/llamalend/widgets/banners/BadDebtBanner.tsx), [`apps/main/src/llamalend/widgets/action-card/hooks/useLowSolvencyForm.ts`](apps/main/src/llamalend/widgets/action-card/hooks/useLowSolvencyForm.ts)
+**Location:** [`apps/main/src/llamalend/llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts), [`apps/main/src/llamalend/widgets/banners/BadDebtBanner.tsx`](apps/main/src/llamalend/widgets/banners/BadDebtBanner.tsx), [`apps/main/src/llamalend/widgets/action-card/hooks/useFormLowSolvency.ts`](apps/main/src/llamalend/widgets/action-card/hooks/useFormLowSolvency.ts)
 
 LlamaLend lend markets now also apply automatic protections based on solvency thresholds defined in [`SOLVENCY_THRESHOLDS`](apps/main/src/llamalend/llama-markets.constants.ts)
 
