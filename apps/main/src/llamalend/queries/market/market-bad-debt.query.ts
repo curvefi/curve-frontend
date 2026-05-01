@@ -1,4 +1,5 @@
 import { type Endpoint, getBadDebt } from '@curvefi/prices-api/liquidations'
+import { recordValues } from '@primitives/objects.utils'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -25,7 +26,5 @@ export const getBadDebtLendMarketsOptions = (enabled = true) =>
 export const getBadDebtMintMarketsOptions = (enabled = true) =>
   getBadDebtMarketsOptionsQuery({ type: LlamaMarketType.Mint }, enabled)
 
-export const invalidateBadDebtMarkets = async () => {
-  await invalidateBadDebtMarketsQuery({ type: LlamaMarketType.Lend })
-  await invalidateBadDebtMarketsQuery({ type: LlamaMarketType.Mint })
-}
+export const invalidateBadDebtMarkets = async () =>
+  Promise.all(recordValues(LlamaMarketType).map(type => invalidateBadDebtMarketsQuery({ type })))

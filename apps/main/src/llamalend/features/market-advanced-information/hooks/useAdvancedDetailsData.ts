@@ -1,4 +1,4 @@
-import { useSolvencyLendMarket } from '@/llamalend/hooks/useSolvencyLendMarket'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
@@ -45,7 +45,7 @@ export const useAdvancedDetailsData = ({
     chainId,
     tokenAddress: borrowToken?.address,
   })
-  const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyLendMarket({
+  const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
     blockchainId,
     controllerAddress,
   })

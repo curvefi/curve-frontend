@@ -1,5 +1,5 @@
 import { FieldValues, UseFormHandleSubmit } from 'react-hook-form'
-import { useSolvencyLendMarket } from '@/llamalend/hooks/useSolvencyLendMarket'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { DEFAULT_ALERT, SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -29,7 +29,7 @@ export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChain
   handleFormSubmit,
 }: Props<T, ChainId>) => {
   const [isOpen, openModal, closeModal] = useSwitch(false)
-  const solvency = useSolvencyLendMarket(
+  const solvency = useSolvencyMarket(
     {
       blockchainId: BlockchainIds[chainId],
       controllerAddress: getControllerAddress(market),

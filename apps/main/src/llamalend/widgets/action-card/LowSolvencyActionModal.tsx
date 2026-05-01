@@ -25,19 +25,19 @@ const getLowSolvencyModalCopy = ({
       title: t`Confirm deposit`,
       content: t`I understand that this market has bad debt and that depositing ${token} may result in delayed, restricted, or unavailable withdrawals.`,
       checkboxLabel: t`I understand, let me deposit ${token}`,
-      cta: t`Deposit`,
+      buttonText: t`Deposit`,
     },
     stake: {
       title: t`Confirm stake`,
       content: t`I understand that this market has bad debt and that staking ${token} may result in delayed, restricted, or unavailable withdrawals.`,
       checkboxLabel: t`I understand, let me stake ${token}`,
-      cta: t`Stake`,
+      buttonText: t`Stake`,
     },
     borrow: {
       title: t`Confirm borrow`,
       content: t`I understand that this market has bad debt and that opening a new borrow position with ${token} collateral in this market carries elevated risk.`,
       checkboxLabel: t`I understand, let me borrow against ${token}`,
-      cta: t`Borrow`,
+      buttonText: t`Borrow`,
     },
   }[action]
 }
@@ -55,32 +55,31 @@ export const LowSolvencyActionModal = ({
   open: boolean
   tokenSymbol: string | null | undefined
 }) => {
-  const [accepted, , , toggleAccepted, setAccepted] = useSwitch(false)
-  const copy = getLowSolvencyModalCopy({ action, tokenSymbol })
-
+  const [accepted, , unsetAccepted, toggleAccepted] = useSwitch(false)
+  const { title, content, checkboxLabel, buttonText } = getLowSolvencyModalCopy({ action, tokenSymbol })
   useEffect(() => {
-    if (!open) setAccepted(false)
-  }, [open, setAccepted])
+    if (!open) unsetAccepted()
+  }, [open, unsetAccepted])
 
   return (
     <ModalDialog
       open={open}
       onClose={onClose}
-      title={copy.title}
+      title={title}
       footer={
         <Stack flexGrow={1}>
           <Button disabled={!accepted} onClick={onConfirm} data-testid="low-solvency-action-submit-button">
-            {copy.cta}
+            {buttonText}
           </Button>
         </Stack>
       }
       compact
     >
       <Stack spacing={Spacing.md}>
-        <Typography>{copy.content}</Typography>
+        <Typography>{content}</Typography>
         <CheckboxField
           checked={accepted}
-          label={copy.checkboxLabel}
+          label={checkboxLabel}
           onChange={toggleAccepted}
           testIdPrefix="low-solvency-action"
         />

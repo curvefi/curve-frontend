@@ -400,15 +400,12 @@ export function calculateReturnToWallet({
   )
 }
 
-export const getBadDebtMarketKey = (chain: Chain, controllerAddress: Address) =>
-  `${chain}:${controllerAddress.toLowerCase()}`
-
 export const createGetBadDebtMarket = (badDebtMarkets: BadDebt | undefined) => {
+  const toKey = (chain: Chain, controllerAddress: Address) => `${chain}:${controllerAddress.toLowerCase()}`
   const badDebtByMarket = new Map(
-    (badDebtMarkets ?? []).map(market => [getBadDebtMarketKey(market.chain, market.controllerAddress), market]),
+    (badDebtMarkets ?? []).map(market => [toKey(market.chain, market.controllerAddress), market]),
   )
-  return (chain: Chain, controllerAddress: Address) =>
-    badDebtByMarket.get(getBadDebtMarketKey(chain, controllerAddress))?.badDebt
+  return (chain: Chain, controllerAddress: Address) => badDebtByMarket.get(toKey(chain, controllerAddress))?.badDebt
 }
 
 export const calculateMarketSolvency = ({
@@ -419,7 +416,7 @@ export const calculateMarketSolvency = ({
   badDebtUsd: number | undefined
 }) => (totalAssetsUsd && badDebtUsd != null ? (Math.max(0, totalAssetsUsd - badDebtUsd) / totalAssetsUsd) * 100 : null)
 
-export const deprecateLowSolvency = (solvencyPercent: number | null) =>
+export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
     ? t`This market is deprecated due to low solvency`
     : null

@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { ethAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
-import { calculateMarketSolvency, createGetBadDebtMarket, deprecateLowSolvency } from '@/llamalend/llama.utils'
+import { calculateMarketSolvency, createGetBadDebtMarket, lowSolvencyDeprecatedMessage } from '@/llamalend/llama.utils'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -189,7 +189,7 @@ const convertLendingVault = (
     type: marketType,
     url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
     deprecatedMessage:
-      DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? deprecateLowSolvency(solvencyPercent),
+      DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,

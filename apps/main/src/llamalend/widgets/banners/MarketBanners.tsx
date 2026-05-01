@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useDeprecatedMarket } from '@/llamalend/hooks/useDeprecatedMarket'
-import { useSolvencyLendMarket } from '@/llamalend/hooks/useSolvencyLendMarket'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,7 +37,7 @@ export const MarketBanners = <ChainId extends IChainId>({
   const marketType = market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const deprecatedMarket = useDeprecatedMarket({ blockchainId, controllerAddress, marketType })
-  const { data: solvencyMarket } = useSolvencyLendMarket({ blockchainId, controllerAddress })
+  const { data: solvencyMarket } = useSolvencyMarket({ blockchainId, controllerAddress })
 
   return (
     <Stack sx={HIDE_IF_EMPTY}>
