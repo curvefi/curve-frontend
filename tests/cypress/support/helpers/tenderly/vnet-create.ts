@@ -37,7 +37,7 @@ export const createVirtualTestnet = ({
       body: createOptions,
       failOnStatusCode: false,
     })
-    .then((response) => {
+    .then(response => {
       if (!response.isOkStatusCode) {
         throw new Error(
           `Failed to create virtual testnet '${createOptions.slug}': ${response.status} ${response.statusText}`,

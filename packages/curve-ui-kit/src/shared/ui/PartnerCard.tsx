@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,7 @@ import { CURVE_ASSETS_URL } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { GlobeIcon } from '../icons/GlobeIcon'
 import { XIcon } from '../icons/XIcon'
+import { Badge } from './Badge'
 import { StackedChainIcons } from './StackedChainIcons'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -44,58 +44,56 @@ export type Partner = {
 
 export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl, twitterUrl }: Partner) => (
   <Card sx={{ display: 'flex', height: '100%' }}>
-    <CardContent sx={{ display: 'flex', flexGrow: 1, backgroundColor: (t) => t.design.Layer[2].Fill }}>
-      <Stack flexGrow={1} gap={Spacing.md}>
-        <Stack direction="row" gap={Spacing.md}>
-          {imageId && (
-            <Box
-              component="img"
-              src={`${CURVE_ASSETS_URL}/${imageId}`}
-              sx={{ height: IconSize.xxl, width: IconSize.xxl }}
+    <CardContent component={Stack} flexGrow={1} gap={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[2].Fill }}>
+      <Stack direction="row" gap={Spacing.md}>
+        {imageId && (
+          <Box
+            component="img"
+            src={`${CURVE_ASSETS_URL}/${imageId}`}
+            sx={{ height: IconSize.xxl, width: IconSize.xxl }}
+          />
+        )}
+        <Stack justifyContent="center">
+          <Typography variant="headingSBold">{name}</Typography>
+
+          {networks && Object.values(networks).some(x => x) && (
+            <StackedChainIcons
+              blockchainIds={Object.entries(networks)
+                .filter(([, enabled]) => enabled)
+                .map(([networkId]) => networkId)}
             />
           )}
-          <Stack justifyContent="center">
-            <Typography variant="headingSBold">{name}</Typography>
-
-            {networks && Object.values(networks).some((x) => x) && (
-              <StackedChainIcons
-                blockchainIds={Object.entries(networks)
-                  .filter(([, enabled]) => enabled)
-                  .map(([networkId]) => networkId)}
-              />
-            )}
-          </Stack>
         </Stack>
+      </Stack>
 
-        {description && (
-          <Typography flexGrow={1} variant="bodyMRegular">
-            {description}
-          </Typography>
-        )}
+      {description && (
+        <Typography flexGrow={1} variant="bodyMRegular">
+          {description}
+        </Typography>
+      )}
 
-        {/** Could be replaced with icon buttons if somebody's feeling cute */}
-        <Stack direction="row" gap={Spacing.sm} justifyContent="space-between">
-          <Stack direction="row" gap={Spacing.sm} alignItems="center">
-            {appUrl && (
-              <IconButton {...LinkProps} href={appUrl}>
-                <GlobeIcon />
-              </IconButton>
-            )}
-            {twitterUrl && (
-              <IconButton {...LinkProps} href={twitterUrl}>
-                <XIcon />
-              </IconButton>
-            )}
-          </Stack>
-
-          {tags?.length && (
-            <Stack direction="row" gap={Spacing.sm} alignItems="center">
-              {tags.map((tag) => (
-                <Chip key={tag} label={tag} color="highlight" />
-              ))}
-            </Stack>
+      {/** Could be replaced with icon buttons if somebody's feeling cute */}
+      <Stack direction="row" gap={Spacing.sm} justifyContent="space-between">
+        <Stack direction="row" gap={Spacing.sm} alignItems="center">
+          {appUrl && (
+            <IconButton {...LinkProps} href={appUrl}>
+              <GlobeIcon />
+            </IconButton>
+          )}
+          {twitterUrl && (
+            <IconButton {...LinkProps} href={twitterUrl}>
+              <XIcon />
+            </IconButton>
           )}
         </Stack>
+
+        {tags?.length && (
+          <Stack direction="row" gap={Spacing.sm} alignItems="center">
+            {tags.map(tag => (
+              <Badge key={tag} label={tag} color="highlight" />
+            ))}
+          </Stack>
+        )}
       </Stack>
     </CardContent>
   </Card>

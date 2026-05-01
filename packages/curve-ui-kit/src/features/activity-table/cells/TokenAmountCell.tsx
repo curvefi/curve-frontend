@@ -48,7 +48,7 @@ export const TokenAmountCell = ({ amount, amountUsd, align = 'left', tokenAddres
         <Stack alignItems={isRightAligned ? 'flex-end' : 'flex-start'}>
           <Typography variant="tableCellMBold">{formatAmount(amount)}</Typography>
           {amountUsd != null && amountUsd !== 0 && (
-            <Typography variant="tableCellSRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
+            <Typography variant="tableCellSRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>
               {formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}
             </Typography>
           )}

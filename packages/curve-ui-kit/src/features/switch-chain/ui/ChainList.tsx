@@ -5,6 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
+import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
@@ -35,8 +36,8 @@ export function ChainList({
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
-        options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
-        (o) => (o.isTestnet ? ChainType.test : ChainType.main),
+        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        o => (o.isTestnet ? ChainType.test : ChainType.main),
       ),
     [options, searchValue],
   )
@@ -47,8 +48,17 @@ export function ChainList({
   }
 
   const entries = Object.entries(groupedOptions)
+  const missingWagmiChains = options.filter(({ isTestnet, chainId }) => !isTestnet && !wagmiChainsMap[chainId])
+
   return (
     <>
+      {missingWagmiChains.length > 0 && (
+        <Alert variant="filled" severity="error" data-testid="missing-wagmi-chain">
+          <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
+          {t`Missing wagmi chain configs in chains.ts for: `}
+          {missingWagmiChains.map(({ id }) => id).join(', ')}
+        </Alert>
+      )}
       <SearchField
         sx={{ marginBottom: 2 }}
         placeholder={t`Search Networks`}
@@ -63,7 +73,7 @@ export function ChainList({
               <Fragment key={key}>
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
-                  {networks.map((network) => (
+                  {networks.map(network => (
                     <MenuItem<string, typeof Link>
                       data-testid={`menu-item-chain-${network.id}`}
                       key={network.id}

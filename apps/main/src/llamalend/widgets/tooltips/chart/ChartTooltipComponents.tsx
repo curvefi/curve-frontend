@@ -11,7 +11,7 @@ export const ChartTooltipShell = ({ title, children }: { title: ReactNode; child
       display: 'flex',
       flexDirection: 'column',
       gap: Spacing.sm,
-      backgroundColor: (theme) => theme.design.Layer[3].Fill,
+      backgroundColor: theme => theme.design.Layer[3].Fill,
       padding: Spacing.md,
       width: MaxWidth.chartTooltip,
     }}
@@ -28,7 +28,7 @@ export const ChartTooltipSeriesGroup = ({ children }: { children: ReactNode }) =
     sx={{
       padding: Spacing.sm,
       gap: Spacing.xs,
-      backgroundColor: (theme) => theme.design.Layer[2].Fill,
+      backgroundColor: theme => theme.design.Layer[2].Fill,
     }}
   >
     {children}

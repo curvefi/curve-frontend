@@ -14,10 +14,10 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 
 export const TopLockers = () => {
   const { data: veCrvData, isSuccess: statsSuccess } = useStatsVecrvQuery({})
-  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const topHoldersSortBy = useStore((state) => state.analytics.topHoldersSortBy)
-  const setTopHoldersSortBy = useStore((state) => state.analytics.setTopHoldersSortBy)
+  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
+  const topHoldersSortBy = useStore(state => state.analytics.topHoldersSortBy)
+  const setTopHoldersSortBy = useStore(state => state.analytics.setTopHoldersSortBy)
 
   const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'
   const lockersFetchError = veCrvHolders.fetchStatus === 'ERROR'
@@ -63,7 +63,7 @@ export const TopLockers = () => {
             selectedKey={topHoldersSortBy}
             minWidth="9rem"
             items={TOP_HOLDERS_FILTERS}
-            onSelectionChange={(key) => key != null && setTopHoldersSortBy(key as TopHoldersSortBy)}
+            onSelectionChange={key => key != null && setTopHoldersSortBy(key as TopHoldersSortBy)}
           />
         </Box>
       </TitleRow>

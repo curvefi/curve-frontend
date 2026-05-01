@@ -10,7 +10,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
-import { assert } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
@@ -18,7 +18,7 @@ import { hasClaimableRewards } from '../queries/supply/supply-query.helpers'
 
 type ClaimMutation = Record<string, never>
 
-export type ClaimOptions = {
+type ClaimOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   userAddress: Address | undefined
@@ -38,7 +38,15 @@ const claimRewards = async (market: LlamaMarketTemplate, userAddress: Address | 
   return (await requireGauge(market.id).vault.claimRewards()) as Hex
 }
 
-export const useClaimCrvMutation = ({ network, network: { chainId }, marketId, userAddress }: ClaimOptions) => {
+export const useClaimCrvMutation = ({
+  network,
+  network: { chainId },
+  marketId,
+  userAddress,
+  crvTokenAddress,
+}: ClaimOptions & {
+  crvTokenAddress: Address | undefined
+}) => {
   const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
     network,
     marketId,
@@ -47,6 +55,7 @@ export const useClaimCrvMutation = ({ network, network: { chainId }, marketId, u
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming CRV rewards...`,
     successMessage: () => t`Claimed rewards!`,
+    mutationTokenAddresses: () => notFalsy(crvTokenAddress),
     ...noFormFieldOptions, // no form fields
   })
 
@@ -55,7 +64,13 @@ export const useClaimCrvMutation = ({ network, network: { chainId }, marketId, u
   return { onSubmit, mutate, error, isPending }
 }
 
-export const useClaimRewardsMutation = ({ network, network: { chainId }, marketId, userAddress }: ClaimOptions) => {
+export const useClaimRewardsMutation = ({
+  network,
+  network: { chainId },
+  marketId,
+  userAddress,
+  rewardTokenAddresses,
+}: ClaimOptions & { rewardTokenAddresses: Address[] }) => {
   const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
     network,
     marketId,
@@ -64,6 +79,7 @@ export const useClaimRewardsMutation = ({ network, network: { chainId }, marketI
     validationSuite: claimableRewardsValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,
     successMessage: () => t`Claimed rewards!`,
+    mutationTokenAddresses: () => rewardTokenAddresses,
     ...noFormFieldOptions, // no form fields
   })
 

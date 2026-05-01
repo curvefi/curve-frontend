@@ -30,10 +30,7 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
   marketOnChainRewardsQuery: Query<SupplyRewards | undefined>,
   userSupplyBoostQuery: Query<number | null>,
 ) => {
-  const rebasingYieldApy = getLatestSnapshotValue(
-    snapshotsQuery.data,
-    (snapshot) => snapshot.borrowedToken.rebasingYield,
-  )
+  const rebasingYieldApy = getLatestSnapshotValue(snapshotsQuery.data, snapshot => snapshot.borrowedToken.rebasingYield)
   // todo: refactor using decimals for calculation, rounding errors causes supplyApy != netSupplyApy even when identical
   const { totalUserBoost } = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(rates.data?.lendApy),
@@ -60,7 +57,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   },
   enabled: boolean,
 ) {
-  const blockchainId = chainId != null ? BlockchainIds[chainId] : undefined
+  const blockchainId = chainId == null ? undefined : BlockchainIds[chainId]
   const market = marketId ? requireVault(marketId) : undefined
   const snapshotsQuery = useLlamaSnapshot(market, blockchainId, enabled)
   const lendingSnapshotsQuery = q({

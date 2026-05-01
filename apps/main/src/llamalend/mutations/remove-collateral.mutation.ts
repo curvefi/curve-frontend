@@ -11,7 +11,7 @@ import { rootKeys } from '@ui-kit/lib/model'
 
 type RemoveCollateralMutation = { userCollateral: Decimal }
 
-export type RemoveCollateralOptions = {
+type RemoveCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

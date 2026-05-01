@@ -29,7 +29,7 @@ export const ChartUserBands = ({
   market: Llamma | null
   selectorMenu?: ReactNode
 }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[marketId])
   const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(marketId) ?? {}
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
@@ -72,7 +72,6 @@ export const ChartUserBands = ({
   }, [userBandsBalances, oraclePriceBand])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBrushIndex({ startIndex: undefined, endIndex: undefined })
   }, [chartBandBalancesData])
 

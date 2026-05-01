@@ -5,8 +5,8 @@ import { useUserProfileStore } from '../store'
 import { themes } from './themes'
 
 export const ThemeToggleButtons = () => {
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const theme = useUserProfileStore(state => state.theme)
+  const setTheme = useUserProfileStore(state => state.setTheme)
   return (
     <ToggleButtonGroup
       value={theme}

@@ -30,6 +30,7 @@ export type OhlcChartProps = {
   refetchingCapped: boolean
   selectChartList: ChartSelections[]
   latestOraclePrice?: string
+  onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
 export const ChartWrapper = ({
@@ -51,13 +52,14 @@ export const ChartWrapper = ({
   refetchingCapped,
   selectChartList,
   latestOraclePrice,
+  onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
   const wrapperRef = useRef(null)
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   const isError = chartStatus === 'ERROR'
-  const errorMessage = t`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`
+  const errorMessage = t`Unable to fetch "${selectChartList?.find(c => c.key === selectedChartKey)?.label ?? ''}" data.`
   const error = useMemo(() => (isError ? new Error(errorMessage) : null), [isError, errorMessage]) // todo: pass correct error from query instead of creating new error with message
 
   return (
@@ -97,6 +99,7 @@ export const ChartWrapper = ({
             liqRangeNewVisible={liqRangeNewVisible}
             oraclePriceVisible={oraclePriceVisible}
             latestOraclePrice={latestOraclePrice}
+            onVisiblePriceRangeChange={onVisiblePriceRangeChange}
           />
         </Box>
       </ChartStateWrapper>

@@ -28,7 +28,7 @@ export const DetailsBandsChart = ({
   market: Llamma | null
   selectorMenu?: ReactNode
 }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[marketId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
@@ -65,7 +65,7 @@ export const DetailsBandsChart = ({
   const parsedChartBandBalancesData = useMemo(() => {
     setBrushIndex({ startIndex: undefined, endIndex: undefined })
     return parseData(chartBandBalancesData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chartBandBalancesDataLength])
 
   return (

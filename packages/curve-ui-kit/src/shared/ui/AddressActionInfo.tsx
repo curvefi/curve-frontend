@@ -4,7 +4,7 @@ import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { shortenAddress } from '../../utils'
 import { ActionInfo } from './ActionInfo'
 
-export interface AddressActionInfoProps {
+interface AddressActionInfoProps {
   network: BaseConfig | undefined
   title: ReactNode
   address: string | undefined
@@ -23,7 +23,7 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
     sx={{
       alignItems: 'center',
       ...(isBorderBottom && {
-        borderBottom: (t) => `1px solid ${t.palette.divider}`,
+        borderBottom: t => `1px solid ${t.palette.divider}`,
       }),
     }}
     link={network && address ? scanAddressPath(network, address) : undefined}

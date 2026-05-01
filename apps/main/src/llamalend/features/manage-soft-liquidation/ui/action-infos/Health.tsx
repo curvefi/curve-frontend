@@ -36,7 +36,7 @@ export const Health = ({ current, next, ...actionInfoProps }: Props) => (
   <ActionInfo
     label="Health"
     value={`${formatValue(next ?? current)}%`}
-    valueColor={next != null ? newHealthColor({ current, next }) : healthColor(current)}
+    valueColor={next == null ? healthColor(current) : newHealthColor({ current, next })}
     {...(next != null && {
       prevValue: `${formatValue(current)}%`,
       prevValueColor: 'textTertiary',

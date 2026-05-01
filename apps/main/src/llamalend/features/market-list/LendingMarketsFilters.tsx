@@ -1,8 +1,9 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
-import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
+import { useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
@@ -33,7 +34,7 @@ const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDet
  */
 const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
   const { chain, address = null } = tokens[symbol] ?? {}
-  return <Chip label={symbol} size="small" icon={<TokenIcon blockchainId={chain} address={address} />} />
+  return <Badge label={symbol} size="small" icon={<TokenIcon blockchainId={chain} address={address} />} />
 }
 
 /**
@@ -49,7 +50,7 @@ export const LendingMarketsFilters = ({
   // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
   const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
   const markets = useMemo(
-    () => (selectedChains?.length ? data.filter((market) => selectedChains.includes(market.chain)) : data),
+    () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
     [data, selectedChains],
   )
 
@@ -58,8 +59,8 @@ export const LendingMarketsFilters = ({
   const tokens = useMemo(
     () =>
       keyBy(
-        data.flatMap((market) => [market.assets.collateral, market.assets.borrowed]),
-        (i) => i.symbol,
+        data.flatMap(market => [market.assets.collateral, market.assets.borrowed]),
+        i => i.symbol,
       ),
     [data],
   )
@@ -68,14 +69,15 @@ export const LendingMarketsFilters = ({
       container
       spacing={Spacing.sm}
       paddingBlockStart={Spacing.sm}
+      {...(useNewMarketListLayout() && { paddingBlockEnd: Spacing.sm })}
       paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
     >
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
-          renderItem={(symbol) => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
+          renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
           defaultText={t`All`}
           defaultTextMobile={t`All Collateral Tokens`}
           data={markets}
@@ -87,8 +89,8 @@ export const LendingMarketsFilters = ({
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
-          renderItem={(symbol) => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
+          renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
           defaultText={t`All`}
           defaultTextMobile={t`All Debt Tokens`}
           data={markets}

@@ -51,7 +51,7 @@ export const TAB_TEXT_VARIANTS = {
   extraExtraLarge: 'headingMBold',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
-export const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
+const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
   extraExtraLarge: ButtonSize.md,
@@ -169,7 +169,7 @@ const tabPaddingStyles = ({ blockStart, blockEnd, inlineStart, inlineEnd }: TabP
 const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boolean }, ...variants: string[]) =>
   variants
     .map(
-      (variant) =>
+      variant =>
         `&.${variant}${hideInactiveBorders ? `.${HIDE_INACTIVE_BORDERS_CLASS}` : ''} .MuiTab-root:not(.Mui-selected):not(:hover)::after`,
     )
     .join(', ')
@@ -178,7 +178,7 @@ const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boo
 const buildTabStylesBySize = (scope: 'root' | 'vertical', overrideStyles?: TabStyleOptions) =>
   fromEntries(
     recordValues(DEFAULT_TAB_STYLES_BY_SIZE).map(
-      (defaultStyles) =>
+      defaultStyles =>
         [
           `&${scope === 'vertical' ? '.MuiTabs-vertical' : ''}.${defaultStyles.className} .MuiTab-root`,
           {

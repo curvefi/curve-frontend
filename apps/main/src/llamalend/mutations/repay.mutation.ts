@@ -25,7 +25,7 @@ type RepayMutation = {
   routeId: string | undefined
 }
 
-export type RepayOptions = {
+type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
@@ -69,7 +69,7 @@ const repay = async (
         stateCollateral,
         userCollateral,
         userBorrowed,
-        ...parseMutationRoute(routeId, slippage),
+        ...parseMutationRoute(routeId, slippage, impl),
       })) as Hex
     case 'V1':
     case 'V2':

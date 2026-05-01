@@ -1,7 +1,6 @@
 import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } from 'child_process'
 import { mkdir, readdir, rmdir, unlink } from 'fs/promises'
 import { dirname, join } from 'path'
-import { join as joinPath } from 'path'
 
 const { BRANCH, WORKFLOW, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
@@ -123,8 +122,8 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)
 
   const safeBranch = branch.replace(/\//g, '-')
-  const path = joinPath(DEST_DIR, safeBranch, runId)
-  const dest = joinPath(repoRoot, path)
+  const path = join(DEST_DIR, safeBranch, runId)
+  const dest = join(repoRoot, path)
   await mkdir(dest, { recursive: true })
 
   console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${path}'...`)
@@ -145,7 +144,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
  *  cd tests && BRANCH=main WORKFLOW=rpc-tests.yaml DEST_DIR=tests/artifacts \
  *    node --experimental-strip-types scripts/download-artifacts.ts --skip-cleanup
  */
-downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch((error) => {
+downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch(error => {
   console.error(error instanceof Error ? error.message : error)
   process.exitCode = 1
 })

@@ -30,10 +30,10 @@ const TokenSelector = ({
   return (
     <Select
       value={value}
-      onChange={(e) => {
+      onChange={e => {
         const selectedToken = e.target.value
         setValue(selectedToken)
-        const selectedOption = TOKEN_OPTIONS.find((option) => option.name === selectedToken)
+        const selectedOption = TOKEN_OPTIONS.find(option => option.name === selectedToken)
         if (selectedOption) onTokenChange(selectedOption.walletBalance)
       }}
       size="small"
@@ -41,10 +41,10 @@ const TokenSelector = ({
       renderValue={() => <Typography>{value || 'Select token'}</Typography>}
       sx={{
         width: '10rem',
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+        backgroundColor: t => t.design.Layer[1].Fill,
       }}
     >
-      {TOKEN_OPTIONS.map((option) => (
+      {TOKEN_OPTIONS.map(option => (
         <MenuItem key={option.name} value={option.name}>
           {option.name}
         </MenuItem>
@@ -63,7 +63,7 @@ const LargeTokenInputWithTokenSelector = (props: LargeTokenInputProps) => {
       walletBalance={walletBalance}
       tokenSelector={
         <TokenSelector
-          onTokenChange={(newToken) => {
+          onTokenChange={newToken => {
             // Check if for the WithoutWalletBalance story so selecting a token won't make pop up the wallet balance.
             if (walletBalance) setWalletBalance(newToken)
             inputRef.current?.resetBalance()
@@ -125,7 +125,7 @@ const meta: Meta<typeof LargeTokenInput> = {
 type Story = StoryObj<typeof LargeTokenInput>
 
 export const Default: Story = {
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -140,7 +140,7 @@ export const WithoutWalletBalance: Story = {
   args: {
     walletBalance: undefined,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -157,7 +157,7 @@ export const WithoutMaxBalanceSlider: Story = {
       showSlider: false,
     },
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -174,7 +174,7 @@ export const WithChipsCustom: Story = {
       chips: [{ label: 'Yolo', newBalance: () => '1337.42' }],
     },
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -188,7 +188,7 @@ export const WithoutMessage: Story = {
   args: {
     message: undefined,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -203,7 +203,7 @@ export const WithError: Story = {
     message: 'This is an error message',
     isError: true,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -227,7 +227,7 @@ export const WithReactNodeMessage: Story = {
       </Stack>
     ),
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -244,7 +244,7 @@ export const WithChildren: Story = {
         spacing={1}
         sx={{
           padding: 2,
-          backgroundColor: (t) => t.design.Layer[2].Fill,
+          backgroundColor: t => t.design.Layer[2].Fill,
         }}
       >
         <Typography variant="bodyMBold">Additional Content</Typography>
@@ -255,7 +255,7 @@ export const WithChildren: Story = {
       </Stack>
     ),
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {

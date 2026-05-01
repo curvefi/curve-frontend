@@ -13,7 +13,7 @@ export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUse
         .getPool(poolId)
         .userLiquidityUSD(userAddress)
         .catch(() => 'NaN') // todo: remove, this is gross
-        .then((x) => decimal(x) ?? null),
+        .then(x => decimal(x) ?? null),
     validationSuite: userPoolValidationSuite,
   },
 )

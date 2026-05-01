@@ -163,7 +163,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isLeverageEnabled,
     leverage: mapQuery(
       useBorrowMoreFutureLeverage(params, isLeverageBorrowMore(market, values.leverageEnabled)),
-      (value) => value,
+      value => value,
     ),
   }
 }

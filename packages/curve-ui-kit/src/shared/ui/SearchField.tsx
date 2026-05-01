@@ -6,7 +6,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 
-export type SearchFieldProps = TextFieldProps & {
+type SearchFieldProps = TextFieldProps & {
   value?: string
   onSearch: (search: string) => void
   inputRef?: RefObject<HTMLInputElement | null>
@@ -42,7 +42,7 @@ export const SearchField = ({
   return (
     <TextField
       fullWidth
-      onChange={(e) => setSearch(e.target.value)}
+      onChange={e => setSearch(e.target.value)}
       slotProps={{
         htmlInput: { ref },
         input: {

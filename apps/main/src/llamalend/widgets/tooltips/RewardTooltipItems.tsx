@@ -2,7 +2,7 @@ import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
-import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -15,8 +15,8 @@ const { Spacing } = SizesAndSpaces
 type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined
-  extraRewards: CampaignPoolRewards[]
-  tooltipType: Extract<RewardsAction, 'borrow' | 'loan' | 'supply'>
+  extraRewards: CampaignRewards[]
+  tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
   extraIncentives: SupplyExtraIncentive[]
 }
 
@@ -49,7 +49,7 @@ export const RewardsTooltipItems = ({
                 target="_blank"
                 sx={{
                   textDecoration: 'none',
-                  color: (t) => t.design.Text.TextColors.Secondary,
+                  color: t => t.design.Text.TextColors.Secondary,
                   svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
                   '&:hover svg': { fontSize: 20 },
                 }}

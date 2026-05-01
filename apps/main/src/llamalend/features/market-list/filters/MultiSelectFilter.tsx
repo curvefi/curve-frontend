@@ -62,7 +62,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
     ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
       const value = currentTarget.getAttribute('value')!
       const options = selectedOptions?.includes(value)
-        ? selectedOptions.filter((v) => v !== value)
+        ? selectedOptions.filter(v => v !== value)
         : [...(selectedOptions ?? []), value]
       setColumnFilter(id, serializeListFilter(options))
     },
@@ -109,7 +109,6 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           data-testid={`menu-${id}`}
           open={isOpen}
           onClose={close}
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{
@@ -120,7 +119,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           <Stack
             direction="row"
             justifyContent="space-between"
-            borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`}
+            borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`}
             padding={Spacing.sm}
             component="li"
           >
@@ -132,7 +131,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
               sx={{ paddingInline: 0 }}
             >{t`Clear Selection`}</Button>
           </Stack>
-          {options.map((optionId) => {
+          {options.map(optionId => {
             const isSelected = selectedOptions?.includes(optionId)
             return (
               <InvertOnHover hoverRef={menuRef} key={optionId}>

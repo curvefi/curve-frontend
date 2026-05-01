@@ -14,8 +14,7 @@ import {
 } from '@/dao/types/dao.types'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import { scanTxPath } from '@ui/utils'
-import { notify, useWallet } from '@ui-kit/features/connect-wallet'
-import { getLib } from '@ui-kit/features/connect-wallet'
+import { notify, useWallet, getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -74,7 +73,7 @@ export const createProposalsSlice = (
 ): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    setSearchValue: (filterValue) => {
+    setSearchValue: filterValue => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
     },
     setActiveFilter: (filter: ProposalListFilter) => {
@@ -269,7 +268,7 @@ export const createProposalsSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

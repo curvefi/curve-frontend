@@ -1,68 +1,90 @@
 import { defineChain, type Chain } from 'viem'
 import type { NetworkDef } from '@ui/utils'
+import { defaultGetRpcUrls } from '@ui-kit/features/connect-wallet/lib/wagmi/transports'
 import { Chain as ChainId } from '@ui-kit/utils/network'
 import {
   arbitrum,
   arbitrumSepolia,
+  arcTestnet,
   aurora,
   avalanche,
   base,
   bsc,
   celo,
   corn,
+  etherlink,
   fantom,
   fraxtal,
   gnosis,
   ink,
   kava,
   mantle,
+  monad,
   moonbeam,
   neonMainnet,
   optimism,
+  plasma,
   plumeMainnet,
   polygon,
   sonic,
+  stable,
   taiko,
+  unichain,
+  xdc,
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
 import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
-import type { defaultGetRpcUrls } from './rpc'
 
-export const wagmiChains = [
-  mainnet,
-  optimism,
+const wagmiChains = [
+  arbitrum,
+  arbitrumSepolia,
+  arcTestnet,
+  aurora,
+  avalanche,
+  base,
   bsc,
-  gnosis,
-  polygon,
-  sonic,
-  xLayer,
+  celo,
+  corn,
+  etherlink,
+  expchain,
   fantom,
   fraxtal,
-  zksync,
+  gnosis,
   hyperliquid,
-  moonbeam,
+  ink,
   kava,
-  tac,
+  mainnet,
   mantle,
   megaeth,
-  strata,
-  base,
-  expchain,
-  arbitrum,
-  celo,
-  avalanche,
-  ink,
-  plumeMainnet,
-  taiko,
-  arbitrumSepolia,
-  corn,
+  monad,
+  moonbeam,
   neonMainnet,
-  aurora,
+  optimism,
+  plasma,
+  plumeMainnet,
+  polygon,
+  sonic,
+  stable,
+  strata,
+  tac,
+  taiko,
+  unichain,
+  xdc,
+  xLayer,
+  zksync,
 ] as const
 
+const deprecateDate = new Date('2026-07-01')
+export const DEPRECATED_CHAINS: Record<number, Date> = {
+  [aurora.id]: deprecateDate,
+  [kava.id]: deprecateDate,
+  [moonbeam.id]: deprecateDate,
+}
+export const DOWNGRADED_CHAINS = new Set<number>([avalanche, fantom, xLayer, sonic].map(c => c.id))
+
 /** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
-export const wagmiChainsMap = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
+export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
 
 const DECIMALS: Record<number, number> = {
   [ChainId.Tac]: 8, // TAC has 8 decimals instead of 18

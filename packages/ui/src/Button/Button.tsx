@@ -36,10 +36,9 @@ export const Button = forwardRef<
   )
 })
 
-export const StyledButton: IStyledComponent<'web', ButtonProps & ComponentPropsWithRef<'button'>> =
-  styled.button<ButtonProps>`
-    ${buttonBaseStyles};
-  `
+const StyledButton: IStyledComponent<'web', ButtonProps & ComponentPropsWithRef<'button'>> = styled.button<ButtonProps>`
+  ${buttonBaseStyles};
+`
 
 const BoxSpinner = styled(Box)`
   position: absolute;

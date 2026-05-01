@@ -9,11 +9,7 @@ import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanBandsResult = [number, number]
 
-export const {
-  useQuery: useCreateLoanBands,
-  invalidate: invalidateCreateLoanBands,
-  refetchQuery: refetchCreateLoanBands,
-} = queryFactory({
+export const { invalidate: invalidateCreateLoanBands, refetchQuery: refetchCreateLoanBands } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -61,7 +57,7 @@ export const {
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
-  dependencies: (params) => [
+  dependencies: params => [
     createLoanMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],

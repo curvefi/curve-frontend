@@ -15,7 +15,7 @@ import { waitForApproval } from '@ui-kit/utils'
 
 type AddCollateralMutation = { userCollateral: Decimal }
 
-export type AddCollateralOptions = {
+type AddCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

@@ -5,12 +5,13 @@ import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultDepositMint/types'
 import { StyledDetailInfoWrapper } from '@/lend/components/styles'
-import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { DetailInfo } from '@ui/DetailInfo'
@@ -24,25 +25,26 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { decimal } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
   const isSubscribed = useRef(false)
-  const marketAlert = useMarketAlert(rChainId, rOwmId)
+  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 
-  const activeKey = useStore((state) => state.vaultDepositMint.activeKey)
-  const formEstGas = useStore((state) => state.vaultDepositMint.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.vaultDepositMint.formStatus)
-  const formValues = useStore((state) => state.vaultDepositMint.formValues)
-  const detailInfo = useStore((state) => state.vaultDepositMint.detailInfo[activeKey])
+  const activeKey = useStore(state => state.vaultDepositMint.activeKey)
+  const formEstGas = useStore(state => state.vaultDepositMint.formEstGas[activeKey])
+  const formStatus = useStore(state => state.vaultDepositMint.formStatus)
+  const formValues = useStore(state => state.vaultDepositMint.formValues)
+  const detailInfo = useStore(state => state.vaultDepositMint.detailInfo[activeKey])
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
-  const maxResp = useStore((state) => state.vaultDepositMint.max[maxActiveKey])
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepApprove = useStore((state) => state.vaultDepositMint.fetchStepApprove)
-  const fetchStepDepositMint = useStore((state) => state.vaultDepositMint.fetchStepDepositMint)
-  const setFormValues = useStore((state) => state.vaultDepositMint.setFormValues)
-  const resetState = useStore((state) => state.vaultDepositMint.resetState)
+  const maxResp = useStore(state => state.vaultDepositMint.max[maxActiveKey])
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepApprove = useStore(state => state.vaultDepositMint.fetchStepApprove)
+  const fetchStepDepositMint = useStore(state => state.vaultDepositMint.fetchStepDepositMint)
+  const setFormValues = useStore(state => state.vaultDepositMint.setFormValues)
+  const resetState = useStore(state => state.vaultDepositMint.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -85,7 +87,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
 
       const resp = await fetchStepDepositMint(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -143,12 +145,12 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['DEPOSIT_MINT'] : ['APPROVAL', 'DEPOSIT_MINT']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleBtnClickDeposit],
   )
@@ -165,7 +167,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
 
   useEffect(() => {
     if (isLoaded) updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -174,7 +176,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
@@ -245,7 +247,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       {marketAlert?.message && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
       {/* actions */}
-      {!marketAlert?.isDisableDeposit && (
+      {!marketAlert?.isDepositDisabled && (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
           {formStatus.error ? <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset({})} /> : null}
           {txInfoBar}

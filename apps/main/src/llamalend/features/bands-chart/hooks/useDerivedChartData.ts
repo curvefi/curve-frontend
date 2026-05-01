@@ -17,7 +17,8 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
   useMemo(() => {
     const yAxisData: number[] = []
     const marketData: number[] = []
-    const userData: number[] = []
+    const userCollateralData: number[] = []
+    const userBorrowedData: number[] = []
     const isLiquidation: boolean[] = []
 
     for (const d of chartData) {
@@ -25,13 +26,15 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
       yAxisData.push(d.pUpDownMedian)
 
       const totalBandValue = (d.bandCollateralValueUsd ?? 0) + (d.bandBorrowedValueUsd ?? 0)
-      const userBandValue = (d.userBandCollateralValueUsd ?? 0) + (d.userBandBorrowedValueUsd ?? 0)
-      const marketBandValue = totalBandValue - userBandValue
+      const userCollateralValue = d.userBandCollateralValueUsd ?? 0
+      const userBorrowedValue = d.userBandBorrowedValueUsd ?? 0
+      const marketBandValue = totalBandValue - userCollateralValue - userBorrowedValue
 
       marketData.push(marketBandValue)
-      userData.push(userBandValue)
-      isLiquidation.push(d.isLiquidationBand === 'SL')
+      userCollateralData.push(userCollateralValue)
+      userBorrowedData.push(userBorrowedValue)
+      isLiquidation.push(d.isLiquidationBand)
     }
 
-    return { yAxisData, marketData, userData, isLiquidation }
+    return { yAxisData, marketData, userCollateralData, userBorrowedData, isLiquidation }
   }, [chartData])

@@ -144,6 +144,7 @@ export const Sizing = {
 } as const
 
 export const Duration = {
+  ChartFrame: 16, // 16ms = ~60fps
   Delay: 100,
   Flicker: 1000,
   Focus: 50,

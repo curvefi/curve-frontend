@@ -86,11 +86,11 @@ const InteractiveLegendsWrapper = () => {
 
   const toggleVisibility = (label: string) => {
     if (label === t`Oracle Price`) {
-      setVisibility((prev) => ({ ...prev, oraclePrice: !prev.oraclePrice }))
+      setVisibility(prev => ({ ...prev, oraclePrice: !prev.oraclePrice }))
     } else if (label === t`Conversion zone`) {
-      setVisibility((prev) => ({ ...prev, conversionZone: !prev.conversionZone }))
+      setVisibility(prev => ({ ...prev, conversionZone: !prev.conversionZone }))
     } else if (label === t`New conversion zone`) {
-      setVisibility((prev) => ({ ...prev, newConversionZone: !prev.newConversionZone }))
+      setVisibility(prev => ({ ...prev, newConversionZone: !prev.newConversionZone }))
     }
   }
 
@@ -233,11 +233,11 @@ const FullFeaturedWrapper = () => {
 
   const toggleVisibility = (label: string) => {
     if (label === t`Oracle Price`) {
-      setVisibility((prev) => ({ ...prev, oraclePrice: !prev.oraclePrice }))
+      setVisibility(prev => ({ ...prev, oraclePrice: !prev.oraclePrice }))
     } else if (label === t`Conversion zone`) {
-      setVisibility((prev) => ({ ...prev, conversionZone: !prev.conversionZone }))
+      setVisibility(prev => ({ ...prev, conversionZone: !prev.conversionZone }))
     } else if (label === t`New conversion zone`) {
-      setVisibility((prev) => ({ ...prev, newConversionZone: !prev.newConversionZone }))
+      setVisibility(prev => ({ ...prev, newConversionZone: !prev.newConversionZone }))
     }
   }
 
@@ -291,9 +291,9 @@ const LineLegendsWrapper = () => {
   const theme = useTheme()
 
   const legendSets: LegendItem[] = [
-    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines.Line1, dash: 'none' } },
-    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines.Line2, dash: '4 2' } },
-    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines.Line3, dash: '2 2' } },
+    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1], dash: 'none' } },
+    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: '4 2' } },
+    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines[3], dash: '2 2' } },
   ]
 
   return (

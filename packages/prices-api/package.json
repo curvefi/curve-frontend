@@ -1,6 +1,6 @@
 {
   "name": "@curvefi/prices-api",
-  "version": "1.1.21",
+  "version": "1.1.22",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -9,7 +9,8 @@
     "build:js": "vite build",
     "build:types": "tsc -p tsconfig.build-types.json --emitDeclarationOnly",
     "prepublishOnly": "yarn run build",
-    "lint": "eslint \"**/*.ts*\"",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/prices-api --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/prices-api --cache-strategy content . --fix",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-prices-api.tsbuildinfo"
   },
   "peerDependencies": {
@@ -17,7 +18,6 @@
   },
   "devDependencies": {
     "eslint": "*",
-    "eslint-config-custom": "*",
     "typescript": "*"
   },
   "publishConfig": {

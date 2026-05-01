@@ -1,11 +1,12 @@
 import type { EChartsOption } from 'echarts-for-react'
+import { sum, zip } from 'lodash'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { formatNumberWithOptions } from './bands-chart.utils'
-import { generateMarkLines, createLabelStyle } from './markLines'
+import { generateMarkLines } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
 const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
-  const min = Math.min(...chartData.map((d) => d.p_down))
+  const min = Math.min(...chartData.map(d => d.p_down))
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
   // if oraclePrice is outside of range of bands, set min to oraclePrice - bandDelta to make sure it's visible
@@ -16,7 +17,7 @@ const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefine
 }
 
 const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
-  const max = Math.max(...chartData.map((d) => d.p_up))
+  const max = Math.max(...chartData.map(d => d.p_up))
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
   // if oraclePrice is outside of range of bands, set max to oraclePrice + bandDelta to make sure it's visible
@@ -26,6 +27,9 @@ const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefine
   return max + bandDelta * 2
 }
 
+const LINE_WIDTH = 0.5
+const [ENABLE_OUTLINE, DISABLE_OUTLINE] = [true, false]
+
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
 // Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric, endX]
@@ -34,14 +38,13 @@ const createCustomRectSeries = (
   name: string,
   color: string,
   softLiquidationBandOutlineColor: string,
-  data: Array<[number, number, number, number, number, number, number]>,
+  data: [number, number, number, number, number, number, number][],
   enableSoftLiquidationOutline: boolean,
   markArea?: Record<string, unknown> | null,
   markLine?: Record<string, unknown> | null,
 ) => ({
   name,
   type: 'custom' as const,
-  animation: true,
   animationDuration: Duration.Transition,
   animationDurationUpdate: Duration.Transition,
   animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
@@ -51,16 +54,12 @@ const createCustomRectSeries = (
   clip: true, // Clip rectangles to grid area to prevent overflow over axis labels
   emphasis: {
     focus: 'self',
-    itemStyle: {
-      opacity: 1,
-    },
   },
   renderItem: (
     _params: unknown,
     api: {
       value: (index: number) => number
       coord: (point: number[]) => number[]
-      style: (opts: Record<string, unknown>) => Record<string, unknown>
     },
   ) => {
     const startX = api.value(1)
@@ -102,11 +101,11 @@ const createCustomRectSeries = (
     return {
       type: 'rect',
       shape: { x: left, y: paddedTop, width, height: paddedHeight },
-      style: api.style({
+      style: {
         fill: color,
         stroke: isSoftLiquidationBand && enableSoftLiquidationOutline ? softLiquidationBandOutlineColor : 'transparent',
-        lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 2 : 0,
-      }),
+        lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 1 : 0,
+      },
     }
   },
   ...(markArea && { markArea }),
@@ -126,10 +125,8 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (!chartData.length) return {}
 
-  const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 0, bottom: 8 }
-  const gridRight = 16 + dataZoomWidth
-  const labelXOffset = 16 - (gridRight - dataZoomWidth)
+  // bottom padding matches the lightweight-charts time scale spacing used by the adjacent candle chart
+  const gridPadding = { left: 0, top: 0, right: 4, bottom: 7 }
 
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)
@@ -137,7 +134,7 @@ export const getChartOptions = (
   // Calculate x-axis extent for markLines (max endX value across all series)
   // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
   // endX is at index 6, and for the full extent we need marketWidth + userWidth
-  const xEnd = Math.max(...chartData.map((_, i) => (derived.marketData[i] ?? 0) + (derived.userData[i] ?? 0)))
+  const xEnd = Math.max(...zip(derived.marketData, derived.userCollateralData, derived.userBorrowedData).map(sum))
   const xStart = 0
 
   // Generate mark areas using exact price edges
@@ -146,17 +143,14 @@ export const getChartOptions = (
     : []
 
   // Generate all mark lines (user range + oracle price) using coord format
-  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
+  const markLines = generateMarkLines(userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
-    backgroundColor: 'transparent',
-    animation: true,
     animationDuration: Duration.Transition,
     animationDurationUpdate: Duration.Transition,
-    animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
     grid: {
       left: gridPadding.left,
-      right: gridRight,
+      right: gridPadding.right,
       top: gridPadding.top,
       bottom: gridPadding.bottom,
       containLabel: true,
@@ -167,7 +161,6 @@ export const getChartOptions = (
         type: 'shadow',
         axis: 'y',
         snap: true,
-        triggerTooltip: true,
         shadowStyle: {
           opacity: 0.1,
         },
@@ -179,7 +172,6 @@ export const getChartOptions = (
       // ECharts sets white-space: nowrap on the tooltip container by default; override to allow wrapping
       extraCssText:
         'white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: none !important; width: max-content !important;',
-      confine: false,
       // Only show tooltip when there's actual data at the hovered position
       triggerOn: 'mousemove',
     },
@@ -192,63 +184,48 @@ export const getChartOptions = (
       axisLabel: {
         color: palette.scaleLabelsColor,
         hideOverlap: true,
-        interval: 'auto',
-        overflow: 'break',
-        showMinLabel: true,
+        align: 'left',
+        showMinLabel: false,
         showMaxLabel: false,
-        margin: 8,
+        // label margin matches the lightweight-charts time scale margin used by the adjacent candle chart
+        margin: 10,
         formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'solid',
-          width: 0.5,
+          width: LINE_WIDTH,
         },
       },
+      splitNumber: 3,
     },
     yAxis: {
-      type: 'value',
       position: 'right',
       axisLine: { show: false },
       axisTick: { show: false },
-      overflow: 'hide',
       axisPointer: {
         show: true,
         type: 'shadow',
         snap: true,
         label: {
-          show: true,
-          formatter: (params: { value: unknown }) => formatNumberWithOptions(Number(params.value)),
-          padding: [2, 4],
-          borderRadius: 0,
-          backgroundColor: palette.oraclePriceLineColor,
+          show: false,
         },
       },
       axisLabel: {
-        color: palette.scaleLabelsColor,
-        hideOverlap: true,
-        overflow: 'break',
-        showMinLabel: false,
-        showMaxLabel: false,
-        formatter: (value: number) => formatNumberWithOptions(value),
+        show: false,
       },
       splitLine: {
-        show: true,
-        lineStyle: {
-          color: palette.gridColor,
-          type: 'solid',
-          width: 0.5,
-        },
+        show: false,
       },
       min: priceMin,
       max: priceMax,
     },
     series: (() => {
-      const marketSeriesData: Array<[number, number, number, number, number, number, number]> = []
-      const userSeriesData: Array<[number, number, number, number, number, number, number]> = []
-      const outlineSeriesData: Array<[number, number, number, number, number, number, number]> = []
+      const marketSeriesData: [number, number, number, number, number, number, number][] = []
+      const userCollateralSeriesData: [number, number, number, number, number, number, number][] = []
+      const userBorrowedSeriesData: [number, number, number, number, number, number, number][] = []
+      const outlineSeriesData: [number, number, number, number, number, number, number][] = []
       for (let i = 0; i < chartData.length; i++) {
         const d = chartData[i]
         const median = d.pUpDownMedian
@@ -256,20 +233,21 @@ export const getChartOptions = (
         const pUp = d.p_up
         const isLiq = derived.isLiquidation[i] ? 1 : 0
         const marketWidth = derived.marketData[i] ?? 0
-        const userWidth = derived.userData[i] ?? 0
-        const marketStart = 0
-        const userStart = marketWidth
-        marketSeriesData.push([median, marketStart, marketWidth, pDown, pUp, isLiq, marketStart + marketWidth])
-        userSeriesData.push([median, userStart, userWidth, pDown, pUp, isLiq, userStart + userWidth])
-        outlineSeriesData.push([
+        const userCollateralWidth = derived.userCollateralData[i] ?? 0
+        const userBorrowedWidth = derived.userBorrowedData[i] ?? 0
+        const totalWidth = marketWidth + userCollateralWidth + userBorrowedWidth
+        marketSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
+        userCollateralSeriesData.push([median, 0, userCollateralWidth, pDown, pUp, isLiq, userCollateralWidth])
+        userBorrowedSeriesData.push([
           median,
-          marketStart,
-          marketWidth + userWidth,
+          userCollateralWidth,
+          userBorrowedWidth,
           pDown,
           pUp,
           isLiq,
-          marketStart + marketWidth + userWidth,
+          userCollateralWidth + userBorrowedWidth,
         ])
+        outlineSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
       }
 
       const marketSeries = createCustomRectSeries(
@@ -277,47 +255,39 @@ export const getChartOptions = (
         palette.marketBandColor,
         palette.liquidationBandOutlineColor,
         marketSeriesData,
-        false,
+        DISABLE_OUTLINE,
         markAreas.length
-          ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
+          ? { silent: true, itemStyle: { color: palette.userRangeBackgroundColor }, data: markAreas }
           : undefined,
         markLines.length
           ? {
               animation: false,
               animationDuration: 0,
               animationDurationUpdate: 0,
-              silent: false,
               symbol: 'none',
-              data: markLines.map((line) => {
+              label: { show: false },
+              data: markLines.map(line => {
                 const [startPoint, endPoint] = line
-                return [
-                  {
-                    ...startPoint,
-                    label: {
-                      ...startPoint.label,
-                      position: 'start',
-                      align: 'left',
-                      verticalAlign: 'middle',
-                      offset: [-labelXOffset, 0],
-                      ...createLabelStyle(line.lineStyle, palette),
-                    },
-                  },
-                  {
-                    ...endPoint,
-                    lineStyle: line.lineStyle,
-                  },
-                ]
+                return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
               }),
             }
           : undefined,
       )
 
-      const userSeries = createCustomRectSeries(
+      const userCollateralSeries = createCustomRectSeries(
         'User Collateral',
-        palette.userBandColor,
+        palette.userCollateralShareColor,
         palette.liquidationBandOutlineColor,
-        userSeriesData,
-        false,
+        userCollateralSeriesData,
+        DISABLE_OUTLINE,
+      )
+
+      const userBorrowedSeries = createCustomRectSeries(
+        'User Borrowed',
+        palette.userBorrowedShareColor,
+        palette.liquidationBandOutlineColor,
+        userBorrowedSeriesData,
+        DISABLE_OUTLINE,
       )
 
       const outlineSeries = {
@@ -326,53 +296,14 @@ export const getChartOptions = (
           'transparent',
           palette.liquidationBandOutlineColor,
           outlineSeriesData,
-          true,
+          ENABLE_OUTLINE,
         ),
         silent: true,
         z: 2,
         emphasis: { disabled: true },
       }
 
-      return [marketSeries, userSeries, outlineSeries]
+      return [marketSeries, userCollateralSeries, userBorrowedSeries, outlineSeries]
     })(),
-    dataZoom: [
-      {
-        type: 'slider',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        right: 10,
-        width: dataZoomWidth,
-        brushSelect: false,
-        showDataShadow: false,
-        borderColor: 'none',
-        backgroundColor: palette.zoomTrackBackgroundColor,
-        fillerColor: palette.zoomThumbColor,
-        handleSize: '100%',
-        handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
-        showDetail: false,
-        labelFormatter: (value: number | string) => formatNumberWithOptions(Number(value)),
-        dataBackground: {
-          lineStyle: {
-            color: palette.gridColor,
-            opacity: 0.5,
-          },
-          areaStyle: {
-            color: palette.gridColor,
-            opacity: 0.2,
-          },
-        },
-        // Prevent filtering of markLines when zooming
-        filterMode: 'none',
-      },
-      {
-        type: 'inside',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        zoomOnMouseWheel: 'shift',
-        moveOnMouseWheel: true,
-        // Prevent filtering of markLines when zooming
-        filterMode: 'none',
-      },
-    ],
   }
 }

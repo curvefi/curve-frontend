@@ -18,7 +18,7 @@ export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: Filt
     (type: LlamaMarketType) => {
       setColumnFilter(
         LlamaMarketColumnId.Type,
-        serializeListFilter(filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter ?? []), type]),
+        serializeListFilter(filter?.includes(type) ? filter.filter(f => f !== type) : [...(filter ?? []), type]),
       )
     },
     [filter, setColumnFilter],

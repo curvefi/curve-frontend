@@ -36,7 +36,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
+type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
 
 export const LoanBorrowMore = ({
   rChainId,
@@ -48,21 +48,21 @@ export const LoanBorrowMore = ({
   isLeverage = false,
 }: LoanBorrowMoreProps) => {
   const isSubscribed = useRef(false)
-  const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
-  const activeKeyMax = useStore((state) => state.loanBorrowMore.activeKeyMax)
-  const detailInfoLeverage = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanBorrowMore.formStatus)
-  const formValues = useStore((state) => state.loanBorrowMore.formValues)
-  const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const activeKey = useStore(state => state.loanBorrowMore.activeKey)
+  const activeKeyMax = useStore(state => state.loanBorrowMore.activeKeyMax)
+  const detailInfoLeverage = useStore(state => state.loanBorrowMore.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanBorrowMore.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanBorrowMore.formStatus)
+  const formValues = useStore(state => state.loanBorrowMore.formValues)
+  const maxRecv = useStore(state => state.loanBorrowMore.maxRecv[activeKeyMax])
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
-  const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
-  const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
-  const resetState = useStore((state) => state.loanBorrowMore.resetState)
+  const fetchStepApprove = useStore(state => state.loanBorrowMore.fetchStepApprove)
+  const fetchStepIncrease = useStore(state => state.loanBorrowMore.fetchStepIncrease)
+  const setFormValues = useStore(state => state.loanBorrowMore.setFormValues)
+  const resetState = useStore(state => state.loanBorrowMore.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -108,7 +108,7 @@ export const LoanBorrowMore = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -214,9 +214,7 @@ export const LoanBorrowMore = ({
                           : null
                       }
                       confirmed={confirmedWarning}
-                      setConfirmed={(val) =>
-                        setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
-                      }
+                      setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   cancelBtnProps: {
@@ -241,11 +239,11 @@ export const LoanBorrowMore = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved && !isApprovedCompleted ? ['BORROW_MORE'] : ['APPROVAL', 'BORROW_MORE']
       }
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [expectedCollateral?.totalCollateral, userState, userBalances, fetchStepApprove, handleBtnClickBorrow],
   )
@@ -270,13 +268,13 @@ export const LoanBorrowMore = ({
       resetState()
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // form changed to leverage, reset form
   useEffect(() => {
     if (isLoaded) updateFormValues(DEFAULT_FORM_VALUES, '', true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLeverage])
 
   // steps
@@ -298,7 +296,7 @@ export const LoanBorrowMore = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     isLoaded,
     activeKey,
@@ -316,7 +314,7 @@ export const LoanBorrowMore = ({
 
   useEffect(() => {
     if (isLoaded) updateFormValues({}, maxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
@@ -353,7 +351,7 @@ export const LoanBorrowMore = ({
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
+          handleInpChange={useCallback(userCollateral => updateFormValues({ userCollateral }), [updateFormValues])}
         />
 
         {isLeverage && (
@@ -383,7 +381,7 @@ export const LoanBorrowMore = ({
           tokenAddress={market?.borrowed_token?.address}
           tokenSymbol={market?.borrowed_token?.symbol}
           maxRecv={maxRecv}
-          handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
+          handleInpChange={useCallback(debt => updateFormValues({ debt }), [updateFormValues])}
         />
       </Stack>
 

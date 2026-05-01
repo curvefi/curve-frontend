@@ -2,26 +2,9 @@ import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { InternalLink } from '@ui/Link'
 import type { InternalLinkProps } from '@ui/Link/InternalLink'
-import { formatNumber } from '@ui/utils'
-
-interface TableRowProps {
-  holder: Record<string, string | number>
-  sortBy: { key: string; label: string; order: 'asc' | 'desc' }
-  labels: { key: string; label: string }[]
-  gridTemplateColumns?: string
-}
-
-export const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
-  <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
-    {labels.map((label, index) => (
-      <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>
-        {formatNumber(holder[label.key])}
-      </TableData>
-    ))}
-  </TableRowWrapper>
-)
 
 type TableRowWrapperProps = { columns: number; gridTemplateColumns?: string }
+
 export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & ComponentPropsWithRef<'div'>> =
   styled.div<TableRowWrapperProps>`
     display: grid;

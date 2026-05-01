@@ -73,7 +73,8 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
     throw new Error(`${components.length} components and ${urls.length} urls found for [${tabKey}, ${subTabKey}]`)
 
   const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
-  return { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab }
+  const content = <Component {...params} />
+  return { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab }
 }
 
 const marginInline = { mobile: 'auto', desktop: 0 } as const
@@ -96,7 +97,7 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
-  const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
+  const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>
       <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} overflow={overflow} />
@@ -107,13 +108,13 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
           value={subTab.value}
           options={subTabs}
           overflow="fullWidth"
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+          sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
           onChange={onChangeSubTab}
         />
       )}
 
       <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
-        <Component {...options.params} />
+        {content}
       </WithWrapper>
     </Stack>
   )

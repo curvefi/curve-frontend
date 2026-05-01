@@ -19,7 +19,7 @@ type RateCurveTooltipProps = {
 export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps) => (
   <ChartTooltipShell title={`${formatPercent(datum.utilization)} ${t`Utilization`}`}>
     <ChartTooltipSeriesGroup>
-      {visibleSeries.map((activeSeries) => (
+      {visibleSeries.map(activeSeries => (
         <ChartTooltipSeriesRow
           key={activeSeries.key}
           label={activeSeries.label}

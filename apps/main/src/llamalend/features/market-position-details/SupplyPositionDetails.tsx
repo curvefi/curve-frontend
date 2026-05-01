@@ -67,7 +67,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
         value={SUPPLY_POSITION_TAB}
         options={[{ value: SUPPLY_POSITION_TAB, label: t`Supply Details` }]}
       />
-      <Grid container padding={Spacing.md} spacing={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+      <Grid container padding={Spacing.md} spacing={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
           <Metric
             size="medium"

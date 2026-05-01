@@ -1,8 +1,7 @@
-import { type ChangeEvent, type ReactNode, useCallback } from 'react'
+import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -10,11 +9,9 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { joinButtonText } from '@primitives/string.utils'
-import { AlertBox } from '@ui/AlertBox'
-import type { AlertType } from '@ui/AlertBox/types'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
@@ -28,11 +25,6 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing } = SizesAndSpaces
 
-type BorrowDisabledAlert = {
-  alertType?: AlertType
-  message?: ReactNode
-}
-
 /**
  * The form contents for the create loan tab.
  * @param market The market to create a loan.
@@ -44,17 +36,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
-  onSuccess,
   borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  onSuccess: CreateLoanOptions['onSuccess']
-  borrowDisabledAlert?: BorrowDisabledAlert
+  borrowDisabledAlert?: FormDisabledAlert | false
 }) => {
-  const isBorrowDisabled = !!borrowDisabledAlert
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -73,7 +62,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     values,
     leverage,
     priceImpact,
-  } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
+  } = useCreateLoanForm({ market, network, preset, onPricesUpdated, disabled: !!borrowDisabledAlert })
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
@@ -84,7 +73,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      onSubmit={isBorrowDisabled ? form.handleSubmit(() => undefined) : onSubmit}
+      onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
           market={market}
@@ -95,7 +84,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           borrowToken={borrowToken}
           networks={networks}
           routes={routes}
-          onSlippageChange={(value) => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm(form, { slippage: value })}
         />
       }
       data-testid="create-loan-form"
@@ -121,17 +110,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           hideBalance
           testId="borrow-debt-input"
           network={network}
-          message={
-            <Balance
-              prefix={t`Max borrow:`}
-              tooltip={t`Max borrow`}
-              symbol={borrowToken?.symbol}
-              balance={values.maxDebt}
-              loading={maxDebt.isLoading}
-              onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
-              buttonTestId="borrow-set-debt-to-max"
-            />
-          }
+          message={`${t`Max borrow:`} ${values.maxDebt ?? '-'} ${borrowToken?.symbol}`}
         />
       </Stack>
 
@@ -158,10 +137,10 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         </Collapse>
       </LoanPresetSelector>
 
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
 
-      {isBorrowDisabled ? (
-        <AlertBox alertType={borrowDisabledAlert.alertType!}>{borrowDisabledAlert.message}</AlertBox>
+      {borrowDisabledAlert ? (
+        <AlertDisableForm>{borrowDisabledAlert.message}</AlertDisableForm>
       ) : (
         <Button
           type="submit"

@@ -46,13 +46,13 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
-  // override the user's leverage choice when we get to know the user has a (non)-leveraged position
+  // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
   useFormSync(form, { leverageEnabled: events && isPositionLeveraged(events.originalLeverage) })
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
     userBorrowed: { ...maxUserBorrowed, field: 'maxBorrowed' as const },
-    debt: { ...mapQuery(maxReceive, (d) => decimal(d.maxDebt)), field: 'maxDebt' as const },
+    debt: { ...mapQuery(maxReceive, d => decimal(d.maxDebt)), field: 'maxDebt' as const },
     maxLeverage,
   }
 }

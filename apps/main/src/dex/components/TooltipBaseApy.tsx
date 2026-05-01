@@ -16,7 +16,7 @@ export const TooltipBaseApy = ({
 
   if (poolData?.pool.isLending) {
     label = t`Pool APY + Lending APY`
-  } else if (poolData?.tokenAddresses.indexOf('0xae7ab96520de3a18e5e111b5eaab095312d7fe84') !== -1) {
+  } else if (poolData?.tokenAddresses?.includes('0xae7ab96520de3a18e5e111b5eaab095312d7fe84')) {
     // hard coding steth label, not defined in pool object
     label = t`Pool APY + Staking APY`
   } else if (

@@ -46,7 +46,7 @@ export const DetailInfoHealth = ({
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
+  const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const {
     healthFull: healthFullCurrent,
     healthNotFull: healthNotFullCurrent,
@@ -94,7 +94,6 @@ export const DetailInfoHealth = ({
   // current health mode
   useEffect(() => {
     if (typeof oraclePriceBand === 'number' && bandsCurrent && healthFullCurrent && healthNotFullCurrent) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentHealthMode(
         getHealthMode(
           market?.borrowed_token?.symbol,

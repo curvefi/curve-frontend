@@ -12,7 +12,7 @@ import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/share
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
-import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
+import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
@@ -97,15 +97,15 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const priceImpactSeverity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
+  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, { slippage })
   const exchangeRateValue = decimal(exchangeRate?.data)
 
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
     prevNetRate: prevNetBorrowApr,
-    prevRate: prevRates && mapQuery(prevRates, (d) => d?.borrowApr),
+    prevRate: prevRates && mapQuery(prevRates, d => d?.borrowApr),
     netRate: netBorrowApr,
-    rate: rates && mapQuery(rates, (d) => d?.borrowApr),
+    rate: rates && mapQuery(rates, d => d?.borrowApr),
     defaultValue: useShowNetRate('borrow'),
   })
 
@@ -184,8 +184,8 @@ export const LoanActionInfoList = ({
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
-              value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
-              prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
+              value={prices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
+              prevValue={prevPrices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               {...combineActionInfoState(prices, prevPrices)}
               size="small"
@@ -260,9 +260,9 @@ export const LoanActionInfoList = ({
         )}
         {priceImpact && (
           <ActionInfo
-            label={priceImpactSeverity ? t`High price impact` : t`Price impact`}
+            label={priceImpactLabel}
             value={priceImpact.data == null ? '-' : formatPercent(priceImpact.data)}
-            valueColor={{ error: 'error', warning: 'warning.main' }[priceImpactSeverity!]}
+            valueColor={priceImpactColor}
             error={priceImpact.error}
             loading={priceImpact.isLoading}
             size="small"
@@ -275,7 +275,7 @@ export const LoanActionInfoList = ({
             label={t`Exchange rate`}
             value={
               exchangeRateValue &&
-              `1 ${collateralSymbol} = ${formatNumber(exchangeRateValue, { abbreviate: false })} ${borrowSymbol}`
+              `1 ${collateralSymbol} = ${formatNumber(exchangeRateValue, { abbreviate: false, highPrecision: true })} ${borrowSymbol}`
             }
             error={exchangeRate.error}
             loading={exchangeRate.isLoading}

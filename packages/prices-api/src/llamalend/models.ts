@@ -141,6 +141,7 @@ export type UserMarketStats = {
   n1: number
   n2: number
   n: number
+  activeBand: number
   /** The amount of borrow token borrowed by the user, so what you'd normally expect as 'borrowed' */
   debt: number
   collateral: number
@@ -185,6 +186,24 @@ export type UserMarketEarnings = {
 }
 
 export type UserMarketSnapshots = UserMarketStats[]
+
+export type MarketUser = {
+  user: string
+  first: Date
+  last: Date
+  debt: number
+  health: number
+  healthFull: number
+  loss: number
+  borrowed: number
+  collateral: number
+  softLiquidation: boolean
+}
+
+export type MarketUsers = {
+  count: number
+  users: MarketUser[]
+}
 
 export type UserCollateralEvents = {
   controller: Address

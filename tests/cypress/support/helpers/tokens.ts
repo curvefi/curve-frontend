@@ -55,12 +55,12 @@ const TOKENS: Token[] = [
 ]
 
 export const oneToken = (chain?: string) =>
-  chain ? oneOf(...TOKENS.filter((t) => t.chain === chain)!) : oneOf(...TOKENS)
+  chain ? oneOf(...TOKENS.filter(t => t.chain === chain)!) : oneOf(...TOKENS)
 
 export const mockTokenPrices = () =>
-  cy.intercept('https://prices.curve.finance/v1/usd_price/*/*', (req) => {
+  cy.intercept('https://prices.curve.finance/v1/usd_price/*/*', req => {
     const address = new URL(req.url).pathname.split('/').pop()
-    const token = TOKENS.find((t) => t.address === address)
+    const token = TOKENS.find(t => t.address === address)
     if (!token) {
       return req.reply(404, { error: `Token ${address} not in the mocked data` })
     }

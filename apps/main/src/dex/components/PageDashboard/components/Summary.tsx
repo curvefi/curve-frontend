@@ -28,8 +28,8 @@ const tabs: TabOption<Tab>[] = [
 export const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
 
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const searchedWalletAddresses = useStore((state) => state.dashboard.searchedWalletAddresses)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const searchedWalletAddresses = useStore(state => state.dashboard.searchedWalletAddresses)
 
   const networkHaveLockedCrv = rChainId === 1
 
@@ -59,11 +59,11 @@ export const Summary = () => {
             defaultInputValue={formValues.walletAddress}
             inputValue={formValues.walletAddress}
             placeholder="0x..."
-            onInputChange={(walletAddress) => updateFormValues({ walletAddress })}
-            onSelectionChange={(val) => updateFormValues({ walletAddress: val as string })}
+            onInputChange={walletAddress => updateFormValues({ walletAddress })}
+            onSelectionChange={val => updateFormValues({ walletAddress: val as string })}
           >
             <Section title={t`Recently viewed addresses`}>
-              {searchedWalletAddresses.map((address) => (
+              {searchedWalletAddresses.map(address => (
                 <Item key={address} textValue={address}>
                   {shortenAccount(address)}
                 </Item>
@@ -108,6 +108,7 @@ type H3Props = ComponentPropsWithRef<'h3'>
 type BoxComponentProps = ComponentProps<typeof Box>
 type StatsComponentProps = ComponentProps<typeof Stats>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const StyledStats: IStyledComponent<'web', StatsComponentProps> = styled(Stats)`
   border-color: var(--summary_content--border-color);
 `
@@ -116,6 +117,7 @@ const TabContentWrapper = styled(Box)``
 
 const TabWrapper = styled(Box)``
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SummaryTitle: IStyledComponent<'web', H3Props> = styled.h3`
   font-size: var(--font-size-3);
   margin-bottom: 0.5rem;
@@ -129,6 +131,7 @@ export const SummaryTitle: IStyledComponent<'web', H3Props> = styled.h3`
   }
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const StyledTotalBalanceWrapper: IStyledComponent<'web', DivProps> = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
@@ -162,6 +165,7 @@ const TitleWrapper = styled.div`
 `
 
 type SummarySpinnerWrapperProps = { isMain?: boolean }
+// eslint-disable-next-line react-refresh/only-export-components
 export const SummarySpinnerWrapper: IStyledComponent<'web', SummarySpinnerWrapperProps & DivProps> = styled(
   SpinnerWrapper,
 )<SummarySpinnerWrapperProps>`
@@ -178,6 +182,7 @@ export const SummarySpinnerWrapper: IStyledComponent<'web', SummarySpinnerWrappe
   }};
 `
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SummaryInnerContent: IStyledComponent<'web', BoxComponentProps> = styled(Box)`
   position: relative;
   min-height: 4.375rem; // 70px

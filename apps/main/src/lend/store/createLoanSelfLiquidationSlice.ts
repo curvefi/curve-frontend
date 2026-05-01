@@ -43,7 +43,7 @@ export type LoanSelfLiquidationSlice = {
   }
 }
 
-export const DEFAULT_FORM_STATUS: FormStatus = {
+const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
   loading: true,
   step: '',
@@ -214,6 +214,6 @@ export const createLoanSelfLiquidationSlice = (
   },
 })
 
-export function _canSelfLiquidate(walletStablecoin: string, tokensToLiquidate: string) {
+function _canSelfLiquidate(walletStablecoin: string, tokensToLiquidate: string) {
   return +(walletStablecoin ?? '0') >= +tokensToLiquidate * 1.0001
 }

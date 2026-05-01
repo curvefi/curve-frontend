@@ -8,13 +8,14 @@
   },
   "scripts": {
     "dev": "tsx watch src/dev.ts",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/router-api --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/router-api --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-router-api.tsbuildinfo",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "fastify": "^5.8.3"
+    "fastify": "^5.8.5"
   },
   "peerDependencies": {
     "@curvefi/api": "*"
@@ -23,7 +24,6 @@
     "@curvefi/api": "*",
     "@types/node": "*",
     "eslint": "*",
-    "eslint-config-custom": "*",
     "tsx": "4.21.0",
     "typescript": "*",
     "vitest": "*"

@@ -82,18 +82,18 @@ export const TabsSwitcher = <T extends string | number>({
   } = useTabsOverflow(options, isKebabMode)
 
   const tabsValue = useMemo(
-    () => (visibleOptions.some((option) => option.value === value) ? value : false),
+    () => (visibleOptions.some(option => option.value === value) ? value : false),
     [visibleOptions, value],
   )
 
   const [kebabMenuValue, kebabTabsValue] = useMemo(
     () =>
-      isKebabMode && hiddenOptions.some((option) => option.value === value)
+      isKebabMode && hiddenOptions.some(option => option.value === value)
         ? [value ?? false, KEBAB_TAB_VALUE]
         : [false, false],
     [isKebabMode, hiddenOptions, value],
   )
-  const hiddenValues = useMemo(() => new Set(hiddenOptions.map((option) => option.value)), [hiddenOptions])
+  const hiddenValues = useMemo(() => new Set(hiddenOptions.map(option => option.value)), [hiddenOptions])
   const hasHiddenTabs = isKebabMode && hiddenOptions.length > 0
 
   const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`

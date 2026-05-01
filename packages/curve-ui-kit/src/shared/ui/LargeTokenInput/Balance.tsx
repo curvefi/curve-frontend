@@ -69,8 +69,8 @@ export const Balance = <T extends Amount>({
               sx={{
                 width: IconSize.sm,
                 height: IconSize.sm,
-                color: (t) => t.palette.text.primary,
-                ...(disabled && { color: (t) => t.palette.text.disabled }),
+                color: t => t.palette.text.primary,
+                ...(disabled && { color: t => t.palette.text.disabled }),
               }}
             />
           )

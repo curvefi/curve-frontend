@@ -39,11 +39,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
     return user.length > 15 ? (shortenAddress(user)?.toString() ?? user) : user
   }
 
-  const dataFormatted = data.map((x) => ({
-    ...x,
-    weight: x.weight.fromWei(),
-    locked: x.locked.fromWei(),
-  }))
+  const dataFormatted = data.map(x => ({ ...x, weight: x.weight.fromWei(), locked: x.locked.fromWei() }))
 
   return (
     <ChartContainer height={height}>
@@ -82,7 +78,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
             dataKey={filter}
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            tickFormatter={(value) =>
+            tickFormatter={value =>
               filter === 'weightRatio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
             }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}

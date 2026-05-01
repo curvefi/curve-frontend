@@ -45,7 +45,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
+import { DetailInfoTradeRoutes } from './components/DetailInfoTradeRoutes'
 
 export const LoanDeleverage = ({
   curve,
@@ -57,20 +57,20 @@ export const LoanDeleverage = ({
   const isSubscribed = useRef(false)
   const push = useNavigate()
 
-  const activeKey = useStore((state) => state.loanDeleverage.activeKey)
-  const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
-  const formEstGas = useStore((state) => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
-  const formStatus = useStore((state) => state.loanDeleverage.formStatus)
-  const formValues = useStore((state) => state.loanDeleverage.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const activeKey = useStore(state => state.loanDeleverage.activeKey)
+  const detailInfo = useStore(state => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
+  const formEstGas = useStore(state => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
+  const formStatus = useStore(state => state.loanDeleverage.formStatus)
+  const formValues = useStore(state => state.loanDeleverage.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
-  const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
-  const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
-  const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
+  const userWalletBalances = useStore(state => state.loans.userWalletBalancesMapper[llammaId])
+  const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
+  const fetchStepRepay = useStore(state => state.loanDeleverage.fetchStepRepay)
+  const setFormValues = useStore(state => state.loanDeleverage.setFormValues)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -120,7 +120,7 @@ export const LoanDeleverage = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txInfoBarMessage = resp.loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is paid-off and will no longer be manageable.`
@@ -174,7 +174,7 @@ export const LoanDeleverage = ({
                     <DialogHighPriceImpactWarning
                       priceImpact={detailInfo?.priceImpact}
                       confirmed={confirmHighPriceImpact}
-                      setConfirmed={(val) => setConfirmHighPriceImpact(val)}
+                      setConfirmed={val => setConfirmHighPriceImpact(val)}
                     />
                   ),
                   isDismissable: false,
@@ -193,7 +193,7 @@ export const LoanDeleverage = ({
         },
       }
 
-      return ['REPAY'].map((k) => stepsObj[k])
+      return ['REPAY'].map(k => stepsObj[k])
     },
     [userState?.collateral, confirmHighPriceImpact, maxSlippage, handleBtnClickRepay],
   )
@@ -206,14 +206,14 @@ export const LoanDeleverage = ({
     return () => {
       isSubscribed.current = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   // signer changed
   useEffect(() => {
     updateFormValues(DEFAULT_FORM_VALUES, '', true)
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.signerAddress])
 
   // update formValues
@@ -221,7 +221,7 @@ export const LoanDeleverage = ({
     if (chainId && llamma) {
       updateFormValues({}, '', false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, llamma, userState?.collateral, userLoanDetails?.userIsCloseToLiquidation])
 
   // maxSlippage
@@ -229,7 +229,7 @@ export const LoanDeleverage = ({
     if (maxSlippage) {
       updateFormValues({}, maxSlippage, false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   //  pageVisible
@@ -237,7 +237,7 @@ export const LoanDeleverage = ({
     if (!formStatus.isInProgress) {
       updateFormValues({}, '', false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isPageVisible])
 
   // interval
@@ -253,7 +253,7 @@ export const LoanDeleverage = ({
       const updatedSteps = getSteps(activeKey, curve, llamma, formStatus, formValues, detailInfo)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     detailInfo.loading,
     detailInfo.isHighImpact,
@@ -270,18 +270,6 @@ export const LoanDeleverage = ({
   const disable = formStatus.isInProgress
   const isReady = !!curve && !!llamma
   const isValid = !formValues.collateralError
-
-  const LeveragePriceImpactDetail = () => (
-    <DetailInfo
-      isBold={isValid && detailInfo.isHighImpact}
-      variant={isValid && detailInfo.isHighImpact ? 'error' : undefined}
-      label={isValid && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
-      loading={!isReady || detailInfo.loading}
-      loadingSkeleton={[70, 20]}
-    >
-      {isValid && detailInfo.priceImpact ? <strong>{detailInfo.priceImpact}%</strong> : '-'}
-    </DetailInfo>
-  )
 
   return (
     <Box grid gridRowGap={3}>
@@ -329,7 +317,15 @@ export const LoanDeleverage = ({
           {...detailInfo}
           detailInfoLeverage={
             <DetailInfoLeverageWrapper>
-              <LeveragePriceImpactDetail />
+              <DetailInfo
+                isBold={isValid && detailInfo.isHighImpact}
+                variant={isValid && detailInfo.isHighImpact ? 'error' : undefined}
+                label={isValid && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
+                loading={!isReady || detailInfo.loading}
+                loadingSkeleton={[70, 20]}
+              >
+                {isValid && detailInfo.priceImpact ? <strong>{detailInfo.priceImpact}%</strong> : '-'}
+              </DetailInfo>
               <DetailInfoTradeRoutes
                 loading={detailInfo.loading}
                 routes={detailInfo.routeName}

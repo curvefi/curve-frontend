@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { FetchingStatus } from '../types'
 
-export type ChartKey = 'oracle' | 'llamma'
+type ChartKey = 'oracle' | 'llamma'
 
 type ChartAvailability = {
   fetchStatus: FetchingStatus
@@ -48,7 +48,7 @@ export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleToken
   useEffect(() => {
     if (isLoading || selectChartList.length === 0) return
 
-    const isCurrentInList = selectChartList.some((s) => s.key === selectedChartKey)
+    const isCurrentInList = selectChartList.some(s => s.key === selectedChartKey)
     if (!isCurrentInList) {
       setSelectedChartKey(selectChartList[0].key as ChartKey)
     }

@@ -36,8 +36,8 @@ export const useLiquidationRange = ({
     const formatRange = (prices: string[]): LlammaLiquididationRange => {
       const [lowPrice, highPrice] = prices
       return {
-        price1: timeSeriesData.map((data) => ({ time: data.time, value: Number(highPrice) })),
-        price2: timeSeriesData.map((data) => ({ time: data.time, value: Number(lowPrice) })),
+        price1: timeSeriesData.map(data => ({ time: data.time, value: Number(highPrice) })),
+        price2: timeSeriesData.map(data => ({ time: data.time, value: Number(lowPrice) })),
       }
     }
 

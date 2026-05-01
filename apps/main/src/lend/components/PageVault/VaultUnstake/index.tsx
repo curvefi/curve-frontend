@@ -24,14 +24,14 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
   const rFormType = 'unstake'
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.vaultUnstake.activeKey)
-  const formEstGas = useStore((state) => state.vaultUnstake.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.vaultUnstake.formStatus)
-  const formValues = useStore((state) => state.vaultUnstake.formValues)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepUnstake = useStore((state) => state.vaultUnstake.fetchStepUnstake)
-  const setFormValues = useStore((state) => state.vaultUnstake.setFormValues)
-  const resetState = useStore((state) => state.vaultUnstake.resetState)
+  const activeKey = useStore(state => state.vaultUnstake.activeKey)
+  const formEstGas = useStore(state => state.vaultUnstake.formEstGas[activeKey])
+  const formStatus = useStore(state => state.vaultUnstake.formStatus)
+  const formValues = useStore(state => state.vaultUnstake.formValues)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepUnstake = useStore(state => state.vaultUnstake.fetchStepUnstake)
+  const setFormValues = useStore(state => state.vaultUnstake.setFormValues)
+  const resetState = useStore(state => state.vaultUnstake.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -70,7 +70,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
       const resp = await fetchStepUnstake(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
@@ -110,12 +110,12 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = ['UNSTAKE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [handleBtnClickUnstake],
   )
@@ -132,7 +132,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
   useEffect(() => {
     if (isLoaded) updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -141,7 +141,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

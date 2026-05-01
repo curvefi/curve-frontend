@@ -14,7 +14,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/compone
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
-import { fulfilledValue, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
+import { fulfilledValue, getStorageValue, setStorageValue } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import { PromisePool } from '@supercharge/promise-pool'
@@ -22,6 +22,7 @@ import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain, getErrorMessage } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { sleep } from '@ui-kit/utils/time.utils'
 import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
@@ -257,7 +258,7 @@ export const createDashboardSlice = (
 
       // update search addresses, local storage
       const cachedAddresses = getStorageValue('APP_DASHBOARD')?.addresses ?? []
-      if (cachedAddresses.indexOf(walletAddress) === -1) {
+      if (!cachedAddresses.includes(walletAddress)) {
         const searchedAddresses = [walletAddress].concat(cachedAddresses).slice(0, 10)
         sliceState.setStateByKey('searchedWalletAddresses', searchedAddresses)
         setStorageValue('APP_DASHBOARD', { addresses: searchedAddresses })
@@ -300,11 +301,11 @@ export const createDashboardSlice = (
         noResult: poolIds.length === 0,
       })
     },
-    setFormStatusClaimFees: (updatedFormStatus) => {
+    setFormStatusClaimFees: updatedFormStatus => {
       const { formStatus, ...sliceState } = get()[sliceKey]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatus })
     },
-    setFormStatusVecrv: (updatedFormStatusVecrv) => {
+    setFormStatusVecrv: updatedFormStatusVecrv => {
       const { formStatus, ...sliceState } = get()[sliceKey]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatusVecrv })
     },
@@ -394,7 +395,7 @@ export const createDashboardSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -407,7 +408,7 @@ export const createDashboardSlice = (
   },
 })
 
-export function getActiveKey(chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) {
+function getActiveKey(chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) {
   return `${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}${sortBy}${sortByOrder}`
 }
 

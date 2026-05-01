@@ -59,13 +59,13 @@ export const TokenSection = <T extends Option = Option>({
   return (
     <>
       {title && (
-        <Box sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <Box sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: t => t.design.Layer[1].Fill }}>
           <CardHeader
             title={
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 {title}
                 {isLoading && (
-                  <Box sx={{ marginBlockEnd: Spacing.xs }}>
+                  <Box sx={{ marginBlockEnd: Spacing.xs, marginInlineEnd: Spacing.sm }}>
                     <Spinner size={15} />
                   </Box>
                 )}
@@ -78,9 +78,9 @@ export const TokenSection = <T extends Option = Option>({
       )}
 
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {displayTokens.map((token) => {
+        {displayTokens.map(token => {
           const blacklistEntry = blacklist.find(
-            (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
+            x => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
           )
           return (
             <TokenOption

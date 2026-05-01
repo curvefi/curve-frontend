@@ -30,7 +30,7 @@ export function getDecimalLength(val: string) {
  * calls onExecute, waits for the transactions to be mined and then waits until
  * isSatisfied returns true.
  */
-export async function waitForTransaction({
+async function waitForTransaction({
   onExecute,
   config,
   isSatisfied,
@@ -47,7 +47,7 @@ export async function waitForTransaction({
   const results = await onExecute()
   const txHashes = toArray(results)
   if (txHashes.length > 0) {
-    await Promise.all(txHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
+    await Promise.all(txHashes.map(hash => waitForTransactionReceipt(config, { hash })))
     if (onSatisfiedMessage) notify(onSatisfiedMessage, 'success')
     await waitFor(isSatisfied, { timeout })
     return txHashes

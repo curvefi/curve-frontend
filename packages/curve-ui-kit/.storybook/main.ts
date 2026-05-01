@@ -1,5 +1,5 @@
-import type { StorybookConfig } from '@storybook/react-vite'
 import { mergeConfig } from 'vite'
+import type { StorybookConfig } from '@storybook/react-vite'
 
 const config: StorybookConfig = {
   stories: [
@@ -65,12 +65,11 @@ const config: StorybookConfig = {
   //     // Makes string and boolean types that can be undefined appear as inputs and switches
   //     shouldRemoveUndefinedFromOptional: true,
   //     // Filter out third-party props from node_modules except @mui packages
-  //     propFilter: (prop) =>
-  //       prop.parent ? /@mui/.test(prop.parent.fileName) || !/node_modules/.test(prop.parent.fileName) : true,
+  //     propFilter: (prop) =>  //       prop.parent ? /@mui/.test(prop.parent.fileName) || !/node_modules/.test(prop.parent.fileName) : true,
   //   },
   // },
 
-  previewHead: (head) => `
+  previewHead: head => `
     ${head}
     <style>
       #storybook-root {
@@ -79,9 +78,10 @@ const config: StorybookConfig = {
     </style>
   `,
   // Storybook uses its own Vite pipeline; set sourcemaps here to ensure `build:storybook` emits `.map` files.
-  viteFinal: async (config) =>
+  viteFinal: config =>
     mergeConfig(config, {
       build: { sourcemap: true },
     }),
 }
+// eslint-disable-next-line import-x/no-default-export
 export default config

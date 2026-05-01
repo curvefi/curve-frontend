@@ -10,7 +10,7 @@ import { formatUsd } from '@ui-kit/utils'
 type Epoch = ScrvUsdRevenue['epochs'][number]
 
 export const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (!active || !payload || !payload.length) return null
+  if (!active || !payload?.length) return null
 
   const { endDate, weeklyRevenue } = payload[0].payload as Epoch
 

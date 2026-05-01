@@ -66,5 +66,5 @@ export const {
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
-  dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
+  dependencies: params => [createLoanExpectedCollateralQueryKey(params)],
 })

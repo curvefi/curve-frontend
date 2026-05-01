@@ -39,7 +39,7 @@ type OracleTokenSummaryProps = {
 }
 
 export const OracleSummary = ({ chainId }: Props) => {
-  const tokens = useStore((state) => state.createPool.tokensInPool)
+  const tokens = useStore(state => state.createPool.tokensInPool)
 
   const oracleTokens = [
     { token: tokens.tokenA, title: t`Token A`, tokenId: TOKEN_A },

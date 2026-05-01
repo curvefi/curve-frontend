@@ -12,7 +12,7 @@ const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
 const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse, odos: buildOdosRouteResponse }
 
-export const sortByMaxAmountOutDescending = (a: RouteResponse, b: RouteResponse) =>
+const sortByMaxAmountOutDescending = (a: RouteResponse, b: RouteResponse) =>
   decimalCompare(decimalMax(...a.amountOut) ?? '0', decimalMax(...b.amountOut) ?? '0')
 
 /**
@@ -23,7 +23,7 @@ export const getRoutes = async (request: FastifyRequest<{ Querystring: RoutesQue
   const { router = ['curve'] } = query
 
   const results = await Promise.allSettled(
-    router.map((router) =>
+    router.map(router =>
       handleTimeout(
         routers[router](query, request.log),
         ROUTE_TIMEOUT,
@@ -36,14 +36,14 @@ export const getRoutes = async (request: FastifyRequest<{ Querystring: RoutesQue
     (res): res is PromiseFulfilledResult<RouteResponse[]> => res.status === 'fulfilled',
   )
 
-  failures.forEach((res) => request.log.error({ message: 'route calculation failed', error: res.reason }))
+  failures.forEach(res => request.log.error({ message: 'route calculation failed', error: res.reason }))
   if (!successes.length) {
-    const reasons = failures.map((f) => f.reason)
+    const reasons = failures.map(f => f.reason)
     if (reasons.length === 1) throw reasons[0]
     throw new Error(`Failed to calculate route for ${router.join(', ')}: ${reasons.join('; ')}`)
   }
 
-  const result = successes.flatMap((res) => res.value).sort((a, b) => sortByMaxAmountOutDescending(b, a))
+  const result = successes.flatMap(res => res.value).sort((a, b) => sortByMaxAmountOutDescending(b, a))
   request.log.info({ message: 'route calculated', query, result })
   return result
 }

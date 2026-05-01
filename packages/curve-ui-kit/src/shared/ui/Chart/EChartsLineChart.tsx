@@ -14,12 +14,12 @@ export type LineSeriesConfig<TSeriesKey extends string> = {
   strokeWidth?: number
 }
 
-export type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
+type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   datum: TData
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-export type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: string }
+type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: string }
 
 /** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
 const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
@@ -27,7 +27,7 @@ const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extend
   activeSeries: LineSeriesConfig<TSeriesKey>[],
   paddingRatio: number,
 ): { yMin: number; yMax: number } => {
-  const values = data.flatMap((item) => activeSeries.map((s) => Number(item[s.key])).filter(Number.isFinite))
+  const values = data.flatMap(item => activeSeries.map(s => Number(item[s.key])).filter(Number.isFinite))
   if (!values.length) return { yMin: 0, yMax: 0 }
 
   const min = Math.min(...values)
@@ -39,8 +39,8 @@ const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extend
 const parseDashType = (dash?: string): 'solid' | number[] => {
   const segments = dash
     ?.split(' ')
-    .map((segment) => Number(segment))
-    .filter((segment) => Number.isFinite(segment) && segment > 0)
+    .map(segment => Number(segment))
+    .filter(segment => Number.isFinite(segment) && segment > 0)
   return segments?.length ? segments : 'solid'
 }
 
@@ -90,7 +90,7 @@ export const EChartsLineChart = <
   })
 
   const activeSeries = useMemo(
-    () => (visibleSeries ? series.filter((item) => visibleSeries.includes(item.key)) : series),
+    () => (visibleSeries ? series.filter(item => visibleSeries.includes(item.key)) : series),
     [series, visibleSeries],
   )
 
@@ -112,7 +112,7 @@ export const EChartsLineChart = <
         left: 0,
         top: 0,
         right: 0,
-        bottom: markLines?.some((ml) => ml.label) ? 24 : 0,
+        bottom: markLines?.some(ml => ml.label) ? 24 : 0,
       },
       xAxis: {
         type: xAxisType ?? 'time',
@@ -180,7 +180,7 @@ export const EChartsLineChart = <
       series: activeSeries.map((line, index) => ({
         name: line.label,
         type: 'line',
-        data: data.map((item) => [item[xKey], Number(item[line.key])]),
+        data: data.map(item => [item[xKey], Number(item[line.key])]),
         showSymbol: false,
         symbol: 'circle',
         symbolSize: 4,
@@ -201,8 +201,8 @@ export const EChartsLineChart = <
                 width: 1,
               },
               data: markLines
-                .filter((markLine) => Number.isFinite(markLine.value))
-                .map((markLine) => ({
+                .filter(markLine => Number.isFinite(markLine.value))
+                .map(markLine => ({
                   xAxis: markLine.value,
                   ...(markLine.label && {
                     label: {

@@ -8,6 +8,8 @@
     "hoistingLimits": "dependencies"
   },
   "scripts": {
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/tests --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/tests --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
     "test": "vitest run",
     "test:ui": "vitest --ui",
@@ -24,16 +26,15 @@
     "@cypress/react": "^9.0.1",
     "@cypress/vite-dev-server": "^7.2.1",
     "@types/cypress": "^1.1.6",
-    "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "*",
-    "@vitest/ui": "^4.1.0",
-    "cypress": "^15.12.0",
-    "dotenv-flow": "^4.1.0",
+    "@vitest/ui": "^4.1.4",
+    "cypress": "^15.13.1",
+    "eslint": "*",
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
     "vite-plugin-svgr": "*",
     "vitest": "*",
-    "wait-on": "^9.0.4"
+    "wait-on": "^9.0.5"
   }
 }

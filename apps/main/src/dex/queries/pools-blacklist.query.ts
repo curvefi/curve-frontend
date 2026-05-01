@@ -6,9 +6,20 @@ import { queryFactory, type ChainNameParams } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 
 // List from api.curve.finance: https://raw.githubusercontent.com/curvefi/curve-api/eed5dd84492b3e5611a34504a98bc1fa256defa5/routes/v1/getHiddenPools.js
+// List for core api https://github.com/curvefi/curve-api-core/blob/ab4080c816438c9c97d0baab82ad939aabb9bc85/routes/v1/getHiddenPools.js
 
 // We allow blocking more than just the chains supported by prices api.
-export type ChainBlacklist = Chain | 'avalanche' | 'moonbeam' | 'kava'
+type ChainBlacklist =
+  | Chain
+  | 'avalanche'
+  | 'moonbeam'
+  | 'kava'
+  | 'xdc'
+  | 'tac'
+  | 'etherlink'
+  | 'plume'
+  | 'unichain'
+  | 'monad'
 
 /**
  * A local hardcoded blacklist of pools we don't want to show in the front-end for whatever reason.
@@ -71,6 +82,8 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
     '0x184F3Fed33D4194A5603C14481241BD089268e4b', // factory-stable-ng-685 - Team asked to hide
   ],
   arbitrum: [
+    '0x15FB53Cb126140dfbfDED07d0057E1896B2dbCa3', // factory-stable-ng-206 - Unitos.net/USDT - scam pool pretending to be USDT
+
     // List from api.curve.finance
     '0xE9dcF2d2A17eAD11fab8b198578B20535370Be6a', // factory-v2-1 - duplicate MIM pool
     '0x6041631c566Eb8dc6258A75Fa5370761d4873990', // factory-v2-3 - non pegged pool
@@ -157,7 +170,45 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
   hyperliquid: [
     // List from api.curve.finance
     '0x355d85d00FC76B1d09Fc746E394FA0E59f308861', // factory-stable-ng-6 - test pool, team asked to hide it
+    '0xB7b1bc9E42A80C6defd93b62ddd69f533E1464B5', // factory-stable-ng-11 - test pool, team asked to hide it
     '0xD62df456EC376Fa0cdfC20C721DAe5469d093177', // factory-stable-ng-26 - redeployed, team asked to hide it
+  ],
+  xdc: [
+    // List from core api
+    '0x826c3Bb33cE1C5360E15dC08d311E30db3acdF20', // test pool, team asked to hide it
+  ],
+  tac: [
+    // List from core api
+    '0x2124959EEd1331A0a0E527e16CDa06E7068a7854', // pool redeployed, team asked to hide it
+    '0x425C634Af06e28aeda4cbD1da0Bee2a71cA6fC75', // pool redeployed, team asked to hide it
+    '0xC981eB4b4fF59d1899AD91fa3d60568fBCe9699d', // pool redeployed, team asked to hide it
+    '0x89B5a78f2e47ACB3aE8C83a4676C6af335355eCB', // pool redeployed, team asked to hide it
+    '0x9600B761C9f219c6A4C6567B0F1400F2CE6265b8', // team asked to hide it
+    '0xc6e7c8DC7414C28C67de0238393e50431De83a69', // team asked to hide it
+  ],
+  etherlink: [
+    // List from core api
+    '0x0Eac4526321866178c6444f0a211A21DB4a0Ed4C', // wrong deployed pool, team asked to hide
+  ],
+  plume: [
+    // List from core api
+    '0x6eCD9991764988ba2c9023A8Bb7a2b320624dB09', // spam
+    '0x557118Aec9EB7218d81E35eF47BB9D9257ED99A5', // spam
+    '0x9F5D9a5d2926998bA6E80eF0964735B1DCB33B43', // spam
+    '0xd1831677Fd527C93e6f20821Aa85507Fe329C1C9', // spam
+    '0xd3A6ebAcA9035997BeA0A905958De0cE09ed9471', // spam
+    '0xE1dd3Bb5871C414062545562e85AB1b8e1c90d5D', // spam
+  ],
+  unichain: [
+    // List from core api
+    '0xbaBE778ef6aCE022f62e8fAee312D80E3C1D1e13', // wrong deployed pool
+  ],
+  monad: [
+    // List from core api
+    '0x0Eac4526321866178c6444f0a211A21DB4a0Ed4C', // Team asked to hide
+    '0x95aF759ec2f4385EdBbBA959A8a1CDc65610D080', // Team asked to hide
+    '0x576AB9325FdC1ade3c02d09E1882C0385e353cfe', // Pool deployed incorrectly
+    '0xE6Bca8B387a79B226897379645700e37b8055D53', // Pool deployed incorrectly, team asked to hide
   ],
 } as const
 
@@ -172,10 +223,10 @@ const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist
   [
     ...(blacklist[blockchainId] ?? []),
     ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),
-  ].map((address) => getAddress(address)) // just to be sure there's no missing checksums from the prices api
+  ].map(address => getAddress(address)) // just to be sure there's no missing checksums from the prices api
 
 export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
-  mapQuery(usePricesApiBlacklist({}), (blacklist) => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
+  mapQuery(usePricesApiBlacklist({}), blacklist => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
 
 export const fetchPoolsBlacklist = async ({ blockchainId }: ChainNameParams) =>
   blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : []

@@ -52,11 +52,11 @@ export const SelectTokenButton = ({
   const isMobile = useIsMobile()
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
-  const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
-  const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
+  const userAddedTokens = useStore(state => state.createPool.userAddedTokens)
+  const updateUserAddedTokens = useStore(state => state.createPool.updateUserAddedTokens)
 
   const { data: basePools = [], isLoading: basePoolsLoading } = useBasePools({ chainId })
-  const swapType = useStore((state) => state.createPool.swapType)
+  const swapType = useStore(state => state.createPool.swapType)
 
   const [error, setError] = useState<string>()
   const [filterValue, setFilterValue] = useState('')
@@ -68,14 +68,9 @@ export const SelectTokenButton = ({
       symbol: nativeToken?.wrappedSymbol ?? '',
     },
     ...network.createQuickList,
-  ].map(({ address, symbol }) => ({
-    chain: blockchainId,
-    address: address as Address,
-    symbol,
-  }))
+  ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 
   if (!overlayTriggerState.isOpen) {
-    // eslint-disable-next-line react-hooks/refs
     visibleTokens.current = {}
   }
 
@@ -83,9 +78,7 @@ export const SelectTokenButton = ({
   const allTokens = useMemo(
     () =>
       filterBasepools
-        ? tokens.filter((item) =>
-            basePools.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
-          )
+        ? tokens.filter(item => basePools.some(basepool => basepool.token.toLowerCase() === item.address.toLowerCase()))
         : tokens,
     [basePools, filterBasepools, tokens],
   )
@@ -94,7 +87,7 @@ export const SelectTokenButton = ({
 
   const options = useMemo(
     () =>
-      filteredResults.map((token) => ({
+      filteredResults.map(token => ({
         chain: blockchainId,
         address: token.address as Address,
         symbol: token.symbol,
@@ -112,11 +105,11 @@ export const SelectTokenButton = ({
       if (
         filterValueLowerCase.length === 42 &&
         options.length === 0 &&
-        !(userAddedTokens ?? []).some((x) => x.address.toLocaleLowerCase() === filterValueLowerCase)
+        !(userAddedTokens ?? []).some(x => x.address.toLocaleLowerCase() === filterValueLowerCase)
       ) {
         try {
           const token = await curve.getCoinsData([filterValueLowerCase])
-          const isBasePool = !!basePools?.some((basepool) => basepool.token.toLowerCase() === filterValueLowerCase)
+          const isBasePool = !!basePools?.some(basepool => basepool.token.toLowerCase() === filterValueLowerCase)
 
           updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
         } catch (error) {
@@ -129,7 +122,7 @@ export const SelectTokenButton = ({
   }, [basePools, chainId, curve, filterValue, options, updateUserAddedTokens, userAddedTokens])
 
   const selectedToken = useMemo(
-    () => (selectedAddress ? tokens.find((userToken) => userToken.address === selectedAddress) : null),
+    () => (selectedAddress ? tokens.find(userToken => userToken.address === selectedAddress) : null),
     [selectedAddress, tokens],
   )
 
@@ -180,7 +173,7 @@ export const SelectTokenButton = ({
               setFilterBasepools(false)
               handleClose()
             }}
-            onSearch={(val) => {
+            onSearch={val => {
               setFilterValue(val)
               setError(undefined)
             }}

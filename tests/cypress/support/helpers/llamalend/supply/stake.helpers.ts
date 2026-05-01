@@ -7,22 +7,38 @@ import {
   submitSupplyForm,
   touchSupplyInput,
   writeSupplyInput,
+  checkSupplyAlert,
 } from './supply.helpers'
 
 export const submitStakeForm = () => submitSupplyForm('stake', 'Stake successful!')
 
 export const readStakeAvailableAmount = () =>
   getSupplyInputBalanceValueAttr('stake')
-    .should((balanceValue) => {
+    .should(balanceValue => {
       expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
     })
-    .then((balanceValue) => (balanceValue || '0') as Decimal)
+    .then(balanceValue => (balanceValue || '0') as Decimal)
 
 /**
  * Fill in the stake form with the specified amount.
  */
 export function writeStakeForm({ amount }: { amount: Decimal }) {
   writeSupplyInput({ type: 'stake', amount })
+}
+
+/**
+ * Check the stake submit state for enabled and disabled markets.
+ */
+export function checkStakeSubmit({ buttonText, hasGauge = true }: { buttonText: string; hasGauge?: boolean }) {
+  if (!hasGauge) {
+    cy.get('[data-testid="supply-stake-submit-button"]').should('not.exist')
+
+    checkSupplyAlert('alert-no-gauge')
+
+    return
+  }
+
+  checkSupplySubmitButtonText('stake', buttonText)
 }
 
 /**

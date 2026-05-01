@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
+import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-soft-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -10,20 +11,26 @@ import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
+import { CRVUSD } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useCrvSwapUrl } from '../../manage-soft-liquidation/hooks/useCrvSwapUrl'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
+
+const { Spacing } = SizesAndSpaces
 
 function RepayTokenSelector<ChainId extends IChainId>({
   token,
@@ -59,6 +66,7 @@ export const RepayForm = <ChainId extends IChainId>({
   enabled,
   onPricesUpdated,
   collateralEvents,
+  isInSoftLiquidation,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -66,6 +74,7 @@ export const RepayForm = <ChainId extends IChainId>({
   enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
+  isInSoftLiquidation?: boolean
 }) => {
   const network = networks[chainId]
   const {
@@ -93,11 +102,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const swapRequired = selectedToken !== borrowToken
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const {
-    data: maxAmountInBorrowToken,
-    isLoading: maxAmountInBorrowTokenLoading,
-    error: maxAmountInBorrowTokenError,
-  } = useTokenAmountConversion({
+  const { data: maxAmountInBorrowToken } = useTokenAmountConversion({
     chainId,
     amountIn: max[selectedField],
     tokenInAddress: selectedToken?.address,
@@ -108,6 +113,8 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
+
+  const crvSwapUrl = useCrvSwapUrl()
 
   useEffect(
     () => () => {
@@ -131,17 +138,17 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm(form, { slippage: value })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
           routes={routes}
-          prices={q(useRepayPrices(params))}
+          prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}
         />
       }
     >
       <LoanFormTokenInput
-        label={t`Amount to repay`}
+        label={t`Debt to repay`}
         token={selectedToken}
         blockchainId={network.id}
         name={selectedField}
@@ -162,34 +169,28 @@ export const RepayForm = <ChainId extends IChainId>({
             tokens={tokens}
           />
         }
-        message={
-          maxAmountInBorrowTokenError?.message ?? (
-            <Balance
-              prefix={maxAmountPrefix}
-              tooltip={t`Max available to repay`}
-              symbol={borrowToken?.symbol}
-              balance={maxAmountInBorrowToken}
-              loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-              onClick={() =>
-                updateForm(form, {
-                  [selectedField]: max[selectedField].data,
-                })
-              }
-            />
-          )
-        }
+        message={`${maxAmountPrefix} ${maxAmountInBorrowToken ?? '-'} ${borrowToken?.symbol}`}
+        onMessageNumberClick={() => updateForm(form, { [selectedField]: max[selectedField].data })}
       />
-      <HighPriceImpactAlert priceImpact={priceImpact} values={{ leverageEnabled: swapRequired, ...params }} />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} />
 
-      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
-        {isPending
-          ? t`Processing...`
-          : joinButtonText(
-              isApproved.data === false && t`Approve`,
-              notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-              isFull.data && t`Close Position`,
-            )}
-      </Button>
+      {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
+
+      <Stack gap={Spacing.xs}>
+        <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
+          {isPending
+            ? t`Processing...`
+            : joinButtonText(
+                isApproved.data === false && t`Approve`,
+                notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
+                isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+              )}
+        </Button>
+
+        {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
+          <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
+        )}
+      </Stack>
 
       <FormAlerts
         error={repayError}

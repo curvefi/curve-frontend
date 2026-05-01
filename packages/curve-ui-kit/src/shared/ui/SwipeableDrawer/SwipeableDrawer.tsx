@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { Box, SxProps, Theme } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
 type Props = {
@@ -41,12 +41,12 @@ export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Pr
   </Box>
 )
 
-export const Puller = () => (
+const Puller = () => (
   <Box
     sx={{
       width: 80,
       height: 4,
-      backgroundColor: (t) => t.design.Color.Neutral[500],
+      backgroundColor: t => t.design.Color.Neutral[500],
       margin: '0 auto',
     }}
   />

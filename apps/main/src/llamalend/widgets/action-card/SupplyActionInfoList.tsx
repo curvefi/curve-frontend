@@ -10,7 +10,7 @@ import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
 
-export type SupplyActionInfoListProps = {
+type SupplyActionInfoListProps = {
   isOpen: boolean
   isApproved?: boolean
   /** Vault shares with optional previous value for comparison */

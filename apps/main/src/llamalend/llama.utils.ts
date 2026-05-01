@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -13,7 +13,7 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
-import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
@@ -25,8 +25,17 @@ import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
   typeof id === 'string' ? (id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)) : id
 
-export const isLendV2Market = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate && market.version === 'v2'
+/**
+ * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
+ * We use this helper during query validation since we cannot crash the validation suite outside `test()`
+ */
+export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) => {
+  if (typeof marketId === 'object') return marketId
+  const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
+  return marketId && lib && getLlamaMarket(marketId, lib)
+}
+
+const isLendV2Market = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && market.version === 'v2'
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
@@ -57,7 +66,7 @@ export const hasV1Leverage = (market: LlamaMarketTemplate) =>
 
 export const hasV2Leverage = (market: MintMarketTemplate) => !isLendV2Market(market) && market?.leverageV2.hasLeverage()
 
-export const hasV1Deleverage = (market: LlamaMarketTemplate) =>
+const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
 
 // hasV2Leverage works for deleverage as well
@@ -132,6 +141,15 @@ export const getTokens = (market: LlamaMarketTemplate) =>
         },
       }
 
+export function getControllerAddress(market: LlamaMarketTemplate): Address
+export function getControllerAddress(market: null | undefined): undefined
+export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined
+export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined {
+  return (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as
+    | Address
+    | undefined
+}
+
 /**
  * Calculates the loan-to-value ratio of a market.
  * @param debtAmount - The amount of debt in the market.
@@ -194,11 +212,61 @@ export const updateUserEventsApi = (
 const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (userIsCloseToLiquidation ? 0 : 0.1)
 
 /**
+ * Whether the oracle price has dropped below the user's band range.
+ * Band numbers go up as prices go down, so the user's lower price boundary is the higher band
+ * number (n2, or `userBandsValue[1]` after `reverseBands`). If the active/oracle-price band has
+ * moved past it, the price is below the user's range and their collateral has fully converted.
+ */
+export const isBelowRange = (activeBand: number | null | undefined, lowerBoundBand: number | null | undefined) =>
+  activeBand != null && lowerBoundBand != null && activeBand > lowerBoundBand
+
+/**
+ * Picks the health value to display to the user. Health is the buffer before full liquidation,
+ * which happens at health = 0 (see the liquidation-protection docs).
+ *
+ * `healthNotFull` values collateral at each band's mid-price only — it's the buffer as measured
+ * inside the liquidation-protection range, ignoring any price cushion above the range.
+ * `healthFull` adds that above-range cushion on top, so above the range `healthFull >= healthNotFull`
+ * and inside/below the range they're equal.
+ *
+ * We display `healthFull` by default because it reflects the user's actual current buffer. But when
+ * `healthNotFull` is negative the band-valued collateral no longer covers the debt, meaning the user
+ * is one drop into the range away from full liquidation — so we surface that pessimistic value as a
+ * warning even if `healthFull` would still look positive.
+ *
+ * See https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works.
+ */
+export const getDisplayHealth = (
+  healthFull: Decimal | number | null | undefined,
+  healthNotFull: Decimal | number | null | undefined,
+): number | null => {
+  if (healthFull == null || healthNotFull == null) return null
+  return +(+healthNotFull < 0 ? healthNotFull : healthFull)
+}
+
+/**
  * healthNotFull is needed here because:
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
  */
 export function getLiquidationStatus(
+  healthNotFull: Decimal | undefined,
+  userIsCloseToSoftLiquidation: boolean,
+  userIsBelowRange: boolean,
+  userStateCollateral: Decimal | undefined,
+  userStateBorrowed: Decimal | undefined,
+): UserPositionStatus {
+  if (healthNotFull == null || userStateCollateral == null || userStateBorrowed == null) return undefined
+  const threshold = getSoftLiquidationThreshold(userIsCloseToSoftLiquidation)
+  if (+healthNotFull < 0) return 'hardLiquidation' as const
+  if (userIsBelowRange && +userStateCollateral > 0) return 'incompleteConversion' as const
+  if (userIsBelowRange && +userStateCollateral <= 0) return 'fullyConverted' as const
+  if (+userStateBorrowed > threshold) return 'softLiquidation' as const
+  return 'healthy' as const
+}
+
+/** @deprecated Use {@link getLiquidationStatus} — this legacy version returns label/tooltip for the old forms. */
+export function getLiquidationStatusLegacy(
   healthNotFull: string,
   userIsCloseToLiquidation: boolean,
   userStateStablecoin: string,
@@ -229,7 +297,7 @@ export function getLiquidationStatus(
   return userStatus
 }
 
-export function getIsUserCloseToLiquidation(
+export function getIsUserCloseToSoftLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
   oraclePriceBand: number | null | undefined,
@@ -250,7 +318,7 @@ export function reverseBands(bands: [number, number] | number[]) {
 // I only want to move code, not change. At least they're neatly in the same place now.
 
 export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = sortBy(objectKeys(bandsBalances), (k) => +k)
+  const sortedKeys = sortBy(objectKeys(bandsBalances), k => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
     bandsBalancesArr.push({ ...bandsBalances[k], band: k })
@@ -259,7 +327,7 @@ export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: stri
 }
 
 export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
-  const sortedKeys = sortBy(objectKeys(bandBalances).map((k) => +k))
+  const sortedKeys = sortBy(objectKeys(bandBalances).map(k => +k))
   const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
   for (const k of sortedKeys) {
     bandBalancesArr.push({ ...bandBalances[k], band: `${k}` })
@@ -279,7 +347,7 @@ export const formatCollateralNotional = (
     collateral.value &&
       collateral.symbol &&
       `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
-    borrow && borrow.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+    borrow?.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
   ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */

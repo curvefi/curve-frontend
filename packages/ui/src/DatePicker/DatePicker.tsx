@@ -115,7 +115,7 @@ function CalendarGrid({ state, ...props }: AriaCalendarGridProps & { state: Cale
         </tr>
       </thead>
       <tbody>
-        {[...new Array(weeksInMonth).keys()].map((weekIndex) => (
+        {[...new Array(weeksInMonth).keys()].map(weekIndex => (
           <tr key={weekIndex}>
             {state
               .getDatesInWeek(weekIndex)
@@ -172,7 +172,7 @@ export function DatePicker<T extends DateValue>(
     if (props.quickActionValue) {
       state.setOpen(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [props.quickActionValue])
 
   return (

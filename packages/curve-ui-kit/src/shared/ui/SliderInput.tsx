@@ -13,7 +13,7 @@ import { Slider, type SliderProps } from './Slider'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-export type RangeValue = [number, number]
+type RangeValue = [number, number]
 export type DecimalRangeValue = [Decimal, Decimal]
 
 export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
@@ -81,7 +81,7 @@ const clampDecimal = <T extends Decimal | DecimalRangeValue>(
   value: Decimal | DecimalRangeValue,
   min: number,
   max: number,
-): T => apply(value, (v) => decimal(clamp(Number(v), min, max))) as T
+): T => apply(value, v => decimal(clamp(Number(v), min, max))) as T
 
 const isRangeValue = (value: Decimal | DecimalRangeValue): value is DecimalRangeValue => Array.isArray(value)
 
@@ -127,7 +127,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const [internalValue, setInternalValue, cancelDebounce] = useDebounce<T>({
     initialValue: value,
     debounceMs,
-    callback: useCallback((nextValue) => onChange(clampDecimal(nextValue, min, max)), [onChange, min, max]),
+    callback: useCallback(nextValue => onChange(clampDecimal(nextValue, min, max)), [onChange, min, max]),
   })
 
   /** The current display values for slider and inputs */
@@ -135,7 +135,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
 
   /** The slider's numeric value with sliderValueTransform mapping if provided (e.g. logarithmic scales) */
   const sliderValue = useMemo(
-    (): SliderValue => apply(displayValue, (v) => mapToSliderValue(Number(v))) as SliderValue,
+    (): SliderValue => apply(displayValue, v => mapToSliderValue(Number(v))) as SliderValue,
     [displayValue, mapToSliderValue],
   )
 
@@ -145,7 +145,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       if (nextValue == null) return
       setInternalValue(nextValue)
       cancelDebounce()
-      if (Array.isArray(nextValue) && nextValue.find((v) => v == null)) return
+      if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
       onChange(nextValue as T)
     },
     [cancelDebounce, onChange, setInternalValue],
@@ -154,8 +154,8 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   /**Converts slider's numeric value to Decimal and maps back to original value space */
   const computeSliderValue = useCallback(
     (rawValue: SliderValue): T | undefined => {
-      const mapped = apply(rawValue, (v) => decimal(mapFromSliderValue(v)))
-      return Array.isArray(mapped) && mapped.find((v) => v == null) ? undefined : (mapped as T)
+      const mapped = apply(rawValue, v => decimal(mapFromSliderValue(v)))
+      return Array.isArray(mapped) && mapped.find(v => v == null) ? undefined : (mapped as T)
     },
     [mapFromSliderValue],
   )
@@ -229,10 +229,10 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       value={inputValue}
       min={decimal(min)}
       max={decimal(max)}
-      onChange={(newValue) => {
+      onChange={newValue => {
         handleInputChange(index)(newValue)
       }}
-      onBlur={(newValue) => {
+      onBlur={newValue => {
         handleInputBlur(index)(newValue)
         inputOnBlur?.(newValue)
       }}

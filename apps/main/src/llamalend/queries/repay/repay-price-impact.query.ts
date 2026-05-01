@@ -1,11 +1,10 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
-import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
-import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const {
@@ -68,5 +67,5 @@ export const {
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: true, validateMax: false }),
-  dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
+  dependencies: params => [repayExpectedBorrowedQueryKey(params)],
 })

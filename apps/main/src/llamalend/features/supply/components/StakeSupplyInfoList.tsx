@@ -14,7 +14,7 @@ import { decimalSum } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
-export type StakeSupplyInfoListProps<ChainId extends IChainId> = {
+type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
@@ -44,18 +44,18 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={mapQuery(userBalances, (d) => d.stakedShares)}
+      prevVaultShares={mapQuery(userBalances, d => d.stakedShares)}
       vaultShares={mapQuery(
         userBalances,
-        (d) => d.stakedShares && stakeAmount && decimalSum(d.stakedShares, stakeAmount),
+        d => d.stakedShares && stakeAmount && decimalSum(d.stakedShares, stakeAmount),
       )}
-      prevAmountSupplied={mapQuery(userBalances, (d) => d.stakedSharesAmount)}
+      prevAmountSupplied={mapQuery(userBalances, d => d.stakedSharesAmount)}
       amountSupplied={mapQuery(
         userBalances,
-        (d) =>
+        d =>
           d.stakedSharesAmount && amountStakedAssets.data && decimalSum(d.stakedSharesAmount, amountStakedAssets.data),
       )}
-      supplyApy={mapQuery(prevRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(prevRates, d => d.lendApy)}
       netSupplyApy={prevNetSupplyApy}
       gas={q(useStakeEstimateGas(networks, params, isOpen))}
     />

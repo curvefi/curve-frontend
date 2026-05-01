@@ -28,12 +28,12 @@ export const PageVeCrv = () => {
   const { address: userAddress } = useConnection()
 
   const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
-  const resetState = useStore((state) => state.lockedCrv.resetState)
+  const resetState = useStore(state => state.lockedCrv.resetState)
 
   // onMount
   useEffect(
     () => () => resetState(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
     [],
   )
 

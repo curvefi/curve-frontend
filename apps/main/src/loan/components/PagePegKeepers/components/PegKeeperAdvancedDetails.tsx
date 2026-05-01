@@ -55,7 +55,7 @@ export const PegKeeperAdvancedDetails = ({
             sx={{
               width: IconSize.md,
               height: IconSize.md,
-              color: (t) => t.design.Text.TextColors.Primary,
+              color: t => t.design.Text.TextColors.Primary,
             }}
           />
         </Tooltip>

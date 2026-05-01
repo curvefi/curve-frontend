@@ -112,7 +112,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
             <PoolParameterValue>
               {returnPoolType(poolMetadata.poolType, poolMetadata.coins.length)}
               {poolMetadata.metapool && `, ${t`Metapool`}`}
-              {basePools?.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
+              {basePools?.some(pool => pool.pool === poolAddress) && `, ${t`Basepool`}`}
             </PoolParameterValue>
           </PoolParameter>
           {poolMetadata.basePool && (
@@ -462,7 +462,7 @@ const PoolParameter = styled.div<{ noBorder?: boolean }>`
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-2) 0;
-  border-bottom: ${(props) => (props.noBorder ? '' : '1px solid var(--border-600)')};
+  border-bottom: ${props => (props.noBorder ? '' : '1px solid var(--border-600)')};
   &:last-child {
     border: none;
   }
@@ -547,7 +547,7 @@ const StatsData = styled.p`
 
 type SpanProps = ComponentPropsWithRef<'span'>
 
-export const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
+const ExternalLinkToken: IStyledComponent<'web', SpanProps> = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `

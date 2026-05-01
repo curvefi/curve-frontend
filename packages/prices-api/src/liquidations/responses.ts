@@ -64,23 +64,44 @@ export type GetLiqLossesResponse = {
   }[]
 }
 
+type LiquidationHealthDistributionDecileResponse = {
+  health_decile: string
+  collateral: number
+  borrowed?: number
+  /** crvusd endpoint returns "stablecoin" instead of "borrowed" */
+  stablecoin?: number
+  debt: number
+}
+
 export type GetLiqHealthDecilesResponse = {
-  data: {
-    health_decile: string
-    collateral: number
-    stablecoin: number
-    debt: number
-  }[]
+  median: number
+  mean: number
+  std: number
+  min: number
+  max: number
+  data: LiquidationHealthDistributionDecileResponse[]
+}
+
+type TotalOverview = {
+  chain: Chain
+  soft_liquidation_users: number
+  bad_debt: number
+  liquidatable_positions: number
+  liquidatable_pos_debt_usd: number
+  liquidatable_collateral_usd: number
+  // only for lending endpoint
+  liquidatable_borrowed_usd: number | undefined
+  // only for crvusd endpoint
+  liquidatable_stablecoin_usd: number | undefined
 }
 
 export type GetTotalOverviewResponse = {
-  data: {
-    chain: Chain
-    soft_liquidation_users: number
-    bad_debt: number
-    liquidatable_positions: number
-    liquidatable_pos_debt_usd: number
-    liquidatable_collateral_usd: number
-    liquidatable_borrowed_usd: number
-  }[]
+  data: TotalOverview[]
+}
+
+export type GetBadDebtResponse = {
+  data: (TotalOverview & {
+    market: string
+    controller_address: Address
+  })[]
 }

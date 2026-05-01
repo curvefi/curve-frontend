@@ -47,7 +47,7 @@ export function useResizeObserver(
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
       const { inlineSize: width, blockSize: height } = updatedEntry?.borderBoxSize[0] ?? {}
-      const dimensions = [width, height].map((d) => Math.round(d || 0)) as [number, number]
+      const dimensions = [width, height].map(d => Math.round(d || 0)) as [number, number]
       // Allow initial height to be set if prev is null
       setDimensions((prev): [number, number] =>
         prev == null

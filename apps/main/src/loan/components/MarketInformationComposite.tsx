@@ -41,7 +41,7 @@ export const MarketInformationComposite = ({
     <Stack gap={PAGE_SPACING}>
       <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
       {!newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
       )}
@@ -51,27 +51,23 @@ export const MarketInformationComposite = ({
           <CrvUsdPriceChart />
         </>
       )}
-      {market && (
-        <Card>
-          <CardHeader title={t`Advanced Details`} size="small" />
-          <CardContent>
-            <Stack>
-              <AdvancedDetails
-                chainId={chainId}
-                marketId={marketId}
-                market={market}
-                marketType={LlamaMarketType.Mint}
-              />
-              <MarketInfoLayout
-                chainId={chainId}
-                marketType={LlamaMarketType.Mint}
-                market={market}
-                network={networks[chainId]}
-              />
-            </Stack>
-          </CardContent>
-        </Card>
-      )}
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <AdvancedDetails
+            chainId={chainId}
+            marketId={marketId}
+            market={market || undefined}
+            marketType={LlamaMarketType.Mint}
+          />
+          <MarketInfoLayout
+            chainId={chainId}
+            marketType={LlamaMarketType.Mint}
+            market={market || undefined}
+            network={networks[chainId]}
+          />
+        </CardContent>
+      </Card>
     </Stack>
   )
 }

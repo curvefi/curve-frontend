@@ -45,18 +45,18 @@ export const FormDeposit = ({
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const activeKey = useStore(state => state.poolDeposit.activeKey)
+  const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formLpTokenExpected = useStore(
-    (state) => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
+    state => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
   )
-  const formStatus = useStore((state) => state.poolDeposit.formStatus)
-  const formValues = useStore((state) => state.poolDeposit.formValues)
-  const slippage = useStore((state) => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepApprove)
-  const fetchStepDeposit = useStore((state) => state.poolDeposit.fetchStepDeposit)
-  const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
+  const formStatus = useStore(state => state.poolDeposit.formStatus)
+  const formValues = useStore(state => state.poolDeposit.formValues)
+  const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
+  const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
+  const fetchStepDeposit = useStore(state => state.poolDeposit.fetchStepDeposit)
+  const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
   const network = networks[chainId!] || null
 
@@ -93,10 +93,10 @@ export const FormDeposit = ({
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
+    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
       const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, 'DEPOSIT', poolData.pool, formValues)
+      await fetchStepApprove(activeKey, curve, 'DEPOSIT', poolData.pool, formValues, maxSlippage)
       if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepApprove],
@@ -109,7 +109,7 @@ export const FormDeposit = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -130,7 +130,7 @@ export const FormDeposit = ({
       steps: Step[],
       maxSlippage: string,
     ) => {
-      const haveFormValues = formValues.amounts.some((a) => Number(a.value) > 0)
+      const haveFormValues = formValues.amounts.some(a => Number(a.value) > 0)
       const isValid = haveFormValues && !formStatus.error
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'DEPOSIT'
@@ -141,7 +141,7 @@ export const FormDeposit = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: async () => handleApproveClick(activeKey, curve, poolData, formValues),
+          onClick: async () => handleApproveClick(activeKey, curve, poolData, formValues, maxSlippage),
         },
         ['DEPOSIT']: {
           key: 'DEPOSIT',
@@ -180,12 +180,12 @@ export const FormDeposit = ({
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['DEPOSIT'] : ['APPROVAL', 'DEPOSIT']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleApproveClick, handleDepositClick],
   )
@@ -203,7 +203,7 @@ export const FormDeposit = ({
     if (poolId) {
       resetState(poolData, 'DEPOSIT')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -211,7 +211,7 @@ export const FormDeposit = ({
     if (chainId && poolId) {
       updateFormValues({}, null, null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
@@ -219,7 +219,7 @@ export const FormDeposit = ({
     if (maxSlippage) {
       updateFormValues({}, null, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // steps
@@ -238,7 +238,7 @@ export const FormDeposit = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     curve?.chainId,
     poolData?.pool.id,

@@ -14,8 +14,6 @@ type HealthBarProps = {
 type HealthLevel = 'hardLiquidation' | 'liquidationProtection' | 'risky' | 'good' | 'pristine'
 
 const BAR_HEIGHT = '2rem' // 36px
-/** padding necesarry to mimic Metric components inherent line-height padding */
-const TRACK_BOTTOM_PADDING = '0.1875rem' // 3px
 /** Inset from the container border so labels sit inside the filled portion of the bar */
 const LABEL_INSET = '0.125rem' // 2px
 
@@ -49,13 +47,13 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
       />
     )
   ) : (
-    <Stack paddingBottom={TRACK_BOTTOM_PADDING} sx={sx}>
+    <Stack sx={sx}>
       <Stack
         sx={{
           position: 'relative',
           width: '100%',
           height: BAR_HEIGHT,
-          backgroundColor: (t) => t.design.Color.Neutral[300],
+          backgroundColor: t => t.design.Color.Neutral[300],
           transition: `background-color ${TransitionFunction}`,
         }}
       >
@@ -66,7 +64,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
                 ? `${health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION ? 100 : clampPercentage(health)}%`
                 : '0%',
             height: '100%',
-            backgroundColor: health != null ? getHealthTrackColor({ health, softLiquidation, theme }) : 'transparent',
+            backgroundColor: health == null ? 'transparent' : getHealthTrackColor({ health, softLiquidation, theme }),
             transition: `width ${TransitionFunction}, background-color ${TransitionFunction}`,
           }}
         />
@@ -87,7 +85,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
               position: 'absolute',
               bottom: LABEL_INSET,
               left: LABEL_INSET,
-              color: (t) =>
+              color: t =>
                 health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION || health >= HEALTH_THRESHOLDS.GOOD
                   ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
                   : health < HEALTH_THRESHOLDS.CRITICAL
@@ -110,7 +108,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           >
             <Typography
               variant="bodyXsRegular"
-              sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
+              sx={{ color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
             >
               {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
             </Typography>

@@ -32,16 +32,13 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
   } = useClaimableCrv(params, enabled)
 
   const crvAddress = useMemo(() => market && getCrvAddress(market), [market])
+  const rewardsAddresses = useMemo(() => claimableRewards?.map(r => r.token) ?? [], [claimableRewards])
 
-  const tokenAddresses = useMemo(
-    () => notFalsy(crvAddress, ...(claimableRewards?.map((r) => r.token) ?? [])),
-    [claimableRewards, crvAddress],
-  )
   const {
     data: usdRates,
     isLoading: usdRateLoading,
     error: usdRateError,
-  } = useTokenUsdRates({ chainId, tokenAddresses })
+  } = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress, ...rewardsAddresses) })
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(
@@ -52,14 +49,14 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     )
     return tokens
       .filter(({ amount }) => Number(amount) > 0)
-      .map((item) => ({
+      .map(item => ({
         ...item,
         ...(usdRates?.[item.token] != null && { notional: Number(item.amount) * usdRates[item.token] }),
       }))
   }, [crvAddress, claimableCrv, claimableRewards, usdRates])
 
   const totalNotionals = useMemo(() => {
-    const notionals = notFalsy(...claimableTokens.map((item) => item.notional))
+    const notionals = notFalsy(...claimableTokens.map(item => item.notional))
     return notionals.length > 0 ? sum(notionals) : undefined
   }, [claimableTokens])
 
@@ -68,6 +65,8 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     claimableRewardsError,
     hasClaimableCrv: Number(claimableCrv) > 0,
     hasClaimableRewards: hasClaimableRewards(claimableRewards),
+    crvTokenAddress: crvAddress,
+    rewardTokenAddresses: rewardsAddresses,
     claimableTokens,
     totalNotionals,
     isClaimablesLoading: [isClaimableCrvLoading, isClaimableRewardsLoading].some(Boolean),

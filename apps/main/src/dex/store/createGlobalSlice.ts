@@ -108,7 +108,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValues = state[sliceKey][key]
         const storedActiveKeyValues = storedValues[activeKey] // todo: this means the following branch is unreachable?
         if (typeof storedValues === 'undefined') {
@@ -133,7 +133,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValue = state[sliceKey][key]
         if (!isEqual(storedValue, value)) {
           if (showLog) {
@@ -148,7 +148,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
-        produce((state) => {
+        produce(state => {
           const storedValue = state[sliceKey][key]
           if (!isEqual(storedValue, value)) {
             if (showLog) {
@@ -162,7 +162,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   },
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[sliceKey] = {
           ...state[sliceKey],
           ...defaultState,

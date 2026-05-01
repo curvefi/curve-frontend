@@ -18,28 +18,11 @@ import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
-/**
- * A large token input field for loan forms, with balance and max handling.
- */
-export const LoanFormTokenInput = <
+export type LoanFormTokenInputProps<
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
   TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
->({
-  label,
-  token,
-  blockchainId,
-  name,
-  max,
-  form,
-  testId,
-  message,
-  network,
-  positionBalance,
-  tokenSelector,
-  hideBalance,
-  onValueChange,
-}: {
+> = {
   label: string
   token: { address: Address; symbol?: string } | undefined
   blockchainId: INetworkName | undefined
@@ -70,7 +53,32 @@ export const LoanFormTokenInput = <
    * Called after the form value is set.
    */
   onValueChange?: (value: Decimal | undefined) => void
-}) => {
+  onMessageNumberClick?: (value: Decimal | undefined) => void
+}
+
+/**
+ * A large token input field for loan forms, with balance and max handling.
+ */
+export const LoanFormTokenInput = <
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+>({
+  label,
+  token,
+  blockchainId,
+  name,
+  max,
+  form,
+  testId,
+  message,
+  network,
+  positionBalance,
+  tokenSelector,
+  hideBalance,
+  onValueChange,
+  onMessageNumberClick,
+}: LoanFormTokenInputProps<TFieldValues, TFieldName, TMaxFieldName>) => {
   const { address: userAddress } = useConnection()
   const {
     data: balance,
@@ -138,9 +146,9 @@ export const LoanFormTokenInput = <
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? (
-        <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />
+        <HelperMessage message={errorMessage} onNumberClick={onMessageNumberClick ?? onBalance} isError />
       ) : (
-        message && <HelperMessage onNumberClick={onBalance} message={message} />
+        message && <HelperMessage onNumberClick={onMessageNumberClick ?? onBalance} message={message} />
       )}
     </LargeTokenInput>
   )

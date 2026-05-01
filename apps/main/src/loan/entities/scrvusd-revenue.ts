@@ -18,7 +18,7 @@ const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   const epochs: Epoch[] = []
   let currentEpoch: Epoch | null = null
 
-  sortedHistory.forEach((item) => {
+  sortedHistory.forEach(item => {
     // If we don't have a current epoch or the item doesn't belong to current epoch
     if (!currentEpoch || item.timestamp > new Date(currentEpoch.endDate)) {
       // Find the previous Thursday if item is not on Thursday
@@ -44,7 +44,7 @@ const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   return epochs
 }
 
-export const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
+const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
   const pages = 1
   const dataPerPage = 300
 

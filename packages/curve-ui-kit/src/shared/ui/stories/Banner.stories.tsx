@@ -8,7 +8,7 @@ const SEVERITIES: NonNullable<BannerProps['severity']>[] = ['alert', 'warning', 
 
 const meta: Meta<typeof Banner> = {
   title: 'UI Kit/Primitives/Banner',
-  component: (props) => (
+  component: props => (
     <Box sx={{ minWidth: 600 }}>
       <Banner {...props} />
     </Box>
@@ -126,7 +126,7 @@ export const GroupedAndSorted: Story = {
   render: () => (
     <Box sx={{ minWidth: 600 }}>
       <StackBanners>
-        {SEVERITIES.flatMap((severity) => [
+        {SEVERITIES.flatMap(severity => [
           <Banner key={`${severity}-non`} severity={severity} subtitle="This banner is not removable">
             {severity} banner
           </Banner>,

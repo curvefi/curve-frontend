@@ -40,19 +40,19 @@ export const Dashboard = ({
   const isSubscribed = useRef(false)
   const push = useNavigate()
 
-  const activeKey = useStore((state) => state.dashboard.activeKey)
-  const formValues = useStore((state) => state.dashboard.formValues)
-  const error = useStore((state) => state.dashboard.error)
-  const dashboardDataPoolIds = useStore((state) => state.dashboard.dashboardDataPoolIds[activeKey])
+  const activeKey = useStore(state => state.dashboard.activeKey)
+  const formValues = useStore(state => state.dashboard.formValues)
+  const error = useStore(state => state.dashboard.error)
+  const dashboardDataPoolIds = useStore(state => state.dashboard.dashboardDataPoolIds[activeKey])
   const dashboardDataActiveKey = getDashboardDataActiveKey(rChainId, formValues.walletAddress)
-  const dashboardDataMapper = useStore((state) => state.dashboard.dashboardDatasMapper[dashboardDataActiveKey])
-  const noResult = useStore((state) => state.dashboard.noResult)
-  const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
-  const isLoading = useStore((state) => state.dashboard.loading)
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
-  const poolsMapper = useStore((state) => state.pools.poolsMapper[rChainId])
-  const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
-  const setFormValues = useStore((state) => state.dashboard.setFormValues)
+  const dashboardDataMapper = useStore(state => state.dashboard.dashboardDatasMapper[dashboardDataActiveKey])
+  const noResult = useStore(state => state.dashboard.noResult)
+  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
+  const isLoading = useStore(state => state.dashboard.loading)
+  const isXSmDown = useLayoutStore(state => state.isXSmDown)
+  const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
+  const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[rChainId])
+  const setFormValues = useStore(state => state.dashboard.setFormValues)
 
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
@@ -91,7 +91,7 @@ export const Dashboard = ({
   // curvejs change
   useEffect(() => {
     updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, !pageLoaded, haveAllPools, poolsMapper])
 
   // signerAddress
@@ -99,7 +99,7 @@ export const Dashboard = ({
     if (signerAddress) {
       updateFormValues({ walletAddress: signerAddress })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [signerAddress])
 
   const updatePath = useCallback(
@@ -141,7 +141,7 @@ export const Dashboard = ({
               <TableRowNoResult colSpan={colSpan} noResult={noResult} error={error} />
             ) : dashboardDataPoolIds?.length > 0 ? (
               <>
-                {dashboardDataPoolIds.map((poolId) => {
+                {dashboardDataPoolIds.map(poolId => {
                   const poolData = poolsMapper?.[poolId]
                   const dashboardData = dashboardDataMapper?.[poolId]
 

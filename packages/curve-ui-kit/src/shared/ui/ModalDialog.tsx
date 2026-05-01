@@ -17,7 +17,7 @@ const {
   Height: { modal: modalHeight },
 } = SizesAndSpaces
 
-export type ModalDialogProps = {
+type ModalDialogProps = {
   /** Content of the modal dialog */
   children: ReactNode
 

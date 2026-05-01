@@ -28,13 +28,13 @@ export const { useQuery: useIntegrations } = queryFactory({
   category: 'global.integrations',
 })
 
-export const parseIntegrationsList = (integrationsList: IntegrationsResponse) =>
-  sortBy(integrationsList, (i) => i.name).map(
+const parseIntegrationsList = (integrationsList: IntegrationsResponse) =>
+  sortBy(integrationsList, i => i.name).map(
     (app): Partner => ({
       name: app.name,
       description: app.description,
       imageId: `platforms/${app.imageId}`,
-      networks: fromEntries(app.networks.map((n) => [n, true])),
+      networks: fromEntries(app.networks.map(n => [n, true])),
       tags: app.tags,
       appUrl: app.appUrl ?? undefined,
       twitterUrl: app.twitterUrl ?? undefined,

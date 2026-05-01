@@ -22,15 +22,14 @@ type VoteGaugeFieldProps = {
 
 export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
   const { address: userAddress } = useConnection()
-  const castVote = useStore((state) => state.gauges.castVote)
-  const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
+  const castVote = useStore(state => state.gauges.castVote)
+  const txCastVoteState = useStore(state => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
     chainId: Chain.Ethereum,
     gaugeAddress: userGaugeVoteData?.gaugeAddress,
     userAddress,
   })
   const { userPower, gaugeAddress } = userGaugeVoteData
-  // eslint-disable-next-line react-hooks/purity
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed

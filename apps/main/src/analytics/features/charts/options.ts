@@ -13,6 +13,8 @@ const deepMerge = <T>(target: T, source: DeepPartial<T>): T => ({
   ),
 })
 
+const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const // not an array to prevent typing as number[]
+
 /** Creates a color palette (and font settings) derived from the MUI theme for use in ECharts options. */
 export const createPalette = ({ theme }: { theme: Theme }) => ({
   fontFamily: theme.typography.bodyMRegular.fontFamily as string,
@@ -21,16 +23,8 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
   gridLinesColor: theme.design.Color.Neutral[300],
   axisLabelsColor: theme.design.Text.TextColors.Tertiary,
 
-  colors: [
-    theme.design.Chart.Lines.Line1,
-    theme.design.Chart.Lines.Line2,
-    theme.design.Chart.Lines.Line3,
-    theme.design.Chart.Lines.Line4,
-    theme.design.Chart.Lines.Line5,
-    theme.design.Chart.Lines.Line6,
-    theme.design.Chart.Lines.Line7,
-    theme.design.Chart.Lines.Line8,
-  ],
+  colors: CHART_COLOR_INDICES.map(i => theme.design.Chart.Lines[i]),
+  surfaceColors: CHART_COLOR_INDICES.map(i => theme.design.Chart.Surfaces[i]),
 })
 
 type ChartPalette = ReturnType<typeof createPalette>
@@ -51,7 +45,7 @@ export const createTooltip = (formatter: (v: number) => string) => ({
     `<strong>${(params as TooltipParam[])[0].axisValue}</strong>` +
     (params as TooltipParam[])
       .map(
-        (item) =>
+        item =>
           `<div style="display:flex;justify-content:space-between;gap:1rem;font-variant-numeric:tabular-nums">` +
           `<span>${item.marker}${item.seriesName}</span>` +
           `<span>${formatter(item.value)}</span>` +
@@ -73,9 +67,14 @@ export const createChartOptions = ({
   deepMerge(createDefaults(palette), {
     ...options,
     series: toArray(options.series)
-      .map((serie, index) => ({ serie, toggled: legendSets[index].toggled, color: palette.colors[index] }))
+      .map((serie, index) => ({
+        serie,
+        toggled: legendSets[index].toggled,
+        color: palette.colors[index],
+        surfaceColor: palette.surfaceColors[index],
+      }))
       .filter(({ toggled }) => toggled !== false)
-      .map(({ serie, color }) => deepMerge(createSerieDefaults(serie, color), serie)),
+      .map(({ serie, color, surfaceColor }) => deepMerge(createSerieDefaults(serie, color, surfaceColor), serie)),
   })
 
 const createDefaults = (palette: ChartPalette): EChartsOption => ({
@@ -104,7 +103,7 @@ const createDefaults = (palette: ChartPalette): EChartsOption => ({
   },
 })
 
-const createSerieDefaults = (serie: SeriesOption, color: string): SeriesOption => ({
+const createSerieDefaults = (serie: SeriesOption, color: string, surfaceColor: string): SeriesOption => ({
   symbol: 'circle',
   symbolSize: 8,
   showSymbol: false, // hidden by default, only shown on hover (emphasis below)
@@ -116,7 +115,7 @@ const createSerieDefaults = (serie: SeriesOption, color: string): SeriesOption =
   silent: true, // Removes the pointer cursor when hovering on line, clicking does nothing anyway?
   lineStyle: { color, width: 2 },
   itemStyle: { color, borderColor: color, borderWidth: 2 }, // tooltip marker color
-  ...('areaStyle' in serie && { areaStyle: { color, opacity: 1 } }),
+  ...('areaStyle' in serie && { areaStyle: { color: surfaceColor, opacity: 1 } }),
 })
 
 /** Converts a UTC timestamp (ms) to an ISO date string (YYYY-MM-DD) for use as an ECharts category axis value. */

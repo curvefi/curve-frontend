@@ -51,16 +51,16 @@ export const FormWithdraw = ({
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolWithdraw.activeKey)
-  const formEstGas = useStore((state) => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolWithdraw.formStatus)
-  const formValues = useStore((state) => state.poolWithdraw.formValues)
-  const slippage = useStore((state) => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
-  const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
-  const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const activeKey = useStore(state => state.poolWithdraw.activeKey)
+  const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formStatus = useStore(state => state.poolWithdraw.formStatus)
+  const formValues = useStore(state => state.poolWithdraw.formValues)
+  const slippage = useStore(state => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
+  const fetchStepApprove = useStore(state => state.poolWithdraw.fetchStepApprove)
+  const fetchStepWithdraw = useStore(state => state.poolWithdraw.fetchStepWithdraw)
+  const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
@@ -100,10 +100,17 @@ export const FormWithdraw = ({
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues) => {
+    async (
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      pool: Pool,
+      formValues: FormValues,
+      maxSlippage: string,
+    ) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues)
+      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues, maxSlippage)
       if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepApprove],
@@ -116,7 +123,7 @@ export const FormWithdraw = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -145,7 +152,7 @@ export const FormWithdraw = ({
       let isValid = haveSigner && !isSeed && isValidLpToken && !!formValues.selected && !formStatus.error
 
       if (isValid && (formValues.selected === 'token' || formValues.selected === 'imbalance')) {
-        isValid = formValues.amounts.some((a) => +a.value > 0)
+        isValid = formValues.amounts.some(a => +a.value > 0)
       }
 
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
@@ -157,7 +164,7 @@ export const FormWithdraw = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues),
+          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
@@ -196,12 +203,12 @@ export const FormWithdraw = ({
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['WITHDRAW'] : ['APPROVAL', 'WITHDRAW']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleApproveClick, handleWithdrawClick, haveSigner, lpTokenBalance],
   )
@@ -219,7 +226,7 @@ export const FormWithdraw = ({
     if (poolId) {
       resetState(poolData, 'WITHDRAW')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -227,7 +234,7 @@ export const FormWithdraw = ({
     if (chainId && poolId) {
       updateFormValues({}, null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
@@ -235,7 +242,7 @@ export const FormWithdraw = ({
     if (maxSlippage) {
       updateFormValues({}, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // steps
@@ -256,7 +263,7 @@ export const FormWithdraw = ({
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     config,
     chainId,
@@ -270,13 +277,13 @@ export const FormWithdraw = ({
     seed.isSeed,
   ])
 
-  const tokenAddresses = useMemo(() => formValues.amounts.map((a) => a.tokenAddress), [formValues.amounts])
+  const tokenAddresses = useMemo(() => formValues.amounts.map(a => a.tokenAddress), [formValues.amounts])
   const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses })
 
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
-      const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
+      const foundCoinWithAmount = formValues.amounts.find(a => Number(a.value) > 0)
 
       if (foundCoinWithAmount && !lodash.isUndefined(usdRates[foundCoinWithAmount.tokenAddress])) {
         const { value, tokenAddress } = foundCoinWithAmount
@@ -286,10 +293,10 @@ export const FormWithdraw = ({
         }
       }
     } else if (formValues.selected === 'lpToken' || formValues.selected === 'imbalance') {
-      const amounts = formValues.amounts.filter((a) => Number(a.value) > 0)
+      const amounts = formValues.amounts.filter(a => Number(a.value) > 0)
       let usdAmountTotal = 0
 
-      amounts.forEach((a) => {
+      amounts.forEach(a => {
         const usdRate = usdRates[a.tokenAddress]
         if (usdRate && !lodash.isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
@@ -337,7 +344,7 @@ export const FormWithdraw = ({
             aria-label="Customized amounts received"
             isDisabled={isDisabled}
             value={formValues.selected}
-            onChange={(selected) => {
+            onChange={selected => {
               if (selected === 'token') {
                 updateFormValues(
                   {
@@ -443,7 +450,7 @@ export const FormWithdraw = ({
           <Checkbox
             isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
-            onChange={(isWrapped) => {
+            onChange={isWrapped => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
                 const cFormValues = lodash.cloneDeep(formValues)

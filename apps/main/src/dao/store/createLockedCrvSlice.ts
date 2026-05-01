@@ -62,7 +62,7 @@ export type LockedCrvSlice = {
   }
 }
 
-export const DEFAULT_STATE: SliceState = {
+const DEFAULT_STATE: SliceState = {
   activeKey: '',
   activeKeyVecrvInfo: '',
   formEstGas: {},
@@ -355,7 +355,7 @@ export const createLockedCrvSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -364,6 +364,6 @@ export const createLockedCrvSlice = (
   },
 })
 
-export function getActiveKey(formType: FormType | '', chainId: ChainId | undefined, walletAddress: string | undefined) {
+function getActiveKey(formType: FormType | '', chainId: ChainId | undefined, walletAddress: string | undefined) {
   return `${formType}-${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}`
 }

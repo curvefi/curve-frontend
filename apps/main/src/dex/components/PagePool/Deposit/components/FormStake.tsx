@@ -29,15 +29,15 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolDeposit.formStatus)
-  const formValues = useStore((state) => state.poolDeposit.formValues)
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
-  const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
-  const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
-  const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
+  const activeKey = useStore(state => state.poolDeposit.activeKey)
+  const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formStatus = useStore(state => state.poolDeposit.formStatus)
+  const formValues = useStore(state => state.poolDeposit.formValues)
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
+  const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
+  const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
+  const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
@@ -83,7 +83,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -125,12 +125,12 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['STAKE'] : ['APPROVAL', 'STAKE']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleApproveClick, handleStakeClick],
   )
@@ -148,7 +148,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (poolId) {
       resetState(poolData, 'STAKE')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
 
   // curve state change
@@ -156,7 +156,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     if (chainId && poolId) {
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // steps
@@ -165,7 +165,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolId, signerAddress, formValues, formStatus])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
@@ -187,7 +187,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           balance={lpTokenBalance ?? ''}
           balanceLoading={lpTokenBalanceLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
-          handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
+          handleAmountChange={useCallback(lpToken => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
         />
       </FieldsWrapper>

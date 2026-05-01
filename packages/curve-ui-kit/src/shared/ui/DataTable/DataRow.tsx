@@ -29,6 +29,7 @@ export type DataRowProps<T extends TableItem> = {
   isLast: boolean
   expandedPanel?: ExpandedPanel<T>
   shouldStickFirstColumn?: boolean
+  verticalAlign?: 'top' | 'center' | 'bottom'
 }
 
 export const DataRow = <T extends TableItem>({
@@ -37,6 +38,7 @@ export const DataRow = <T extends TableItem>({
   row,
   expandedPanel,
   shouldStickFirstColumn,
+  verticalAlign = 'center',
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -50,12 +52,13 @@ export const DataRow = <T extends TableItem>({
   const visibleCells = row.getVisibleCells()
   return (
     <>
-      <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverRef={{ current: element }} disabled={isMobile}>
+      <InvertOnHover hoverColor={t => t.design.Table.Row.Hover} hoverRef={{ current: element }} disabled={isMobile}>
         <TableRow
           sx={useMemo(
             () => ({
               marginBlock: 0,
               cursor: hasUrl ? 'pointer' : 'default',
+              verticalAlign,
               transition: `border-bottom ${TransitionFunction}`,
               [`& .${DesktopOnlyHoverClass}`]: {
                 opacity: { mobile: 1, desktop: 0 },
@@ -64,18 +67,18 @@ export const DataRow = <T extends TableItem>({
               '&:hover': {
                 [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {
-                  backgroundColor: (t) => t.design.Table.Row.Hover,
+                  backgroundColor: t => t.design.Table.Row.Hover,
                 },
               },
               ...(isLast && {
                 // to avoid the sticky header showing without any rows, show the last row on top of it
                 position: 'sticky',
-                zIndex: (t) => t.zIndex.tableStickyLastRow,
+                zIndex: t => t.zIndex.tableStickyLastRow,
                 top: 0,
-                backgroundColor: (t) => t.design.Table.Row.Default,
+                backgroundColor: t => t.design.Table.Row.Default,
               }),
             }),
-            [isLast, hasUrl],
+            [isLast, hasUrl, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

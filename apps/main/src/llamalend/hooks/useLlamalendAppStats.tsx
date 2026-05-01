@@ -3,8 +3,10 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@primitives/fetch.utils'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -52,11 +54,15 @@ export function useLlamalendAppStats(
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
   const isMarketPage = useMatchRoute({ to: `${currentApp}/$network${LLAMALEND_ROUTES.PAGE_MARKETS}/$id` })
+  const showDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
 
   enabled &&= !isDesktop || !isMarketPage // hide header stats on lend/crvusd market pages only on desktop
 
-  const { data: marketData } = useLlamaMarkets(address, enabled)
-  const tvl = useMemo(() => sum((marketData?.markets ?? []).map((m) => m.tvl)), [marketData])
+  const { data: marketData } = useLlamaMarkets(
+    { userAddress: address, enableLLv2: useLLv2(), showDeprecatedMarkets },
+    enabled,
+  )
+  const tvl = useMemo(() => sum((marketData?.markets ?? []).map(m => m.tvl)), [marketData])
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
   const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)

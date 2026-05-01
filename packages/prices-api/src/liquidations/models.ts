@@ -54,10 +54,19 @@ export type LiqLosses = {
 }
 
 export type LiqHealthDecile = {
-  decile: string
-  collateralUsdValue: number
+  healthDecile: string
+  collateral: number
   debt: number
-  stablecoin: number
+  borrowed: number
+}
+
+export type LiqHealthDeciles = {
+  meanHealth: number
+  medianHealth: number
+  stdHealth: number
+  minHealth: number
+  maxHealth: number
+  deciles: LiqHealthDecile[]
 }
 
 export type TotalOverview = {
@@ -67,5 +76,11 @@ export type TotalOverview = {
   liquidatablePositions: number
   liquidatablePosDebtUsd: number
   liquidatableCollateralUsd: number
-  liquidatableBorrowedUsd: number
+  liquidatableBorrowedUsd: number | null
+  liquidatableStablecoinUsd: number | null
 }[]
+
+export type BadDebt = (TotalOverview[number] & {
+  market: string
+  controllerAddress: Address
+})[]

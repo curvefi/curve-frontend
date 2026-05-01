@@ -10,7 +10,7 @@ import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-col
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanPricesReceiveQuery = CreateLoanFormQuery & Pick<CreateLoanForm, 'maxDebt'>
-export type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuery>
+type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuery>
 
 type CreateLoanPricesResult = [Decimal, Decimal]
 const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as CreateLoanPricesResult
@@ -67,7 +67,7 @@ export const {
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, ignoreMaxCollateral: true }),
-  dependencies: (params) => [
+  dependencies: params => [
     createLoanMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],

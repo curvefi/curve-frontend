@@ -23,7 +23,7 @@ export type MintMarket = MintMarketFromApi & {
 export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
   queryKey: () => ['mint-markets', 'v2'] as const,
   queryFn: async (): Promise<MintMarket[]> =>
-    recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map((market) => ({ ...market, chain }))),
+    recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),
   category: 'llamalend.marketList',
   validationSuite: EmptyValidationSuite,
 })
@@ -35,7 +35,7 @@ const {
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
-    mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map((market) => market.controller)),
+    mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map(market => market.controller)),
   category: 'llamalend.user',
   validationSuite: userAddressValidationSuite,
 })
@@ -60,7 +60,7 @@ export const invalidateAllUserMintMarkets = async (userAddress: Address | null |
 
   const invalidateContracts = recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).flatMap(
     ([blockchainId, contracts]) =>
-      contracts.map((contractAddress) =>
+      contracts.map(contractAddress =>
         invalidateUserMintMarketStats({
           userAddress,
           blockchainId,

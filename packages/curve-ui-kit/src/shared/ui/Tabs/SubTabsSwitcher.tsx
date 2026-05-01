@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { TabsSwitcher, type TabOption } from './TabsSwitcher'
 
-export type SubTabsSwitcherProps<T extends string | number> = {
+type SubTabsSwitcherProps<T extends string | number> = {
   tabs: readonly TabOption<T>[]
   value: T | undefined
   onChange: (value: T) => void
@@ -12,7 +12,7 @@ export type SubTabsSwitcherProps<T extends string | number> = {
  */
 export const SubTabsSwitcher = <T extends string | number>({ tabs, value, onChange }: SubTabsSwitcherProps<T>) => (
   <Box
-    sx={(theme) => ({
+    sx={theme => ({
       position: 'relative',
       width: '100%',
       // Pseudo-element keeps the divider visually aligned without padding shifts

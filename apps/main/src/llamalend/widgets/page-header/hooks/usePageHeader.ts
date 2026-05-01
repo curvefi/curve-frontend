@@ -19,7 +19,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress, type CampaignRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -51,7 +51,7 @@ function buildSupplyRate({
     | { crvRates?: Range<number> | null; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
     | undefined
   lendingSnapshots: LendingSnapshot[] | undefined
-  campaigns: CampaignPoolRewards[]
+  campaigns: CampaignRewards[]
   blockchainId: Chain | undefined
   loading: boolean
   category: AverageCategory
@@ -76,9 +76,9 @@ function buildSupplyRate({
       blockchainId &&
         formatSupplyExtraIncentives({
           incentives: notFalsyArray(
-            marketOnChainRewards?.rewardsApr?.map((reward) => ({
+            marketOnChainRewards?.rewardsApr?.map(reward => ({
               title: reward.symbol,
-              percentage: aprToApy(reward.apy) as number,
+              percentage: aprToApy(reward.apy)!,
               blockchainId,
               address: reward.tokenAddress,
             })),
@@ -153,7 +153,7 @@ export const usePageHeader = ({
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
   const lendingSnapshots = isLendMarket ? (snapshots as LendingSnapshot[] | undefined) : undefined
-  const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
+  const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield)
   const supplyRate = isLendMarket
     ? buildSupplyRate({
         supplyApy: marketRates?.lendApy,

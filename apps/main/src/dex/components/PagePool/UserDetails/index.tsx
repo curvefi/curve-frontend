@@ -32,7 +32,7 @@ export const MySharesStats = ({
 } & Pick<TransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
 
   const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo({
     chainId: rChainId,

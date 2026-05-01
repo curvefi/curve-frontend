@@ -58,4 +58,4 @@ const refetch = [
 export const invalidateOrRefetchCreateLoanRouteQueries = async (
   route: RouteResponse | undefined,
   params: CreateLoanDebtParams,
-) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map((run) => run(params))))
+) => route && (await Promise.all((route.id == params.routeId ? refetch : invalidate).map(run => run(params))))

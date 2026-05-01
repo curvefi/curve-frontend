@@ -1,3 +1,4 @@
+import { zeroAddress } from 'viem'
 import type { Address } from 'viem'
 import { oneAddress } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -60,6 +61,7 @@ const createBaseSupplyMarket = ({
   vaultOverrides,
   currentApy,
   futureApy,
+  hasGauge = true,
 }: {
   chainId: number
   walletBalances: {
@@ -73,6 +75,7 @@ const createBaseSupplyMarket = ({
   }
   currentApy: Decimal
   futureApy: Decimal
+  hasGauge?: boolean
 }) => {
   const statsRates = createStub(createSupplyRates(currentApy))
   const statsFutureRates = createStub(createSupplyRates(futureApy))
@@ -100,7 +103,7 @@ const createBaseSupplyMarket = ({
       address: SUPPLY_MARKET_ADDRESSES.borrowed,
       decimals: 18,
     },
-    addresses: SUPPLY_MARKET_ADDRESSES,
+    addresses: { ...SUPPLY_MARKET_ADDRESSES, ...(!hasGauge && { gauge: zeroAddress }) },
     stats: {
       rates: statsRates,
       futureRates: statsFutureRates,
@@ -130,8 +133,16 @@ const createBaseSupplyMarket = ({
   }
 }
 
-export const createDepositScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
-  const input = { amount: '12.5' as const }
+export const createDepositScenario = ({
+  chainId,
+  approved,
+  maxDeposit = '1000000',
+}: {
+  chainId: number
+  approved: boolean
+  maxDeposit?: Decimal
+}) => {
+  const input = { amount: '12.5' as const, maxDeposit }
   const amount = input.amount
   const amountArgs = [amount] as const
   const balances = {
@@ -144,6 +155,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
   const futureApy = '0.0412'
   const depositApprove = createStub([TEST_TX_HASH])
   const depositIsApproved = approved ? createStub(true) : createIsApprovedStub(depositApprove)
+  const maxDepositStub = createStub(input.maxDeposit)
   const previewDeposit = createStub(input.amount)
   const estimateGasDeposit = createStub(`${150_000}`)
   const estimateGasDepositApprove = createStub(`${95_000}`)
@@ -156,6 +168,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
     currentApy,
     futureApy,
     vaultOverrides: {
+      maxDeposit: maxDepositStub,
       previewDeposit,
       depositIsApproved,
       depositApprove,
@@ -175,6 +188,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
       walletBalances: [] as const,
       marketRates: [false, false] as const,
       futureRates: [amount, '0'] as const,
+      maxDeposit: [] as const,
       previewDeposit: amountArgs,
       isApproved: amountArgs,
       estimateGas: amountArgs,
@@ -193,6 +207,7 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
     },
     stubs: {
       ...sharedStubs,
+      maxDeposit: maxDepositStub,
       previewDeposit,
       depositIsApproved,
       depositApprove,
@@ -203,7 +218,15 @@ export const createDepositScenario = ({ chainId, approved }: { chainId: number; 
   }
 }
 
-export const createStakeScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+export const createStakeScenario = ({
+  chainId,
+  approved,
+  hasGauge = true,
+}: {
+  chainId: number
+  approved: boolean
+  hasGauge?: boolean
+}) => {
   const input = { amount: '15' as const }
   const amount = input.amount
   const balances = {
@@ -226,6 +249,7 @@ export const createStakeScenario = ({ chainId, approved }: { chainId: number; ap
     walletBalances: balances,
     currentApy,
     futureApy,
+    hasGauge,
     vaultOverrides: {
       stakeIsApproved,
       stakeApprove,
@@ -294,6 +318,8 @@ export const createWithdrawScenario = ({
   } as const
   const currentApy = '0.0510'
   const futureApy = isFull ? '0.0540' : '0.0531'
+  const maxWithdraw = createStub(depositedShares)
+  const maxRedeem = createStub(depositedShares)
   const previewWithdraw = createStub(input.amount)
   const estimateGasWithdraw = createStub(`${142_000}`)
   const estimateGasRedeem = createStub(`${149_000}`)
@@ -307,6 +333,8 @@ export const createWithdrawScenario = ({
     currentApy,
     futureApy,
     vaultOverrides: {
+      maxWithdraw,
+      maxRedeem,
       previewWithdraw,
       withdraw,
       redeem,
@@ -325,6 +353,8 @@ export const createWithdrawScenario = ({
       walletBalances: [] as const,
       marketRates: [false, false] as const,
       futureRates: [decimalMinus('0', amount), '0'] as const,
+      maxWithdraw: [] as const,
+      maxRedeem: [] as const,
       previewWithdraw: [amount] as const,
       estimateGas: [submitAmount] as const,
       submit: [submitAmount] as const,
@@ -340,6 +370,8 @@ export const createWithdrawScenario = ({
     },
     stubs: {
       ...sharedStubs,
+      maxWithdraw,
+      maxRedeem,
       previewWithdraw,
       estimateGasWithdraw,
       estimateGasRedeem,
@@ -394,10 +426,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
         prevAmountSupplied: balances.gauge,
         symbol: 'crvUSD',
       },
-      alert: {
-        title: 'Unstake only',
-        description: 'recover your lent assets',
-      },
+      alert: 'alert-unstake-only',
     },
     stubs: {
       ...sharedStubs,

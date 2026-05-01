@@ -60,16 +60,16 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
   isNative(query)
     ? await queryClient
         .fetchQuery({ ...getNativeBalanceQueryOptions(config, query), staleTime: 0 })
-        .then((balance) => convertBalance({ value: balance.value, decimals: balance.decimals }))
+        .then(balance => convertBalance({ value: balance.value, decimals: balance.decimals }))
     : await queryClient
         .fetchQuery({
           ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
           staleTime: 0,
         })
-        .then((results) => convertBalance(parseERC20Results(results)))
+        .then(results => convertBalance(parseERC20Results(results)))
 
 /** Invalidate a specific token balance query  */
-export const invalidateTokenBalance = (config: Config, query: TokenBalanceQuery) => {
+const invalidateTokenBalance = (config: Config, query: TokenBalanceQuery) => {
   const { queryKey } = isNative(query)
     ? getNativeBalanceQueryOptions(config, query)
     : readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) })
@@ -83,7 +83,7 @@ export const invalidateTokenBalances = async (
   { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
 ) =>
   await Promise.all(
-    uniqAddresses(tokenAddresses).map((tokenAddress) =>
+    uniqAddresses(tokenAddresses).map(tokenAddress =>
       invalidateTokenBalance(config, { chainId, userAddress, tokenAddress }),
     ),
   )
@@ -128,7 +128,7 @@ const QUERIES_FRESHNESS_OPTIONS = {
 export function useTokenBalance(
   { chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>,
   // TODO: refactor into a validation suite, same for usePoolTokenBalances and usePoolTokenDepositBalances
-  enabled: boolean = true,
+  enabled = true,
 ) {
   const isEnabled = enabled && chainId != null && userAddress != null && tokenAddress != null
   const isNativeToken = tokenAddress != null && isNative({ tokenAddress })
@@ -190,7 +190,7 @@ const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =
  */
 export function useTokenBalances(
   { chainId, userAddress, tokenAddresses = [] }: FieldsOf<ChainQuery & UserQuery> & { tokenAddresses?: Address[] },
-  enabled: boolean = true,
+  enabled = true,
 ) {
   const config = useConfig()
 
@@ -200,7 +200,7 @@ export function useTokenBalances(
   return useQueries({
     queries: useMemo(
       () =>
-        uniqueAddresses.map((tokenAddress) => ({
+        uniqueAddresses.map(tokenAddress => ({
           ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
           ...QUERIES_FRESHNESS_OPTIONS,
           enabled: isEnabled,
@@ -238,8 +238,8 @@ export const prefetchTokenBalances = async (
 ) => {
   const uniqueAddresses = uniqAddresses(tokenAddresses)
 
-  const nativeToken = uniqueAddresses.find((tokenAddress) => isNative({ tokenAddress }))
-  const erc20Addresses = uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress }))
+  const nativeToken = uniqueAddresses.find(tokenAddress => isNative({ tokenAddress }))
+  const erc20Addresses = uniqueAddresses.filter(tokenAddress => !isNative({ tokenAddress }))
 
   // Prefetch native balance individually (can't be multicalled as it uses wagmi's useBalance, and it's one address anyway)
   if (nativeToken) {
@@ -254,7 +254,7 @@ export const prefetchTokenBalances = async (
   // Wagmi config handles multicall batching by batchSize under the hood (defaults to 1_024 bytes)
   if (!erc20Addresses.length) return
 
-  const tokenContracts = erc20Addresses.map((tokenAddress) =>
+  const tokenContracts = erc20Addresses.map(tokenAddress =>
     getERC20QueryContracts({ chainId, userAddress, tokenAddress }),
   )
   const results = await multicall(config, { chainId, contracts: tokenContracts.flat() })

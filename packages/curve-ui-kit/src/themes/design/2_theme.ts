@@ -170,7 +170,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[500],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -267,7 +267,7 @@ export const createLightDesign = (
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Grays[100],
+      Fill: Layer[1].Fill,
       Stroke: Text.TextColors.Primary,
     },
     Hover: {
@@ -316,6 +316,9 @@ export const createLightDesign = (
     LiquidationZone: {
       Current: Oranges[50],
       Future: Blues[100],
+      CurrentTopLine: Reds[600],
+      CurrentBottomLine: Yellows[500],
+      FutureLine: Blues[500],
     },
     Candles: {
       Positive: Greens[500],
@@ -324,17 +327,17 @@ export const createLightDesign = (
     Lines: {
       Positive: Greens[500],
       Negative: Reds[600],
-      Line1: Blues[500],
-      Line2: Greens[500],
-      Line3: Yellows[500],
-      Line4: Oranges[500],
-      Line5: Reds[500],
-      Line6: Violets[600],
-      Line7: Blues[800],
-      Line8: Reds[800],
+      1: Blues[500],
+      2: Greens[500],
+      3: Yellows[500],
+      4: Oranges[500],
+      5: Reds[500],
+      6: Violets[600],
+      7: Greens[800],
+      8: Reds[800],
     },
     Surfaces: {
-      1: Blues[100],
+      1: Blues[200],
       2: Greens[100],
       3: Yellows[200],
       4: Oranges[50],
@@ -635,7 +638,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Label: Blues[700],
-        Fill: Grays[850],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -732,7 +735,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Color.Neutral[75],
+      Fill: Layer[1].Fill,
       Stroke: Text.TextColors.Primary,
     },
     Hover: {
@@ -781,6 +784,9 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     LiquidationZone: {
       Current: Oranges[900],
       Future: Blues[950],
+      CurrentTopLine: Reds[500],
+      CurrentBottomLine: Yellows[500],
+      FutureLine: Blues[500],
     },
     Candles: {
       Positive: Greens[400],
@@ -789,17 +795,17 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Lines: {
       Positive: Greens[400],
       Negative: Reds[500],
-      Line1: Blues[500],
-      Line2: Greens[400],
-      Line3: Yellows[500],
-      Line4: Oranges[500],
-      Line5: Reds[500],
-      Line6: Violets[500],
-      Line7: Blues[300],
-      Line8: Reds[100],
+      1: Blues[500],
+      2: Greens[400],
+      3: Yellows[500],
+      4: Oranges[500],
+      5: Reds[500],
+      6: Violets[500],
+      7: Greens[100],
+      8: Reds[100],
     },
     Surfaces: {
-      1: Blues[950],
+      1: Blues[900],
       2: Greens[800],
       3: Yellows[950],
       4: Oranges[900],
@@ -1061,7 +1067,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[500],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -1207,6 +1213,9 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     LiquidationZone: {
       Current: Oranges[50],
       Future: Blues[100],
+      CurrentTopLine: Reds[500],
+      CurrentBottomLine: Yellows[500],
+      FutureLine: Violets[500],
     },
     Candles: {
       Positive: Greens[500],
@@ -1215,22 +1224,22 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Lines: {
       Positive: Greens[500],
       Negative: Reds[500],
-      Line1: Blues[500],
-      Line2: Greens[500],
-      Line3: Yellows[500],
-      Line4: Oranges[500],
-      Line5: Reds[500],
-      Line6: Violets[600],
-      Line7: Blues[800],
-      Line8: Reds[800],
+      1: Violets[500],
+      2: Greens[500],
+      3: Yellows[500],
+      4: Oranges[500],
+      5: Reds[500],
+      6: Blues[500],
+      7: Greens[800],
+      8: Reds[800],
     },
     Surfaces: {
-      1: Blues[100],
+      1: Violets[200],
       2: Greens[100],
       3: Yellows[200],
       4: Oranges[50],
       5: Reds[50],
-      6: Violets[100],
+      6: Blues[100],
       7: Greens[100],
       8: Reds[200],
     },

@@ -3,7 +3,7 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 
 export const useTokensNameMapper = (rChainId: ChainId | '') => {
-  const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId])
+  const tokensNameMapper = useStore(state => state.tokens.tokensNameMapper[rChainId])
   return {
     tokensNameMapper: tokensNameMapper || {},
     tokensNameMapperStr: useMemo(

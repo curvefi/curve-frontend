@@ -3,7 +3,7 @@ import { AlertColor, AlertIcons } from '@/dex/utils/alerts'
 import Typography from '@mui/material/Typography'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
-export const PoolAlertIcon = ({ alert: { alertType, message } }: { alert: PoolAlert }) => (
+const PoolAlertIcon = ({ alert: { alertType, message } }: { alert: PoolAlert }) => (
   <Tooltip title={message}>
     <Typography color={AlertColor[alertType]} variant="bodyXsRegular">
       {AlertIcons[alertType]}

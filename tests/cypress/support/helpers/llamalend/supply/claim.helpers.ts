@@ -1,4 +1,4 @@
-import { encodeFunctionData, parseAbi, type Address } from 'viem'
+import { type Address, encodeFunctionData, parseAbi } from 'viem'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
@@ -42,17 +42,18 @@ export const submitClaimAndSettle = (
   })
 }
 
-const checkpointTenderlySupplyRewards = ({
-  vnet,
-  userAddress,
-  gaugeAddress,
-}: {
-  vnet: CreateVirtualTestnetResponse
-  userAddress: Address
-  gaugeAddress: Address
-}) =>
-  // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
-  loadTenderlyAccount().then(async (tenderlyAccount) => {
+const checkpointTenderlySupplyRewards = (
+  {
+    vnet,
+    userAddress,
+    gaugeAddress,
+  }: {
+    vnet: CreateVirtualTestnetResponse
+    userAddress: Address
+    gaugeAddress: Address
+  }, // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
+) =>
+  loadTenderlyAccount().then(async tenderlyAccount => {
     await sendVnetTransaction({
       tenderly: { ...tenderlyAccount, vnetId: vnet.id },
       tx: {
@@ -96,19 +97,16 @@ const touchClaimForm = (type: string) => {
 export function validateClaimTabState({
   crvButtonDisabled = true,
   otherRewardsButtonDisabled = true,
+  noRewards = crvButtonDisabled && otherRewardsButtonDisabled,
 }: {
   crvButtonDisabled?: boolean
   otherRewardsButtonDisabled?: boolean
+  noRewards?: boolean
 } = {}) {
   getClaimSubmitButton('crv').should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   getClaimSubmitButton('other').should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
-
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-
-  if (crvButtonDisabled && otherRewardsButtonDisabled) {
-    cy.contains('No rewards').should('be.visible')
-    cy.contains('There are currently no rewards to claim').should('be.visible')
-  }
+  cy.get('[data-testid="supply-claim-empty-state"]', LOAD_TIMEOUT).should(noRewards ? 'be.visible' : 'not.exist')
 }
 
 /**
@@ -150,8 +148,8 @@ export function checkClaimDetailsLoaded({
 
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should('have.length.at.least', 1)
-  cy.get('[data-testid="data-table-cell-token"]').each(($row) => {
-    const [, match] = $row.text().replaceAll(',', '').match(CLAIMABLE_AMOUNT_REGEX) ?? []
+  cy.get('[data-testid="data-table-cell-token"]').each($row => {
+    const [, match] = CLAIMABLE_AMOUNT_REGEX.exec($row.text().replaceAll(',', '')) ?? []
     expect(match).to.not.equal(undefined)
     expect(Number(match)).to.be.greaterThan(0)
   })
@@ -161,7 +159,7 @@ export function checkClaimDetailsLoaded({
     cy.get('[data-testid="rewards-value"]').should('be.visible')
   }
 
-  expectedSymbols?.forEach((symbol) => {
+  expectedSymbols?.forEach(symbol => {
     cy.get('[data-testid="data-table-cell-token"]').contains(symbol)
   })
 }

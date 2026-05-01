@@ -1,4 +1,7 @@
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+
+export const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDT/
 
 const getFromAmountInput = (options = {}) => cy.get('[data-testid="from-amount"] [name="fromAmount"]', options)
 const getToAmountInput = (options = {}) => cy.get('[data-testid="to-amount"] [name="toAmount"]', options)
@@ -19,10 +22,10 @@ export function writeSwapForm({ amount }: { amount: string }) {
  * Check that the swap route details (exchange rate, price impact, to-amount) have loaded.
  */
 export function checkSwapDetailsLoaded() {
-  getToAmountInput(LOAD_TIMEOUT).should(($el) => {
+  getToAmountInput(LOAD_TIMEOUT).should($el => {
     expect($el.val()).to.match(/^\d+(\.\d+)?$/)
   })
-  cy.get('[data-testid="exchange-rate-value"]', LOAD_TIMEOUT).should('contain', '/')
+  getActionValue('exchange-rate').should('match', ExpectedExchangeRate)
   cy.get('[data-testid="price-impact-value"]', LOAD_TIMEOUT).should('contain', '%')
 }
 

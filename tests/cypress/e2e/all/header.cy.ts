@@ -1,4 +1,5 @@
 import {
+  APP_ROUTES,
   AppRoute,
   CRVUSD_PAGE_MARKETS_ROUTE,
   DEFAULT_PAGES,
@@ -61,7 +62,7 @@ describe('Header', () => {
       cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
-      cy.window().then((win) => {
+      cy.window().then(win => {
         // get scroll width dynamically, crvusd page with small header doesn't render a scrollbar
         const scrollWidth = win.innerWidth - win.document.documentElement.clientWidth
         const expectedFooterWidth = Math.min(
@@ -77,13 +78,13 @@ describe('Header', () => {
     })
 
     it('should switch themes', () => {
-      cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
+      cy.get(`[data-testid='navigation-connect-wallet']`).then($nav => {
         const font1 = $nav.css('font-family')
         cy.get(`[data-testid='user-profile-button']`).click()
         cy.get(`[data-testid='theme-switch-button-chad']`).click()
 
         // check font change
-        cy.get(`[data-testid='navigation-connect-wallet']`).then(($el) => {
+        cy.get(`[data-testid='navigation-connect-wallet']`).then($el => {
           const font2 = $el.css('font-family')
           expect(font1).not.to.equal(font2)
           cy.get(`[data-testid='theme-switch-button-dark']`).click()
@@ -168,13 +169,13 @@ describe('Header', () => {
       cy.get(`[data-testid='social-buttons']`).scrollIntoView()
       cy.get(`[data-testid='social-buttons']`).should('be.visible')
       cy.get(`[data-testid='sidebar-settings']`).click()
-      cy.get(`[data-testid='sidebar-settings']`).then(($settings) => {
+      cy.get(`[data-testid='sidebar-settings']`).then($settings => {
         const font1 = $settings.css('font-family')
         cy.get(`[data-testid='theme-switch-button-chad']`).click()
         cy.get(`[data-testid='theme-switch-button-chad']`).should('have.attr', 'aria-pressed', 'true')
 
         // check font change
-        cy.get(`[data-testid='sidebar-settings']`).then(($el) => {
+        cy.get(`[data-testid='sidebar-settings']`).then($el => {
           const font2 = $el.css('font-family')
           expect(font1).not.to.equal(font2)
         })
@@ -203,7 +204,7 @@ describe('Header', () => {
       cy.viewport(width, height)
       const route = oneAppRoute()
       cy.visitWithoutTestConnector(route, {
-        onBeforeLoad: (win) => {
+        onBeforeLoad: win => {
           if (dismissedDate) {
             win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(dismissedDate))
           }
@@ -235,8 +236,24 @@ describe('Header', () => {
     })
   })
 
+  describe('chain selector', () => {
+    beforeEach(() => {
+      ;[width, height] = oneDesktopViewport()
+      cy.viewport(width, height)
+      const route = APP_ROUTES.dex() as unknown as AppRoute
+      cy.visitWithoutTestConnector(route)
+      waitIsLoaded(route)
+    })
+
+    it('should have no missing wagmi chains alert', () => {
+      cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
+      cy.get(`[data-testid='btn-change-chain']`).click()
+      cy.get(`[data-testid='missing-wagmi-chain']`).should('not.exist')
+    })
+  })
+
   function dismissPhishingWarningBanner(date?: number) {
-    cy.window().then((win) => {
+    cy.window().then(win => {
       win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
     })
   }

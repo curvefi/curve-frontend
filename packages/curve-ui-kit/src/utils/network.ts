@@ -26,7 +26,7 @@ export enum Chain {
   Sonic = 146,
   Hyperliquid = 999,
   Xdc = 50,
-  Tac = 2390,
+  Tac = 239,
   Corn = 21000000,
   Ink = 57073,
   Taiko = 167000,
@@ -69,7 +69,7 @@ export const requireBlockchainId = (chainId: Chain) =>
  * Maps prices API blockchain identifiers to numeric chain IDs.
  * Reverse mapping of chainIdToBlockchainId.
  */
-export const ChainIds: Partial<Record<BlockchainId, Chain>> = {
+const ChainIds: Partial<Record<BlockchainId, Chain>> = {
   ethereum: Chain.Ethereum,
   arbitrum: Chain.Arbitrum,
   optimism: Chain.Optimism,

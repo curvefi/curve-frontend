@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { toArray } from '@primitives/array.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -21,9 +22,11 @@ import { WithSkeleton } from './WithSkeleton'
 const { Spacing, IconSize } = SizesAndSpaces
 
 // Correspond to flexbox align items values.
+// eslint-disable-next-line react-refresh/only-export-components
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const MetricSize = {
   small: 'highlightM',
   medium: 'highlightL',
@@ -31,7 +34,7 @@ export const MetricSize = {
   extraLarge: 'highlightXxl',
 } as const satisfies Record<string, TypographyVariantKey>
 
-export const MetricUnitSize = {
+const MetricUnitSize = {
   small: 'highlightXs',
   medium: 'highlightS',
   large: 'highlightM',
@@ -45,11 +48,17 @@ const MetricChangeSize = {
   extraLarge: 'highlightM',
 } as const satisfies Record<string, TypographyVariantKey>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: number
   abbreviate?: boolean // Defaults to true
+}
+
+type MetricErrorTooltip = Omit<TooltipProps, 'children' | 'title' | 'body'> & {
+  title: ReactNode
+  body: ReactNode
 }
 
 /**
@@ -73,7 +82,7 @@ const notionalsToString = (notionals: MetricProps['notional']) =>
   typeof notionals === 'string'
     ? notionals
     : toArray(typeof notionals === 'number' ? { value: notionals, abbreviate: true } : notionals)
-        .map((notional) => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
+        .map(notional => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
         .join(' + ')
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
@@ -102,7 +111,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         onClick={copyValue}
         sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
-        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        title={tooltip?.title ?? (numberValue === null ? t`N/A` : numberValue.toLocaleString())}
         data-testid={`${testId}-value`}
         data-value={value}
       >
@@ -168,6 +177,11 @@ export type MetricProps = {
   /** Optional content to display to the right of the value */
   rightAdornment?: ReactNode
 
+  /** Shows an error triangle icon on the metric value row. */
+  error?: Error | null
+  /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
+  errorTooltip?: MetricErrorTooltip
+
   size?: keyof typeof MetricSize
   alignment?: Alignment
   loading?: boolean
@@ -188,6 +202,8 @@ export const Metric = ({
   notional,
 
   rightAdornment,
+  error = undefined,
+  errorTooltip,
 
   size = 'medium',
   alignment = 'start',
@@ -219,16 +235,27 @@ export const Metric = ({
 
       <WithSkeleton loading={loading}>
         <Stack direction="row" alignItems="baseline">
-          <MetricValue
-            value={value}
-            valueOptions={valueOptions}
-            change={change}
-            size={size}
-            copyValue={value || value === 0 ? copyValue : undefined}
-            tooltip={valueTooltip}
-            testId={testId}
-          />
-          {rightAdornment}
+          {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
+          {error ? (
+            <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
+              <Typography component="span" variant={MetricSize[size]} color="error">
+                <ExclamationTriangleIcon fontSize="inherit" />
+              </Typography>
+            </Tooltip>
+          ) : (
+            <>
+              <MetricValue
+                value={value}
+                valueOptions={valueOptions}
+                change={change}
+                size={size}
+                copyValue={value || value === 0 ? copyValue : undefined}
+                tooltip={valueTooltip}
+                testId={testId}
+              />
+              {rightAdornment}
+            </>
+          )}
         </Stack>
       </WithSkeleton>
 

@@ -7,7 +7,7 @@ import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 
-export type LeverageInfoFieldsOptions = {
+type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
   leverageValue: Query<Decimal | null>
   prevLeverageValue: Query<Decimal | null>
@@ -52,7 +52,7 @@ export const useLeverageInfoFields = ({
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
           ...(leverageEnabled && {
-            exchangeRate: expected && mapQuery(expected, (data) => data.avgPrice ?? null),
+            exchangeRate: expected && mapQuery(expected, data => data.avgPrice ?? null),
             routes,
             slippage,
             onSlippageChange,
@@ -61,6 +61,6 @@ export const useLeverageInfoFields = ({
         }
       : {
           prevCollateral,
-          collateral: mapQuery(prevCollateral, (prev) => prev && collateralDelta && decimalSum(prev, collateralDelta)!),
+          collateral: mapQuery(prevCollateral, prev => prev && collateralDelta && decimalSum(prev, collateralDelta)!),
         }),
   }) satisfies Partial<LoanActionInfoListProps>

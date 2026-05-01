@@ -1,13 +1,10 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
-import { styled, type IStyledComponent } from 'styled-components'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { CellContext } from '@tanstack/react-table'
-import { Icon } from '@ui/Icon'
-import type { IconProps } from '@ui/Icon/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
@@ -50,8 +47,3 @@ export const PoolTitleCell = ({
     </Stack>
   )
 }
-
-export const StyledIcon: IStyledComponent<'web', IconProps> = styled(Icon)`
-  margin: var(--spacing-3) auto 0;
-  color: var(--white);
-`

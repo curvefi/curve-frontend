@@ -16,7 +16,7 @@ export const LlamaChainFilterChips = ({
   const chains = useMemo(
     () =>
       getUniqueSortedStrings(
-        data.filter((market) => !market.deprecatedMessage || market.userHasPositions),
+        data.filter(market => !market.deprecatedMessage || market.userHasPositions),
         LlamaMarketColumnId.Chain,
       ),
     [data],
@@ -34,7 +34,7 @@ export const LlamaChainFilterChips = ({
           selectedChains?.includes(chain)
             ? selectedChains.length === 1
               ? undefined
-              : selectedChains.filter((c) => c !== chain)
+              : selectedChains.filter(c => c !== chain)
             : [...(selectedChains ?? []), chain],
         ),
       ),

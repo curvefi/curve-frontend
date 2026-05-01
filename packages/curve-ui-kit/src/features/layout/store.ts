@@ -37,7 +37,7 @@ const DEFAULT_STATE: LayoutState = {
   isPageVisible: true,
 }
 
-const layoutStore = immer<LayoutState & LayoutActions>((set) => ({
+const layoutStore = immer<LayoutState & LayoutActions>(set => ({
   ...DEFAULT_STATE,
   setLayoutWidth: (pageWidthClassName: PageWidthClassName) => {
     const isLgUp = pageWidthClassName.startsWith('page-large') || pageWidthClassName.startsWith('page-wide')
@@ -45,7 +45,7 @@ const layoutStore = immer<LayoutState & LayoutActions>((set) => ({
     const isSmUp = pageWidthClassName === 'page-small'
     const isXSmDown = pageWidthClassName.startsWith('page-small-x')
     const isXXSm = pageWidthClassName === 'page-small-xx'
-    set((state) => {
+    set(state => {
       state.windowWidth = document.documentElement.clientWidth // excludes scrollbar width, unlike window.innerWidth
       state.pageWidth = pageWidthClassName
       state.isXSmDown = isXSmDown
@@ -56,11 +56,11 @@ const layoutStore = immer<LayoutState & LayoutActions>((set) => ({
     })
   },
   setNavHeight: (value: number) =>
-    set((state) => {
+    set(state => {
       state.navHeight = value
     }),
-  setPageVisible: (visible) =>
-    set((state) => {
+  setPageVisible: visible =>
+    set(state => {
       state.isPageVisible = visible
     }),
 }))

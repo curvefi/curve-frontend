@@ -13,7 +13,7 @@ type BridgeApproveMutation = {
   amount: Decimal
 }
 
-export type BridgeApproveOptions = {
+type BridgeApproveOptions = {
   chainId: number
   onApproved: OnTransactionSuccess<BridgeApproveMutation>
   onReset: () => void
@@ -28,8 +28,8 @@ export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: Brid
         .then(([hash]) => ({ hash: hash as Hex })),
     validationSuite: bridgeFormValidationSuite,
     validationParams: { chainId },
-    pendingMessage: (mutation) => t`Approving... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
-    successMessage: (mutation) => t`Approved! ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
+    pendingMessage: mutation => t`Approving... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
+    successMessage: mutation => t`Approved! ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
     onSuccess: onApproved,
     ...props,
   })

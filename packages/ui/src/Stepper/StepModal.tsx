@@ -26,7 +26,7 @@ export const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
 
   useEffect(() => {
     if (typeof modal.initFn === 'function') modal.initFn()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   return (

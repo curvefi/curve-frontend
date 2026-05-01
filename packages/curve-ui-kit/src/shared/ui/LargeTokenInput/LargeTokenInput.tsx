@@ -9,7 +9,6 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,6 +20,7 @@ import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, formatNumber } from '@ui-kit/utils'
+import { SelectableChip } from '../SelectableChip'
 import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'
@@ -37,10 +37,10 @@ type InputChip = {
 
 export type ChipsPreset = 'max' | 'range'
 const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
-  max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
-  range: [25, 50, 75, 100].map((p) => ({
+  max: [{ label: t`Max`, newBalance: maxBalance => maxBalance }],
+  range: [25, 50, 75, 100].map(p => ({
     label: `${p}%`,
-    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}`),
+    newBalance: maxBalance => maxBalance && calculateNewBalance(maxBalance, `${p}`),
   })),
 }
 
@@ -266,8 +266,8 @@ export const LargeTokenInput = ({
       id={componentId}
       data-testid={testId}
       sx={{
-        backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-        outline: (t) =>
+        backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+        outline: t =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
@@ -279,7 +279,7 @@ export const LargeTokenInput = ({
             alignItems="center"
             sx={{
               // Prevent small size difference in inputs when there's only a label and no chips
-              minHeight: chipSizeClickable['extraSmall'].height,
+              minHeight: chipSizeClickable.extraSmall.height,
             }}
           >
             {label && (
@@ -302,27 +302,29 @@ export const LargeTokenInput = ({
                   [`#${componentId}:hover &`]: { opacity: 1 },
                 }}
               >
-                {chips.map((chip) => (
-                  <Chip
-                    key={`input-chip-${chip.label}`}
-                    label={
-                      <WithSkeleton loading={!!maxBalance?.isLoading}>
-                        <span>{chip.label}</span>
-                      </WithSkeleton>
-                    }
-                    data-testid={!chipDisabled && `input-chip-${chip.label}`}
-                    size="extraSmall"
-                    color="default"
-                    clickable
-                    disabled={chipDisabled}
-                    onClick={() => {
-                      const newBalance = chip.newBalance(maxBalance?.balance)
-                      if (newBalance !== undefined) {
-                        handleBalanceChange(newBalance)
+                {chips.map(
+                  (
+                    chip, // todo: refactor chip to button
+                  ) => (
+                    <SelectableChip
+                      key={`input-chip-${chip.label}`}
+                      label={
+                        <WithSkeleton loading={!!maxBalance?.isLoading}>
+                          <span>{chip.label}</span>
+                        </WithSkeleton>
                       }
-                    }}
-                  ></Chip>
-                ))}
+                      data-testid={!chipDisabled && `input-chip-${chip.label}`}
+                      disabled={chipDisabled}
+                      toggle={() => {
+                        const newBalance = chip.newBalance(maxBalance?.balance)
+                        if (newBalance !== undefined) {
+                          handleBalanceChange(newBalance)
+                        }
+                      }}
+                      selected={false}
+                    />
+                  ),
+                )}
               </Stack>
             )}
           </Stack>
@@ -360,7 +362,7 @@ export const LargeTokenInput = ({
               name={name}
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={(value) => handlePercentageChange(value as Decimal)}
+              onChange={value => handlePercentageChange(value as Decimal)}
               sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
               min={MIN_PERCENTAGE}
               max={MAX_PERCENTAGE}

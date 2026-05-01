@@ -1,7 +1,7 @@
 import { merge } from 'lodash'
 import { toArray } from '@primitives/array.utils'
 
-export const APP_STORAGE = {
+const APP_STORAGE = {
   APP_DASHBOARD: 'curve-app-dashboard',
 }
 

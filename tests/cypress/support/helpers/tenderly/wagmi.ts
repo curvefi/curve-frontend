@@ -23,7 +23,7 @@ type Options = {
 const getTestChain = (chainId: number | string) =>
   assert(
     // Tenderly recommends chain 73571 to prevent replay attacks, but our code relies on `chainId === Chain.Ethereum`. However, we do not use wallets with real funds.
-    [mainnet, arbitrum].find((c) => c.id === +chainId),
+    [mainnet, arbitrum].find(c => c.id === +chainId),
     `Unsupported chain ${chainId}`,
   ) as typeof mainnet
 

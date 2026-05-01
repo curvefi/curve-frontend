@@ -3,7 +3,7 @@ import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { ComponentTestWrapper, type Config } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 
-const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+const getVirtualNetwork = createVirtualTestnet(uuid => ({
   slug: `pegkeepers-${uuid}`,
   display_name: `Pegkeepers (${uuid})`,
   fork_config: {

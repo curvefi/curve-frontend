@@ -1,5 +1,5 @@
-export const ALPHA = 0.3 // For geometric with exponent: higher -> slower start, steeper end
-export const POWER_P = 4.0 // For additive power easing (ease-in when p>1)
+const ALPHA = 0.3 // For geometric with exponent: higher -> slower start, steeper end
+const POWER_P = 4.0 // For additive power easing (ease-in when p>1)
 
 /**
  * Geometric interpolation with exponent α.

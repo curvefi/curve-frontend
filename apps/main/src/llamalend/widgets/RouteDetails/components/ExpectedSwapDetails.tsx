@@ -10,7 +10,7 @@ import { RouteToken } from './RouteToken'
 
 const stateDefault = { height: '34px', data: [] as Hop[] }
 
-const _getTotal = (amounts: (string | number | undefined)[]) => sum(amounts.map((val) => +(val ?? '0')))
+const _getTotal = (amounts: (string | number | undefined)[]) => sum(amounts.map(val => +(val ?? '0')))
 
 export const ExpectedSwapDetails = ({
   network: networkId,
@@ -36,8 +36,7 @@ export const ExpectedSwapDetails = ({
   const [{ height, data }, setData] = useState<{ height: string; data: Hop[] }>(stateDefault)
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setData((prev) => ({ ...stateDefault, height: prev.height }))
+    setData(prev => ({ ...stateDefault, height: prev.height }))
     const state = { height: '', data: [] as Hop[] }
 
     if (routesRef.current) {

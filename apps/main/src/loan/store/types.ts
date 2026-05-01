@@ -1,6 +1,3 @@
-/* createCreateLoanSlice */
-export type DetailInfo = { healthFull: string; healthNotFull: string; prices: string[]; bands: [number, number] }
-
 /* createLiqRangesSlice */
 export type MaxRecvLeverage = { maxBorrowable: string; maxCollateral: string; leverage: string; routeIdx: number }
 
@@ -16,4 +13,3 @@ export type LiqRange = {
 }
 
 export type LiqRangeSliderIdx = LiqRange & { sliderIdx: number }
-export type LiqRangesMapper = { [n: string]: LiqRangeSliderIdx }

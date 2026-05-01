@@ -1,14 +1,4 @@
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
-
 export const ETHEREUM_CHAIN_ID = 1
-
-export const ROUTE = {
-  ...DAO_ROUTES,
-  PAGE_VECRV_CREATE: '/vecrv/create',
-  PAGE_VECRV_ADJUST_CRV: '/vecrv/adjust_crv',
-  PAGE_VECRV_ADJUST_DATE: '/vecrv/adjust_date',
-  PAGE_404: '/404',
-} as const
 
 export const TOP_HOLDERS: Record<string, { address: string; title: string }> = {
   ['0x989aeb4d175e16225e39e87d0d97a3360524ad80']: {

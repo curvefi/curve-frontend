@@ -7,7 +7,7 @@ export function getPercentage(val: bigint, percentage: bigint) {
 export function sum(values: (string | bigint)[], unit: number | undefined = 18) {
   let sum = 0n
 
-  values.forEach((val) => {
+  values.forEach(val => {
     sum += parseUnits(val, unit)
   })
 
@@ -35,7 +35,7 @@ export function isGreaterThanOrEqualTo(inputVal: bigint | string, compareValue: 
   return biInputValue >= biCompareValue
 }
 
-export function parseUnits(val: string | bigint, unit: number | undefined = 18) {
+function parseUnits(val: string | bigint, unit: number | undefined = 18) {
   if (typeof val === 'bigint') return val
 
   // parseUnits will throw error if value is empty string

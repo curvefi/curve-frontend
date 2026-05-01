@@ -1,13 +1,12 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
-import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
-import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { RouterSwapAlerts } from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
+import { RoutesActionInfo } from '@/dex/components/PageRouterSwap/components/RoutesActionInfo'
 import type {
+  ExchangeRate,
   FormStatus,
   FormValues,
   RoutesAndOutput,
@@ -18,7 +17,7 @@ import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
@@ -27,11 +26,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
-import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import { getStepStatus } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector, useTokenSelectorData } from '@ui-kit/features/select-token'
@@ -41,14 +40,20 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal } from '@ui-kit/utils'
+import { q } from '@ui-kit/types/util'
+import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const { Spacing } = SizesAndSpaces
+
+const formatExchangeRate = ({ from, to, value }: ExchangeRate) =>
+  ['1', from, '=', +value ? formatNumber(value, { abbreviate: true, highPrecision: true }) : '-', to].join(' ')
 
 export const QuickSwap = ({
   pageLoaded,
@@ -72,29 +77,30 @@ export const QuickSwap = ({
   const isSubscribed = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
-  const activeKey = useStore((state) => state.quickSwap.activeKey)
-  const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.quickSwap.formStatus)
-  const formValues = useStore((state) => state.quickSwap.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const rpcRoutesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
-  const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
-  const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
-  const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
-  const setFormValues = useStore((state) => state.quickSwap.setFormValues)
+  const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
+  const activeKey = useStore(state => state.quickSwap.activeKey)
+  const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
+  const formStatus = useStore(state => state.quickSwap.formStatus)
+  const formValues = useStore(state => state.quickSwap.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const rpcRoutesAndOutput = useStore(state => state.quickSwap.routesAndOutput[activeKey])
+  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
+  const fetchStepApprove = useStore(state => state.quickSwap.fetchStepApprove)
+  const fetchStepSwap = useStore(state => state.quickSwap.fetchStepSwap)
+  const resetFormErrors = useStore(state => state.quickSwap.resetFormErrors)
+  const setFormValues = useStore(state => state.quickSwap.setFormValues)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const haveSigner = !!userAddress
-  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
-  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
+  const cryptoMaxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore(state => state.maxSlippage.stable)
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
-    !haveSigner,
+    !userAddress,
   )
+  const gas = useEstimateGas(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
 
-  const routesAndOutput = haveSigner ? rpcRoutesAndOutput : apiRoutes
+  const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
   const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
   const slippageImpact = routesAndOutput
@@ -115,14 +121,14 @@ export const QuickSwap = ({
   const tokens = useMemo(
     () =>
       Object.values(tokensMapper ?? {})
-        .filter((token) => !!token)
+        .filter(token => !!token)
         .map(toTokenOption(network?.networkId)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
     [tokensMapperStr, network?.networkId],
   )
 
-  const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
+  const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
 
   const {
     data: userFromBalance,
@@ -212,7 +218,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -330,12 +336,12 @@ export const QuickSwap = ({
       let stepsKey: StepKey[]
 
       if (formProcessing || formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['SWAP'] : ['APPROVAL', 'SWAP']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [
       config,
@@ -382,25 +388,27 @@ export const QuickSwap = ({
       isSubscribed.current = false
       updateFormValues({}, false, '', true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   // maxSlippage
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, cryptoMaxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cryptoMaxSlippage])
+    if (isReady) updateFormValues({}, false, storeMaxSlippage)
+    // Intentionally depend on raw profile slippage values, not storeMaxSlippage.
+    // storeMaxSlippage also changes when route metadata resolves, which can trigger a slippage/activeKey refresh loop.
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [cryptoMaxSlippage, stableMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {
     if (isReady) throttledFetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isPageVisible])
 
   // network switched
   useEffect(() => {
     updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.chainId])
 
   // updateForm - immediate fetch on token changes
@@ -422,15 +430,14 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
-    setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
-  const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading =
     !pageLoaded ||
-    (haveSigner ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
+    (userAddress ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
@@ -439,6 +446,14 @@ export const QuickSwap = ({
   const setToAmount = useCallback(
     (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
     [updateFormValues],
+  )
+  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(
+    {
+      data: decimal(routesAndOutput?.priceImpact),
+      error: null,
+      isLoading: routesAndOutputLoading,
+    },
+    { slippage: storeMaxSlippage as Decimal },
   )
 
   return (
@@ -485,7 +500,11 @@ export const QuickSwap = ({
             />
           </TokenSelector>
         }
-        message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+        message={
+          formValues.fromError &&
+          userFromBalance != null &&
+          t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
+        }
       />
 
       {/* SWAP ICON */}
@@ -539,33 +558,38 @@ export const QuickSwap = ({
       />
 
       {/* detail info */}
-      <Stack>
-        <DetailInfoExchangeRate loading={routesAndOutputLoading} exchangeRates={routesAndOutput?.exchangeRates} />
-        <DetailInfoPriceImpact
-          loading={routesAndOutputLoading}
-          priceImpact={routesAndOutput?.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact}
-        />
-        <DetailInfoTradeRoute
-          params={params}
-          loading={routesAndOutputLoading}
-          routes={routesAndOutput?.routes}
-          tokensNameMapper={tokensNameMapper}
-        />
-
-        {haveSigner && (
-          <DetailInfoEstGas
-            chainId={chainId}
-            {...formEstGas}
-            loading={typeof formEstGas === 'undefined' && routesAndOutputLoading}
-            isDivider
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
+      <Stack gap={Spacing.xs}>
+        <Stack>
+          <SlippageToleranceActionInfo
+            maxSlippage={storeMaxSlippage}
+            stateKey={isStableswapRoute ? 'stable' : 'crypto'}
+            size="small"
           />
-        )}
-        <SlippageToleranceActionInfo
-          maxSlippage={storeMaxSlippage}
-          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
-        />
+          <ActionInfo
+            label={priceImpactLabel}
+            value={routesAndOutput?.priceImpact == null ? '-' : formatPercent(routesAndOutput.priceImpact)}
+            valueColor={priceImpactColor}
+            loading={routesAndOutputLoading}
+            size="small"
+            testId="price-impact"
+          />
+          <ActionInfo
+            label={t`Exchange rate`}
+            value={routesAndOutput?.exchangeRate && formatExchangeRate(routesAndOutput.exchangeRate)}
+            loading={routesAndOutputLoading}
+            size="small"
+            testId="exchange-rate"
+          />
+          <RoutesActionInfo
+            params={params}
+            loading={routesAndOutputLoading}
+            routes={routesAndOutput?.routes}
+            tokensNameMapper={tokensNameMapper}
+            poolDataMapper={poolDataMapper}
+            swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
+          />
+        </Stack>
+        {userAddress && <ActionInfoGasEstimate gas={q(gas)} isApproved={formStatus.isApproved} />}
       </Stack>
 
       {/* alerts */}
@@ -582,7 +606,7 @@ export const QuickSwap = ({
       />
 
       {/* actions */}
-      <FormConnectWallet loading={haveSigner && !steps.length}>
+      <FormConnectWallet loading={!!userAddress && !steps.length}>
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
       </FormConnectWallet>

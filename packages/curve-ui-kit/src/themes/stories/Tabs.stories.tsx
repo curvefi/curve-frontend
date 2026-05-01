@@ -36,7 +36,7 @@ const getOptionsWithAdornments = (
 const getOptionsWithIconsOnly = (count: number, size: keyof typeof TABS_SIZES_CLASSES): TabOption<TabValue>[] => {
   const iconSize = SIZE_TO_ICON_SIZE[size]
 
-  return DEFAULT_TABS.slice(0, count).map((tab) => ({
+  return DEFAULT_TABS.slice(0, count).map(tab => ({
     ...tab,
     label: null,
     startAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
@@ -86,9 +86,9 @@ export const Contained: Story = {
   args: {
     variant: 'contained',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4}>
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -106,9 +106,9 @@ export const Underlined: Story = {
   args: {
     variant: 'underlined',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4}>
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -126,9 +126,9 @@ export const Overlined: Story = {
   args: {
     variant: 'overlined',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4}>
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -147,9 +147,9 @@ export const VerticalContained: Story = {
     variant: 'contained',
     orientation: 'vertical',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4} direction="row">
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -168,9 +168,9 @@ export const VerticalUnderlined: Story = {
     variant: 'underlined',
     orientation: 'vertical',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4} direction="row">
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -189,9 +189,9 @@ export const VerticalOverlined: Story = {
     variant: 'overlined',
     orientation: 'vertical',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4} direction="row">
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -210,7 +210,7 @@ export const NoInactiveBorders: Story = {
     variant: 'underlined',
     hideInactiveBorders: true,
   },
-  render: (args) => <TabsSwitcherWrapper {...args} options={getOptionsWithAdornments(3, args.size ?? 'small')} />,
+  render: args => <TabsSwitcherWrapper {...args} options={getOptionsWithAdornments(3, args.size ?? 'small')} />,
   parameters: {
     docs: {
       description: {
@@ -223,9 +223,9 @@ export const NoInactiveBorders: Story = {
 export const IconsOnly: Story = {
   render: () => (
     <Stack gap={4}>
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <Stack key={size} gap={4} direction="row" alignItems="center">
-          {VARIANTS.map((variant) => (
+          {VARIANTS.map(variant => (
             <TabsSwitcherWrapper
               key={`${variant}-${size}`}
               variant={variant}
@@ -252,9 +252,9 @@ export const OverflowFullWidth: Story = {
     variant: 'contained',
     overflow: 'fullWidth',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4} width="40rem">
-      {VARIANTS.map((variant) => (
+      {VARIANTS.map(variant => (
         <TabsSwitcherWrapper key={variant} {...args} variant={variant} options={getOptionsWithAdornments(3)} />
       ))}
     </Stack>
@@ -273,9 +273,9 @@ export const OverflowKebab: Story = {
     variant: 'contained',
     overflow: 'kebab',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4} width="30rem">
-      {TAB_SIZE_KEYS.map((size) => (
+      {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(8, size)} />
       ))}
     </Stack>

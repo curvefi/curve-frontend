@@ -11,7 +11,7 @@ export type IconStyles = { $svgTop?: string }
 /**
  * Hook to handle mobile tooltip behavior, using click events to open the tooltip
  */
-function useMobileTooltip(onClick: { (): void | undefined } | (() => void) | undefined) {
+function useMobileTooltip(onClick: (() => void) | undefined) {
   const isMobile = useIsMobile()
   const [open, setOpen] = useState(false)
   const [scrollY, setScrollY] = useState<number | null>(null)
@@ -19,7 +19,6 @@ function useMobileTooltip(onClick: { (): void | undefined } | (() => void) | und
   const handleScroll = useCallback(() => {
     if (scrollY !== window.scrollY) {
       setOpen(false)
-      // eslint-disable-next-line react-hooks/immutability
       window.removeEventListener('scroll', handleScroll)
     }
   }, [scrollY])

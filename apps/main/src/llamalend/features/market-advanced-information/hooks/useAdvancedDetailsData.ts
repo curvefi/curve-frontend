@@ -1,17 +1,35 @@
-import { getTokens } from '@/llamalend/llama.utils'
+import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
+import {
+  useMarketCapAndAvailable,
+  useMarketTotalCollateral,
+  useMarketMaxLeverage,
+  useMarketLiquidationHealthDistribution,
+  useMarketUsers,
+} from '@/llamalend/queries/market'
+import type { Endpoint } from '@curvefi/prices-api/lending'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
+
+const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
+  [LlamaMarketType.Lend]: 'lending',
+  [LlamaMarketType.Mint]: 'crvusd',
+}
 
 export const useAdvancedDetailsData = ({
   chainId,
   market,
   marketId,
   marketType,
-}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
+}: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
+  const controllerAddress = getControllerAddress(market)
+  const endpoint = endpointFromMarketType[marketType]
+
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -27,6 +45,22 @@ export const useAdvancedDetailsData = ({
     chainId,
     tokenAddress: borrowToken?.address,
   })
+  const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
+    type: marketType,
+    blockchainId,
+    controllerAddress,
+  })
+  const { data: marketUsers, isLoading: marketUsersLoading } = useMarketUsers({
+    endpoint,
+    blockchainId,
+    contractAddress: controllerAddress,
+  })
+  const { data: liquidationHealthDistribution, isLoading: liquidationHealthDistributionLoading } =
+    useMarketLiquidationHealthDistribution({
+      endpoint,
+      blockchainId,
+      contractAddress: controllerAddress,
+    })
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
   const borrowedTotal = totalCollateral == null ? null : Number(totalCollateral.borrowed)
@@ -56,5 +90,21 @@ export const useAdvancedDetailsData = ({
       totalAssets: capAndAvailable?.totalAssets,
       loading: !market || capAndAvailableLoading,
     },
+    totalBorrowers: {
+      value: marketUsers?.count,
+      loading: !market || marketUsersLoading,
+    },
+    averageHealth: {
+      value: liquidationHealthDistribution?.meanHealth,
+      distribution: liquidationHealthDistribution,
+      loading: !market || liquidationHealthDistributionLoading,
+    },
+    ...(marketType === LlamaMarketType.Lend && {
+      solvency: {
+        value: solvencyData?.solvencyPercent,
+        badDebtUsd: solvencyData?.badDebtUsd,
+        loading: !market || solvencyLoading,
+      },
+    }),
   }
 }

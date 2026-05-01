@@ -6,15 +6,15 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { TotalNotionalRow } from '@ui-kit/shared/ui/DataTable/inline-cells/notional-cells'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { type ClaimableToken } from './columns'
+import { TotalNotionalRow } from './columns/notional-cells'
 
-export type ClaimTabProps<ChainId extends IChainId> = {
+type ClaimTabProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
@@ -56,9 +56,8 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           table={table}
           emptyState={
             !isError && (
-              <Alert severity="warning" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
-                <AlertTitle>{t`No rewards`}</AlertTitle>
-                {t`There are currently no rewards to claim. Only markets with active gauge have rewards.`}
+              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
+                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
               </Alert>
             )
           }
@@ -68,7 +67,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             !!claimableTokens.length &&
             !isLoading && (
               <TotalNotionalRow
-                sx={{ backgroundColor: (t) => t.design.Table.Row.Hover }}
+                sx={{ backgroundColor: t => t.design.Table.Row.Hover }}
                 totalNotionals={totalNotionals}
                 isNotionalLoading={isNotionalLoading}
               />

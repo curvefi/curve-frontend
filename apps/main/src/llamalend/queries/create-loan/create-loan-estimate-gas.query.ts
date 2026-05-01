@@ -47,7 +47,7 @@ const {
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
-  dependencies: (params) => [createLoanMaxReceiveKey(params)],
+  dependencies: params => [createLoanMaxReceiveKey(params)],
 })
 
 const {
@@ -95,7 +95,7 @@ const {
           userBorrowed,
           debt,
           range,
-          ...parseMutationRoute(routeId, slippage),
+          ...parseMutationRoute(routeId, slippage, impl),
         })
       case 'V1':
       case 'V2':
@@ -108,7 +108,7 @@ const {
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, collateralRequired: true }),
-  dependencies: (params) => [
+  dependencies: params => [
     createLoanMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],

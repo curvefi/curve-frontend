@@ -26,9 +26,6 @@ import {
 import {
   checkClosePositionDetailsLoaded,
   submitClosePositionForm,
-  submitImproveHealthForm,
-  touchImproveHealthForm,
-  writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
@@ -41,7 +38,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
-const testCases = recordValues(LlamaMarketType).map((marketType) => ({ marketType, ...oneLoanTestMarket(marketType) }))
+const testCases = recordValues(LlamaMarketType).map(marketType => ({ marketType, ...oneLoanTestMarket(marketType) }))
 
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
@@ -82,7 +79,7 @@ testCases.forEach(
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
-      const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+      const getVirtualNetwork = createVirtualTestnet(uuid => ({
         slug: `loan-integration-${uuid}`,
         display_name: `LoanIntegration (${uuid})`,
         fork_config: { block_number: 'latest' },
@@ -157,13 +154,13 @@ testCases.forEach(
 
       it(`increases health`, () => {
         cy.mount(<LoanTestWrapper tab="improve-health" />)
-        writeImproveHealthForm({ amount: improveHealth })
+        writeRepayLoanForm({ amount: improveHealth })
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
           isPriceChanged: false,
         })
-        submitImproveHealthForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
-        touchImproveHealthForm() // make sure the new debt is shown
+        submitRepayForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
+        touchRepayLoanForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
 

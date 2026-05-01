@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 import {
-  getIsUserCloseToLiquidation,
-  getLiquidationStatus,
+  getIsUserCloseToSoftLiquidation,
+  getLiquidationStatusLegacy,
   hasV2Leverage,
   reverseBands,
   sortBandsMint,
@@ -75,14 +75,14 @@ async function fetchChartBandBalancesData(
 ) {
   // filter out bands that doesn't have stablecoin and collaterals
   const ns = bandBalancesArr
-    .filter((b) => {
+    .filter(b => {
       const { stablecoin, collateral } = bandBalances[b.band] ?? {}
       return +stablecoin > 0 || +collateral > 0
     })
-    .map((b) => b.band)
+    .map(b => b.band)
 
   // TODO: handle errors
-  const { results } = await PromisePool.for(ns).process(async (n) => {
+  const { results } = await PromisePool.for(ns).process(async n => {
     const { collateral, stablecoin } = bandBalances[n]
     const [p_up, p_down] = await llamma.calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
@@ -105,9 +105,8 @@ async function fetchChartBandBalancesData(
   })
 
   const parsedBandBalances = []
-  for (const idx in results) {
-    const r = results[idx]
-    parsedBandBalances.unshift(r)
+  for (const result of results) {
+    parsedBandBalances.unshift(result)
   }
   return parsedBandBalances
 }
@@ -236,7 +235,8 @@ const detailInfo = {
       userBandsPct: userBandsRange ? llamma.calcRangePct(userBandsRange) : '0',
       userPrices,
       userLoss: parseUserLoss(userLoss),
-      userStatus: getLiquidationStatus(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
+      userIsCloseToLiquidation,
+      userStatus: getLiquidationStatusLegacy(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
     }
 
     return fetchedUserDetails
@@ -269,7 +269,7 @@ const detailInfo = {
     const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
 
     const reversedUserBands = reverseBands(userBands)
-    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(
+    const userIsCloseToLiquidation = getIsUserCloseToSoftLiquidation(
       reversedUserBands[0],
       userLiquidationBand,
       oraclePriceBand,
@@ -676,7 +676,7 @@ const loanIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -935,7 +935,7 @@ const collateralIncrease = {
       return resp
     } catch (err) {
       console.error(err)
-      if (err?.message && err.message.includes('liquidation mode')) {
+      if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
@@ -991,7 +991,7 @@ const collateralIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-step-add-collateral')
@@ -1011,7 +1011,7 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -1068,7 +1068,7 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-step-remove-collateral')

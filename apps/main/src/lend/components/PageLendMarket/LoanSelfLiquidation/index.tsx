@@ -44,18 +44,18 @@ export const LoanSelfLiquidation = ({
   params,
 }: PageContentProps<MarketUrlParams>) => {
   const isSubscribed = useRef(false)
-  const formEstGas = useStore((state) => state.loanSelfLiquidation.formEstGas)
-  const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)
-  const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
-  const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
+  const formEstGas = useStore(state => state.loanSelfLiquidation.formEstGas)
+  const formStatus = useStore(state => state.loanSelfLiquidation.formStatus)
+  const futureRates = useStore(state => state.loanSelfLiquidation.futureRates)
+  const liquidationAmt = useStore(state => state.loanSelfLiquidation.liquidationAmt)
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
-  const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
-  const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
-  const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchDetails = useStore(state => state.loanSelfLiquidation.fetchDetails)
+  const fetchStepApprove = useStore(state => state.loanSelfLiquidation.fetchStepApprove)
+  const fetchStepLiquidate = useStore(state => state.loanSelfLiquidation.fetchStepLiquidate)
+  const resetState = useStore(state => state.loanSelfLiquidation.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -128,7 +128,7 @@ export const LoanSelfLiquidation = ({
             const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
             const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)
 
-            if (isSubscribed.current && resp && resp.hash && !resp.loanExists && !resp.error) {
+            if (isSubscribed.current && resp?.hash && !resp.loanExists && !resp.error) {
               const TxDescription = (
                 <Trans>
                   Transaction completed. This loan will no longer exist. Click{' '}
@@ -154,12 +154,12 @@ export const LoanSelfLiquidation = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['SELF_LIQUIDATE'] : ['APPROVAL', 'SELF_LIQUIDATE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, fetchStepLiquidate, params, reset, userBalances],
   )
@@ -176,7 +176,7 @@ export const LoanSelfLiquidation = ({
   // max slippage
   useEffect(() => {
     if (isLoaded && api && market && maxSlippage) void fetchDetails(api, market, maxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [maxSlippage])
 
   // init
@@ -185,7 +185,7 @@ export const LoanSelfLiquidation = ({
       resetState()
       void fetchDetails(api, market, maxSlippage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -194,7 +194,7 @@ export const LoanSelfLiquidation = ({
       const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, userState)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances, userState])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

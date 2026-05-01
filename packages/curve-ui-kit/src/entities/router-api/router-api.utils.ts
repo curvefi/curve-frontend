@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
+import { ILeverageZapV2 } from '@curvefi/llamalend-api/lib/lendMarkets/interfaces/leverageZapV2'
 import type { Address } from '@primitives/address.utils'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
@@ -17,7 +17,7 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
   } = getRouteById(routeId)
   const { to, data } = assert(tx, `No transaction information for route ${routeId}`)
   /* Enso returns no price impact when it has no usd price, the library will be updated to accept null */
-  const quote = { outAmount, priceImpact: priceImpact as number }
+  const quote = { outAmount, priceImpact: priceImpact! }
   return { router: to, calldata: data, quote }
 }
 
@@ -25,10 +25,13 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
  * Like parseRoute, but also computes minRecv from outAmount and slippage.
  * minRecv = outAmount * (100 - slippage) / 100
  */
-export const parseMutationRoute = (routeId: string | undefined, slippage: Amount): RouteMutationMeta => {
+export const parseMutationRoute = (
+  routeId: string | undefined,
+  slippage: Decimal,
+  zapv2: ILeverageZapV2,
+): RouteMutationMeta => {
   const route = parseRoute(routeId)
-  const minReceive = BigNumber(route.quote.outAmount).times(BigNumber(100).minus(slippage)).div(100).toString()
-  return { ...route, minRecv: minReceive }
+  return { ...route, minRecv: zapv2.calcMinRecv(route.quote.outAmount, Number(slippage)) }
 }
 
 /**

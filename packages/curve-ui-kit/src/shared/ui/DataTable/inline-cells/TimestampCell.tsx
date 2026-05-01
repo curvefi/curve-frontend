@@ -31,10 +31,10 @@ export const TimestampCell = ({ timestamp, txUrl }: TimestampCellProps) => {
     >
       <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
       <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
-        <Typography variant="tableCellSRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
+        <Typography variant="tableCellSRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>
           {formatTime(timestamp)}
         </Typography>
-        {clickable && <ArrowOutwardIcon sx={{ fontSize: 20, color: (t) => t.design.Text.TextColors.Secondary }} />}
+        {clickable && <ArrowOutwardIcon sx={{ fontSize: 20, color: t => t.design.Text.TextColors.Secondary }} />}
       </Stack>
     </InlineTableCell>
   )

@@ -32,17 +32,14 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export const sleep = (ms: number = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)) =>
-  new Promise((resolve) => setTimeout(resolve, ms))
-
 // curve.finance url
 export function getCurvefiUrl(poolId: string, host: string) {
   const v2Key = 'factory-v2-'
   const cryptoKey = 'factory-crypto-'
 
-  if (poolId.match(v2Key)) {
+  if (RegExp(v2Key).exec(poolId)) {
     return `${host}/factory/${poolId.split(v2Key)[1]}`
-  } else if (poolId.match(cryptoKey)) {
+  } else if (RegExp(cryptoKey).exec(poolId)) {
     return `${host}/factory-crypto/${poolId.split(cryptoKey)[1]}`
   } else {
     return `${host}/${poolId}`

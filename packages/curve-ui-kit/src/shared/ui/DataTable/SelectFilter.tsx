@@ -28,7 +28,7 @@ export const SelectFilter = <T extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const selectedOption = useMemo(() => options.find((option) => option.id === value), [options, value])
+  const selectedOption = useMemo(() => options.find(option => option.id === value), [options, value])
 
   // the select component does a lot of stuff with its children, so we cannot add a wrapper for the theme inverter.
   // therefore, I was forced to reimplement the menu separate from the select component.
@@ -58,7 +58,6 @@ export const SelectFilter = <T extends string>({
           data-testid={`menu-${name}`}
           open={isOpen}
           onClose={close}
-          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}

@@ -46,10 +46,10 @@ type StatisticsProps = {
 }
 
 export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
-  const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
-  const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
-  const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
-  const setRevenueChartTimeOption = useStore((state) => state.scrvusd.setRevenueChartTimeOption)
+  const selectedStatisticsChart = useStore(state => state.scrvusd.selectedStatisticsChart)
+  const setSelectedStatisticsChart = useStore(state => state.scrvusd.setSelectedStatisticsChart)
+  const revenueChartTimeOption = useStore(state => state.scrvusd.revenueChartTimeOption)
+  const setRevenueChartTimeOption = useStore(state => state.scrvusd.setRevenueChartTimeOption)
 
   const {
     data: yieldData,
@@ -77,7 +77,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
       dash,
     },
     toggled: visibleSeries.includes(key),
-    onToggle: () => setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
+    onToggle: () => setVisibleSeries(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])),
   }))
 
   return (
@@ -89,58 +89,56 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
           : MaxWidth.section,
       }}
     >
-      <Card>
-        <CardHeader size="small" title={t`Statistics`} />
-        <CardContent>
-          <Stack gap={Spacing.md}>
-            <StatsStack />
+      <Card size="small">
+        <CardHeader title={t`Statistics`} />
+        <CardContent component={Stack} gap={Spacing.md}>
+          <StatsStack />
 
-            <ChartHeader
-              chartSelections={{
-                selections: chartSelections,
-                activeSelection: selectedStatisticsChart,
-                setActiveSelection: setSelectedStatisticsChart,
-              }}
-              chartOptionVariant="buttons-group"
-              expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
-            />
+          <ChartHeader
+            chartSelections={{
+              selections: chartSelections,
+              activeSelection: selectedStatisticsChart,
+              setActiveSelection: setSelectedStatisticsChart,
+            }}
+            chartOptionVariant="buttons-group"
+            expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
+          />
 
-            {selectedStatisticsChart === 'savingsRate' && (
-              <Stack gap={Spacing.md}>
-                <ChartStateWrapper
-                  height={Height.chart}
-                  isLoading={isScrvUsdYieldLoading}
-                  error={scrvUsdYieldError}
-                  errorMessage={t`Unable to fetch savings rate data.`}
-                >
-                  <RevenueLineChart
-                    height={Height.chart}
-                    data={yieldData ?? EMPTY_YIELD_DATA}
-                    visibleSeries={visibleSeries}
-                  />
-                </ChartStateWrapper>
-                <ChartFooter
-                  legendSets={legendSets}
-                  toggleOptions={timeOptions}
-                  activeToggleOption={revenueChartTimeOption}
-                  onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
-                />
-              </Stack>
-            )}
-
-            {selectedStatisticsChart === 'distributions' && (
+          {selectedStatisticsChart === 'savingsRate' && (
+            <Stack gap={Spacing.md}>
               <ChartStateWrapper
                 height={Height.chart}
-                isLoading={isRevenueLoading}
-                error={revenueError}
-                errorMessage={t`Unable to fetch distributions data.`}
+                isLoading={isScrvUsdYieldLoading}
+                error={scrvUsdYieldError}
+                errorMessage={t`Unable to fetch savings rate data.`}
               >
-                <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+                <RevenueLineChart
+                  height={Height.chart}
+                  data={yieldData ?? EMPTY_YIELD_DATA}
+                  visibleSeries={visibleSeries}
+                />
               </ChartStateWrapper>
-            )}
+              <ChartFooter
+                legendSets={legendSets}
+                toggleOptions={timeOptions}
+                activeToggleOption={revenueChartTimeOption}
+                onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
+              />
+            </Stack>
+          )}
 
-            <AdvancedDetails network={networks[Chain.Ethereum]} />
-          </Stack>
+          {selectedStatisticsChart === 'distributions' && (
+            <ChartStateWrapper
+              height={Height.chart}
+              isLoading={isRevenueLoading}
+              error={revenueError}
+              errorMessage={t`Unable to fetch distributions data.`}
+            >
+              <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+            </ChartStateWrapper>
+          )}
+
+          <AdvancedDetails network={networks[Chain.Ethereum]} />
         </CardContent>
       </Card>
     </Stack>

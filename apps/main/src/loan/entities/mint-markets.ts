@@ -9,14 +9,14 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
  * Hook to get a mapping of mint market controller address to market name for all mint markets on a specific chain.
  * Primarily useful fetching mint markets via URL.
  */
-export const useMintMarketMapping = ({ chainId }: { chainId: ChainId | undefined }) => {
+const useMintMarketMapping = ({ chainId }: { chainId: ChainId | undefined }) => {
   const { llamaApi: api } = useCurve()
 
   return useMemo(
     () =>
       api &&
       chainId &&
-      fromEntries(api.mintMarkets.getMarketList().map((name) => [api.getMintMarket(name).controller as Address, name])),
+      fromEntries(api.mintMarkets.getMarketList().map(name => [api.getMintMarket(name).controller as Address, name])),
     [api, chainId],
   )
 }

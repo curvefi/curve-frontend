@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
-import { MarketAlertBanner } from '@/lend/components/MarketAlertBanner'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
-import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
-import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import type { Chain } from '@curvefi/prices-api'
+import { type Chain } from '@curvefi/prices-api'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -26,19 +22,19 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const network = networks[rChainId]
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
-  const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
 
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
@@ -57,11 +53,8 @@ export const Page = () => {
     marketId: rOwmId,
     userAddress,
   })
-  const marketAlert = useMarketAlert(rChainId, rOwmId)
-
   useEffect(() => {
     if (api && market && isPageVisible) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoaded(true)
       const timer = setTimeout(
         () =>
@@ -95,7 +88,6 @@ export const Page = () => {
     api,
     market,
     userActiveKey,
-    titleMapper,
   }
 
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
@@ -115,14 +107,11 @@ export const Page = () => {
         />
       }
     >
-      {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-      {!isHighSeverityAlert(marketAlert?.alertType) && (
-        <CampaignRewardsBanner
-          chainId={rChainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
-        />
-      )}
+      <MarketBanners
+        chainId={rChainId}
+        market={market}
+        rewardsBanner={<CampaignRewardsBanner chainId={rChainId} market={market} />}
+      />
       {hasSupplyPosition && <SupplyPositionDetails {...supplyPositionDetails} />}
       <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
     </DetailPageLayout>

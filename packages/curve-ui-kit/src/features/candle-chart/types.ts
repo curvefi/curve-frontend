@@ -10,10 +10,6 @@ export type ChartSelection =
   | { type: 'lp-token'; symbol: string }
   | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
-export interface LabelList {
-  label: string
-}
-
 export interface LpPriceOhlcData {
   time: number
   open: number

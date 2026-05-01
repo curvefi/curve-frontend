@@ -1,7 +1,7 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
-import { Stack } from '@mui/material'
+import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
@@ -56,39 +56,26 @@ export const CrvUsdPriceChart = () => {
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
     const sorted = sortBy(
       uniqBy(
-        priceHistory.map((item) => ({
-          timestamp: new Date(item.timestamp).getTime(),
-          price: item.price,
-        })),
+        priceHistory.map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
         'timestamp',
       ),
-      (item) => item.timestamp,
+      item => item.timestamp,
     )
 
     return addMovingAverages(
       sorted,
-      (d) => d.price,
-      (d) => d.timestamp,
+      d => d.price,
+      d => d.timestamp,
     )
   }, [priceHistory])
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
-    () => ({
-      price: Color.Primary[500],
-      movingAverage: Color.Secondary[500],
-      totalAverage: Color.Tertiary[400],
-    }),
+    () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
     [Color.Primary, Color.Secondary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<PriceSeriesKey>[] = useMemo(
-    () =>
-      SERIES_CONFIG.map(({ key, label, dash }) => ({
-        key,
-        label,
-        color: seriesColors[key],
-        dash,
-      })),
+    () => SERIES_CONFIG.map(({ key, label, dash }) => ({ key, label, color: seriesColors[key], dash })),
     [seriesColors],
   )
 
@@ -98,17 +85,15 @@ export const CrvUsdPriceChart = () => {
         label,
         line: { lineStroke: seriesColors[key], dash },
         toggled: visibleSeries.includes(key),
-        onToggle: () =>
-          setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
+        onToggle: () => setVisibleSeries(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])),
       })),
     [seriesColors, visibleSeries],
   )
 
   return (
-    <Card>
+    <Card size="small">
       <CardHeader
         title={t`Historical crvUSD Peg`}
-        size="small"
         action={
           <SelectTimeOption
             options={timeOptions}
@@ -118,7 +103,7 @@ export const CrvUsdPriceChart = () => {
           />
         }
       />
-      <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <CardContent component={Stack} gap={Spacing.md}>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}
@@ -132,7 +117,7 @@ export const CrvUsdPriceChart = () => {
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | number | string) => formatDate(value)}
-            yTickFormatter={(value) =>
+            yTickFormatter={value =>
               formatNumber(+value, { unit: 'dollar', abbreviate: false, decimals: 4, minimumFractionDigits: 4 })
             }
             yPaddingRatio={0.25}
@@ -143,7 +128,7 @@ export const CrvUsdPriceChart = () => {
           legendSets={legendSets}
           description={t`This chart shows crvUSD's historical peg to $1. For mint market interest rates, the rate is a function of crvUSD's peg. When the price dips below $1, rates increase to incentivize loan repayment and reduce supply; when the price rises above $1, rates decrease to encourage borrowing — restoring balance to the system.`}
         />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

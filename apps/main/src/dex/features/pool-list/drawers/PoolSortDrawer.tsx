@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { Button, MenuItem } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
@@ -20,11 +20,12 @@ type Props = {
   sortField: PoolColumnId
 }
 
-// Temporary minimal sort options until full options are defined
 const useDexPoolSortOptions = () =>
   [
     { id: PoolColumnId.Volume, label: t`Volume` },
     { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
+    { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
+    { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
   ] as const
 
 export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
@@ -32,7 +33,7 @@ export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const sortOptions = useDexPoolSortOptions()
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const selectedOption = useMemo(() => sortOptions.find((option) => option.id === sortField), [sortOptions, sortField])
+  const selectedOption = useMemo(() => sortOptions.find(option => option.id === sortField), [sortOptions, sortField])
 
   const handleSort = useCallback(
     (id: PoolColumnId) => {

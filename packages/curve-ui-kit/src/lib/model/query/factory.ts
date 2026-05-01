@@ -12,7 +12,7 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
-import { logQuery } from '@ui-kit/lib/logging'
+import { logError, logQuery, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
 import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
 
@@ -86,7 +86,23 @@ export class NoRetryError extends Error {
  * // → { chainId: 1, poolId: 'abc' }
  */
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
-  Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+  Object.fromEntries(queryKey.flatMap(i => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+
+async function runQuery<TKey extends QueryKey, TData, TQuery>(
+  queryKey: TKey,
+  queryFn: (params: TQuery) => Promise<TData>,
+  disableLog: true | undefined,
+) {
+  try {
+    if (!disableLog) logQuery(queryKey)
+    const data = await queryFn(getParamsFromQueryKey(queryKey))
+    if (!disableLog) logSuccess(queryKey, ...[data ? [data] : []])
+    return data
+  } catch (error) {
+    logError(queryKey, error, error.message)
+    throw error
+  }
+}
 
 export function queryFactory<
   TQuery extends object,
@@ -96,7 +112,7 @@ export function queryFactory<
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
-  queryFn: runQuery,
+  queryFn,
   queryKey,
   category,
   validationSuite,
@@ -116,22 +132,15 @@ export function queryFactory<
   keepPreviousData?: boolean
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
       queryKey: queryKey(params),
-      queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => {
-        try {
-          if (!disableLog) logQuery(queryKey)
-          return await runQuery(getParamsFromQueryKey(queryKey))
-        } catch (error) {
-          console.error(`Error in query `, JSON.stringify(queryKey), error) // log here, `queryClient.onError` has no stack trace
-          throw error
-        }
-      },
+      queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => await runQuery(queryKey, queryFn, disableLog),
       enabled:
         enabled &&
         isEmpty(validate(validationSuite, params)) &&
-        !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
+        !dependencies?.(params).some(key => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
         !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)

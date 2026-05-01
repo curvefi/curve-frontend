@@ -24,7 +24,7 @@ export type CollateralForm = {
   maxCollateral: Decimal | undefined
 }
 
-export const collateralValidationGroup = ({
+const collateralValidationGroup = ({
   chainId,
   userCollateral,
   maxCollateral,

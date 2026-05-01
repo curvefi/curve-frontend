@@ -25,8 +25,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { scanTxPath } from '@ui/utils'
-import { formatNumber } from '@ui/utils'
+import { scanTxPath, formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -37,17 +36,17 @@ import { decimal } from '@ui-kit/utils'
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const detailInfo = useStore((state) => state.loanCollateralRemove.detailInfo[activeKey])
-  const formEstGas = useStore((state) => state.loanCollateralRemove.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanCollateralRemove.formStatus)
-  const formValues = useStore((state) => state.loanCollateralRemove.formValues)
-  const maxRemovable = useStore((state) => state.loanCollateralRemove.maxRemovable)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const activeKey = useStore(state => state.loanCollateralRemove.activeKey)
+  const detailInfo = useStore(state => state.loanCollateralRemove.detailInfo[activeKey])
+  const formEstGas = useStore(state => state.loanCollateralRemove.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanCollateralRemove.formStatus)
+  const formValues = useStore(state => state.loanCollateralRemove.formValues)
+  const maxRemovable = useStore(state => state.loanCollateralRemove.maxRemovable)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
-  const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
-  const resetState = useStore((state) => state.loanCollateralRemove.resetState)
+  const fetchStepDecrease = useStore(state => state.loanCollateralRemove.fetchStepDecrease)
+  const setFormValues = useStore(state => state.loanCollateralRemove.setFormValues)
+  const resetState = useStore(state => state.loanCollateralRemove.resetState)
 
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -78,7 +77,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(network, resp.hash)
         setTxInfoBar(
@@ -146,9 +145,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
                     <DialogFormWarning
                       health={healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) =>
-                        setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
-                      }
+                      setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   isDismissable: false,
@@ -169,7 +166,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
 
       const stepsKey: StepKey[] = ['REMOVE']
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [handleBtnClickRemove, userBalances, userState],
   )
@@ -189,7 +186,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
       resetState()
       updateFormValues({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isLoaded])
 
   // steps
@@ -207,7 +204,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
       )
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     isLoaded,
     activeKey,

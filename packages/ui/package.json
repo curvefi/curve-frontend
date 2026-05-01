@@ -4,12 +4,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
-    "@carbon/icons-react": "^11.74.0",
+    "@carbon/icons-react": "^11.78.0",
     "react-aria": "3.47.0",
     "react-stately": "3.45.0"
   },
@@ -17,7 +17,6 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "eslint": "*",
-    "eslint-config-custom": "*",
     "typescript": "*"
   },
   "peerDependencies": {

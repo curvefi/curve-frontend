@@ -143,7 +143,6 @@ export const NumericTextField = ({
 
   // Update input value when value changes externally
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
   }, [value, isFocused, format])
 
@@ -154,7 +153,7 @@ export const NumericTextField = ({
       value={inputValue}
       inputMode="decimal"
       autoComplete="off"
-      onFocus={(e) => {
+      onFocus={e => {
         setIsFocused(true)
         /**
          * Select all content when clicked.
@@ -165,7 +164,7 @@ export const NumericTextField = ({
         ;(e.target as HTMLInputElement).select()
         onFocus?.(e)
       }}
-      onChange={(e) => {
+      onChange={e => {
         const sanitizedValue = sanitize(e.target.value, inputValue)
         setInputValue(sanitizedValue)
         onChange?.(sanitizedValue)

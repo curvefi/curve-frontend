@@ -6,12 +6,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint \"**/*.ts*\"",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/external-rewards --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/external-rewards --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-external-rewards.tsbuildinfo"
   },
   "devDependencies": {
     "eslint": "*",
-    "eslint-config-custom": "*",
     "typescript": "*"
   }
 }

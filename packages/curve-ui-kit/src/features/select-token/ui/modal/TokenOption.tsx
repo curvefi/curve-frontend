@@ -13,11 +13,11 @@ import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
 
-export type TokenOptionCallbacks = {
+type TokenOptionCallbacks = {
   onToken: () => void
 }
 
-export type TokenOptionsProps = {
+type TokenOptionsProps = {
   balance?: string
   tokenPrice?: number
   disabled?: boolean
@@ -62,8 +62,8 @@ export const TokenOption = ({
             sx={{ ...(disabled && { filter: 'saturate(0)' }) }}
           />
 
-          <Stack flexGrow={1}>
-            <Typography variant="bodyMBold" color={primary}>
+          <Stack flexGrow={1} overflow="hidden">
+            <Typography variant="bodyMBold" color={primary} overflow="hidden" textOverflow="ellipsis">
               {symbol}
             </Typography>
 

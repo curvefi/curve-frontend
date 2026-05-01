@@ -76,7 +76,7 @@ export const MetricsRow = ({
                 }}
                 rebasingYieldApy={supplyRate.rebasingYield}
                 isLoading={supplyRate.loading}
-                periodLabel={supplyRatePeriod as string}
+                periodLabel={supplyRatePeriod!}
                 extraRewards={supplyRate.extraRewards ?? []}
                 extraIncentives={supplyRate.extraIncentives ?? []}
               />

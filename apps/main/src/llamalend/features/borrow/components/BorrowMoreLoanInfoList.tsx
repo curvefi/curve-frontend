@@ -72,7 +72,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
           isOpen,
         ),
       )}
-      debt={mapQuery(prevDebt, (stateDebt) => decimalSum(stateDebt, debt))}
+      debt={mapQuery(prevDebt, stateDebt => decimalSum(stateDebt, debt))}
       {...useLeverageInfoFields({
         leverageEnabled,
         leverageValue: useBorrowMoreFutureLeverage(params, isOpen),

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { styled } from 'styled-components'
 import { QuickSwap } from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -8,13 +7,16 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { useStore } from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { BoxHeader, Box } from '@ui/Box'
-import { IconButton } from '@ui/IconButton'
-import { breakpoints } from '@ui/utils'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 export const PageRouterSwap = () => {
   const props = useParams<NetworkUrlParams>()
@@ -25,11 +27,11 @@ export const PageRouterSwap = () => {
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
-  const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerCachedFromAddress = useStore((state) => state.storeCache.routerFormValues[rChainId]?.fromAddress)
-  const routerCachedToAddress = useStore((state) => state.storeCache.routerFormValues[rChainId]?.toAddress)
+  const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
+  const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
+  const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
@@ -40,10 +42,7 @@ export const PageRouterSwap = () => {
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams?.get('slippage')
   const searchedParams = useMemo(
-    () => ({
-      fromAddress: paramsFromAddress,
-      toAddress: paramsToAddress,
-    }),
+    () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
     [paramsFromAddress, paramsToAddress],
   )
 
@@ -89,7 +88,7 @@ export const PageRouterSwap = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     isConnecting,
     hasRouter,
@@ -102,14 +101,9 @@ export const PageRouterSwap = () => {
     routerCachedToAddress,
   ])
   return (
-    <StyledQuickSwapWrapper variant="primary" shadowed data-testid="swap-page">
-      <BoxHeader className="title-text">
-        <IconButton testId="hidden" hidden />
-        {t`Swap`}
-        <IconButton testId="hidden" hidden />
-      </BoxHeader>
-
-      <Box grid gridRowGap={3} padding>
+    <Card sx={{ maxWidth: MaxWidth.actionCard, margin: '0 auto' }} data-testid="swap-page">
+      <CardHeader title={t`Swap`} />
+      <CardContent>
         {rChainId && (
           <QuickSwap
             curve={curveApi}
@@ -122,17 +116,7 @@ export const PageRouterSwap = () => {
             redirect={redirect}
           />
         )}
-      </Box>
-    </StyledQuickSwapWrapper>
+      </CardContent>
+    </Card>
   )
 }
-
-const StyledQuickSwapWrapper = styled(Box)`
-  margin-top: 1rem;
-  width: 100%;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin: 1.5rem auto;
-    max-width: var(--transfer-min-width);
-  }
-`

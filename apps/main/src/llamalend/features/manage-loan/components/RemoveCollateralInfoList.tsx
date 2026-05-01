@@ -43,7 +43,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       gas={q(useRemoveCollateralEstimateGas(networks, params, isOpen))}
-      health={q(useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(useHealthQueries(isFull => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(
@@ -61,7 +61,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
       )}
       collateral={mapQuery(
         prevCollateral,
-        (stateCollateral) => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
+        stateCollateral => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
       )}
       prices={q(useRemoveCollateralPrices(params, isOpen))}
       {...useLeverageInfoFields({

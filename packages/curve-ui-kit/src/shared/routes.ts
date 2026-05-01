@@ -54,11 +54,11 @@ export const DAO_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
-export const ANALYTICS_ROUTES = {
+const ANALYTICS_ROUTES = {
   PAGE_HOME: '/home',
 }
 
-export const BRIDGE_ROUTES = {
+const BRIDGE_ROUTES = {
   PAGE_BRIDGES: '',
 }
 
@@ -109,7 +109,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
 }
 
 /** Returns the full pathname for a given app and network */
-export const getInternalUrl = (app: AppName, networkId: string, route: string = '/') => `/${app}/${networkId}${route}`
+export const getInternalUrl = (app: AppName, networkId: string, route = '/') => `/${app}/${networkId}${route}`
 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (

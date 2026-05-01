@@ -4,16 +4,15 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window
-  const theme = useUserProfileStore((state) => state.theme)
-  const pageWidth = useLayoutStore((state) => state.pageWidth)
-  const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
-  const setPageVisible = useLayoutStore((state) => state.setPageVisible)
+  const theme = useUserProfileStore(state => state.theme)
+  const pageWidth = useLayoutStore(state => state.pageWidth)
+  const setLayoutWidth = useLayoutStore(state => state.setLayoutWidth)
+  const setPageVisible = useLayoutStore(state => state.setPageVisible)
 
   const handleResizeListener = useCallback(() => {
     if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth])
 
-  // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
     if (!pageWidth || !document) return
     document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()

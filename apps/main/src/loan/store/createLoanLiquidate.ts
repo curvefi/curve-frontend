@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { FormStatus } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
 import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
@@ -137,9 +137,10 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
         step: 'LIQUIDATE',
       })
       const chainId = curve.chainId as ChainId
-      const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
+      const network = networks[chainId]
+      const liquidateFn = network.api.loanLiquidate.liquidate
       const resp = await liquidateFn(provider, llamma, maxSlippage)
-      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
+      updateUserEventsApi(wallet, network, llamma, resp.hash)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
@@ -148,6 +149,8 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
         chainId,
         marketId: llamma.id,
         userAddress: wallet?.address,
+        contractAddress: getControllerAddress(llamma),
+        blockchainId: network.id,
       })
 
       get()[sliceKey].setStateByKeys({

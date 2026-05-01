@@ -28,5 +28,5 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
-  dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
+  dependencies: params => [createLoanExpectedCollateralQueryKey(params)],
 })

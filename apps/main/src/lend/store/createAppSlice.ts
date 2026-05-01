@@ -6,7 +6,9 @@ import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
 import { recordEntries } from '@primitives/objects.utils'
+import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { log } from '@ui-kit/lib/logging'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -14,7 +16,7 @@ export type StateKey = string
 // prettier-ignore
 export interface AppSlice {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined, releaseChannel: ReleaseChannel): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -23,7 +25,7 @@ export interface AppSlice {
 }
 
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (_config, api, prevApi) => {
+  hydrate: async (_config, api, prevApi, _wallet, releaseChannel) => {
     if (!api) return
 
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
@@ -48,13 +50,13 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     }
 
     // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
-    await prefetchMarkets({ chainId: api.chainId })
+    await prefetchMarkets({ chainId: api.chainId, enableLLv2: isLLv2Enabled(releaseChannel) })
 
     log('Hydrating Lend - Complete')
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValues = state[sliceKey][key]
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
@@ -79,7 +81,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValue = state[sliceKey][key]
         if (!lodash.isEqual(storedValue, value)) {
           if (showLog) {
@@ -94,7 +96,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
-        produce((state) => {
+        produce(state => {
           const storedValue = state[sliceKey][key]
           if (!lodash.isEqual(storedValue, value)) {
             if (showLog) {
@@ -108,7 +110,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
   },
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[sliceKey] = {
           ...state[sliceKey],
           ...defaultState,

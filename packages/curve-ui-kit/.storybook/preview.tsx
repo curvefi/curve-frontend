@@ -1,12 +1,13 @@
 import '@cy/eip6963-test-setup'
+import type { PropsWithChildren } from 'react'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import Box from '@mui/material/Box'
+import { DocsContainer, type DocsContainerProps } from '@storybook/addon-docs/blocks'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
-import { DocsContainer } from '@storybook/addon-docs/blocks'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
+import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 import { chadTheme, darkTheme, lightTheme } from '../src/themes'
 import { Toast } from '../src/widgets/Toast'
-import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 
 const themes = {
   light: lightTheme(),
@@ -17,14 +18,14 @@ const themes = {
   chadInverted: chadTheme({ inverted: true }),
 }
 
-export const decorators: Decorator[] = [
+const decorators: Decorator[] = [
   withThemeFromJSXProvider<ReactRenderer>({
     themes,
     defaultTheme: 'light',
     Provider: ThemeProvider,
     GlobalStyles: CssBaseline,
   }),
-  (Story) => {
+  Story => {
     const router = createRouter({
       routeTree: createRootRoute({ component: Story }),
       history: createMemoryHistory({ initialEntries: ['/'] }),
@@ -59,7 +60,7 @@ export const decorators: Decorator[] = [
 ]
 
 const preview: Preview = {
-  decorators: decorators,
+  decorators,
   parameters: {
     themes,
     controls: {
@@ -70,10 +71,10 @@ const preview: Preview = {
       },
     },
     docs: {
-      // Implement a custom docs container that applies the theme at the root level.
-      // Workaround for: https://github.com/storybookjs/storybook/issues/26242
-      container: ({ children, context }) => {
-        const theme = themes[context.store.userGlobals.globals.theme] ?? themes.light
+      container: ({ children, context }: PropsWithChildren<DocsContainerProps>) => {
+        // @ts-expect-error - context.store is private API but works at runtime; see https://github.com/storybookjs/storybook/issues/26242
+        const themeName = context.store.userGlobals.globals.theme
+        const theme = themeName in themes ? themes[themeName as keyof typeof themes] : themes.light
         return (
           <DocsContainer context={context}>
             <ThemeProvider theme={theme}>
@@ -89,4 +90,5 @@ const preview: Preview = {
   tags: ['autodocs'],
 }
 
+// eslint-disable-next-line import-x/no-default-export
 export default preview

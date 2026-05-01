@@ -30,57 +30,43 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '$network/analytics',
     component: PageAnalytics,
-    head: () => ({
-      meta: [{ title: 'Analytics - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Analytics - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/gauges',
     component: PageGauges,
-    head: () => ({
-      meta: [{ title: 'Gauges - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Gauges - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/gauges/$gaugeAddress',
     component: PageGauge,
-    head: ({ params }) => ({
-      meta: [{ title: `Gauge - ${params.gaugeAddress} - Curve` }],
-    }),
+    head: ({ params }) => ({ meta: [{ title: `Gauge - ${params.gaugeAddress} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/proposals',
     component: PageDao,
-    head: () => ({
-      meta: [{ title: 'Proposals - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Proposals - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/proposals/$proposalId',
     component: PageProposal,
-    head: ({ params }) => ({
-      meta: [{ title: `Proposal - ${params.proposalId} - Curve` }],
-    }),
+    head: ({ params }) => ({ meta: [{ title: `Proposal - ${params.proposalId} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/user/$userAddress',
     component: PageUser,
-    head: ({ params }) => ({
-      meta: [{ title: `veCRV Holder - ${params.userAddress} - Curve` }],
-    }),
+    head: ({ params }) => ({ meta: [{ title: `veCRV Holder - ${params.userAddress} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/vecrv/$formType',
     component: PageVeCrv,
-    head: () => ({
-      meta: [{ title: 'CRV Locker - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'CRV Locker - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({

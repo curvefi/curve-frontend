@@ -5,13 +5,13 @@ import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS } from '../constants'
 
-const pegkeeperDebtContracts = PEG_KEEPERS.map((pegkeeper) => ({
+const pegkeeperDebtContracts = PEG_KEEPERS.map(pegkeeper => ({
   abi: pegkeeperAbi,
   address: pegkeeper.address,
   functionName: 'debt',
 }))
 
-const pegkeeperDebtCeilingContracts = PEG_KEEPERS.map((pegkeeper) => ({
+const pegkeeperDebtCeilingContracts = PEG_KEEPERS.map(pegkeeper => ({
   abi: pegkeeperDebtCeilingAbi,
   address: PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS,
   functionName: 'debt_ceiling',
@@ -27,12 +27,10 @@ export function useStatistics() {
     contracts: pegkeeperDebtContracts,
   })
 
-  const totalDebt =
-    debt &&
-    debt
-      .filter((x) => x.status === 'success')
-      .map((x) => x.result)
-      .reduce((acc, curr) => acc + curr, 0n)
+  const totalDebt = debt
+    ?.filter(x => x.status === 'success')
+    .map(x => x.result)
+    .reduce((acc, curr) => acc + curr, 0n)
 
   const {
     data: ceiling,
@@ -42,12 +40,10 @@ export function useStatistics() {
     contracts: pegkeeperDebtCeilingContracts,
   })
 
-  const totalCeiling =
-    ceiling &&
-    ceiling
-      .filter((x) => x.status === 'success')
-      .map((x) => x.result)
-      .reduce((acc, curr) => acc + curr, 0n)
+  const totalCeiling = ceiling
+    ?.filter(x => x.status === 'success')
+    .map(x => x.result)
+    .reduce((acc, curr) => acc + curr, 0n)
 
   return {
     totalDebt: totalDebt == null ? undefined : (formatEther(totalDebt) as Decimal),

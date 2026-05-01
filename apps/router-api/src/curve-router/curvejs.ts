@@ -22,11 +22,11 @@ const ONE_MINUTE = 60000
  * Fetch pools from all Curve factories and set up periodic refresh for a given CurveJS instance.
  */
 async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
-  const factories = FACTORIES.map((key) => curve[key])
+  const factories = FACTORIES.map(key => curve[key])
   const fetchAllPools = async ({ initial = false }: { initial?: boolean } = {}) => {
     try {
       await Promise.all(
-        factories.map(async (factory) => {
+        factories.map(async factory => {
           await factory.fetchPools()
           if ('fetchNewPools' in factory) await factory.fetchNewPools()
         }),

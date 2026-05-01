@@ -72,7 +72,7 @@ const {
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
-  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
+  dependencies: params => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 const {
@@ -129,7 +129,7 @@ const {
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
-  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
+  dependencies: params => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 export const useRepayEstimateGas = createApprovedEstimateGasHook({

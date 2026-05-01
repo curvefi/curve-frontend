@@ -109,7 +109,7 @@ const pool = {
       const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
       resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
       if (baseApyResult.status === 'rejected') {
-        if (p.inApi) resp.error['base'] = true
+        if (p.inApi) resp.error.base = true
       } else {
         resp.base.day = new BN(resp.base.day).toFixed(8)
         resp.base.week = new BN(resp.base.week).toFixed(8)
@@ -124,8 +124,8 @@ const pool = {
       const rewards = fulfilledValue(rewardsResult)
 
       if (rewardsResult.status === 'rejected') {
-        resp.error['others'] = true
-        resp.error['crv'] = true
+        resp.error.others = true
+        resp.error.crv = true
       }
 
       if (rewardsResult.status === 'fulfilled' && rewards) {
@@ -135,7 +135,7 @@ const pool = {
         ]
 
         // others rewards
-        resp.other = others.filter((other) => +other.apy > 0)
+        resp.other = others.filter(other => +other.apy > 0)
         resp.crv = +baseApy > 0 || +boostedApy > 0 ? [baseApy, boostedApy] : [0, 0]
       }
       return resp
@@ -146,10 +146,9 @@ const pool = {
     // others rewards
     const others = fulfilledValue(otherResult) ?? []
     if (otherResult.status === 'rejected') {
-      resp.error['others'] = true
+      resp.error.others = true
     } else {
-      for (const idx in others) {
-        const other = others[idx]
+      for (const other of others) {
         if (chainId === 8453) {
           if (other.symbol !== 'CRV' && +other.apy > 0) {
             resp.other.push(other)
@@ -162,7 +161,7 @@ const pool = {
 
     // crv rewards
     if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
-      resp.error['crv'] = true
+      resp.error.crv = true
     }
     if (crvResult.status === 'fulfilled' && !!crvResult.value) {
       const [baseApy] = crvResult.value
@@ -280,15 +279,23 @@ const router = {
     fromAddress: string,
     toAddress: string,
     fromAmount: string,
+    slippageTolerance: string,
     isApprovalCheckOnly?: boolean,
   ) => {
-    log('routerEstGasApproval', fromAddress, toAddress, fromAmount)
+    log('routerEstGasApproval', fromAddress, toAddress, fromAmount, slippageTolerance)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = await curve.router.isApproved(fromAddress, fromAmount)
       if (!isApprovalCheckOnly) {
         resp.estimatedGas = resp.isApproved
-          ? await curve.router.estimateGas.swap(fromAddress, toAddress, fromAmount)
+          ? await (
+              curve.router.estimateGas.swap as (
+                inputCoin: string,
+                outputCoin: string,
+                amount: string | number,
+                slippage?: number,
+              ) => Promise<EstimatedGas>
+            )(fromAddress, toAddress, fromAmount, +slippageTolerance)
           : await curve.router.estimateGas.approve(fromAddress, fromAmount)
       }
       void warnIncorrectEstGas(curve.chainId, resp.estimatedGas)
@@ -389,16 +396,17 @@ const poolDeposit = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
+    maxSlippage: string,
   ) => {
-    log('depositEstGasApproval', p.name, isWrapped, amounts)
+    log('depositEstGasApproval', p.name, isWrapped, amounts, maxSlippage)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = isWrapped ? await p.depositWrappedIsApproved(amounts) : await p.depositIsApproved(amounts)
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.depositWrapped(amounts)
-          : await p.estimateGas.deposit(amounts)
+          ? await p.estimateGas.depositWrapped(amounts, +maxSlippage)
+          : await p.estimateGas.deposit(amounts, +maxSlippage)
       } else {
         resp.estimatedGas = isWrapped
           ? await p.estimateGas.depositWrappedApprove(amounts)
@@ -480,8 +488,9 @@ const poolDeposit = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
+    maxSlippage: string,
   ) => {
-    log('depositAndStakeEstGasApproval', p.name, isWrapped, amounts)
+    log('depositAndStakeEstGasApproval', p.name, isWrapped, amounts, maxSlippage)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = isWrapped
@@ -490,8 +499,8 @@ const poolDeposit = {
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.depositAndStakeWrapped(amounts)
-          : await p.estimateGas.depositAndStake(amounts)
+          ? await p.estimateGas.depositAndStakeWrapped(amounts, +maxSlippage)
+          : await p.estimateGas.depositAndStake(amounts, +maxSlippage)
       } else {
         resp.estimatedGas = isWrapped
           ? await p.estimateGas.depositAndStakeWrappedApprove(amounts)
@@ -782,16 +791,17 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     lpTokenAmount: string,
+    maxSlippage: string,
   ) => {
-    log('withdrawEstGasApproval', p.name, lpTokenAmount)
+    log('withdrawEstGasApproval', p.name, lpTokenAmount, maxSlippage)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawIsApproved(lpTokenAmount)
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.withdrawWrapped(lpTokenAmount)
-          : await p.estimateGas.withdraw(lpTokenAmount)
+          ? await p.estimateGas.withdrawWrapped(lpTokenAmount, +maxSlippage)
+          : await p.estimateGas.withdraw(lpTokenAmount, +maxSlippage)
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawApprove(lpTokenAmount)
       }
@@ -845,8 +855,8 @@ const poolWithdraw = {
     const resp = { activeKey, expected: '', bonus: '', error: '' }
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
-        isWrapped ? await p.withdrawImbalanceWrappedExpected(amounts) : await p.withdrawImbalanceExpected(amounts),
-        isWrapped ? await p.withdrawImbalanceWrappedBonus(amounts) : await p.withdrawImbalanceBonus(amounts),
+        isWrapped ? p.withdrawImbalanceWrappedExpected(amounts) : p.withdrawImbalanceExpected(amounts),
+        isWrapped ? p.withdrawImbalanceWrappedBonus(amounts) : p.withdrawImbalanceBonus(amounts),
       ])
       resp.expected = fulfilledValue(expectedResult) ?? ''
       resp.bonus = fulfilledValue(bonusResult) ?? ''
@@ -863,16 +873,17 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
+    maxSlippage: string,
   ) => {
-    log('withdrawImbalanceEstGasApproval', p.name, isWrapped, amounts)
+    log('withdrawImbalanceEstGasApproval', p.name, isWrapped, amounts, maxSlippage)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawImbalanceIsApproved(amounts)
 
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.withdrawImbalanceWrapped(amounts)
-          : await p.estimateGas.withdrawImbalance(amounts)
+          ? await p.estimateGas.withdrawImbalanceWrapped(amounts, +maxSlippage)
+          : await p.estimateGas.withdrawImbalance(amounts, +maxSlippage)
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawImbalanceApprove(amounts)
       }
@@ -933,11 +944,11 @@ const poolWithdraw = {
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
         isWrapped
-          ? await p.withdrawOneCoinWrappedExpected(lpTokenAmount, tokenAddress)
-          : await p.withdrawOneCoinExpected(lpTokenAmount, tokenAddress),
+          ? p.withdrawOneCoinWrappedExpected(lpTokenAmount, tokenAddress)
+          : p.withdrawOneCoinExpected(lpTokenAmount, tokenAddress),
         isWrapped
-          ? await p.withdrawOneCoinWrappedBonus(lpTokenAmount, tokenAddress)
-          : await p.withdrawOneCoinBonus(lpTokenAmount, tokenAddress),
+          ? p.withdrawOneCoinWrappedBonus(lpTokenAmount, tokenAddress)
+          : p.withdrawOneCoinBonus(lpTokenAmount, tokenAddress),
       ])
       resp.expected = fulfilledValue(expectedResult) ?? ''
       resp.bonus = fulfilledValue(bonusResult) ?? ''
@@ -955,15 +966,16 @@ const poolWithdraw = {
     isWrapped: boolean,
     lpTokenAmount: string,
     tokenAddress: string,
+    maxSlippage: string,
   ) => {
-    log('withdrawOneCoinEstGasApproval', p.name, isWrapped, lpTokenAmount, tokenAddress)
+    log('withdrawOneCoinEstGasApproval', p.name, isWrapped, lpTokenAmount, tokenAddress, maxSlippage)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawOneCoinIsApproved(lpTokenAmount)
       if (resp.isApproved) {
         resp.estimatedGas = isWrapped
-          ? await p.estimateGas.withdrawOneCoinWrapped(lpTokenAmount, tokenAddress)
-          : await p.estimateGas.withdrawOneCoin(lpTokenAmount, tokenAddress)
+          ? await p.estimateGas.withdrawOneCoinWrapped(lpTokenAmount, tokenAddress, +maxSlippage)
+          : await p.estimateGas.withdrawOneCoin(lpTokenAmount, tokenAddress, +maxSlippage)
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawOneCoinApprove(lpTokenAmount)
       }
@@ -1054,7 +1066,7 @@ const poolWithdraw = {
     const claimableRewards = await p.claimableRewards()
 
     // ClaimableReward[] = [{token: '0x5a98fcbea516cf06857215779fd812ca3bef1b32', symbol: 'LDO', amount: '15.589367306902830498'}]
-    return claimableRewards.filter((r) => {
+    return claimableRewards.filter(r => {
       if (chainId !== 1) {
         return r.symbol !== 'CRV' && +r.amount > 0
       }
@@ -1123,9 +1135,9 @@ const wallet = {
     log('getUserClaimable', poolIds, walletAddress)
     const fetchedUserClaimable = await curve.getUserClaimable(poolIds, walletAddress)
     if (curve.chainId === 8453) {
-      return fetchedUserClaimable.map((poolClaimables) => {
+      return fetchedUserClaimable.map(poolClaimables => {
         if (Array.isArray(poolClaimables)) {
-          const crvClaimables = poolClaimables.filter((c) => c.symbol === 'CRV')
+          const crvClaimables = poolClaimables.filter(c => c.symbol === 'CRV')
           // Base chain show too many CRV
           if (crvClaimables.length === 2) {
             return [crvClaimables[0]]
@@ -1205,7 +1217,7 @@ const wallet = {
           profit.crvProfit = filteredCrvProfiles
         }
         if (chainId === 8453) {
-          const foundCRVRewards = rewards[1].find((r) => r.symbol === 'CRV')
+          const foundCRVRewards = rewards[1].find(r => r.symbol === 'CRV')
           if (!foundCRVRewards) {
             profit.tokensProfit = rewards[1]
           }

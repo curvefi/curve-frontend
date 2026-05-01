@@ -15,8 +15,8 @@ export const DetailsLoanChartBalances = ({
 }: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'> & {
   selectorMenu?: ReactNode
 }) => {
-  const statsBandsResp = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
-  const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
+  const statsBandsResp = useStore(state => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
+  const loanPricesResp = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
@@ -52,7 +52,7 @@ export const DetailsLoanChartBalances = ({
   const parsedChartBandBalancesData = useMemo(() => {
     setBrushIndex({ startIndex: undefined, endIndex: undefined })
     return chartBandBalancesData && _parseData(chartBandBalancesData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chartBandBalancesData?.length])
 
   return (

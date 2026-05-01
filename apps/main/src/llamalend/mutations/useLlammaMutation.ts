@@ -10,7 +10,7 @@ import {
   useTransactionMutation,
   type TransactionMutationOptions,
 } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { getLlamaMarket, updateUserEventsApi } from '../llama.utils'
+import { getControllerAddress, getLlamaMarket, getTokens, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
 
 /** Context created in onMutate, extends the base transaction context with llamma market and api */
@@ -20,6 +20,11 @@ type LlammaContext = TransactionContext & {
   userAddress: Address
 }
 
+// Default market's collateral and borrow token addresses to invalidate after mutations.
+const getDefaultAddresses = (market: LlamaMarketTemplate) => {
+  const { collateralToken, borrowToken } = getTokens(market)
+  return [collateralToken.address, borrowToken.address]
+}
 /**
  * Custom hook for handling llamma-related mutations with automatic wallet and API validation.
  * Wraps `useTransactionMutation` and adds llamma market context, cache invalidation,
@@ -36,7 +41,7 @@ export function useLlammaMutation<TVariables extends object>({
   marketId: string | null | undefined
   /** The current network config */
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  /** Token balances affected by the mutation that should be refetched after success */
+  /** Token balances affected by the mutation that should be refetched after success. Defaults to market collateral + borrow tokens. */
   mutationTokenAddresses?: (variables: TVariables, context: LlammaContext) => Address[] | undefined
 }) {
   const { llamaApi } = useCurve()
@@ -54,11 +59,17 @@ export function useLlammaMutation<TVariables extends object>({
     }),
     onSuccess: async (data, receipt, variables, context) => {
       const { market, wallet, userAddress } = context
-      const tokenAddresses = mutationTokenAddresses?.(variables, context) ?? []
+      const tokenAddresses = mutationTokenAddresses?.(variables, context) ?? getDefaultAddresses(market)
       updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
 
       await Promise.all([
-        invalidateAllUserMarketDetails({ chainId, marketId: market.id, userAddress }),
+        invalidateAllUserMarketDetails({
+          chainId,
+          marketId: market.id,
+          userAddress,
+          contractAddress: getControllerAddress(market),
+          blockchainId: networkId,
+        }),
         invalidateTokenBalances(config, {
           chainId,
           userAddress,

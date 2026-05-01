@@ -25,11 +25,11 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
         disableUnderline: true,
         sx: {
           maxHeight: Sizing.lg,
-          backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-          fontFamily: (t) => t.typography.highlightXl.fontFamily,
+          backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+          fontFamily: t => t.typography.highlightXl.fontFamily,
           fontSize: FontSize.xl,
           fontWeight: FontWeight.Bold,
-          color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
+          color: t => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
         },
       },
     }}

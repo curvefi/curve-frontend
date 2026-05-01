@@ -23,7 +23,7 @@ export const InputLabel = ({
     if (offsetWidth && offsetHeight && description !== '-') {
       setSkeleton([offsetWidth > 10 ? offsetWidth : 20, offsetHeight - 4] as [number, number])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [descriptionEl?.offsetHeight, descriptionEl?.offsetWidth])
 
   return (

@@ -1,12 +1,11 @@
-import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
-import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export type RepayExpectedBorrowedResult = {
+type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
   borrowedFromStateCollateral?: Decimal
   borrowedFromUserCollateral?: Decimal

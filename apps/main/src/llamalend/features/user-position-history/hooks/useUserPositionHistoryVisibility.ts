@@ -7,9 +7,9 @@ import { UserPositionHistoryColumnId } from '../columns'
  * Create a map of column visibility for the User Position History table on mobile devices.
  * On mobile that shows only the event type and time columns.
  */
-export const createUserPositionHistoryMobileColumns = () =>
+const createUserPositionHistoryMobileColumns = () =>
   fromEntries(
-    recordValues(UserPositionHistoryColumnId).map((key) => [
+    recordValues(UserPositionHistoryColumnId).map(key => [
       key,
       key === UserPositionHistoryColumnId.Type || key === UserPositionHistoryColumnId.Time,
     ]),

@@ -32,7 +32,7 @@ export const PositionDetailsComposite = ({
         <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
         <LlamaMonitorBotButton />
       </Stack>
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{activeTab.render()}</Stack>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{activeTab.render()}</Stack>
     </Stack>
   )
 }

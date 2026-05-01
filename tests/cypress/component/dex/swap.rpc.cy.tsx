@@ -19,7 +19,7 @@ describe('Router Swap (RPC)', () => {
 
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
-  const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+  const getVirtualNetwork = createVirtualTestnet(uuid => ({
     slug: `swap-integration-${uuid}`,
     display_name: `SwapIntegration (${uuid})`,
     fork_config: { block_number: 'latest' },

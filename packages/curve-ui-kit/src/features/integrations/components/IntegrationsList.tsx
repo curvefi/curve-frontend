@@ -6,9 +6,11 @@ import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { BLOCKCHAIN_LEGACY_NAMES } from '@ui/utils'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 import { PartnerCard, type Partner } from '@ui-kit/shared/ui/PartnerCard'
+import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.utils'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -33,8 +35,8 @@ const filterIntegrations = ({
   const networkId = Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === network)?.[0] ?? network
 
   const list = [...integrations]
-    .filter((app) => tag === 'all' || app.tags?.includes(tag))
-    .filter((app) => !networkId || app.networks?.[networkId])
+    .filter(app => tag === 'all' || app.tags?.includes(tag))
+    .filter(app => !networkId || app.networks?.[networkId])
 
   if (!searchText) {
     return list
@@ -43,22 +45,23 @@ const filterIntegrations = ({
   return new Fuse<Partner>(list, {
     ignoreLocation: true,
     threshold: 0.01,
-    keys: [{ name: 'name', getFn: (a) => a.name }],
+    keys: [{ name: 'name', getFn: a => a.name }],
   })
     .search(searchText)
-    .map((r) => r.item)
+    .map(r => r.item)
 }
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
   const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
   const isLoading = integrationsLoading || integrationsTagsLoading
+  const isMobile = useIsMobile()
 
   // Collect the unique list of networks from the integrations response
   const networks = useMemo(
     () => [
       ...new Set(
-        integrations.flatMap((integration) =>
+        integrations.flatMap(integration =>
           Object.entries(integration.networks ?? [])
             .filter(([, enabled]) => enabled)
             .map(([networkId]) => networkId),
@@ -73,7 +76,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
-    () => (networks.find((network) => network === searchParams?.get('network')) || networkId) ?? 'ethereum',
+    () => (networks.find(network => network === searchParams?.get('network')) || networkId) ?? 'ethereum',
     [networkId, networks, searchParams],
   )
 
@@ -103,14 +106,14 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
         <ChainFilterChips
           chains={networks}
           selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
-          toggleChain={useCallback((network) => updateFilters({ network }), [updateFilters])}
+          toggleChain={useCallback(network => updateFilters({ network }), [updateFilters])}
         />
 
         <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">
-          {Object.values(tags).map((tag) => (
+          {Object.values(tags).map(tag => (
             <SelectableChip
+              size={getDefaultSelectableChipSize(isMobile)}
               key={tag.id}
-              size="small"
               label={
                 <Stack direction="row" alignItems="center" gap={Spacing.sm}>
                   {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
@@ -129,15 +132,15 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
             <Trans>
               No integration apps found with for{' '}
               {notFalsy(searchText, filterTag)
-                .map((x) => `“${x}”`)
+                .map(x => `“${x}”`)
                 .join(t` and `)}
             </Trans>
           </Box>
         ) : (
           <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
-            {(integrationsFiltered ?? []).map((app) => (
+            {(integrationsFiltered ?? []).map(app => (
               <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <PartnerCard {...app} tags={(app.tags ?? []).map((tag) => tags[tag]?.displayName ?? tag)} />
+                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
               </Grid>
             ))}
           </Grid>

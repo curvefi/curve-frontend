@@ -4,7 +4,7 @@ import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { Chain } from '@curvefi/prices-api'
-import { Stack } from '@mui/material'
+import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
@@ -25,7 +25,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export type RateMode = 'borrow' | 'supply'
+type RateMode = 'borrow' | 'supply'
 
 export type RateChartPoint = {
   timestamp: number
@@ -70,38 +70,28 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
 
   const chartData = useMemo<RateChartPoint[]>(() => {
     const sorted = sortBy(
-      snapshots.map((snapshot) => ({
+      snapshots.map(snapshot => ({
         // timestamp is typed as Date but may be a string after JSON serialization (e.g. React Query cache)
         timestamp: new Date(snapshot.timestamp).getTime(),
         rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
       })),
-      (item) => item.timestamp,
+      item => item.timestamp,
     )
 
     return addMovingAverages(
       sorted,
-      (d) => d.rate,
-      (d) => d.timestamp,
+      d => d.rate,
+      d => d.timestamp,
     )
   }, [snapshots, rateMode])
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
-    () => ({
-      rate: Color.Primary[500],
-      movingAverage: Color.Secondary[500],
-      totalAverage: Color.Tertiary[400],
-    }),
+    () => ({ rate: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
     [Color.Primary, Color.Secondary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<RateSeriesKey>[] = useMemo(
-    () =>
-      activeSeriesConfig.map(({ key, label, dash }) => ({
-        key,
-        label,
-        color: seriesColors[key],
-        dash,
-      })),
+    () => activeSeriesConfig.map(({ key, label, dash }) => ({ key, label, color: seriesColors[key], dash })),
     [seriesColors, activeSeriesConfig],
   )
 
@@ -111,17 +101,15 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
         label,
         line: { lineStroke: seriesColors[key], dash },
         toggled: visibleSeries.includes(key),
-        onToggle: () =>
-          setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key])),
+        onToggle: () => setVisibleSeries(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])),
       })),
     [seriesColors, visibleSeries, activeSeriesConfig],
   )
 
   return (
-    <Card>
+    <Card size="small">
       <CardHeader
         title={rateMode === 'borrow' ? t`Historical Borrow Rate` : t`Historical Supply Rate`}
-        size="small"
         action={
           <SelectTimeOption
             options={timeOptions}
@@ -131,7 +119,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
           />
         }
       />
-      <Stack gap={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <CardContent component={Stack} gap={Spacing.md}>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={isLoading || !market}
@@ -145,13 +133,13 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: RateChartPoint['timestamp'] | number | string) => formatDate(value)}
-            yTickFormatter={(value) => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
+            yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}
           />
         </ChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

@@ -12,7 +12,11 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { useNewBandsChart, useMarketHistoricalRatesChart } from '@ui-kit/hooks/useFeatureFlags'
+import {
+  useNewBandsChart,
+  useMarketHistoricalRatesChart,
+  useMarketInterestRatesAndUtilizationChart,
+} from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -40,41 +44,41 @@ export const MarketInformationComposite = ({
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const newBandsChartEnabled = useNewBandsChart()
+  const isBorrow = type === 'borrow'
   const blockchainId = networks[rChainId].id as Chain
 
   return (
     <Stack gap={PAGE_SPACING}>
-      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
-      {type === 'borrow' && !newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      {isBorrow && <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />}
+      {isBorrow && !newBandsChartEnabled && (
+        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}
 
       {useMarketHistoricalRatesChart() && (
         <>
-          <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />
+          {isBorrow && <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />}
           <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="supply" />
-          <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
         </>
       )}
 
-      {market && (
-        <Card>
-          <CardHeader title={t`Advanced Details`} size="small" />
-          <CardContent>
-            <Stack>
-              <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
-              <MarketInfoLayout
-                chainId={rChainId}
-                marketType={LlamaMarketType.Lend}
-                market={market}
-                network={networks[rChainId]}
-              />
-            </Stack>
-          </CardContent>
-        </Card>
+      {useMarketInterestRatesAndUtilizationChart() && (
+        <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
       )}
+
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
+          <MarketInfoLayout
+            chainId={rChainId}
+            marketType={LlamaMarketType.Lend}
+            market={market}
+            network={networks[rChainId]}
+          />
+        </CardContent>
+      </Card>
     </Stack>
   )
 }

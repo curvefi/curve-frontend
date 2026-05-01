@@ -6,7 +6,7 @@ import { useMarketCapAndAvailable, useRateCurve } from '@/llamalend/queries/mark
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
-import { Stack } from '@mui/material'
+import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
@@ -88,15 +88,12 @@ export const MarketRateCurveChart = ({
   )
 
   const seriesColors: Record<RateCurveSeriesKey, string> = useMemo(
-    () => ({
-      borrowApr: Color.Primary[500],
-      supplyApy: Color.Tertiary[400],
-    }),
+    () => ({ borrowApr: Color.Primary[500], supplyApy: Color.Tertiary[400] }),
     [Color.Primary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<RateCurveSeriesKey>[] = useMemo(
-    () => SERIES_CONFIG.map((serie) => ({ ...serie, color: seriesColors[serie.key] })),
+    () => SERIES_CONFIG.map(serie => ({ ...serie, color: seriesColors[serie.key] })),
     [seriesColors],
   )
 
@@ -107,15 +104,15 @@ export const MarketRateCurveChart = ({
         line: { lineStroke: seriesColors[key], dash },
         toggled: visibleSeries.includes(key),
         onToggle: () =>
-          setVisibleSeries((prev) => (prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key])),
+          setVisibleSeries(prev => (prev.includes(key) ? prev.filter(item => item !== key) : [...prev, key])),
       })),
     [seriesColors, visibleSeries],
   )
 
   return (
-    <Card>
-      <CardHeader title={t`Interest Rate & Utilization`} size="small" />
-      <Stack gap={Spacing.md} sx={{ backgroundColor: (theme) => theme.design.Layer[1].Fill, padding: Spacing.md }}>
+    <Card size="small">
+      <CardHeader title={t`Interest Rate & Utilization`} />
+      <CardContent component={Stack} gap={Spacing.md}>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={isLoading || !market}
@@ -130,8 +127,8 @@ export const MarketRateCurveChart = ({
             visibleSeries={visibleSeries}
             xAxisType="value"
             markLines={markLines}
-            xTickFormatter={(value) => formatPercent(+value)}
-            yTickFormatter={(value) => formatPercent(+value)}
+            xTickFormatter={value => formatPercent(+value)}
+            yTickFormatter={value => formatPercent(+value)}
             yPaddingRatio={0.05}
             renderTooltip={RateCurveTooltip}
           />
@@ -140,7 +137,7 @@ export const MarketRateCurveChart = ({
           legendSets={legendSets}
           description={t`This chart illustrates the relationship between utilization and interest rates in this market. It reflects the market’s monetary policy—how rates adjust based on supply and demand dynamics.`}
         />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }

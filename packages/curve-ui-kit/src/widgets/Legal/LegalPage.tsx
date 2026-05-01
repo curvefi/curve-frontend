@@ -19,13 +19,12 @@ import type { Tab, DisclaimerTab } from './types/tabs'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-export type LegalPageProps = {
+type LegalPageProps = {
   currentApp: AppName
 }
 
 function useAfterHydration(result: string) {
   const [value, setValue] = useState<string>()
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(result), [result]) // only after hydration, otherwise test may click too fast
   return value
 }
@@ -42,11 +41,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
 
   const tabs = useMemo(
     () => [
-      ...TABS.map(({ value, ...props }) => ({
-        ...props,
-        value,
-        href: getSearchString({ tab: value }, searchParams),
-      })),
+      ...TABS.map(({ value, ...props }) => ({ ...props, value, href: getSearchString({ tab: value }, searchParams) })),
     ],
     [searchParams],
   )
@@ -93,7 +88,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <Stack
               direction={'row'}
               justifyContent="space-between"
-              sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+              sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
             >
               <TabsSwitcher
                 variant="underlined"
@@ -106,7 +101,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
                 sx={{
                   flexGrow: 1,
                   borderBottom: '1px solid',
-                  borderColor: (t) => t.design.Color.Neutral[200],
+                  borderColor: t => t.design.Color.Neutral[200],
                   display: 'block',
                 }}
               />

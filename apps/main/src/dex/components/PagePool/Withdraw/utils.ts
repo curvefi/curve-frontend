@@ -24,13 +24,10 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
 }
 
 export function resetFormAmounts(formValues: FormValues) {
-  return formValues.amounts.map((a) => ({ ...a, value: '' }))
+  return formValues.amounts.map(a => ({ ...a, value: '' }))
 }
 
-export function getTokensText(
-  { claimableCrv, claimableRewards }: FormValues,
-  { isClaimCrv, isClaimRewards }: FormStatus,
-) {
+function getTokensText({ claimableCrv, claimableRewards }: FormValues, { isClaimCrv, isClaimRewards }: FormStatus) {
   const message = []
 
   if (isClaimCrv) {

@@ -20,7 +20,7 @@ import type { Range } from '@ui-kit/types/util'
 
 const { Height } = SizesAndSpaces
 
-export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
+type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
@@ -29,24 +29,19 @@ type UseOhlcChartStateProps = {
 }
 
 const useLegacyChartPrices = () => {
-  const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
-  const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
-  const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
-  const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
-  const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
-  const repayActiveKey = useStore((state) => state.loanRepay.activeKey)
-  const repayLeveragePrices = useStore((state) => state.loanRepay.detailInfoLeverage[repayActiveKey]?.prices ?? null)
-  const repayLoanPrices = useStore((state) => state.loanRepay.detailInfo[loanRepayActiveKey]?.prices ?? null)
+  const borrowMoreActiveKey = useStore(state => state.loanBorrowMore.activeKey)
+  const loanRepayActiveKey = useStore(state => state.loanRepay.activeKey)
+  const loanCollateralAddActiveKey = useStore(state => state.loanCollateralAdd.activeKey)
+  const loanCollateralRemoveActiveKey = useStore(state => state.loanCollateralRemove.activeKey)
+  const borrowMorePrices = useStore(state => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
+  const repayActiveKey = useStore(state => state.loanRepay.activeKey)
+  const repayLeveragePrices = useStore(state => state.loanRepay.detailInfoLeverage[repayActiveKey]?.prices ?? null)
+  const repayLoanPrices = useStore(state => state.loanRepay.detailInfo[loanRepayActiveKey]?.prices ?? null)
   const addCollateralPrices = useStore(
-    (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null,
+    state => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null,
   )
   const removeCollateralPrices = useStore(
-    (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
+    state => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
   return useMemo(() => {
     if (repayLeveragePrices?.length) return repayLeveragePrices
@@ -54,21 +49,10 @@ const useLegacyChartPrices = () => {
     if (addCollateralPrices?.length) return addCollateralPrices
     if (repayLoanPrices?.length) return repayLoanPrices
     if (borrowMorePrices?.length) return borrowMorePrices
-    if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
-      const prices = liqRangesMapper[formValues.n].prices
-      return [prices[1], prices[0]]
-    }
-    return loanCreateLeverageDetailInfo?.prices ?? null
-  }, [
-    repayLeveragePrices,
-    removeCollateralPrices,
-    addCollateralPrices,
-    repayLoanPrices,
-    borrowMorePrices,
-    formValues.n,
-    liqRangesMapper,
-    loanCreateLeverageDetailInfo,
-  ]) as Range<Decimal> | undefined
+    return null
+  }, [repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
+    | Range<Decimal>
+    | undefined
 }
 
 export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcChartStateProps) => {
@@ -80,22 +64,22 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
     userAddress,
   })
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const oraclePoolFetchStatus = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
-  const oraclePoolData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.data)
-  const oraclePoolOraclePriceData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
-  const oraclePoolCollateralSymbol = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.collateralToken.symbol)
-  const oraclePoolBorrowedSymbol = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.borrowedToken.symbol)
-  const oraclePoolRefetchingCapped = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.refetchingCapped)
-  const oraclePoolLastFetchEndTime = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.lastFetchEndTime)
-  const llammaFetchStatus = useStore((state) => state.ohlcCharts.chartLlammaOhlc.fetchStatus)
-  const llammaOraclePriceData = useStore((state) => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
-  const llammaRefetchingCapped = useStore((state) => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
-  const llammaLastFetchEndTime = useStore((state) => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
-  const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
-  const fetchOraclePoolOhlcData = useStore((state) => state.ohlcCharts.fetchOraclePoolOhlcData)
-  const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const resetOhlcState = useStore((state) => state.ohlcCharts.resetState)
-  const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
+  const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
+  const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
+  const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
+  const oraclePoolCollateralSymbol = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.collateralToken.symbol)
+  const oraclePoolBorrowedSymbol = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.borrowedToken.symbol)
+  const oraclePoolRefetchingCapped = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.refetchingCapped)
+  const oraclePoolLastFetchEndTime = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.lastFetchEndTime)
+  const llammaFetchStatus = useStore(state => state.ohlcCharts.chartLlammaOhlc.fetchStatus)
+  const llammaOraclePriceData = useStore(state => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
+  const llammaRefetchingCapped = useStore(state => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
+  const llammaLastFetchEndTime = useStore(state => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
+  const fetchLlammaOhlcData = useStore(state => state.ohlcCharts.fetchLlammaOhlcData)
+  const fetchOraclePoolOhlcData = useStore(state => state.ohlcCharts.fetchOraclePoolOhlcData)
+  const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
+  const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
+  const priceInfo = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
 
   const { oraclePrice } = priceInfo ?? {}
 

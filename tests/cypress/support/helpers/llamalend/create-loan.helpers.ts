@@ -48,10 +48,10 @@ export const LOAN_TEST_MARKETS = {
   ],
   [LlamaMarketType.Lend]: [
     {
-      id: 'one-way-market-3',
-      label: 'CRV-crvUSD Old Lend Market',
-      collateralAddress: '0xd533a949740bb3306d119cc777fa900ba034cd52', // CRV
-      controllerAddress: '0xeda215b7666936ded834f76f3fbc6f323295110a',
+      id: 'one-way-market-2',
+      label: 'tBTC-crvUSD Old Lend Market',
+      collateralAddress: '0x18084fba666a33d37592fa2633fd49a74dd93a88', // tBTC
+      controllerAddress: '0x413fd2511bad510947a91f5c6c79ebd8138c29fc',
       collateral: '100',
       borrow: '3',
       borrowMore: '1',
@@ -125,10 +125,12 @@ export function writeCreateLoanForm({
   borrow: Decimal
   leverageEnabled: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-info"]', TRANSACTION_LOAD_TIMEOUT).should(
+    'exist',
+  )
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-info"]').should('not.contain.text', '?')
   getActionValue('borrow-health').should('equal', '∞')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
@@ -141,14 +143,14 @@ export function writeCreateLoanForm({
  */
 export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boolean }) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
-  cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]').should('not.exist') // make sure we don't click the previous max
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // new max is being calculated
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]').should('not.exist') // new max is being calculated
   // wait for max borrow to load and verify the input value matches (using data-value for precision)
-  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .then((maxValue) => getBorrowInput().should('have.value', maxValue))
+    .then(maxValue => getBorrowInput().should('have.value', maxValue))
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
   checkLoanDetailsLoaded({ leverageEnabled })
 }

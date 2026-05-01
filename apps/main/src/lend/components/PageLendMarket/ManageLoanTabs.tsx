@@ -46,7 +46,7 @@ const LendManageLegacyMenu = [
     value: 'leverage',
     label: t`Leverage`,
     visible: ({ market }) => market?.leverage?.hasLeverage(),
-    component: (props) => <LoanBorrowMore {...props} isLeverage />,
+    component: props => <LoanBorrowMore {...props} isLeverage />,
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
@@ -121,13 +121,19 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
-          <ImproveHealthForm chainId={chainId} market={market} networks={networks} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, isLoaded, collateralEvents }: ManageLoanProps) => (
+          <ImproveHealthForm
+            chainId={chainId}
+            market={market}
+            networks={networks}
+            enabled={isLoaded}
+            collateralEvents={collateralEvents}
+          />
         ),
       },
       {
         value: 'close-position',
-        label: t`Close position`,
+        label: t`Close`,
         component: ({ rChainId: chainId, market, isLoaded }: ManageLoanProps) => (
           <ClosePositionForm chainId={chainId} networks={networks} market={market} enabled={isLoaded} />
         ),

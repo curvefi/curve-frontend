@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, ParsedBandsBalances, UserBandsPriceRange } from '../types'
+import { ChartDataPoint, FetchedBandsBalances, UserBandsPriceRange } from '../types'
 
 /**
  * Calculates the user positions price range
@@ -14,13 +14,13 @@ import { ChartDataPoint, ParsedBandsBalances, UserBandsPriceRange } from '../typ
  */
 export const useUserBandsPriceRange = (
   chartData: ChartDataPoint[],
-  userBandsBalances: ParsedBandsBalances[],
+  userBandsBalances: FetchedBandsBalances[],
 ): UserBandsPriceRange =>
   useMemo(() => {
     if (!userBandsBalances.length) return null
 
-    const userBandNumbers = new Set(userBandsBalances.map((band) => band.n))
-    const userBands = chartData.filter((d) => userBandNumbers.has(d.n))
+    const userBandNumbers = new Set(userBandsBalances.map(band => band.n))
+    const userBands = chartData.filter(d => userBandNumbers.has(d.n))
 
     if (!userBands.length) return null
 

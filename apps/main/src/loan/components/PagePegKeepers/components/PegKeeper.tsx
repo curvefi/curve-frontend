@@ -26,33 +26,31 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
   const { rate, debt, debtCeiling, estCallerProfit, rebalance, isRebalancing } = usePegkeeper(pegkeeper)
 
   return (
-    <Card sx={sx} data-testid={`${testId}-root`}>
+    <Card sx={sx} data-testid={`${testId}-root`} size="small">
       <PegKeeperHeader
         underlyingCoins={underlyingCoins}
         underlyingCoinAddresses={underlyingCoinAddresses}
         rate={rate}
       />
 
-      <CardContent>
-        <Stack gap={Spacing.md}>
-          <PegKeeperMetrics rate={rate} debt={debt} debtCeiling={debtCeiling} poolName={poolName} testId={testId} />
+      <CardContent component={Stack} gap={Spacing.md}>
+        <PegKeeperMetrics rate={rate} debt={debt} debtCeiling={debtCeiling} poolName={poolName} testId={testId} />
 
-          <PegKeeperAdvancedDetails
-            address={address}
-            estCallerProfit={estCallerProfit}
-            poolId={poolId}
-            poolName={poolName}
-            poolAddress={poolAddress}
-            testId={testId}
-          />
+        <PegKeeperAdvancedDetails
+          address={address}
+          estCallerProfit={estCallerProfit}
+          poolId={poolId}
+          poolName={poolName}
+          poolAddress={poolAddress}
+          testId={testId}
+        />
 
-          <PegKeeperRebalanceButton
-            canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
-            isRebalancing={isRebalancing}
-            onRebalance={rebalance}
-            testId={testId}
-          />
-        </Stack>
+        <PegKeeperRebalanceButton
+          canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
+          isRebalancing={isRebalancing}
+          onRebalance={rebalance}
+          testId={testId}
+        />
       </CardContent>
     </Card>
   )

@@ -58,7 +58,7 @@ export const LoanPresetSelector = ({
         aria-label={t`Loan Preset`}
         sx={{ width: '100%' }}
       >
-        {Object.values(LoanPreset).map((p) => (
+        {Object.values(LoanPreset).map(p => (
           <Tooltip
             title={PRESETS[p].title}
             body={

@@ -1,11 +1,14 @@
 import { zeroAddress } from 'viem'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { oneAddress, oneDecimal } from '@cy/support/generators'
+import { oneAddress, oneDecimal, oneValueOf } from '@cy/support/generators'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockMethod = (...args: any[]) => Promise<any>
+
+export const oneMarketType = () => oneValueOf(LlamaMarketType)
 
 // Borrow-side tests rely on the MintMarketTemplate prototype and mint-specific methods.
 export const createMockMintMarket = (overrides: object) =>
@@ -23,12 +26,7 @@ export const createMockMintMarket = (overrides: object) =>
     ...overrides,
   }) as MintMarketTemplate
 
-const createMockLendRates = () => ({
-  borrowApr: '0.1',
-  borrowApy: '0.1',
-  lendApr: '0.04',
-  lendApy: '0.04',
-})
+const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr: '0.04', lendApy: '0.04' })
 
 export type MockLendStats = {
   rates: MockMethod
@@ -79,6 +77,9 @@ export const createMockLendEstimateGas = (): MockLendEstimateGas => ({
 
 export type MockLendVault = {
   estimateGas: MockLendEstimateGas
+  maxDeposit: MockMethod
+  maxWithdraw: MockMethod
+  maxRedeem: MockMethod
   convertToAssets: MockMethod
   previewDeposit: MockMethod
   previewWithdraw: MockMethod
@@ -99,6 +100,9 @@ export type MockLendVault = {
 
 export const createMockLendVault = (): MockLendVault => ({
   estimateGas: createMockLendEstimateGas(),
+  maxDeposit: cy.stub().resolves('0'),
+  maxWithdraw: cy.stub().resolves('0'),
+  maxRedeem: cy.stub().resolves('0'),
   convertToAssets: cy.stub().callsFake(async (shares: string) => shares),
   previewDeposit: cy.stub().resolves('0'),
   previewWithdraw: cy.stub().resolves('0'),

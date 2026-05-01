@@ -1,5 +1,6 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
@@ -7,9 +8,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useStakeForm } from '../hooks/useStakeForm'
+import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
-export type StakeFormProps<ChainId extends IChainId> = {
+type StakeFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
@@ -25,6 +27,7 @@ export const StakeForm = <ChainId extends IChainId>({
   enabled,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
+  const blockchainId = network.id
 
   const {
     form,
@@ -34,9 +37,11 @@ export const StakeForm = <ChainId extends IChainId>({
     isDisabled,
     vaultToken,
     borrowToken,
+    collateralToken,
     stakeError,
     formErrors,
     isApproved,
+    hasGauge,
     max,
   } = useStakeForm({ market, network, enabled })
 
@@ -49,22 +54,34 @@ export const StakeForm = <ChainId extends IChainId>({
       <LoanFormTokenInput
         label={t`Amount to stake`}
         token={vaultToken}
-        blockchainId={network.id}
+        blockchainId={blockchainId}
         name="stakeAmount"
         form={form}
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
+        tokenSelector={
+          <StakeTokenLabel
+            blockchainId={blockchainId}
+            vaultTokenLabel={vaultToken?.symbol}
+            collateralTokenAddress={collateralToken?.address}
+            borrowTokenAddress={borrowToken?.address}
+          />
+        }
       />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid={`${TEST_ID_PREFIX}-submit-button`}
-      >
-        {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
-      </Button>
+      {hasGauge ? (
+        <Button
+          type="submit"
+          loading={isPending || !market}
+          disabled={isDisabled}
+          data-testid={`${TEST_ID_PREFIX}-submit-button`}
+        >
+          {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
+        </Button>
+      ) : (
+        <AlertNoGauge />
+      )}
 
       <FormAlerts error={stakeError} formErrors={formErrors} handledErrors={['stakeAmount']} />
     </Form>

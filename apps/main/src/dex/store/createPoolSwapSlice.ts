@@ -103,12 +103,12 @@ export const createPoolSwapSlice = (
         const provider = useWallet.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
-          const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then((module) => module.default)
+          const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then(module => module.default)
           const iface = new Interface(json)
           const contract = new Contract(pool.address, iface.format(), provider)
           const storedRates = await contract.stored_rates()
 
-          const ignoreExchangeRateCheck = Object.values(storedRates).some((rate) => {
+          const ignoreExchangeRateCheck = Object.values(storedRates).some(rate => {
             // if rate is > 1, then number cannot be checked for exchange rate
             const parsedRate = BigInt(rate as bigint)
               .toString()
@@ -553,13 +553,13 @@ function getRouterWarningModal(
 
 function getReservesBalanceError(currencyReserves: CurrencyReserves, address: string, amount: string) {
   if (+amount > 0) {
-    const found = currencyReserves.tokens.find((t) => t.tokenAddress === address)
+    const found = currencyReserves.tokens.find(t => t.tokenAddress === address)
     return found ? (+amount > 0 && +amount > +found.balance ? 'too-much-reserves' : '') : ''
   }
   return ''
 }
 
-export function getActiveKey({ fromAddress, fromAmount, toAddress }: FormValues, maxSlippage: string) {
+function getActiveKey({ fromAddress, fromAmount, toAddress }: FormValues, maxSlippage: string) {
   const parsedFromAddress = fromAddress ? fromAddress.slice(fromAddress.length - 4) : ''
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
   return `${parsedFromAddress}-${fromAmount}-${parsedToAddress}-${maxSlippage}`

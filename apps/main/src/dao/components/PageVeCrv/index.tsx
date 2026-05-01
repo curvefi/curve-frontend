@@ -20,8 +20,8 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}
   const canUnlock = getIsLockExpired(
@@ -40,7 +40,6 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   useEffect(() => {
     if (canUnlock) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTab('withdraw')
     }
     // if user has no locked crv, and is not on the create tab, set the tab to create

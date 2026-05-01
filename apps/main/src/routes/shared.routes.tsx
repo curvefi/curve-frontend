@@ -19,9 +19,7 @@ export const createSharedRoutes = (app: AppName, layoutProps: LayoutProps) => [
     path: '/',
     /** Redirect is handled by the `RootLayout` component */
     component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
@@ -32,17 +30,13 @@ export const createSharedRoutes = (app: AppName, layoutProps: LayoutProps) => [
   createRoute({
     path: '$network/legal',
     component: () => <LegalPage currentApp={app} />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Legal - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/integrations',
     component: Integrations,
-    head: () => ({
-      meta: [{ title: 'Integrations - Curve' }],
-    }),
+    head: () => ({ meta: [{ title: 'Integrations - Curve' }] }),
     ...layoutProps,
   }),
 ]

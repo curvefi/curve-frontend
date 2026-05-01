@@ -25,7 +25,7 @@ export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateL
   queryKey: () => ['lending-vaults', 'v2'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
-      markets.map((market) => ({ ...market, chain: chain as ChainName })),
+      markets.map(market => ({ ...market, chain: chain as ChainName })),
     ),
   category: 'llamalend.marketList',
   validationSuite: EmptyValidationSuite,
@@ -41,7 +41,7 @@ const {
     Object.fromEntries(
       Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
         chain,
-        userMarkets.map((market) => market.controller),
+        userMarkets.map(market => market.controller),
       ]),
     ) as Record<ChainName, Address[]>,
   category: 'llamalend.user',
@@ -79,7 +79,7 @@ export async function invalidateAllUserLendingVaults(userAddress: Address | null
 
   const invalidateContracts = recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).flatMap(
     ([blockchainId, contracts]) =>
-      contracts.map((contractAddress) =>
+      contracts.map(contractAddress =>
         invalidateUserLendingVaultStats({
           userAddress,
           blockchainId,
@@ -105,7 +105,7 @@ const {
     return fromEntries(
       recordEntries(positions).map(([chain, positions]) => [
         chain,
-        positions.filter((p) => p.currentShares || p.currentSharesInGauge).map((position) => position.vaultAddress),
+        positions.filter(p => p.currentShares || p.currentSharesInGauge).map(position => position.vaultAddress),
       ]),
     )
   },
@@ -117,7 +117,7 @@ export async function invalidateAllUserLendingSupplies(userAddress: Address | nu
 
   const invalidateContracts = recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).flatMap(
     ([blockchainId, positions]) =>
-      positions.map((contractAddress) =>
+      positions.map(contractAddress =>
         invalidateUserLendingVaultEarnings({
           userAddress,
           blockchainId,

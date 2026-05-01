@@ -8,8 +8,8 @@ import { campaigns } from '@external-rewards'
 
 const REWARDS = groupBy(
   // Can't use Object.groupBy until we support ES2024
-  campaigns.flatMap((campaign) =>
-    campaign.pools.map((pool) => ({
+  campaigns.flatMap(campaign =>
+    campaign.pools.map(pool => ({
       // Campaign specific properties
       campaignName: campaign.campaignName,
       platform: campaign.platform,
@@ -34,11 +34,11 @@ const REWARDS = groupBy(
         }),
     })),
   ),
-  (x) => x.address,
+  x => x.address,
 )
 
 /**
- * Base query for all external reward campaigns.
+ * Base query for all external reward campaigns, both pools and markets.
  *
  * Fetches all active campaigns across all networks and applies time-based filtering
  * to only include campaigns within their active period. Network filtering is intentionally

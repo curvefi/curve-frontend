@@ -59,7 +59,7 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
     // Skip for manual pagination - data is expected to change on page change
     if (isManualPagination) return
     // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCount.current && resultCount) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    if (lastResultCount.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
     lastResultCount.current = resultCount
   }, [resultCount, isManualPagination])
 }
@@ -93,7 +93,7 @@ export const DataTable = <T extends TableItem>({
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
-  const { isLimited, isLoading: isLoadingViewAll, handleShowAll } = useTableRowLimit(rowLimit)
+  const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
   const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
   const showViewAllButton = isLimited && rows.length > rowLimit!
@@ -101,9 +101,8 @@ export const DataTable = <T extends TableItem>({
   const showPagination = !isLimited && table.getPageCount() > 1
 
   const headerGroups = table.getHeaderGroups()
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
   const containerRef = useRef<HTMLDivElement>(null)
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
@@ -113,7 +112,7 @@ export const DataTable = <T extends TableItem>({
     top: maxHeight ? 0 : top,
     zIndex: t.zIndex.tableHeader,
     backgroundColor: t.design.Table.Header.Fill,
-    marginBlock: Sizing['sm'],
+    marginBlock: Sizing.sm,
   })
   const showFooter = showPagination || showViewAllButton || footerRow
 
@@ -121,7 +120,7 @@ export const DataTable = <T extends TableItem>({
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
         sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
+          backgroundColor: t => t.design.Layer[1].Fill,
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
         }}
         data-testid={!loading && 'data-table'}
@@ -130,8 +129,8 @@ export const DataTable = <T extends TableItem>({
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
             {children && <FilterRow table={table}>{children}</FilterRow>}
 
-            {headerGroups.map((headerGroup) => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+            {headerGroups.map(headerGroup => (
+              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}
@@ -163,10 +162,10 @@ export const DataTable = <T extends TableItem>({
         </TableBody>
         {showFooter && (
           <TableFooter>
-            {footerRow && <TableRow>{footerRow}</TableRow>}
+            {footerRow && <TableRow sx={{ verticalAlign: rowProps.verticalAlign }}>{footerRow}</TableRow>}
             {showViewAllButton && (
               <TableRow>
-                <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
+                <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}
                 </TableViewAllCell>
               </TableRow>

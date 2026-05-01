@@ -18,6 +18,7 @@ const variantMapping = {
   bodyXsRegular: 'p',
   bodyXsBold: 'p',
 
+  buttonXxs: 'span',
   buttonXs: 'span',
   buttonS: 'span',
   buttonM: 'span',

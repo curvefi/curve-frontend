@@ -51,7 +51,7 @@ export const handleBreakpoints = (values: {
   [P in keyof CSSObject]: CSSObject[P] | Responsive<CSSObject[P]>
 }): CSSObject =>
   fromEntries(
-    basicMuiTheme.breakpoints.keys.map((breakpoint) => {
+    basicMuiTheme.breakpoints.keys.map(breakpoint => {
       const selector = basicMuiTheme.breakpoints.up(breakpoint)
       return [
         selector,
@@ -70,3 +70,9 @@ export const mapBreakpoints = (
   values: Responsive,
   callback: (value: string, breakpoint: Breakpoint) => string,
 ): CSSObject => mapRecord(values, (breakpoint, value) => callback(value, breakpoint))
+
+export const fixedResponsive = <T extends string>(value: T): Responsive<T> => ({
+  mobile: value,
+  tablet: value,
+  desktop: value,
+})

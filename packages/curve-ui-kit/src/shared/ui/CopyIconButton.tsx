@@ -15,15 +15,16 @@ type CopyIconBUttonProps = {
   children?: ReactNode
 } & IconButtonProps
 
-export const CopyIconButton = ({
-  copyText,
-  label,
-  confirmationText,
-  children = <CopyIcon />,
-  size = 'extraSmall',
-  ...iconProps
-}: CopyIconBUttonProps) => (
-  // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
+export const CopyIconButton = (
+  {
+    copyText,
+    label,
+    confirmationText,
+    children = <CopyIcon />,
+    size = 'extraSmall',
+    ...iconProps
+  }: CopyIconBUttonProps, // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
+) => (
   <InvertTheme inverted={false}>
     <Tooltip title={label} placement="top">
       <IconButton
@@ -34,7 +35,7 @@ export const CopyIconButton = ({
           return (
             navigator.clipboard?.writeText(copyText).then(
               () => showToast({ message: copyText, severity: 'info', title: confirmationText, testId }),
-              (e) => showToast({ title: e.message, severity: 'error', testId }),
+              e => showToast({ title: e.message, severity: 'error', testId }),
             ) ?? showToast({ title: t`Clipboard not available`, severity: 'warning', testId })
           )
         }}

@@ -11,7 +11,6 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
 
   // Update internal state when the checked prop changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setValue(checked ? 'option1' : 'option2')
   }, [checked])
 
@@ -19,7 +18,7 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
     <FormControl>
       <RadioGroup
         value={value}
-        onChange={(event) => {
+        onChange={event => {
           const newValue = event.target.value
           setValue(newValue)
           const isChecked = newValue === 'option1'

@@ -10,13 +10,18 @@ import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import type { BridgeFormParams } from '../BridgeFormTabs'
+import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { useBridgeForm } from '../hooks/useBridgeForm'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent } from './BridgeFormContent'
 import { BridgeInfoAlert } from './BridgeInfoAlert'
 
 /** Hooks up the bridge form content with an actual form and hooks */
-export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
+export const BridgeForm = ({
+  chainId,
+  networks,
+  bridgeDisabledAlert,
+}: BridgeFormParams & { bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'> }) => {
   const { isConnected, isConnecting } = useConnection()
   const { connect } = useWallet()
   const navigate = useNavigate()
@@ -69,13 +74,14 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
         amountError={amountError}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
+        bridgeDisabledAlert={bridgeDisabledAlert}
         loading={!supportedNetworks.length || loading}
         isPending={isPending}
         isApproved={isApproved?.data}
         isConnected={isConnected}
         isConnecting={isConnecting}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
-        onAmount={(amount) => updateForm(form, { amount })}
+        onAmount={amount => updateForm(form, { amount })}
         onConnect={() => connect()}
         onChangeNetwork={() =>
           navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))

@@ -133,6 +133,12 @@ const defaultTokens: TokenOption[] = [
     symbol: 'A7A5',
     volume: 2.5,
   },
+  {
+    chain: 'ethereum',
+    address: MAINNET_CRV_ADDRESS,
+    symbol: 'CRV with a very superlong name that should be truncated',
+    volume: 11.5,
+  },
 ]
 
 const defaultBalances = {
@@ -190,7 +196,7 @@ const TokenSelectorComponent = ({
         disableSorting={disableSorting}
         disableMyTokens={disableMyTokens}
         isLoading={true}
-        onToken={(newToken) => {
+        onToken={newToken => {
           action('onToken')(newToken)
           setSelectedToken(newToken)
         }}

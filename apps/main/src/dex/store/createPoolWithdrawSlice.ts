@@ -62,8 +62,24 @@ export type PoolWithdrawSlice = {
     setFormValues(formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
     // steps
-    fetchEstGasApproval(activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
+    fetchEstGasApproval(
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      formType: FormType,
+      pool: Pool,
+      formValues: FormValues,
+      maxSlippage: string,
+    ): Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchStepApprove(
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      formType: FormType,
+      pool: Pool,
+      formValues: FormValues,
+      maxSlippage: string,
+    ): Promise<FnStepApproveResponse | undefined>
     fetchStepWithdraw(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
     fetchStepUnstake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
     fetchStepClaim(activeKey: string, curve: CurveApi, poolData: PoolData): Promise<FnStepResponse | undefined>
@@ -92,7 +108,7 @@ export const createPoolWithdrawSlice = (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchWithdrawToken: async (props) => {
+    fetchWithdrawToken: async props => {
       const { storedActiveKey, config, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       const cFormValues = cloneDeep(formValues)
@@ -102,7 +118,7 @@ export const createPoolWithdrawSlice = (
       //  get slippage and expected
       if (+cFormValues.lpToken > 0) {
         // set loading state
-        cFormValues.amounts = cFormValues.amounts.map((a) => ({ ...a, value: '' }))
+        cFormValues.amounts = cFormValues.amounts.map(a => ({ ...a, value: '' }))
         get()[sliceKey].setStateByKeys({ formValues: cloneDeep(cFormValues) })
         get()[sliceKey].setStateByKey('slippage', {
           [activeKey]: {
@@ -129,7 +145,7 @@ export const createPoolWithdrawSlice = (
               },
             })
           } else {
-            cFormValues.amounts = cFormValues.amounts.map((a) => ({
+            cFormValues.amounts = cFormValues.amounts.map(a => ({
               ...a,
               value: a.tokenAddress === cFormValues.selectedTokenAddress ? resp.expected : '',
             }))
@@ -149,10 +165,10 @@ export const createPoolWithdrawSlice = (
 
       // get gas
       if (signerAddress) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues, maxSlippage)
       }
     },
-    fetchWithdrawLpToken: async (props) => {
+    fetchWithdrawLpToken: async props => {
       const { storedActiveKey, config, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       const cFormValues = cloneDeep(formValues)
@@ -197,11 +213,11 @@ export const createPoolWithdrawSlice = (
 
         // get gas
         if (signerAddress) {
-          void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues, maxSlippage)
         }
       }
     },
-    fetchWithdrawCustom: async (props) => {
+    fetchWithdrawCustom: async props => {
       const { storedActiveKey, config, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       const cFormValues = cloneDeep(formValues)
@@ -209,7 +225,7 @@ export const createPoolWithdrawSlice = (
       const { signerAddress } = curve
 
       //  get slippage and expected
-      if (cFormValues.amounts.some((a) => +a.value > 0)) {
+      if (cFormValues.amounts.some(a => +a.value > 0)) {
         // set loading state
         get()[sliceKey].setStateByKey('slippage', {
           [activeKey]: {
@@ -288,7 +304,7 @@ export const createPoolWithdrawSlice = (
 
       // get gas
       if (signerAddress) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues, maxSlippage)
       }
     },
     fetchClaimable: async (activeKey, chainId, pool) => {
@@ -373,14 +389,14 @@ export const createPoolWithdrawSlice = (
           void get()[sliceKey].fetchWithdrawCustom(props)
         }
       } else if (formType === 'UNSTAKE' && !!signerAddress && +cFormValues.stakedLpToken > 0) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues, maxSlippage)
       } else if (formType === 'CLAIM') {
         void get()[sliceKey].fetchClaimable(activeKey, chainId, pool)
       }
     },
 
     // steps
-    fetchEstGasApproval: async (activeKey, config, curve, formType, pool, formValues) => {
+    fetchEstGasApproval: async (activeKey, config, curve, formType, pool, formValues, maxSlippage) => {
       const { chainId } = curve
       let resp
       if (formType === 'WITHDRAW') {
@@ -395,6 +411,7 @@ export const createPoolWithdrawSlice = (
                   pool,
                   formValues.isWrapped,
                   formValues.lpToken,
+                  maxSlippage,
                 )
               : formValues.selected === 'imbalance'
                 ? await curvejsApi.poolWithdraw.withdrawImbalanceEstGasApproval(
@@ -403,6 +420,7 @@ export const createPoolWithdrawSlice = (
                     pool,
                     formValues.isWrapped,
                     parseAmountsForAPI(formValues.amounts),
+                    maxSlippage,
                   )
                 : await curvejsApi.poolWithdraw.withdrawOneCoinEstGasApproval(
                     activeKey,
@@ -411,6 +429,7 @@ export const createPoolWithdrawSlice = (
                     formValues.isWrapped,
                     formValues.lpToken,
                     formValues.selectedTokenAddress,
+                    maxSlippage,
                   )
         }
       } else if (formType === 'UNSTAKE') {
@@ -436,7 +455,7 @@ export const createPoolWithdrawSlice = (
       }
       return resp
     },
-    fetchStepApprove: async (activeKey, config, curve, formType, pool, formValues) => {
+    fetchStepApprove: async (activeKey, config, curve, formType, pool, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -457,7 +476,7 @@ export const createPoolWithdrawSlice = (
         const fn = curvejsApi.poolWithdraw.withdrawImbalanceApprove
         resp = await fn(activeKey, provider, pool, parseAmountsForAPI(amounts))
       }
-      if (resp && resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp?.activeKey === get()[sliceKey].activeKey) {
         const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -471,7 +490,7 @@ export const createPoolWithdrawSlice = (
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas and approval
-          await get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, formValues)
+          await get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, formValues, maxSlippage)
         }
 
         return resp
@@ -507,7 +526,7 @@ export const createPoolWithdrawSlice = (
         const fn = curvejsApi.poolWithdraw.withdrawImbalance
         resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
       }
-      if (resp && resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp?.activeKey === get()[sliceKey].activeKey) {
         const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
@@ -635,7 +654,7 @@ export const createPoolWithdrawSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
@@ -652,7 +671,7 @@ export const createPoolWithdrawSlice = (
   },
 })
 
-export function getActiveKey(
+function getActiveKey(
   poolId: string,
   formType: FormType,
   {
@@ -679,7 +698,7 @@ export function getActiveKey(
     } else if (selected === 'lpToken') {
       activeKey += `${selected}-${isWrapped}-${maxSlippage}-${lpToken}`
     } else {
-      const amountsStr = amounts.map((a) => a.value).join('-')
+      const amountsStr = amounts.map(a => a.value).join('-')
       activeKey += `${selected}-${amountsStr}`
     }
   } else if (formType === 'UNSTAKE') {
@@ -693,7 +712,7 @@ export function getActiveKey(
 function resetFormValues(formValues: FormValues) {
   return {
     ...cloneDeep(formValues),
-    amounts: formValues.amounts.map((a) => ({ ...a, value: '' })),
+    amounts: formValues.amounts.map(a => ({ ...a, value: '' })),
     claimableRewards: [],
     claimableCrv: '',
     lpToken: '',

@@ -1,42 +1,27 @@
 import { useMemo } from 'react'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import { sortBy } from '@primitives/array.utils'
 
 type ProcessedBandsData = {
   marketBandsBalances: FetchedBandsBalances[] | undefined
   userBandsBalances: FetchedBandsBalances[] | undefined
-  oraclePriceBand: number | null | undefined
-  collateralUsdRate: number | null | undefined
-  borrowedUsdRate: number | null | undefined
 }
 
-export const useProcessedBandsData = ({
-  marketBandsBalances,
-  userBandsBalances,
-  oraclePriceBand,
-  collateralUsdRate,
-  borrowedUsdRate,
-}: ProcessedBandsData) =>
+export const useProcessedBandsData = ({ marketBandsBalances, userBandsBalances }: ProcessedBandsData) =>
   useMemo(() => {
     if (!marketBandsBalances) return []
 
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
-    const hasCollateralRate =
-      typeof collateralUsdRate === 'number' && Number.isFinite(collateralUsdRate) && collateralUsdRate > 0
-    const hasBorrowedRate =
-      typeof borrowedUsdRate === 'number' && Number.isFinite(borrowedUsdRate) && borrowedUsdRate > 0
 
-    const getBandValues = (band: FetchedBandsBalances) => {
-      const collateralAmount = Number(band.collateral)
-      const borrowedAmount = Number(band.borrowed)
+    const getBandValues = (band: FetchedBandsBalances) => ({
+      collateralAmount: +band.collateral,
+      borrowedAmount: +band.borrowed,
+      collateralValueUsd: band.collateralUsd,
+      borrowedValueUsd: band.collateralBorrowedUsd - band.collateralUsd,
+    })
 
-      const collateralValueUsd = hasCollateralRate ? collateralAmount * collateralUsdRate : band.collateralUsd
-      const borrowedValueUsd = hasBorrowedRate ? borrowedAmount * borrowedUsdRate : band.collateralBorrowedUsd
-
-      return { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd }
-    }
-
-    const marketTuples: [number, ChartDataPoint][] = marketBands.map((band) => {
+    const marketTuples: [number, ChartDataPoint][] = marketBands.map(band => {
       const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
 
       return [
@@ -55,12 +40,11 @@ export const useProcessedBandsData = ({
               ? collateralValueUsd + borrowedValueUsd
               : undefined,
           isLiquidationBand: band.isLiquidationBand,
-          isOraclePriceBand: band.n === oraclePriceBand,
         },
       ]
     })
 
-    const userTuples: [number, ChartDataPoint][] = userBands.map((band) => {
+    const userTuples: [number, ChartDataPoint][] = userBands.map(band => {
       const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
       return [
         band.n,
@@ -78,7 +62,6 @@ export const useProcessedBandsData = ({
               ? collateralValueUsd + borrowedValueUsd
               : undefined,
           isLiquidationBand: band.isLiquidationBand,
-          isOraclePriceBand: band.n === oraclePriceBand,
         },
       ]
     })
@@ -94,5 +77,5 @@ export const useProcessedBandsData = ({
       }
     })
 
-    return Array.from(bandsMap.values()).sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
-  }, [marketBandsBalances, userBandsBalances, oraclePriceBand, collateralUsdRate, borrowedUsdRate])
+    return sortBy(Array.from(bandsMap.values()), d => d.pUpDownMedian, 'desc')
+  }, [marketBandsBalances, userBandsBalances])

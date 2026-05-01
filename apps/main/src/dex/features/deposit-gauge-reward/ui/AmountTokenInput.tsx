@@ -1,7 +1,6 @@
 import { MouseEvent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Address, isAddressEqual } from 'viem'
-import { ethAddress } from 'viem'
+import { Address, isAddressEqual, ethAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import {
   useDepositRewardApproveIsMutating,
@@ -38,7 +37,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { address: signerAddress } = useConnection()
-  const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
+  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
   } = useNetworkByChain({ chainId })
@@ -65,7 +64,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       .filter(
         (token): token is Token =>
           !!token &&
-          activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
+          activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map(toTokenOption(networkId))
 
@@ -73,7 +72,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     if (
       rewardTokenId &&
       filteredTokens.length > 0 &&
-      !filteredTokens.some((token) => isAddressEqual(token.address, rewardTokenId))
+      !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
     ) {
       setValue('rewardTokenId', filteredTokens[0].address, { shouldValidate: true })
     }
@@ -81,8 +80,8 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     return filteredTokens
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
 
-  const token = filteredTokens.find((x) => x.address === rewardTokenId)
-  const tokenAddresses = filteredTokens.map((t) => t.address)
+  const token = filteredTokens.find(x => x.address === rewardTokenId)
+  const tokenAddresses = filteredTokens.map(t => t.address)
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
   const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
@@ -92,7 +91,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   })
 
   const rewardTokenBalance = useMemo(
-    () => rewardTokenId && tokenBalances && tokenBalances[rewardTokenId],
+    () => rewardTokenId && tokenBalances?.[rewardTokenId],
     [rewardTokenId, tokenBalances],
   )
 

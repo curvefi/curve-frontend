@@ -22,7 +22,7 @@ type VoteGaugeProps = {
 export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const { address: userAddress } = useConnection()
   const [showDetails, setShowDetails] = useState(false)
-  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
+  const setSelectedGauge = useStore(state => state.gauges.setSelectedGauge)
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   return (

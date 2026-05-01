@@ -127,7 +127,7 @@ export const setupTenderlyLoan = ({
   })
 
   // the call above uses cy.request, but to use async we need cy.then()
-  loadTenderlyAccount().then(async (tenderlyAccount) => {
+  loadTenderlyAccount().then(async tenderlyAccount => {
     await approveTokenForSpender({
       vnet,
       userAddress,

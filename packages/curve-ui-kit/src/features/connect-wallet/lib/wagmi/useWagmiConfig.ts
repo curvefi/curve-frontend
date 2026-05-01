@@ -6,8 +6,7 @@ import type { NetworkMapping } from '@ui/utils'
 import { isCypress, noCypressTestConnector } from '@ui-kit/utils/env'
 import { Chain as ChainEnum } from '@ui-kit/utils/network'
 import { createChainFromNetwork } from './chains'
-import { defaultGetRpcUrls } from './rpc'
-import { createTransportFromNetwork } from './transports'
+import { createTransportFromNetwork, defaultGetRpcUrls } from './transports'
 import { createWagmiConfig } from './wagmi-config'
 import { createTestConnector } from './wagmi-test'
 
@@ -15,7 +14,7 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
   useMemo(() => {
     if (networks == null) return
 
-    const chains = recordValues(networks).map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [
+    const chains = recordValues(networks).map(network => createChainFromNetwork(network, defaultGetRpcUrls)) as [
       Chain,
       ...Chain[],
     ]
@@ -28,7 +27,7 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
           connectors: [
             createTestConnector({
               privateKey: generatePrivateKey(),
-              chain: chains.find((chain) => chain.id === ChainEnum.Ethereum)!,
+              chain: chains.find(chain => chain.id === ChainEnum.Ethereum)!,
             })!,
           ],
         }),

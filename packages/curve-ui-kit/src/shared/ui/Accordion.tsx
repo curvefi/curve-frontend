@@ -70,7 +70,7 @@ type ControlledAccordionProps = {
   toggle: () => void
 }
 
-export type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
+type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
 
 /**
  * Handles the toggle logic for both controlled and uncontrolled accordion modes.
@@ -134,7 +134,7 @@ export const Accordion = ({
 
           '&:hover, &.Mui-focusVisible': {
             '&::after': {
-              borderColor: (t) => t.design.Button.Focus_Outline,
+              borderColor: t => t.design.Button.Focus_Outline,
               borderWidth: '2px',
             },
             ...(!ghost && { backgroundColor: layer1Fill }),
@@ -183,7 +183,7 @@ export const Accordion = ({
               height: headerIconSize[size],
               transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
               // Create a transition that mimics the collapse transition
-              transition: (t) =>
+              transition: t =>
                 t.transitions.create('transform', {
                   duration: t.transitions.duration.standard,
                   easing: t.transitions.easing.easeInOut,

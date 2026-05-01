@@ -11,11 +11,6 @@ export function delayAction<T>(cb: T) {
   }
 }
 
-export function sleep(ms?: number) {
-  const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)
-  return new Promise((resolve) => setTimeout(resolve, parsedMs))
-}
-
 export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'

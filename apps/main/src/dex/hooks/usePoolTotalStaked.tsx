@@ -11,8 +11,8 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
   const { curveApi = null } = useCurve()
   const { provider: walletProvider } = useWallet()
-  const staked = useStore((state) => state.pools.stakedMapper[address])
-  const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
+  const staked = useStore(state => state.pools.stakedMapper[address])
+  const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
   const { data: networks } = useNetworks()
   const { rpcUrl } = (curveApi && networks[curveApi.chainId]) || {}
 
@@ -26,7 +26,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const getContract = useCallback(
     async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
-        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then((module) => module.default.abi)
+        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(module => module.default.abi)
         const iface = new Interface(abi)
         return new Contract(address, iface.format(), provider)
       } catch (error) {
@@ -78,7 +78,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
         }
       })()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curveApi?.signerAddress, curveApi?.chainId, address, rpcUrl, walletProvider])
 
   return staked

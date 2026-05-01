@@ -105,9 +105,9 @@ export const AllSizes: Story = {
     valueRight: 'crvUSD',
     size: 'small',
   },
-  render: (args) => (
+  render: args => (
     <Stack gap={4} alignItems="center" width="25rem" sx={{ alignItems: 'stretch' }}>
-      {SIZES.map((size) => (
+      {SIZES.map(size => (
         <ActionInfo
           key={size}
           {...args}

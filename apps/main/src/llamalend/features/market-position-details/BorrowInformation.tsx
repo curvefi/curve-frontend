@@ -4,7 +4,6 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import {
   LiquidationThresholdTooltipContent,
   type Leverage,
@@ -13,8 +12,6 @@ import {
   type LiquidationRange,
   type BandRange,
 } from './'
-
-const { MaxWidth } = SizesAndSpaces
 
 const dollarUnitOptions = {
   abbreviate: false,
@@ -45,8 +42,7 @@ export const BorrowInformation = ({
       display="grid"
       gap={3}
       sx={{
-        gridTemplateColumns: '1fr 1fr',
-        [`@media (min-width: ${MaxWidth.legacyMarketAndBorrowDetails})`]: { gridTemplateColumns: '1fr 1fr' },
+        gridTemplateColumns: { mobile: '1fr 1fr', desktop: 'repeat(4, 1fr)' },
       }}
     >
       <Metric
@@ -104,7 +100,7 @@ export const BorrowInformation = ({
         label={t`Total debt`}
         value={totalDebt?.value}
         loading={totalDebt?.loading}
-        valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
+        valueOptions={{ unit: { symbol: collateralValue?.borrow?.symbol ?? '?', position: 'suffix' } }}
         valueTooltip={{
           title: t`Total Debt`,
           body: <TotalDebtTooltipContent />,

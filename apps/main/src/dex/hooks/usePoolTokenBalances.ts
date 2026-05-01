@@ -58,17 +58,17 @@ export const fetchPoolTokenBalances = async (config: Config, curve: CurveApi, po
   const userAddress = curve.signerAddress as Address
 
   const balances = await Promise.allSettled([
-    ...(wrappedCoinAddresses as Address[]).map((tokenAddress) =>
+    ...(wrappedCoinAddresses as Address[]).map(tokenAddress =>
       fetchTokenBalance(config, { chainId, userAddress, tokenAddress }).then(
-        (balance) => [tokenAddress, balance] as const,
+        balance => [tokenAddress, balance] as const,
       ),
     ),
-    ...(underlyingCoinAddresses as Address[]).map((tokenAddress) =>
+    ...(underlyingCoinAddresses as Address[]).map(tokenAddress =>
       fetchTokenBalance(config, { chainId, userAddress, tokenAddress }).then(
-        (balance) => [tokenAddress, balance] as const,
+        balance => [tokenAddress, balance] as const,
       ),
     ),
   ])
 
-  return Object.fromEntries(balances.filter((x) => x.status === 'fulfilled').map((x) => x.value))
+  return Object.fromEntries(balances.filter(x => x.status === 'fulfilled').map(x => x.value))
 }

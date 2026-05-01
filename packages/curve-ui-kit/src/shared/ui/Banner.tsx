@@ -23,27 +23,27 @@ export const DEFAULT_SEVERITY = 'info' as const
 
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
-    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
+    title: { color: t => t.design.Text.TextColors.FilledFeedback.Info.Primary },
+    subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
     wrapper: {
-      border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
-      backgroundColor: (t) => t.design.Layer[1].Fill,
+      border: t => `1px solid ${t.design.Layer.Highlight.Outline}`,
+      backgroundColor: t => t.design.Layer[1].Fill,
     },
   },
   highlight: {
-    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
-    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
+    title: { color: t => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
+    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Info },
   },
   warning: {
-    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
-    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
+    title: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
+    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Warning },
   },
   alert: {
-    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
-    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
+    title: { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
+    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Error },
   },
 }
 

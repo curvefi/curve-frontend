@@ -6,7 +6,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 export const GaugeVotingBarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     return (
       <TooltipWrapper>
         <TooltipTitle>{payload[0].payload.title}</TooltipTitle>

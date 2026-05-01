@@ -3,10 +3,8 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Grid, { GridProps } from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useUserPositionsSummary'
@@ -21,16 +19,14 @@ type UserPositionStatisticsProps = {
 
 const UserPositionStatisticItem = ({
   label,
-  data,
-  isLoading,
-  error,
+  metric: { data, isLoading, error },
   itemSize,
 }: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => {
   const hasError = !!error
   return (
     <Grid size={itemSize}>
       <Metric
-        value={!hasError && data}
+        value={data}
         size="medium"
         // isLoading can still be true if there is an error
         loading={!hasError && isLoading}
@@ -38,18 +34,12 @@ const UserPositionStatisticItem = ({
           unit: 'dollar',
         }}
         label={label}
-        rightAdornment={
-          hasError && (
-            <Tooltip
-              arrow
-              placement="top"
-              title={t`Error fetching ${label}`}
-              body={<TooltipDescription text={t`Some positions could not be loaded correctly.`} />}
-            >
-              <ExclamationTriangleIcon fontSize="small" color="error" />
-            </Tooltip>
-          )
-        }
+        error={error}
+        errorTooltip={{
+          placement: 'top',
+          title: t`Error fetching ${label}`,
+          body: <TooltipDescription text={t`Some positions could not be loaded correctly.`} />,
+        }}
       />
     </Grid>
   )
@@ -58,7 +48,7 @@ const UserPositionStatisticItem = ({
 export const UserPositionSummary = ({ markets, selectedChains }: UserPositionStatisticsProps) => {
   const filteredMarkets = useMemo(() => {
     const chains = parseListFilter(selectedChains)
-    return chains ? markets?.filter((market) => chains.includes(market.chain)) : markets
+    return chains ? markets?.filter(market => chains.includes(market.chain)) : markets
   }, [markets, selectedChains])
   const summary = useUserPositionsSummary({ markets: filteredMarkets })
   return (
@@ -68,12 +58,12 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
       paddingInline={Spacing.md}
       spacing={Spacing.md}
       sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        borderBlock: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+        backgroundColor: t => t.design.Layer[1].Fill,
+        borderBlock: t => `1px solid ${t.design.Layer[1].Outline}`,
       }}
     >
-      {summary.map((item) => (
-        <UserPositionStatisticItem key={item.label} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
+      {summary.map((item, index) => (
+        <UserPositionStatisticItem key={index} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
       ))}
     </Grid>
   )

@@ -14,7 +14,7 @@ type BridgeMutation = {
   amount: Decimal
 }
 
-export type BridgeOptions = {
+type BridgeOptions = {
   chainId: number
   onReset: () => void
 }
@@ -29,8 +29,8 @@ export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
     },
     validationSuite: bridgeFormValidationSuite,
     validationParams: { chainId },
-    pendingMessage: (mutation) => t`Bridging... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
-    successMessage: (mutation) => t`Bridged! ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
+    pendingMessage: mutation => t`Bridging... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
+    successMessage: mutation => t`Bridged! ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
     ...props,
   })
 

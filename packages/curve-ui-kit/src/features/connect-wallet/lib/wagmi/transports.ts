@@ -1,9 +1,11 @@
+import lodash from 'lodash'
 import type { HttpTransportConfig } from 'viem'
 import type { NetworkDef } from '@ui/utils'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'
-import type { defaultGetRpcUrls } from './rpc'
+import { wagmiChainsMap } from './chains'
+import { RPC } from './rpc'
 
 const { Size, Time } = Duration.WagmiBatch
 
@@ -12,6 +14,19 @@ export const WAGMI_HTTP_OPTIONS = {
   // exclude write methods from fallbacks: even if the RPC fails, it might have processed the transaction
   methods: { exclude: ['eth_sendTransaction', 'eth_sendRawTransaction'] },
 } satisfies HttpTransportConfig
+
+/**
+ * Gets a list of unique RPC URLs for a given chain in priority order:
+ * 1. Hardcoded RPC URLs from RPC configuration
+ * 2. Network-specific RPC URL from the provided configuration
+ * 3. Default Wagmi chain RPC URLs as fallbacks
+ *
+ * @param chainId - The chain ID to get RPC URLs for
+ * @param networkRpcUrl - The primary RPC URL from the network configuration
+ * @returns Array of unique RPC URLs in priority order
+ */
+export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, networkRpcUrl: string) =>
+  lodash.uniq([...(RPC[chainId] ?? []), networkRpcUrl, ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
 
 /**
  * Transport configuration for Wagmi:
@@ -39,5 +54,5 @@ export const WAGMI_HTTP_OPTIONS = {
 export const createTransportFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls) =>
   fallback([
     unstable_connector(injected),
-    ...getRpcUrls(network.chainId, network.rpcUrl).map((url) => http(url, WAGMI_HTTP_OPTIONS)),
+    ...getRpcUrls(network.chainId, network.rpcUrl).map(url => http(url, WAGMI_HTTP_OPTIONS)),
   ])

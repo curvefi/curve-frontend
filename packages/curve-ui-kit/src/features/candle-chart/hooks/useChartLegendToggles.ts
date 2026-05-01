@@ -26,9 +26,9 @@ export const useChartLegendToggles = ({
   const [liqRangeCurrentVisible, setLiqRangeCurrentVisible] = useState(true)
   const [liqRangeNewVisible, setLiqRangeNewVisible] = useState(true)
 
-  const toggleOraclePriceVisible = useCallback(() => setOraclePriceVisible((v) => !v), [])
-  const toggleLiqRangeCurrentVisible = useCallback(() => setLiqRangeCurrentVisible((v) => !v), [])
-  const toggleLiqRangeNewVisible = useCallback(() => setLiqRangeNewVisible((v) => !v), [])
+  const toggleOraclePriceVisible = useCallback(() => setOraclePriceVisible(v => !v), [])
+  const toggleLiqRangeCurrentVisible = useCallback(() => setLiqRangeCurrentVisible(v => !v), [])
+  const toggleLiqRangeNewVisible = useCallback(() => setLiqRangeNewVisible(v => !v), [])
 
   const legendSets: LegendItem[] = useMemo(
     () =>

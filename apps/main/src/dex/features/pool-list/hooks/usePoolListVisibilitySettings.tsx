@@ -5,9 +5,13 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { getDefaultSort } from '../columns'
-import { POOL_LIST_COLUMNS, PoolColumnId } from '../columns'
-import { POOL_LIST_COLUMN_OPTIONS, PoolColumnVariant } from '../columns'
+import {
+  POOL_LIST_COLUMNS,
+  POOL_LIST_COLUMN_OPTIONS,
+  PoolColumnId,
+  PoolColumnVariant,
+  getDefaultSort,
+} from '../columns'
 
 const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<PoolColumnId>[]>> = { version: 1 }
 
@@ -15,8 +19,8 @@ const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<Pool
  * Create a map of column visibility for the pool list on mobile devices.
  * On mobile that is just the title and the column that is currently sorted.
  */
-export const createMobileColumns = (sortBy: PoolColumnId) =>
-  fromEntries(recordValues(PoolColumnId).map((key) => [key, key === PoolColumnId.PoolName || key === sortBy]))
+const createMobileColumns = (sortBy: PoolColumnId) =>
+  fromEntries(recordValues(PoolColumnId).map(key => [key, key === PoolColumnId.PoolName || key === sortBy]))
 
 export function usePoolListVisibilitySettings(
   title: string,

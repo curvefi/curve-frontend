@@ -1,3 +1,4 @@
+import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import type { RepayHealthParams, RepayHealthQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -64,4 +65,5 @@ export const {
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+  dependencies: params => [repayExpectedBorrowedQueryKey(params)],
 })

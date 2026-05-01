@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens, hasVault } from '@/llamalend/llama.utils'
+import { getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
@@ -43,12 +43,13 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
+  const marketHasGauge = !!market && hasGauge(market)
 
   const vaultToken = getVaultToken(market)
-  const { borrowToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
-  const maxUserStake = mapQuery(userBalances, (d) => d.depositedShares)
+  const maxUserStake = mapQuery(userBalances, d => d.depositedShares)
 
   const form = useForm<StakeForm>({
     ...formDefaultOptions,
@@ -60,12 +61,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      (): StakeParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        stakeAmount: values.stakeAmount,
-      }),
+      (): StakeParams<ChainId> => ({ chainId, marketId, userAddress, stakeAmount: values.stakeAmount }),
       [chainId, marketId, userAddress, values.stakeAmount],
     ),
   )
@@ -86,12 +82,14 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || isPending || isDebouncing,
+    isDisabled: !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
+    collateralToken,
     stakeError,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
+    hasGauge: marketHasGauge,
     formErrors: useFormErrors(formState),
   }
 }

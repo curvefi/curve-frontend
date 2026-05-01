@@ -6,12 +6,12 @@ import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 export const PoolInfo = () => {
-  const poolName = useStore((state) => state.createPool.poolName)
-  const poolSymbol = useStore((state) => state.createPool.poolSymbol)
-  const updatePoolName = useStore((state) => state.createPool.updatePoolName)
-  const updatePoolSymbol = useStore((state) => state.createPool.updatePoolSymbol)
+  const poolName = useStore(state => state.createPool.poolName)
+  const poolSymbol = useStore(state => state.createPool.poolSymbol)
+  const updatePoolName = useStore(state => state.createPool.updatePoolName)
+  const updatePoolSymbol = useStore(state => state.createPool.updatePoolSymbol)
 
-  const invalidCharsFound = INVALID_POOLS_NAME_CHARACTERS.filter((c) => poolName.includes(c))
+  const invalidCharsFound = INVALID_POOLS_NAME_CHARACTERS.filter(c => poolName.includes(c))
   const poolNameError =
     invalidCharsFound.length > 0
       ? t`Pool name cannot contain the following character${invalidCharsFound.length > 1 ? 's' : ''}: "${invalidCharsFound.join('", "')}"`

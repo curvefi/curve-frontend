@@ -6,7 +6,7 @@ import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 export const findTab = <T extends { value: string }>(tabs: T[], key: string | undefined): T =>
   assert(
     tabs.find(({ value }) => value === key),
-    `No tab found for key "${key}" in [${tabs.map((t) => t.value).join(', ')}]`,
+    `No tab found for key "${key}" in [${tabs.map(t => t.value).join(', ')}]`,
   )
 
 /**
@@ -25,7 +25,7 @@ export function useTabs<T>(
   tabOptions: readonly TabOption<T>[]
 } {
   const [requestedValue, onTabChange] = useState<T | undefined>(defaultValue)
-  const isPresent = requestedValue !== undefined && options.some((o) => o.value === requestedValue)
+  const isPresent = requestedValue !== undefined && options.some(o => o.value === requestedValue)
   const tab = isPresent ? requestedValue : options[0]?.value
   return { tab, onTabChange, tabOptions: options }
 }

@@ -1,14 +1,9 @@
-import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
+import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayParams } from '../validation/repay.types'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayRouteImage,
-  invalidate: invalidateRepayRouteImage,
-  refetchQuery: refetchRepayRouteImage,
-} = queryFactory({
+export const { invalidate: invalidateRepayRouteImage, refetchQuery: refetchRepayRouteImage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
