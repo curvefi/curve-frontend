@@ -21,7 +21,7 @@ export const BalanceAmount = <T extends Amount>({
   testId?: string
   sx?: SxProps
 }) => (
-  <WithSkeleton loading={loading}>
+  <WithSkeleton loading={loading} sx={sx}>
     <Typography
       className="balance"
       variant="highlightXs"

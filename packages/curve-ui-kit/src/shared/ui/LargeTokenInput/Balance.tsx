@@ -1,7 +1,5 @@
-import type { ReactNode } from 'react'
 import type { SvgIcon } from '@mui/material'
 import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -42,15 +40,6 @@ export type Props<T> = {
   inline?: boolean
 }
 
-const BalanceContent = ({ children, inline }: { children: ReactNode; inline: boolean }) =>
-  inline ? (
-    <Box>{children}</Box>
-  ) : (
-    <Stack direction="row" gap={Spacing.xs} alignItems="center">
-      {children}
-    </Stack>
-  )
-
 export const Balance = <T extends Amount>({
   symbol = '?',
   balance,
@@ -72,7 +61,7 @@ export const Balance = <T extends Amount>({
     testId={buttonTestId}
   >
     <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
-      <BalanceContent inline={inline}>
+      <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
         {typeof Prefix === 'string' ? (
           <Typography variant="bodyXsRegular" color="textTertiary" {...(inline && { component: 'span' })}>
             {Prefix}
@@ -110,7 +99,7 @@ export const Balance = <T extends Amount>({
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
           </Typography>
         )}{' '}
-      </BalanceContent>
+      </Box>
     </Tooltip>
   </WithWrapper>
 )
