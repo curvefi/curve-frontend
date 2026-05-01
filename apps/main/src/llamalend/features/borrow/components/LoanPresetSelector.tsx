@@ -11,7 +11,7 @@ import { PRESET_RANGES, LoanPreset } from '../../../constants'
 
 const PRESETS = {
   [LoanPreset.Safe]: {
-    title: t`Conservative`,
+    title: t`Default`,
     description:
       t`Sets up your Llamalend loan to offer the maximum safety by spreading your liquidity across more bands. ` +
       `This does not fully protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
