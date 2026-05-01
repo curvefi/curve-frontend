@@ -10,7 +10,6 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { notFalsy } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/forms'
 import { t } from '@ui-kit/lib/i18n'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { decimal, decimalNegate } from '@ui-kit/utils'
@@ -21,7 +20,6 @@ import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/col
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const formOptions = {
-  ...formDefaultOptions,
   defaultValues: { slippage: SLIPPAGE_PRESETS.STABLE },
 } as const
 
@@ -75,7 +73,7 @@ export function useClosePositionForm({
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)
 
-  const values = watchForm(form)
+  const values = form.values
   const {
     onSubmit,
     isPending: isClosing,

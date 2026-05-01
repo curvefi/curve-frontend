@@ -1,6 +1,5 @@
 import { captureError, captureString } from '@ui-kit/features/sentry'
 import { useForm } from '@ui-kit/forms'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
@@ -18,14 +17,13 @@ type ErrorReportFormValues = {
   context?: ErrorContext
 }
 
+const defaultValues: ErrorReportFormValues = { address: '', contactMethod: 'email', contact: '', description: '' }
+
 export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose: () => void) => {
-  const form = useForm<ErrorReportFormValues>({
-    ...formDefaultOptions,
-    defaultValues: { address: '', contactMethod: 'email', contact: '', description: '' },
-  })
+  const form = useForm<ErrorReportFormValues>({ defaultValues })
   return {
     form,
-    values: watchForm(form),
+    values: form.values,
     onSubmit: form.handleSubmit(async formData => {
       const body = {
         formData,

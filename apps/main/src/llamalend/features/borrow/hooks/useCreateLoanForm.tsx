@@ -7,13 +7,11 @@ import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
@@ -29,9 +27,11 @@ import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
-const resolver = vestResolver(
-  createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true, collateralRequired: true }),
-)
+const resolver = createLoanQueryValidationSuite({
+  debtRequired: false,
+  skipMarketValidation: true,
+  collateralRequired: true,
+})
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -49,8 +49,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 }) {
   const { address: userAddress } = useConnection()
   const form = useForm<CreateLoanForm>({
-    ...formDefaultOptions,
-    resolver,
+    validation: resolver,
     defaultValues: {
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
@@ -64,7 +63,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
   })
 
-  const values = watchForm(form)
+  const values = form.values
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({

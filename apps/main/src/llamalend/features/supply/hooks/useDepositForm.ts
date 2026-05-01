@@ -6,15 +6,13 @@ import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.ty
 import { useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import {
+  type DepositForm,
   depositFormValidationSuite,
   DepositParams,
-  type DepositForm,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({ depositAmount: undefined, maxDepositAmount: undefined })
@@ -35,12 +33,11 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   const { borrowToken } = market ? getTokens(market) : {}
 
   const form = useForm<DepositForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(depositFormValidationSuite),
+    validation: depositFormValidationSuite,
     defaultValues: emptyDepositForm(),
   })
 
-  const depositAmount = watchField(form, 'depositAmount')
+  const depositAmount = form.getValues('depositAmount')
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(

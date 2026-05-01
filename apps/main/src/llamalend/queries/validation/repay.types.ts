@@ -13,10 +13,10 @@ export type CompleteRepayForm = {
 }
 
 type RepayCalculatedValues = {
-  maxCollateral: Decimal
-  maxBorrowed: Decimal
-  maxStateCollateral: Decimal
-  isFull: boolean
+  maxCollateral: Decimal | undefined
+  maxBorrowed: Decimal | undefined
+  maxStateCollateral: Decimal | undefined
+  isFull: boolean | undefined
 }
 
 export type RepayFormData = MakeOptional<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &

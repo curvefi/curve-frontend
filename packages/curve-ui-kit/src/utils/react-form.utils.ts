@@ -1,6 +1,6 @@
 import { type SubmitEventHandler, useEffect, useMemo } from 'react'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
-import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from '@ui-kit/forms'
+import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from '@ui-kit/forms'
 import type { Query } from '@ui-kit/types/util'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
@@ -23,14 +23,14 @@ export function updateForm<TFieldValues extends FieldValues>(
   if (!changes.length) return // no changes, skip revalidation
   changes.forEach(([field, value]) =>
     // eslint-disable-next-line no-restricted-syntax
-    form.setValue(field as Path<TFieldValues>, value, {
+    form.setValue(field, value, {
       shouldValidate: false, // we revalidate just below.
       shouldDirty: !automated,
       shouldTouch: !automated,
     }),
   )
   // eslint-disable-next-line no-restricted-syntax
-  form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
+  form.trigger()
 }
 
 /**
@@ -43,7 +43,7 @@ export const useFormSync = <TFieldValues extends FieldValues>(
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(
-    ...(recordEntries(formState.errors) as [keyof TFieldValues | 'root', Error | undefined][])
+    ...(recordEntries(formState.errors) as [FieldPath<TFieldValues> | 'root', Error | undefined][])
       .filter(
         ([field, error]) =>
           (field in formState.touchedFields || (field === 'root' && formState.isDirty)) && error?.message,
@@ -63,7 +63,7 @@ export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T
 }
 
 /** Checks if any of the given fields are touched in the form. */
-export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: Path<T>[]) =>
+export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: FieldPath<T>[]) =>
   fields.some(field => field in form.formState.touchedFields)
 
 export const cancelSubmit: SubmitEventHandler<HTMLFormElement> = e => e.preventDefault()

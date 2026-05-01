@@ -61,7 +61,7 @@ export function useMaxTokenValues(
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(
     (range: number) => {
-      const { debt, maxDebt } = form.getValues()
+      const { debt, maxDebt } = form.values
       updateForm(form, { maxDebt: undefined, range })
       // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
       pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!

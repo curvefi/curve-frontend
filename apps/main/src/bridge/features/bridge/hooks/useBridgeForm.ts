@@ -1,7 +1,6 @@
 import { noop } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
@@ -9,7 +8,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useForm } from '@ui-kit/forms'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
@@ -52,15 +50,14 @@ const emptyBridgeForm = () =>
   }) satisfies BridgeForm
 
 const formProps = {
-  ...formDefaultOptions,
-  resolver: vestResolver(bridgeFormValidationSuite),
+  validation: bridgeFormValidationSuite,
   defaultValues: emptyBridgeForm(),
 }
 
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
   const form = useForm<BridgeForm>(formProps)
 
-  const values = watchForm(form)
+  const values = form.values
 
   const { address: userAddress } = useConnection()
   const params = useBridgeParams({ chainId, userAddress, ...values })

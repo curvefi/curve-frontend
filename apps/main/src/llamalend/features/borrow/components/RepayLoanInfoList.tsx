@@ -146,7 +146,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           collateralSymbol: collateralToken?.symbol ?? '',
           borrowedSymbol: borrowToken?.symbol ?? '',
         },
-        isOpen && isFull,
+        isOpen && !!isFull,
       )}
       {...useLeverageInfoFields({
         leverageEnabled: swapRequired, // in llamalend.js we need to use the leverage implementations to do any swap

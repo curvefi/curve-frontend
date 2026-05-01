@@ -3,8 +3,6 @@ import { FormProvider } from '@ui-kit/forms'
 import type { FieldValues, FormProviderProps } from '@ui-kit/forms'
 import { FormContent } from './FormContent'
 
-type TContext = null // not used yet, we can make this generic later if needed
-
 /**
  * A form element that includes a provider, a form tag, and a content wrapper.
  * Supports a footer below the form (outside the background area).
@@ -18,7 +16,7 @@ export const Form = <TFieldValues extends FieldValues>({
   onSubmit: SubmitEventHandler<HTMLFormElement>
   children: ReactNode
   footer: ReactNode
-} & FormProviderProps<TFieldValues, TContext, TFieldValues>) => (
+} & FormProviderProps<TFieldValues>) => (
   <FormProvider {...form}>
     <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
       <FormContent footer={footer}>{children}</FormContent>
