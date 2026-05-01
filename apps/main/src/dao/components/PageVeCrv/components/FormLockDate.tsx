@@ -81,9 +81,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
         utcDate: toCalendarDate(utcDate),
         utcDateError,
         calcdUtcDate:
-          utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate)
-            ? formatDate(new Date(calcdUtcDate.valueOf()))
-            : '',
+          utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
         days,
       })
     },
@@ -114,7 +112,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   const handleBtnClickIncrease = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
-        const localUtcDate = formValues.calcdUtcDate || formatDate(new Date(formValues.utcDate.toString()))
+        const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm changing unlock date to ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)

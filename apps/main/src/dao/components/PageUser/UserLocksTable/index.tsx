@@ -60,10 +60,10 @@ export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
             {formatNumber(Number(lock.amount))}
           </TableData>
           <TableData className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatLocaleDateFromTimestamp(lock.timestamp)}
+            {formatLocaleDateFromTimestamp(lock.timestamp / 1000)}
           </TableData>
           <TableData className={userLocksSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}>
-            {lock.unlockTime ? formatLocaleDateFromTimestamp(lock.unlockTime) : '-'}
+            {lock.unlockTime ? formatLocaleDateFromTimestamp(lock.unlockTime / 1000) : '-'}
           </TableData>
         </TableRowWrapper>
       )}

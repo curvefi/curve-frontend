@@ -40,7 +40,7 @@ export const VeCrcFees = () => {
               <>
                 <FeesContainer>
                   {veCrvFees.fees.map(item => (
-                    <FeeRow key={new Date(item.timestamp).getTime()}>
+                    <FeeRow key={item.timestamp}>
                       <FeeDate>
                         {formatDate(item.timestamp)}
                         {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}

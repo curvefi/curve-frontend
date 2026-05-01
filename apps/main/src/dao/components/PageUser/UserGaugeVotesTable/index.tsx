@@ -2,14 +2,11 @@ import lodash from 'lodash'
 import { useMemo } from 'react'
 import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
-import {
-  type UserGaugeVoteFormatted,
-  useUserGaugeVoteQuery,
-  invalidateUserGaugeVoteQuery,
-} from '@/dao/entities/user-gauge-votes'
+import { useUserGaugeVoteQuery, invalidateUserGaugeVoteQuery } from '@/dao/entities/user-gauge-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
+import type { UserGaugeVote } from '@curvefi/prices-api/gauge/models'
 import { formatLocaleDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -22,7 +19,7 @@ interface UserGaugeVotesTableProps {
 }
 
 const sortUserGaugeVotes = (
-  userGaugeVotes: UserGaugeVoteFormatted[],
+  userGaugeVotes: UserGaugeVote[],
   sortBy: { key: UserGaugeVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
@@ -42,7 +39,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
   )
 
   return (
-    <PaginatedTable<UserGaugeVoteFormatted>
+    <PaginatedTable<UserGaugeVote>
       data={sortedUserGaugeVotes}
       minWidth={tableMinWidth}
       isLoading={isLoading}
@@ -59,7 +56,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
         <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableData className="align-left">{gaugeVote.gaugeName}</TableData>
           <TableData className={`right-padding ${userGaugeVotesSortBy.key === 'timestamp' ? 'sortby-active' : ''}`}>
-            {formatLocaleDateFromTimestamp(gaugeVote.timestamp)}
+            {formatLocaleDateFromTimestamp(gaugeVote.timestamp / 1000)}
           </TableData>
           <TableData
             className={userGaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}

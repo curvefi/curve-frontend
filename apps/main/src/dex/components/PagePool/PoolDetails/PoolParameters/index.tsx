@@ -219,7 +219,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                           <>
                             <br />{' '}
                             {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
-                              new Date(future_A_time),
+                              future_A_time,
                               'short',
                             )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`}
                           </>

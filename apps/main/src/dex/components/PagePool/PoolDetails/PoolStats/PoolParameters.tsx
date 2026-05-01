@@ -173,7 +173,7 @@ export const PoolParameters = ({
                     future_A_time != null &&
                     dayjs().isAfter(future_A_time, 'day') &&
                     t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
-                      new Date(future_A_time),
+                      future_A_time,
                       'short',
                     )}, when A ramped from ${initial_A} to ${future_A}.`}
                 </Stack>
