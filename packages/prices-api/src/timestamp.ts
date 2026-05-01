@@ -1,3 +1,4 @@
+declare const TimestampBrand: unique symbol
 declare const TimestampResponseBrand: unique symbol
 
 /** ISO 8601 date string shape (e.g. `"2024-01-01T00:00:00.000Z"`), always including timezone info. */
@@ -15,10 +16,12 @@ type IsoDateString = `${number}-${number}-${number}T${string}`
  * - ISO 8601 date string (e.g. `"2024-01-01T00:00:00.000Z"`)
  */
 export type TimestampResponse = (number | `${number}` | IsoDateString) & { readonly [TimestampResponseBrand]: true }
-export type Timestamp = IsoDateString
+
+/** Unix epoch milliseconds. Pass to `new Date(t)` to get a `Date`. Branded to enforce being parsed. */
+export type Timestamp = number & { readonly [TimestampBrand]: true }
 
 /** Converts a `Date` to the exact type that is expected by a `Timestamp`. */
-export const fromDate = (date: Date) => date.toISOString() as Timestamp
+export const fromDate = (date: Date) => date.getTime() as Timestamp
 
 const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
 
