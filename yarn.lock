@@ -7396,10 +7396,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:9.3.1":
-  version: 9.3.1
-  resolution: "bignumber.js@npm:9.3.1"
-  checksum: 10c0/61342ba5fe1c10887f0ecf5be02ff6709271481aff48631f86b4d37d55a99b87ce441cfd54df3d16d10ee07ceab7e272fc0be430c657ffafbbbf7b7d631efb75
+"bignumber.js@npm:11.0.0":
+  version: 11.0.0
+  resolution: "bignumber.js@npm:11.0.0"
+  checksum: 10c0/a3675125b7bff72a618981d05e938e5318b1b9994fed6802a6d1330ea00ef2f3f8a0b90fa44872d43f34331aa4f5977276c775c170748ace516e4eecf6f216a3
   languageName: node
   linkType: hard
 
