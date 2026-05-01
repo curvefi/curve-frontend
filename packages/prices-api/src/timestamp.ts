@@ -1,21 +1,18 @@
 declare const TimestampBrand: unique symbol
-declare const TimestampResponseBrand: unique symbol
 
 /** ISO 8601 date string shape (e.g. `"2024-01-01T00:00:00.000Z"`), always including timezone info. */
 type IsoDateString = `${number}-${number}-${number}T${string}`
 
 /**
- * A raw, serialized timestamp as returned by the Prices API. The exact shape
- * varies between endpoints, so this is the union of all variants we receive
- * from the backend. Branded, such that we can't accidentally pass an unparsed
- * response into a function that takes `number | string` as an argument.
+ * A raw, serialized timestamp as returned by the Prices API. The exact shape varies
+ * between endpoints, so this is the union of all variants we receive from the backend.
  *
  * Underlying shape is one of:
  * - unix seconds as `number` (e.g. `1704067200`)
  * - unix seconds as `string` (e.g. `"1704067200"`)
  * - ISO 8601 date string (e.g. `"2024-01-01T00:00:00.000Z"`)
  */
-export type TimestampResponse = (number | `${number}` | IsoDateString) & { readonly [TimestampResponseBrand]: true }
+export type TimestampResponse = number | `${number}` | IsoDateString
 
 /** Unix epoch milliseconds. Pass to `new Date(t)` to get a `Date`. Branded to enforce being parsed. */
 export type Timestamp = number & { readonly [TimestampBrand]: true }
