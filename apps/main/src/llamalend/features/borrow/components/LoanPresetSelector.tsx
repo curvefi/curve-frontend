@@ -9,24 +9,14 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PRESET_RANGES, LoanPreset } from '../../../constants'
 
-const PRESETS = {
-  [LoanPreset.Safe]: {
-    title: t`Default`,
-    description:
-      t`Sets up your Llamalend loan to offer the maximum safety by spreading your liquidity across more bands. ` +
-      `This does not fully protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
-  },
-  [LoanPreset.MaxLtv]: {
-    title: t`Max LTV`,
-    description:
-      t`Sets up your Llamalend loan to offer the maximum LTV (highest loan to value ratio) against your collateral. ` +
-      `This implies higher risks.`,
-  },
-  [LoanPreset.Custom]: {
-    title: t`Custom`,
-    description: t`Setup your loan as you like it.`,
-  },
+const PRESETS_DESCRIPTIONS = {
+  [LoanPreset.Safe]: t`Default`,
+  [LoanPreset.MaxLtv]: t`Max LTV`,
+  [LoanPreset.Custom]: t`Custom`,
 }
+
+const PRESET_TOOLTIP_TITLE = t`Liquidation protection setup`
+const PRESET_TOOLTIP_BODY = t`Liquidation protection setup enables you to set the depth of the liquidation range for your position and determines how gradually your position moves through soft liquidation. Wider protection gives your position more room to react to price moves. Narrower protection allows higher LTV, but increases liquidation risk.`
 
 const { Spacing } = SizesAndSpaces
 
@@ -60,10 +50,10 @@ export const LoanPresetSelector = ({
       >
         {Object.values(LoanPreset).map(p => (
           <Tooltip
-            title={PRESETS[p].title}
+            title={PRESET_TOOLTIP_TITLE}
             body={
               <TooltipWrapper>
-                <TooltipDescription text={PRESETS[p].description} />
+                <TooltipDescription text={PRESET_TOOLTIP_BODY} />
               </TooltipWrapper>
             }
             key={p}
@@ -74,7 +64,7 @@ export const LoanPresetSelector = ({
               data-testid={`loan-preset-${p}`}
               sx={{ flex: 1, whiteSpace: 'nowrap' }}
             >
-              {PRESETS[p].title}
+              {PRESETS_DESCRIPTIONS[p]}
             </ToggleButton>
           </Tooltip>
         ))}
