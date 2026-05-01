@@ -8,7 +8,7 @@ import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
-import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
+import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
@@ -28,7 +28,7 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { mapQuery, q, type QueryProp, type Range } from '@ui-kit/types/util'
+import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { resetForm, updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
@@ -161,9 +161,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
     isLeverageEnabled,
-    leverage: mapQuery(
-      useBorrowMoreFutureLeverage(params, isLeverageBorrowMore(market, values.leverageEnabled)),
-      value => value,
-    ),
+    leverage: useBorrowMoreLeverage(params),
   }
 }
