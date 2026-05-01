@@ -30,7 +30,7 @@ export const BalanceAmount = <T extends Amount>({
       data-value={children ?? ''}
       sx={{ ...VERTICAL_CENTER_TEXT, ...sx }}
     >
-      {loading ? '???' : children == null ? '-' : formatNumber(children, { abbreviate: true })}
+      {loading ? '?????' : children == null ? '-' : formatNumber(children, { abbreviate: true })}
     </Typography>
   </WithSkeleton>
 )

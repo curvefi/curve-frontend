@@ -126,6 +126,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           hideBalance
           message={
             <Balance
+              inline
               prefix={t`Max borrow amount:`}
               tooltip={t`Max available to borrow`}
               symbol={borrowToken?.symbol}

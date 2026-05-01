@@ -18,8 +18,8 @@ import { joinButtonText } from '@primitives/string.utils'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
@@ -177,6 +177,7 @@ export const RepayForm = <ChainId extends IChainId>({
         message={
           maxAmountInBorrowTokenError?.message ?? (
             <Balance
+              inline
               prefix={maxAmountPrefix}
               tooltip={t`Max available to repay`}
               symbol={borrowToken?.symbol}

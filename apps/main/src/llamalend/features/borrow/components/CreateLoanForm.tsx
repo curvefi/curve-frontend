@@ -11,8 +11,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
@@ -113,10 +113,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           network={network}
           message={
             <Balance
+              inline
               prefix={t`Max borrow:`}
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
-              balance={values.maxDebt}
+              balance={maxDebt.data}
               loading={maxDebt.isLoading}
               onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"

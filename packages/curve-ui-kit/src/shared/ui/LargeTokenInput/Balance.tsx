@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react'
 import type { SvgIcon } from '@mui/material'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
@@ -36,7 +38,18 @@ export type Props<T> = {
   buttonTestId?: string
   /** Callback function when balance is clicked (if enabled). */
   onClick?: () => void
+  /** Whether the balance should be displayed inline */
+  inline?: boolean
 }
+
+const BalanceContent = ({ children, inline }: { children: ReactNode; inline: boolean }) =>
+  inline ? (
+    <Box>{children}</Box>
+  ) : (
+    <Stack direction="row" gap={Spacing.xs} alignItems="center">
+      {children}
+    </Stack>
+  )
 
 export const Balance = <T extends Amount>({
   symbol = '?',
@@ -49,6 +62,7 @@ export const Balance = <T extends Amount>({
   onClick,
   disabled = false,
   buttonTestId,
+  inline = false,
 }: Props<T>) => (
   <WithWrapper
     Wrapper={BalanceButton}
@@ -58,9 +72,9 @@ export const Balance = <T extends Amount>({
     testId={buttonTestId}
   >
     <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
-      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+      <BalanceContent inline={inline}>
         {typeof Prefix === 'string' ? (
-          <Typography variant="bodyXsRegular" color="textTertiary">
+          <Typography variant="bodyXsRegular" color="textTertiary" {...(inline && { component: 'span' })}>
             {Prefix}
           </Typography>
         ) : (
@@ -74,26 +88,24 @@ export const Balance = <T extends Amount>({
               }}
             />
           )
-        )}
-
-        <BalanceAmount disabled={disabled} loading={loading}>
+        )}{' '}
+        <BalanceAmount disabled={disabled} loading={loading} sx={{ ...(inline && { display: 'inline' }) }}>
           {balance}
-        </BalanceAmount>
-
+        </BalanceAmount>{' '}
         <Typography
           variant="highlightXs"
           color={disabled ? 'textDisabled' : 'textPrimary'}
           sx={{ ...VERTICAL_CENTER_TEXT }}
+          {...(inline && { component: 'span' })}
         >
           {symbol}
-        </Typography>
-
+        </Typography>{' '}
         {notionalValueUsd != null && notionalValueUsd !== 0 && !loading && (
           <Typography variant="bodyXsRegular" color="textTertiary" sx={{ ...VERTICAL_CENTER_TEXT }}>
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
           </Typography>
-        )}
-      </Stack>
+        )}{' '}
+      </BalanceContent>
     </Tooltip>
   </WithWrapper>
 )
