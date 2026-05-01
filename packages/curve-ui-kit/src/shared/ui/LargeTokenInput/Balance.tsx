@@ -101,7 +101,12 @@ export const Balance = <T extends Amount>({
           {symbol}
         </Typography>{' '}
         {notionalValueUsd != null && notionalValueUsd !== 0 && !loading && (
-          <Typography variant="bodyXsRegular" color="textTertiary" sx={{ ...VERTICAL_CENTER_TEXT }}>
+          <Typography
+            variant="bodyXsRegular"
+            color="textTertiary"
+            sx={{ ...VERTICAL_CENTER_TEXT }}
+            {...(inline && { component: 'span' })}
+          >
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
           </Typography>
         )}{' '}
