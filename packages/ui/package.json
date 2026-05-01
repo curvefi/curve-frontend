@@ -9,7 +9,7 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
-    "@carbon/icons-react": "^11.78.0",
+    "@carbon/icons-react": "11.79.0",
     "react-aria": "3.48.0",
     "react-stately": "3.46.0"
   },
