@@ -43,8 +43,7 @@ export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: Po
   const { tokenAddresses, tokensCountBy } = poolDataCacheOrApi
   const swapTokensMapper: { [tokenAddress: string]: Token } = {}
 
-  for (const idx in tokenAddresses) {
-    const address = tokenAddresses[idx]
+  for (const address of tokenAddresses) {
     const token = lodash.cloneDeep(tokensMapper[address])
 
     if (token) {

@@ -59,7 +59,7 @@ export const BorrowPositionDetails = ({
   const statusContent =
     status && getPositionStatusContent(collateralValue.collateral.symbol, collateralValue.borrow.symbol)[status]
   return (
-    <Stack padding={Spacing.md} gap={Spacing.xs}>
+    <Stack padding={Spacing.sm} gap={Spacing.xs}>
       {statusContent?.hasMarketAlert && (
         <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
           <AlertTitle>{statusContent.title}</AlertTitle>

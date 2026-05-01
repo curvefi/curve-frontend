@@ -13,6 +13,11 @@ const Padding = {
   lg: Spacing.lg,
 }
 
+export const cardContentSmallStyles = {
+  ...handleBreakpoints({ padding: Padding.sm }),
+  '&:last-child': handleBreakpoints({ paddingBlockEnd: Padding.sm }),
+}
+
 export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardContent'] => ({
   styleOverrides: {
     root: {
@@ -24,10 +29,7 @@ export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardC
   variants: [
     {
       props: { size: 'small' },
-      style: {
-        ...handleBreakpoints({ padding: Padding.sm }),
-        '&:last-child': handleBreakpoints({ paddingBlockEnd: Padding.sm }),
-      },
+      style: cardContentSmallStyles,
     },
   ],
 })

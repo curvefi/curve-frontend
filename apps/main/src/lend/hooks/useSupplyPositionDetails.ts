@@ -99,7 +99,7 @@ export const useSupplyPositionDetails = ({
         incentives:
           onChainRewards?.rewardsApr?.map(r => ({
             title: r.symbol,
-            percentage: aprToApy(r.apy) as number,
+            percentage: aprToApy(r.apy)!,
             blockchainId,
             address: r.tokenAddress,
           })) ?? [],

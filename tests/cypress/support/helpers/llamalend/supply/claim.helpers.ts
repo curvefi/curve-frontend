@@ -149,7 +149,7 @@ export function checkClaimDetailsLoaded({
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should('have.length.at.least', 1)
   cy.get('[data-testid="data-table-cell-token"]').each($row => {
-    const [, match] = $row.text().replaceAll(',', '').match(CLAIMABLE_AMOUNT_REGEX) ?? []
+    const [, match] = CLAIMABLE_AMOUNT_REGEX.exec($row.text().replaceAll(',', '')) ?? []
     expect(match).to.not.equal(undefined)
     expect(Number(match)).to.be.greaterThan(0)
   })

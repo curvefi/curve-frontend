@@ -1,6 +1,5 @@
 import lodash from 'lodash'
-import type { FormValues, Route } from '@/dex/components/PageRouterSwap/types'
-import type { FormStatus } from '@/dex/components/PageRouterSwap/types'
+import type { FormValues, FormStatus, Route } from '@/dex/components/PageRouterSwap/types'
 import { Pool, PoolData } from '@/dex/types/main.types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import { log, LogStatus } from '@ui-kit/lib'
@@ -43,7 +42,7 @@ export function parseRouterRoutes(
 
       const poolName = pool ? pool.name : route.poolId
 
-      if (pool && pool.isCrypto) {
+      if (pool?.isCrypto) {
         haveCryptoRoutes = true
       }
 

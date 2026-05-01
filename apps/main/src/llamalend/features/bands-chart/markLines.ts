@@ -18,8 +18,8 @@ const createMarkLine = (
   xEnd: number,
   yValue: number,
   color: string,
-  type: string = 'dashed',
-  width: number = 2,
+  type = 'dashed',
+  width = 2,
 ): MarkLine => {
   const line: MarkLine = [{ coord: [xStart, yValue] }, { coord: [xEnd, yValue] }] as MarkLine
   line.lineStyle = { color, type, width }

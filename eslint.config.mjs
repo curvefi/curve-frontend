@@ -4,7 +4,7 @@ import js from '@eslint/js'
 import eslintReact from '@eslint-react/eslint-plugin'
 import tanstack from '@tanstack/eslint-plugin-query'
 import prettier from 'eslint-config-prettier'
-import importPlugin from 'eslint-plugin-import'
+import { importX } from 'eslint-plugin-import-x'
 import noOnlyTests from 'eslint-plugin-no-only-tests'
 import { reactRefresh } from 'eslint-plugin-react-refresh'
 import storybook from 'eslint-plugin-storybook'
@@ -30,10 +30,13 @@ const config = [
 
   // Recommended presets (flat-native)
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
   ...tanstack.configs['flat/recommended'],
   eslintReact.configs['recommended-typescript'],
   reactRefresh.configs.vite(),
+  importX.flatConfigs.recommended,
+  importX.flatConfigs.typescript,
   ...storybook.configs['flat/recommended'],
 
   // Project-wide rules + plugins
@@ -41,7 +44,6 @@ const config = [
     plugins: {
       'no-only-tests': noOnlyTests,
       'unused-imports': unusedImports,
-      import: importPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -54,13 +56,13 @@ const config = [
     },
     settings: {
       react: { version: 'detect' },
-      'import/resolver': {
+      'import-x/resolver': {
         typescript: {
           alwaysTryTypes: true,
           project: ['./tsconfig.json'],
         },
       },
-      'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
+      'import-x/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
     },
     rules: {
       // The follow react rules are turned off as they were not enabled or working properly in the old eslint react plugin
@@ -98,10 +100,10 @@ const config = [
       'arrow-parens': ['error', 'as-needed'],
       'no-only-tests/no-only-tests': 'error',
       'unused-imports/no-unused-imports': 'warn',
-      'import/no-default-export': 'error',
 
-      // rule to enforce that imports are only allowed from certain paths
-      'import/no-restricted-paths': [
+      'import-x/no-default-export': 'error',
+      'import-x/no-named-as-default': 'off',
+      'import-x/no-restricted-paths': [
         'error',
         {
           basePath: __dirname,
@@ -127,6 +129,23 @@ const config = [
         },
       ],
 
+      'import-x/order': [
+        'warn',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          pathGroups: [
+            // This will make all @-prefixed external imports come after non-@ imports
+            { pattern: '@*/**', group: 'external', position: 'after' },
+          ],
+          pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+          'newlines-between': 'never',
+        },
+      ],
+
       'no-restricted-imports': [
         'warn',
         {
@@ -144,7 +163,6 @@ const config = [
         },
       ],
 
-      '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -158,6 +176,29 @@ const config = [
         },
       ],
       '@typescript-eslint/triple-slash-reference': 'off',
+
+      // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
+      '@typescript-eslint/no-base-to-string': 'off',
+      '@typescript-eslint/no-duplicate-type-constituents': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/require-await': 'off',
+
+      // And the following ones are from tseslint.configs.stylisticTypeChecked
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@typescript-eslint/consistent-indexed-object-style': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
       'no-console': [
@@ -166,22 +207,7 @@ const config = [
           allow: ['warn', 'error', 'info', 'trace', 'assert'],
         },
       ],
-      'import/order': [
-        'warn',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          pathGroups: [
-            // This will make all @-prefixed external imports come after non-@ imports
-            { pattern: '@*/**', group: 'external', position: 'after' },
-          ],
-          pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
-          'newlines-between': 'never',
-        },
-      ],
+
       'no-restricted-syntax': [
         'error',
         {
@@ -204,7 +230,7 @@ const config = [
   {
     files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
     rules: {
-      'import/no-default-export': 'off',
+      'import-x/no-default-export': 'off',
     },
   },
 

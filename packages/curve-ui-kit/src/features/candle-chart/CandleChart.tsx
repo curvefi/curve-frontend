@@ -46,8 +46,8 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   const rangeEndTime = (range.endTime ?? fallbackEnd) as Time
 
   return orderedEntries.map(([time, values]) => {
-    const upper = values.upper as number
-    const lower = values.lower as number
+    const upper = values.upper!
+    const lower = values.lower!
     return {
       time: time as Time,
       upper: Math.max(upper, lower),

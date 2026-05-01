@@ -258,7 +258,7 @@ export const createDashboardSlice = (
 
       // update search addresses, local storage
       const cachedAddresses = getStorageValue('APP_DASHBOARD')?.addresses ?? []
-      if (cachedAddresses.indexOf(walletAddress) === -1) {
+      if (!cachedAddresses.includes(walletAddress)) {
         const searchedAddresses = [walletAddress].concat(cachedAddresses).slice(0, 10)
         sliceState.setStateByKey('searchedWalletAddresses', searchedAddresses)
         setStorageValue('APP_DASHBOARD', { addresses: searchedAddresses })

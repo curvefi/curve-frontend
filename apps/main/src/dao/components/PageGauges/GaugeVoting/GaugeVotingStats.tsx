@@ -1,6 +1,5 @@
 import { styled } from 'styled-components'
-import { useEnsName } from 'wagmi'
-import { useConnection } from 'wagmi'
+import { useEnsName, useConnection } from 'wagmi'
 import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBoxSelectGauge'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'

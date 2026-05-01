@@ -63,7 +63,7 @@ class LlamaArray<T> {
    * @returns A new array with the dropped elements.
    * @example [1, 2, 3].drop(2) // [3]
    */
-  drop(n: number = 1): LlamaArray<T> {
+  drop(n = 1): LlamaArray<T> {
     return new LlamaArray(this._value.slice(Math.max(0, n)))
   }
 
@@ -117,8 +117,8 @@ class LlamaArray<T> {
    * @example [{name: 'John', age: 30}, {name: 'Jane', age: 25}].orderBy(x => x.age, 'asc') // [{name: 'Jane', age: 25}, {name: 'John', age: 30}]
    */
   orderBy(
-    iteratees: ((item: T) => string | number) | Array<(item: T) => string | number>,
-    orders: 'asc' | 'desc' | Array<'asc' | 'desc'> = 'asc',
+    iteratees: ((item: T) => string | number) | ((item: T) => string | number)[],
+    orders: 'asc' | 'desc' | ('asc' | 'desc')[] = 'asc',
   ): LlamaArray<T> {
     const iterateesArray = toArray(iteratees)
     const ordersArray = toArray(orders)

@@ -112,7 +112,7 @@ export const FormDepositStake = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDepositStake(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const TxDescription = t`Deposit and staked ${tokenText}`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }

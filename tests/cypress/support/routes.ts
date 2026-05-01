@@ -1,13 +1,12 @@
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
-import { recordValues } from '@primitives/objects.utils'
-import { assert } from '@primitives/objects.utils'
-import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
+import { recordValues, assert } from '@primitives/objects.utils'
 import {
   CRVUSD_ROUTES,
   DAO_ROUTES,
   DEX_ROUTES,
   LEND_ROUTES,
+  LEND_MARKET_ROUTES,
   LLAMALEND_ROUTES,
   PAGE_INTEGRATIONS,
   PAGE_LEGAL,

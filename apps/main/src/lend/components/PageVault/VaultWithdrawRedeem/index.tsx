@@ -96,7 +96,7 @@ export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, u
       setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
       const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues, vaultShares)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = t`Transaction complete.`
         setTxInfoBar(
           <TxInfoBar

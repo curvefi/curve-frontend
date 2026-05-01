@@ -11,5 +11,5 @@ type Details = UserLoanDetails['details'] & { error: string }
 export function useUserLoanDetails(userActiveKey: string): Partial<Details> {
   const loanDetails = useStore(state => state.user.loansDetailsMapper[userActiveKey])
 
-  return !loanDetails || loanDetails.details == null ? {} : { ...loanDetails.details, error: loanDetails.error }
+  return loanDetails?.details == null ? {} : { ...loanDetails.details, error: loanDetails.error }
 }

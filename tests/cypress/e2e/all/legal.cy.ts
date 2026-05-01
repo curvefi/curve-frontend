@@ -1,5 +1,4 @@
-import { oneDisclaimersSubTabs, oneLegalPageTab } from '@cy/support/helpers/tabs'
-import { clickTab } from '@cy/support/helpers/tabs'
+import { oneDisclaimersSubTabs, oneLegalPageTab, clickTab } from '@cy/support/helpers/tabs'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, oneAppPath, oneTabletOrDesktopViewport, oneViewport } from '@cy/support/ui'
 
 describe('Legal', () => {

@@ -16,6 +16,12 @@ import { MarketAlertBanner } from './MarketAlertBanner'
 
 const isHighSeverityAlert = (type: AlertType | undefined) => type && ['warning', 'danger'].includes(type)
 
+/**
+ * When the stack is empty, we don't want to display it at all,
+ * because an empty div influences a parent flex's gap.
+ */
+const HIDE_IF_EMPTY = { '&:empty': { display: 'none' } }
+
 export const MarketBanners = <ChainId extends IChainId>({
   chainId,
   market,
@@ -32,8 +38,9 @@ export const MarketBanners = <ChainId extends IChainId>({
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const deprecatedMarket = useDeprecatedMarket({ blockchainId, controllerAddress, marketType })
   const { data: solvencyMarket } = useSolvencyLendMarket({ blockchainId, controllerAddress })
+
   return (
-    <Stack>
+    <Stack sx={HIDE_IF_EMPTY}>
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {deprecatedMarket && <DeprecatedMarketBanner {...deprecatedMarket} />}
       {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}

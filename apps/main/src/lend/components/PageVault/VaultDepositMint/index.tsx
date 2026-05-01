@@ -87,7 +87,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
 
       const resp = await fetchStepDepositMint(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar

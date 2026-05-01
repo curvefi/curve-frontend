@@ -19,7 +19,7 @@ export const statusColorMap = (status?: StepStatus) => {
     case 'pending':
       return 'var(--button--disabled--background-color)'
     default:
-      throw 'Invalid step status'
+      throw new Error('Invalid step status')
   }
 }
 

@@ -109,7 +109,7 @@ const pool = {
       const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
       resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
       if (baseApyResult.status === 'rejected') {
-        if (p.inApi) resp.error['base'] = true
+        if (p.inApi) resp.error.base = true
       } else {
         resp.base.day = new BN(resp.base.day).toFixed(8)
         resp.base.week = new BN(resp.base.week).toFixed(8)
@@ -124,8 +124,8 @@ const pool = {
       const rewards = fulfilledValue(rewardsResult)
 
       if (rewardsResult.status === 'rejected') {
-        resp.error['others'] = true
-        resp.error['crv'] = true
+        resp.error.others = true
+        resp.error.crv = true
       }
 
       if (rewardsResult.status === 'fulfilled' && rewards) {
@@ -146,10 +146,9 @@ const pool = {
     // others rewards
     const others = fulfilledValue(otherResult) ?? []
     if (otherResult.status === 'rejected') {
-      resp.error['others'] = true
+      resp.error.others = true
     } else {
-      for (const idx in others) {
-        const other = others[idx]
+      for (const other of others) {
         if (chainId === 8453) {
           if (other.symbol !== 'CRV' && +other.apy > 0) {
             resp.other.push(other)
@@ -162,7 +161,7 @@ const pool = {
 
     // crv rewards
     if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
-      resp.error['crv'] = true
+      resp.error.crv = true
     }
     if (crvResult.status === 'fulfilled' && !!crvResult.value) {
       const [baseApy] = crvResult.value
@@ -856,8 +855,8 @@ const poolWithdraw = {
     const resp = { activeKey, expected: '', bonus: '', error: '' }
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
-        isWrapped ? await p.withdrawImbalanceWrappedExpected(amounts) : await p.withdrawImbalanceExpected(amounts),
-        isWrapped ? await p.withdrawImbalanceWrappedBonus(amounts) : await p.withdrawImbalanceBonus(amounts),
+        isWrapped ? p.withdrawImbalanceWrappedExpected(amounts) : p.withdrawImbalanceExpected(amounts),
+        isWrapped ? p.withdrawImbalanceWrappedBonus(amounts) : p.withdrawImbalanceBonus(amounts),
       ])
       resp.expected = fulfilledValue(expectedResult) ?? ''
       resp.bonus = fulfilledValue(bonusResult) ?? ''
@@ -945,11 +944,11 @@ const poolWithdraw = {
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
         isWrapped
-          ? await p.withdrawOneCoinWrappedExpected(lpTokenAmount, tokenAddress)
-          : await p.withdrawOneCoinExpected(lpTokenAmount, tokenAddress),
+          ? p.withdrawOneCoinWrappedExpected(lpTokenAmount, tokenAddress)
+          : p.withdrawOneCoinExpected(lpTokenAmount, tokenAddress),
         isWrapped
-          ? await p.withdrawOneCoinWrappedBonus(lpTokenAmount, tokenAddress)
-          : await p.withdrawOneCoinBonus(lpTokenAmount, tokenAddress),
+          ? p.withdrawOneCoinWrappedBonus(lpTokenAmount, tokenAddress)
+          : p.withdrawOneCoinBonus(lpTokenAmount, tokenAddress),
       ])
       resp.expected = fulfilledValue(expectedResult) ?? ''
       resp.bonus = fulfilledValue(bonusResult) ?? ''

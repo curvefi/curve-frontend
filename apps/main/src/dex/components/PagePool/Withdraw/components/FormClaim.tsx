@@ -68,7 +68,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, poolData)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
         const claimedLabel = formStatus.isClaimCrv
           ? 'CRV'
           : `${formValues.claimableRewards.map(r => r.symbol).join(', ')} rewards`

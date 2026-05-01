@@ -37,15 +37,15 @@ export const TotalRecurrence = ({ title }: Props) => {
     return Object.values(dashboardDataMapper).reduce(
       (prev, { profitBase, profitCrv, profitOthers, profitsTotalUsd }) => {
         if (profitBase) {
-          prev.tokens['base'] = { symbol: t`Base`, day: Number(profitBase.day), price: 1 }
+          prev.tokens.base = { symbol: t`Base`, day: Number(profitBase.day), price: 1 }
         }
 
         if (profitCrv) {
           const { day, price } = profitCrv
-          if (typeof prev.tokens['CRV'] === 'undefined') {
-            prev.tokens['CRV'] = { symbol: 'CRV', day: Number(day), price }
+          if (typeof prev.tokens.CRV === 'undefined') {
+            prev.tokens.CRV = { symbol: 'CRV', day: Number(day), price }
           } else {
-            prev.tokens['CRV'].day += Number(day)
+            prev.tokens.CRV.day += Number(day)
           }
         }
 

@@ -4,8 +4,8 @@ import {
   invalidateMarketTotalCollateral,
   invalidateMarketVaultOnChainRewards,
   invalidateMarketVaultPricePerShare,
+  invalidateMarketRates,
 } from '@/llamalend/queries/market'
-import { invalidateMarketRates } from '@/llamalend/queries/market'
 
 export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) =>
   Promise.all([

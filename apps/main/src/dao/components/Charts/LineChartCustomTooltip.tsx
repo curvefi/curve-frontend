@@ -6,7 +6,7 @@ import { formatDateFromTimestamp, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const { gauge_weight, gauge_relative_weight, epoch, emissions } = payload[0].payload
 
     return (

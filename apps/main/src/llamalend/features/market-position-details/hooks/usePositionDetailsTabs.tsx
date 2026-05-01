@@ -6,11 +6,8 @@ import { notFalsy } from '@primitives/objects.utils'
 import { useTabs } from '@ui-kit/hooks/useTabs'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPositionDetails, type BorrowPositionDetailsProps } from '../BorrowPositionDetails'
 import { NoPosition } from '../NoPosition'
-
-const { Spacing } = SizesAndSpaces
 
 export type PositionDetailsTab = 'borrowDetails' | 'activity'
 type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => ReactNode }
@@ -43,7 +40,7 @@ export const usePositionDetailsTabs = ({
           value: 'activity' as const,
           label: t`Activity`,
           render: () => (
-            <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
+            <Stack>
               <UserPositionHistory
                 variant="flat"
                 events={events}

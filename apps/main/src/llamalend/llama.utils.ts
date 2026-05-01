@@ -349,7 +349,7 @@ export const formatCollateralNotional = (
     collateral.value &&
       collateral.symbol &&
       `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
-    borrow && borrow.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+    borrow?.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
   ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */

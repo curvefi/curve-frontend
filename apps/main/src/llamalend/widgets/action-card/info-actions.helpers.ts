@@ -35,5 +35,4 @@ export const combineActionInfoState = (...queries: (QueryProp<unknown> | undefin
 export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
-) =>
-  value && value.data != null && comparedValue != null ? !new BigNumber(value.data).isEqualTo(comparedValue) : undefined
+) => (value?.data != null && comparedValue != null ? !new BigNumber(value.data).isEqualTo(comparedValue) : undefined)

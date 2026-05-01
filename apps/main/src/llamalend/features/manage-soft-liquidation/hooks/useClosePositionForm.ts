@@ -140,7 +140,7 @@ export function useClosePositionForm({
       borrowToken && {
         symbol: borrowToken.symbol,
         amount: paidFromCollateral,
-        usd: decimalNegate(decimal(borrowTokenUsdRate && BigNumber(-paidFromCollateral).times(borrowTokenUsdRate))),
+        usd: decimalNegate(decimal(borrowTokenUsdRate && BigNumber(-+paidFromCollateral).times(borrowTokenUsdRate))),
       },
     [borrowToken, borrowTokenUsdRate, paidFromCollateral],
   )
@@ -159,7 +159,7 @@ export function useClosePositionForm({
       borrowToken && {
         symbol: borrowToken.symbol,
         amount: excess,
-        usd: decimalNegate(decimal(borrowTokenUsdRate && BigNumber(-excess).times(borrowTokenUsdRate))),
+        usd: decimalNegate(decimal(borrowTokenUsdRate && BigNumber(-+excess).times(borrowTokenUsdRate))),
       },
     [borrowToken, borrowTokenUsdRate, excess],
   )
