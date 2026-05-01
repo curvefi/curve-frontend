@@ -26,6 +26,7 @@ import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loa
 import { invalidateOrRefetchCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
+import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
@@ -117,6 +118,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
   const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
+  const isHighLiquidationRisk = q(useIsHighLiquidationRisk(params))
 
   const isPending = formState.isSubmitting || isCreating
   const isDisabled =
@@ -139,6 +141,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
     isApproved: useCreateLoanIsApproved(params),
     priceImpact,
+    isHighLiquidationRisk,
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,

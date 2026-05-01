@@ -20,6 +20,7 @@ import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayo
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
+import { HighLiquidationRiskAlert } from './HighLiquidationRiskAlert'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
@@ -62,6 +63,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     values,
     leverage,
     priceImpact,
+    isHighLiquidationRisk,
   } = useCreateLoanForm({ market, network, preset, onPricesUpdated, disabled: !!borrowDisabledAlert })
 
   const toggleLeverage = useCallback(
@@ -138,6 +140,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       </LoanPresetSelector>
 
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
+      <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
 
       {borrowDisabledAlert ? (
         <AlertDisableForm>{borrowDisabledAlert.message}</AlertDisableForm>
