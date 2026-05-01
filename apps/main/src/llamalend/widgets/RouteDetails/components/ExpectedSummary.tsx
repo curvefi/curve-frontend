@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import { Icon } from '@ui/Icon'
-import type { RouteDetailsProps } from '../types'
-import type { BreakdownItem } from '../types'
+import type { BreakdownItem, RouteDetailsProps } from '../types'
 import { format } from '../utils'
 
 export const ExpectedSummary = ({

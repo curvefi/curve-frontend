@@ -4,8 +4,7 @@ import {
   useVaultMaxRedeemShares,
   useVaultMaxWithdrawAmount,
 } from '@/llamalend/queries/supply/supply-withdraw-limits.query'
-import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
-import type { WithdrawForm } from '@/llamalend/queries/validation/supply.validation'
+import type { WithdrawParams, WithdrawForm } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib'

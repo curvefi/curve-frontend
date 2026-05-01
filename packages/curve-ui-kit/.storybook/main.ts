@@ -78,10 +78,10 @@ const config: StorybookConfig = {
     </style>
   `,
   // Storybook uses its own Vite pipeline; set sourcemaps here to ensure `build:storybook` emits `.map` files.
-  viteFinal: async config =>
+  viteFinal: config =>
     mergeConfig(config, {
       build: { sourcemap: true },
     }),
 }
-// eslint-disable-next-line import/no-default-export
+// eslint-disable-next-line import-x/no-default-export
 export default config

@@ -128,7 +128,7 @@ const QUERIES_FRESHNESS_OPTIONS = {
 export function useTokenBalance(
   { chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>,
   // TODO: refactor into a validation suite, same for usePoolTokenBalances and usePoolTokenDepositBalances
-  enabled: boolean = true,
+  enabled = true,
 ) {
   const isEnabled = enabled && chainId != null && userAddress != null && tokenAddress != null
   const isNativeToken = tokenAddress != null && isNative({ tokenAddress })
@@ -190,7 +190,7 @@ const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =
  */
 export function useTokenBalances(
   { chainId, userAddress, tokenAddresses = [] }: FieldsOf<ChainQuery & UserQuery> & { tokenAddresses?: Address[] },
-  enabled: boolean = true,
+  enabled = true,
 ) {
   const config = useConfig()
 

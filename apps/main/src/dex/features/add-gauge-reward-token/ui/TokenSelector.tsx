@@ -67,7 +67,7 @@ export const TokenSelector = ({
     const rewardTokenId = getValues('rewardTokenId')
 
     const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(gaugeRewardToken =>
-      isAddressEqual(gaugeRewardToken as Address, rewardTokenId as Address),
+      isAddressEqual(gaugeRewardToken as Address, rewardTokenId!),
     )
     if (filteredTokens.length > 0 && (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress)) {
       setValue('rewardTokenId', filteredTokens[0].address, { shouldValidate: true })

@@ -1,5 +1,4 @@
-import { ComponentProps } from 'react'
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui-kit/shared/ui/Slider'

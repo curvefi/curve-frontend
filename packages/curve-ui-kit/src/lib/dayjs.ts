@@ -1,3 +1,4 @@
+/* eslint-disable import-x/no-named-as-default-member */
 export { default as dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'

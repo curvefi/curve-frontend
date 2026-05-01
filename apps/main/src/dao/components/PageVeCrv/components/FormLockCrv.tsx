@@ -61,7 +61,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncreaseCrv(activeKey, curve, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txDescription = t`Lock amount updated`
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />)
       }

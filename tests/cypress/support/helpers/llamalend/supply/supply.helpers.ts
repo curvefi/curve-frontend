@@ -2,8 +2,7 @@ import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber, formatPercent } from '@ui-kit/utils'
-import { Chain } from '@ui-kit/utils'
+import { formatNumber, formatPercent, Chain } from '@ui-kit/utils'
 import { getActionValue } from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {

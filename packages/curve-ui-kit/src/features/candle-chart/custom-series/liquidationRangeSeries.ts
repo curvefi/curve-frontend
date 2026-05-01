@@ -87,7 +87,7 @@ const drawSeries = (
   target: CanvasRenderingTarget2D,
   priceConverter: PriceToCoordinateConverter,
 ) => {
-  if (!payload.data || !payload.data.bars.length) return
+  if (!payload.data?.bars.length) return
 
   const points = collectVisiblePoints(payload, priceConverter)
   if (!points.length) return

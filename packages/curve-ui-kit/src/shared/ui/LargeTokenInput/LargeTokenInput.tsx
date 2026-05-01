@@ -279,7 +279,7 @@ export const LargeTokenInput = ({
             alignItems="center"
             sx={{
               // Prevent small size difference in inputs when there's only a label and no chips
-              minHeight: chipSizeClickable['extraSmall'].height,
+              minHeight: chipSizeClickable.extraSmall.height,
             }}
           >
             {label && (

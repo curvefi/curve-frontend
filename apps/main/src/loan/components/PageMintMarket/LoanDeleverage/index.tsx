@@ -120,7 +120,7 @@ export const LoanDeleverage = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txInfoBarMessage = resp.loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is paid-off and will no longer be manageable.`
@@ -271,18 +271,6 @@ export const LoanDeleverage = ({
   const isReady = !!curve && !!llamma
   const isValid = !formValues.collateralError
 
-  const LeveragePriceImpactDetail = () => (
-    <DetailInfo
-      isBold={isValid && detailInfo.isHighImpact}
-      variant={isValid && detailInfo.isHighImpact ? 'error' : undefined}
-      label={isValid && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
-      loading={!isReady || detailInfo.loading}
-      loadingSkeleton={[70, 20]}
-    >
-      {isValid && detailInfo.priceImpact ? <strong>{detailInfo.priceImpact}%</strong> : '-'}
-    </DetailInfo>
-  )
-
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
@@ -329,7 +317,15 @@ export const LoanDeleverage = ({
           {...detailInfo}
           detailInfoLeverage={
             <DetailInfoLeverageWrapper>
-              <LeveragePriceImpactDetail />
+              <DetailInfo
+                isBold={isValid && detailInfo.isHighImpact}
+                variant={isValid && detailInfo.isHighImpact ? 'error' : undefined}
+                label={isValid && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
+                loading={!isReady || detailInfo.loading}
+                loadingSkeleton={[70, 20]}
+              >
+                {isValid && detailInfo.priceImpact ? <strong>{detailInfo.priceImpact}%</strong> : '-'}
+              </DetailInfo>
               <DetailInfoTradeRoutes
                 loading={detailInfo.loading}
                 routes={detailInfo.routeName}

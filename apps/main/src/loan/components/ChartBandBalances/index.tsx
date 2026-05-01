@@ -105,7 +105,7 @@ export const ChartBandBalances = ({
                 />
                 <Tooltip
                   content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
+                    if (active && payload?.length) {
                       const {
                         stablecoin,
                         collateral,

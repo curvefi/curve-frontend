@@ -113,7 +113,7 @@ export const CollateralIncrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         setTxInfoBar(
           <TxInfoBar
             description={t`Transaction complete`}

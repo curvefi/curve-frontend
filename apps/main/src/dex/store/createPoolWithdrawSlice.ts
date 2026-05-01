@@ -476,7 +476,7 @@ export const createPoolWithdrawSlice = (
         const fn = curvejsApi.poolWithdraw.withdrawImbalanceApprove
         resp = await fn(activeKey, provider, pool, parseAmountsForAPI(amounts))
       }
-      if (resp && resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp?.activeKey === get()[sliceKey].activeKey) {
         const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -526,7 +526,7 @@ export const createPoolWithdrawSlice = (
         const fn = curvejsApi.poolWithdraw.withdrawImbalance
         resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
       }
-      if (resp && resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp?.activeKey === get()[sliceKey].activeKey) {
         const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''

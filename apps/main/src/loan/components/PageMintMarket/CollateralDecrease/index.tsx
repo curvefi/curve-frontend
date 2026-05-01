@@ -111,7 +111,7 @@ export const CollateralDecrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = `Remove ${formValues.collateral} ${llamma.collateralSymbol} collateral.`
         setTxInfoBar(
           <TxInfoBar
