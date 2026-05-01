@@ -4,6 +4,7 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
 /** Query to get expected leverage after borrow more with leverage enabled. */
@@ -69,5 +70,5 @@ export const {
 export function useBorrowMoreLeverage(params: BorrowMoreParams) {
   const current = useUserCurrentLeverage(params)
   const future = useBorrowMoreFutureLeverage(params)
-  return future.data == null ? current : future
+  return q(future.data == null ? current : future)
 }
