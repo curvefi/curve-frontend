@@ -1,14 +1,10 @@
-import {
-  type FieldPathByValue as _FieldPathByValue,
-  type FieldValues as _FieldValues,
-  type Path,
-  type PathValue,
-} from 'react-hook-form'
+/* eslint-disable no-restricted-imports */
+import { type FieldValues, type Path, type PathValue } from 'react-hook-form'
 import type { PartialRecord } from '@primitives/objects.utils'
 
-export type FieldValues = _FieldValues
+export { type FieldValues, type FieldPathByValue } from 'react-hook-form'
+
 export type FieldPath<T extends FieldValues> = Path<T>
-export type FieldPathByValue<T extends FieldValues, TValue> = _FieldPathByValue<T, TValue>
 export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = PathValue<T, TFieldPath>
 export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root'
 export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<ErrorKey<T>, Error>

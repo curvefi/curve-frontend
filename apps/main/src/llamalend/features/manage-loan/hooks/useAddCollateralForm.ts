@@ -12,7 +12,7 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useForm } from '@ui-kit/forms'
+import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { Range } from '@ui-kit/types/util'

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+// eslint-disable-next-line no-restricted-imports
 import { DefaultValues, useForm as _useForm } from 'react-hook-form'
 import type { ICreateResult as ValidationSuite } from '@hookform/resolvers/vest'
 import { vestResolver } from '@hookform/resolvers/vest'

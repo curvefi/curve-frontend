@@ -1,6 +1,6 @@
 import { FunctionComponent, useCallback, useMemo } from 'react'
 import { ErrorMessage } from '@hookform/error-message'
-import { useFormContext } from '@ui-kit/forms'
+import { useFormContext } from '@ui-kit/features/forms'
 import { ErrorContainer } from '../styled-containers'
 import type { FormError } from './error-types'
 

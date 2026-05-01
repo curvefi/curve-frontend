@@ -14,7 +14,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
-import { FormProvider, useForm } from '@ui-kit/forms'
+import { FormProvider, useForm } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useFormSync } from '@ui-kit/utils/react-form.utils'
 

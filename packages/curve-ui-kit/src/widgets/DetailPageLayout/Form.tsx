@@ -1,6 +1,6 @@
 import type { SubmitEventHandler, ReactNode } from 'react'
-import { FormProvider } from '@ui-kit/forms'
-import type { FieldValues, FormProviderProps } from '@ui-kit/forms'
+import { FormProvider } from '@ui-kit/features/forms'
+import type { FieldValues, FormProviderProps } from '@ui-kit/features/forms'
 import { FormContent } from './FormContent'
 
 /**

@@ -11,7 +11,7 @@ import {
   DepositParams,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useForm } from '@ui-kit/forms'
+import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 

@@ -1,6 +1,6 @@
 import { type SubmitEventHandler, useEffect, useMemo } from 'react'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
-import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from '@ui-kit/forms'
+import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from '@ui-kit/features/forms'
 import type { Query } from '@ui-kit/types/util'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
@@ -43,7 +43,7 @@ export const useFormSync = <TFieldValues extends FieldValues>(
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(
-    ...(recordEntries(formState.errors) as [FieldPath<TFieldValues> | 'root', Error | undefined][])
+    ...recordEntries(formState.errors)
       .filter(
         ([field, error]) =>
           (field in formState.touchedFields || (field === 'root' && formState.isDirty)) && error?.message,

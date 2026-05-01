@@ -1,5 +1,5 @@
+import { useForm } from '@ui-kit/features/forms'
 import { captureError, captureString } from '@ui-kit/features/sentry'
-import { useForm } from '@ui-kit/forms'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 

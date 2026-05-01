@@ -5,7 +5,7 @@ import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/dex/featur
 import { ChainId } from '@/dex/types/main.types'
 import { InputDebounced } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
-import { useFormContext } from '@ui-kit/forms'
+import { useFormContext } from '@ui-kit/features/forms'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
