@@ -24,7 +24,7 @@ function filterBridges<T extends Partner>(searchText: string, bridges: T[]): T[]
     keys: ['name'],
   })
 
-  return fuse.search(trimmed).map((result) => result.item)
+  return fuse.search(trimmed).map(result => result.item)
 }
 
 export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: string }) => {

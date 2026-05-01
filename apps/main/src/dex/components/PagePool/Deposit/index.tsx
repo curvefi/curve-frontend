@@ -19,9 +19,9 @@ const tabs: TabOption<FormType>[] = [
 
 export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
-  const formType = useStore((state) => state.poolDeposit.formType)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
-  const setStateByKeys = useStore((state) => state.poolDeposit.setStateByKeys)
+  const formType = useStore(state => state.poolDeposit.formType)
+  const resetState = useStore(state => state.poolDeposit.resetState)
+  const setStateByKeys = useStore(state => state.poolDeposit.setStateByKeys)
 
   const [tab, setTab] = useState<FormType>('DEPOSIT')
 
@@ -50,7 +50,7 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
         <TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} overflow="fullWidth" />
       }
     >
-      {poolAlert && poolAlert.isDisableDeposit ? (
+      {poolAlert?.isDisableDeposit ? (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       ) : (
         <>

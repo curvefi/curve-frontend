@@ -26,14 +26,14 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.lockedCrv.activeKey)
+  const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
-  const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.lockedCrv.formStatus)
-  const formValues = useStore((state) => state.lockedCrv.formValues)
-  const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.lockedCrv.formStatus)
+  const formValues = useStore(state => state.lockedCrv.formValues)
+  const fetchStepIncreaseTime = useStore(state => state.lockedCrv.fetchStepIncreaseTime)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -56,7 +56,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
 
   const updateFormValues = useCallback(
-    async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
@@ -77,16 +77,13 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
-      void updateFormValues(
-        {
-          utcDate: toCalendarDate(utcDate),
-          utcDateError,
-          calcdUtcDate:
-            utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
-          days,
-        },
-        false,
-      )
+      void updateFormValues({
+        utcDate: toCalendarDate(utcDate),
+        utcDateError,
+        calcdUtcDate:
+          utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
+        days,
+      })
     },
     [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, rFormType, updateFormValues],
   )
@@ -98,10 +95,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
         const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
-        void updateFormValues(
-          { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },
-          false,
-        )
+        void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
@@ -109,7 +103,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       const days = utcDate.diff(currUnlockUtcTime, 'd')
       const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
-      void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
+      void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days })
       return calcdUtcDate
     },
     [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, rFormType, updateFormValues],
@@ -123,7 +117,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
 
-        if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+        if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Lock date updated`
           setTxInfoBar(
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,
@@ -152,7 +146,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       }
 
       const stepsKey: StepKey[] = ['INCREASE_TIME']
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleBtnClickIncrease],
   )
@@ -160,7 +154,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    void updateFormValues({}, true)
+    void updateFormValues({}, { isFullReset: true })
 
     return () => {
       isSubscribed.current = false
@@ -178,7 +172,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   }, [activeKey, curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
 
   // interval
-  usePageVisibleInterval(() => updateFormValues({}, false), REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(() => updateFormValues({}), REFRESH_INTERVAL['5m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const loading = typeof vecrvInfo === 'undefined'
@@ -187,7 +181,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
     <>
       <StyledForm
         autoComplete="off"
-        onSubmit={(evt) => {
+        onSubmit={evt => {
           evt.preventDefault()
         }}
       >
@@ -219,9 +213,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-        {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
-        )}
+        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
         {txInfoBar}
         <Stepper steps={steps} hideStepNumber />
       </FormActions>

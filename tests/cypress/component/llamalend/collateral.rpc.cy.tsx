@@ -17,7 +17,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { objectKeys } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-const testCases = objectKeys(LOAN_TEST_MARKETS).map((type) => oneLoanTestMarket(type, (market) => !market.hasLeverage))
+const testCases = objectKeys(LOAN_TEST_MARKETS).map(type => oneLoanTestMarket(type, market => !market.hasLeverage))
 
 describe('Collateral forms', () => {
   testCases.forEach(
@@ -27,7 +27,7 @@ describe('Collateral forms', () => {
 
         const privateKey = generatePrivateKey()
         const { address } = privateKeyToAccount(privateKey)
-        const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+        const getVirtualNetwork = createVirtualTestnet(uuid => ({
           slug: `collateral-integration-${uuid}`,
           display_name: `CollateralIntegration (${uuid})`,
           fork_config: { block_number: 'latest' },

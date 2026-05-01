@@ -8,7 +8,7 @@ type GaugeListColumnsProps = {
 }
 
 export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
-  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
+  const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
 
   return (
     <>

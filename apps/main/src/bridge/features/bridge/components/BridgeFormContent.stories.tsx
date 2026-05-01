@@ -78,7 +78,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
             bridgeCost={constQ(0.69)}
             gas={constQ({ estGasCostUsd: 0.12 })}
             isApproved={isApproved}
-            nativeTokenSymbol={BridgeNetworks.find((n) => n.chainId === fromChainId)!.symbol}
+            nativeTokenSymbol={BridgeNetworks.find(n => n.chainId === fromChainId)!.symbol}
           />
           <BridgeInfoAlert />
         </>
@@ -126,7 +126,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
           }, 2000)
         }}
         onChangeNetwork={() => setIsWrongNetwork(false)}
-        onNetworkSelected={(network) => setFromChainId(network.chainId)}
+        onNetworkSelected={network => setFromChainId(network.chainId)}
       />
     </FormContent>
   )
@@ -139,19 +139,19 @@ const meta: Meta<typeof BridgeFormContent> = {
 type Story = StoryObj<typeof BridgeFormContent>
 
 export const Default: Story = {
-  render: (args) => <BridgeForm {...args} />,
+  render: args => <BridgeForm {...args} />,
   parameters: { docs: { description: { story: 'Default bridge form' } } },
   args: { isConnected: true },
 }
 
 export const NotConnected: Story = {
-  render: (args) => <BridgeForm {...args} />,
+  render: args => <BridgeForm {...args} />,
   parameters: { docs: { description: { story: 'No connected wallet' } } },
   args: { isConnected: false },
 }
 
 export const WrongNetwork: Story = {
-  render: (args) => <BridgeForm {...args} />,
+  render: args => <BridgeForm {...args} />,
   parameters: { docs: { description: { story: 'Wallet is on the wrong network compared to from chain' } } },
   args: { isConnected: true, isWrongNetwork: true },
 }

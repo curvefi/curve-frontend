@@ -73,5 +73,5 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
-  dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
+  dependencies: params => [repayExpectedBorrowedQueryKey(params)],
 })

@@ -15,7 +15,7 @@ function TestComponent() {
         <LargeTokenInput
           name="amount"
           balance={balance}
-          onBalance={(newBalance) => {
+          onBalance={newBalance => {
             setBalance(newBalance)
             setBalanceDebounced(newBalance)
             setOnBalanceCalled(true)

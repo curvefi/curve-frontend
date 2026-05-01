@@ -26,12 +26,7 @@ export const createMockMintMarket = (overrides: object) =>
     ...overrides,
   }) as MintMarketTemplate
 
-const createMockLendRates = () => ({
-  borrowApr: '0.1',
-  borrowApy: '0.1',
-  lendApr: '0.04',
-  lendApy: '0.04',
-})
+const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr: '0.04', lendApy: '0.04' })
 
 export type MockLendStats = {
   rates: MockMethod

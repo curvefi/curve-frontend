@@ -40,20 +40,20 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       amountLabel={t`Amount staked`}
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={mapQuery(userBalances, (d) => d.stakedShares)}
+      prevVaultShares={mapQuery(userBalances, d => d.stakedShares)}
       vaultShares={mapQuery(
         userBalances,
-        (d) => d.stakedShares && unstakeAmount && decimalMinus(d.stakedShares, unstakeAmount),
+        d => d.stakedShares && unstakeAmount && decimalMinus(d.stakedShares, unstakeAmount),
       )}
-      prevAmountSupplied={mapQuery(userBalances, (d) => d.stakedSharesAmount)}
+      prevAmountSupplied={mapQuery(userBalances, d => d.stakedSharesAmount)}
       amountSupplied={mapQuery(
         userBalances,
-        (d) =>
+        d =>
           d.stakedSharesAmount &&
           amountUnstakedAssets.data &&
           decimalMinus(d.stakedSharesAmount, amountUnstakedAssets.data),
       )}
-      supplyApy={mapQuery(prevRates, (d) => d.lendApy)}
+      supplyApy={mapQuery(prevRates, d => d.lendApy)}
       netSupplyApy={prevNetSupplyApy}
       gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
     />

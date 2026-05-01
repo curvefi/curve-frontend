@@ -41,7 +41,7 @@ export const MarketInformationComposite = ({
     <Stack gap={PAGE_SPACING}>
       <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
       {!newBandsChartEnabled && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
           <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
       )}
@@ -51,8 +51,8 @@ export const MarketInformationComposite = ({
           <CrvUsdPriceChart />
         </>
       )}
-      <Card>
-        <CardHeader title={t`Advanced Details`} size="small" />
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
           <AdvancedDetails
             chainId={chainId}

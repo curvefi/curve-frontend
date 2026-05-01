@@ -45,8 +45,8 @@ export const AdvancedCreateLoanOptions = ({
       <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
       <Stack
         sx={{
-          '--chart_reference_line--color': (t) => t.design.Color.Primary[500],
-          '--health_mode_healthy_darkBg--color': (t) => t.design.Text.TextColors.Feedback.Success,
+          '--chart_reference_line--color': t => t.design.Color.Primary[500],
+          '--health_mode_healthy_darkBg--color': t => t.design.Text.TextColors.Feedback.Success,
           '& .recharts-reference-line-line': { strokeDasharray: '6' },
         }}
       >

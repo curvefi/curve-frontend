@@ -21,9 +21,7 @@ type FetchedBandsBalances = {
 }
 
 export const sortBands = (bandsBalances: BandsBalances) => ({
-  bandsBalancesArr: lodash
-    .sortBy(Object.keys(bandsBalances), (k) => +k)
-    .map((k) => ({ ...bandsBalances[+k], band: +k })),
+  bandsBalancesArr: lodash.sortBy(Object.keys(bandsBalances), k => +k).map(k => ({ ...bandsBalances[+k], band: +k })),
   bandsBalances,
 })
 
@@ -33,9 +31,9 @@ export async function fetchChartBandBalancesData(
   market: LlamaMarketTemplate,
   isMarket: boolean,
 ) {
-  const bands = isMarket ? bandsBalancesArr.filter((b) => +b.borrowed > 0 || +b.collateral > 0) : bandsBalancesArr
+  const bands = isMarket ? bandsBalancesArr.filter(b => +b.borrowed > 0 || +b.collateral > 0) : bandsBalancesArr
 
-  const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(bands).process(async (b) => {
+  const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(bands).process(async b => {
     const { collateral, borrowed, band: n } = b
     const [p_up, p_down] = await getPricesImplementation(market).calcBandPrices(n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
@@ -43,8 +41,8 @@ export async function fetchChartBandBalancesData(
     const collateralUsd = new BN(collateral).multipliedBy(sqrt)
 
     return {
-      borrowed: decimal(borrowed) as Decimal,
-      collateral: decimal(collateral) as Decimal,
+      borrowed: decimal(borrowed)!,
+      collateral: decimal(collateral)!,
       collateralUsd: collateralUsd.toNumber(),
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand === +n,

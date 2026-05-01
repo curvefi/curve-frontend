@@ -29,7 +29,7 @@ const flickerEffect = (
 
 type ColorEffect = (set: (value: (prev: ColorState) => ColorState) => void) => void | (() => void)
 
-const setInfo: ColorEffect = (set) => set(() => 'info')
+const setInfo: ColorEffect = set => set(() => 'info')
 const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
   healthy: setInfo,
   softLiquidation: flickerEffect,

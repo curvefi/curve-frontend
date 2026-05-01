@@ -20,8 +20,8 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}
   const canUnlock = getIsLockExpired(

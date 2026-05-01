@@ -32,7 +32,7 @@ export const RewardsIcons = ({
         {extraIncentives.map(({ title, address, blockchainId }) => (
           <TokenIcon key={title} blockchainId={blockchainId} address={address} size="mui-sm" />
         ))}
-        {lodash.uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
+        {lodash.uniq(filteredRewards.map(r => r.platformImageId)).map(img => (
           <RewardIcon size="sm" key={img} imageId={img} />
         ))}
       </Stack>

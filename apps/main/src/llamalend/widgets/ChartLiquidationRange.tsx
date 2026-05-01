@@ -56,10 +56,10 @@ interface TooltipContentProps {
 }
 
 const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHealthColor }: TooltipContentProps) => {
-  if (!active || !payload || !payload.length || !oraclePrice) return null
+  if (!active || !payload?.length || !oraclePrice) return null
 
-  const currPrices = isManage ? payload.find((p) => p.name === 'curr') : undefined
-  const newPrices = isManage ? payload.find((p) => p.name === 'new') : payload[0]
+  const currPrices = isManage ? payload.find(p => p.name === 'curr') : undefined
+  const newPrices = isManage ? payload.find(p => p.name === 'new') : payload[0]
 
   const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
   const [np1, np2] = (newPrices?.payload.new as string[]) ?? []
@@ -159,7 +159,7 @@ export const ChartLiquidationRange = ({
               interval="preserveStartEnd"
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
-              tickFormatter={(tick) => `${formatNumber(tick, { ...(tick > 10 && { decimals: 0 }) })}`}
+              tickFormatter={tick => `${formatNumber(tick, { ...(tick > 10 && { decimals: 0 }) })}`}
               domain={([dataMin, dataMax]) => {
                 // add 0.1 spacing to min and max data
                 const min = Math.floor(dataMin - dataMin * 0.1)
@@ -315,7 +315,7 @@ export const ChartLiquidationRange = ({
                     color: chartReferenceLineColor,
                   },
                   {
-                    value: `${t`Liquidation Range`} (${data.map((d) => d.new.map((n) => formatNumber(n, { currency: 'USD' })).join(' - ')).join(', ')})`,
+                    value: `${t`Liquidation Range`} (${data.map(d => d.new.map(n => formatNumber(n, { currency: 'USD' })).join(' - ')).join(', ')})`,
                     type: 'rect',
                     color: chartHealthColor,
                   },

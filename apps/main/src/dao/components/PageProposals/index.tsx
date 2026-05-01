@@ -19,14 +19,14 @@ import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import { Proposal } from './Proposal'
 
 export const Proposals = () => {
-  const activeSortBy = useStore((state) => state.proposals.activeSortBy)
-  const activeSortDirection = useStore((state) => state.proposals.activeSortDirection)
-  const setActiveSortBy = useStore((state) => state.proposals.setActiveSortBy)
-  const setActiveSortDirection = useStore((state) => state.proposals.setActiveSortDirection)
-  const setActiveFilter = useStore((state) => state.proposals.setActiveFilter)
-  const setSearchValue = useStore((state) => state.proposals.setSearchValue)
-  const searchValue = useStore((state) => state.proposals.searchValue)
-  const activeFilter = useStore((state) => state.proposals.activeFilter)
+  const activeSortBy = useStore(state => state.proposals.activeSortBy)
+  const activeSortDirection = useStore(state => state.proposals.activeSortDirection)
+  const setActiveSortBy = useStore(state => state.proposals.setActiveSortBy)
+  const setActiveSortDirection = useStore(state => state.proposals.setActiveSortDirection)
+  const setActiveFilter = useStore(state => state.proposals.setActiveFilter)
+  const setSearchValue = useStore(state => state.proposals.setSearchValue)
+  const searchValue = useStore(state => state.proposals.searchValue)
+  const activeFilter = useStore(state => state.proposals.activeFilter)
   const push = useNavigate()
 
   const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
@@ -51,7 +51,7 @@ export const Proposals = () => {
             id="inpSearchProposals"
             placeholder={t`Search`}
             variant="small"
-            handleInputChange={(val) => setSearchValue(val)}
+            handleInputChange={val => setSearchValue(val)}
             handleSearchClose={() => setSearchValue('')}
             value={searchValue}
           />
@@ -62,7 +62,7 @@ export const Proposals = () => {
               items={PROPOSAL_FILTERS}
               selectedKey={activeFilter}
               minWidth="9rem"
-              onSelectionChange={(key) => key != null && setActiveFilter(key as ProposalListFilter)}
+              onSelectionChange={key => key != null && setActiveFilter(key as ProposalListFilter)}
             />
             <StyledProposalsFilters
               filters={PROPOSAL_FILTERS}
@@ -77,7 +77,7 @@ export const Proposals = () => {
               selectedKey={activeSortBy}
               minWidth="9rem"
               items={PROPOSAL_SORTING_METHODS}
-              onSelectionChange={(key) => key != null && setActiveSortBy(key as SortByFilterProposals)}
+              onSelectionChange={key => key != null && setActiveSortBy(key as SortByFilterProposals)}
             />
             <ToggleDirectionIcon
               size={20}

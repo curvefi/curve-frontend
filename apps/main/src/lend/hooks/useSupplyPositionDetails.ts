@@ -70,7 +70,7 @@ export const useSupplyPositionDetails = ({
     limit: rateWindow,
   })
 
-  const rebasingYield = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
+  const rebasingYield = getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield)
 
   const supplyMetrics = getSupplyApyMetrics({
     supplyApy: toNumberOrNull(marketRates?.lendApy),
@@ -97,9 +97,9 @@ export const useSupplyPositionDetails = ({
       averageCategory: RATE_CATEGORY,
       extraIncentives: formatSupplyExtraIncentives({
         incentives:
-          onChainRewards?.rewardsApr?.map((r) => ({
+          onChainRewards?.rewardsApr?.map(r => ({
             title: r.symbol,
-            percentage: aprToApy(r.apy) as number,
+            percentage: aprToApy(r.apy)!,
             blockchainId,
             address: r.tokenAddress,
           })) ?? [],

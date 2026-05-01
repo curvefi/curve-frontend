@@ -52,7 +52,7 @@ export const DataRow = <T extends TableItem>({
   const visibleCells = row.getVisibleCells()
   return (
     <>
-      <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverRef={{ current: element }} disabled={isMobile}>
+      <InvertOnHover hoverColor={t => t.design.Table.Row.Hover} hoverRef={{ current: element }} disabled={isMobile}>
         <TableRow
           sx={useMemo(
             () => ({
@@ -67,15 +67,15 @@ export const DataRow = <T extends TableItem>({
               '&:hover': {
                 [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {
-                  backgroundColor: (t) => t.design.Table.Row.Hover,
+                  backgroundColor: t => t.design.Table.Row.Hover,
                 },
               },
               ...(isLast && {
                 // to avoid the sticky header showing without any rows, show the last row on top of it
                 position: 'sticky',
-                zIndex: (t) => t.zIndex.tableStickyLastRow,
+                zIndex: t => t.zIndex.tableStickyLastRow,
                 top: 0,
-                backgroundColor: (t) => t.design.Table.Row.Default,
+                backgroundColor: t => t.design.Table.Row.Default,
               }),
             }),
             [isLast, hasUrl, verticalAlign],

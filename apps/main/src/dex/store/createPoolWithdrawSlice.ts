@@ -108,7 +108,7 @@ export const createPoolWithdrawSlice = (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchWithdrawToken: async (props) => {
+    fetchWithdrawToken: async props => {
       const { storedActiveKey, config, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       const cFormValues = cloneDeep(formValues)
@@ -118,7 +118,7 @@ export const createPoolWithdrawSlice = (
       //  get slippage and expected
       if (+cFormValues.lpToken > 0) {
         // set loading state
-        cFormValues.amounts = cFormValues.amounts.map((a) => ({ ...a, value: '' }))
+        cFormValues.amounts = cFormValues.amounts.map(a => ({ ...a, value: '' }))
         get()[sliceKey].setStateByKeys({ formValues: cloneDeep(cFormValues) })
         get()[sliceKey].setStateByKey('slippage', {
           [activeKey]: {
@@ -145,7 +145,7 @@ export const createPoolWithdrawSlice = (
               },
             })
           } else {
-            cFormValues.amounts = cFormValues.amounts.map((a) => ({
+            cFormValues.amounts = cFormValues.amounts.map(a => ({
               ...a,
               value: a.tokenAddress === cFormValues.selectedTokenAddress ? resp.expected : '',
             }))
@@ -168,7 +168,7 @@ export const createPoolWithdrawSlice = (
         void get()[sliceKey].fetchEstGasApproval(activeKey, config, curve, formType, pool, cFormValues, maxSlippage)
       }
     },
-    fetchWithdrawLpToken: async (props) => {
+    fetchWithdrawLpToken: async props => {
       const { storedActiveKey, config, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       const cFormValues = cloneDeep(formValues)
@@ -217,7 +217,7 @@ export const createPoolWithdrawSlice = (
         }
       }
     },
-    fetchWithdrawCustom: async (props) => {
+    fetchWithdrawCustom: async props => {
       const { storedActiveKey, config, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       const cFormValues = cloneDeep(formValues)
@@ -225,7 +225,7 @@ export const createPoolWithdrawSlice = (
       const { signerAddress } = curve
 
       //  get slippage and expected
-      if (cFormValues.amounts.some((a) => +a.value > 0)) {
+      if (cFormValues.amounts.some(a => +a.value > 0)) {
         // set loading state
         get()[sliceKey].setStateByKey('slippage', {
           [activeKey]: {
@@ -476,7 +476,7 @@ export const createPoolWithdrawSlice = (
         const fn = curvejsApi.poolWithdraw.withdrawImbalanceApprove
         resp = await fn(activeKey, provider, pool, parseAmountsForAPI(amounts))
       }
-      if (resp && resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp?.activeKey === get()[sliceKey].activeKey) {
         const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -526,7 +526,7 @@ export const createPoolWithdrawSlice = (
         const fn = curvejsApi.poolWithdraw.withdrawImbalance
         resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
       }
-      if (resp && resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp?.activeKey === get()[sliceKey].activeKey) {
         const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
@@ -654,7 +654,7 @@ export const createPoolWithdrawSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
@@ -698,7 +698,7 @@ function getActiveKey(
     } else if (selected === 'lpToken') {
       activeKey += `${selected}-${isWrapped}-${maxSlippage}-${lpToken}`
     } else {
-      const amountsStr = amounts.map((a) => a.value).join('-')
+      const amountsStr = amounts.map(a => a.value).join('-')
       activeKey += `${selected}-${amountsStr}`
     }
   } else if (formType === 'UNSTAKE') {
@@ -712,7 +712,7 @@ function getActiveKey(
 function resetFormValues(formValues: FormValues) {
   return {
     ...cloneDeep(formValues),
-    amounts: formValues.amounts.map((a) => ({ ...a, value: '' })),
+    amounts: formValues.amounts.map(a => ({ ...a, value: '' })),
     claimableRewards: [],
     claimableCrv: '',
     lpToken: '',

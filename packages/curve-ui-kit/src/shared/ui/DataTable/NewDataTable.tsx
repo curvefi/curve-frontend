@@ -59,7 +59,7 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
     // Skip for manual pagination - data is expected to change on page change
     if (isManualPagination) return
     // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCount.current && resultCount) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    if (lastResultCount.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
     lastResultCount.current = resultCount
   }, [resultCount, isManualPagination])
 }
@@ -102,7 +102,7 @@ export const NewDataTable = <T extends TableItem>({
 
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
   const containerRef = useRef<HTMLDivElement>(null)
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
@@ -111,7 +111,7 @@ export const NewDataTable = <T extends TableItem>({
     position: 'sticky',
     top: maxHeight ? 0 : top,
     zIndex: t.zIndex.tableHeader,
-    marginBlock: Sizing['sm'],
+    marginBlock: Sizing.sm,
   })
   const showFooter = showPagination || showViewAllButton || footerRow
 
@@ -127,8 +127,8 @@ export const NewDataTable = <T extends TableItem>({
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
             {children && <NewFilterRow table={table}>{children}</NewFilterRow>}
 
-            {headerGroups.map((headerGroup) => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+            {headerGroups.map(headerGroup => (
+              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}

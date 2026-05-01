@@ -22,7 +22,7 @@ export function writeSwapForm({ amount }: { amount: string }) {
  * Check that the swap route details (exchange rate, price impact, to-amount) have loaded.
  */
 export function checkSwapDetailsLoaded() {
-  getToAmountInput(LOAD_TIMEOUT).should(($el) => {
+  getToAmountInput(LOAD_TIMEOUT).should($el => {
     expect($el.val()).to.match(/^\d+(\.\d+)?$/)
   })
   getActionValue('exchange-rate').should('match', ExpectedExchangeRate)

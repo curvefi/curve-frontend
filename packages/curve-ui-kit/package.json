@@ -7,8 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/curve-ui-kit --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/curve-ui-kit --cache-strategy content . --fix",
     "storybook": "storybook dev -p 6006 --no-open",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-curve-ui-kit.tsbuildinfo",
     "build:storybook": "storybook build"
@@ -53,7 +53,6 @@
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "*",
     "eslint": "*",
-    "eslint-config-custom": "*",
     "storybook": "10.3.5",
     "typescript": "*",
     "vite": "*",

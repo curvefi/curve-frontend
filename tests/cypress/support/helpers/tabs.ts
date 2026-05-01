@@ -2,8 +2,8 @@ import { oneOf } from '@cy/support/generators'
 import { DISCLAIMER_TABS, TABS as LEGAL_PAGE_TABS } from '@ui-kit/widgets/Legal/constants'
 import { LOAD_TIMEOUT } from '../ui'
 
-export const oneLegalPageTab = () => oneOf(...LEGAL_PAGE_TABS.map((tab) => tab.value))
-export const oneDisclaimersSubTabs = () => oneOf(...DISCLAIMER_TABS.map((tab) => tab.value))
+export const oneLegalPageTab = () => oneOf(...LEGAL_PAGE_TABS.map(tab => tab.value))
+export const oneDisclaimersSubTabs = () => oneOf(...DISCLAIMER_TABS.map(tab => tab.value))
 
 const isTabClickable = ($tab: JQuery) => window.getComputedStyle($tab[0]).pointerEvents !== 'none'
 
@@ -12,7 +12,7 @@ export const clickTab = (testIdPrefix: string, value: string, options: Partial<C
     .get(`[data-testid="${testIdPrefix}-container"]`, options)
     .get(`[data-testid="${testIdPrefix}-${value}"]`, options)
 
-  tab.then(($tab) => {
+  tab.then($tab => {
     // check if the tab is clickable
     if (isTabClickable($tab)) {
       // phishing banner hides button on mobile that's why the force click

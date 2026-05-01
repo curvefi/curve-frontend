@@ -15,8 +15,8 @@ export const DetailsLoanChartBalances = ({
 }: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'> & {
   selectorMenu?: ReactNode
 }) => {
-  const statsBandsResp = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
-  const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
+  const statsBandsResp = useStore(state => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
+  const loanPricesResp = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,

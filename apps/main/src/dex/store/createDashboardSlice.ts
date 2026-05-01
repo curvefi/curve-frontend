@@ -258,7 +258,7 @@ export const createDashboardSlice = (
 
       // update search addresses, local storage
       const cachedAddresses = getStorageValue('APP_DASHBOARD')?.addresses ?? []
-      if (cachedAddresses.indexOf(walletAddress) === -1) {
+      if (!cachedAddresses.includes(walletAddress)) {
         const searchedAddresses = [walletAddress].concat(cachedAddresses).slice(0, 10)
         sliceState.setStateByKey('searchedWalletAddresses', searchedAddresses)
         setStorageValue('APP_DASHBOARD', { addresses: searchedAddresses })
@@ -301,11 +301,11 @@ export const createDashboardSlice = (
         noResult: poolIds.length === 0,
       })
     },
-    setFormStatusClaimFees: (updatedFormStatus) => {
+    setFormStatusClaimFees: updatedFormStatus => {
       const { formStatus, ...sliceState } = get()[sliceKey]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatus })
     },
-    setFormStatusVecrv: (updatedFormStatusVecrv) => {
+    setFormStatusVecrv: updatedFormStatusVecrv => {
       const { formStatus, ...sliceState } = get()[sliceKey]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatusVecrv })
     },
@@ -395,7 +395,7 @@ export const createDashboardSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

@@ -10,7 +10,7 @@ import type { TokenAmount } from './types'
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted number string or '-' for null/undefined values
  */
-export const formatValue = (x?: number, decimals: number = 2) =>
+export const formatValue = (x?: number, decimals = 2) =>
   x == null
     ? '-'
     : x.toLocaleString(undefined, {
@@ -44,7 +44,7 @@ export const formatValue = (x?: number, decimals: number = 2) =>
  * formatTokens({ symbol: 'ETH', amount: 10.555 }, 3)
  * // Returns: "10.555 ETH"
  */
-export const formatTokens = (tokens: TokenAmount | TokenAmount[], decimals: number = 2) =>
+export const formatTokens = (tokens: TokenAmount | TokenAmount[], decimals = 2) =>
   toArray(tokens)
     .map(({ amount, symbol }) => {
       const value = Number(amount)

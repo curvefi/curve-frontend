@@ -70,9 +70,9 @@ export const createWagmiConfig = memoize(
     max: 1, // only memoize the last call
     normalizer: ([{ chains, transports }]) =>
       JSON.stringify({
-        chainIds: chains.map((c) => c.id),
+        chainIds: chains.map(c => c.id),
         transportIds: Object.keys(transports),
-        rpcUrls: chains.flatMap((c) => c.rpcUrls?.default?.http ?? []),
+        rpcUrls: chains.flatMap(c => c.rpcUrls?.default?.http ?? []),
       }),
   },
 )

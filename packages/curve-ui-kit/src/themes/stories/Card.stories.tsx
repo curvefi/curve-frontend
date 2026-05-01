@@ -117,9 +117,9 @@ const meta: Meta<typeof CardStory> = {
 
 type Story = StoryObj<typeof CardStory>
 
-export const Default: Story = { render: (args) => <CardStory {...args} /> }
-export const Simple: Story = { render: (args) => <CardStorySimple {...args} /> }
-export const HeaderOnly: Story = { render: (args) => <CardStoryHeaderOnly {...args} /> }
-export const TokenPairAvatar: Story = { render: (args) => <CardStoryTokenPairAvatar {...args} /> }
+export const Default: Story = { render: args => <CardStory {...args} /> }
+export const Simple: Story = { render: args => <CardStorySimple {...args} /> }
+export const HeaderOnly: Story = { render: args => <CardStoryHeaderOnly {...args} /> }
+export const TokenPairAvatar: Story = { render: args => <CardStoryTokenPairAvatar {...args} /> }
 
 export default meta

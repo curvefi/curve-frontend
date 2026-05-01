@@ -12,7 +12,7 @@ const LOW_EXCHANGE_RATE = 0.98
 // exclude these pairs from displaying Exchange rate is low
 export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: string, routes: Route[]) {
   // if routes does not have a pool, exclude from low exchange rate check
-  if (Array.isArray(routes) && routes.some((r) => r.routeUrlId === '')) {
+  if (Array.isArray(routes) && routes.some(r => r.routeUrlId === '')) {
     return true
   }
 
@@ -182,7 +182,7 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveApi, toA
     rate: storedRates[index],
   }))
 
-  const toStoredRate = ratesWithAddresses.find((r) => r.coinAddress === toAddress.toLowerCase())?.rate
+  const toStoredRate = ratesWithAddresses.find(r => r.coinAddress === toAddress.toLowerCase())?.rate
 
   return toStoredRate
 }

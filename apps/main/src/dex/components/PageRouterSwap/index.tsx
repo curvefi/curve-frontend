@@ -78,22 +78,22 @@ export const QuickSwap = ({
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
-  const activeKey = useStore((state) => state.quickSwap.activeKey)
-  const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.quickSwap.formStatus)
-  const formValues = useStore((state) => state.quickSwap.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const rpcRoutesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
-  const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
-  const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
-  const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
-  const setFormValues = useStore((state) => state.quickSwap.setFormValues)
+  const activeKey = useStore(state => state.quickSwap.activeKey)
+  const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
+  const formStatus = useStore(state => state.quickSwap.formStatus)
+  const formValues = useStore(state => state.quickSwap.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const rpcRoutesAndOutput = useStore(state => state.quickSwap.routesAndOutput[activeKey])
+  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
+  const fetchStepApprove = useStore(state => state.quickSwap.fetchStepApprove)
+  const fetchStepSwap = useStore(state => state.quickSwap.fetchStepSwap)
+  const resetFormErrors = useStore(state => state.quickSwap.resetFormErrors)
+  const setFormValues = useStore(state => state.quickSwap.setFormValues)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
-  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
+  const cryptoMaxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore(state => state.maxSlippage.stable)
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
     !userAddress,
@@ -121,14 +121,14 @@ export const QuickSwap = ({
   const tokens = useMemo(
     () =>
       Object.values(tokensMapper ?? {})
-        .filter((token) => !!token)
+        .filter(token => !!token)
         .map(toTokenOption(network?.networkId)),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [tokensMapperStr, network?.networkId],
   )
 
-  const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
+  const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
 
   const {
     data: userFromBalance,
@@ -218,7 +218,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -336,12 +336,12 @@ export const QuickSwap = ({
       let stepsKey: StepKey[]
 
       if (formProcessing || formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['SWAP'] : ['APPROVAL', 'SWAP']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [
       config,
@@ -430,7 +430,7 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
-    setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
+    setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
@@ -502,7 +502,8 @@ export const QuickSwap = ({
         }
         message={
           formValues.fromError &&
-          t`Amount > wallet balance ${formatNumber(userFromBalance as Decimal, { abbreviate: false })}`
+          userFromBalance != null &&
+          t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
         }
       />
 

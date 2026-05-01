@@ -93,7 +93,7 @@ const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as cons
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(15, 20)
   const data = [
-    ...range(count).map((index) => oneLendingPool(chain, { utilization: index / count, tvl: oneTvl() })),
+    ...range(count).map(index => oneLendingPool(chain, { utilization: index / count, tvl: oneTvl() })),
     ...(chain == 'ethereum'
       ? ([
           {
@@ -124,7 +124,7 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
 }
 
 export const createLendingVaultChainsResponse = (): Record<Chain, GetMarketsResponse> =>
-  fromEntries(LendingChains.map((chain) => [chain, oneLendingVaultResponse(chain)]))
+  fromEntries(LendingChains.map(chain => [chain, oneLendingVaultResponse(chain)]))
 
 export const mockLendingVaults = (chains: Record<Chain, GetMarketsResponse>) =>
   cy.intercept('https://prices.curve.finance/v1/lending/markets', { body: { chains } })
@@ -134,7 +134,7 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
   cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=day&fetch_on_chain=true&limit=7', {
     body: {
       chain,
-      data: range(84).map((i) => ({
+      data: range(84).map(i => ({
         borrow_apy: i / 2, // increasing APY, graph should be green
         borrow_apr: i / 2, // increasing APR, graph should be green
         borrow_total_apy: i / 2 - 1,

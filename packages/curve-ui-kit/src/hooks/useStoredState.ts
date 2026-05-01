@@ -71,7 +71,7 @@ export function useStoredState<T>({
 }: StoredStateOptions<T>): GetAndSet<T> {
   const fullKey = getStorageKey(key, version)
   const [stateValue, setState] = useState<T>(get(fullKey, initialValue))
-  const setStateValue = useCallback((value: T) => setState((old) => (isEqual(old, value) ? old : value)), [])
+  const setStateValue = useCallback((value: T) => setState(old => (isEqual(old, value) ? old : value)), [])
 
   const setValue = useCallback(
     (setter: SetStateAction<T>) => {

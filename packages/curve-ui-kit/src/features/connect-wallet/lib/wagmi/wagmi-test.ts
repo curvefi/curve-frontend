@@ -1,4 +1,3 @@
-import type { SendTransactionParameters } from 'viem'
 import {
   type Chain,
   createWalletClient,
@@ -7,6 +6,7 @@ import {
   fallback,
   http,
   type PrivateKeyAccount,
+  type SendTransactionParameters,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { createConnector, type CreateConnectorFn } from 'wagmi'
@@ -65,7 +65,7 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     chain,
     transport: fallback([
       (transport ?? cypressTransport)(account, chain),
-      ...chain.rpcUrls.default.http.map((url) => http(url, WAGMI_HTTP_OPTIONS)),
+      ...chain.rpcUrls.default.http.map(url => http(url, WAGMI_HTTP_OPTIONS)),
     ]),
   })
 

@@ -46,9 +46,9 @@ type Story = StoryObj<typeof StackedChainIcons>
 export const Default: Story = {}
 
 export const OverlapPercentages: Story = {
-  render: (args) => (
+  render: args => (
     <Stack gap={2}>
-      {OVERLAPS.map((overlap) => (
+      {OVERLAPS.map(overlap => (
         <Stack key={overlap} gap={4} direction="row">
           <Typography variant="bodySRegular">{(overlap * 100).toFixed(0).toString()}%</Typography>
           <StackedChainIcons {...args} overlap={overlap} />

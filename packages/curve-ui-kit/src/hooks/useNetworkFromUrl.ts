@@ -7,7 +7,7 @@ import { getCurrentNetwork } from '@ui-kit/shared/routes'
 export function useNetworkFromUrl<T extends NetworkMapping>(networks: T | undefined) {
   const pathname = usePathname()
   return useMemo(
-    () => networks && recordValues(networks).find((n) => n.id == getCurrentNetwork(pathname)),
+    () => networks && recordValues(networks).find(n => n.id == getCurrentNetwork(pathname)),
     [pathname, networks],
   )
 }

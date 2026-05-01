@@ -11,7 +11,7 @@ export function hasParentWithClass(target: EventTarget, className: string, { unt
     if (element.classList.contains(className)) {
       return true
     }
-    element = element.parentElement as HTMLElement
+    element = element.parentElement!
   }
   return false
 }

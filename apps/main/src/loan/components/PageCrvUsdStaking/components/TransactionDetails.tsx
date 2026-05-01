@@ -16,13 +16,13 @@ const { IconSize } = SizesAndSpaces
 
 export const TransactionDetails = () => {
   const { address } = useConnection()
-  const preview = useStore((state) => state.scrvusd.preview)
-  const scrvUsdExchangeRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate)
-  const approveInfinite = useStore((state) => state.scrvusd.approveInfinite)
-  const setApproveInfinite = useStore((state) => state.scrvusd.setApproveInfinite)
-  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const fetchStatus = useStore((state) => state.scrvusd.estGas.fetchStatus)
-  const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(address ?? ''))
+  const preview = useStore(state => state.scrvusd.preview)
+  const scrvUsdExchangeRate = useStore(state => state.scrvusd.scrvUsdExchangeRate)
+  const approveInfinite = useStore(state => state.scrvusd.approveInfinite)
+  const setApproveInfinite = useStore(state => state.scrvusd.setApproveInfinite)
+  const stakingModule = useStore(state => state.scrvusd.stakingModule)
+  const fetchStatus = useStore(state => state.scrvusd.estGas.fetchStatus)
+  const estimateGas = useStore(state => state.scrvusd.getEstimateGas(address ?? ''))
 
   const { estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)
   const hasWallet = !!address
@@ -53,7 +53,7 @@ export const TransactionDetails = () => {
         sx={{
           width: IconSize.sm,
           height: IconSize.sm,
-          color: (t) => t.palette.text.secondary,
+          color: t => t.palette.text.secondary,
         }}
       />
       <WithSkeleton loading={gasLoading}>

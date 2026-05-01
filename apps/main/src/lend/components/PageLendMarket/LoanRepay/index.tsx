@@ -50,20 +50,20 @@ export const LoanRepay = ({
 }: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
   const push = useNavigate()
-  const activeKey = useStore((state) => state.loanRepay.activeKey)
-  const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanRepay.formStatus)
-  const formValues = useStore((state) => state.loanRepay.formValues)
+  const activeKey = useStore(state => state.loanRepay.activeKey)
+  const detailInfoLeverage = useStore(state => state.loanRepay.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanRepay.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanRepay.formStatus)
+  const formValues = useStore(state => state.loanRepay.formValues)
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
-  const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
-  const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
-  const setFormValues = useStore((state) => state.loanRepay.setFormValues)
-  const resetState = useStore((state) => state.loanRepay.resetState)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepApprove = useStore(state => state.loanRepay.fetchStepApprove)
+  const fetchStepRepay = useStore(state => state.loanRepay.fetchStepRepay)
+  const fetchAllUserDetails = useStore(state => state.user.fetchAll)
+  const setFormValues = useStore(state => state.loanRepay.setFormValues)
+  const resetState = useStore(state => state.loanRepay.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -108,7 +108,7 @@ export const LoanRepay = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
 
         setTxInfoBar(
@@ -218,9 +218,7 @@ export const LoanRepay = ({
                         swapFrom: collateral_token.symbol,
                       }}
                       confirmed={confirmedWarning}
-                      setConfirmed={(val) =>
-                        setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
-                      }
+                      setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   cancelBtnProps: {
@@ -243,12 +241,12 @@ export const LoanRepay = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved && !isApprovedCompleted ? ['REPAY'] : ['APPROVAL', 'REPAY']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [
       confirmedWarning,
@@ -407,7 +405,7 @@ export const LoanRepay = ({
             tokenBalance={userBalances?.borrowed}
             debt={userState?.debt ?? '0'}
             handleInpChange={useCallback(
-              (userBorrowed) => {
+              userBorrowed => {
                 if (hasExpectedBorrowed) {
                   updateFormValues({ userBorrowed, isFullRepay: false })
                   return
@@ -464,7 +462,7 @@ export const LoanRepay = ({
       <Checkbox
         isDisabled={disableCheckbox}
         isSelected={detailInfoLeverage?.repayIsFull || formValues.isFullRepay}
-        onChange={(isFullRepay) => {
+        onChange={isFullRepay => {
           if (isFullRepay) {
             updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay })
           } else {

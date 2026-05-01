@@ -42,17 +42,18 @@ export const submitClaimAndSettle = (
   })
 }
 
-const checkpointTenderlySupplyRewards = ({
-  vnet,
-  userAddress,
-  gaugeAddress,
-}: {
-  vnet: CreateVirtualTestnetResponse
-  userAddress: Address
-  gaugeAddress: Address
-}) =>
-  // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
-  loadTenderlyAccount().then(async (tenderlyAccount) => {
+const checkpointTenderlySupplyRewards = (
+  {
+    vnet,
+    userAddress,
+    gaugeAddress,
+  }: {
+    vnet: CreateVirtualTestnetResponse
+    userAddress: Address
+    gaugeAddress: Address
+  }, // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
+) =>
+  loadTenderlyAccount().then(async tenderlyAccount => {
     await sendVnetTransaction({
       tenderly: { ...tenderlyAccount, vnetId: vnet.id },
       tx: {
@@ -147,8 +148,8 @@ export function checkClaimDetailsLoaded({
 
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should('have.length.at.least', 1)
-  cy.get('[data-testid="data-table-cell-token"]').each(($row) => {
-    const [, match] = $row.text().replaceAll(',', '').match(CLAIMABLE_AMOUNT_REGEX) ?? []
+  cy.get('[data-testid="data-table-cell-token"]').each($row => {
+    const [, match] = CLAIMABLE_AMOUNT_REGEX.exec($row.text().replaceAll(',', '')) ?? []
     expect(match).to.not.equal(undefined)
     expect(Number(match)).to.be.greaterThan(0)
   })
@@ -158,7 +159,7 @@ export function checkClaimDetailsLoaded({
     cy.get('[data-testid="rewards-value"]').should('be.visible')
   }
 
-  expectedSymbols?.forEach((symbol) => {
+  expectedSymbols?.forEach(symbol => {
     cy.get('[data-testid="data-table-cell-token"]').contains(symbol)
   })
 }

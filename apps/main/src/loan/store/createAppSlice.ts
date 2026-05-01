@@ -49,7 +49,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    const markets = curveApi.mintMarkets.getMarketList().map((name) => curveApi.getMintMarket(name))
+    const markets = curveApi.mintMarkets.getMarketList().map(name => curveApi.getMintMarket(name))
     await loans.fetchLoansDetails(curveApi, markets)
 
     log('Hydrate crvUSD - Complete')
@@ -57,7 +57,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValues = state[sliceKey][key]
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
@@ -82,7 +82,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValue = state[sliceKey][key]
         if (!lodash.isEqual(storedValue, value)) {
           if (showLog) {
@@ -97,7 +97,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
-        produce((state) => {
+        produce(state => {
           const storedValue = state[sliceKey][key]
           if (!lodash.isEqual(storedValue, value)) {
             if (showLog) {
@@ -111,7 +111,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
   },
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[sliceKey] = {
           ...state[sliceKey],
           ...defaultState,

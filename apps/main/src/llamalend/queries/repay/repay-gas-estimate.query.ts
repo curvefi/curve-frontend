@@ -68,7 +68,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
-  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
+  dependencies: params => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApproveGasEstimateQuery } = queryFactory({
@@ -130,7 +130,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
-  dependencies: (params) => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
+  dependencies: params => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
 export const useRepayEstimateGas = createApprovedEstimateGasHook({

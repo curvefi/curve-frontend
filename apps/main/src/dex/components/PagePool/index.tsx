@@ -19,6 +19,7 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
+import type { NetworkConfig } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
@@ -44,6 +45,22 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
+const TitleComp = ({
+  network,
+  poolAddress,
+  poolName,
+}: {
+  network: NetworkConfig
+  poolAddress: string
+  poolName: string
+}) => (
+  <AppPageFormTitleWrapper>
+    <StyledExternalLink href={scanAddressPath(network, poolAddress)}>
+      <Title as="h1">{poolName}</Title>
+    </StyledExternalLink>
+  </AppPageFormTitleWrapper>
+)
+
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
@@ -53,14 +70,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolAlert = usePoolAlert(poolData)
   const { tokensMapper } = useTokensMapper(rChainId)
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
+  const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { pool } = poolDataCacheOrApi
 
-  const poolMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
-  const poolTypeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
+  const poolMaxSlippage = useUserProfileStore(state => state.maxSlippage[chainIdPoolId])
+  const poolTypeMaxSlippage = useUserProfileStore(state => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
     {
@@ -134,9 +151,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       !!rewardDistributors &&
       !!signerAddress &&
-      Object.values(rewardDistributors).some((distributorId) =>
-        isAddressEqual(distributorId as Address, signerAddress),
-      ),
+      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId as Address, signerAddress)),
     [rewardDistributors, signerAddress],
   )
 
@@ -173,13 +188,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [isAvailableManageGauge, rFormType, toggleForm])
 
-  const TitleComp = () => (
-    <AppPageFormTitleWrapper>
-      <StyledExternalLink href={scanAddressPath(network, pool.address)}>
-        <Title as="h1">{pool?.name || ''}</Title>
-      </StyledExternalLink>
-    </AppPageFormTitleWrapper>
-  )
   return (
     <>
       {poolAlert?.banner && (
@@ -193,11 +201,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       <DetailPageLayout
         formTabs={
           <FormMargins>
-            {!isMdUp && <TitleComp />}
+            {!isMdUp && <TitleComp network={network} poolName={pool.name || ''} poolAddress={pool.address} />}
             <TabsSwitcher
               variant="contained"
               value={!rFormType ? 'deposit' : rFormType}
-              onChange={(key) => toggleForm(key as TransferFormType)}
+              onChange={key => toggleForm(key as TransferFormType)}
               options={tabs}
               testIdPrefix="pool-form-tab"
             />
@@ -241,7 +249,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           </FormMargins>
         }
       >
-        {isMdUp && <TitleComp />}
+        {isMdUp && <TitleComp network={network} poolName={pool.name || ''} poolAddress={pool.address} />}
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">

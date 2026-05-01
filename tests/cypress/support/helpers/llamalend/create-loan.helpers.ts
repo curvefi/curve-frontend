@@ -150,7 +150,7 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   // wait for max borrow to load and verify the input value matches (using data-value for precision)
   cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .then((maxValue) => getBorrowInput().should('have.value', maxValue))
+    .then(maxValue => getBorrowInput().should('have.value', maxValue))
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
   checkLoanDetailsLoaded({ leverageEnabled })
 }

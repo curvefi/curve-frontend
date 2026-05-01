@@ -19,7 +19,7 @@ export const statusColorMap = (status?: StepStatus) => {
     case 'pending':
       return 'var(--button--disabled--background-color)'
     default:
-      throw 'Invalid step status'
+      throw new Error('Invalid step status')
   }
 }
 
@@ -69,7 +69,7 @@ export function getStepStatus(isSuccess: boolean, isInProgress: boolean, isValid
 }
 
 export function getActiveStep(steps: Step[]) {
-  const foundIdx = steps.findIndex((step) => step.status === 'current' || step.status === 'in-progress')
+  const foundIdx = steps.findIndex(step => step.status === 'current' || step.status === 'in-progress')
   if (foundIdx !== -1) {
     return foundIdx + 1
   }

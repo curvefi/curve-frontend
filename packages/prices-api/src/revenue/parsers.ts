@@ -35,10 +35,7 @@ export const parseCushion = (x: Responses.GetCushionsResponse['data'][number]): 
 
 export const parseDistribution = (
   x: Responses.GetDistributionsResponse['distributions'][number],
-): Models.Distribution => ({
-  timestamp: toDate(x.timestamp),
-  feesUsd: x.fees_usd,
-})
+): Models.Distribution => ({ timestamp: toDate(x.timestamp), feesUsd: x.fees_usd })
 
 export const parseCowSwapSettlement = (
   x: Responses.GetCowSwapSettlementsResponse['data'][number],

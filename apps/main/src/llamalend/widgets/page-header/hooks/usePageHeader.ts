@@ -76,9 +76,9 @@ function buildSupplyRate({
       blockchainId &&
         formatSupplyExtraIncentives({
           incentives: notFalsyArray(
-            marketOnChainRewards?.rewardsApr?.map((reward) => ({
+            marketOnChainRewards?.rewardsApr?.map(reward => ({
               title: reward.symbol,
-              percentage: aprToApy(reward.apy) as number,
+              percentage: aprToApy(reward.apy)!,
               blockchainId,
               address: reward.tokenAddress,
             })),
@@ -153,7 +153,7 @@ export const usePageHeader = ({
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
   const lendingSnapshots = isLendMarket ? (snapshots as LendingSnapshot[] | undefined) : undefined
-  const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, (snapshot) => snapshot.borrowedToken.rebasingYield)
+  const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield)
   const supplyRate = isLendMarket
     ? buildSupplyRate({
         supplyApy: marketRates?.lendApy,

@@ -85,7 +85,7 @@ const LinkStyles = styled.a<StylesProps>`
     margin-bottom: var(--spacing-narrow);
     @media (min-width: 36.75rem) {
       margin-bottom: auto;
-      margin-right: ${(props) => (props.link2 ? 'var(--spacing-3)' : '')};
+      margin-right: ${props => (props.link2 ? 'var(--spacing-3)' : '')};
     }
   }
   &:focus-visible {

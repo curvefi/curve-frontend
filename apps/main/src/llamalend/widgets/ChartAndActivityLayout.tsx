@@ -65,14 +65,14 @@ type ChartAndActivityLayoutProps = {
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
-  const toggleBandsVisible = useCallback(() => setIsBandsVisible((prev) => !prev), [setIsBandsVisible])
+  const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const newBandsChartEnabled = useNewBandsChart()
   const bandsPalette = useBandsChartPalette()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
-    setCandlePriceRange((previous) =>
+    setCandlePriceRange(previous =>
       previous && Math.abs(Math.max(previous.min - min, previous.max - max)) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
         ? previous
         : { min, max },
@@ -106,11 +106,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   return (
     <Stack>
       <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         {tab === 'events' && <LlammaActivityEvents {...activity} />}
         {tab === 'trades' && <LlammaActivityTrades {...activity} />}
         {tab === 'chart' && (
-          <Stack sx={{ gap: Spacing.sm }}>
+          <Stack sx={{ gap: Spacing.sm, padding: Spacing.sm }}>
             <ChartHeader
               chartOptionVariant="select"
               chartSelections={{

@@ -67,8 +67,7 @@ export const createTokensSlice = (
         const volume = +volumes[pool.id] || 0
         const counted = countBy(tokensAll)
 
-        for (const idx in tokenAddressesAll) {
-          const address = tokenAddressesAll[idx]
+        for (const [idx, address] of tokenAddressesAll.entries()) {
           const tokenMappedVolume = cTokensMapper[address]?.volume ?? 0
           const token = tokensAll[idx] // ignore token name with empty string
 
@@ -107,7 +106,7 @@ export const createTokensSlice = (
 
       return Object.keys(parsedPartialTokensMapper)
     },
-    setEmptyPoolListDefault: async (curve) => {
+    setEmptyPoolListDefault: async curve => {
       const { [sliceKey]: sliceState } = get()
       const chainId = curve.chainId
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
@@ -144,7 +143,7 @@ export const createTokensSlice = (
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

@@ -132,16 +132,13 @@ type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
 /** Hook to fetch USD rates for multiple tokens on a specific blockchain. */
 export const useTokenUsdRates = (
   { chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] },
-  enabled: boolean = true,
+  enabled = true,
 ) => {
   const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
   return useQueries({
     queries: useMemo(
       (): UseTokenOptions[] =>
-        uniqueAddresses.map((tokenAddress) => ({
-          ...getTokenUsdRateQueryOptions({ chainId, tokenAddress }),
-          enabled,
-        })),
+        uniqueAddresses.map(tokenAddress => ({ ...getTokenUsdRateQueryOptions({ chainId, tokenAddress }), enabled })),
       [chainId, uniqueAddresses, enabled],
     ),
     combine: useCallback(

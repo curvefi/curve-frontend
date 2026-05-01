@@ -16,7 +16,7 @@ const useMintMarketMapping = ({ chainId }: { chainId: ChainId | undefined }) => 
     () =>
       api &&
       chainId &&
-      fromEntries(api.mintMarkets.getMarketList().map((name) => [api.getMintMarket(name).controller as Address, name])),
+      fromEntries(api.mintMarkets.getMarketList().map(name => [api.getMintMarket(name).controller as Address, name])),
     [api, chainId],
   )
 }

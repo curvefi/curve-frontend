@@ -85,8 +85,8 @@ describe('NumericTextField', () => {
   it(`selects all text when input is clicked`, () => {
     cy.mount(<TestComponent initialValue="12345" />)
     cy.get('input').click()
-    cy.window().then((win) => {
-      const input = win.document.querySelector('input') as HTMLInputElement
+    cy.window().then(win => {
+      const input = win.document.querySelector('input')!
       expect(input.selectionStart).to.equal(0)
       expect(input.selectionEnd).to.equal(5)
     })
@@ -180,7 +180,7 @@ describe('NumericTextField', () => {
   })
 
   it('applies formatting when provided and toggles raw value on focus', () => {
-    const formatWithAbbreviation: NonNullable<NumericTextFieldProps['format']> = (value) =>
+    const formatWithAbbreviation: NonNullable<NumericTextFieldProps['format']> = value =>
       value == null ? '' : formatNumber(Number(value), { abbreviate: true })
 
     cy.mount(<TestComponent initialValue="1000" format={formatWithAbbreviation} />)

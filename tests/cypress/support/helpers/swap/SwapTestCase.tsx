@@ -52,7 +52,7 @@ export const SwapTestCase = ({ vnet, privateKey, chainId, fromAddress, toAddress
       app="dex"
       network={defaultNetworks[chainId]}
       onChainUnavailable={console.error}
-      hydrate={{ dex: useStore((state) => state.hydrate) }}
+      hydrate={{ dex: useStore(state => state.hydrate) }}
     >
       <QuickSwapTest chainId={chainId} fromAddress={fromAddress} toAddress={toAddress} />
     </CurveProvider>

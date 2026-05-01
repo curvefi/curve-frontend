@@ -43,23 +43,23 @@ export const CollateralIncrease = ({
   const llammaId = llamma?.id ?? ''
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanCollateralIncrease.activeKey)
-  const detailInfo = useStore((state) => state.loanCollateralIncrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
-  const formEstGas = useStore((state) => state.loanCollateralIncrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanCollateralIncrease.formStatus)
-  const formValues = useStore((state) => state.loanCollateralIncrease.formValues)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const activeKey = useStore(state => state.loanCollateralIncrease.activeKey)
+  const detailInfo = useStore(state => state.loanCollateralIncrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
+  const formEstGas = useStore(state => state.loanCollateralIncrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanCollateralIncrease.formStatus)
+  const formValues = useStore(state => state.loanCollateralIncrease.formValues)
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
-  const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
+  const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
+    state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
-  const fetchStepApprove = useStore((state) => state.loanCollateralIncrease.fetchStepApprove)
-  const fetchStepIncrease = useStore((state) => state.loanCollateralIncrease.fetchStepIncrease)
-  const setFormValues = useStore((state) => state.loanCollateralIncrease.setFormValues)
-  const setStateByKey = useStore((state) => state.loanCollateralIncrease.setStateByKey)
-  const resetState = useStore((state) => state.loanCollateralIncrease.resetState)
+  const fetchStepApprove = useStore(state => state.loanCollateralIncrease.fetchStepApprove)
+  const fetchStepIncrease = useStore(state => state.loanCollateralIncrease.fetchStepIncrease)
+  const setFormValues = useStore(state => state.loanCollateralIncrease.setFormValues)
+  const setStateByKey = useStore(state => state.loanCollateralIncrease.setStateByKey)
+  const resetState = useStore(state => state.loanCollateralIncrease.resetState)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -113,7 +113,7 @@ export const CollateralIncrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         setTxInfoBar(
           <TxInfoBar
             description={t`Transaction complete`}
@@ -170,7 +170,7 @@ export const CollateralIncrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) => setConfirmHealthWarning(val)}
+                      setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
@@ -192,12 +192,12 @@ export const CollateralIncrease = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['ADD'] : ['APPROVAL', 'ADD']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleBtnClickAdd, healthMode],
   )

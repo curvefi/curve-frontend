@@ -219,7 +219,7 @@ export const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert 
       },
     }
 
-    const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
+    const tokenAddressWithAlert = (tokenAddressAll ?? []).find(tokenAddress => !!alerts[tokenAddress])
     return tokenAddressWithAlert ? alerts[tokenAddressWithAlert] : null
   }, [tokenAddressAll])
 

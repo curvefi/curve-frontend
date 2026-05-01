@@ -19,7 +19,7 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
   } = getRouteById(routeId)
   const { to, data } = assert(tx, `No transaction information for route ${routeId}`)
   /* Enso returns no price impact when it has no usd price, the library will be updated to accept null */
-  const quote = { outAmount, priceImpact: priceImpact as number }
+  const quote = { outAmount, priceImpact: priceImpact! }
   return { router: to, calldata: data, quote }
 }
 

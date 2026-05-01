@@ -15,9 +15,6 @@
     "campaign": "Fraxtal.json"
   },
   {
-    "campaign": "Resolv.json"
-  },
-  {
     "campaign": "Lombard.json"
   },
   {
@@ -30,19 +27,10 @@
     "campaign": "YieldFi.json"
   },
   {
-    "campaign": "Babylon.json"
-  },
-  {
     "campaign": "Vnx.json"
   },
   {
-    "campaign": "Hourglass.json"
-  },
-  {
     "campaign": "Fx.json"
-  },
-  {
-    "campaign": "Carrot.json"
   },
   {
     "campaign": "Infinifi.json"
@@ -54,16 +42,10 @@
     "campaign": "GoNuts.json"
   },
   {
-    "campaign": "YieldNest.json"
-  },
-  {
     "campaign": "Falcon.json"
   },
   {
     "campaign": "Hyperwave.json"
-  },
-  {
-    "campaign": "TacTokens.json"
   },
   {
     "campaign": "Loop.json"
@@ -72,19 +54,10 @@
     "campaign": "Noon.json"
   },
   {
-    "campaign": "Tharwa.json"
-  },
-  {
-    "campaign": "Apple.json"
-  },
-  {
     "campaign": "Aegis.json"
   },
   {
     "campaign": "Ebisu.json"
-  },
-  {
-    "campaign": "MezoUSD.json"
   },
   {
     "campaign": "Liquity.json"

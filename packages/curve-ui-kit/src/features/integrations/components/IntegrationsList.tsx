@@ -35,8 +35,8 @@ const filterIntegrations = ({
   const networkId = Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === network)?.[0] ?? network
 
   const list = [...integrations]
-    .filter((app) => tag === 'all' || app.tags?.includes(tag))
-    .filter((app) => !networkId || app.networks?.[networkId])
+    .filter(app => tag === 'all' || app.tags?.includes(tag))
+    .filter(app => !networkId || app.networks?.[networkId])
 
   if (!searchText) {
     return list
@@ -45,10 +45,10 @@ const filterIntegrations = ({
   return new Fuse<Partner>(list, {
     ignoreLocation: true,
     threshold: 0.01,
-    keys: [{ name: 'name', getFn: (a) => a.name }],
+    keys: [{ name: 'name', getFn: a => a.name }],
   })
     .search(searchText)
-    .map((r) => r.item)
+    .map(r => r.item)
 }
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
@@ -61,7 +61,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   const networks = useMemo(
     () => [
       ...new Set(
-        integrations.flatMap((integration) =>
+        integrations.flatMap(integration =>
           Object.entries(integration.networks ?? [])
             .filter(([, enabled]) => enabled)
             .map(([networkId]) => networkId),
@@ -76,7 +76,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
-    () => (networks.find((network) => network === searchParams?.get('network')) || networkId) ?? 'ethereum',
+    () => (networks.find(network => network === searchParams?.get('network')) || networkId) ?? 'ethereum',
     [networkId, networks, searchParams],
   )
 
@@ -106,11 +106,11 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
         <ChainFilterChips
           chains={networks}
           selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
-          toggleChain={useCallback((network) => updateFilters({ network }), [updateFilters])}
+          toggleChain={useCallback(network => updateFilters({ network }), [updateFilters])}
         />
 
         <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">
-          {Object.values(tags).map((tag) => (
+          {Object.values(tags).map(tag => (
             <SelectableChip
               size={getDefaultSelectableChipSize(isMobile)}
               key={tag.id}
@@ -132,15 +132,15 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
             <Trans>
               No integration apps found with for{' '}
               {notFalsy(searchText, filterTag)
-                .map((x) => `“${x}”`)
+                .map(x => `“${x}”`)
                 .join(t` and `)}
             </Trans>
           </Box>
         ) : (
           <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
-            {(integrationsFiltered ?? []).map((app) => (
+            {(integrationsFiltered ?? []).map(app => (
               <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <PartnerCard {...app} tags={(app.tags ?? []).map((tag) => tags[tag]?.displayName ?? tag)} />
+                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
               </Grid>
             ))}
           </Grid>

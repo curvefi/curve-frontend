@@ -52,7 +52,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
     userBorrowed: { ...maxUserBorrowed, field: 'maxBorrowed' as const },
-    debt: { ...mapQuery(maxReceive, (d) => decimal(d.maxDebt)), field: 'maxDebt' as const },
+    debt: { ...mapQuery(maxReceive, d => decimal(d.maxDebt)), field: 'maxDebt' as const },
     maxLeverage,
   }
 }

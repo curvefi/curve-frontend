@@ -17,7 +17,7 @@ export function usePageFromQueryString(pageSize: number, fieldName = 'page') {
     [fieldName, searchParams],
   )
   const onChange: OnChangeFn<PaginationState> = useCallback(
-    (newPagination) => {
+    newPagination => {
       const { pageIndex: newPage } =
         typeof newPagination == 'function' ? newPagination({ pageIndex, pageSize }) : newPagination
       searchNavigate({ [fieldName]: newPage > 0 ? (newPage + 1).toString() : null }, { replace: true })

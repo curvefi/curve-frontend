@@ -196,7 +196,7 @@ const TokenSelectorComponent = ({
         disableSorting={disableSorting}
         disableMyTokens={disableMyTokens}
         isLoading={true}
-        onToken={(newToken) => {
+        onToken={newToken => {
           action('onToken')(newToken)
           setSelectedToken(newToken)
         }}

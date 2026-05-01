@@ -20,10 +20,10 @@ export const AddGaugeLink = ({
   lpToken,
   poolDataCacheOrApi,
 }: { chainId: ChainId; address: string; lpToken: string } & Pick<PageTransferProps, 'poolDataCacheOrApi'>) => {
-  const setCurrentPoolType = useStore((state) => state.deployGauge.setCurrentPoolType)
-  const setSidechainGauge = useStore((state) => state.deployGauge.setSidechainGauge)
-  const setPoolAddress = useStore((state) => state.deployGauge.setPoolAddress)
-  const setLpTokenAddress = useStore((state) => state.deployGauge.setLpTokenAddress)
+  const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
+  const setSidechainGauge = useStore(state => state.deployGauge.setSidechainGauge)
+  const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
+  const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
 
   const params = useParams<PoolUrlParams>()
   const push = useNavigate()

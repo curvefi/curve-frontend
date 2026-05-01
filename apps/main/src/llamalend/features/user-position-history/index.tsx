@@ -24,7 +24,7 @@ export const UserPositionHistory = ({ events, isLoading, isError, variant }: Use
         <Typography variant="bodyXsRegular">
           {t`Llamelend liquidations are not price based, but health based.`}
         </Typography>
-        <Typography variant="bodyXsBold" sx={{ color: (t) => t.design.Text.TextColors.Highlight }}>
+        <Typography variant="bodyXsBold" sx={{ color: t => t.design.Text.TextColors.Highlight }}>
           {t`Liquidations occur when health reaches 0.`}
         </Typography>
       </Stack>

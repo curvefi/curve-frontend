@@ -90,7 +90,7 @@ export const useRemoveCollateralForm = <
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,
-    positionCollateral: mapQuery(useUserState(params, enabled), (d) => d.collateral),
+    positionCollateral: mapQuery(useUserState(params, enabled), d => d.collateral),
     collateralToken,
     borrowToken,
     formErrors: useFormErrors(formState),

@@ -32,7 +32,7 @@ export function usePrevLoanState<ChainId extends IChainId>(
   return {
     prevDebt,
     prevCollateral,
-    prevHealth: q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, enabled))),
+    prevHealth: q(useHealthQueries(isFull => getUserHealthOptions({ ...params, isFull }, enabled))),
     prevPrices: prevPrices ?? userPrevPrices,
     prevLoanToValue: q(
       useLoanToValueFromUserState(

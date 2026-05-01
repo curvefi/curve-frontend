@@ -26,7 +26,7 @@ type RevenueChartTooltipProps = {
 export const RevenueChartTooltip = ({ datum, visibleSeries }: RevenueChartTooltipProps) => (
   <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
     <ChartTooltipSeriesGroup>
-      {visibleSeries.map((series) => (
+      {visibleSeries.map(series => (
         <ChartTooltipSeriesRow
           key={series.key}
           label={lineLabels[series.key]}

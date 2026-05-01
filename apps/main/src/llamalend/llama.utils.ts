@@ -318,7 +318,7 @@ export function reverseBands(bands: [number, number] | number[]) {
 // I only want to move code, not change. At least they're neatly in the same place now.
 
 export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = sortBy(objectKeys(bandsBalances), (k) => +k)
+  const sortedKeys = sortBy(objectKeys(bandsBalances), k => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
     bandsBalancesArr.push({ ...bandsBalances[k], band: k })
@@ -327,7 +327,7 @@ export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: stri
 }
 
 export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
-  const sortedKeys = sortBy(objectKeys(bandBalances).map((k) => +k))
+  const sortedKeys = sortBy(objectKeys(bandBalances).map(k => +k))
   const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
   for (const k of sortedKeys) {
     bandBalancesArr.push({ ...bandBalances[k], band: `${k}` })
@@ -347,7 +347,7 @@ export const formatCollateralNotional = (
     collateral.value &&
       collateral.symbol &&
       `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
-    borrow && borrow.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+    borrow?.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
   ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */

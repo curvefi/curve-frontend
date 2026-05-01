@@ -48,7 +48,7 @@ export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignRewards }
         <TooltipParagraph>
           <TooltipStepsTitle>Steps:</TooltipStepsTitle>
           <ol>
-            {steps.map((step) => (
+            {steps.map(step => (
               <TooltipStep key={step}>{step}</TooltipStep>
             ))}
           </ol>

@@ -87,12 +87,12 @@ const drawSeries = (
   target: CanvasRenderingTarget2D,
   priceConverter: PriceToCoordinateConverter,
 ) => {
-  if (!payload.data || !payload.data.bars.length) return
+  if (!payload.data?.bars.length) return
 
   const points = collectVisiblePoints(payload, priceConverter)
   if (!points.length) return
 
-  target.useBitmapCoordinateSpace((scope) => {
+  target.useBitmapCoordinateSpace(scope => {
     const ctx = scope.context
     ctx.save()
     ctx.scale(scope.horizontalPixelRatio, scope.verticalPixelRatio)
@@ -149,7 +149,7 @@ const fillBand = (ctx: CanvasRenderingContext2D, points: PreparedPoint[], option
   ctx.beginPath()
   ctx.moveTo(points[0].x, points[0].upper)
 
-  points.forEach((point) => {
+  points.forEach(point => {
     ctx.lineTo(point.x, point.upper)
   })
 
@@ -197,7 +197,7 @@ const drawBoundary = (
   }
 
   ctx.moveTo(points[0].x, points[0][key])
-  points.forEach((point) => ctx.lineTo(point.x, point[key]))
+  points.forEach(point => ctx.lineTo(point.x, point[key]))
   ctx.stroke()
 }
 

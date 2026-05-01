@@ -58,7 +58,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
     if (key != null && chartSelections.setActiveSelection) chartSelections.setActiveSelection(key)
   }
   const foundChartOption = chartSelections.selections.find(
-    (selection) => selection.key === chartSelections.activeSelection,
+    selection => selection.key === chartSelections.activeSelection,
   )
   const hasSingleOption = chartSelections.selections.length === 1
 
@@ -83,7 +83,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
         <Stack direction="row" alignItems="center" gap={Spacing.sm}>
           <Select
             value={chartSelections.activeSelection ?? ''}
-            onChange={(event) => {
+            onChange={event => {
               if (event.target.value != null && chartSelections.setActiveSelection)
                 chartSelections.setActiveSelection(event.target.value as TChartKey)
             }}
@@ -94,7 +94,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
               transformOrigin: { vertical: 'top', horizontal: 'left' },
             }}
           >
-            {chartSelections.selections.map((selection) => (
+            {chartSelections.selections.map(selection => (
               <MenuItem value={selection.key} key={selection.key}>
                 <Typography variant="bodySBold">{selection.activeTitle}</Typography>
               </MenuItem>
@@ -111,7 +111,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
         <ToggleButtonGroup exclusive value={chartSelections.activeSelection} onChange={handleChartOptionToggle}>
           {chartOptionVariant === 'buttons-group' &&
             !hasSingleOption &&
-            chartSelections.selections.map((selection) => (
+            chartSelections.selections.map(selection => (
               <ToggleButton value={selection.key} key={selection.key} size="small">
                 {selection.label}
               </ToggleButton>

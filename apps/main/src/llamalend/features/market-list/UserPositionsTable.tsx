@@ -51,9 +51,9 @@ const useTabs = (results: LlamaMarketsResult | undefined) => {
   const openPositionsCount = useMemo(
     (): Record<MarketRateType, string | undefined> =>
       fromEntries(
-        Object.values(MarketRateType).map((type) => [
+        Object.values(MarketRateType).map(type => [
           type,
-          markets && `${markets.filter((market) => market.userHasPositions?.[type]).length}`,
+          markets && `${markets.filter(market => market.userHasPositions?.[type]).length}`,
         ]),
       ),
     [markets],
@@ -118,10 +118,11 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
   const userData = useMemo(
     () =>
       markets
-        .filter((market) => market.userHasPositions?.[tab])
-        .map((market) =>
-          // For supply positions, navigate to vault page instead of borrow page
-          tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market,
+        .filter(market => market.userHasPositions?.[tab])
+        .map(
+          (
+            market, // For supply positions, navigate to vault page instead of borrow page
+          ) => (tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market),
         ),
     [markets, tab],
   )
@@ -201,9 +202,9 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
           // needed for the bottom border to be the same height as the tabs
           alignItems="stretch"
           sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
+            backgroundColor: t => t.design.Layer[1].Fill,
             flexGrow: 1,
-            borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
+            borderBottom: t => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
           }}
         >
           <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} overflow="standard" />

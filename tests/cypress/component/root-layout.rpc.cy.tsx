@@ -24,7 +24,7 @@ function Test() {
 }
 
 describe('RootLayout RPC Tests', () => {
-  const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+  const getVirtualNetwork = createVirtualTestnet(uuid => ({
     slug: `root-layout-${uuid}`,
     display_name: `RootLayout (${uuid})`,
     fork_config: { block_number: '23039344' },

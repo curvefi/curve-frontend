@@ -1,13 +1,12 @@
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
-import { recordValues } from '@primitives/objects.utils'
-import { assert } from '@primitives/objects.utils'
-import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
+import { recordValues, assert } from '@primitives/objects.utils'
 import {
   CRVUSD_ROUTES,
   DAO_ROUTES,
   DEX_ROUTES,
   LEND_ROUTES,
+  LEND_MARKET_ROUTES,
   LLAMALEND_ROUTES,
   PAGE_INTEGRATIONS,
   PAGE_LEGAL,
@@ -22,7 +21,7 @@ export const APP_ROUTES = {
   dex: () => `dex/${DEFAULT_NETWORK}${oneValueOf(DEX_ROUTES)}`,
   lend: () =>
     `lend/${DEFAULT_NETWORK}${oneOf(
-      ...recordValues(LEND_ROUTES).map((r) =>
+      ...recordValues(LEND_ROUTES).map(r =>
         r == LEND_ROUTES.PAGE_MARKETS
           ? // use market detail page, the list page redirects to the llamalend app
             `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(LEND_MARKET_ROUTES)}`
@@ -31,9 +30,10 @@ export const APP_ROUTES = {
     )}`,
   crvusd: () =>
     `crvusd/${DEFAULT_NETWORK}${oneOf(
-      ...recordValues(CRVUSD_ROUTES).map((r) =>
-        // use market detail page, the list page redirects to the llamalend app
-        r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
+      ...recordValues(CRVUSD_ROUTES).map(
+        (
+          r, // use market detail page, the list page redirects to the llamalend app
+        ) => (r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r),
       ),
     )}`,
   llamalend: () => `llamalend/${DEFAULT_NETWORK}${oneValueOf(LLAMALEND_ROUTES)}`,
@@ -41,7 +41,7 @@ export const APP_ROUTES = {
     `dao/${DEFAULT_NETWORK}${oneOf(
       ...recordValues({ ...DAO_ROUTES, PAGE_USER: `${DAO_ROUTES.PAGE_USER}/${oneAddress()}` }).filter(
         // exclude external links, hide the integrations page which redirects to the dex app
-        (route) => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),
+        route => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),
       ),
     )}`,
 }

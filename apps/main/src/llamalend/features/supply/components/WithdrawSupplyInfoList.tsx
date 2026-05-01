@@ -41,7 +41,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
     <SupplyActionInfoList
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
-      prevVaultShares={mapQuery(userBalances, (d) => d.totalShares)}
+      prevVaultShares={mapQuery(userBalances, d => d.totalShares)}
       vaultShares={{
         data:
           userBalances.data.totalShares &&
@@ -53,13 +53,13 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
           ),
         ...combineQueryState(userBalances, removableVaultShares),
       }}
-      prevAmountSupplied={mapQuery(userBalances, (d) => d.totalSharesAmount)}
+      prevAmountSupplied={mapQuery(userBalances, d => d.totalSharesAmount)}
       amountSupplied={mapQuery(
         userBalances,
-        (d) => d.totalSharesAmount && withdrawAmount && decimalMinus(d.totalSharesAmount, withdrawAmount),
+        d => d.totalSharesAmount && withdrawAmount && decimalMinus(d.totalSharesAmount, withdrawAmount),
       )}
-      prevSupplyApy={mapQuery(prevRates, (d) => d.lendApy)}
-      supplyApy={mapQuery(rates, (d) => d.lendApy)}
+      prevSupplyApy={mapQuery(prevRates, d => d.lendApy)}
+      supplyApy={mapQuery(rates, d => d.lendApy)}
       prevNetSupplyApy={prevNetSupplyApy}
       netSupplyApy={netSupplyApy}
       gas={q(useWithdrawEstimateGas(networks, params, isOpen))}

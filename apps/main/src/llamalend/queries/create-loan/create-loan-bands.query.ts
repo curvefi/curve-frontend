@@ -58,7 +58,7 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
-  dependencies: (params) => [
+  dependencies: params => [
     createLoanMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],

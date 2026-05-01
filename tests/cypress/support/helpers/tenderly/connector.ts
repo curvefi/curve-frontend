@@ -14,7 +14,7 @@ const tenderlyTransport = (account: PrivateKeyAccount, tenderly: TenderlyConfig)
         return [account.address]
       }
       if (method === 'eth_sendTransaction') {
-        return await sendVnetTransaction({ tenderly, tx: param as RpcTransactionRequest }).catch((err) => {
+        return await sendVnetTransaction({ tenderly, tx: param as RpcTransactionRequest }).catch(err => {
           console.error(`Tenderly failed for ${method}(${JSON.stringify(param)}). Error: ${err}`)
           throw err
         })
@@ -30,4 +30,4 @@ export const createTenderlyConnector = ({
 }: Pick<CreateTestConnectorOptions, 'privateKey' | 'chain'> & {
   /** Tenderly configuration for the Virtual Testnet */
   tenderly: TenderlyConfig
-}) => createTestConnector({ ...opts, transport: (account) => tenderlyTransport(account, tenderly) })
+}) => createTestConnector({ ...opts, transport: account => tenderlyTransport(account, tenderly) })

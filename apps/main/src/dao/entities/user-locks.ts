@@ -13,7 +13,7 @@ export type UserLockFormatted = Omit<UserLock, 'timestamp' | 'unlockTime' | 'amo
 const _fetchUserLocks = async ({ userAddress }: { userAddress: string }): Promise<UserLockFormatted[]> => {
   const response = await getUserLocks(userAddress)
 
-  return response.map((lock) => ({
+  return response.map(lock => ({
     ...lock,
     amount: Number(lock.amount) / 1e18,
     lockedBalance: Number(lock.lockedBalance) / 1e18,

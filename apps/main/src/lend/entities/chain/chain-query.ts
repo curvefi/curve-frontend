@@ -16,7 +16,7 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   queryFn: async ({ chainId, enableLLv2 }: ChainQuery & { enableLLv2: boolean }): Promise<string[]> => {
     const api = requireLib('llamaApi')
     await Promise.all(
-      notFalsy(V1, enableLLv2 && v2chains.includes(chainId) && V2).map((version) =>
+      notFalsy(V1, enableLLv2 && v2chains.includes(chainId) && V2).map(version =>
         api.lendMarkets.fetchMarkets({ useApi: USE_API, version }),
       ),
     )

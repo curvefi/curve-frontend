@@ -31,7 +31,7 @@ export const NoPosition = ({ type }: NoPositionProps) => (
       </Typography>
       <Typography
         variant="bodySRegular"
-        sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center', color: (t) => t.design.Text.TextColors.Secondary }}
+        sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center', color: t => t.design.Text.TextColors.Secondary }}
       >
         {description[type]}
       </Typography>

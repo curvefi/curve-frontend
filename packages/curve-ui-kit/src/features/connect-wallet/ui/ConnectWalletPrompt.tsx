@@ -32,7 +32,7 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
           alignItems="center"
           justifyContent="center"
           sx={{
-            backgroundImage: (t) => `url(${getBackgroundUrl(t.key)})`,
+            backgroundImage: t => `url(${getBackgroundUrl(t.key)})`,
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',

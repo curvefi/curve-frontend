@@ -30,7 +30,7 @@ export const ModalDialog = ({ children, footerContent, maxWidth, state, title, .
   usePreventScroll({ isDisabled: false }) // prevent scrolling while modal is open
 
   const isMobile = useIsMobile()
-  const isSmUp = useLayoutStore((state) => state.isSmUp)
+  const isSmUp = useLayoutStore(state => state.isSmUp)
 
   const { buttonProps: closeButtonProps } = useButton(
     {

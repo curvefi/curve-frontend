@@ -82,7 +82,7 @@ const notionalsToString = (notionals: MetricProps['notional']) =>
   typeof notionals === 'string'
     ? notionals
     : toArray(typeof notionals === 'number' ? { value: notionals, abbreviate: true } : notionals)
-        .map((notional) => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
+        .map(notional => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
         .join(' + ')
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
@@ -111,7 +111,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         onClick={copyValue}
         sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
-        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        title={tooltip?.title ?? (numberValue === null ? t`N/A` : numberValue.toLocaleString())}
         data-testid={`${testId}-value`}
         data-value={value}
       >

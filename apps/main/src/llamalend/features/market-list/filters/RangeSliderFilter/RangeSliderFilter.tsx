@@ -89,7 +89,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
           size="medium"
           value={useMemo(() => range.map(decimal) as DecimalRangeValue, [range])}
           onChange={useCallback<OnSliderChange>(
-            (newRange) => setRange(newRange.map(Number) as Range<number>),
+            newRange => setRange(newRange.map(Number) as Range<number>),
             [setRange],
           )}
           min={min}
@@ -97,7 +97,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
           step={sliderValueTransform?.sliderStep ?? step}
           sliderValueTransform={sliderValueTransform}
           inputProps={{
-            format: (value) => formatNumber(Number(value), { abbreviate: true }),
+            format: value => formatNumber(Number(value), { abbreviate: true }),
             adornment,
           }}
           name={id}

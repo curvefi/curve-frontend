@@ -8,4 +8,4 @@ export const TABS: TabOption<Tab>[] = [
   { value: 'native', label: t`Native Bridges` },
 ]
 
-export const VALID_TABS = new Set(TABS.map((tab) => tab.value))
+export const VALID_TABS = new Set(TABS.map(tab => tab.value))

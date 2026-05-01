@@ -52,7 +52,7 @@ export function getHashRedirectUrl({ pathname: path, search: query, hash }: Pars
   const search = new URLSearchParams(query)
   const hashPath = hash.replace(/^\/?/, '') // note tanstack hash doesn't start with #, but window.location.hash does
   const pathname = path.endsWith('/') ? path : `${path}/` // the ending slash is only there in root routes
-  const oldApp = oldOrigins.find((app) => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
+  const oldApp = oldOrigins.find(app => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
   const [, app, network, ...rest] = `${oldApp ? `/${oldApp}` : ''}${pathname}${hashPath}`.split('/')
   if ([app, network].includes('integrations')) {
     // old routes directly to integrations
@@ -60,7 +60,7 @@ export function getHashRedirectUrl({ pathname: path, search: query, hash }: Pars
   }
   const appName = AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
   const routes = OldRoutes[appName]
-  if (network && routes?.find((r) => r.startsWith(`/${network}`))) {
+  if (network && routes?.find(r => r.startsWith(`/${network}`))) {
     // handle old routes without network (this code should only be called when network is not found)
     return `/${appName}/${networkId}/${network}/${rest.join('/')}${search}`
   }

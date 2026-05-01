@@ -19,6 +19,7 @@ import {
   MarketStatBands,
   MarketStatCapAndAvailable,
   MaxRecvLeverageResp,
+  OneWayMarketTemplate,
   ParsedBandsBalances,
   Provider,
   RewardCrv,
@@ -27,7 +28,6 @@ import {
   UserLoss,
   UserMarketBalances,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, log } from '@/lend/utils/helpers'
 import {
   getIsUserCloseToSoftLiquidation,
@@ -69,7 +69,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[id] = { bands: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const [balances, bandsInfo, bandsBalances] = await Promise.all([
           market.stats.balances(),
           market.stats.bandsInfo(),
@@ -80,11 +80,12 @@ const market = {
         const maxMinBands = [maxBand, minBand]
 
         const bandBalances = liquidationBand ? await market.stats.bandBalances(liquidationBand) : null
+        const isMarket = true
         const parsedBandsBalances = await fetchChartBandBalancesData(
           sortBandsLend(bandsBalances),
           liquidationBand,
           market,
-          true,
+          isMarket,
         )
 
         results[market.id] = {
@@ -113,7 +114,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { totalAssets: '', available: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const { totalAssets, available } = await market.stats.capAndAvailable(useMultiCall, USE_API)
         results[market.id] = { totalAssets, available, error: '' }
       })
@@ -130,7 +131,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { prices: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const [oraclePrice, oraclePriceBand, price, basePrice] = await Promise.all([
           market.prices.oraclePrice(),
           market.prices.oraclePriceBand(),
@@ -162,7 +163,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { rates: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const rates = await market.stats.rates(useMultiCall, USE_API)
         results[market.id] = { rates, error: '' }
       })
@@ -174,7 +175,7 @@ const market = {
     log('fetchMarketsVaultsRewards', markets.length)
     const results: { [id: string]: MarketRewards } = {}
 
-    await PromisePool.for(markets).process(async (market) => {
+    await PromisePool.for(markets).process(async market => {
       const resp: MarketRewards = {
         rewards: {
           other: [],
@@ -224,7 +225,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { maxLeverage: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
         results[market.id] = { maxLeverage, error: '' }
       })
@@ -249,7 +250,7 @@ const user = {
           error,
         }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
 
         const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage] =
@@ -329,7 +330,7 @@ const user = {
           error,
         }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const resp = await market.wallet.balances()
         const vaultSharesConverted = +resp.vaultShares > 0 ? await market.vault.convertToAssets(resp.vaultShares) : '0'
@@ -815,7 +816,7 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -1212,7 +1213,7 @@ const loanCollateralAdd = {
       return resp
     } catch (err) {
       console.error(err)
-      if (err?.message && err.message.includes('liquidation mode')) {
+      if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
@@ -1292,7 +1293,7 @@ const loanCollateralRemove = {
       return resp
     } catch (error) {
       console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
+      if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -1769,15 +1770,15 @@ async function fetchChartBandBalancesData(
   // filter out bands that doesn't have borrowed or collaterals
   const ns = isMarket
     ? bandsBalancesArr
-        .filter((b) => {
+        .filter(b => {
           const { borrowed, collateral } = bandsBalances[b.band] ?? {}
           return +borrowed > 0 || +collateral > 0
         })
-        .map((b) => b.band)
-    : bandsBalancesArr.map((b) => b.band)
+        .map(b => b.band)
+    : bandsBalancesArr.map(b => b.band)
 
   // TODO: handle errors
-  const { results } = await PromisePool.for(ns).process(async (n) => {
+  const { results } = await PromisePool.for(ns).process(async n => {
     const { collateral, borrowed } = bandsBalances[n]
     const [p_up, p_down] = await market.prices.calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
@@ -1800,9 +1801,8 @@ async function fetchChartBandBalancesData(
   })
 
   const parsedBandBalances = []
-  for (const idx in results) {
-    const r = results[idx]
-    parsedBandBalances.unshift(r)
+  for (const result of results) {
+    parsedBandBalances.unshift(result)
   }
   return parsedBandBalances
 }
@@ -1854,5 +1854,5 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 }
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
-  return (args.find((a) => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
+  return args.find(a => a.status == 'rejected')?.reason.message
 }

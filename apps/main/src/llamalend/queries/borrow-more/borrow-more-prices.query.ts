@@ -60,5 +60,5 @@ export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePr
   },
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false, debtRequired: true }),
-  dependencies: (params) => notFalsy(params.leverageEnabled && getBorrowMoreExpectedCollateralKey(params)),
+  dependencies: params => notFalsy(params.leverageEnabled && getBorrowMoreExpectedCollateralKey(params)),
 })

@@ -48,7 +48,7 @@ const UserPositionStatisticItem = ({
 export const UserPositionSummary = ({ markets, selectedChains }: UserPositionStatisticsProps) => {
   const filteredMarkets = useMemo(() => {
     const chains = parseListFilter(selectedChains)
-    return chains ? markets?.filter((market) => chains.includes(market.chain)) : markets
+    return chains ? markets?.filter(market => chains.includes(market.chain)) : markets
   }, [markets, selectedChains])
   const summary = useUserPositionsSummary({ markets: filteredMarkets })
   return (
@@ -58,8 +58,8 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
       paddingInline={Spacing.md}
       spacing={Spacing.md}
       sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        borderBlock: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+        backgroundColor: t => t.design.Layer[1].Fill,
+        borderBlock: t => `1px solid ${t.design.Layer[1].Outline}`,
       }}
     >
       {summary.map((item, index) => (

@@ -13,9 +13,5 @@ export function addMovingAverages<T>(
   const totalAverage = meanBy(data, getValue)
   const averages = movingAverage(data.map(getValue), data.map(getTimestamp), windowMs)
 
-  return data.map((item, i) => ({
-    ...item,
-    movingAverage: averages[i],
-    totalAverage,
-  }))
+  return data.map((item, i) => ({ ...item, movingAverage: averages[i], totalAverage }))
 }

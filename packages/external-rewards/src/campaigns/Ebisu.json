@@ -11,7 +11,7 @@
       "description": "Providing liquidity in this pool makes you eligible for xEBISU rewards (xEBISU is a tokenized point). Visit Ebisu dapp to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0xD25f2cC6819FBD34641712122397eFbaf9b6A6e2",
+      "address": "0x31d563e7d382cd934014bec8c6c931751e6b3a9a",
       "network": "ethereum",
       "multiplier": "5x",
       "tags": ["points"],

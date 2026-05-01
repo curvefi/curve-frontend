@@ -9,8 +9,8 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 import { VeCrvFeesChart } from '../VeCrvFeesChart'
 
 export const VeCrcFees = () => {
-  const getVeCrvFees = useStore((state) => state.analytics.getVeCrvFees)
-  const veCrvFees = useStore((state) => state.analytics.veCrvFees)
+  const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
+  const veCrvFees = useStore(state => state.analytics.veCrvFees)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
   const feesError = veCrvFees.fetchStatus === 'ERROR'
@@ -39,7 +39,7 @@ export const VeCrcFees = () => {
             {feesReady && (
               <>
                 <FeesContainer>
-                  {veCrvFees.fees.map((item) => (
+                  {veCrvFees.fees.map(item => (
                     <FeeRow key={item.timestamp.getTime()}>
                       <FeeDate>
                         {formatDate(item.timestamp)}

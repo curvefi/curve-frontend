@@ -46,7 +46,7 @@ export const DetailInfoHealth = ({
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
+  const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const {
     healthFull: healthFullCurrent,
     healthNotFull: healthNotFullCurrent,

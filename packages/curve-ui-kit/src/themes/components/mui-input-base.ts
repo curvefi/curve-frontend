@@ -1,6 +1,5 @@
 /// <reference path="./mui-input-base.d.ts" />
-import type { Components } from '@mui/material/styles'
-import type { TypographyVariantsOptions } from '@mui/material/styles'
+import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import type { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'

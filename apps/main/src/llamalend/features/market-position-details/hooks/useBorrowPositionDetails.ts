@@ -13,8 +13,8 @@ import {
 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useLoanExists } from '@/llamalend/queries/user'
 import {
+  useLoanExists,
   useUserBands,
   useUserCurrentLeverage,
   useUserHealth,

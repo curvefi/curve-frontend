@@ -46,7 +46,7 @@ export const NewFilterChip = ({
       selectableChipSize="medium"
       selected={filterExpanded}
       icon={<FilterIcon />}
-      toggle={() => setFilterExpanded((prev) => !prev)}
+      toggle={() => setFilterExpanded(prev => !prev)}
       data-testid="btn-expand-filters"
     />
   )

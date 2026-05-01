@@ -20,5 +20,5 @@ export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
     decimal(await getLoanImplementation(marketId).addCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
   category: 'llamalend.addCollateral',
   validationSuite: leverageCollateralValidationSuite,
-  dependencies: (params) => [userCurrentLeverageQueryKey(params)],
+  dependencies: params => [userCurrentLeverageQueryKey(params)],
 })

@@ -19,9 +19,9 @@ const tabs: TabOption<FormType>[] = [
 export const Withdraw = (transferProps: TransferProps) => {
   const { poolAlert, poolData } = transferProps
 
-  const formType = useStore((state) => state.poolWithdraw.formType)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
+  const formType = useStore(state => state.poolWithdraw.formType)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
+  const setStateByKey = useStore(state => state.poolWithdraw.setStateByKey)
 
   const [tab, setTab] = useState<FormType>('WITHDRAW')
 

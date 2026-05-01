@@ -28,19 +28,19 @@ type OhlcChartStateProps = {
 }
 
 const useLegacyChartPrices = () => {
-  const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
-  const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
-  const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
-  const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
-  const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
-  const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
-  const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
-  const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
+  const increaseActiveKey = useStore(state => state.loanIncrease.activeKey)
+  const decreaseActiveKey = useStore(state => state.loanDecrease.activeKey)
+  const deleverageActiveKey = useStore(state => state.loanDeleverage.activeKey)
+  const collateralIncreaseActiveKey = useStore(state => state.loanCollateralIncrease.activeKey)
+  const collateralDecreaseActiveKey = useStore(state => state.loanCollateralDecrease.activeKey)
+  const increaseLoanPrices = useStore(state => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
+  const decreaseLoanPrices = useStore(state => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
+  const deleveragePrices = useStore(state => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
   const increaseCollateralPrices = useStore(
-    (state) => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null,
+    state => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null,
   )
   const decreaseCollateralPrices = useStore(
-    (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
+    state => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
   return useMemo(() => {
     if (deleveragePrices?.length) return deleveragePrices
@@ -58,22 +58,22 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   const { address: userAddress } = useConnection()
   const storePreviewPrices = useLegacyChartPrices()
   const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
-  const oraclePoolFetchStatus = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
-  const oraclePoolData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.data)
-  const oraclePoolOraclePriceData = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
-  const oraclePoolCollateralSymbol = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.collateralToken.symbol)
-  const oraclePoolBorrowedSymbol = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.borrowedToken.symbol)
-  const oraclePoolRefetchingCapped = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.refetchingCapped)
-  const oraclePoolLastFetchEndTime = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc.lastFetchEndTime)
-  const llammaFetchStatus = useStore((state) => state.ohlcCharts.chartLlammaOhlc.fetchStatus)
-  const llammaOraclePriceData = useStore((state) => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
-  const llammaRefetchingCapped = useStore((state) => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
-  const llammaLastFetchEndTime = useStore((state) => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
-  const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
-  const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
-  const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const resetOhlcState = useStore((state) => state.ohlcCharts.resetState)
-  const priceInfo = useStore((state) => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
+  const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
+  const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
+  const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
+  const oraclePoolCollateralSymbol = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.collateralToken.symbol)
+  const oraclePoolBorrowedSymbol = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.borrowedToken.symbol)
+  const oraclePoolRefetchingCapped = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.refetchingCapped)
+  const oraclePoolLastFetchEndTime = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.lastFetchEndTime)
+  const llammaFetchStatus = useStore(state => state.ohlcCharts.chartLlammaOhlc.fetchStatus)
+  const llammaOraclePriceData = useStore(state => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
+  const llammaRefetchingCapped = useStore(state => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
+  const llammaLastFetchEndTime = useStore(state => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
+  const fetchLlammaOhlcData = useStore(state => state.ohlcCharts.fetchLlammaOhlcData)
+  const fetchOracleOhlcData = useStore(state => state.ohlcCharts.fetchOracleOhlcData)
+  const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
+  const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
+  const priceInfo = useStore(state => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
 

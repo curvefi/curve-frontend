@@ -63,7 +63,7 @@ class LlamaArray<T> {
    * @returns A new array with the dropped elements.
    * @example [1, 2, 3].drop(2) // [3]
    */
-  drop(n: number = 1): LlamaArray<T> {
+  drop(n = 1): LlamaArray<T> {
     return new LlamaArray(this._value.slice(Math.max(0, n)))
   }
 
@@ -85,7 +85,7 @@ class LlamaArray<T> {
    * @example [1, 2].zip(['a', 'b']) // [[1, 'a'], [2, 'b']]
    */
   zip<U>(...arrays: U[][]): LlamaArray<[T, ...U[]]> {
-    return new LlamaArray(this._value.map((item, index) => [item, ...arrays.map((arr) => arr[index])]))
+    return new LlamaArray(this._value.map((item, index) => [item, ...arrays.map(arr => arr[index])]))
   }
 
   /**
@@ -105,7 +105,7 @@ class LlamaArray<T> {
    */
   uniqWith(comparator: (a: T, b: T) => boolean): LlamaArray<T> {
     return new LlamaArray(
-      this._value.filter((element, index) => this._value.findIndex((step) => comparator(element, step)) === index),
+      this._value.filter((element, index) => this._value.findIndex(step => comparator(element, step)) === index),
     )
   }
 
@@ -117,8 +117,8 @@ class LlamaArray<T> {
    * @example [{name: 'John', age: 30}, {name: 'Jane', age: 25}].orderBy(x => x.age, 'asc') // [{name: 'Jane', age: 25}, {name: 'John', age: 30}]
    */
   orderBy(
-    iteratees: ((item: T) => string | number) | Array<(item: T) => string | number>,
-    orders: 'asc' | 'desc' | Array<'asc' | 'desc'> = 'asc',
+    iteratees: ((item: T) => string | number) | ((item: T) => string | number)[],
+    orders: 'asc' | 'desc' | ('asc' | 'desc')[] = 'asc',
   ): LlamaArray<T> {
     const iterateesArray = toArray(iteratees)
     const ordersArray = toArray(orders)
@@ -185,7 +185,7 @@ class LlamaArray<T> {
    */
   difference(...arrays: T[][]): LlamaArray<T> {
     const otherSet = new Set(arrays.flat())
-    return new LlamaArray(this._value.filter((x) => !otherSet.has(x)))
+    return new LlamaArray(this._value.filter(x => !otherSet.has(x)))
   }
 
   // Passthrough methods to avoid needing to call .value() constantly

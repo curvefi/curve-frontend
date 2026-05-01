@@ -65,7 +65,7 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
     })
     file.on('close', () => {
       cache.delete(filePath)
-      watcher.close?.().catch((e) => {
+      watcher.close?.().catch(e => {
         console.error('Error closing Vite watcher for Cypress spec:', e)
       })
     })

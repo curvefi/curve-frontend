@@ -19,7 +19,7 @@ describe('Manage soft liquidation', () => {
   const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
   const MARKET_ID = 'wsteth' // https://www.curve.finance/crvusd/ethereum/markets/wstETH/create
 
-  const getVirtualNetwork = forkVirtualTestnet((uuid) => ({
+  const getVirtualNetwork = forkVirtualTestnet(uuid => ({
     vnet_id: 'a967f212-c4a3-4d65-afb6-2e79055f7a6f',
     display_name: `crvUSD wstETH Soft Liquidation Fork ${uuid}`,
   }))

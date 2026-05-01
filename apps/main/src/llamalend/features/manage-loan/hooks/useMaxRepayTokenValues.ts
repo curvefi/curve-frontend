@@ -39,7 +39,7 @@ export function useMaxRepayTokenValues(
 
   const maxBorrowed = useQueryMinimum(
     maxUserBorrowed,
-    mapQuery(userState, (d) => d.debt),
+    mapQuery(userState, d => d.debt),
   )
 
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
@@ -55,7 +55,7 @@ export function useMaxRepayTokenValues(
     max: {
       userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
       userBorrowed: { ...maxBorrowed, field: 'maxBorrowed' as const },
-      stateCollateral: { ...mapQuery(userState, (d) => d.collateral), field: 'maxStateCollateral' as const },
+      stateCollateral: { ...mapQuery(userState, d => d.collateral), field: 'maxStateCollateral' as const },
       expected: useRepayExpectedBorrowed(params),
     },
   }

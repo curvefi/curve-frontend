@@ -45,7 +45,7 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
     },
     category: 'llamalend.createLoan',
     validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
-    dependencies: (params) => [createLoanMaxReceiveKey(params)],
+    dependencies: params => [createLoanMaxReceiveKey(params)],
   })
 
 const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoanEstimateGasQuery } = queryFactory({
@@ -103,7 +103,7 @@ const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoa
   },
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, collateralRequired: true }),
-  dependencies: (params) => [
+  dependencies: params => [
     createLoanMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],

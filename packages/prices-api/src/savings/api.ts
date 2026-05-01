@@ -19,8 +19,8 @@ export async function getEvents(page: number, options?: Options) {
 }
 
 export async function getYield(
-  aggNumber: number = 1,
-  aggUnit: string = 'hour',
+  aggNumber = 1,
+  aggUnit = 'hour',
   startDate?: number,
   endDate?: number,
   options?: Options,
@@ -36,7 +36,7 @@ export async function getYield(
   return resp.data.map(Parsers.parseYield)
 }
 
-export async function getRevenue(page: number, perPage: number = 100, options?: Options) {
+export async function getRevenue(page: number, perPage = 100, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetRevenueResponse>(
     `${host}/v1/crvusd/savings/revenue?page=${page}&per_page=${perPage}`,

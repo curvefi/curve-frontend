@@ -19,7 +19,7 @@ export const LendMarketSubNavMobile = () => {
       <Portal container={() => document.getElementsByTagName('header').item(0)}>
         <SubNav testId="lend-market-subnav">
           <PageTabsSwitcher
-            pages={routes.map((route) => routeToPage(route, { networkId, pathname }))}
+            pages={routes.map(route => routeToPage(route, { networkId, pathname }))}
             overflow="fullWidth"
           />
         </SubNav>

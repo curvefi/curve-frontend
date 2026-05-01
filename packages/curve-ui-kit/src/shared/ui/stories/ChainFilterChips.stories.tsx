@@ -56,7 +56,7 @@ export const InteractiveSingleSelect: Story = {
   render: function Render(args) {
     const [selected, setSelected] = useState<string>('ethereum')
     return (
-      <ChainFilterChips chains={args.chains} selectedChains={[selected]} toggleChain={(chain) => setSelected(chain)} />
+      <ChainFilterChips chains={args.chains} selectedChains={[selected]} toggleChain={chain => setSelected(chain)} />
     )
   },
 }
@@ -70,7 +70,7 @@ export const InteractiveMultiSelect: Story = {
   render: function Render(args) {
     const [selected, setSelected] = useState<string[]>(['ethereum'])
     const toggleChain = (chain: string) => {
-      setSelected((prev) => (prev.includes(chain) ? prev.filter((c) => c !== chain) : [...prev, chain]))
+      setSelected(prev => (prev.includes(chain) ? prev.filter(c => c !== chain) : [...prev, chain]))
     }
     return <ChainFilterChips chains={args.chains} selectedChains={selected} toggleChain={toggleChain} />
   },

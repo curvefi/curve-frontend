@@ -34,5 +34,5 @@ export const getShadow = (design: DesignSystem, elevation: ShadowElevation) =>
 export const getInsetShadow = (design: DesignSystem, elevation: ShadowElevation) =>
   getShadow(design, elevation)
     .split(',')
-    .map((s) => `inset ${s}`)
+    .map(s => `inset ${s}`)
     .join(',')

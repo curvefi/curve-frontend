@@ -69,7 +69,7 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
     address: CONTRACT_VECRV,
     functionName: 'balanceOfAt',
     args: enabled ? ([userAddress, BigInt(block)] as const) : undefined,
-    query: { enabled, select: (vecrv) => Number(vecrv) / 1e18 },
+    query: { enabled, select: vecrv => Number(vecrv) / 1e18 },
   })
 
   const snapshotVeCrv = useMemo(

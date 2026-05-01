@@ -30,7 +30,7 @@ function visitAndWait(
   cy.viewport(width, height)
   cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
-  if (query?.['page']) {
+  if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
   }
 }
@@ -45,7 +45,7 @@ const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
 const getTopUsdValues = (columnId: 'volume' | 'tvl') =>
   cy
     .get(`[data-testid="data-table-cell-${columnId}"]`)
-    .then(($cells) =>
+    .then($cells =>
       Cypress.$.makeArray($cells).map(
         ({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }),
       ),
@@ -92,31 +92,31 @@ describe('DEX Pools', () => {
     }
 
     it('sorts by volume', () => {
-      getTopUsdValues('volume').then((vals) => expectOrder(vals, 'desc')) // initial is Volume desc
+      getTopUsdValues('volume').then(vals => expectOrder(vals, 'desc')) // initial is Volume desc
       cy.url().should('not.include', 'volume') // initial sort not in URL
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('volume', 'asc')
-      getTopUsdValues('volume').then((vals) => expectOrder(vals, 'asc'))
+      getTopUsdValues('volume').then(vals => expectOrder(vals, 'asc'))
       cy.url().should('include', 'sort=volume')
     })
 
     it('sorts by TVL (desc/asc)', () => {
       cy.url().should('not.include', 'tvl') // initial sort not in URL
       sortBy('tvl', 'desc')
-      getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'desc'))
+      getTopUsdValues('tvl').then(vals => expectOrder(vals, 'desc'))
       cy.url().should('include', 'sort=-tvl')
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('tvl', 'asc')
-      getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'asc'))
+      getTopUsdValues('tvl').then(vals => expectOrder(vals, 'asc'))
       cy.url().should('include', 'sort=tvl')
     })
 
     it('filters by currency chip', () => {
       const currency = oneOf('usd', 'btc')
-      getHiddenCount(breakpoint).then((beforeCount) => {
+      getHiddenCount(breakpoint).then(beforeCount => {
         expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
         clickFilterChip(currency)
-        getHiddenCount(breakpoint).then((afterCount) => {
+        getHiddenCount(breakpoint).then(afterCount => {
           expect(+afterCount).to.be.greaterThan(+beforeCount)
           // chip is in the drawer for mobile, check on desktop that we show count
           if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(/\(\d+\)/)
@@ -149,7 +149,7 @@ describe('DEX Pools', () => {
       cy.get(`[data-testid="pool-link-deposit"]`).click()
     }
     cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
-    cy.window().then((win) => win.history.go(-1))
+    cy.window().then(win => win.history.go(-1))
     cy.url().should('include', `?search=${filter}`)
   })
 
@@ -165,14 +165,14 @@ describe('DEX Pools', () => {
 
   it('paginates', () => {
     const getPages = ($buttons: JQuery) =>
-      Cypress.$.makeArray($buttons).map((el) => el.dataset.testid?.replace('btn-page-', ''))
+      Cypress.$.makeArray($buttons).map(el => el.dataset.testid?.replace('btn-page-', ''))
 
     // open page 5 (1-based)
     visitAndWait(width, height, { query: { page: '5' } })
 
     // Current page selected
     cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
-    cy.get('[data-testid^="btn-page-"]').then(($buttons) => {
+    cy.get('[data-testid^="btn-page-"]').then($buttons => {
       const [prevLastPage, lastPage] = [$buttons.length - 1, $buttons.length]
       expect(getPages($buttons)).to.deep.equal([
         'prev',
@@ -191,14 +191,14 @@ describe('DEX Pools', () => {
       // click on the first page and check again
       cy.get('[data-testid="btn-page-1"]').click()
       cy.url().should('not.include', `page`)
-      cy.get('[data-testid^="btn-page-"]').then(($buttons) =>
+      cy.get('[data-testid^="btn-page-"]').then($buttons =>
         expect(getPages($buttons)).to.deep.equal(['1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`, 'next']),
       )
 
       // click on the last page and check again
       cy.get(`[data-testid="btn-page-${lastPage}"]`).click()
       cy.url().should('include', `?page=${lastPage}`)
-      cy.get('[data-testid^="btn-page-"]').then(($buttons) =>
+      cy.get('[data-testid^="btn-page-"]').then($buttons =>
         expect(getPages($buttons)).to.deep.equal(['prev', '1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`]),
       )
     })

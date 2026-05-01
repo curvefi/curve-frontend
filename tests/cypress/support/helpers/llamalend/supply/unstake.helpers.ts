@@ -13,10 +13,10 @@ export const submitUnstakeForm = () => submitSupplyForm('unstake', 'Unstake succ
 
 export const readUnstakeAvailableAmount = () =>
   getSupplyInputBalanceValueAttr('unstake')
-    .should((balanceValue) => {
+    .should(balanceValue => {
       expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
     })
-    .then((balanceValue) => (balanceValue || '0') as Decimal)
+    .then(balanceValue => (balanceValue || '0') as Decimal)
 
 /**
  * Fill in the unstake form with the specified amount.

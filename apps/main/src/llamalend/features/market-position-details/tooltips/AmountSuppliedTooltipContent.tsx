@@ -21,7 +21,7 @@ const formatAmount = (
 }
 
 const formatPercentageDisplay = (percentage: number | null) =>
-  percentage !== null ? formatPercent(percentage * 100) : UnavailableNotation
+  percentage === null ? UnavailableNotation : formatPercent(percentage * 100)
 
 export const AmountSuppliedTooltipContent = ({ shares, supplyAsset }: { shares: Shares; supplyAsset: SupplyAsset }) => {
   const { value, staked } = shares

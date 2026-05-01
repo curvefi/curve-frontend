@@ -82,9 +82,9 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
       ),
     )
 
-    toArray(router).forEach((router) => query.append('router', router))
+    toArray(router).forEach(router => query.append('router', router))
     const routes = await fetchJson<RouteResponse[]>(`/api/router/v1/routes?${query}`)
-    routes.forEach((route) => setRouteQueryData({ routeId: route.id }, route))
+    routes.forEach(route => setRouteQueryData({ routeId: route.id }, route))
     return routes
   },
   validationSuite: routerApiValidation,

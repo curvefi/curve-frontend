@@ -6,7 +6,7 @@ import type * as Responses from './responses'
 
 export async function getProposals(
   page: number,
-  pagination: number = 10,
+  pagination = 10,
   search: string,
   type: Models.ProposalType | 'all',
   status: Models.ProposalStatus,
@@ -37,12 +37,7 @@ export async function getProposal(
   return Parsers.parseProposalDetails(resp)
 }
 
-export async function getUserProposalVotes(
-  user: string,
-  page: number = 1,
-  pagination: number = 100,
-  options?: Options,
-) {
+export async function getUserProposalVotes(user: string, page = 1, pagination = 100, options?: Options) {
   try {
     const host = getHost(options)
     const resp = await fetch<Responses.GetUserProposalVotes>(
