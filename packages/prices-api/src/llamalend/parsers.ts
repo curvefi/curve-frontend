@@ -1,4 +1,5 @@
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
+import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -53,7 +54,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   },
   leverage: x.leverage,
   extraRewardApr: x.extra_reward_apr.map(y => ({ address: y.address, symbol: y.symbol, rate: y.apr })),
-  createdAt: x.created_at,
+  createdAt: parseTimestamp(x.created_at),
   maxLtv: x.max_ltv,
 })
 
@@ -81,7 +82,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   collateralBalanceUsd: parseFloat(x.collateral_balance_usd),
   borrowedBalance: parseFloat(x.borrowed_balance),
   borrowedBalanceUsd: parseFloat(x.borrowed_balance_usd),
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
   discountLiquidation: x.liquidation_discount,
   discountLoan: x.loan_discount,
   basePrice: parseFloat(x.base_price),
@@ -111,8 +112,8 @@ export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'mark
   x.markets.map(market => ({
     name: market.market_name,
     controller: market.controller,
-    snapshotFirst: market.first_snapshot,
-    snapshotLast: market.last_snapshot,
+    snapshotFirst: parseTimestamp(market.first_snapshot),
+    snapshotLast: parseTimestamp(market.last_snapshot),
   }))
 
 export const parseAllUserLendingPositions = (x: Responses.GetAllUserLendingPositionsResponse) =>
@@ -124,8 +125,8 @@ export const parseUserLendingPositions = (
   x.markets.map(market => ({
     marketName: market.market_name,
     vaultAddress: market.vault_address,
-    firstDeposit: market.first_deposit,
-    lastActivity: market.last_activity,
+    firstDeposit: parseTimestamp(market.first_deposit),
+    lastActivity: parseTimestamp(market.last_activity),
     currentShares: parseFloat(market.current_shares),
     currentSharesInGauge: parseFloat(market.current_shares_in_gauge),
     boostMultiplier: market.boost_multiplier,
@@ -151,7 +152,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   lossPct: x.loss_pct,
   oraclePrice: x.oracle_price,
   blockNumber: x.block_number,
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
 })
 
 export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse): Models.UserMarketEarnings => ({
@@ -189,8 +190,8 @@ export const parseMarketUsers = (x: Responses.GetMarketUsersResponse): Models.Ma
   count: x.count,
   users: x.data.map(y => ({
     user: y.user,
-    first: y.first,
-    last: y.last,
+    first: parseTimestamp(y.first),
+    last: parseTimestamp(y.last),
     debt: parseFloat(y.debt),
     health: parseFloat(y.health),
     healthFull: parseFloat(y.health_full),
@@ -214,7 +215,7 @@ export const parseUserCollateralEvents = (
   totalBorrowed: x.total_borrowed,
   totalBorrowedPrecise: x.total_borrowed_precise,
   events: x.data.map(y => ({
-    timestamp: y.dt,
+    timestamp: parseTimestamp(y.dt),
     txHash: y.transaction_hash,
     type: y.type,
     user: y.user,

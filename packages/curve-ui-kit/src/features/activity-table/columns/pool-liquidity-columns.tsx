@@ -1,4 +1,3 @@
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { type Token } from '@primitives/address.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
@@ -63,7 +62,7 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
     columnHelper.accessor('time', {
       id: PoolLiquidityColumnId.Time,
       header: t`Time`,
-      cell: ({ row }) => <TimestampCell timestamp={toDate(row.original.time)} txUrl={row.original.txUrl} />,
+      cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} />,
       meta: { type: 'numeric' },
     }),
   ]

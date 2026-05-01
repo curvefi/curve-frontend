@@ -6,7 +6,6 @@ import { useStore } from '@/dao/store/useStore'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { Locker } from '@curvefi/prices-api/dao'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatNumber, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -69,7 +68,7 @@ export const TopHoldersTable = () => {
             <TableData
               className={allHoldersSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {holder.unlockTime ? formatDate(toDate(holder.unlockTime)) : 'N/A'}
+              {holder.unlockTime ? formatDate(holder.unlockTime) : 'N/A'}
             </TableData>
           </TableRowWrapper>
         )}

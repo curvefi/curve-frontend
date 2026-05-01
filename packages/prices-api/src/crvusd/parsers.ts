@@ -1,4 +1,5 @@
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
+import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -36,7 +37,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     pending: x.pending_fees,
     collected: x.collected_fees,
   },
-  createdAt: x.created_at,
+  createdAt: parseTimestamp(x.created_at),
   maxLtv: x.max_ltv,
 })
 
@@ -44,7 +45,7 @@ export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
   fromEntries(recordEntries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)]))
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
-  timestamp: x.dt,
+  timestamp: parseTimestamp(x.dt),
   rate: x.rate,
   borrowApy: x.borrow_apy, // value already in percentage: 0.12 => 0.12%
   borrowApr: x.borrow_apr, // value already in percentage: 0.12 => 0.12%
@@ -93,7 +94,7 @@ export const parseKeeper = (x: Responses.GetKeepersResponse['keepers'][number]):
 })
 
 export const parseSupply = (x: Responses.GetSupplyResponse['data'][number]): Models.CrvUsdSupply => ({
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
   market: x.market,
   supply: x.supply,
   borrowable: x.borrowable,
@@ -103,8 +104,8 @@ export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'mark
   x.markets.map(market => ({
     collateral: market.collateral,
     controller: market.controller,
-    snapshotFirst: market.first_snapshot,
-    snapshotLast: market.last_snapshot,
+    snapshotFirst: parseTimestamp(market.first_snapshot),
+    snapshotLast: parseTimestamp(market.last_snapshot),
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
@@ -127,7 +128,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   lossPct: x.loss_pct,
   oraclePrice: x.oracle_price,
   blockNumber: x.block_number,
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
 })
 
 export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>
@@ -147,7 +148,7 @@ export const parseUserCollateralEvents = (
   totalDepositFromUserUsdValue: x.total_deposit_from_user_usd_value,
   totalDepositUsdValue: x.total_deposit_usd_value,
   events: x.data.map(y => ({
-    timestamp: y.dt,
+    timestamp: parseTimestamp(y.dt),
     txHash: y.transaction_hash,
     type: y.type,
     user: y.user,

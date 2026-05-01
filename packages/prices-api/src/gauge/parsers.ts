@@ -1,4 +1,5 @@
 import type { Chain } from '..'
+import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -33,16 +34,16 @@ export const parseGauge = (x: Responses.GetGaugeResponse): Models.Gauge => ({
   weightRelativeDelta7d: x.gauge_relative_weight_7d_delta ? x.gauge_relative_weight_7d_delta : undefined,
   weightRelativeDelta60d: x.gauge_relative_weight_60d_delta ? x.gauge_relative_weight_60d_delta : undefined,
   creationTx: x.creation_tx,
-  creationDate: x.creation_date,
+  creationDate: parseTimestamp(x.creation_date),
   lastVoteTx: x.last_vote_tx ?? undefined,
-  lastVoteDate: x.last_vote_date ? x.last_vote_date : undefined,
+  lastVoteDate: x.last_vote_date ? parseTimestamp(x.last_vote_date) : undefined,
 })
 
 export const parseVote = (x: Responses.GetVotesResponse['votes'][number]): Models.GaugeVote => ({
   user: x.user,
   weight: x.weight,
   blockNumber: x.block_number,
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
   tx: x.transaction,
 })
 
@@ -60,7 +61,7 @@ export const parseDeployment = (x: Responses.GetDeploymentResponse): Models.Depl
   calldata: x.calldata,
   calldataDecoded: x.decoded_calldata ?? undefined,
   blockNumber: x.block_number,
-  timestamp: x.dt,
+  timestamp: parseTimestamp(x.dt),
 })
 
 export const parseUserGaugeVote = (x: Responses.GetUserGaugeVotesResponse['votes'][number]): Models.UserGaugeVote => ({
@@ -68,6 +69,6 @@ export const parseUserGaugeVote = (x: Responses.GetUserGaugeVotesResponse['votes
   gaugeName: x.gauge_name,
   weight: x.weight,
   blockNumber: x.block_number,
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
   txHash: x.transaction,
 })

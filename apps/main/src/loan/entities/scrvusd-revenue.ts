@@ -1,6 +1,5 @@
 import { getRevenue } from '@curvefi/prices-api/savings'
 import type { Revenue } from '@curvefi/prices-api/savings/models'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { weiToEther } from '@ui-kit/utils'
@@ -14,14 +13,14 @@ export type ScrvUsdRevenue = { totalDistributed: string; epochs: Epoch[]; histor
  */
 const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   // Sort history by date
-  const sortedHistory = [...history].sort((a, b) => toDate(a.timestamp).getTime() - toDate(b.timestamp).getTime())
+  const sortedHistory = [...history].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
 
   const epochs: Epoch[] = []
   let currentEpoch: Epoch | null = null
 
   sortedHistory.forEach(item => {
     // If we don't have a current epoch or the item doesn't belong to current epoch
-    if (!currentEpoch || toDate(item.timestamp) > new Date(currentEpoch.endDate)) {
+    if (!currentEpoch || new Date(item.timestamp) > new Date(currentEpoch.endDate)) {
       // Find the previous Thursday if item is not on Thursday
       const startDate = new Date(item.timestamp)
       while (startDate.getDay() !== 4) {

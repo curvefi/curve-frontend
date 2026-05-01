@@ -3,6 +3,7 @@ import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import { networks } from '@/dao/networks'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
+import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
 import { formatNumber, convertToLocaleTimestamp, formatDate, scanAddressPath } from '@ui/utils'
@@ -77,7 +78,10 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         <StatsRow>
           <StatTitle>{t`Deployment Date`}</StatTitle>
           <StatData>
-            {formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}
+            {formatDate(
+              new Date(convertToLocaleTimestamp(new Date(parseTimestamp(gaugeData.creation_date)).getTime())),
+              'long',
+            )}
           </StatData>
         </StatsRow>
         <StatsRow>

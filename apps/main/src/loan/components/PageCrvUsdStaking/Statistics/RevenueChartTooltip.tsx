@@ -5,7 +5,6 @@ import {
 } from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
@@ -25,7 +24,7 @@ type RevenueChartTooltipProps = {
 }
 
 export const RevenueChartTooltip = ({ datum, visibleSeries }: RevenueChartTooltipProps) => (
-  <ChartTooltipShell title={formatDate(toDate(datum.timestamp), 'long')}>
+  <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
     <ChartTooltipSeriesGroup>
       {visibleSeries.map(series => (
         <ChartTooltipSeriesRow

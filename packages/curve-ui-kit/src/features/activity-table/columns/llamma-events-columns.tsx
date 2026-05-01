@@ -1,4 +1,3 @@
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TimestampCell, AddressCell, LlammaEventActionCell, LlammaEventChangeCell } from '../cells'
@@ -40,7 +39,7 @@ export const LLAMMA_EVENTS_COLUMNS = [
   columnHelper.accessor('timestamp', {
     id: LlammaEventsColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={toDate(row.original.timestamp)} txUrl={row.original.txUrl} />,
+    cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.txUrl} />,
     meta: { type: 'numeric' },
   }),
 ]

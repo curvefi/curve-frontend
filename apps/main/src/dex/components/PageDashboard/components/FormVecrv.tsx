@@ -54,7 +54,7 @@ export const FormVecrv = () => {
     (lookupAddressIsSameAsSignerAddress && getIsLockExpired(lockedAmount, unlockTime)) ||
     parsedFormStatus.formTypeCompleted
   const lockedAmountDisplay = <strong>{formatNumber(lockedAmount, { defaultValue: '-' })}</strong>
-  const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(new Date(unlockTime), 'long')}</strong> : '-' //
+  const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(unlockTime, 'long')}</strong> : '-' //
 
   const handleBtnClickWithdraw = useCallback(
     async (activeKey: string, curve: CurveApi, lockedAmount: string) => {

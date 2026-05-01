@@ -172,7 +172,7 @@ export const PoolParameters = ({
                   {initial_A_time != null &&
                     future_A_time != null &&
                     dayjs().isAfter(future_A_time, 'day') &&
-                    t`Last change occurred between ${formatDate(new Date(initial_A_time), 'short')} and ${formatDate(
+                    t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
                       new Date(future_A_time),
                       'short',
                     )}, when A ramped from ${initial_A} to ${future_A}.`}
@@ -190,7 +190,7 @@ export const PoolParameters = ({
               />
               <ActionInfo
                 label=" "
-                value={`${formatDate(new Date(initial_A_time), 'short')} to ${formatDate(new Date(future_A_time), 'short')}`}
+                value={`${formatDate(initial_A_time, 'short')} to ${formatDate(future_A_time, 'short')}`}
               />
             </>
           )}

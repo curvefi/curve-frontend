@@ -1,43 +1,29 @@
-declare const TimestampBrand: unique symbol
+declare const TimestampResponseBrand: unique symbol
+
+/** ISO 8601 date string shape (e.g. `"2024-01-01T00:00:00.000Z"`), always including timezone info. */
+type IsoDateString = `${number}-${number}-${number}T${string}`
 
 /**
- * A serialized timestamp that can indicate many of the timestamp variants
- * as returned by the Prices API.
- *
- * Branded so it can't be used directly as a `number` or `string`. To read
- * the value, pass it through `toDate(...)`. This is intentional: it forces
- * a single, consistent parsing path and prevents accidental arithmetic
- * (e.g. `timestamp * 1000`) or string concatenation on values whose unit
- * (seconds vs. ms) and format (unix vs. ISO) are not guaranteed.
+ * A raw, serialized timestamp as returned by the Prices API. The exact shape
+ * varies between endpoints, so this is the union of all variants we receive
+ * from the backend. Branded, such that we can't accidentally pass an unparsed
+ * response into a function that takes `number | string` as an argument.
  *
  * Underlying shape is one of:
  * - unix seconds as `number` (e.g. `1704067200`)
  * - unix seconds as `string` (e.g. `"1704067200"`)
  * - ISO 8601 date string (e.g. `"2024-01-01T00:00:00.000Z"`)
  */
-export type Timestamp = (number | `${number}` | `${number}-${number}-${number}T${string}`) & {
-  readonly [TimestampBrand]: true
-}
+export type TimestampResponse = (number | `${number}` | IsoDateString) & { readonly [TimestampResponseBrand]: true }
+export type Timestamp = IsoDateString
 
-/** Create a `Timestamp` from a `Date`. */
-export function fromDate(date: Date) {
-  return Math.floor(date.getTime() / 1000) as Timestamp
-}
+/** Converts a `Date` to the exact type that is expected by a `Timestamp`. */
+export const fromDate = (date: Date) => date.toISOString() as Timestamp
 
 const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
 
-/**
- * Converts a timestamp string or number to UTC Date object
- * @param timestamp - Timestamp as string (ISO format or unix seconds) or number (unix seconds)
- * @returns UTC Date object
- * @example
- * toDate(1234567890) // Unix timestamp number
- * toDate("1234567890") // Unix timestamp string
- * toDate("2024-01-01T00:00:00.000Z") // ISO with UTC
- * toDate("2024-01-01T00:00:00.000+01:00") // ISO with timezone
- * toDate("2024-01-01T00:00:00") // ISO without timezone (assumes UTC)
- */
-export function toDate(timestamp: Timestamp) {
+/** Coerces any `TimestampResponse` shape to a `Date`. ISO strings without timezone info are assumed UTC. */
+function toDate(timestamp: TimestampResponse) {
   // Convert actual unix timestamp numbers to Date.
   if (typeof timestamp === 'number') {
     return new Date(timestamp * 1000)
@@ -55,6 +41,9 @@ export function toDate(timestamp: Timestamp) {
 
   return new Date(utcTimestamp)
 }
+
+/** Parses a raw `TimestampResponse` (in any of the formats the Prices API returns) into a serializable and normalized ISO 8601 `Timestamp`. */
+export const parseTimestamp = (timestamp: TimestampResponse) => fromDate(toDate(timestamp))
 
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60
 

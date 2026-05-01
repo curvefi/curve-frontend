@@ -2,7 +2,6 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import type { Locker } from '@curvefi/prices-api/dao'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -38,7 +37,7 @@ export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<Valu
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>
             {unlockTime ? (
-              <TooltipData>{formatDate(toDate(unlockTime))}</TooltipData>
+              <TooltipData>{formatDate(unlockTime)}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

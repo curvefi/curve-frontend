@@ -1,4 +1,5 @@
 import type { Chain } from '..'
+import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -13,14 +14,14 @@ export const parseTopPools = (x: Responses.GetTopPoolsResponse['revenue'][number
 })
 
 export const parseCrvUsdWeekly = (x: Responses.GetCrvUsdWeeklyResponse['fees'][number]): Models.CrvUsdWeekly => ({
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
   controller: x.controller,
   collateral: x.collateral,
   feesUsd: x.fees_usd,
 })
 
 export const parsePoolsWeekly = (x: Responses.GetPoolsWeeklyResponse['fees'][number]): Models.PoolsWeekly => ({
-  timestamp: x.timestamp,
+  timestamp: parseTimestamp(x.timestamp),
   chain: x.chain as Chain,
   feesUsd: x.fees_usd,
 })
@@ -34,12 +35,12 @@ export const parseCushion = (x: Responses.GetCushionsResponse['data'][number]): 
 
 export const parseDistribution = (
   x: Responses.GetDistributionsResponse['distributions'][number],
-): Models.Distribution => ({ timestamp: x.timestamp, feesUsd: x.fees_usd })
+): Models.Distribution => ({ timestamp: parseTimestamp(x.timestamp), feesUsd: x.fees_usd })
 
 export const parseCowSwapSettlement = (
   x: Responses.GetCowSwapSettlementsResponse['data'][number],
 ): Models.CowSwapSettlement => ({
-  timestamp: x.dt,
+  timestamp: parseTimestamp(x.dt),
   coin: {
     lpToken: x.coin.lp_token,
     symbol: x.coin.symbol,

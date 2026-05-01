@@ -16,7 +16,7 @@ type CrvUsdPriceTooltipProps = {
 }
 
 export const CrvUsdPriceTooltip = ({ datum, visibleSeries }: CrvUsdPriceTooltipProps) => (
-  <ChartTooltipShell title={formatDate(new Date(datum.timestamp), 'long')}>
+  <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
     <ChartTooltipSeriesGroup>
       {visibleSeries.map(activeSeries => (
         <ChartTooltipSeriesRow

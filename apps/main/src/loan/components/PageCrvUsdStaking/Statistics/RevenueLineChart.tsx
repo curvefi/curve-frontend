@@ -47,7 +47,7 @@ export const RevenueLineChart = ({ data, height, visibleSeries }: Props) => {
         xKey="timestamp"
         series={series}
         visibleSeries={visibleSeries}
-        xTickFormatter={value => formatDate(new Date(value))}
+        xTickFormatter={value => formatDate(value)}
         yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 1 })}
         renderTooltip={({ datum, visibleSeries }) => (
           <RevenueChartTooltip datum={datum} visibleSeries={visibleSeries} />

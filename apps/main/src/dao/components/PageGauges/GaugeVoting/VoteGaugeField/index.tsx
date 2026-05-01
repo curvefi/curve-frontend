@@ -151,9 +151,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
             {t`Updating vote available on:`} <br />
-            <strong>
-              {formatDate(new Date(convertToLocaleTimestamp(new Date(userGaugeVoteNextTime).getTime())), 'long')}
-            </strong>
+            <strong>{formatDate(convertToLocaleTimestamp(new Date(userGaugeVoteNextTime).getTime()), 'long')}</strong>
             <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
           </VoteOnCooldown>
         </Box>

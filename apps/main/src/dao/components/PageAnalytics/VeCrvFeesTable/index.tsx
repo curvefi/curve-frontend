@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useStore } from '@/dao/store/useStore'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -41,10 +40,10 @@ export const VeCrcFees = () => {
               <>
                 <FeesContainer>
                   {veCrvFees.fees.map(item => (
-                    <FeeRow key={toDate(item.timestamp).getTime()}>
+                    <FeeRow key={new Date(item.timestamp).getTime()}>
                       <FeeDate>
-                        {formatDate(toDate(item.timestamp))}
-                        {toDate(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
+                        {formatDate(item.timestamp)}
+                        {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
                       </FeeDate>
                       <FeeData>
                         {formatNumber(item.feesUsd, {

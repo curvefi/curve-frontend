@@ -1,4 +1,3 @@
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenAmountCell, TimestampCell, AddressCell } from '../cells'
@@ -52,7 +51,7 @@ export const POOL_TRADES_COLUMNS = [
   columnHelper.accessor('time', {
     id: PoolTradesColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={toDate(row.original.time)} txUrl={row.original.txUrl} />,
+    cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} />,
     meta: { type: 'numeric' },
   }),
 ]

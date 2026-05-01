@@ -64,10 +64,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   }, [poolData?.pool?.wrappedCoins])
 
   // TODO: format date by locale
-  const rampUpAEndsTime = useMemo(
-    () => (future_A_time ? formatDate(new Date(future_A_time), 'long') : null),
-    [future_A_time],
-  )
+  const rampUpAEndsTime = useMemo(() => (future_A_time ? formatDate(future_A_time, 'long') : null), [future_A_time])
 
   const rampADetails = useMemo(() => {
     if (initial_A_time && initial_A && future_A_time && future_A) {
@@ -221,7 +218,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                         future_A_time != null && (
                           <>
                             <br />{' '}
-                            {t`Last change occurred between ${formatDate(new Date(initial_A_time), 'short')} and ${formatDate(
+                            {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
                               new Date(future_A_time),
                               'short',
                             )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`}

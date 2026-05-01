@@ -1,5 +1,5 @@
 import type { Address } from '@primitives/address.utils'
-import type { Timestamp } from '../timestamp'
+import type { TimestampResponse } from '../timestamp'
 
 export type GetEventsResponse = {
   count: number
@@ -11,12 +11,14 @@ export type GetEventsResponse = {
     assets: string
     shares: string
     block_number: number
-    timestamp: Timestamp
+    timestamp: TimestampResponse
     transaction_hash: Address
   }[]
 }
 
-export type GetYieldResponse = { data: { timestamp: Timestamp; assets: number; supply: number; proj_apy: string }[] }
+export type GetYieldResponse = {
+  data: { timestamp: TimestampResponse; assets: number; supply: number; proj_apy: string }[]
+}
 
 export type GetRevenueResponse = {
   count: number
@@ -30,12 +32,12 @@ export type GetRevenueResponse = {
     total_fees: string
     protocol_fees: string
     tx_hash: Address
-    dt: Timestamp
+    dt: TimestampResponse
   }[]
 }
 
 export type GetStatisticsResponse = {
-  last_updated: Timestamp
+  last_updated: TimestampResponse
   last_updated_block: number
   proj_apy: number
   supply: number

@@ -16,7 +16,7 @@ type HistoricalRatesTooltipProps = {
 }
 
 export const HistoricalRatesTooltip = ({ datum, visibleSeries }: HistoricalRatesTooltipProps) => (
-  <ChartTooltipShell title={formatDate(new Date(datum.timestamp), 'long')}>
+  <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
     <ChartTooltipSeriesGroup>
       {visibleSeries.map(activeSeries => (
         <ChartTooltipSeriesRow

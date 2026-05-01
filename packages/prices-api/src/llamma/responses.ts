@@ -1,6 +1,6 @@
 import type { Address, Token } from '@primitives/address.utils'
 import type { PaginationMeta } from '..'
-import type { Timestamp } from '../timestamp'
+import type { TimestampResponse } from '../timestamp'
 
 export type GetLlammaEventsResponse = PaginationMeta & {
   data: {
@@ -15,7 +15,7 @@ export type GetLlammaEventsResponse = PaginationMeta & {
       amount_collateral: number
     } | null
     block_number: number
-    timestamp: Timestamp
+    timestamp: TimestampResponse
     transaction_hash: Address
   }[]
 }
@@ -33,14 +33,14 @@ export type GetLlammaTradesResponse = PaginationMeta & {
     fee_x: number
     fee_y: number
     block_number: number
-    timestamp: Timestamp
+    timestamp: TimestampResponse
     transaction_hash: Address
   }[]
 }
 
 export type GetLlammaOHLCResponse = {
   data: {
-    time: Timestamp
+    time: TimestampResponse
     open: number | null
     close: number | null
     high: number | null

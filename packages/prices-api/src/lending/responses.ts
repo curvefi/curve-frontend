@@ -1,7 +1,7 @@
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain } from '..'
-import type { Timestamp } from '../timestamp'
+import type { TimestampResponse } from '../timestamp'
 
 type Bar = {
   value: number
@@ -30,7 +30,7 @@ export type GetOracleResponse = {
     },
   ]
   data: {
-    time: Timestamp
+    time: TimestampResponse
     open: number
     close: number
     high: number
@@ -57,7 +57,7 @@ export type GetUserCollateralEventsResponse = {
   page: number
   data: [
     {
-      dt: Timestamp
+      dt: TimestampResponse
       transaction_hash: Address
       type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
       user: Address

@@ -1,6 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { PaginationMeta, Chain } from '..'
-import type { Timestamp } from '../timestamp'
+import type { TimestampResponse } from '../timestamp'
 
 type Coin = {
   pool_index: number
@@ -40,7 +40,7 @@ export type GetPoolResponse = Pool
 
 export type GetVolumeResponse = {
   data: {
-    timestamp: Timestamp
+    timestamp: TimestampResponse
     volume: number
     fees: number
   }[]
@@ -48,7 +48,7 @@ export type GetVolumeResponse = {
 
 export type GetTvlResponse = {
   data: {
-    timestamp: Timestamp
+    timestamp: TimestampResponse
     tvl_usd?: number
     balances: number[]
     token_prices: number[]
@@ -79,7 +79,7 @@ export type GetPoolTradesResponse = PaginationMeta & {
     tokens_bought: number
     tokens_bought_usd: number
     block_number: number
-    time: Timestamp
+    time: TimestampResponse
     transaction_hash: Address
     buyer: Address
     usd_fee: number
@@ -98,7 +98,7 @@ export type GetAllPoolTradesResponse = PaginationMeta & {
     tokens_bought_usd: number
     price: number
     block_number: number
-    time: Timestamp
+    time: TimestampResponse
     transaction_hash: Address
     buyer: Address
     fee: number
@@ -118,7 +118,7 @@ export type GetPoolLiquidityEventsResponse = PaginationMeta & {
     fees: number[] | null
     token_supply: number
     block_number: number
-    time: Timestamp
+    time: TimestampResponse
     transaction_hash: Address
     provider: Address
   }[]
@@ -187,6 +187,6 @@ export type GetPoolMetadataResponse = {
   vyper_version: string | null
   deployment_tx: string | null
   deployment_block: number | null
-  deployment_date: Timestamp | null
+  deployment_date: TimestampResponse | null
   has_donations: boolean
 }

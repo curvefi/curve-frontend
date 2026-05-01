@@ -2,7 +2,6 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import type { LocksDaily } from '@curvefi/prices-api/dao'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,7 +15,7 @@ export const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipP
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
-            <TooltipData>{formatDate(toDate(day))}</TooltipData>
+            <TooltipData>{formatDate(day)}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>

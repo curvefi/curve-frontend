@@ -1,6 +1,5 @@
 import { getYield } from '@curvefi/prices-api/savings'
 import type { Yield } from '@curvefi/prices-api/savings/models'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { timeOptionValidationSuite, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
@@ -24,7 +23,7 @@ const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
   const enriched = addMovingAverages(
     data,
     item => item.apyProjected,
-    item => toDate(item.timestamp).getTime(),
+    item => new Date(item.timestamp).getTime(),
   )
 
   return enriched.map(({ movingAverage, totalAverage, ...item }) => ({

@@ -7,7 +7,7 @@ import { networks } from '@/dao/networks'
 import { useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { toDate } from '@curvefi/prices-api/timestamp'
+import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { formatDate, formatNumber, scanAddressPath } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
@@ -63,7 +63,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           title={t`Created`}
           data={
             <StyledMetricsColumnData>
-              {gaugeData && formatDate(toDate(gaugeData.creation_date))}
+              {gaugeData && formatDate(parseTimestamp(gaugeData.creation_date))}
             </StyledMetricsColumnData>
           }
         />

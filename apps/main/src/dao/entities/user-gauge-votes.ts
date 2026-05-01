@@ -1,5 +1,4 @@
 import { getUserGaugeVotes } from '@curvefi/prices-api/gauge/api'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 
@@ -15,7 +14,7 @@ export type UserGaugeVoteFormatted = {
 const _fetchUserGaugeVotes = async ({ userAddress }: { userAddress: string }): Promise<UserGaugeVoteFormatted[]> => {
   const votes = await getUserGaugeVotes(userAddress)
 
-  return votes.map(vote => ({ ...vote, timestamp: toDate(vote.timestamp).getTime() / 1000 }))
+  return votes.map(vote => ({ ...vote, timestamp: new Date(vote.timestamp).getTime() / 1000 }))
 }
 
 export const { useQuery: useUserGaugeVoteQuery, invalidate: invalidateUserGaugeVoteQuery } = queryFactory({

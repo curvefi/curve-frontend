@@ -1,3 +1,4 @@
+import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
@@ -12,7 +13,7 @@ export const parseOracles = (x: Responses.GetOraclesResponse): Models.Oracles =>
       hashParent: block_header.parent_hash,
       stateRoot: block_header.state_root,
       blockNumber: block_header.block_number,
-      timestamp: block_header.timestamp,
+      timestamp: parseTimestamp(block_header.timestamp),
     },
   })),
 })

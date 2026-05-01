@@ -1,6 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain, PaginationMeta } from '..'
-import type { Timestamp } from '../timestamp'
+import type { TimestampResponse } from '../timestamp'
 
 export type GetChainsResponse = {
   data: Chain[]
@@ -63,7 +63,7 @@ export type GetMarketsResponse = {
       symbol: string
       apr: number
     }[]
-    created_at: Timestamp
+    created_at: TimestampResponse
     max_ltv: number
   }[]
 }
@@ -123,7 +123,7 @@ export type GetSnapshotsResponse = {
         rebasing_yield: number | null
         rebasing_yield_apr: number | null
       }
-      timestamp: Timestamp
+      timestamp: TimestampResponse
       max_ltv: number
     },
   ]
@@ -134,8 +134,8 @@ export type GetUserMarketsResponse = PaginationMeta & {
   markets: {
     market_name: string
     controller: Address
-    first_snapshot: Timestamp
-    last_snapshot: Timestamp
+    first_snapshot: TimestampResponse
+    last_snapshot: TimestampResponse
   }[]
 }
 
@@ -149,8 +149,8 @@ export type GetUserLendingPositionsResponse = PaginationMeta & {
   markets: {
     market_name: string
     vault_address: Address
-    first_deposit: Timestamp
-    last_activity: Timestamp
+    first_deposit: TimestampResponse
+    last_activity: TimestampResponse
     current_shares: string
     current_shares_in_gauge: string
     boost_multiplier: number
@@ -179,7 +179,7 @@ type UserMarketStats = {
   collateral_up: number
   oracle_price: number
   block_number: number
-  timestamp: Timestamp
+  timestamp: TimestampResponse
 }
 
 export type GetUserMarketStatsResponse = UserMarketStats
@@ -234,7 +234,7 @@ export type GetUserCollateralEventsResponse = {
   pagination: number
   page: number
   data: {
-    dt: Timestamp
+    dt: TimestampResponse
     transaction_hash: Address
     type: 'Borrow' | 'Deposit'
     user: Address
@@ -274,8 +274,8 @@ export type GetUserCollateralEventsResponse = {
 export type GetMarketUsersResponse = PaginationMeta & {
   data: {
     user: string
-    first: Timestamp
-    last: Timestamp
+    first: TimestampResponse
+    last: TimestampResponse
     debt: string
     health: string
     health_full: string
