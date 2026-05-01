@@ -10,6 +10,24 @@ env:
 permissions:
   contents: read
 jobs:
+  check-supply-chain:
+    name: Check supply chain
+    timeout-minutes: 6
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # needed to diff yarn.lock against the base branch commit
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn check-supply-chain
+
   lint:
     name: Lint, format & typecheck
     timeout-minutes: 6
@@ -221,24 +239,6 @@ jobs:
           name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
           path: e2e-*.log
-
-  check-supply-chain:
-    name: Check supply chain
-    timeout-minutes: 6
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0  # needed to diff yarn.lock against the base branch commit
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - run: yarn check-supply-chain
 
   notify:
     name: Notify Slack
