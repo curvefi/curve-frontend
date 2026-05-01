@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
-import type { FormDisabledAlert, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getControllerAddress, getTokens, getMarketType, isRouterRequired } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
@@ -93,18 +94,17 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   enabled,
   onPricesUpdated,
   collateralEvents,
-  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
-  borrowDisabledAlert?: FormDisabledAlert
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
+  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
@@ -141,7 +141,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     handleFormSubmit: form.handleSubmit,
   })
 
-  const disabledAlert = borrowDisabledAlert ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
   useCallbackSync(useBorrowMorePrices(params, enabled), onPricesUpdated)
 

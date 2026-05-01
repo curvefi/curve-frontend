@@ -1,4 +1,4 @@
-import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -17,7 +17,6 @@ type DepositFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  depositDisabledAlert?: FormDisabledAlert
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
@@ -27,7 +26,6 @@ export const DepositForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  depositDisabledAlert,
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -47,7 +45,7 @@ export const DepositForm = <ChainId extends IChainId>({
     isApproved,
     max,
     disabledAlert,
-  } = useDepositForm({ market, network, enabled, depositDisabledAlert })
+  } = useDepositForm({ market, network, enabled })
 
   return (
     <Form

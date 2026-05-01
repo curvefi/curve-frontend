@@ -1,7 +1,7 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
-import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,13 +37,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
-  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  borrowDisabledAlert?: FormDisabledAlert
 }) => {
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
@@ -73,7 +71,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     network,
     preset,
     onPricesUpdated,
-    borrowDisabledAlert,
   })
 
   const toggleLeverage = useCallback(

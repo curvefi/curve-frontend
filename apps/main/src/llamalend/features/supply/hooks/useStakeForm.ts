@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
-import type { FormDisabledAlert, LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { getControllerAddress, getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
@@ -13,6 +14,7 @@ import type { Address } from '@primitives/address.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
 import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
@@ -31,17 +33,16 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  depositDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  depositDisabledAlert?: FormDisabledAlert
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
   const marketHasGauge = !!market && hasGauge(market)
+  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const vaultToken = getVaultToken(market)
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
@@ -86,7 +87,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
-  const disabledAlert = depositDisabledAlert ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking
   return {

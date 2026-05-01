@@ -1,4 +1,4 @@
-import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
@@ -18,7 +18,6 @@ type StakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  depositDisabledAlert?: FormDisabledAlert
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
@@ -28,7 +27,6 @@ export const StakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  depositDisabledAlert,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
   const blockchainId = network.id
@@ -52,7 +50,7 @@ export const StakeForm = <ChainId extends IChainId>({
     hasGauge,
     max,
     disabledAlert,
-  } = useStakeForm({ market, network, enabled, depositDisabledAlert })
+  } = useStakeForm({ market, network, enabled })
 
   return (
     <Form

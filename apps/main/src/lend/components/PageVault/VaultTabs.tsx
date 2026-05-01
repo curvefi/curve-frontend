@@ -5,47 +5,16 @@ import { VaultUnstake } from '@/lend/components/PageVault/VaultUnstake'
 import { VaultWithdrawRedeem } from '@/lend/components/PageVault/VaultWithdrawRedeem'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLendingMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type VaultProps = PageContentProps<MarketUrlParams>
-
-function DepositTab({ rChainId, market, isLoaded }: VaultProps) {
-  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
-
-  return (
-    <DepositForm
-      networks={networks}
-      chainId={rChainId}
-      market={market}
-      enabled={isLoaded}
-      depositDisabledAlert={marketAlert?.isDepositDisabled ? marketAlert : undefined}
-    />
-  )
-}
-
-function StakeTab({ rChainId, market, isLoaded }: VaultProps) {
-  const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
-
-  return (
-    <StakeForm
-      networks={networks}
-      chainId={rChainId}
-      market={market}
-      enabled={isLoaded}
-      depositDisabledAlert={marketAlert?.isDepositDisabled ? marketAlert : undefined}
-    />
-  )
-}
 
 const LegacyVaultMenu = [
   {
@@ -75,7 +44,9 @@ const NewVaultMenu = [
       {
         value: 'deposit',
         label: t`Deposit`,
-        component: DepositTab,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <DepositForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
       },
       {
         value: 'withdraw',
@@ -93,7 +64,9 @@ const NewVaultMenu = [
       {
         value: 'stake',
         label: t`Stake`,
-        component: StakeTab,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <StakeForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
       },
       {
         value: 'unstake',

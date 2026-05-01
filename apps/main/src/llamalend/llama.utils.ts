@@ -17,6 +17,7 @@ import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
@@ -102,6 +103,9 @@ export const isRouterRequired = (
 
 export const hasGauge = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
+
+export const getMarketType = (market: LlamaMarketTemplate | null | undefined) =>
+  market ? (market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint) : undefined
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol

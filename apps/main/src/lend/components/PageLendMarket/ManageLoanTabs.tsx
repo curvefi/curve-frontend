@@ -11,36 +11,17 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams> & {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
-}
-
-function BorrowTab({ rChainId: chainId, market, isLoaded, onPricesUpdated, collateralEvents }: ManageLoanProps) {
-  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
-
-  return (
-    <BorrowMoreForm
-      networks={networks}
-      chainId={chainId}
-      market={market}
-      onPricesUpdated={onPricesUpdated}
-      enabled={isLoaded}
-      collateralEvents={collateralEvents}
-      borrowDisabledAlert={marketAlert?.isBorrowDisabled ? marketAlert : undefined}
-    />
-  )
 }
 
 const LendManageLegacyMenu = [
@@ -73,7 +54,16 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: BorrowTab,
+    component: ({ rChainId: chainId, market, isLoaded, onPricesUpdated, collateralEvents }: ManageLoanProps) => (
+      <BorrowMoreForm
+        networks={networks}
+        chainId={chainId}
+        market={market}
+        onPricesUpdated={onPricesUpdated}
+        enabled={isLoaded}
+        collateralEvents={collateralEvents}
+      />
+    ),
   },
   {
     value: 'loan-decrease',

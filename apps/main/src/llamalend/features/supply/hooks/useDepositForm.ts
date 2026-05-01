@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { FormDisabledAlert, LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import {
@@ -16,6 +17,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({ depositAmount: undefined, maxDepositAmount: undefined })
@@ -24,16 +26,15 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  depositDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  depositDisabledAlert?: FormDisabledAlert
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
+  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const { borrowToken } = market ? getTokens(market) : {}
 
@@ -77,7 +78,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     handleFormSubmit: form.handleSubmit,
   })
 
-  const disabledAlert = depositDisabledAlert ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
   const { formState } = form
 
   const isPending = formState.isSubmitting || isDepositing

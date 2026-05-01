@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
-import type { FormDisabledAlert, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getControllerAddress, getTokens, getMarketType, hasZapV2 } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
@@ -40,15 +41,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   network: { chainId },
   preset,
   onPricesUpdated,
-  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   preset: LoanPreset
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  borrowDisabledAlert?: FormDisabledAlert
 }) {
   const { address: userAddress } = useConnection()
+  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
   const form = useForm<CreateLoanForm>({
     ...formDefaultOptions,
     resolver,
@@ -124,7 +124,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     handleFormSubmit: form.handleSubmit,
   })
 
-  const disabledAlert = borrowDisabledAlert ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}

@@ -2,7 +2,7 @@ import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { FormDisabledAlert, LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -31,7 +31,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled,
   onPricesUpdated,
   collateralEvents,
-  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -39,7 +38,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
-  borrowDisabledAlert?: FormDisabledAlert
 }) => {
   const network = networks[chainId]
   const {
@@ -70,7 +68,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     enabled,
     onPricesUpdated,
     collateralEvents,
-    borrowDisabledAlert,
   })
 
   const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
