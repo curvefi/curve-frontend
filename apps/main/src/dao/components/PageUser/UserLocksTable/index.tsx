@@ -5,6 +5,7 @@ import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import { LockType } from '@curvefi/prices-api/dao/models'
+import Box from '@mui/material/Box'
 import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LOCKS_LABELS } from '../constants'
@@ -40,33 +41,39 @@ export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const minWidth = 36
 
   return (
-    <PaginatedTable<UserLockFormatted>
-      data={sortUserLocks(userLocks ?? [], userLocksSortBy)}
-      minWidth={minWidth}
-      isLoading={isLoading}
-      isError={isError}
-      isSuccess={isSuccess}
-      columns={LOCKS_LABELS}
-      sortBy={userLocksSortBy}
-      errorMessage={t`An error occurred while fetching user locking activity.`}
-      setSortBy={key => setUserLocksSortBy(key as UserLocksSortBy)}
-      getData={() => invalidateUserLocks({ userAddress })}
-      noDataMessage={t`No locking activity found for this user.`}
-      gridTemplateColumns={gridTemplateColumns}
-      renderRow={(lock, index) => (
-        <TableRowWrapper key={index} columns={LOCKS_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
-          <TableData className="align-left">{lockTypeLabel(lock.lockType)}</TableData>
-          <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatNumber(Number(lock.amount))}
-          </TableData>
-          <TableData className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatLocaleDateFromTimestamp(lock.timestamp)}
-          </TableData>
-          <TableData className={userLocksSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}>
-            {lock.unlockTime ? formatLocaleDateFromTimestamp(lock.unlockTime) : '-'}
-          </TableData>
-        </TableRowWrapper>
-      )}
-    />
+    <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <PaginatedTable<UserLockFormatted>
+        data={sortUserLocks(userLocks ?? [], userLocksSortBy)}
+        minWidth={minWidth}
+        isLoading={isLoading}
+        isError={isError}
+        isSuccess={isSuccess}
+        columns={LOCKS_LABELS}
+        sortBy={userLocksSortBy}
+        errorMessage={t`An error occurred while fetching user locking activity.`}
+        setSortBy={key => setUserLocksSortBy(key as UserLocksSortBy)}
+        getData={() => invalidateUserLocks({ userAddress })}
+        noDataMessage={t`No locking activity found for this user.`}
+        gridTemplateColumns={gridTemplateColumns}
+        renderRow={(lock, index) => (
+          <TableRowWrapper key={index} columns={LOCKS_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
+            <TableData className="align-left">{lockTypeLabel(lock.lockType)}</TableData>
+            <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active right-padding' : 'right-padding'}>
+              {formatNumber(Number(lock.amount))}
+            </TableData>
+            <TableData
+              className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}
+            >
+              {formatLocaleDateFromTimestamp(lock.timestamp)}
+            </TableData>
+            <TableData
+              className={userLocksSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
+            >
+              {lock.unlockTime ? formatLocaleDateFromTimestamp(lock.unlockTime) : '-'}
+            </TableData>
+          </TableRowWrapper>
+        )}
+      />
+    </Box>
   )
 }
