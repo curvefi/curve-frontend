@@ -44,9 +44,9 @@ export const MAINNET_CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52' 
 export const REUSD_ADDRESS = '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' as const
 export const SREUSD_ADDRESS = '0x557AB1e003951A73c12D16F0fEA8490E39C33C35' as const
 
-export const ARAGON_OWNERSHIP_VOTING: Address = '0xe478de485ad2fe566d49342cbd03e49ed7db3356'
-export const ARAGON_OWNERSHIP_AGENT: Address = '0x40907540d8a6c65c637785e8f8b742ae6b0b9968'
-export const GAUGE_CONTROLLER: Address = '0x2f50d538606fa9edd2b11e2446beb18c9d5846bb'
+export const ARAGON_OWNERSHIP_VOTING = '0xe478de485ad2fe566d49342cbd03e49ed7db3356' as const
+export const ARAGON_OWNERSHIP_AGENT = '0x40907540d8a6c65c637785e8f8b742ae6b0b9968' as const
+export const GAUGE_CONTROLLER = '0x2f50d538606fa9edd2b11e2446beb18c9d5846bb' as const
 
 export const CRVUSD = {
   symbol: 'crvUSD',
