@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import type { Address } from 'viem'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
-import { FormDisabledAlert } from '@/llamalend/llamalend.types'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkDepositSubmit,
@@ -21,11 +21,12 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
+
 const testCases: {
   title: string
   approved?: boolean
   buttonText?: string
-  depositAlert?: FormDisabledAlert
+  disabledMarketController?: Address
   maxDeposit?: Decimal
   solvencyPercent?: number
 }[] = [
@@ -36,10 +37,7 @@ const testCases: {
   { title: 'fills and cannot submit (max deposit limit)', maxDeposit: '5' },
   {
     title: 'fills and cannot submit (market alert)',
-    depositAlert: {
-      alertType: 'danger',
-      message: 'This market is deprecated after a donation attack.',
-    } as const,
+    disabledMarketController: '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86',
   },
 ]
 
@@ -47,11 +45,19 @@ describe('DepositForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
   testCases.forEach(
-    ({ approved = true, title, buttonText = 'Deposit', depositAlert, maxDeposit, solvencyPercent = 100 }) => {
+    ({
+      approved = true,
+      title,
+      buttonText = 'Deposit',
+      disabledMarketController,
+      maxDeposit,
+      solvencyPercent = 100,
+    }) => {
       it(title, () => {
         const { input, market, llamaApi, expected, stubs } = createDepositScenario({
           chainId,
           approved,
+          controller: disabledMarketController,
           maxDeposit,
           solvencyPercent,
         })
@@ -61,19 +67,13 @@ describe('DepositForm (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <DepositForm
-              market={market}
-              networks={llamaNetworks}
-              chainId={chainId}
-              depositDisabledAlert={depositAlert}
-              enabled
-            />
+            <DepositForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
           </MockLoanTestWrapper>,
         )
 
         writeDepositForm({ amount: input.amount })
         checkMaxDeposit(maxDeposit)
-        checkDepositSubmit({ buttonText, depositAlert, maxDeposit, solvencyPercent })
+        checkDepositSubmit({ buttonText, withDisabledAlert: !!disabledMarketController, maxDeposit, solvencyPercent })
         // When `maxDeposit` is set, the entered amount exceeds the max, so the test stops after validating the disabled state.
         // This avoids adding custom expectations for action info values in this scenario.
         if (maxDeposit) return
@@ -93,8 +93,8 @@ describe('DepositForm (mocked)', () => {
           }
         })
 
-        // A deposit alert or very low solvency blocks submission, so the test stops after validating the disabled state and actions infos.
-        if (depositAlert || solvencyPercent < SOLVENCY_THRESHOLDS.low) return
+        // A market alert or very low solvency blocks submission, so the test stops after validating the disabled state and action infos.
+        if (disabledMarketController || solvencyPercent < SOLVENCY_THRESHOLDS.low) return
 
         submitDepositForm({ solvencyPercent }).then(() => {
           expect(stubs.deposit).to.have.been.calledWithExactly(...expected.submit)

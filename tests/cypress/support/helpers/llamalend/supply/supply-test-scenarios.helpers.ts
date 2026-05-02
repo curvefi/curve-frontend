@@ -62,6 +62,7 @@ const createBaseSupplyMarket = ({
   currentApy,
   futureApy,
   hasGauge = true,
+  controller = SUPPLY_MARKET_ADDRESSES.controller,
 }: {
   chainId: number
   walletBalances: {
@@ -76,6 +77,7 @@ const createBaseSupplyMarket = ({
   currentApy: Decimal
   futureApy: Decimal
   hasGauge?: boolean
+  controller?: Address
 }) => {
   const statsRates = createStub(createSupplyRates(currentApy))
   const statsFutureRates = createStub(createSupplyRates(futureApy))
@@ -103,7 +105,7 @@ const createBaseSupplyMarket = ({
       address: SUPPLY_MARKET_ADDRESSES.borrowed,
       decimals: 18,
     },
-    addresses: { ...SUPPLY_MARKET_ADDRESSES, ...(!hasGauge && { gauge: zeroAddress }) },
+    addresses: { ...SUPPLY_MARKET_ADDRESSES, controller, ...(!hasGauge && { gauge: zeroAddress }) },
     stats: {
       rates: statsRates,
       futureRates: statsFutureRates,
@@ -138,11 +140,13 @@ export const createDepositScenario = ({
   approved,
   maxDeposit = '1000000',
   solvencyPercent = 100,
+  controller,
 }: {
   chainId: number
   approved: boolean
   maxDeposit?: Decimal
   solvencyPercent?: number
+  controller?: Address
 }) => {
   const input = { amount: '12.5' as const, maxDeposit }
   const amount = input.amount
@@ -169,6 +173,7 @@ export const createDepositScenario = ({
     walletBalances: balances,
     currentApy,
     futureApy,
+    controller,
     vaultOverrides: {
       maxDeposit: maxDepositStub,
       previewDeposit,

@@ -1,5 +1,4 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
-import type { FormDisabledAlert } from '@/llamalend/llamalend.types'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -38,16 +37,16 @@ export function writeDepositForm({ amount }: { amount: Decimal }) {
  */
 export function checkDepositSubmit({
   buttonText,
-  depositAlert,
+  withDisabledAlert,
   maxDeposit,
   solvencyPercent,
 }: {
   buttonText: string
-  depositAlert?: FormDisabledAlert
+  withDisabledAlert?: boolean
   maxDeposit?: Decimal
   solvencyPercent: number
 }) {
-  if (depositAlert || solvencyPercent < SOLVENCY_THRESHOLDS.low) {
+  if (withDisabledAlert || solvencyPercent < SOLVENCY_THRESHOLDS.low) {
     cy.get('[data-testid="supply-deposit-submit-button"]').should('not.exist')
     cy.get('[data-testid="alert-disable-form"]').should('exist')
     return

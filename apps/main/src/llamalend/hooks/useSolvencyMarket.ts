@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { useMappedQuery } from '@ui-kit/types/util'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { useMappedQuery } from '@ui-kit/types/util'
 
 type SolvencyMarketParams = {
   blockchainId: Chain | undefined
