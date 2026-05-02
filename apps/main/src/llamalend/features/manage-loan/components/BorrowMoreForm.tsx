@@ -47,9 +47,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
     isDisabled,
     borrowToken,
     collateralToken,
@@ -62,6 +59,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isLeverageEnabled,
     priceImpact,
     disabledAlert,
+    solvencyModal: { onConfirm, onClose, isOpen },
   } = useBorrowMoreForm({
     market,
     network,

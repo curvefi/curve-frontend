@@ -95,8 +95,10 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     isApproved: useDepositIsApproved(params, enabled),
     formErrors: useFormErrors(formState),
     disabledAlert,
-    onClose,
-    onConfirm,
-    isOpen,
+    solvencyModal: {
+      isOpen,
+      onClose,
+      onConfirm,
+    },
   }
 }

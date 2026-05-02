@@ -37,9 +37,6 @@ export const StakeForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
     isDisabled,
     vaultToken,
     borrowToken,
@@ -50,6 +47,7 @@ export const StakeForm = <ChainId extends IChainId>({
     hasGauge,
     max,
     disabledAlert,
+    solvencyModal: { onConfirm, onClose, isOpen },
   } = useStakeForm({ market, network, enabled })
 
   return (

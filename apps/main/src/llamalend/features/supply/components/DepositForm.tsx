@@ -35,9 +35,6 @@ export const DepositForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
     isDisabled,
     borrowToken,
     error,
@@ -45,6 +42,7 @@ export const DepositForm = <ChainId extends IChainId>({
     isApproved,
     max,
     disabledAlert,
+    solvencyModal: { onConfirm, onClose, isOpen },
   } = useDepositForm({ market, network, enabled })
 
   return (
