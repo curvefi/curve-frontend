@@ -37,7 +37,7 @@ export const MarketBanners = <ChainId extends IChainId>({
   const marketType = market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const deprecatedMarket = useDeprecatedMarket({ blockchainId, controllerAddress, marketType })
-  const { data: solvencyMarket } = useSolvencyMarket({ blockchainId, controllerAddress })
+  const { data: solvencyMarket } = useSolvencyMarket({ blockchainId, controllerAddress, marketType })
 
   return (
     <Stack sx={HIDE_IF_EMPTY}>

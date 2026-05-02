@@ -8,6 +8,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { q } from '@ui-kit/types/util'
 import { BlockchainIds } from '@ui-kit/utils/network'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type Props<T extends FieldValues, ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
@@ -29,13 +30,11 @@ export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChain
   handleFormSubmit,
 }: Props<T, ChainId>) => {
   const [isOpen, openModal, closeModal] = useSwitch(false)
-  const solvency = useSolvencyMarket(
-    {
-      blockchainId: BlockchainIds[chainId],
-      controllerAddress: getControllerAddress(market),
-    },
-    market instanceof LendMarketTemplate,
-  )
+  const solvency = useSolvencyMarket({
+    blockchainId: BlockchainIds[chainId],
+    controllerAddress: getControllerAddress(market),
+    marketType: market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint,
+  })
 
   return {
     solvency: q(solvency),

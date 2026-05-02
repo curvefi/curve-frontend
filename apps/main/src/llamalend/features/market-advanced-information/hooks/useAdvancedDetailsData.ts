@@ -48,6 +48,7 @@ export const useAdvancedDetailsData = ({
   const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
     blockchainId,
     controllerAddress,
+    marketType,
   })
   const { data: marketUsers, isLoading: marketUsersLoading } = useMarketUsers({
     endpoint,
