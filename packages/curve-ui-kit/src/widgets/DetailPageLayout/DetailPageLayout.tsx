@@ -81,7 +81,7 @@ export const DetailPageLayout = ({
       container
       data-testid={testId ?? 'detail-page-layout'}
       spacing={PAGE_SPACING}
-      sx={PAGE_MARGIN}
+      sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
       direction={isNewLayout ? 'row-reverse' : 'row'}
     >
       {isMobile && <Grid size={12}>{renderHeader}</Grid>}
