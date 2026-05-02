@@ -127,7 +127,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const [internalValue, setInternalValue, cancelDebounce] = useDebounce<T>({
     initialValue: value,
     debounceMs,
-    callback: useCallback(nextValue => onChange(clampDecimal(nextValue, min, max)), [onChange, min, max]),
+    callback: onChange,
   })
 
   /** The current display values for slider and inputs */
