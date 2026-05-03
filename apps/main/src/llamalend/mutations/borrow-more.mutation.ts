@@ -94,7 +94,7 @@ export const useBorrowMoreMutation = ({
     ...props,
   })
 
-  const onSubmit = useCallback(async (form: BorrowMoreForm) => mutate(form as BorrowMoreMutation), [mutate])
+  const onSubmit = useCallback((form: BorrowMoreForm) => mutate(form as BorrowMoreMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }
 }

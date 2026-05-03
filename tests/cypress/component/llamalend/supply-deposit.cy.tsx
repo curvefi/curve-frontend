@@ -18,6 +18,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -48,7 +49,7 @@ describe('DepositForm (mocked)', () => {
     ({
       approved = true,
       title,
-      buttonText = 'Deposit',
+      buttonText = t`Deposit`,
       disabledMarketController,
       maxDeposit,
       solvencyPercent = 100,

@@ -13,7 +13,7 @@ import { BlockchainIds } from '@ui-kit/utils/network'
 type Props<T extends FieldValues, ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   chainId: ChainId
-  onSubmit: (form: T) => Promise<void>
+  onSubmit: (form: T) => void
   handleFormSubmit: UseFormHandleSubmit<T, T>
 }
 
