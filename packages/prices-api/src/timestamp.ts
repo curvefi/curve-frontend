@@ -42,7 +42,7 @@ function toDate(timestamp: TimestampResponse) {
   return new Date(utcTimestamp)
 }
 
-/** Parses a raw `TimestampResponse` (in any of the formats the Prices API returns) into a serializable and normalized ISO 8601 `Timestamp`. */
+/** Parses a raw `TimestampResponse` (in any of the formats the Prices API returns) into a serializable timestamp in milliseconds to be consumed by `new Date()` */
 export const parseTimestamp = (timestamp: TimestampResponse) => fromDate(toDate(timestamp))
 
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60
