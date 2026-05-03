@@ -2,13 +2,13 @@ import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import {
-  ChartLiquidationRange as ChartLiquidationRangeECharts,
-  type ChartLiquidationRangeProps as ChartLiquidationRangeEChartsProps,
-} from './ChartLiquidationRangeECharts'
+  SmallLiquidationRangeChart as SmallLiquidationRangeChartComponent,
+  type SmallLiquidationRangeChartProps as SmallLiquidationRangeChartComponentProps,
+} from './SmallLiquidationRangeChart'
 
 const { Spacing } = SizesAndSpaces
 
-const healthyPositionData: ChartLiquidationRangeEChartsProps['data'] = [
+const healthyPositionData: SmallLiquidationRangeChartComponentProps['data'] = [
   {
     new: [1550, 1875],
     newLabel: 'LR',
@@ -16,7 +16,7 @@ const healthyPositionData: ChartLiquidationRangeEChartsProps['data'] = [
   },
 ]
 
-const softLiquidationData: ChartLiquidationRangeEChartsProps['data'] = [
+const softLiquidationData: SmallLiquidationRangeChartComponentProps['data'] = [
   {
     new: [1480, 1800],
     newLabel: 'LR',
@@ -24,7 +24,7 @@ const softLiquidationData: ChartLiquidationRangeEChartsProps['data'] = [
   },
 ]
 
-const emptyData: ChartLiquidationRangeEChartsProps['data'] = [
+const emptyData: SmallLiquidationRangeChartComponentProps['data'] = [
   {
     new: [0, 0],
     newLabel: 'LR',
@@ -32,16 +32,16 @@ const emptyData: ChartLiquidationRangeEChartsProps['data'] = [
   },
 ]
 
-const meta: Meta<typeof ChartLiquidationRangeECharts> = {
-  title: 'Llamalend/Widgets/ChartLiquidationRangeECharts',
-  component: ChartLiquidationRangeECharts,
+const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
+  title: 'Llamalend/Widgets/SmallLiquidationRangeChart',
+  component: SmallLiquidationRangeChartComponent,
   decorators: [
-    (Story) => (
+    Story => (
       <Box
         padding={Spacing.sm}
         sx={{
           width: '100%',
-          backgroundColor: (t) => t.design.Layer[1].Fill,
+          backgroundColor: t => t.design.Layer[1].Fill,
         }}
       >
         <Story />
@@ -67,7 +67,7 @@ const meta: Meta<typeof ChartLiquidationRangeECharts> = {
 }
 
 export default meta
-type Story = StoryObj<typeof ChartLiquidationRangeECharts>
+type Story = StoryObj<typeof SmallLiquidationRangeChartComponent>
 
 export const HealthyPosition: Story = {
   args: {

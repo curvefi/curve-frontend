@@ -7,13 +7,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LegendSet, type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { getHealthTrackColor } from '../features/market-position-details/market-position-details.utils'
-
-export interface LiquidationRangeData {
-  new: number[]
-  newLabel?: string
-  oraclePrice: string
-}
+import { getHealthTrackColor } from '../../features/market-position-details/market-position-details.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,16 +22,15 @@ const AXIS_BORDER_WIDTH_PX = 1
 
 type NumberRange = readonly [number, number]
 
-export interface ChartLiquidationRangeProps {
-  data: LiquidationRangeData[]
+export interface SmallLiquidationRangeChartProps {
+  liquidationRanges: {
+    newRange?: NumberRange
+    currentRange?: NumberRange
+  }
+  oraclePrice: number | undefined
   health: number | null | undefined
   softLiquidation?: boolean | null
   showLegend?: boolean
-}
-
-const getRange = (values: number[] = [0, 0]): NumberRange => {
-  const [valueA = 0, valueB = 0] = values
-  return [Math.min(valueA, valueB), Math.max(valueA, valueB)]
 }
 
 const hasRenderableRange = ([min, max]: NumberRange) => Number.isFinite(min) && Number.isFinite(max) && max > min
@@ -63,20 +56,23 @@ const getXAxisDomain = (dataMin: number, dataMax: number, oraclePriceValue: numb
   return max <= min ? ([min, min + 1] as const) : ([min, max] as const)
 }
 
-export const ChartLiquidationRange = ({
-  data,
+export const SmallLiquidationRangeChart = ({
+  liquidationRanges,
+  oraclePrice,
   health,
   softLiquidation,
   showLegend = false,
-}: ChartLiquidationRangeProps) => {
-  const chartData = data[0]
-  const oraclePrice = chartData?.oraclePrice ?? ''
+}: SmallLiquidationRangeChartProps) => {
+  const { newRange, currentRange } = liquidationRanges
   const theme = useTheme()
-  const newRange = useMemo(() => getRange(chartData?.new), [chartData?.new])
-  const haveNewData = hasRenderableRange(newRange)
-  const parsedOraclePrice = oraclePrice ? Number(oraclePrice) : NaN
+  const renderableNewRange = newRange && hasRenderableRange(newRange) ? newRange : undefined
+  const renderableCurrentRange = currentRange && hasRenderableRange(currentRange) ? currentRange : undefined
+  const renderableRange = renderableNewRange ?? renderableCurrentRange
+  const haveRangeData = !!renderableRange
+  const parsedOraclePrice = oraclePrice == null ? NaN : Number(oraclePrice)
   const hasOraclePrice = Number.isFinite(parsedOraclePrice)
-  const isInLiquidationRange = hasOraclePrice && isValueInRange(parsedOraclePrice, newRange)
+  const isInLiquidationRange =
+    hasOraclePrice && renderableRange ? isValueInRange(parsedOraclePrice, renderableRange) : false
   const showFireStyle = isInLiquidationRange && theme.key === 'chad'
 
   const {
@@ -86,11 +82,10 @@ export const ChartLiquidationRange = ({
   const chartAxisLineColor = Color.Neutral[600]
   const chartReferenceLineColor = Color.Primary[300]
   const chartRangeColor = getHealthTrackColor({ health, softLiquidation, theme })
-  // Always use a near-black so the LR text reads against the colored fill in any theme.
   const chartRangeLabelColor = Color.Neutral[950]
 
-  const dataMin = haveNewData ? newRange[0] : 0
-  const dataMax = haveNewData ? newRange[1] : 0
+  const dataMin = renderableRange?.[0] ?? 0
+  const dataMax = renderableRange?.[1] ?? 0
   const [xMin, xMax] = getXAxisDomain(dataMin, dataMax, hasOraclePrice ? parsedOraclePrice : 0)
 
   const option: EChartsOption = useMemo(
@@ -133,22 +128,22 @@ export const ChartLiquidationRange = ({
           lineStyle: { opacity: 0 },
           markArea: {
             silent: true,
-            data: haveNewData
+            data: haveRangeData
               ? [
                   [
                     {
-                      xAxis: newRange[0],
+                      xAxis: renderableRange[0],
                       itemStyle: { color: chartRangeColor },
                       label: {
                         show: true,
                         position: 'inside',
-                        formatter: chartData?.newLabel ?? 'LR',
+                        formatter: 'LR',
                         color: chartRangeLabelColor,
                         fontWeight: 'bold',
                         fontSize: 12,
                       },
                     },
-                    { xAxis: newRange[1] },
+                    { xAxis: renderableRange[1] },
                   ],
                 ]
               : [],
@@ -181,14 +176,13 @@ export const ChartLiquidationRange = ({
     [
       chartAxisLabelColor,
       chartAxisLineColor,
-      chartData?.newLabel,
       chartRangeColor,
       chartRangeLabelColor,
       chartReferenceLineColor,
       hasOraclePrice,
-      haveNewData,
-      newRange,
+      haveRangeData,
       parsedOraclePrice,
+      renderableRange,
       showFireStyle,
       xMax,
       xMin,
@@ -226,7 +220,7 @@ export const ChartLiquidationRange = ({
       </Box>
       {showLegend && (
         <Stack direction="row" gap={Spacing.sm}>
-          {legendPayload.map((item) => (
+          {legendPayload.map(item => (
             <LegendSet key={item.label} {...item} />
           ))}
         </Stack>
