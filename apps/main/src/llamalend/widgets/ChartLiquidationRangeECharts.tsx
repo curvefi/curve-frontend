@@ -1,4 +1,3 @@
-import type { CustomSeriesRenderItem, CustomSeriesRenderItemReturn } from 'echarts'
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo } from 'react'
 import Box from '@mui/material/Box'
@@ -9,31 +8,30 @@ import { t } from '@ui-kit/lib/i18n'
 import { LegendSet, type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getHealthTrackColor } from '../features/market-position-details/market-position-details.utils'
-import type { LiquidationRangeData } from './ChartLiquidationRange'
+
+export interface LiquidationRangeData {
+  new: number[]
+  newLabel?: string
+  oraclePrice: string
+}
 
 const { Spacing } = SizesAndSpaces
 
-const TRACK_HEIGHT_PX = 32 // 2rem
-const AXIS_HEIGHT_PX = 24 // 1.5rem
-const TOP_PADDING_PX = 8 // 0.5rem
-const PRICE_MARKER_TICK_HEIGHT_PX = 4 // 0.25rem
-const PRICE_MARKER_TICK_WIDTH_PX = 2 // 0.125rem
-const PRICE_MARKER_LABEL_GAP_PX = 4 // 0.25rem
+const TRACK_HEIGHT_PX = 24
+const AXIS_HEIGHT_PX = 24
+const TOP_PADDING_PX = 16 // reserves room for the Oracle label above the marker line
+const PRICE_MARKER_TICK_HEIGHT_PX = 6
+const PRICE_MARKER_TICK_WIDTH_PX = 1
+const PRICE_MARKER_LABEL_GAP_PX = 6
 const CHART_BODY_HEIGHT_PX = TRACK_HEIGHT_PX + AXIS_HEIGHT_PX + TOP_PADDING_PX
 const AXIS_BORDER_WIDTH_PX = 1
-const THUMB_LABEL_FONT_SIZE_PX = 12
-const CATEGORY_INDEX = 0
 
 type NumberRange = readonly [number, number]
-type CustomGroupChildren = Extract<NonNullable<CustomSeriesRenderItemReturn>, { type: 'group' }>['children']
-type RectStyle = { fill: string; stroke?: string; lineWidth?: number; opacity?: number }
 
 export interface ChartLiquidationRangeProps {
   data: LiquidationRangeData[]
   health: number | null | undefined
   softLiquidation?: boolean | null
-  height?: number
-  isManage?: boolean
   showLegend?: boolean
 }
 
@@ -69,112 +67,36 @@ export const ChartLiquidationRange = ({
   data,
   health,
   softLiquidation,
-  height = 85,
-  isManage = false,
   showLegend = false,
 }: ChartLiquidationRangeProps) => {
   const chartData = data[0]
   const oraclePrice = chartData?.oraclePrice ?? ''
   const theme = useTheme()
   const newRange = useMemo(() => getRange(chartData?.new), [chartData?.new])
-  const currRange = useMemo(() => getRange(chartData?.curr), [chartData?.curr])
   const haveNewData = hasRenderableRange(newRange)
-  const haveCurrData = isManage && hasRenderableRange(currRange)
   const parsedOraclePrice = oraclePrice ? Number(oraclePrice) : NaN
   const hasOraclePrice = Number.isFinite(parsedOraclePrice)
-  const isInLiquidationRange = hasOraclePrice && isValueInRange(parsedOraclePrice, haveCurrData ? currRange : newRange)
+  const isInLiquidationRange = hasOraclePrice && isValueInRange(parsedOraclePrice, newRange)
   const showFireStyle = isInLiquidationRange && theme.key === 'chad'
-  const chartBodyHeight = showLegend ? CHART_BODY_HEIGHT_PX : height
 
   const {
     design: { Color, Text },
   } = theme
-  const chartAxisColor = Text.TextColors.Secondary
+  const chartAxisLabelColor = Text.TextColors.Tertiary
+  const chartAxisLineColor = Color.Neutral[600]
   const chartReferenceLineColor = Color.Primary[300]
   const chartRangeColor = getHealthTrackColor({ health, softLiquidation, theme })
-  const chartLabelColor = Text.TextColors.Secondary
-  const thumbFontFamily = String(theme.typography.bodyXsBold.fontFamily ?? '')
-  const thumbFontWeight = Number(theme.typography.bodyXsBold.fontWeight) || 700
+  // Always use a near-black so the LR text reads against the colored fill in any theme.
+  const chartRangeLabelColor = Color.Neutral[950]
 
-  const dataValues = [...(haveNewData ? newRange : []), ...(haveCurrData ? currRange : [])]
-  const dataMin = dataValues.length ? Math.min(...dataValues) : 0
-  const dataMax = dataValues.length ? Math.max(...dataValues) : 0
+  const dataMin = haveNewData ? newRange[0] : 0
+  const dataMax = haveNewData ? newRange[1] : 0
   const [xMin, xMax] = getXAxisDomain(dataMin, dataMax, hasOraclePrice ? parsedOraclePrice : 0)
 
-  const option: EChartsOption = useMemo(() => {
-    const [newMin, newMax] = newRange
-    const [currMin, currMax] = currRange
-
-    const renderItem: CustomSeriesRenderItem = (_params, api) => {
-      const children: CustomGroupChildren = []
-      const categoryValue = Number(api.value(4))
-      const [, centerY] = api.coord([newMin, categoryValue])
-
-      const pushRangeRect = (range: NumberRange, style: RectStyle) => {
-        if (!hasRenderableRange(range)) return null
-
-        const [startX] = api.coord([range[0], categoryValue])
-        const [endX] = api.coord([range[1], categoryValue])
-
-        children.push({
-          type: 'rect',
-          silent: true,
-          shape: {
-            x: Math.min(startX, endX),
-            y: centerY - TRACK_HEIGHT_PX / 2,
-            width: Math.abs(endX - startX),
-            height: TRACK_HEIGHT_PX,
-          },
-          style,
-        })
-
-        return { startX, endX }
-      }
-
-      if (haveCurrData) {
-        pushRangeRect(currRange, {
-          fill: chartAxisColor,
-          opacity: 0.16,
-          stroke: chartAxisColor,
-          lineWidth: 2,
-        })
-      }
-
-      const newCoords = haveNewData ? pushRangeRect(newRange, { fill: chartRangeColor }) : null
-
-      if (newCoords) {
-        children.push({
-          type: 'text',
-          silent: true,
-          style: {
-            text: chartData?.newLabel ?? 'LR',
-            x: (newCoords.startX + newCoords.endX) / 2,
-            y: centerY,
-            fill: chartLabelColor,
-            align: 'center',
-            verticalAlign: 'middle',
-            fontSize: THUMB_LABEL_FONT_SIZE_PX,
-            fontFamily: thumbFontFamily,
-            fontWeight: thumbFontWeight,
-          },
-        })
-      }
-
-      return {
-        type: 'group',
-        emphasisDisabled: true,
-        children,
-      }
-    }
-
-    return {
+  const option: EChartsOption = useMemo(
+    () => ({
       animation: false,
-      grid: {
-        left: 0,
-        top: TOP_PADDING_PX,
-        right: 0,
-        bottom: AXIS_HEIGHT_PX,
-      },
+      grid: { left: 0, top: TOP_PADDING_PX, right: 0, bottom: AXIS_HEIGHT_PX },
       xAxis: {
         type: 'value',
         min: xMin,
@@ -182,18 +104,12 @@ export const ChartLiquidationRange = ({
         axisLine: {
           show: true,
           onZero: false,
-          lineStyle: {
-            color: chartLabelColor,
-            width: AXIS_BORDER_WIDTH_PX,
-          },
+          lineStyle: { color: chartAxisLineColor, width: AXIS_BORDER_WIDTH_PX },
         },
         axisTick: {
           show: true,
           length: PRICE_MARKER_TICK_HEIGHT_PX,
-          lineStyle: {
-            color: chartLabelColor,
-            width: PRICE_MARKER_TICK_WIDTH_PX,
-          },
+          lineStyle: { color: chartAxisLineColor, width: PRICE_MARKER_TICK_WIDTH_PX },
         },
         splitLine: { show: false },
         axisLabel: {
@@ -201,90 +117,83 @@ export const ChartLiquidationRange = ({
           showMaxLabel: true,
           alignMinLabel: 'left',
           alignMaxLabel: 'right',
-          color: chartAxisColor,
+          color: chartAxisLabelColor,
           hideOverlap: true,
           margin: PRICE_MARKER_LABEL_GAP_PX,
           formatter: (tick: number) => `${formatNumber(tick, { ...(tick > 10 && { decimals: 0 }) })}`,
         },
       },
-      yAxis: {
-        type: 'category',
-        data: [chartData?.name ?? ''],
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-      },
+      yAxis: { type: 'value', min: 0, max: 1, show: false },
       series: [
         {
-          name: 'range',
-          type: 'custom',
-          coordinateSystem: 'cartesian2d',
-          data: [[newMin, newMax, currMin, currMax, CATEGORY_INDEX]],
-          encode: { x: [0, 1, 2, 3], y: 4 },
-          clip: false,
-          renderItem,
-        },
-        ...(hasOraclePrice
-          ? [
-              {
-                name: 'oracle-marker',
-                type: 'line',
-                data: [[parsedOraclePrice, CATEGORY_INDEX]],
-                showSymbol: false,
-                silent: true,
-                lineStyle: {
-                  opacity: 0,
-                },
-                tooltip: {
-                  show: false,
-                },
-                emphasis: {
-                  disabled: true,
-                },
-                markLine: {
-                  silent: true,
-                  symbol: ['none', 'none'],
-                  lineStyle: {
-                    color: chartReferenceLineColor,
-                    width: 1,
-                    opacity: showFireStyle ? 0.2 : 1,
-                    type: 'solid',
-                  },
-                  label: {
-                    show: true,
-                    formatter: t`Oracle`,
-                    position: 'start',
-                    color: chartReferenceLineColor,
-                    fontSize: 11,
-                    fontWeight: 'bold',
-                    distance: 2,
-                  },
-                  data: [{ xAxis: parsedOraclePrice }],
-                },
+          type: 'line',
+          data: [[xMin, 0]],
+          showSymbol: false,
+          silent: true,
+          lineStyle: { opacity: 0 },
+          markArea: {
+            silent: true,
+            data: haveNewData
+              ? [
+                  [
+                    {
+                      xAxis: newRange[0],
+                      itemStyle: { color: chartRangeColor },
+                      label: {
+                        show: true,
+                        position: 'inside',
+                        formatter: chartData?.newLabel ?? 'LR',
+                        color: chartRangeLabelColor,
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
+                    },
+                    { xAxis: newRange[1] },
+                  ],
+                ]
+              : [],
+          },
+          ...(hasOraclePrice && {
+            markLine: {
+              silent: true,
+              symbol: ['none', 'none'],
+              lineStyle: {
+                color: chartReferenceLineColor,
+                width: 1,
+                opacity: showFireStyle ? 0.2 : 1,
+                type: 'solid',
               },
-            ]
-          : []),
+              label: {
+                show: true,
+                formatter: t`Oracle`,
+                position: 'end',
+                color: chartReferenceLineColor,
+                fontSize: 11,
+                fontWeight: 'bold',
+                distance: 2,
+              },
+              data: [{ xAxis: parsedOraclePrice }],
+            },
+          }),
+        },
       ],
-    }
-  }, [
-    chartAxisColor,
-    chartData?.name,
-    chartData?.newLabel,
-    chartLabelColor,
-    chartRangeColor,
-    chartReferenceLineColor,
-    currRange,
-    hasOraclePrice,
-    haveCurrData,
-    haveNewData,
-    newRange,
-    parsedOraclePrice,
-    showFireStyle,
-    thumbFontFamily,
-    thumbFontWeight,
-    xMax,
-    xMin,
-  ])
+    }),
+    [
+      chartAxisLabelColor,
+      chartAxisLineColor,
+      chartData?.newLabel,
+      chartRangeColor,
+      chartRangeLabelColor,
+      chartReferenceLineColor,
+      hasOraclePrice,
+      haveNewData,
+      newRange,
+      parsedOraclePrice,
+      showFireStyle,
+      xMax,
+      xMin,
+    ],
+  )
 
   const legendPayload: LegendItem[] = [
     {
@@ -298,17 +207,12 @@ export const ChartLiquidationRange = ({
   ]
 
   return (
-    <Stack
-      sx={{
-        width: '100%',
-        height: `${height}px`,
-      }}
-    >
+    <Stack sx={{ width: '100%' }}>
       <Box
         sx={{
           width: '100%',
-          height: `${chartBodyHeight}px`,
-          minHeight: `${chartBodyHeight}px`,
+          height: `${CHART_BODY_HEIGHT_PX}px`,
+          minHeight: `${CHART_BODY_HEIGHT_PX}px`,
         }}
       >
         <ReactECharts
@@ -316,7 +220,7 @@ export const ChartLiquidationRange = ({
           notMerge
           lazyUpdate
           autoResize
-          style={{ width: '100%', height: chartBodyHeight }}
+          style={{ width: '100%', height: CHART_BODY_HEIGHT_PX }}
           opts={{ renderer: 'svg' }}
         />
       </Box>
