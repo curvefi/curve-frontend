@@ -82,7 +82,7 @@ const oneLendingPool = (
       rebasing_yield_apr: null,
     },
     extra_reward_apr: [],
-    created_at: fromDate(oneDate()) as unknown as TimestampResponse,
+    created_at: (fromDate(oneDate()) * 1000) as unknown as TimestampResponse,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }
