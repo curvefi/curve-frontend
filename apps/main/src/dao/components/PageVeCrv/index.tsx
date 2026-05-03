@@ -16,6 +16,8 @@ import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLay
 import { FormCrvLocker } from './components/FormCrvLocker'
 import { WrongNetwork } from './WrongNetwork'
 
+const MAX_WIDTH = '30rem' as const // Temporary hard coded with, in the future this'll get a redesign
+
 export const VeCrv = () => {
   const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
   const { curveApi = null, connectState } = useCurve()
@@ -36,7 +38,7 @@ export const VeCrv = () => {
 
   return (
     <DetailPageLayout formTabs={null} testId="vecrv-page">
-      <Stack margin="auto" maxWidth="30rem" sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Stack margin="auto" maxWidth={MAX_WIDTH} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         <BoxHeader className="title-text">
           <IconButton hidden />
           {t`CRV Locker`}
