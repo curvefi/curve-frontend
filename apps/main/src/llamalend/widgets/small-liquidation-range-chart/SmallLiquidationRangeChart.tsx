@@ -35,9 +35,6 @@ export interface SmallLiquidationRangeChartProps {
 
 const hasRenderableRange = ([min, max]: NumberRange) => Number.isFinite(min) && Number.isFinite(max) && max > min
 
-const isValueInRange = (value: number, range: NumberRange) =>
-  Number.isFinite(value) && hasRenderableRange(range) && value >= range[0] && value < range[1]
-
 const getXAxisDomain = (dataMin: number, dataMax: number, oraclePriceValue: number) => {
   const min = Math.floor(dataMin - dataMin * 0.1)
 
@@ -71,9 +68,6 @@ export const SmallLiquidationRangeChart = ({
   const haveRangeData = !!renderableRange
   const parsedOraclePrice = oraclePrice == null ? NaN : Number(oraclePrice)
   const hasOraclePrice = Number.isFinite(parsedOraclePrice)
-  const isInLiquidationRange =
-    hasOraclePrice && renderableRange ? isValueInRange(parsedOraclePrice, renderableRange) : false
-  const showFireStyle = isInLiquidationRange && theme.key === 'chad'
 
   const {
     design: { Color, Text },
@@ -155,7 +149,7 @@ export const SmallLiquidationRangeChart = ({
               lineStyle: {
                 color: chartReferenceLineColor,
                 width: 1,
-                opacity: showFireStyle ? 0.2 : 1,
+                opacity: 1,
                 type: 'solid',
               },
               label: {
@@ -183,7 +177,6 @@ export const SmallLiquidationRangeChart = ({
       haveRangeData,
       parsedOraclePrice,
       renderableRange,
-      showFireStyle,
       xMax,
       xMin,
     ],
