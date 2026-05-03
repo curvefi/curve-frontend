@@ -9,7 +9,7 @@ import {
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { formatDate, formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { VOTES_LABELS } from '../constants'
@@ -81,12 +81,12 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
           <TableData
             className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatLocaleDateFromTimestamp(proposalVote.voteOpen)}
+            {formatDate(proposalVote.voteOpen * 1000)}
           </TableData>
           <TableData
             className={userProposalVotesSortBy.key === 'voteClose' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatLocaleDateFromTimestamp(proposalVote.voteClose)}
+            {formatDate(proposalVote.voteClose * 1000)}
           </TableData>
         </TableRowWrapper>
       )}

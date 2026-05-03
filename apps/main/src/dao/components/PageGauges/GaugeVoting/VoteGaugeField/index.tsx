@@ -8,7 +8,7 @@ import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
-import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
+import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 import { NumberField } from './NumberField'
@@ -151,7 +151,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
             {t`Updating vote available on:`} <br />
-            <strong>{formatDate(convertToLocaleTimestamp(new Date(userGaugeVoteNextTime).getTime()), 'long')}</strong>
+            <strong>{formatDate(userGaugeVoteNextTime, 'long')}</strong>
             <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
           </VoteOnCooldown>
         </Box>

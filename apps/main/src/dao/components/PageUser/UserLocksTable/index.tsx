@@ -5,7 +5,7 @@ import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import { LockType } from '@curvefi/prices-api/dao/models'
-import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils'
+import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LOCKS_LABELS } from '../constants'
 
@@ -60,10 +60,10 @@ export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
             {formatNumber(Number(lock.amount))}
           </TableData>
           <TableData className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatLocaleDateFromTimestamp(lock.timestamp / 1000)}
+            {formatDate(lock.timestamp)}
           </TableData>
           <TableData className={userLocksSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}>
-            {lock.unlockTime ? formatLocaleDateFromTimestamp(lock.unlockTime / 1000) : '-'}
+            {lock.unlockTime ? formatDate(lock.unlockTime) : '-'}
           </TableData>
         </TableRowWrapper>
       )}

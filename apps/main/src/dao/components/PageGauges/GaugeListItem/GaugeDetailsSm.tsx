@@ -6,7 +6,7 @@ import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { formatNumber, convertToLocaleTimestamp, formatDate, scanAddressPath } from '@ui/utils'
+import { formatNumber, formatDate, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
@@ -77,12 +77,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Deployment Date`}</StatTitle>
-          <StatData>
-            {formatDate(
-              new Date(convertToLocaleTimestamp(new Date(parseTimestamp(gaugeData.creation_date)).getTime())),
-              'long',
-            )}
-          </StatData>
+          <StatData>{formatDate(parseTimestamp(gaugeData.creation_date), 'long')}</StatData>
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>

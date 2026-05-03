@@ -7,7 +7,7 @@ import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { UserGaugeVote } from '@curvefi/prices-api/gauge/models'
-import { formatLocaleDateFromTimestamp } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber, shortenAddress } from '@ui-kit/utils'
@@ -56,7 +56,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
         <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableData className="align-left">{gaugeVote.gaugeName}</TableData>
           <TableData className={`right-padding ${userGaugeVotesSortBy.key === 'timestamp' ? 'sortby-active' : ''}`}>
-            {formatLocaleDateFromTimestamp(gaugeVote.timestamp / 1000)}
+            {formatDate(gaugeVote.timestamp)}
           </TableData>
           <TableData
             className={userGaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}
