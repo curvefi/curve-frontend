@@ -86,9 +86,12 @@ export const validateLeverageSupported = (
   })
 }
 
-export const validateLeverageValuesSupported = (marketId: string | null | undefined) => {
+export const validateLeverageValuesSupported = (
+  marketId: LlamaMarketTemplate | string | null | undefined,
+  required = true,
+) => {
   const market = tryGetLlamaMarket(marketId)
-  skipWhen(!market, () => {
+  skipWhen(!market || !required, () => {
     test('marketId', 'Market does not support leverage values', () => {
       enforce(market && hasLeverageValue(market)).isTruthy()
     })
