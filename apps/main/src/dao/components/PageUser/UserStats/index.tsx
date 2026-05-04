@@ -1,9 +1,13 @@
 import { styled } from 'styled-components'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import type { Locker } from '@curvefi/prices-api/dao'
+import Stack from '@mui/material/Stack'
 import { Box } from '@ui/Box'
 import { formatNumber, formatDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 interface UserStatsProps {
   veCrvHolder: Locker
@@ -11,7 +15,7 @@ interface UserStatsProps {
 }
 
 export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
-  <Wrapper>
+  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
     <h4>{t`USER STATS`}</h4>
     <MetricsContainer>
       <MetricsComp
@@ -37,17 +41,8 @@ export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         data={<MetricsColumnData>{formatNumber(veCrvHolder.weightRatio)}%</MetricsColumnData>}
       />
     </MetricsContainer>
-  </Wrapper>
+  </Stack>
 )
-
-const Wrapper = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3) var(--spacing-3);
-  border-bottom: 1px solid var(--gray-500a20);
-`
 
 const MetricsContainer = styled(Box)`
   display: grid;

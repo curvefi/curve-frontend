@@ -14,6 +14,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
@@ -128,7 +129,17 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
-          message={`${t`Max borrow amount:`} ${max.debt.data ?? '-'} ${borrowToken?.symbol}`}
+          message={
+            <Balance
+              inline
+              prefix={t`Max borrow amount:`}
+              tooltip={t`Max available to borrow`}
+              symbol={borrowToken?.symbol}
+              balance={max.debt.data}
+              loading={max.debt.isLoading}
+              onClick={() => updateForm(form, { debt: max.debt.data })}
+            />
+          }
         />
       </Stack>
 

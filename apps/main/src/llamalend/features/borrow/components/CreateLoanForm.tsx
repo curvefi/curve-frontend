@@ -13,6 +13,7 @@ import { joinButtonText } from '@primitives/string.utils'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
@@ -21,6 +22,7 @@ import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayo
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
+import { HighLiquidationRiskAlert } from './HighLiquidationRiskAlert'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
@@ -64,6 +66,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     leverage,
     priceImpact,
     solvencyModal: { onConfirm, onClose, isOpen },
+    isHighLiquidationRisk,
   } = useCreateLoanForm({
     market,
     network,
@@ -117,10 +120,20 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           hideBalance
           testId="borrow-debt-input"
           network={network}
-          message={`${t`Max borrow:`} ${values.maxDebt ?? '-'} ${borrowToken?.symbol}`}
+          message={
+            <Balance
+              inline
+              prefix={t`Max borrow:`}
+              tooltip={t`Max borrow`}
+              symbol={borrowToken?.symbol}
+              balance={maxDebt.data}
+              loading={maxDebt.isLoading}
+              onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
+              buttonTestId="borrow-set-debt-to-max"
+            />
+          }
         />
       </Stack>
-
       {!!market && hasLeverage(market) && (
         <LeverageInput
           checked={values.leverageEnabled}
@@ -129,7 +142,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           maxLeverage={maxLeverage.data}
         />
       )}
-
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>
           <AdvancedCreateLoanOptions
@@ -145,6 +157,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       </LoanPresetSelector>
 
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
+      <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
 
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
@@ -153,7 +166,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
         </Button>
       )}
-
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}
@@ -161,7 +173,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         onConfirm={onConfirm}
         tokenSymbol={collateralToken?.symbol}
       />
-
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
     </Form>
   )

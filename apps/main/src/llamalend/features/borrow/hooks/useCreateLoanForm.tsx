@@ -25,9 +25,10 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
-import { invalidateOrRefetchCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
+import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
+import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
@@ -134,6 +135,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
   const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
+  const isHighLiquidationRisk = q(useIsHighLiquidationRisk(params))
 
   const isPending = formState.isSubmitting || isCreating
 
@@ -157,6 +159,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
     isApproved: useCreateLoanIsApproved(params),
     priceImpact,
+    isHighLiquidationRisk,
     formErrors: useFormErrors(formState),
     disabledAlert,
     solvencyModal: {
@@ -173,7 +176,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        await invalidateOrRefetchCreateLoanRouteQueries(route, { ...params, routeId: route?.id })
+        await invalidateCreateLoanRouteQueries(route, params)
       },
     }),
   }

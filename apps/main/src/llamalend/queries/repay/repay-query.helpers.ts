@@ -9,9 +9,7 @@ import type { FieldsOf } from '@ui-kit/lib'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 import { getUserState } from '../user/user-state.query'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'> & {
-  slippage?: RepayQuery['slippage']
-}
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId' | 'slippage'>
 export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 /** Returns true when repayment closes the loan using only debt tokens from the wallet. */
@@ -43,8 +41,7 @@ export function getRepayImplementation(
     if (!hasUserCollateral && !hasStateCollateral)
       return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
     if (hasZapV2(market)) {
-      const route =
-        (routeMeta as RouteMutationMeta) ?? parseMutationRoute(routeId, slippage ?? '0', market.leverageZapV2)
+      const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
       return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, userBorrowed, ...route }]] as const
     }
     if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
@@ -69,6 +66,7 @@ export function getRepayImplementationType(
       userCollateral: userCollateral ?? '0',
       stateCollateral: stateCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
+      slippage: '0', // irrelevant for this specific helper
       routeId: undefined,
     },
     routeMeta,

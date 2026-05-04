@@ -6,11 +6,7 @@ import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  getQueryOptions: getRepayHealthOptions,
-  invalidate: invalidateRepayHealth,
-  refetchQuery: refetchRepayHealth,
-} = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRepayHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -19,6 +15,7 @@ export const {
     userBorrowed = '0',
     userAddress,
     isHealthFull,
+    slippage,
     routeId,
   }: RepayHealthParams) =>
     [
@@ -28,6 +25,7 @@ export const {
       { userCollateral },
       { userBorrowed },
       { isHealthFull },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -37,9 +35,16 @@ export const {
     userBorrowed,
     isHealthFull,
     userAddress,
+    slippage,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
+    const [type, impl] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+      slippage,
+    })
     switch (type) {
       case 'zapV2':
         return (
@@ -56,7 +61,7 @@ export const {
       case 'V2':
         return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isHealthFull)) as Decimal
       case 'deleverage':
-        return (await impl.repayHealth(userCollateral, isHealthFull)) as Decimal
+        return (await impl.repayHealth(stateCollateral, isHealthFull)) as Decimal
       case 'unleveragedMint':
         return (await impl.repayHealth(userBorrowed, isHealthFull)) as Decimal
       case 'unleveragedLend':

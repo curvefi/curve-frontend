@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useStore } from '@/dao/store/useStore'
-import { Box } from '@ui/Box'
+import Box from '@mui/material/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { SpinnerComponent as Spinner } from '../../Spinner'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
@@ -22,21 +22,16 @@ export const DailyLocks = () => {
   }, [getVeCrvLocks, veCrvLocks.locks.length, veCrvLocks.fetchStatus])
 
   return (
-    <Wrapper>
+    <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <BoxTitle>{t`Daily veCRV Locks Last 100 Days`}</BoxTitle>
       <Content>
         {locksFetchLoading && <Spinner height="32.5rem" />}
         {locksFetchError && <ErrorMessage message={t`Error fetching daily veCRV locks`} onClick={getVeCrvLocks} />}
         {locksFetchSuccess && <PositiveAndNegativeBarChart height={520} data={veCrvLocks.locks.slice(256, 356)} />}
       </Content>
-    </Wrapper>
+    </Box>
   )
 }
-
-const Wrapper = styled(Box)`
-  width: 100%;
-  margin-bottom: auto;
-`
 
 const BoxTitle = styled.h4`
   font-size: var(--font-size-3);
