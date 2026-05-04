@@ -61,7 +61,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
       case 'V2':
         return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isHealthFull)) as Decimal
       case 'deleverage':
-        return (await impl.repayHealth(userCollateral, isHealthFull)) as Decimal
+        return (await impl.repayHealth(stateCollateral, isHealthFull)) as Decimal
       case 'unleveragedMint':
         return (await impl.repayHealth(userBorrowed, isHealthFull)) as Decimal
       case 'unleveragedLend':

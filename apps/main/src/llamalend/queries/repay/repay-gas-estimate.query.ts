@@ -59,7 +59,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
       case 'V2':
         return await impl.estimateGas.repay(...args, +slippage)
       case 'deleverage':
-        throw new Error('estimateGas.repay is not supported for deleverage repay')
+        return await impl.estimateGas.repay(...args, +slippage)
       case 'unleveragedLend':
         return await impl.estimateGas.repay(...args)
       case 'unleveragedMint':
