@@ -54,7 +54,7 @@ export const User = () => {
   const { data: userEnsName } = useEnsName({ address: userAddress as Address })
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <DetailPageLayout formTabs={null} testId="user-page">
       <Box>
         <UserHeader userAddress={userAddress} userEnsName={userEnsName} />
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
