@@ -1,3 +1,8 @@
+import {
+  CHART_LINE_DASH_PATTERNS,
+  CHART_REFERENCE_LINE_WIDTH,
+  type ChartLineDashPattern,
+} from '@ui-kit/shared/ui/Chart/chart.utils'
 import { BandsChartPalette, UserBandsPriceRange } from './types'
 
 /**
@@ -6,23 +11,16 @@ import { BandsChartPalette, UserBandsPriceRange } from './types'
  * Includes lineStyle metadata for label styling
  */
 type MarkLine = [{ coord: [number, number] }, { coord: [number, number] }] & {
-  lineStyle: { color: string; type: string; width: number }
+  lineStyle: { color: string; type: ChartLineDashPattern; width: number }
 }
 
 /**
  * Creates a standardized mark line configuration using coord format
  * for proper alignment with custom series rectangles
  */
-const createMarkLine = (
-  xStart: number,
-  xEnd: number,
-  yValue: number,
-  color: string,
-  type = 'dashed',
-  width = 2,
-): MarkLine => {
+const createMarkLine = (xStart: number, xEnd: number, yValue: number, color: string): MarkLine => {
   const line: MarkLine = [{ coord: [xStart, yValue] }, { coord: [xEnd, yValue] }] as MarkLine
-  line.lineStyle = { color, type, width }
+  line.lineStyle = { color, type: CHART_LINE_DASH_PATTERNS.reference, width: CHART_REFERENCE_LINE_WIDTH }
   return line
 }
 

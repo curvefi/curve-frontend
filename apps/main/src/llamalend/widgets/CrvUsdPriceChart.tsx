@@ -15,7 +15,9 @@ import {
   ChartFooter,
   type LegendItem,
   addMovingAverages,
+  CHART_LINE_DASH_PATTERNS,
   EChartsLineChart,
+  type ChartLineDashPattern,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
@@ -33,10 +35,10 @@ export type CrvUsdPriceChartPoint = {
 
 type PriceSeriesKey = 'price' | 'movingAverage' | 'totalAverage'
 
-const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash: string }[] = [
-  { key: 'price', label: t`crvUSD Price`, dash: 'none' },
-  { key: 'movingAverage', label: t`7-day MA Price`, dash: '2 2' },
-  { key: 'totalAverage', label: t`Average Price`, dash: '4 4' },
+const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
+  { key: 'price', label: t`crvUSD Price` },
+  { key: 'movingAverage', label: t`7-day MA Price`, dash: CHART_LINE_DASH_PATTERNS.movingAverage },
+  { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.average },
 ]
 
 export const CrvUsdPriceChart = () => {
