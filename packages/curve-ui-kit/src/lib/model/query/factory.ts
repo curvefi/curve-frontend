@@ -164,10 +164,11 @@ export function queryFactory<
      */
     refetchQuery: (params: TParams) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
     useQuery: (params: TParams, condition?: boolean) => {
-      const options = getQueryOptions(params, condition)
-      const result = useQuery(options)
+      const { enabled, ...options } = getQueryOptions(params, condition)
+      const result = useQuery({ enabled, ...options })
+      const newProperties = { enabled, validation: enabled ? {} : validate(validationSuite, params) }
       // add validation results to the query result via Object.assign so we don't enumerate all react-query properties
-      return Object.assign(result, { validation: options.enabled ? {} : validate(validationSuite, params) })
+      return Object.assign(result, newProperties)
     },
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   } as const

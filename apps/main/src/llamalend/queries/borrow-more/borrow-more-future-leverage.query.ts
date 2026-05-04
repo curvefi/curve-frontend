@@ -63,8 +63,9 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
   validationSuite: borrowMoreLeverageValidationSuite,
 })
 
+/** Returns the future leverage for borrowing more, when `params` are valid. Otherwise, returns the current leverage */
 export function useBorrowMoreLeverage(params: BorrowMoreParams) {
   const current = useUserCurrentLeverage(params)
   const future = useBorrowMoreFutureLeverage(params)
-  return q(future.data == null ? current : future)
+  return q(future.enabled ? future : current)
 }
