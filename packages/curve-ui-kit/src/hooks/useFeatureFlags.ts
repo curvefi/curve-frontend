@@ -16,9 +16,6 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 const isAlpha = () => getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
 // const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New unified create loan form */
-export const useCreateLoanMuiForm = useStableChannel
-
 /** New unified supply/vault forms (deposit/withdraw/claim) */
 export const useLendingMuiForm = useStableChannel
 
