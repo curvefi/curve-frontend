@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode, RefObject } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -10,8 +10,9 @@ import { LlamaMarketColumnId } from '../columns'
 import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 
 type Props = {
-  filterExpanded: boolean
-  setFilterExpanded: Dispatch<SetStateAction<boolean>>
+  refFilters: RefObject<HTMLDivElement | null>
+  filtersOpen: boolean
+  toggleFilters: () => void
   hiddenCount: number
   resetFilters: () => void
   children?: ReactNode
@@ -21,8 +22,9 @@ type Props = {
 } & FilterProps<LlamaMarketColumnId>
 
 export const FilterChip = ({
-  filterExpanded,
-  setFilterExpanded,
+  refFilters,
+  filtersOpen,
+  toggleFilters,
   hiddenCount,
   resetFilters,
   hasFavorites,
@@ -42,11 +44,12 @@ export const FilterChip = ({
     />
   ) : (
     <GridChip
+      ref={refFilters}
       label={t`Filters`}
       selectableChipSize="medium"
-      selected={filterExpanded}
+      selected={filtersOpen}
       icon={<FilterIcon />}
-      toggle={() => setFilterExpanded(prev => !prev)}
+      toggle={toggleFilters}
       data-testid="btn-expand-filters"
     />
   )
