@@ -16,7 +16,9 @@ import {
   ChartFooter,
   type LegendItem,
   addMovingAverages,
+  CHART_LINE_DASH_PATTERNS,
   EChartsLineChart,
+  type ChartLineDashPattern,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
@@ -42,16 +44,16 @@ type MarketHistoricalRatesChartProps = {
   rateMode: RateMode
 }
 
-const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[] = [
-  { key: 'rate', label: t`Borrow APR`, dash: 'none' },
-  { key: 'movingAverage', label: t`7-day MA APR`, dash: '2 2' },
-  { key: 'totalAverage', label: t`Average APR`, dash: '4 4' },
+const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
+  { key: 'rate', label: t`Borrow APR` },
+  { key: 'movingAverage', label: t`7-day MA APR`, dash: CHART_LINE_DASH_PATTERNS.movingAverage },
+  { key: 'totalAverage', label: t`Average APR`, dash: CHART_LINE_DASH_PATTERNS.average },
 ]
 
-const SUPPLY_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[] = [
-  { key: 'rate', label: t`Supply APY`, dash: 'none' },
-  { key: 'movingAverage', label: t`7-day MA APY`, dash: '2 2' },
-  { key: 'totalAverage', label: t`Average APY`, dash: '4 4' },
+const SUPPLY_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
+  { key: 'rate', label: t`Supply APY` },
+  { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.movingAverage },
+  { key: 'totalAverage', label: t`Average APY`, dash: CHART_LINE_DASH_PATTERNS.average },
 ]
 
 export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: MarketHistoricalRatesChartProps) => {

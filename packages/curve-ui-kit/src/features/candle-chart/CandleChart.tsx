@@ -3,6 +3,7 @@ import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
+import { CHART_REFERENCE_LINE_WIDTH } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
@@ -526,7 +527,7 @@ export const CandleChart = ({
     if (!chartRef.current || oraclePriceSeriesRef.current) return
 
     oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
-      lineWidth: 2 as LineWidth,
+      lineWidth: CHART_REFERENCE_LINE_WIDTH as LineWidth,
       priceLineStyle: LineStyle.Dashed,
       visible: false, // Default visibility, will be updated by separate effect
     })

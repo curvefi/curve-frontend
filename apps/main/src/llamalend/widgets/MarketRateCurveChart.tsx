@@ -15,7 +15,9 @@ import { t } from '@ui-kit/lib/i18n'
 import {
   ChartFooter,
   ChartStateWrapper,
+  CHART_LINE_DASH_PATTERNS,
   EChartsLineChart,
+  type ChartLineDashPattern,
   type LegendItem,
   type LineSeriesConfig,
 } from '@ui-kit/shared/ui/Chart'
@@ -32,9 +34,9 @@ export type RateCurveChartPoint = {
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
-const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash: string }[] = [
-  { key: 'borrowApr', label: t`Borrow APR`, dash: 'none' },
-  { key: 'supplyApy', label: t`Supply APY`, dash: '8 8' },
+const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
+  { key: 'borrowApr', label: t`Borrow APR` },
+  { key: 'supplyApy', label: t`Supply APY`, dash: CHART_LINE_DASH_PATTERNS.alternateSeries },
 ]
 
 export const MarketRateCurveChart = ({
@@ -81,7 +83,7 @@ export const MarketRateCurveChart = ({
           value: currentUtilization,
           label: formatPercent(currentUtilization),
           color: Color.Primary[500],
-          dash: '2 2',
+          dash: CHART_LINE_DASH_PATTERNS.movingAverage,
         },
       ),
     [currentUtilization, Color.Primary],
