@@ -4,7 +4,7 @@ import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/m
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-soft-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { hasLeverage } from '@/llamalend/llama.utils'
+import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserPrices } from '@/llamalend/queries/user'
@@ -99,7 +99,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const swapRequired = selectedToken !== borrowToken
+  const showLeverage = selectedToken !== borrowToken && !!market && hasLeverageValue(market)
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
   const { data: maxAmountInBorrowToken } = useTokenAmountConversion({
@@ -139,8 +139,7 @@ export const RepayForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           onSlippageChange={value => updateForm(form, { slippage: value })}
-          hasLeverage={market && hasLeverage(market)}
-          swapRequired={swapRequired}
+          showLeverage={showLeverage}
           routes={routes}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}

@@ -60,5 +60,5 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false, requireLeverageValue: true }),
 })
