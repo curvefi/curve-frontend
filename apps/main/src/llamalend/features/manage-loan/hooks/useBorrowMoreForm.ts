@@ -16,7 +16,7 @@ import {
   getBorrowMoreImplementation,
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import { invalidateOrRefetchBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
+import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
 import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
@@ -152,7 +152,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       enabled: isRouteRequired(market, values.leverageEnabled),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        await invalidateOrRefetchBorrowMoreRouteQueries(route, { ...params, routeId: route?.id })
+        await invalidateBorrowMoreRouteQueries(route, params)
       },
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),

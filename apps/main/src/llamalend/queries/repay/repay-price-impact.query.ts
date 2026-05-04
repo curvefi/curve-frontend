@@ -7,11 +7,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayPriceImpact,
-  invalidate: invalidateRepayPriceImpact,
-  refetchQuery: refetchRepayPriceImpact,
-} = queryFactory({
+export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -19,6 +15,7 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -27,6 +24,7 @@ export const {
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -35,12 +33,14 @@ export const {
     userCollateral,
     userBorrowed,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<Decimal | null> => {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     switch (type) {

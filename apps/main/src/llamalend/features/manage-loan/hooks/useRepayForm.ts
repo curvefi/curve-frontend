@@ -15,7 +15,7 @@ import {
   isRepayLeveraged,
   type RepayFormFields,
 } from '@/llamalend/queries/repay/repay-query.helpers'
-import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
+import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -171,7 +171,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        await invalidateOrRefetchRepayRouteQueries(route, { ...params, routeId: route?.id })
+        await invalidateRepayRouteQueries(route, params)
       },
     }),
     formErrors: useMemo(
