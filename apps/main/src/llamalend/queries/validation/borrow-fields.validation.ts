@@ -123,9 +123,9 @@ export const validateMaxBorrowed = (
       enforce(maxBorrowed).isDecimal()
     })
   })
-  skipWhen(userBorrowed == null || maxBorrowed == null, () => {
+  skipWhen(maxBorrowed == null, () => {
     test('userBorrowed', `The maximum ${label} is ${maxBorrowed}`, () => {
-      enforce(userBorrowed).lessThanOrEquals(maxBorrowed)
+      enforce(userBorrowed ?? '0').lessThanOrEquals(maxBorrowed)
     })
   })
 }
