@@ -7,6 +7,7 @@ import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
+import Box from '@mui/material/Box'
 import { SearchInput } from '@ui/SearchInput'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
@@ -42,7 +43,7 @@ export const GaugesList = () => {
   )
 
   return (
-    <>
+    <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <Header>
         <h3>{t`CURVE GAUGES`}</h3>
         <SortingWrapper>
@@ -106,7 +107,7 @@ export const GaugesList = () => {
           />
         )}
       </GaugeListWrapper>
-    </>
+    </Box>
   )
 }
 

@@ -39,6 +39,7 @@ const meta: Meta<typeof Balance> = {
       control: 'boolean',
       description: 'Whether the component is in a loading state',
     },
+    inline: { control: 'boolean', description: 'Whether the balance should be displayed inline' },
   },
   args: {
     symbol: 'ETH',
@@ -47,6 +48,7 @@ const meta: Meta<typeof Balance> = {
     prefix: undefined,
     tooltip: undefined,
     onClick: undefined,
+    inline: false,
   },
 }
 
@@ -129,6 +131,13 @@ export const Loading: Story = {
 export const CustomTooltip: Story = {
   args: {
     tooltip: 'Yolo',
+  },
+}
+
+export const Inline: Story = {
+  args: {
+    inline: true,
+    prefix: 'Max value:',
   },
 }
 

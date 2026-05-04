@@ -8,7 +8,7 @@ import { decimal } from '@ui-kit/utils'
 /** Converts an amount from one token to another using USD rates as an intermediary. */
 export function useTokenAmountConversion({
   chainId,
-  amountIn,
+  amountIn: { data: amountIn, error: amountError, isLoading: isAmountLoading },
   tokenInAddress,
   tokenOutAddress,
 }: {
@@ -38,12 +38,13 @@ export function useTokenAmountConversion({
   return {
     data: useMemo(
       () =>
-        tokenInUsdRate && tokenOutUsdRate && amountIn.data
-          ? decimal(BigNumber(amountIn.data).times(tokenInUsdRate).div(tokenOutUsdRate))
-          : undefined,
+        tokenInUsdRate &&
+        tokenOutUsdRate &&
+        amountIn &&
+        decimal(BigNumber(amountIn).times(tokenInUsdRate).div(tokenOutUsdRate)),
       [amountIn, tokenInUsdRate, tokenOutUsdRate],
     ),
-    isLoading: tokenInUsdRateLoading || tokenOutUsdRateLoading || amountIn.isLoading,
-    error: tokenInUsdRateError ?? tokenOutUsdRateError ?? amountIn.error,
+    isLoading: tokenInUsdRateLoading || tokenOutUsdRateLoading || isAmountLoading,
+    error: tokenInUsdRateError ?? tokenOutUsdRateError ?? amountError,
   }
 }

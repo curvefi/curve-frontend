@@ -4,6 +4,7 @@ import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useStore } from '@/dao/store/useStore'
 import { SortByFilterProposals, type ProposalListFilter } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
+import Stack from '@mui/material/Stack'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { SearchInput } from '@ui/SearchInput'
@@ -12,6 +13,7 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { invalidateProposals } from '../../entities/proposals-mapper'
 import { useProposalsList } from '../../hooks/useProposalsList'
 import { ProposalsFilters } from './components/ProposalsFilters'
@@ -43,8 +45,8 @@ export const Proposals = () => {
   )
 
   return (
-    <Wrapper>
-      <ProposalsContainer variant="secondary">
+    <DetailPageLayout formTabs={null}>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         <Header>
           <h3 data-testid="proposal-title">{t`PROPOSALS`}</h3>
           <StyledSearchInput
@@ -109,23 +111,10 @@ export const Proposals = () => {
               ))}
           </ProposalsWrapper>
         </Box>
-      </ProposalsContainer>
-    </Wrapper>
+      </Stack>
+    </DetailPageLayout>
   )
 }
-
-const Wrapper = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  margin: var(--spacing-4) auto 0;
-  width: 65rem;
-  max-width: 100%;
-  flex-grow: 1;
-  min-height: 100%;
-  @media (min-width: 49.6875rem) {
-    max-width: 95%;
-  }
-`
 
 const Header = styled.div`
   display: flex;
@@ -138,15 +127,6 @@ const Header = styled.div`
     justify-content: space-between;
     flex-direction: row;
   }
-`
-
-const ProposalsContainer = styled(Box)`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 100%;
-  width: 100%;
-  max-width: 100vw;
 `
 
 const ProposalsWrapper = styled.div`

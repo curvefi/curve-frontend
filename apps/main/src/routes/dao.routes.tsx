@@ -4,13 +4,13 @@ import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
 
 const DaoLayout = lazyRouteComponent(() => import('@/dao/DaoLayout'), 'DaoLayout')
-const PageAnalytics = lazyRouteComponent(() => import('@/dao/components/PageAnalytics/Page'), 'PageAnalytics')
-const PageGauges = lazyRouteComponent(() => import('@/dao/components/PageGauges/Page'), 'PageGauges')
-const PageGauge = lazyRouteComponent(() => import('@/dao/components/PageGauge/Page'), 'PageGauge')
-const PageDao = lazyRouteComponent(() => import('@/dao/components/PageProposals/Page'), 'PageDao')
-const PageProposal = lazyRouteComponent(() => import('@/dao/components/PageProposal/Page'), 'PageProposal')
-const PageUser = lazyRouteComponent(() => import('@/dao/components/PageUser/Page'), 'PageUser')
-const PageVeCrv = lazyRouteComponent(() => import('@/dao/components/PageVeCrv/Page'), 'PageVeCrv')
+const PageAnalytics = lazyRouteComponent(() => import('@/dao/components/PageAnalytics'), 'Analytics')
+const PageGauges = lazyRouteComponent(() => import('@/dao/components/PageGauges'), 'Gauges')
+const PageGauge = lazyRouteComponent(() => import('@/dao/components/PageGauge'), 'Gauge')
+const PageProposals = lazyRouteComponent(() => import('@/dao/components/PageProposals'), 'Proposals')
+const PageProposal = lazyRouteComponent(() => import('@/dao/components/PageProposal'), 'Proposal')
+const PageUser = lazyRouteComponent(() => import('@/dao/components/PageUser'), 'User')
+const PageVeCrv = lazyRouteComponent(() => import('@/dao/components/PageVeCrv'), 'VeCrv')
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -47,7 +47,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/proposals',
-    component: PageDao,
+    component: PageProposals,
     head: () => ({ meta: [{ title: 'Proposals - Curve' }] }),
     ...layoutProps,
   }),
