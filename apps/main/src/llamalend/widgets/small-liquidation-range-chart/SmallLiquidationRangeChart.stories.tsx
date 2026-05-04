@@ -12,12 +12,13 @@ const healthyPositionRanges: SmallLiquidationRangeChartComponentProps['liquidati
   newRange: [1550, 1875],
 }
 
-const softLiquidationRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  newRange: [1480, 1800],
-}
-
 const currentOnlyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
   currentRange: [1525, 1900],
+}
+
+const currentAndNewRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
+  currentRange: [1425, 1800],
+  newRange: [1525, 1900],
 }
 
 const emptyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {}
@@ -43,7 +44,7 @@ const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
     docs: {
       description: {
         component:
-          'MUI and ECharts liquidation range chart for Llamalend action forms. Displays one liquidation band plus oracle price marker.',
+          'MUI and ECharts liquidation range chart for Llamalend action forms. Displays current and proposed liquidation bands plus oracle price marker.',
       },
     },
   },
@@ -51,9 +52,6 @@ const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
   argTypes: {
     liquidationRanges: { control: false },
     oraclePrice: { control: { type: 'number', min: 0, step: 1 } },
-    health: { control: { type: 'number', min: -10, max: 100, step: 1 } },
-    softLiquidation: { control: 'boolean' },
-    showLegend: { control: 'boolean' },
   },
 }
 
@@ -64,9 +62,6 @@ export const HealthyPosition: Story = {
   args: {
     liquidationRanges: healthyPositionRanges,
     oraclePrice: 1950,
-    health: 75,
-    softLiquidation: false,
-    showLegend: true,
   },
   parameters: {
     docs: {
@@ -77,18 +72,15 @@ export const HealthyPosition: Story = {
   },
 }
 
-export const SoftLiquidation: Story = {
+export const NewRangeOnly: Story = {
   args: {
-    liquidationRanges: softLiquidationRanges,
-    oraclePrice: 1620.5,
-    health: 30,
-    softLiquidation: true,
-    showLegend: true,
+    liquidationRanges: healthyPositionRanges,
+    oraclePrice: 1950,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Soft liquidation: oracle price has fallen inside the liquidation range.',
+        story: 'New range only: proposed liquidation range renders as the future liquidation range band.',
       },
     },
   },
@@ -98,9 +90,6 @@ export const CurrentRangeOnly: Story = {
   args: {
     liquidationRanges: currentOnlyRanges,
     oraclePrice: 1975,
-    health: 55,
-    softLiquidation: false,
-    showLegend: true,
   },
   parameters: {
     docs: {
@@ -111,13 +100,25 @@ export const CurrentRangeOnly: Story = {
   },
 }
 
+export const CurrentAndNewRange: Story = {
+  args: {
+    liquidationRanges: currentAndNewRange,
+    oraclePrice: 1975,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Current and new ranges use the same endpoints; the current range remains visible behind the inset new range.',
+      },
+    },
+  },
+}
+
 export const EmptyState: Story = {
   args: {
     liquidationRanges: emptyRanges,
     oraclePrice: undefined,
-    health: 75,
-    softLiquidation: false,
-    showLegend: false,
   },
   parameters: {
     docs: {
