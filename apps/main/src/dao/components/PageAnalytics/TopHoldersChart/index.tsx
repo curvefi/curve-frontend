@@ -7,6 +7,7 @@ import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useStore } from '@/dao/store/useStore'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
+import MuiBox from '@mui/material/Box'
 import { Box } from '@ui/Box'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { t } from '@ui-kit/lib/i18n'
@@ -55,7 +56,7 @@ export const TopLockers = () => {
   ])
 
   return (
-    <Wrapper>
+    <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <TitleRow>
         <BoxTitle>{t`veCRV Holder Distribution`}</BoxTitle>
         <Box flex flexGap="var(--spacing-1)">
@@ -74,14 +75,9 @@ export const TopLockers = () => {
           <TopHoldersBarChartComponent data={[...veCrvHolders.topHolders, othersData]} filter={topHoldersSortBy} />
         )}
       </Content>
-    </Wrapper>
+    </MuiBox>
   )
 }
-
-const Wrapper = styled(Box)`
-  width: 100%;
-  margin-bottom: auto;
-`
 
 const TitleRow = styled.div`
   display: flex;

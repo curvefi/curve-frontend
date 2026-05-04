@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useStore } from '@/dao/store/useStore'
+import MuiBox from '@mui/material/Box'
 import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,47 +24,51 @@ export const VeCrcFees = () => {
   }, [getVeCrvFees, veCrvFees, feesError])
 
   return (
-    <Wrapper>
-      {feesLoading ? (
-        <Spinner height="27.125rem" />
-      ) : (
-        <>
-          <VeCrvFeesChart />
-          <FeesBox flex flexColumn>
-            <FeesTitlesRow>
-              <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
-              <FeesSubtitle>{t`Fees`}</FeesSubtitle>
-            </FeesTitlesRow>
-            {feesLoading && <Spinner height="27.125rem" />}
-            {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
-            {feesReady && (
-              <>
-                <FeesContainer>
-                  {veCrvFees.fees.map(item => (
-                    <FeeRow key={item.timestamp.getTime()}>
-                      <FeeDate>
-                        {formatDate(item.timestamp)}
-                        {item.timestamp > new Date() && <span> {t`(in progress)`}</span>}
-                      </FeeDate>
-                      <FeeData>
-                        {formatNumber(item.feesUsd, {
-                          currency: 'USD',
-                          notation: 'compact',
-                        })}
-                      </FeeData>
-                    </FeeRow>
-                  ))}
-                </FeesContainer>
-                <TotalFees>
-                  <FeeDate>{t`Total Fees:`}</FeeDate>
-                  <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, { currency: 'USD', notation: 'compact' })}</FeeData>
-                </TotalFees>
-              </>
-            )}
-          </FeesBox>
-        </>
-      )}
-    </Wrapper>
+    <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Wrapper>
+        {feesLoading ? (
+          <Spinner height="27.125rem" />
+        ) : (
+          <>
+            <VeCrvFeesChart />
+            <FeesBox flex flexColumn>
+              <FeesTitlesRow>
+                <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
+                <FeesSubtitle>{t`Fees`}</FeesSubtitle>
+              </FeesTitlesRow>
+              {feesLoading && <Spinner height="27.125rem" />}
+              {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
+              {feesReady && (
+                <>
+                  <FeesContainer>
+                    {veCrvFees.fees.map(item => (
+                      <FeeRow key={item.timestamp.getTime()}>
+                        <FeeDate>
+                          {formatDate(item.timestamp)}
+                          {item.timestamp > new Date() && <span> {t`(in progress)`}</span>}
+                        </FeeDate>
+                        <FeeData>
+                          {formatNumber(item.feesUsd, {
+                            currency: 'USD',
+                            notation: 'compact',
+                          })}
+                        </FeeData>
+                      </FeeRow>
+                    ))}
+                  </FeesContainer>
+                  <TotalFees>
+                    <FeeDate>{t`Total Fees:`}</FeeDate>
+                    <FeeData>
+                      {formatNumber(veCrvFees.veCrvTotalFees, { currency: 'USD', notation: 'compact' })}
+                    </FeeData>
+                  </TotalFees>
+                </>
+              )}
+            </FeesBox>
+          </>
+        )}
+      </Wrapper>
+    </MuiBox>
   )
 }
 

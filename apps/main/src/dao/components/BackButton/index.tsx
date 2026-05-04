@@ -22,7 +22,7 @@ export const BackButton = ({ path, label }: BackButtonProps) => {
 }
 
 const BackButtonWrapper = styled(Box)`
-  margin: 0 auto var(--spacing-2) var(--spacing-3);
+  margin: 0 auto 0 0;
 `
 
 const StyledButton = styled(Button)`

@@ -16,9 +16,11 @@ import { IconButton } from '@ui/IconButton'
 import { Spinner, SpinnerWrapper } from '@ui/Spinner'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { breakpoints } from '@ui/utils'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain, copyToClipboard } from '@ui-kit/utils'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { BackButton } from '../BackButton'
 import { ProposalVoteStatusBox } from '../ProposalVoteStatusBox'
 import { UserBox } from '../UserBox'
@@ -28,7 +30,8 @@ import { ProposalHeader } from './ProposalHeader'
 import { ProposalInformation } from './ProposalInformation'
 import { Voters } from './Voters'
 
-export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
+export const Proposal = () => {
+  const { proposalId: rProposalId } = useParams<ProposalUrlParams>()
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const proposalType = voteType.toLowerCase() as ProposalType
   const { address: userAddress } = useConnection()
@@ -84,7 +87,7 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
   )
 
   return (
-    <Wrapper>
+    <DetailPageLayout formTabs={null}>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_PROPOSALS)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
@@ -196,22 +199,9 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
           )}
         </SecondColumnBox>
       </Box>
-    </Wrapper>
+    </DetailPageLayout>
   )
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: var(--spacing-4) auto var(--spacing-6);
-  width: 65rem;
-  max-width: 100%;
-  flex-grow: 1;
-  min-height: 100%;
-  @media (min-width: 34.375rem) {
-    max-width: 95%;
-  }
-`
 
 const ProposalContainer = styled(Box)`
   display: flex;
