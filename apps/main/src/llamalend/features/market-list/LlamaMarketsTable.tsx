@@ -2,19 +2,23 @@ import { useMemo, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
-import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
+import { TableButton } from '@ui-kit/shared/ui/DataTable/TableButton'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
+import { FilterChip } from './chips/FilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
+import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
@@ -37,6 +41,8 @@ export const LlamaMarketsTable = ({
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
   const data = useMemo(() => markets ?? [], [markets])
+  const [filterExpanded, setFilterExpanded] = useFilterExpanded(LOCAL_STORAGE_KEY)
+  const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
     { columns: LlamaMarketColumnId },
@@ -84,30 +90,32 @@ export const LlamaMarketsTable = ({
     >
       <TableFilters<LlamaMarketColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        loading={loading}
-        onReload={onReload}
+        filterExpanded={filterExpanded}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
-        hasSearchBar
         disableSearchAutoFocus
         searchText={globalFilter}
         onSearch={setGlobalFilter}
-        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
-        chips={
-          <>
-            <LlamaChainFilterChips data={data} {...filterProps} />
-            <LlamaListChips
-              hiddenCount={getHiddenCount(table)}
-              resetFilters={resetFilters}
-              hasFavorites={hasFavorites}
-              onSortingChange={onSortingChange}
-              sortField={sortField}
-              data={data}
-              {...filterProps}
-            />
-          </>
+        header={
+          <TableFiltersHeader
+            title={t`Markets`}
+            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
+          />
         }
+        collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
+        filterChip={
+          <FilterChip
+            filterExpanded={filterExpanded}
+            setFilterExpanded={setFilterExpanded}
+            hiddenCount={getHiddenCount(table)}
+            resetFilters={resetFilters}
+            hasFavorites={hasFavorites}
+            data={data}
+            {...filterProps}
+          />
+        }
+        sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
+        chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
       />
     </DataTable>
   )

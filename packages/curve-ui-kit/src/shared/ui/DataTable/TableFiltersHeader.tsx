@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const NewTableFiltersHeader = ({ title, rightChildren }: { title: string; rightChildren?: ReactNode }) => (
+export const TableFiltersHeader = ({ title, rightChildren }: { title: string; rightChildren?: ReactNode }) => (
   <Stack
     direction="row"
     justifyContent="space-between"

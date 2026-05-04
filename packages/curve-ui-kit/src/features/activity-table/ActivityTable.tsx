@@ -2,9 +2,9 @@ import { Box } from '@mui/material'
 import type { Row, Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -34,7 +34,7 @@ export const ActivityTable = <TData extends TableItem>({
 
   return (
     <Box minHeight={height}>
-      <DataTable
+      <LegacyDataTable
         table={table}
         emptyState={
           <EmptyStateRow table={table} size="lg">

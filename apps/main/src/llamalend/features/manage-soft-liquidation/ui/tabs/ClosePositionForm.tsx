@@ -8,8 +8,8 @@ import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -68,7 +68,7 @@ export const ClosePositionForm = ({
         />
       }
     >
-      <DataTable<ClosePositionRow>
+      <LegacyDataTable<ClosePositionRow>
         table={table}
         emptyState={
           <EmptyStateRow table={table}>
