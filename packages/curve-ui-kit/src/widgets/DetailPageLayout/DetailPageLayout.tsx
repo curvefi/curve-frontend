@@ -55,11 +55,13 @@ export const DetailPageLayout = ({
   header,
   children,
   footer,
+  testId,
 }: {
   formTabs: ReactNode
   header?: ReactNode
   children?: ReactNode
   footer?: ReactNode
+  testId?: string
 }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const isNewLayout = useRightFormTabsLayout()
@@ -77,9 +79,9 @@ export const DetailPageLayout = ({
   return (
     <Grid
       container
-      data-testid="detail-page-layout"
+      data-testid={testId ?? 'detail-page-layout'}
       spacing={PAGE_SPACING}
-      sx={PAGE_MARGIN}
+      sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
       direction={isNewLayout ? 'row-reverse' : 'row'}
     >
       {isMobile && <Grid size={12}>{renderHeader}</Grid>}

@@ -28,7 +28,6 @@ export const {
   useQuery: useBorrowMoreExpectedCollateral,
   queryKey: getBorrowMoreExpectedCollateralKey,
   invalidate: invalidateBorrowMoreExpectedCollateral,
-  refetchQuery: refetchBorrowMoreExpectedCollateral,
 } = queryFactory({
   queryKey: ({
     chainId,
@@ -68,6 +67,7 @@ export const {
       debt,
       leverageEnabled,
       routeId,
+      slippage,
     })
     if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
     return type === 'zapV2'

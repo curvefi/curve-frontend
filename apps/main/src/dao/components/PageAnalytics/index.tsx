@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { styled } from 'styled-components'
 import { useStore } from '@/dao/store/useStore'
-import { Box } from '@ui/Box'
+import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { CrvStats } from './CrvStats'
 import { DailyLocks } from './DailyLocksChart'
 import { TopHoldersTable as HoldersTable } from './HoldersTable'
@@ -29,46 +30,19 @@ export const Analytics = () => {
   }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
   return (
-    <Wrapper>
-      <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
-        <CrvStats />
-        <Box>
-          <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
-
-          <Container variant="secondary">
-            {tab === 'fees' && <VeCrvFees />}
-            {tab === 'holders' && (
-              <Box flex flexColumn flexGap="var(--spacing-2)">
-                <TopHolders />
-                <HoldersTable />
-              </Box>
-            )}
-            {tab === 'locks' && <DailyLocks />}
-          </Container>
-        </Box>
-      </Box>
-    </Wrapper>
+    <DetailPageLayout formTabs={null} testId="analytics-page">
+      <CrvStats />
+      <Stack>
+        <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
+        {tab === 'fees' && <VeCrvFees />}
+        {tab === 'holders' && (
+          <Stack gap={PAGE_SPACING}>
+            <TopHolders />
+            <HoldersTable />
+          </Stack>
+        )}
+        {tab === 'locks' && <DailyLocks />}
+      </Stack>
+    </DetailPageLayout>
   )
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: var(--spacing-4) auto var(--spacing-6);
-  width: 65rem;
-  max-width: 100%;
-  flex-grow: 1;
-  min-height: 100%;
-  @media (min-width: 34.375rem) {
-    max-width: 95%;
-  }
-`
-
-const Container = styled(Box)`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  border: none;
-`

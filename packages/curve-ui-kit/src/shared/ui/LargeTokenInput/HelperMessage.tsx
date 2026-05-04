@@ -26,6 +26,8 @@ const getTextColor = (t: Theme, isError?: boolean) =>
 /**
  * Injects clickable BalanceButton components around numbers in the message.
  * Important: This only works for unformatted numbers!
+ * This was introduced to be able to pass information from the validation suites, which can't use a structured format.
+ * It can incorrectly mark numbers that are not meant to be clickable, such as numbers in an URL.
  */
 const buildClickableMessage = (
   message: string,

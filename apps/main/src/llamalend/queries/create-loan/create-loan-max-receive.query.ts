@@ -48,7 +48,6 @@ export const {
   useQuery: useCreateLoanMaxReceive,
   queryKey: createLoanMaxReceiveKey,
   invalidate: invalidateCreateLoanMaxReceive,
-  refetchQuery: refetchCreateLoanMaxReceive,
 } = queryFactory({
   queryKey: ({
     chainId,

@@ -8,11 +8,7 @@ import { q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
 /** Query to get expected leverage after borrow more with leverage enabled. */
-export const {
-  useQuery: useBorrowMoreFutureLeverage,
-  invalidate: invalidateBorrowMoreFutureLeverage,
-  refetchQuery: refetchBorrowMoreFutureLeverage,
-} = queryFactory({
+export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorrowMoreFutureLeverage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

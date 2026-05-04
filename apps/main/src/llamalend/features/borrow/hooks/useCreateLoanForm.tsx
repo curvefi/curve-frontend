@@ -23,9 +23,10 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
-import { invalidateOrRefetchCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
+import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
+import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 const userDefaultValues = {
@@ -122,6 +123,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
   const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
+  const isHighLiquidationRisk = q(useIsHighLiquidationRisk(params))
 
   const isPending = formState.isSubmitting || isCreating
   const isDisabled =
@@ -144,6 +146,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
     isApproved: useCreateLoanIsApproved(params),
     priceImpact,
+    isHighLiquidationRisk,
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
@@ -154,7 +157,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        await invalidateOrRefetchCreateLoanRouteQueries(route, { ...params, routeId: route?.id })
+        await invalidateCreateLoanRouteQueries(route, params)
       },
     }),
   }

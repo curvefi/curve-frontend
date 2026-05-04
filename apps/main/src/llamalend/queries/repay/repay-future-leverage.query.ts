@@ -5,11 +5,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayFutureLeverage,
-  invalidate: invalidateRepayFutureLeverage,
-  refetchQuery: refetchRepayFutureLeverage,
-} = queryFactory({
+export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutureLeverage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -64,5 +60,5 @@ export const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false, requireLeverageValue: true }),
 })
