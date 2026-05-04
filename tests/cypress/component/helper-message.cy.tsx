@@ -15,9 +15,9 @@ type TestCase = {
 const testCases: TestCase[] = [
   {
     name: 'matches standalone negative and fractional values',
-    message: 'Insufficient balance: available -12.5, required 3.75.',
+    message: 'Insufficient balance: available -12.4999999, required 3.75.',
     expectedMatches: [
-      { raw: '-12.5', text: '-12.50' },
+      { raw: '-12.4999999', text: '-12.50' },
       { raw: '3.75', text: '3.75' },
     ],
   },
@@ -59,13 +59,12 @@ describe('HelperMessage', () => {
 
       cy.get('[data-testid^="helper-message-number-"]').should('have.length', expectedMatches.length)
 
-      expectedMatches.forEach(({ raw, text }, index) =>
-        cy
-          .get(`[data-testid="helper-message-number-${index}"]`)
+      expectedMatches.forEach(({ raw, text }, index) => {
+        cy.get(`[data-testid="helper-message-number-${index}"]`)
           .should('have.attr', 'data-value', raw)
           .and('have.text', text)
-          .click(),
-      )
+        cy.get(`[data-testid="helper-message-number-${index}"]`).click()
+      })
 
       cy.then(() => {
         expect(onNumberClick).to.have.callCount(expectedMatches.length)
