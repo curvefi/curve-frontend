@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 /**
- * A column wrapper for table filters that provides consistent spacing and an optional title.
+ * A wrapper for the table filters that provides consistent spacing and an optional title.
  */
 export const TableFilterItem = ({ title, children }: { title: ReactNode; children: ReactNode }) => (
   <Stack>
