@@ -17,7 +17,7 @@ export const submitDepositForm = ({ solvencyPercent = 100 }: { solvencyPercent?:
 }
 
 export const confirmLowSolvencyDepositForm = () => {
-  cy.get('[data-testid="supply-deposit-submit-button"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="supply-deposit-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled').click()
   cy.get('[data-testid="low-solvency-action-checkbox"]').click()
   cy.get('[data-testid="low-solvency-action-submit-button"]').click()
   return cy

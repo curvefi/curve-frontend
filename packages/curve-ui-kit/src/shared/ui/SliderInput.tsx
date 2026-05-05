@@ -1,4 +1,4 @@
-import { clamp, sortBy } from 'lodash'
+import { sortBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
@@ -75,13 +75,6 @@ const sliderInputMaxWidthMap: Record<NonNullable<SliderInputProps<Decimal>['layo
  */
 const apply = <T, R>(value: T | [T, T], fn: (v: T) => R): R | [R, R] =>
   Array.isArray(value) ? [fn(value[0]), fn(value[1])] : fn(value)
-
-/** Clamps a Decimal or Decimal range between min and max bounds */
-const clampDecimal = <T extends Decimal | DecimalRangeValue>(
-  value: Decimal | DecimalRangeValue,
-  min: number,
-  max: number,
-): T => apply(value, v => decimal(clamp(Number(v), min, max))) as T
 
 const isRangeValue = (value: Decimal | DecimalRangeValue): value is DecimalRangeValue => Array.isArray(value)
 
