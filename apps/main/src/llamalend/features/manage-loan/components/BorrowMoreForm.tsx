@@ -5,6 +5,7 @@ import type { UserCollateralEvents } from '@/llamalend/features/user-position-hi
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -12,6 +13,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
@@ -44,11 +46,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     values,
     params,
     isPending,
+    isLoading,
     onSubmit,
     isDisabled,
     borrowToken,
     collateralToken,
-    borrowError,
+    error,
     isApproved,
     formErrors,
     routes,
@@ -56,6 +59,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     leverage,
     isLeverageEnabled,
     priceImpact,
+    disabledAlert,
+    solvencyModal: { onConfirm, onClose, isOpen },
   } = useBorrowMoreForm({
     market,
     network,
@@ -149,35 +154,47 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
 
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.maxLeverage)} />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid="borrow-more-submit-button"
-        data-validation={JSON.stringify({
-          hasMarket: !!market,
-          isLeverageEnabled,
-          isPending,
-          isDisabled,
-          isValid: form.formState.isValid,
-          isSubmitting: form.formState.isSubmitting,
-          isApproved: q(isApproved),
-          formErrors,
-          rawFormErrors: Object.entries(form.formState.errors),
-          dirtyFields: form.formState.dirtyFields,
-        })}
-      >
-        {isPending
-          ? t`Processing...`
-          : joinButtonText(
-              Number(values.userCollateral) && t`Add`,
-              isApproved?.data === false && t`Approve`,
-              t`Borrow More`,
-            )}
-      </Button>
+      {disabledAlert ? (
+        <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
+      ) : (
+        <Button
+          type="submit"
+          loading={isLoading}
+          disabled={isDisabled}
+          data-testid="borrow-more-submit-button"
+          data-validation={JSON.stringify({
+            hasMarket: !!market,
+            isLeverageEnabled,
+            isPending,
+            isDisabled,
+            isValid: form.formState.isValid,
+            isSubmitting: form.formState.isSubmitting,
+            isApproved: q(isApproved),
+            formErrors,
+            rawFormErrors: Object.entries(form.formState.errors),
+            dirtyFields: form.formState.dirtyFields,
+          })}
+        >
+          {isPending
+            ? t`Processing...`
+            : joinButtonText(
+                Number(values.userCollateral) && t`Add`,
+                isApproved?.data === false && t`Approve`,
+                t`Borrow More`,
+              )}
+        </Button>
+      )}
+
+      <LowSolvencyActionModal
+        action="borrow"
+        open={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        tokenSymbol={collateralToken?.symbol}
+      />
 
       <FormAlerts
-        error={borrowError}
+        error={error}
         formErrors={formErrors}
         handledErrors={notFalsy(
           'userCollateral',
