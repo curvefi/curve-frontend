@@ -35,7 +35,7 @@ const BoxedData = styled.span<{ isKilled?: boolean; isNetwork?: boolean }>`
   ${({ isNetwork }) =>
     isNetwork &&
     `
-      color: var(--primary-400);
-      border: 1px solid var(--primary-400);
+      color: var(--link-400);
+      border: 1px solid var(--link-400);
     `}
 `
