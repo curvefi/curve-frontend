@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
 import { useEnsName } from 'wagmi'
 import { useStore } from '@/dao/store/useStore'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
+import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
-import { Box } from '@ui/Box'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { UserGaugeVotesTable } from './UserGaugeVotesTable'
 import { UserHeader } from './UserHeader'
 import { UserLocksTable } from './UserLocksTable'
@@ -21,11 +22,8 @@ const tabs: TabOption<Tab>[] = [
   { value: 'locks', label: t`User Locks` },
 ]
 
-type UserPageProps = {
-  routerParams: UserUrlParams
-}
-
-export const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
+export const User = () => {
+  const { userAddress: rUserAddress } = useParams<UserUrlParams>()
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
   const [tab, setTab] = useState<Tab>('proposals')
@@ -56,49 +54,18 @@ export const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPa
   const { data: userEnsName } = useEnsName({ address: userAddress as Address })
 
   return (
-    <Wrapper>
-      <UserPageContainer variant="secondary">
+    <DetailPageLayout formTabs={null} testId="user-page">
+      <Box>
         <UserHeader userAddress={userAddress} userEnsName={userEnsName} />
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
-      </UserPageContainer>
+      </Box>
+
       <Box>
         <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
-
-        <Container variant="secondary">
-          {tab === 'proposals' && <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
-          {tab === 'gauge_votes' && <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
-          {tab === 'locks' && <UserLocksTable userAddress={userAddress} />}
-        </Container>
+        {tab === 'proposals' && <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+        {tab === 'gauge_votes' && <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+        {tab === 'locks' && <UserLocksTable userAddress={userAddress} />}
       </Box>
-    </Wrapper>
+    </DetailPageLayout>
   )
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: var(--spacing-4) auto var(--spacing-6);
-  width: 65rem;
-  max-width: 100%;
-  flex-grow: 1;
-  min-height: 100%;
-  gap: var(--spacing-3);
-  @media (min-width: 34.375rem) {
-    max-width: 95%;
-  }
-`
-
-const UserPageContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`
-
-const Container = styled(Box)`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  border: none;
-`

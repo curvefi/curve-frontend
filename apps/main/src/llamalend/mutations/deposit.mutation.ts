@@ -68,7 +68,7 @@ export const useDepositMutation = ({
     ...props,
   })
 
-  const onSubmit = useCallback(async (form: DepositForm) => mutate(form as DepositMutation), [mutate])
+  const onSubmit = useCallback((form: DepositForm) => mutate(form as DepositMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }
 }

@@ -17,7 +17,7 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
             <TooltipData>
               {formatDate(timestamp)}
-              {timestamp > new Date() && <strong> {t`(in progress)`}</strong>}
+              {new Date(timestamp) > new Date() && <strong> {t`(in progress)`}</strong>}
             </TooltipData>
           </TooltipColumn>
         </Box>

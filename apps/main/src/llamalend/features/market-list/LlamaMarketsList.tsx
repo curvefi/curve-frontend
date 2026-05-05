@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -41,6 +42,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
     void Promise.all([
       invalidateLendingVaults({}),
       invalidateMintMarkets({}),
+      invalidateBadDebtMarkets(),
       invalidateAllUserLendingVaults(userAddress),
       invalidateAllUserLendingSupplies(userAddress),
       invalidateAllUserMintMarkets(userAddress),
@@ -61,11 +63,11 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const showDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
+  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
   const { data, isError, isLoading, isFetching } = useLlamaMarkets({
     userAddress: address,
     enableLLv2: useLLv2(),
-    showDeprecatedMarkets,
+    enableDeprecatedMarkets,
   })
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false

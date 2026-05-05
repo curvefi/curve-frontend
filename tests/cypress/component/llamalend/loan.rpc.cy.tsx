@@ -9,6 +9,7 @@ import {
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import {
+  checkLeverageCheckbox,
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,
   oneLoanTestMarket,
@@ -67,6 +68,7 @@ testCases.forEach(
     improveHealth,
     chainId,
     hasLeverage,
+    hasLeverageManagement,
     label,
     marketType,
   }) => {
@@ -119,7 +121,7 @@ testCases.forEach(
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
-        writeCreateLoanForm({ collateral, borrow, leverageEnabled })
+        writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
         checkLoanDetailsLoaded({ leverageEnabled })
         // we need to pass checkMessage=false because the form is unmounted as soon as the transaction is submitted
         submitCreateLoanForm({ checkMessage: false }).then(() => expect(onPricesUpdated).to.be.called)
@@ -128,7 +130,7 @@ testCases.forEach(
 
       it(`borrows more`, () => {
         cy.mount(<LoanTestWrapper tab="borrow-more" />)
-        writeBorrowMoreForm({ debt: borrowMore }) // todo: implement add collateral in some markets
+        writeBorrowMoreForm({ debt: borrowMore, leverageEnabled, hasLeverageManagement }) // todo: implement add collateral in some markets
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt: borrow,
           expectedFutureDebt: debtAfterBorrowMore,
@@ -137,11 +139,12 @@ testCases.forEach(
         submitBorrowMoreForm().then(() => expect(onPricesUpdated).to.be.called)
         touchBorrowMoreForm() // make sure the new debt is shown
         checkCurrentDebt(debtAfterBorrowMore)
+        checkLeverageCheckbox({ leverageEnabled, hasLeverage: hasLeverageManagement })
       })
 
       it(`repays the loan`, () => {
         cy.mount(<LoanTestWrapper tab="repay" />)
-        selectRepayToken({ symbol: debtTokenSymbol, tokenAddress: CRVUSD_ADDRESS, hasLeverage })
+        selectRepayToken({ symbol: debtTokenSymbol, tokenAddress: CRVUSD_ADDRESS, hasLeverageManagement })
         writeRepayLoanForm({ amount: repay })
         checkRepayDetailsLoaded({
           debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: debtTokenSymbol },

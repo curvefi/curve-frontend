@@ -9,7 +9,8 @@ import {
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils/'
+import Box from '@mui/material/Box'
+import { formatDate, formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { VOTES_LABELS } from '../constants'
@@ -44,52 +45,56 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
   const userProposalVotesArray = Object.values(userProposalVotes ?? {})
 
   return (
-    <PaginatedTable<UserProposalVoteFormatted>
-      data={sortUserProposalVotes(userProposalVotesArray, userProposalVotesSortBy)}
-      minWidth={tableMinWidth}
-      isLoading={userProposalVotesLoading}
-      isError={userProposalVotesError}
-      isSuccess={userProposalVotesSuccess}
-      columns={VOTES_LABELS}
-      sortBy={userProposalVotesSortBy}
-      errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={key => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
-      getData={() => invalidateUserProposalVotesQuery({ userAddress })}
-      gridTemplateColumns={gridTemplateColumns}
-      noDataMessage={t`No proposal votes found for this user.`}
-      renderRow={(proposalVote, index) => (
-        <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
-          <TableDataLink
-            href={getEthPath(
-              `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
-            )}
-            className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}
-          >
-            #{proposalVote.voteId}
-          </TableDataLink>
-          <TableData className="right-padding capitalize">{proposalVote.voteType}</TableData>
-          <TableData
-            className={userProposalVotesSortBy.key === 'voteFor' ? 'sortby-active right-padding' : 'right-padding'}
-          >
-            {formatNumber(proposalVote.voteFor)}
-          </TableData>
-          <TableData
-            className={userProposalVotesSortBy.key === 'voteAgainst' ? 'sortby-active right-padding' : 'right-padding'}
-          >
-            {formatNumber(proposalVote.voteAgainst)}
-          </TableData>
-          <TableData
-            className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}
-          >
-            {formatLocaleDateFromTimestamp(proposalVote.voteOpen)}
-          </TableData>
-          <TableData
-            className={userProposalVotesSortBy.key === 'voteClose' ? 'sortby-active right-padding' : 'right-padding'}
-          >
-            {formatLocaleDateFromTimestamp(proposalVote.voteClose)}
-          </TableData>
-        </TableRowWrapper>
-      )}
-    />
+    <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <PaginatedTable<UserProposalVoteFormatted>
+        data={sortUserProposalVotes(userProposalVotesArray, userProposalVotesSortBy)}
+        minWidth={tableMinWidth}
+        isLoading={userProposalVotesLoading}
+        isError={userProposalVotesError}
+        isSuccess={userProposalVotesSuccess}
+        columns={VOTES_LABELS}
+        sortBy={userProposalVotesSortBy}
+        errorMessage={t`An error occurred while fetching proposal votes.`}
+        setSortBy={key => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
+        getData={() => invalidateUserProposalVotesQuery({ userAddress })}
+        gridTemplateColumns={gridTemplateColumns}
+        noDataMessage={t`No proposal votes found for this user.`}
+        renderRow={(proposalVote, index) => (
+          <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
+            <TableDataLink
+              href={getEthPath(
+                `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
+              )}
+              className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}
+            >
+              #{proposalVote.voteId}
+            </TableDataLink>
+            <TableData className="right-padding capitalize">{proposalVote.voteType}</TableData>
+            <TableData
+              className={userProposalVotesSortBy.key === 'voteFor' ? 'sortby-active right-padding' : 'right-padding'}
+            >
+              {formatNumber(proposalVote.voteFor)}
+            </TableData>
+            <TableData
+              className={
+                userProposalVotesSortBy.key === 'voteAgainst' ? 'sortby-active right-padding' : 'right-padding'
+              }
+            >
+              {formatNumber(proposalVote.voteAgainst)}
+            </TableData>
+            <TableData
+              className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}
+            >
+              {formatDate(proposalVote.voteOpen * 1000)}
+            </TableData>
+            <TableData
+              className={userProposalVotesSortBy.key === 'voteClose' ? 'sortby-active right-padding' : 'right-padding'}
+            >
+              {formatDate(proposalVote.voteClose * 1000)}
+            </TableData>
+          </TableRowWrapper>
+        )}
+      />
+    </Box>
   )
 }

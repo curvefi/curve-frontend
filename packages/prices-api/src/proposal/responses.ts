@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { TimestampResponse } from '../timestamp'
 import type { ProposalType } from './models'
 
 type Proposal = {
@@ -17,9 +18,9 @@ type Proposal = {
   total_supply: string
   executed: boolean
   execution_tx: Address | null
-  execution_date: string | null
+  execution_date: TimestampResponse | null
   transaction_hash: Address
-  dt: string
+  dt: TimestampResponse
 }
 
 export type GetProposalsResponse = {

@@ -10,13 +10,16 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -100,6 +103,9 @@ export const isRouterRequired = (
 
 export const hasGauge = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
+
+export const getMarketType = (market: LlamaMarketTemplate | null | undefined) =>
+  market ? (market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint) : undefined
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
@@ -397,3 +403,24 @@ export function calculateReturnToWallet({
     +returnBorrowed > 0 && { value: returnBorrowed, symbol: borrowedSymbol },
   )
 }
+
+export const createGetBadDebtMarket = (badDebtMarkets: BadDebt | undefined) => {
+  const toKey = (chain: Chain, controllerAddress: Address) => `${chain}:${controllerAddress.toLowerCase()}`
+  const badDebtByMarket = new Map(
+    (badDebtMarkets ?? []).map(market => [toKey(market.chain, market.controllerAddress), market]),
+  )
+  return (chain: Chain, controllerAddress: Address) => badDebtByMarket.get(toKey(chain, controllerAddress))?.badDebt
+}
+
+export const calculateMarketSolvency = ({
+  totalAssetsUsd,
+  badDebtUsd,
+}: {
+  totalAssetsUsd: number
+  badDebtUsd: number | undefined
+}) => (totalAssetsUsd && badDebtUsd != null ? (Math.max(0, totalAssetsUsd - badDebtUsd) / totalAssetsUsd) * 100 : null)
+
+export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
+  solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
+    ? t`This market is deprecated due to low solvency`
+    : null

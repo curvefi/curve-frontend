@@ -13,14 +13,14 @@ export type ScrvUsdRevenue = { totalDistributed: string; epochs: Epoch[]; histor
  */
 const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   // Sort history by date
-  const sortedHistory = [...history].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+  const sortedHistory = [...history].sort((a, b) => a.timestamp - b.timestamp)
 
   const epochs: Epoch[] = []
   let currentEpoch: Epoch | null = null
 
   sortedHistory.forEach(item => {
     // If we don't have a current epoch or the item doesn't belong to current epoch
-    if (!currentEpoch || item.timestamp > new Date(currentEpoch.endDate)) {
+    if (!currentEpoch || new Date(item.timestamp) > new Date(currentEpoch.endDate)) {
       // Find the previous Thursday if item is not on Thursday
       const startDate = new Date(item.timestamp)
       while (startDate.getDay() !== 4) {

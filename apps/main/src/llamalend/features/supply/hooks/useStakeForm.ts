@@ -1,22 +1,30 @@
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
+import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { getControllerAddress, getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
+import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const emptyStakeForm = (): StakeForm => ({ stakeAmount: undefined, maxStakeAmount: undefined })
+const userDefaultValues = { stakeAmount: undefined }
+
+const emptyStakeForm = (): StakeForm => ({
+  ...userDefaultValues,
+  maxStakeAmount: undefined,
+})
 
 const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Address; symbol: string } | undefined =>
   market && hasVault(market)
@@ -39,6 +47,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const { chainId } = network
   const marketId = market?.id
   const marketHasGauge = !!market && hasGauge(market)
+  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const vaultToken = getVaultToken(market)
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
@@ -62,13 +71,28 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   )
 
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isStaking,
     error: stakeError,
-  } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
+  } = useStakeMutation({ marketId, network, onReset: () => resetForm(form, userDefaultValues), userAddress })
+
+  const {
+    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
+    solvencyDisabledAlert,
+    onSubmit,
+    onConfirm,
+    onClose,
+    isOpen,
+  } = useFormLowSolvency({
+    market,
+    chainId,
+    onSubmit: onMutationSubmit,
+    handleFormSubmit: form.handleSubmit,
+  })
 
   useFormSync(form, { maxStakeAmount: maxUserStake.data })
 
+  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking
   return {
@@ -76,15 +100,22 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid || !marketHasGauge || isPending || isDebouncing,
+    isLoading: isPending || !market || isSolvencyLoading,
+    onSubmit,
+    isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,
     borrowToken,
     collateralToken,
-    stakeError,
+    error: stakeError ?? solvencyError,
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
     hasGauge: marketHasGauge,
     formErrors: useFormErrors(formState),
+    disabledAlert,
+    solvencyModal: {
+      isOpen,
+      onClose,
+      onConfirm,
+    },
   }
 }

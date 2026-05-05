@@ -1,10 +1,12 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useStakeForm } from '../hooks/useStakeForm'
@@ -33,16 +35,19 @@ export const StakeForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
+    isLoading,
     onSubmit,
     isDisabled,
     vaultToken,
     borrowToken,
     collateralToken,
-    stakeError,
+    error,
     formErrors,
     isApproved,
     hasGauge,
     max,
+    disabledAlert,
+    solvencyModal: { onConfirm, onClose, isOpen },
   } = useStakeForm({ market, network, enabled })
 
   return (
@@ -71,19 +76,31 @@ export const StakeForm = <ChainId extends IChainId>({
       />
 
       {hasGauge ? (
-        <Button
-          type="submit"
-          loading={isPending || !market}
-          disabled={isDisabled}
-          data-testid={`${TEST_ID_PREFIX}-submit-button`}
-        >
-          {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
-        </Button>
+        disabledAlert ? (
+          <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
+        ) : (
+          <Button
+            type="submit"
+            loading={isLoading}
+            disabled={isDisabled}
+            data-testid={`${TEST_ID_PREFIX}-submit-button`}
+          >
+            {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
+          </Button>
+        )
       ) : (
         <AlertNoGauge />
       )}
 
-      <FormAlerts error={stakeError} formErrors={formErrors} handledErrors={['stakeAmount']} />
+      <LowSolvencyActionModal
+        action="stake"
+        open={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        tokenSymbol={vaultToken?.symbol}
+      />
+
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAmount']} />
     </Form>
   )
 }
