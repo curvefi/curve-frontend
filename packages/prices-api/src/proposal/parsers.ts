@@ -1,9 +1,9 @@
-import { toDate } from '../timestamp'
+import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
 export const parseProposal = (x: Responses.GetProposalsResponse['proposals'][number]): Models.Proposal => ({
-  timestamp: toDate(x.dt),
+  timestamp: parseTimestamp(x.dt),
   id: x.vote_id,
   type: x.vote_type.toLocaleLowerCase() === 'parameter' ? 'parameter' : 'ownership',
   metadata: x.metadata?.startsWith('"') // Remove weird starting quote, if present.
@@ -19,7 +19,7 @@ export const parseProposal = (x: Responses.GetProposalsResponse['proposals'][num
   votesFor: Number(BigInt(x.votes_for)) / 10 ** 18,
   votesAgainst: Number(BigInt(x.votes_against)) / 10 ** 18,
   executionTx: x.execution_tx,
-  executionDate: x.execution_date ? toDate(x.execution_date) : null,
+  executionDate: x.execution_date ? parseTimestamp(x.execution_date) : null,
   executed: x.executed,
   totalSupply: Number(BigInt(x.total_supply)) / 10 ** 18,
   txCreation: x.transaction_hash,

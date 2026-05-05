@@ -1,4 +1,5 @@
 import type { Address, Token } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 type Deposit = {
   amount: number
@@ -16,7 +17,7 @@ export type LlammaEvent = {
   deposit?: Deposit | null
   withdrawal?: Withdrawal | null
   blockNumber: number
-  timestamp: Date
+  timestamp: Timestamp
   txHash: Address
 }
 
@@ -32,12 +33,12 @@ export type LlammaTrade = {
   feeX: number
   feeY: number
   blockNumber: number
-  timestamp: Date
+  timestamp: Timestamp
   txHash: Address
 }
 
 export type LlammaOHLC = {
-  time: Date
+  time: Timestamp
   open: number | null
   close: number | null
   high: number | null

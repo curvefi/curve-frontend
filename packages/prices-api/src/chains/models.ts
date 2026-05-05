@@ -1,5 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type ChainInfo = {
   chain: string
@@ -16,7 +17,7 @@ export const activityTypes = ['crvusd', 'lending', 'pools', 'router', 'dao'] as 
 export type ActivityType = (typeof activityTypes)[number]
 
 export type Activity = {
-  timestamp: Date
+  timestamp: Timestamp
   chain: Chain
   type: ActivityType
 }

@@ -1,17 +1,29 @@
-const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
+declare const TimestampBrand: unique symbol
+
+/** ISO 8601 date string shape (e.g. `"2024-01-01T00:00:00.000Z"`), always including timezone info. */
+type IsoDateString = `${number}-${number}-${number}T${string}`
 
 /**
- * Converts a timestamp string or number to UTC Date object
- * @param timestamp - Timestamp as string (ISO format or unix seconds) or number (unix seconds)
- * @returns UTC Date object
- * @example
- * toDate(1234567890) // Unix timestamp number
- * toDate("1234567890") // Unix timestamp string
- * toDate("2024-01-01T00:00:00.000Z") // ISO with UTC
- * toDate("2024-01-01T00:00:00.000+01:00") // ISO with timezone
- * toDate("2024-01-01T00:00:00") // ISO without timezone (assumes UTC)
+ * A raw, serialized timestamp as returned by the Prices API. The exact shape varies
+ * between endpoints, so this is the union of all variants we receive from the backend.
+ *
+ * Underlying shape is one of:
+ * - unix seconds as `number` (e.g. `1704067200`)
+ * - unix seconds as `string` (e.g. `"1704067200"`)
+ * - ISO 8601 date string (e.g. `"2024-01-01T00:00:00.000Z"`)
  */
-export function toDate(timestamp: string | number): Date {
+export type TimestampResponse = number | `${number}` | IsoDateString
+
+/** Unix epoch milliseconds. Pass to `new Date(t)` to get a `Date`. Branded to enforce being parsed. */
+export type Timestamp = number & { readonly [TimestampBrand]: true }
+
+/** Converts a `Date` to the exact type that is expected by a `Timestamp`. */
+export const fromDate = (date: Date) => date.getTime() as Timestamp
+
+const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
+
+/** Coerces any `TimestampResponse` shape to a `Date`. ISO strings without timezone info are assumed UTC. */
+function toDate(timestamp: TimestampResponse) {
   // Convert actual unix timestamp numbers to Date.
   if (typeof timestamp === 'number') {
     return new Date(timestamp * 1000)
@@ -29,6 +41,9 @@ export function toDate(timestamp: string | number): Date {
 
   return new Date(utcTimestamp)
 }
+
+/** Parses a raw `TimestampResponse` (in any of the formats the Prices API returns) into a serializable timestamp in milliseconds to be consumed by `new Date()` */
+export const parseTimestamp = (timestamp: TimestampResponse) => fromDate(toDate(timestamp))
 
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60
 

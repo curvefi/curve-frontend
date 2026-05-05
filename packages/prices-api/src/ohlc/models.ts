@@ -1,5 +1,7 @@
+import type { Timestamp } from '../timestamp'
+
 export type OHLC = {
-  time: Date
+  time: Timestamp
   open: number
   close: number
   high: number
