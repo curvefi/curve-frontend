@@ -164,7 +164,7 @@ export function submitLoanForm({
   expected?: AlertColor
   checkMessage?: boolean
 }) {
-  cy.get(`[data-testid="${form}-submit-button"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
   cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
   if (expected !== 'success') {
     return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
