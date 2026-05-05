@@ -18,7 +18,18 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
-import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+
+const userDefaultValues = { userCollateral: undefined }
+const defaultValues = {
+  ...userDefaultValues,
+  maxCollateral: undefined,
+}
+const formOptions = {
+  ...formDefaultOptions,
+  resolver: vestResolver(addCollateralFormValidationSuite),
+  defaultValues,
+}
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
@@ -40,14 +51,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const borrowToken = tokens?.borrowToken
   const maxCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address }, enabled)
 
-  const form = useForm<CollateralForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(addCollateralFormValidationSuite),
-    defaultValues: {
-      userCollateral: undefined,
-      maxCollateral: undefined,
-    },
-  })
+  const form = useForm<CollateralForm>(formOptions)
 
   const values = watchForm(form)
 
@@ -67,7 +71,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
     network,
-    onReset: form.reset,
+    onReset: () => resetForm(form, userDefaultValues),
     userAddress,
   })
 

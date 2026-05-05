@@ -19,7 +19,15 @@ import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+
+const userDefaultValues = { userCollateral: undefined }
+const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
+const formOptions = {
+  ...formDefaultOptions,
+  resolver: vestResolver(removeCollateralFormValidationSuite),
+  defaultValues,
+}
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -43,14 +51,7 @@ export const useRemoveCollateralForm = <
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
 
-  const form = useForm<CollateralForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(removeCollateralFormValidationSuite),
-    defaultValues: {
-      userCollateral: undefined,
-      maxCollateral: undefined,
-    },
-  })
+  const form = useForm<CollateralForm>(formOptions)
 
   const values = watchForm(form)
 
@@ -70,7 +71,7 @@ export const useRemoveCollateralForm = <
   const { onSubmit, ...action } = useRemoveCollateralMutation({
     marketId,
     network,
-    onReset: form.reset,
+    onReset: () => resetForm(form, userDefaultValues),
     userAddress,
   })
   const { formState } = form

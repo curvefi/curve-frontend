@@ -14,12 +14,13 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+
+const userDefaultValues = { withdrawAmount: undefined, userVaultShares: undefined }
 
 const emptyWithdrawForm = (): WithdrawForm => ({
-  withdrawAmount: undefined,
+  ...userDefaultValues,
   maxWithdrawAmount: undefined,
-  userVaultShares: undefined,
   isFull: false,
 })
 
@@ -65,7 +66,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     onSubmit,
     isPending: isWithdrawing,
     error: withdrawError,
-  } = useWithdrawMutation({ marketId, network, onReset: form.reset, userAddress })
+  } = useWithdrawMutation({ marketId, network, onReset: () => resetForm(form, userDefaultValues), userAddress })
 
   const { formState } = form
 
