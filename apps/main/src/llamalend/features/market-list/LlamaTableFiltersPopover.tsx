@@ -24,34 +24,33 @@ export const LlamaTableFiltersPopover = ({
   onClose: () => void
   anchorRef: RefObject<HTMLDivElement | null>
   markets: LlamaMarket[]
-} & FilterProps<LlamaMarketColumnId>) =>
-  anchorEl && (
-    <Popover
-      open={open}
-      onClose={onClose}
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      slotProps={{
-        paper: {
-          sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
-        },
-      }}
+} & FilterProps<LlamaMarketColumnId>) => (
+  <Popover
+    open={open}
+    onClose={onClose}
+    anchorEl={anchorEl}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+    slotProps={{
+      paper: {
+        sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
+      },
+    }}
+  >
+    <Stack
+      direction="row"
+      alignItems="flex-end"
+      gap={Spacing.sm}
+      justifyContent="space-between"
+      sx={{ borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`, minHeight: MinHeight.popoverHeader }}
+      paddingInlineStart={Spacing.sm}
     >
-      <Stack
-        direction="row"
-        alignItems="flex-end"
-        gap={Spacing.sm}
-        justifyContent="space-between"
-        sx={{ borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`, minHeight: MinHeight.popoverHeader }}
-        paddingInlineStart={Spacing.sm}
-      >
-        <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
-          {t`Filter markets`}
-        </Typography>
-        <IconButton size="extraSmall" onClick={onClose}>
-          <Cross2Icon />
-        </IconButton>
-      </Stack>
-      <LlamaMarketsFilters data={markets} {...filterProps} />
-    </Popover>
-  )
+      <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
+        {t`Filter markets`}
+      </Typography>
+      <IconButton size="extraSmall" onClick={onClose}>
+        <Cross2Icon />
+      </IconButton>
+    </Stack>
+    <LlamaMarketsFilters data={markets} {...filterProps} />
+  </Popover>
+)

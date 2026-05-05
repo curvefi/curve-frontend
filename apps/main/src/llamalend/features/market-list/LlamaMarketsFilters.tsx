@@ -12,10 +12,10 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
+import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaMarketColumnId } from './columns'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
