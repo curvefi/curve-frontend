@@ -16,10 +16,15 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const emptyStakeForm = (): StakeForm => ({ stakeAmount: undefined, maxStakeAmount: undefined })
+const userDefaultValues = { stakeAmount: undefined }
+
+const emptyStakeForm = (): StakeForm => ({
+  ...userDefaultValues,
+  maxStakeAmount: undefined,
+})
 
 const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Address; symbol: string } | undefined =>
   market && hasVault(market)
@@ -69,7 +74,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     onSubmit: onMutationSubmit,
     isPending: isStaking,
     error: stakeError,
-  } = useStakeMutation({ marketId, network, onReset: form.reset, userAddress })
+  } = useStakeMutation({ marketId, network, onReset: () => resetForm(form, userDefaultValues), userAddress })
 
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },

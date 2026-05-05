@@ -22,7 +22,7 @@ describe.skip('Create loan', () => {
 
     it(label, () => {
       cy.visit(path)
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled })
+      writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
       checkLoanDetailsLoaded({ leverageEnabled })
       checkLoanRangeSlider({ leverageEnabled })
       // e2e tests run with a 'fake' account so the transaction fails
