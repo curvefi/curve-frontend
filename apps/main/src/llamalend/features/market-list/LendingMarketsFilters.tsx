@@ -6,7 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
+import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -68,10 +68,10 @@ export const LendingMarketsFilters = ({
   )
   return (
     <Stack padding={Spacing.sm} spacing={Spacing.sm}>
-      <TableFilterColumn title={t`Network`}>
+      <TableFilterItem title={t`Network`}>
         <LlamaChainFilterChips data={markets} {...filterProps} />
-      </TableFilterColumn>
-      <TableFilterColumn title={t`Collateral Tokens`}>
+      </TableFilterItem>
+      <TableFilterItem title={t`Collateral Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
@@ -82,8 +82,8 @@ export const LendingMarketsFilters = ({
           data={markets}
           {...filterProps}
         />
-      </TableFilterColumn>
-      <TableFilterColumn title={t`Debt Tokens`}>
+      </TableFilterItem>
+      <TableFilterItem title={t`Debt Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
@@ -94,8 +94,8 @@ export const LendingMarketsFilters = ({
           data={markets}
           {...filterProps}
         />
-      </TableFilterColumn>
-      <TableFilterColumn title={t`TVL`}>
+      </TableFilterItem>
+      <TableFilterItem title={t`TVL`}>
         <RangeSliderFilter
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
@@ -106,8 +106,8 @@ export const LendingMarketsFilters = ({
           scale="power"
           {...filterProps}
         />
-      </TableFilterColumn>
-      <TableFilterColumn title={t`Available liquidity`}>
+      </TableFilterItem>
+      <TableFilterItem title={t`Available liquidity`}>
         <RangeSliderFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
@@ -118,8 +118,8 @@ export const LendingMarketsFilters = ({
           scale="power"
           {...filterProps}
         />
-      </TableFilterColumn>
-      <TableFilterColumn title={t`Utilization`}>
+      </TableFilterItem>
+      <TableFilterItem title={t`Utilization`}>
         <RangeSliderFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
@@ -130,7 +130,7 @@ export const LendingMarketsFilters = ({
           max={100}
           {...filterProps}
         />
-      </TableFilterColumn>
+      </TableFilterItem>
     </Stack>
   )
 }
