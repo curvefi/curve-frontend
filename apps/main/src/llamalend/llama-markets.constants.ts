@@ -20,7 +20,7 @@ type MarketAlert = TooltipProps & {
 }
 
 const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
-const DEFAULT_ALERT: MarketAlert = {
+export const DEFAULT_ALERT: MarketAlert = {
   alertType: 'danger',
   isBorrowDisabled: true,
   isDepositDisabled: true,
@@ -345,4 +345,11 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
     '0x7Adcc491f0B7f9BC12837B8F5Edf0e580d176F1f',
     '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D',
   ],
+}
+/** Solvency thresholds for the llamalend markets to handle deprecation, banner and gate keeping forms */
+export const SOLVENCY_THRESHOLDS = {
+  // Market above this threshold are considered fully solvent
+  solvent: 99.9,
+  low: 90,
+  insolvent: 0,
 }

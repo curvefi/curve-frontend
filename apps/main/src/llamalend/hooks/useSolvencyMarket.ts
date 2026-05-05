@@ -1,45 +1,34 @@
-import { useMemo } from 'react'
-import { isAddressEqual } from 'viem'
-import { useBadDebtMarkets } from '@/llamalend/queries/market/market-bad-debt.query'
+import { useCallback } from 'react'
 import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { combineQueryState } from '@ui-kit/lib'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { useMappedQuery } from '@ui-kit/types/util'
 
-type BadDebtParams = {
-  type: LlamaMarketType
+type SolvencyMarketParams = {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
+  marketType: LlamaMarketType
 }
 
 /**
- * Returns solvency and insolvency data for a single lend market.
+ * Returns solvency data for a single llamalend market.
  */
-export const useSolvencyMarket = ({ type, blockchainId, controllerAddress }: BadDebtParams) => {
-  // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
-  const enabled = !!blockchainId && !!controllerAddress && type === LlamaMarketType.Lend
-  const badDebtMarkets = useBadDebtMarkets({ type }, enabled)
-  const llamaMarketQuery = useLlamaMarket({ blockchainId, controllerAddress }, enabled)
-  const market = llamaMarketQuery?.data
-
-  const badDebtData = useMemo(() => {
-    if (!blockchainId || !controllerAddress || !market || !badDebtMarkets.data) return undefined
-
-    const badDebtUsd =
-      badDebtMarkets.data.find(
-        item => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
-      )?.badDebt ?? 0
-    const exposureUsd = market.liquidityUsd + market.totalDebtUsd
-    const solvencyPercent = exposureUsd ? (Math.max(0, exposureUsd - badDebtUsd) / exposureUsd) * 100 : undefined
-
-    return {
-      badDebtUsd,
-      solvencyPercent,
-      insolvencyPercent: solvencyPercent == null ? undefined : 100 - solvencyPercent,
-      marketType: market.type,
-    }
-  }, [badDebtMarkets.data, blockchainId, controllerAddress, market])
-
-  return { data: badDebtData, ...combineQueryState(llamaMarketQuery, badDebtMarkets) }
-}
+export const useSolvencyMarket = (
+  { blockchainId, controllerAddress, marketType }: SolvencyMarketParams,
+  enabled = true,
+) =>
+  useMappedQuery(
+    // solvency only computed for lend market, as mint market's solvency is not an user issue
+    useLlamaMarket({ blockchainId, controllerAddress }, enabled && marketType === LlamaMarketType.Lend),
+    useCallback(
+      market =>
+        market.solvencyPercent != null
+          ? {
+              solvencyPercent: market.solvencyPercent,
+              badDebtUsd: market.badDebtUsd!,
+            }
+          : undefined,
+      [],
+    ),
+  )
