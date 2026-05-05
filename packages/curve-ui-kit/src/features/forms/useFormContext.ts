@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { FieldValues, UseFormReturn } from './types'
+import type { FieldValues, UseFormReturn } from './form.types'
 
 export const FormContext = createContext<UseFormReturn | undefined>(undefined)
 

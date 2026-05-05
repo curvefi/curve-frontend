@@ -1,8 +1,12 @@
 import { useMemo } from 'react'
 // eslint-disable-next-line no-restricted-imports
 import { DefaultValues, useForm as _useForm, type ResolverResult, type ResolverOptions } from 'react-hook-form'
-import type { FieldValues, FormErrors, PartialFields, UseFormReturn } from './types'
+import type { FieldValues, FormErrors, PartialFields, UseFormReturn } from './form.types'
 
+/**
+ * Hook used to manage form state and validation. For now, simply delegates the call to react-hook-form.
+ * This custom hook allows us to change the backend without changing the calling code.
+ */
 export const useForm = <T extends FieldValues = FieldValues>({
   defaultValues,
   resolver,

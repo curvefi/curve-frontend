@@ -53,7 +53,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     }
 
     const onApproveError = (error: Error) => {
-      setError('root', { message: error.message })
+      setError('root.serverError', { message: error.message })
     }
 
     depositRewardApprove(
@@ -83,7 +83,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
           })
         },
         onError: (error: Error) => {
-          setError('root', { message: error.message })
+          setError('root.serverError', { message: error.message })
         },
       },
     )

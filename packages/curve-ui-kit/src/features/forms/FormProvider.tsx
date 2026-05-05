@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import type { FieldValues, UseFormReturn } from './types'
+import type { FieldValues, UseFormReturn } from './form.types'
 import { FormContext } from './useFormContext'
 
 export type FormProviderProps<T extends FieldValues> = UseFormReturn<T> & { children: ReactNode }

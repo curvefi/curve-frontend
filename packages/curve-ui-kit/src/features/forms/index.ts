@@ -1,4 +1,4 @@
 export * from './useFormContext'
 export * from './useForm'
 export * from './FormProvider'
-export * from './types'
+export * from './form.types'
