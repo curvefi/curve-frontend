@@ -40,7 +40,7 @@ const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<
 /**
  * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
-export const LlamaMarketsFilters = ({
+export const LendingMarketsFilters = ({
   data,
   gridSx,
   ...filterProps

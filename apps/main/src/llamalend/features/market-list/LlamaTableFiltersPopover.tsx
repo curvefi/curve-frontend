@@ -9,7 +9,7 @@ import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from './columns'
-import { LlamaMarketsFilters } from './LlamaMarketsFilters'
+import { LendingMarketsFilters } from './LendingMarketsFilters'
 
 const { Spacing, Width, MinHeight } = SizesAndSpaces
 
@@ -51,6 +51,6 @@ export const LlamaTableFiltersPopover = ({
         <Cross2Icon />
       </IconButton>
     </Stack>
-    <LlamaMarketsFilters data={markets} {...filterProps} />
+    <LendingMarketsFilters data={markets} {...filterProps} />
   </Popover>
 )
