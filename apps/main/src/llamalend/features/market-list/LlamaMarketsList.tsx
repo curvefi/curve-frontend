@@ -18,9 +18,9 @@ import {
 } from '../../queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
+import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { NewLlamaMarketsTable } from './NewLlamaMarketsTable'
 import { UserPositionsTable } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
@@ -92,9 +92,9 @@ export const LlamaMarketsList = () => {
       )}
 
       {useNewMarketListLayout() ? (
-        <NewLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
-      ) : (
         <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      ) : (
+        <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
       )}
     </ListPageWrapper>
   )

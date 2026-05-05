@@ -3,7 +3,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import type { TableItem, TanstackTable } from './data-table.utils'
 
-export const NewFilterRow = <T extends TableItem>({
+export const LegacyFilterRow = <T extends TableItem>({
   table,
   children,
 }: {
@@ -13,7 +13,7 @@ export const NewFilterRow = <T extends TableItem>({
   <TableRow>
     <TableCell
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
-      sx={{ padding: 0, borderBottomWidth: 0 }}
+      sx={t => ({ backgroundColor: t.design.Layer[1].Fill, padding: 0, borderBottomWidth: 0 })}
       data-testid="table-filters"
     >
       {children}

@@ -2,23 +2,19 @@ import { useMemo, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
-import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
-import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
+import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { NewDataTable } from '@ui-kit/shared/ui/DataTable/NewDataTable'
-import { NewTableButton } from '@ui-kit/shared/ui/DataTable/NewTableButton'
-import { NewTableFilters } from '@ui-kit/shared/ui/DataTable/NewTableFilters'
-import { NewTableFiltersHeader } from '@ui-kit/shared/ui/DataTable/NewTableFiltersHeader'
+import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
+import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
+import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { NewFilterChip } from './chips/NewFilterChip'
-import { NewLlamaListChips } from './chips/NewLlamaListChips'
+import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
+import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
-import { NewMarketSortDrawer } from './drawers/NewMarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
@@ -28,7 +24,7 @@ const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
-export const NewLlamaMarketsTable = ({
+export const LegacyLlamaMarketsTable = ({
   onReload,
   result,
   isError,
@@ -41,8 +37,6 @@ export const NewLlamaMarketsTable = ({
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
   const data = useMemo(() => markets ?? [], [markets])
-  const [filterExpanded, setFilterExpanded] = useFilterExpanded(LOCAL_STORAGE_KEY)
-  const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
     { columns: LlamaMarketColumnId },
@@ -69,7 +63,7 @@ export const NewLlamaMarketsTable = ({
   })
 
   return (
-    <NewDataTable
+    <LegacyDataTable
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
@@ -88,35 +82,33 @@ export const NewLlamaMarketsTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
     >
-      <NewTableFilters<LlamaMarketColumnId>
+      <LegacyTableFilters<LlamaMarketColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        filterExpanded={filterExpanded}
+        loading={loading}
+        onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
+        hasSearchBar
         disableSearchAutoFocus
         searchText={globalFilter}
         onSearch={setGlobalFilter}
-        header={
-          <NewTableFiltersHeader
-            title={t`Markets`}
-            rightChildren={<NewTableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
-          />
-        }
+        leftChildren={<LegacyTableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
-        filterChip={
-          <NewFilterChip
-            filterExpanded={filterExpanded}
-            setFilterExpanded={setFilterExpanded}
-            hiddenCount={getHiddenCount(table)}
-            resetFilters={resetFilters}
-            hasFavorites={hasFavorites}
-            data={data}
-            {...filterProps}
-          />
+        chips={
+          <>
+            <LlamaChainFilterChips data={data} {...filterProps} />
+            <LegacyLlamaListChips
+              hiddenCount={getHiddenCount(table)}
+              resetFilters={resetFilters}
+              hasFavorites={hasFavorites}
+              onSortingChange={onSortingChange}
+              sortField={sortField}
+              data={data}
+              {...filterProps}
+            />
+          </>
         }
-        sortChip={isMobile && <NewMarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
-        chips={<NewLlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
       />
-    </NewDataTable>
+    </LegacyDataTable>
   )
 }

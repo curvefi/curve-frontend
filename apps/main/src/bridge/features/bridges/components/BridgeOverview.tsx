@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { LegacyTableSearchField } from '@ui-kit/shared/ui/DataTable/LegacyTableSearchField'
 import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BridgeGrid } from './BridgeGrid'
@@ -48,7 +48,7 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
         paddingBlockEnd={Spacing.sm}
       >
         {!hideTitle && <Typography variant="headingSBold">{title}</Typography>}
-        <TableSearchField
+        <LegacyTableSearchField
           value={searchText}
           placeholder={t`Search by bridge name`}
           onChange={setSearchText}

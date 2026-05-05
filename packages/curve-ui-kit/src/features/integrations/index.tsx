@@ -5,7 +5,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { LegacyTableSearchField } from '@ui-kit/shared/ui/DataTable/LegacyTableSearchField'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { IntegrationsList } from './components/IntegrationsList'
@@ -44,7 +44,7 @@ export const Integrations = () => {
         paddingBlockEnd={Spacing.sm}
       >
         {!hideTitle && <Typography variant="headingSBold">{t`Curve Integrations`}</Typography>}
-        <TableSearchField
+        <LegacyTableSearchField
           value={searchText}
           placeholder={t`Search by integration name`}
           onChange={setSearchText}
