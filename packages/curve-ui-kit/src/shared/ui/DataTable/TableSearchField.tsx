@@ -1,4 +1,5 @@
 import { notFalsy } from '@primitives/objects.utils'
+import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 
 type Props = {
@@ -9,9 +10,9 @@ type Props = {
   disableAutoFocus?: boolean
 }
 
-export const TableSearchField = ({ value, onChange, testId, disableAutoFocus }: Props) => (
+export const TableSearchField = ({ value, onChange, testId, disableAutoFocus, placeholder = t`Search` }: Props) => (
   <SearchField
-    placeholder="Search"
+    placeholder={placeholder}
     value={value}
     onSearch={onChange}
     data-testid={notFalsy('table-text-search', testId).join('-')}
