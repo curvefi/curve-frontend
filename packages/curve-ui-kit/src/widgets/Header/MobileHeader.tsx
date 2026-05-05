@@ -42,20 +42,19 @@ export const MobileHeader = ({
   const toggleSidebar = useCallback(() => setSidebarOpen(isOpen => !isOpen), [])
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)
-  const appLinks = recordEntries(APP_LINK)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
   const otherAppSections = useMemo(
     () =>
-      appLinks
+      recordEntries(APP_LINK)
         .filter(([appName]) => appName != currentMenu)
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
           pages: routes.map(p => routeToPage(p, { networkId, pathname })),
         })),
-    [appLinks, currentMenu, networkId, pathname],
+    [currentMenu, networkId, pathname],
   )
   return (
     <AppBar
