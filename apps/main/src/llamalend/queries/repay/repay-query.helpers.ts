@@ -17,7 +17,7 @@ export const isFullRepayFromDebtToken = (
   isFull: boolean | undefined,
   stateCollateral: Decimal,
   userCollateral: Decimal,
-) => isFull && !+stateCollateral && !+userCollateral
+) => !!isFull && !+stateCollateral && !+userCollateral
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.

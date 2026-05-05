@@ -23,11 +23,13 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
@@ -107,11 +109,12 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const form = useForm<BorrowMoreForm>({
-    validation: borrowMoreFormValidationSuite,
+    ...formDefaultOptions,
+    resolver: vestResolver(borrowMoreFormValidationSuite),
     defaultValues: emptyBorrowMoreForm(),
   })
 
-  const values = form.values
+  const values = watchForm(form)
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
   const {
     onSubmit: onMutationSubmit,

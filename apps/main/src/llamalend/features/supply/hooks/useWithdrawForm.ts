@@ -5,13 +5,15 @@ import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
 import {
-  type WithdrawForm,
   withdrawFormValidationSuite,
   WithdrawParams,
+  type WithdrawForm,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
@@ -37,11 +39,12 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   const { borrowToken } = market ? getTokens(market) : {}
 
   const form = useForm<WithdrawForm>({
-    validation: withdrawFormValidationSuite,
+    ...formDefaultOptions,
+    resolver: vestResolver(withdrawFormValidationSuite),
     defaultValues: emptyWithdrawForm(),
   })
 
-  const values = form.values
+  const values = watchForm(form)
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): WithdrawParams<ChainId> => ({

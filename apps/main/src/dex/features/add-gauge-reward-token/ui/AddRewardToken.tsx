@@ -12,12 +12,14 @@ import {
   FormActions,
   TokenSelector,
 } from '@/dex/features/add-gauge-reward-token/ui'
+import { vestResolver } from '@hookform/resolvers/vest'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { FormProvider, useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
+import { formDefaultOptions } from '@ui-kit/lib/model/form'
 
 export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { address: signerAddress } = useConnection()
@@ -32,7 +34,8 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     useIsDepositRewardAvailable({ chainId, poolId })
 
   const form = useForm<AddRewardFormValues>({
-    validation: addGaugeRewardTokenValidationSuite,
+    ...formDefaultOptions,
+    resolver: vestResolver(addGaugeRewardTokenValidationSuite),
     defaultValues: {
       rewardTokenId: zeroAddress,
       distributorId: signerAddress ?? zeroAddress,
@@ -59,7 +62,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
         { rewardTokenId, distributorId },
         {
           onError: (error: Error) => {
-            setError('root', { type: 'manual', message: error.message })
+            setError('root.serverError', { type: 'manual', message: error.message })
           },
         },
       )
@@ -88,7 +91,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
           {isSuccessAddRewardToken && addRewardTokenData && (
             <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
           )}
-          <FormErrorsDisplay errorKeys={['root']} component={AlertFormError} />
+          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
         </FormContainer>
       </form>
     </FormProvider>

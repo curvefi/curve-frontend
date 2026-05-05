@@ -11,10 +11,12 @@ import {
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
@@ -39,14 +41,15 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const maxCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address }, enabled)
 
   const form = useForm<CollateralForm>({
-    validation: addCollateralFormValidationSuite,
+    ...formDefaultOptions,
+    resolver: vestResolver(addCollateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
       maxCollateral: undefined,
     },
   })
 
-  const values = form.values
+  const values = watchForm(form)
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(

@@ -4,15 +4,17 @@ import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
-  type UnstakeForm,
   unstakeFormValidationSuite,
   UnstakeParams,
+  type UnstakeForm,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
@@ -47,11 +49,12 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const maxUserUnstake = mapQuery(userBalances, d => d.stakedShares)
 
   const form = useForm<UnstakeForm>({
-    validation: unstakeFormValidationSuite,
+    ...formDefaultOptions,
+    resolver: vestResolver(unstakeFormValidationSuite),
     defaultValues: emptyUnstakeForm(),
   })
 
-  const values = form.values
+  const values = watchForm(form)
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(

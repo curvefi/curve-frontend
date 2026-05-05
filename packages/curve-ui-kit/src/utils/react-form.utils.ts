@@ -1,4 +1,4 @@
-import { type SubmitEventHandler, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from '@ui-kit/features/forms'
 import type { Query } from '@ui-kit/types/util'
@@ -23,14 +23,14 @@ export function updateForm<TFieldValues extends FieldValues>(
   if (!changes.length) return // no changes, skip revalidation
   changes.forEach(([field, value]) =>
     // eslint-disable-next-line no-restricted-syntax
-    form.setValue(field, value, {
+    form.setValue(field as FieldPath<TFieldValues>, value, {
       shouldValidate: false, // we revalidate just below.
       shouldDirty: !automated,
       shouldTouch: !automated,
     }),
   )
   // eslint-disable-next-line no-restricted-syntax
-  form.trigger()
+  form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
 }
 
 /**
@@ -65,5 +65,3 @@ export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T
 /** Checks if any of the given fields are touched in the form. */
 export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: FieldPath<T>[]) =>
   fields.some(field => field in form.formState.touchedFields)
-
-export const cancelSubmit: SubmitEventHandler<HTMLFormElement> = e => e.preventDefault()

@@ -9,11 +9,13 @@ import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
@@ -30,11 +32,9 @@ import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
-const resolver = createLoanQueryValidationSuite({
-  debtRequired: false,
-  skipMarketValidation: true,
-  collateralRequired: true,
-})
+const resolver = vestResolver(
+  createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true, collateralRequired: true }),
+)
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -51,7 +51,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
   const form = useForm<CreateLoanForm>({
-    validation: resolver,
+    ...formDefaultOptions,
+    resolver,
     defaultValues: {
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
@@ -65,7 +66,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
   })
 
-  const values = form.values
+  const values = watchForm(form)
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({

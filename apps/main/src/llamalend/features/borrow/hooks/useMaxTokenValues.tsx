@@ -17,7 +17,7 @@ import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
  *
  * @param collateralToken - The collateral token object containing its address.
  * @param params - The parameters required to fetch max borrowable amounts, including chainId, marketId, and userAddress.
- * @param form - The form instance managing the create loan form state.
+ * @param form - The react-hook-form instance managing the create loan form state.
  */
 export function useMaxTokenValues(
   collateralToken: Address | undefined,
@@ -61,7 +61,7 @@ export function useMaxTokenValues(
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(
     (range: number) => {
-      const { debt, maxDebt } = form.values
+      const { debt, maxDebt } = form.getValues()
       updateForm(form, { maxDebt: undefined, range })
       // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
       pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!

@@ -6,7 +6,7 @@ export { type FieldValues, type FieldPathByValue } from 'react-hook-form'
 
 export type FieldPath<T extends FieldValues> = Path<T>
 export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = PathValue<T, TFieldPath>
-export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root'
+export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root' | `root.serverError`
 export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<ErrorKey<T>, Error>
 export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, true>
 
@@ -19,13 +19,22 @@ export type FormState<T extends FieldValues> = {
   dirtyFields: PartialFields<T>
 }
 
+export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
+  onSubmit: (data: T) => Promise<void> | void,
+) => () => Promise<void> | void
+
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
-  values: T
-  handleSubmit: (onSubmit: (data: T) => Promise<void> | void) => () => Promise<void> | void
-  trigger: (field?: FieldPath<T>) => void
+  handleSubmit: UseFormHandleSubmit<T>
+  trigger: (field?: FieldPath<T>) => Promise<boolean>
   reset: (values?: T) => void
-  watch: <TField extends FieldPath<T>>(field: TField) => FieldPathValue<T, TField>
-  getValues: <TField extends FieldPath<T>>(field: TField) => FieldPathValue<T, TField>
+  watch: {
+    (): T
+    <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
+  }
+  getValues: {
+    (): T
+    <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
+  }
   setValue: (
     field: FieldPath<T>,
     value: T[keyof T],
