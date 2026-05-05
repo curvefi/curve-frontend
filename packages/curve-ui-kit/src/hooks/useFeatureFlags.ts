@@ -49,7 +49,7 @@ export const useRightFormTabsLayout = useStableChannel
 export const useMarketHistoricalRatesChart = useStableChannel
 
 /** New market historical interest rate and utilization chart */
-export const useMarketInterestRatesAndUtilizationChart = useBetaChannel
+export const useMarketInterestRatesAndUtilizationChart = useStableChannel
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel
