@@ -2,8 +2,7 @@ import { FastifyBaseLogger } from 'fastify'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import type { RouteResponse } from '@primitives/router.utils'
-import { generateId } from '../router.utils'
+import type { RouterRouteResponse } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
@@ -75,7 +74,10 @@ async function assembleOdosQuote(
  * Calls Odos (via prices API) to get a quote and builds the router-api response.
  * - Uses GET /odos/quote on the configured ODOS_API_URL (defaults to https://prices.curve.finance)
  */
-export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> => {
+export const buildOdosRouteResponse = async (
+  query: RoutesQuery,
+  log: FastifyBaseLogger,
+): Promise<RouterRouteResponse[]> => {
   const {
     chainId,
     tokenIn: [tokenIn],
@@ -90,17 +92,18 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
     log.info({ message: 'odos route request skipped', query })
     return []
   }
-  const [{ outAmounts, pathId, pathVizImage, priceImpact = null }, id] = await Promise.all([
-    getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log),
-    generateId(protocol, query),
-  ])
+  const {
+    outAmounts,
+    pathId,
+    pathVizImage,
+    priceImpact = null,
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
   const { transaction } = await assembleOdosQuote(
     { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
     log,
   )
   return [
     {
-      id,
       router: protocol,
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],

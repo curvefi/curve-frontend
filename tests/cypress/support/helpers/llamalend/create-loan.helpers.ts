@@ -125,12 +125,10 @@ export function writeCreateLoanForm({
   borrow: Decimal
   leverageEnabled: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-info"]', TRANSACTION_LOAD_TIMEOUT).should(
-    'exist',
-  )
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-info"]').should('not.contain.text', '?')
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
   getActionValue('borrow-health').should('equal', '∞')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
@@ -143,12 +141,12 @@ export function writeCreateLoanForm({
  */
 export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boolean }) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]').should('not.exist') // make sure we don't click the previous max
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
+  cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]').should('not.exist') // new max is being calculated
+  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // new max is being calculated
   // wait for max borrow to load and verify the input value matches (using data-value for precision)
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="helper-message-number-0"]', LOAD_TIMEOUT)
+  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
     .then(maxValue => getBorrowInput().should('have.value', maxValue))
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
@@ -166,7 +164,7 @@ export function submitLoanForm({
   expected?: AlertColor
   checkMessage?: boolean
 }) {
-  cy.get(`[data-testid="${form}-submit-button"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
   cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
   if (expected !== 'success') {
     return cy.get('[data-testid="loan-alert-error"]').should('be.visible')

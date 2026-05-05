@@ -5,12 +5,13 @@ import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import { networks } from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
+import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import type { IconProps } from '@ui/Icon/Icon'
 import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
-import { convertToLocaleTimestamp, formatDate, formatNumber, scanAddressPath } from '@ui/utils'
+import { formatDate, formatNumber, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
@@ -99,7 +100,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
               {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
             </h5>
           </Chip>
-          <h5>{formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}</h5>
+          <h5>{formatDate(parseTimestamp(gaugeData.creation_date), 'long')}</h5>
         </StatsRow>
       </Box>
     </Wrapper>

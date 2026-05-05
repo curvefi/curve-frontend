@@ -46,9 +46,9 @@ export const useAdvancedDetailsData = ({
     tokenAddress: borrowToken?.address,
   })
   const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
-    type: marketType,
     blockchainId,
     controllerAddress,
+    marketType,
   })
   const { data: marketUsers, isLoading: marketUsersLoading } = useMarketUsers({
     endpoint,

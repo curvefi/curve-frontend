@@ -1,5 +1,5 @@
-import { styled } from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
+import Box from '@mui/material/Box'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 import { CurrentVotes } from './CurrentVotes'
@@ -13,15 +13,8 @@ export const GaugeVoting = () => {
     return <ConnectWalletPrompt description="Connect your wallet to view your current votes and vote on gauges" />
   }
   return (
-    <Wrapper>
+    <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <CurrentVotes />
-    </Wrapper>
+    </Box>
   )
 }
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  flex-grow: 1;
-  min-height: 100%;
-`

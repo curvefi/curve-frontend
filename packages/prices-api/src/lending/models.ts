@@ -1,6 +1,7 @@
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 type Bar = {
   value: number
@@ -32,7 +33,7 @@ export type OraclePool = {
 }
 
 export type OracleOHLC = {
-  time: Date
+  time: Timestamp
   open: number
   close: number
   high: number
@@ -42,7 +43,7 @@ export type OracleOHLC = {
 }
 
 export type UserCollateralEvent = {
-  timestamp: Date
+  timestamp: Timestamp
   txHash: Address
   type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
   user: Address

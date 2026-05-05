@@ -1,6 +1,7 @@
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain, PaginationMeta } from '..'
+import type { TimestampResponse } from '../timestamp'
 
 export type GetMarketsResponse = {
   data: {
@@ -35,7 +36,7 @@ export type GetMarketsResponse = {
       rebasing_yield: number | null
       rebasing_yield_apr: number | null
     }
-    created_at: string
+    created_at: TimestampResponse
     max_ltv: number
   }[]
   count: number
@@ -66,7 +67,7 @@ export type GetSnapshotsResponse = {
     min_band: number
     max_band: number
     borrowable: number
-    dt: string
+    dt: TimestampResponse
     liquidation_discount: number
     loan_discount: number
     sum_debt_squared: number
@@ -103,7 +104,7 @@ export type GetSupplyResponse = {
     market: string
     supply: number
     borrowable: number
-    timestamp: string
+    timestamp: TimestampResponse
   }[]
 }
 
@@ -112,8 +113,8 @@ export type GetUserMarketsResponse = PaginationMeta & {
   markets: {
     collateral: string
     controller: Address
-    first_snapshot: string
-    last_snapshot: string
+    first_snapshot: TimestampResponse
+    last_snapshot: TimestampResponse
   }[]
 }
 
@@ -139,7 +140,7 @@ type UserMarketStats = {
   collateral_up: number
   oracle_price: number
   block_number: number
-  timestamp: string
+  timestamp: TimestampResponse
 }
 
 export type GetUserMarketStatsResponse = UserMarketStats
@@ -166,7 +167,7 @@ export type GetUserCollateralEventsResponse = {
   page: number | null
   data: [
     {
-      dt: string
+      dt: TimestampResponse
       transaction_hash: Address
       type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
       user: Address

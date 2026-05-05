@@ -7,7 +7,7 @@ import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns'
-import { NewMarketListFilterDrawer } from '../drawers/NewMarketListFilterDrawer'
+import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 
 type Props = {
   filterExpanded: boolean
@@ -20,7 +20,7 @@ type Props = {
   userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
-export const NewFilterChip = ({
+export const FilterChip = ({
   filterExpanded,
   setFilterExpanded,
   hiddenCount,
@@ -32,7 +32,7 @@ export const NewFilterChip = ({
 }: Props) => {
   const isMobile = useIsMobile()
   return isMobile ? (
-    <NewMarketListFilterDrawer
+    <MarketListFilterDrawer
       hasFavorites={hasFavorites}
       data={data}
       hiddenCount={hiddenCount}

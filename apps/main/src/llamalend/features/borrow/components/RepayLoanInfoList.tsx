@@ -34,11 +34,11 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
 function useRepayRemainingDebt(
   {
     params,
-    swapRequired,
+    showLeverage,
     prevDebt,
   }: {
     params: RepayParams
-    swapRequired: boolean
+    showLeverage: boolean
     prevDebt: Query<Decimal | null>
   },
   { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
@@ -48,7 +48,7 @@ function useRepayRemainingDebt(
   const prev = prevDebt.data
   const debt: QueryProp<Decimal | null> = isFull
     ? constQ('0')
-    : swapRequired
+    : showLeverage
       ? {
           data: prev && expectedBorrowedQuery.data && remainingDebt(prev, expectedBorrowedQuery.data.totalBorrowed),
           ...combineQueryState(prevDebt, expectedBorrowedQuery),
@@ -88,8 +88,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
-  hasLeverage,
-  swapRequired,
+  showLeverage,
   routes,
   form,
   prices,
@@ -101,8 +100,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
-  hasLeverage: boolean | undefined
-  swapRequired: boolean
+  showLeverage: boolean
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
@@ -112,7 +110,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
-    { params, swapRequired, prevDebt },
+    { params, showLeverage, prevDebt },
     { isFull, userBorrowed },
     isOpen,
   )
@@ -149,9 +147,10 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         isOpen && !!isFull,
       )}
       {...useLeverageInfoFields({
-        leverageEnabled: swapRequired, // in llamalend.js we need to use the leverage implementations to do any swap
+        // we need to use the leverage implementations to do any swap. deleverage implementation cannot show the expected values
+        leverageEnabled: showLeverage,
         leverageValue: useRepayFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen && !!hasLeverage),
+        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),

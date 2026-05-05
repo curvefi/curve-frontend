@@ -1,5 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type ChainRevenue = {
   chain: string
@@ -12,14 +13,14 @@ export type ChainTopPoolRevenue = {
 }
 
 export type CrvUsdWeekly = {
-  timestamp: Date
+  timestamp: Timestamp
   controller: Address
   collateral: string
   feesUsd: number
 }
 
 export type PoolsWeekly = {
-  timestamp: Date
+  timestamp: Timestamp
   chain: Chain
   feesUsd: number
 }
@@ -32,12 +33,12 @@ export type Cushion = {
 }
 
 export type Distribution = {
-  timestamp: Date
+  timestamp: Timestamp
   feesUsd: number
 }
 
 export type CowSwapSettlement = {
-  timestamp: Date
+  timestamp: Timestamp
   coin: {
     lpToken: boolean
     symbol: string

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import { fromDate } from '@curvefi/prices-api/timestamp'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -79,7 +80,7 @@ const generatePoolTrades = (count: number): PoolTradeRow[] => {
       tokensBoughtUsd: tokensBought * (boughtIndex === 0 ? 1 : boughtIndex === 1 ? 42000 : 2600),
       price,
       blockNumber: 19000000 + i * 100,
-      time: new Date(now - i * 3600000), // 1 hour apart
+      time: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(1000 + i),
       buyer: generateAddress(2000 + i),
       fee: Math.random() * 0.01,
@@ -111,7 +112,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
     fees: [Math.random() * 10, Math.random() * 0.001, Math.random() * 0.01],
     tokenSupply: 1000000 + Math.random() * 500000,
     blockNumber: 19000000 + i * 50,
-    time: new Date(now - i * 7200000), // 2 hours apart
+    time: fromDate(new Date(now - i * 7200000)), // 2 hours apart
     txHash: generateTxHash(3000 + i),
     provider: generateAddress(4000 + i),
     txUrl: `https://etherscan.io/tx/${generateTxHash(3000 + i)}`,
@@ -141,7 +142,7 @@ const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken
       feeX: Math.random() * 0.001,
       feeY: Math.random() * 10,
       blockNumber: 19000000 + i * 75,
-      timestamp: new Date(now - i * 1800000), // 30 minutes apart
+      timestamp: fromDate(new Date(now - i * 1800000)), // 30 minutes apart
       txHash: generateTxHash(5000 + i),
       txUrl: `https://etherscan.io/tx/${generateTxHash(5000 + i)}`,
       network: 'ethereum' as Chain,
@@ -172,7 +173,7 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
           }
         : null,
       blockNumber: 19000000 + i * 60,
-      timestamp: new Date(now - i * 3600000), // 1 hour apart
+      timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
       txUrl: `https://etherscan.io/tx/${generateTxHash(6000 + i)}`,
       network: 'ethereum' as Chain,

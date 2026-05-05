@@ -8,15 +8,15 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
+import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
+import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
+import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
-import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
@@ -150,7 +150,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
     ...getTableOptions(result),
   })
   return (
-    <DataTable
+    <LegacyDataTable
       table={table}
       rowLimit={DEFAULT_VISIBLE_ROWS}
       viewAllLabel="View all positions"
@@ -168,7 +168,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
       loading={loading}
     >
       <Stack>
-        <TableFilters<LlamaMarketColumnId>
+        <LegacyTableFilters<LlamaMarketColumnId>
           filterExpandedKey={title}
           loading={loading}
           onReload={onReload}
@@ -178,12 +178,12 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
           disableSearchAutoFocus
           searchText={globalFilter}
           onSearch={setGlobalFilter}
-          leftChildren={<TableFiltersTitles title={t`Your Positions`} />}
+          leftChildren={<LegacyTableFiltersTitles title={t`Your Positions`} />}
           collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
               <LlamaChainFilterChips data={userData} {...filterProps} />
-              <LlamaListChips
+              <LegacyLlamaListChips
                 hiddenCount={getHiddenCount(table)}
                 resetFilters={resetFilters}
                 onSortingChange={onSortingChange}
@@ -210,6 +210,6 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
           <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} overflow="standard" />
         </Stack>
       </Stack>
-    </DataTable>
+    </LegacyDataTable>
   )
 }

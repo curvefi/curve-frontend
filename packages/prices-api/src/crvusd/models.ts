@@ -1,6 +1,7 @@
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 export type Market = {
   name: string
@@ -39,12 +40,12 @@ export type Market = {
     pending: number
     collected: number
   }
-  createdAt: Date
+  createdAt: Timestamp
   maxLtv: number
 }
 
 export type Snapshot = {
-  timestamp: Date
+  timestamp: Timestamp
   rate: number
   borrowApy: number
   borrowApr: number
@@ -83,7 +84,7 @@ export type Snapshot = {
 }
 
 export type CrvUsdSupply = {
-  timestamp: Date
+  timestamp: Timestamp
   market: string
   supply: number
   borrowable: number
@@ -103,8 +104,8 @@ export type Keeper = {
 export type UserMarkets = {
   collateral: string
   controller: Address
-  snapshotFirst: Date
-  snapshotLast: Date
+  snapshotFirst: Timestamp
+  snapshotLast: Timestamp
 }[]
 
 export type UserMarketStats = {
@@ -126,13 +127,13 @@ export type UserMarketStats = {
   collateralUp: number
   oraclePrice: number
   blockNumber: number
-  timestamp: Date
+  timestamp: Timestamp
 }
 
 export type UserMarketSnapshots = UserMarketStats[]
 
 export type UserCollateralEvent = {
-  timestamp: Date
+  timestamp: Timestamp
   txHash: Address
   type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
   user: Address
