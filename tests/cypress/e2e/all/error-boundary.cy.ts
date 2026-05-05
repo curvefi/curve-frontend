@@ -10,11 +10,11 @@ const visitErrorBoundary = () => {
       chains: {
         ethereum: {
           data: [
-            // make an error occur on purpose by returning nonsense data (`symbol` should be string)
+            // make an error occur on purpose by returning nonsense data (`address` should be string)
             // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
             {
-              collateral_token: { symbol: 1 },
-              borrowed_token: { symbol: 1 },
+              collateral_token: { symbol: 'ETH', address: 1 },
+              borrowed_token: { symbol: 'crvUSD', address: 1 },
               extra_reward_apr: [],
               vault: '',
               controller: '',
