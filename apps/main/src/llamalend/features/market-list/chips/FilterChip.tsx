@@ -50,7 +50,7 @@ export const FilterChip = ({
       selected={filtersOpen}
       icon={<FilterIcon />}
       toggle={toggleFilters}
-      data-testid="btn-expand-filters"
+      data-testid="btn-open-filters"
     />
   )
 }
