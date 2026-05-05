@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
@@ -14,7 +14,6 @@ import { notFalsy } from '@primitives/objects.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
-import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
@@ -22,7 +21,7 @@ import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/Chart
 import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -66,7 +65,6 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
-  const newBandsChartEnabled = useNewBandsChart()
   const bandsPalette = useBandsChartPalette()
   const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
@@ -79,7 +77,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
     )
   }, [])
 
-  const showBands = newBandsChartEnabled && bands && isBandsVisible
+  const showBands = bands && isBandsVisible
   const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
@@ -124,7 +122,6 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               }}
               isLoading={chart.isLoading}
               customButton={
-                newBandsChartEnabled &&
                 bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} toggle={toggleBandsVisible} />
               }
             />

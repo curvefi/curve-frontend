@@ -150,12 +150,7 @@ export const LendMarketPage = () => {
         borrowPositionDetails={borrowPositionDetails}
         events={collateralEvents}
       />
-      <MarketInformationComposite
-        pageProps={pageProps}
-        type="borrow"
-        loanExists={loanExists}
-        previewPrices={previewPrices}
-      />
+      <MarketInformationComposite pageProps={pageProps} type="borrow" previewPrices={previewPrices} />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

@@ -129,7 +129,6 @@ export const MintMarketPage = () => {
         market={market ?? null}
         marketId={marketId}
         chainId={rChainId}
-        page="manage"
         previewPrices={previewPrices}
       />
     </DetailPageLayout>
