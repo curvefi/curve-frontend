@@ -24,6 +24,7 @@ export function useMaxTokenValues(
   params: CreateLoanFormQueryParams & { userAddress?: Address },
   form: UseFormReturn<CreateLoanForm>,
 ) {
+  const { getValues, setValue, trigger } = form
   const {
     data: userBalance,
     error: balanceError,
@@ -49,24 +50,24 @@ export function useMaxTokenValues(
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
       const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      updateForm(form, { debt, maxDebt }, { automated: true })
+      updateForm({ getValues, setValue, trigger }, { debt, maxDebt }, { automated: true })
       pendingRatioRef.current = null
     } else {
-      updateForm(form, { maxDebt }, { automated: true })
+      updateForm({ getValues, setValue, trigger }, { maxDebt }, { automated: true })
     }
-  }, [form, maxDebt])
+  }, [getValues, maxDebt, setValue, trigger])
 
   useFormSync(form, { maxCollateral })
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(
     (range: number) => {
-      const { debt, maxDebt } = form.getValues()
-      updateForm(form, { maxDebt: undefined, range })
+      const { debt, maxDebt } = getValues()
+      updateForm({ getValues, setValue, trigger }, { maxDebt: undefined, range })
       // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
       pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
     },
-    [form],
+    [getValues, setValue, trigger],
   )
 
   return {

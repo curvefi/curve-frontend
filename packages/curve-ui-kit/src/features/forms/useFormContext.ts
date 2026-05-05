@@ -1,6 +1,6 @@
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
 import type { FieldValues, UseFormReturn } from './form.types'
 
 export const FormContext = createContext<UseFormReturn | undefined>(undefined)
 
-export const useFormContext = <T extends FieldValues = FieldValues>() => FormContext as unknown as UseFormReturn<T>
+export const useFormContext = <T extends FieldValues = FieldValues>() => useContext(FormContext) as UseFormReturn<T>

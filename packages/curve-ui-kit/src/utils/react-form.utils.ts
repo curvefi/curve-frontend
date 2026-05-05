@@ -7,6 +7,11 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
 }>
 
+type FormUpdater<TFieldValues extends FieldValues> = Pick<
+  UseFormReturn<TFieldValues>,
+  'getValues' | 'setValue' | 'trigger'
+>
+
 /**
  * react-hook-form update helper that uses a fixed update policy and then runs a full `form.trigger()` once per call.
  * This is necessary because form.setValue() doesn't revalidate all fields.
@@ -15,7 +20,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
  * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
  */
 export function updateForm<TFieldValues extends FieldValues>(
-  form: UseFormReturn<TFieldValues>,
+  form: FormUpdater<TFieldValues>,
   updates: FormUpdates<TFieldValues>,
   { automated = false }: { automated?: boolean } = {},
 ): void {
@@ -42,9 +47,15 @@ export const resetForm = <TFieldValues extends FieldValues>(
  * Syncs the form with the given values. IMPORTANT: This only works if you always pass the same keys in the same order!
  */
 export const useFormSync = <TFieldValues extends FieldValues>(
-  form: UseFormReturn<TFieldValues>,
-  values: FormUpdates<TFieldValues>, // eslint-disable-next-line @eslint-react/exhaustive-deps
-) => useEffect(() => updateForm(form, values, { automated: true }), [...Object.values(values), form])
+  { getValues, setValue, trigger }: FormUpdater<TFieldValues>,
+  values: FormUpdates<TFieldValues>,
+) => {
+  useEffect(
+    () => updateForm({ getValues, setValue, trigger }, values, { automated: true }),
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+    [getValues, setValue, trigger, ...Object.values(values)],
+  )
+}
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(

@@ -35,10 +35,12 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
     values: { address, contact, contactMethod, description },
     onSubmit,
   } = useErrorReportForm(context, onClose)
+  const { getValues, setValue, trigger } = form
   const { label, placeholder } = contactCopyByMethod[contactMethod]
   useEffect(() => {
-    if (isOpen && userAddress) updateForm(form, { address: userAddress }, { automated: true })
-  }, [form, isOpen, userAddress])
+    if (isOpen && userAddress)
+      updateForm({ getValues, setValue, trigger }, { address: userAddress }, { automated: true })
+  }, [getValues, isOpen, setValue, trigger, userAddress])
   return (
     <ModalDialog
       open={isOpen}

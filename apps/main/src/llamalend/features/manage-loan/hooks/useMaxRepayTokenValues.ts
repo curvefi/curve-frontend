@@ -22,6 +22,7 @@ export function useMaxRepayTokenValues(
   },
   enabled?: boolean,
 ) {
+  const { getValues, setValue, trigger } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({
     chainId,
@@ -45,8 +46,11 @@ export function useMaxRepayTokenValues(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
-    () => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data }, { automated: true })),
-    [form, isFull.data],
+    () =>
+      isFull.data == null
+        ? undefined
+        : updateForm({ getValues, setValue, trigger }, { isFull: isFull.data }, { automated: true }),
+    [getValues, isFull.data, setValue, trigger],
   )
   useFormSync(form, { maxStateCollateral: userState.data?.collateral })
 

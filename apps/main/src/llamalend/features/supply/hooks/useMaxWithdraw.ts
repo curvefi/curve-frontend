@@ -43,6 +43,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   },
   enabled?: boolean,
 ) {
+  const { getValues, setValue, trigger } = form
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = useVaultMaxWithdrawAmount(params, enabled)
   const maxRedeemShares = useVaultMaxRedeemShares(params, enabled)
@@ -58,7 +59,10 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
 
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
   useFormSync(form, { userVaultShares: userBalances.data.depositedShares })
-  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
+  useEffect(
+    () => (isFull.data == null ? undefined : updateForm({ getValues, setValue, trigger }, { isFull: isFull.data })),
+    [getValues, isFull.data, setValue, trigger],
+  )
 
   return {
     maxWithdrawAmount: q(maxWithdrawAmount),
