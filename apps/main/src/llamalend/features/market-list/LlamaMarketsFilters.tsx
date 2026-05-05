@@ -15,6 +15,7 @@ import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-
 import { LlamaMarketColumnId } from './columns'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
+import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -66,7 +67,10 @@ export const LlamaMarketsFilters = ({
     [data],
   )
   return (
-    <Stack padding={Spacing.sm}>
+    <Stack padding={Spacing.sm} spacing={Spacing.sm}>
+      <TableFilterColumn title={t`Network`}>
+        <LlamaChainFilterChips data={markets} {...filterProps} />
+      </TableFilterColumn>
       <TableFilterColumn title={t`Collateral Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
