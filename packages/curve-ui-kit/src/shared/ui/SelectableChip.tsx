@@ -19,9 +19,15 @@ const VARIANT_MAP: Record<SelectableChipVariant, ChipProps['variant']> = {
  * This customizes the MUI Chip component to change color and icon based on selection state.
  * The delete icon is always visible, but hidden when the chip is not selected with some transition.
  */
-export const SelectableChip = ({ selected, toggle, variant = 'outlined', ...props }: SelectableChipProps) => (
+export const SelectableChip = ({
+  selected,
+  toggle,
+  variant = 'outlined',
+  size = 'small',
+  ...props
+}: SelectableChipProps) => (
   <Chip
-    size="small"
+    size={size}
     clickable
     variant={VARIANT_MAP[variant]}
     color={selected ? 'selected' : 'unselected'}
