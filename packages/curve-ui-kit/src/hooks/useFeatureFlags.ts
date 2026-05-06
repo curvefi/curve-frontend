@@ -41,3 +41,6 @@ export const useMarketInterestRatesAndUtilizationChart = useStableChannel
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel
+
+export const useLoanSlices = () =>
+  ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)

@@ -96,6 +96,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
 export const fetchMerklRewards = async (params: object) => {
+  if (window.location.hostname === 'localhost') return {} // todo: ask merkl to add localhost to allowed CORS headers
   const fetchPage = async (page: number, items: number) => {
     const url = `https://api.merkl.xyz/v4/opportunities${addQueryString({
       ...params,
