@@ -8,7 +8,7 @@ import {
 
 const { Spacing } = SizesAndSpaces
 
-const healthyPositionRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
+const newOnlyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
   newRange: [1550, 1875],
 }
 
@@ -17,7 +17,7 @@ const currentOnlyRanges: SmallLiquidationRangeChartComponentProps['liquidationRa
 }
 
 const currentAndNewRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  currentRange: [1425, 1800],
+  currentRange: [1425, 1900],
   newRange: [1525, 1900],
 }
 
@@ -60,7 +60,7 @@ type Story = StoryObj<typeof SmallLiquidationRangeChartComponent>
 
 export const HealthyPosition: Story = {
   args: {
-    liquidationRanges: healthyPositionRanges,
+    liquidationRanges: newOnlyRanges,
     oraclePrice: 1950,
   },
   parameters: {
@@ -74,13 +74,13 @@ export const HealthyPosition: Story = {
 
 export const NewRangeOnly: Story = {
   args: {
-    liquidationRanges: healthyPositionRanges,
+    liquidationRanges: newOnlyRanges,
     oraclePrice: 1950,
   },
   parameters: {
     docs: {
       description: {
-        story: 'New range only: proposed liquidation range renders as the future liquidation range band.',
+        story: 'Shows the proposed liquidation range for a position that has not been opened yet.',
       },
     },
   },
@@ -94,7 +94,7 @@ export const CurrentRangeOnly: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Fallback state: current range renders when no new range is available.',
+        story: 'Shows the existing liquidation range when there is no pending range change.',
       },
     },
   },
@@ -109,7 +109,7 @@ export const CurrentAndNewRange: Story = {
     docs: {
       description: {
         story:
-          'Current and new ranges use the same endpoints; the current range remains visible behind the inset new range.',
+          'Shows an existing liquidation range with a proposed update inset on top, so both ranges remain visible.',
       },
     },
   },
