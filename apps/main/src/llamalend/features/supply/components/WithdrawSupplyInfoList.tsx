@@ -1,4 +1,3 @@
-import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useWithdrawRemovableVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
@@ -7,6 +6,7 @@ import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyR
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMinus } from '@ui-kit/utils'

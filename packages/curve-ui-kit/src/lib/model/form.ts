@@ -1,13 +1,7 @@
-import { FieldPathValue, type FieldPath, type FieldValues, type UseFormReturn } from 'react-hook-form'
+import { FieldPathValue, type FieldPath, type FieldValues, type UseFormReturn } from '@ui-kit/features/forms'
 
 /** Shared defaults for action forms. */
-export const formDefaultOptions = {
-  mode: 'onChange',
-  reValidateMode: 'onBlur',
-  resetOptions: { keepErrors: false },
-  delayError: 150,
-  criteriaMode: 'all',
-} as const
+export const formDefaultOptions = {} as const // todo: get rid of this
 
 /**
  * Wrapper to call form.watch() and avoid lint errors about incompatible hooks.

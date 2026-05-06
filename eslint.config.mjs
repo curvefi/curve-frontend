@@ -121,9 +121,9 @@ const config = [
                 .map(targetApp => `apps/main/src/${targetApp}`),
               from: `apps/main/src/${importedApp}`, // from ==> the app imported
             })),
-            // forbid `wagmi` external dependency package imports, except from packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi
+            // forbid `wagmi` external dependency package imports, except from feature
             {
-              target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi/**'],
+              target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'],
               from: 'wagmi',
             },
           ],
@@ -159,6 +159,10 @@ const config = [
               name: '@mui/material/Chip',
               message:
                 "Use `import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'` or `import { Badge } from '@ui-kit/shared/ui/Badge'` instead.",
+            },
+            {
+              name: 'react-hook-form',
+              message: "Use `'@ui-kit/features/forms'` instead of 'react-hook-form' directly.",
             },
           ],
         },

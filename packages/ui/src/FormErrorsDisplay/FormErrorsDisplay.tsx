@@ -1,6 +1,5 @@
-import { FunctionComponent, useCallback, useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { ErrorMessage } from '@hookform/error-message'
+import { FunctionComponent, useMemo } from 'react'
+import { useFormContext } from '@ui-kit/features/forms'
 import { ErrorContainer } from '../styled-containers'
 import type { FormError } from './error-types'
 
@@ -40,22 +39,17 @@ export const FormErrorsDisplay = <T extends Record<string, unknown>>({
     ]
   }, [errorKeys, errors])
 
-  const renderErrorMessage = useCallback(
-    (key: string, error: unknown) => (
-      <ErrorMessage
-        key={key}
-        name={key}
-        render={() => {
-          const errorMessage = getErrorMessage(error as FormError)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <Component errorKey={errorMessage} handleBtnClose={() => clearErrors(key as any)} />
-        }}
-      />
-    ),
-    [Component, clearErrors],
-  )
-
   if (filteredErrors.length === 0) return null
 
-  return <ErrorContainer>{filteredErrors.map(([key, error]) => renderErrorMessage(key, error))}</ErrorContainer>
+  return (
+    <ErrorContainer>
+      {filteredErrors.map(([key, error]) => (
+        <Component
+          key={key}
+          errorKey={getErrorMessage(error as FormError)}
+          handleBtnClose={() => clearErrors(key as Parameters<typeof clearErrors>[0])}
+        />
+      ))}
+    </ErrorContainer>
+  )
 }

@@ -13,8 +13,11 @@ type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'user
 export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 /** Returns true when repayment closes the loan using only debt tokens from the wallet. */
-export const isFullRepayFromDebtToken = (isFull: boolean, stateCollateral: Decimal, userCollateral: Decimal) =>
-  isFull && !+stateCollateral && !+userCollateral
+export const isFullRepayFromDebtToken = (
+  isFull: boolean | undefined,
+  stateCollateral: Decimal,
+  userCollateral: Decimal,
+) => !!isFull && !+stateCollateral && !+userCollateral
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.

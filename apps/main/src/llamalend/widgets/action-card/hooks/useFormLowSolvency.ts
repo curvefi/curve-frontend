@@ -1,10 +1,10 @@
-import { FieldValues, UseFormHandleSubmit } from 'react-hook-form'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { DEFAULT_ALERT, SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { FieldValues, UseFormHandleSubmit } from '@ui-kit/features/forms'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { q } from '@ui-kit/types/util'
@@ -14,7 +14,7 @@ type Props<T extends FieldValues, ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   chainId: ChainId
   onSubmit: (form: T) => void
-  handleFormSubmit: UseFormHandleSubmit<T, T>
+  handleFormSubmit: UseFormHandleSubmit<T>
 }
 
 const isLowSolvencyActionBlocked = (solvencyPercent: number | null | undefined) =>

@@ -73,11 +73,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     preset,
     onPricesUpdated,
   })
+  const { getValues, setValue, trigger } = form
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
-      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
-    [form],
+      updateForm({ getValues, setValue, trigger }, { leverageEnabled: event.target.checked, routeId: undefined }),
+    [getValues, setValue, trigger],
   )
 
   return (
@@ -128,7 +129,10 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={maxDebt.data}
               loading={maxDebt.isLoading}
-              onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
+              onClick={useCallback(
+                () => updateForm({ getValues, setValue, trigger }, { debt: values.maxDebt }),
+                [getValues, setValue, trigger, values.maxDebt],
+              )}
               buttonTestId="borrow-set-debt-to-max"
             />
           }

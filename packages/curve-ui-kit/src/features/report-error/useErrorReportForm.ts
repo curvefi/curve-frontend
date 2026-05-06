@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm } from '@ui-kit/features/forms'
 import { captureError, captureString } from '@ui-kit/features/sentry'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 

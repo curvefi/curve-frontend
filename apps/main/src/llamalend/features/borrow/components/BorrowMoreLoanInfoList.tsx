@@ -1,4 +1,3 @@
-import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -18,6 +17,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
