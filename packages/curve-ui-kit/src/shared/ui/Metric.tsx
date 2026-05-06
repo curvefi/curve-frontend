@@ -3,6 +3,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { toArray } from '@primitives/array.utils'
+import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -154,7 +155,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 
 export type MetricProps = {
   /** The actual metric value to display */
-  value: number | '' | false | undefined | null
+  value: Amount | '' | false | undefined | null
   valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
     color?: TypographyProps['color']
     abbreviate?: boolean // Default to true

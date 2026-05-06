@@ -1,63 +1,24 @@
-import type { UserPositionStatus } from '@/llamalend/llamalend.types'
+import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
+import { getTokens } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
+import type { UserMarketParams } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { BorrowInformation } from './BorrowInformation'
 import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-export type LiquidationAlert = {
-  softLiquidation: boolean
-  hardLiquidation: boolean
-  status: UserPositionStatus
-}
-export type Health = { value: number | undefined | null; loading: boolean }
-export type LiquidationRange = {
-  value: number[] | undefined | null
-  rangeToLiquidation: number | undefined | null
-  loading: boolean
-}
-export type BandRange = { value: number[] | undefined | null; loading: boolean }
-export type Leverage = { value: number | undefined | null; loading: boolean }
-export type CollateralValue = {
-  totalValue: number | undefined | null
-  collateral: {
-    value: number | undefined | null
-    usdRate: number | undefined | null
-    symbol: string | undefined
-  }
-  borrow: {
-    value: number | undefined | null
-    usdRate: number | undefined | null
-    symbol: string | undefined
-  }
-  loading: boolean
-}
-export type TotalDebt = { value: number | undefined | null; loading: boolean }
+export type BorrowPositionDetailsProps = { params: UserMarketParams; market: LlamaMarketTemplate | undefined }
 
-export type BorrowPositionDetailsProps = {
-  liquidationAlert: LiquidationAlert
-  health: Health
-  liquidationRange: LiquidationRange
-  bandRange: BandRange
-  leverage?: Leverage // doesn't exist yet for crvusd
-  collateralValue: CollateralValue
-  totalDebt: TotalDebt
-}
-
-export const BorrowPositionDetails = ({
-  liquidationAlert,
-  health,
-  liquidationRange,
-  bandRange,
-  leverage,
-  collateralValue,
-  totalDebt,
-}: BorrowPositionDetailsProps) => {
-  const status = liquidationAlert.status
+export const BorrowPositionDetails = ({ params, market }: BorrowPositionDetailsProps) => {
+  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const liquidationStatus = useLiquidationStatus(params)
   const statusContent =
-    status && getPositionStatusContent(collateralValue.collateral.symbol, collateralValue.borrow.symbol)[status]
+    liquidationStatus.data &&
+    getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
   return (
     <Stack padding={Spacing.sm} gap={Spacing.xs}>
       {statusContent?.hasMarketAlert && (
@@ -69,14 +30,11 @@ export const BorrowPositionDetails = ({
         </Alert>
       )}
       <Stack gap={Spacing.sm}>
-        <HealthDetails health={health} liquidationAlert={liquidationAlert} />
-        <BorrowInformation
-          collateralValue={collateralValue}
-          leverage={leverage}
-          liquidationRange={liquidationRange}
-          bandRange={bandRange}
-          totalDebt={totalDebt}
+        <HealthDetails
+          params={params}
+          softLiquidation={mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')}
         />
+        <BorrowInformation params={params} market={market} />
       </Stack>
     </Stack>
   )

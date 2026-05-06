@@ -1,5 +1,6 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { combineQueryState } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
@@ -23,3 +24,12 @@ export const { useQuery: useUserHealth, getQueryOptions: getUserHealthOptions } 
     validateIsFull(isFull)
   }),
 })
+
+export const useUserHealthValue = (params: UserMarketParams) => {
+  const healthFull = useUserHealth({ ...params, isFull: true })
+  const healthNotFull = useUserHealth({ ...params, isFull: false })
+  return {
+    data: healthFull.data && healthNotFull.data && (+healthNotFull.data < 0 ? healthNotFull.data : healthFull.data),
+    ...combineQueryState(healthFull, healthNotFull),
+  }
+}

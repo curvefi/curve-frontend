@@ -8,7 +8,7 @@ export const formatMetricValue = (value: Amount | null | undefined) =>
 
 // Returns null instead of UnavailableNotation to prevent showing UnavailableNotation twice
 export const formatPercentage = (
-  value: number | undefined | null,
-  totalValue: number | undefined | null,
+  value: Amount | undefined | null,
+  totalValue: Amount | undefined | null,
   usdRate: number | undefined | null,
-) => (totalValue && value != null && usdRate != null ? formatPercent(((value * usdRate) / totalValue) * 100) : null)
+) => (totalValue && value != null && usdRate != null ? formatPercent(((+value * usdRate) / +totalValue) * 100) : null)
