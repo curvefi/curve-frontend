@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
-import { CHART_LINE_DASH_PATTERNS, CHART_REFERENCE_LINE_WIDTH } from '@ui-kit/shared/ui/Chart/chart.utils'
+import { CHART_REFERENCE_LINE_WIDTH } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { LegendSet, type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -22,18 +22,10 @@ const CHART_BODY_HEIGHT_PX = TRACK_HEIGHT_PX + AXIS_HEIGHT_PX + TOP_PADDING_PX
 type NumberRange = readonly [number, number]
 
 const FULL_RANGE_Y_AXIS: NumberRange = [0, 1]
+/** When both new and current ranges are present, new range is shortened by 10% to allow some visibility of the current range */
 const BOTTOM_ALIGNED_INSET_RANGE_Y_AXIS: NumberRange = [0, 0.9]
 
 type RangeMarkArea = [Record<string, unknown>, Record<string, unknown>]
-type RangeMarkAreaOptions = {
-  range: NumberRange
-  yRange?: NumberRange
-  color: string
-  label: string
-  labelColor: string
-  showLabel: boolean
-  z2: number
-}
 
 export interface SmallLiquidationRangeChartProps {
   liquidationRanges: {
@@ -45,47 +37,14 @@ export interface SmallLiquidationRangeChartProps {
 
 const hasRenderableRange = ([min, max]: NumberRange) => Number.isFinite(min) && Number.isFinite(max) && max > min
 
-const getRangeLabel = (formatter: string, color: string, show: boolean) => ({
-  show,
-  position: 'inside',
-  formatter,
-  color,
-  fontWeight: FontWeight.Semi_Bold,
-  fontSize: FontSize.xs.desktop,
-})
+const getNewRangeLegendLabel = (hasCurrentRange: boolean) => {
+  if (hasCurrentRange) return t`New Liquidation Range`
+  return t`Liquidation Range`
+}
 
-const createRangeMarkArea = ({
-  range,
-  yRange = FULL_RANGE_Y_AXIS,
-  color,
-  label,
-  labelColor,
-  showLabel,
-  z2,
-}: RangeMarkAreaOptions): RangeMarkArea => [
-  {
-    xAxis: range[0],
-    yAxis: yRange[0],
-    z2,
-    itemStyle: { color },
-    label: getRangeLabel(label, labelColor, showLabel),
-  },
-  { xAxis: range[1], yAxis: yRange[1] },
-]
-
-const getXAxisDomain = (values: number[]) => {
-  const finiteValues = values.filter(Number.isFinite)
-
-  if (!finiteValues.length) return [0, 1] as const
-
-  const dataMin = Math.min(...finiteValues)
-  const dataMax = Math.max(...finiteValues)
-  const minPadding = Math.abs(dataMin) * 0.1 || 1
-  const maxPadding = Math.abs(dataMax) * 0.1 || 1
-  const min = Math.floor(dataMin - minPadding)
-  const max = Math.ceil(dataMax + maxPadding)
-
-  return max <= min ? ([min, min + 1] as const) : ([min, max] as const)
+const getRangeLabel = ({ isCurrentRange, hasOtherRange }: { isCurrentRange: boolean; hasOtherRange: boolean }) => {
+  if (!hasOtherRange) return t`LR`
+  return isCurrentRange ? '' : t`LR (new)`
 }
 
 export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: SmallLiquidationRangeChartProps) => {
@@ -97,6 +56,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
   const haveCurrentRangeData = !!renderableCurrentRange
   const parsedOraclePrice = oraclePrice == null ? NaN : Number(oraclePrice)
   const hasOraclePrice = Number.isFinite(parsedOraclePrice)
+  const hasChartData = haveCurrentRangeData || haveNewRangeData || hasOraclePrice
 
   const {
     design: { Chart, Color, Text },
@@ -108,43 +68,61 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
   const chartCurrentRangeColor = Chart.LiquidationZone.Current
   const chartNewRangeColor = Chart.LiquidationZone.Future
 
-  const domainValues = [
-    ...(renderableCurrentRange ?? []),
-    ...(renderableNewRange ?? []),
-    ...(hasOraclePrice ? [parsedOraclePrice] : []),
-  ]
-  const [xMin, xMax] = getXAxisDomain(domainValues)
+  const seriesData = useMemo(() => {
+    const domainValues = [
+      ...(renderableCurrentRange ?? []),
+      ...(renderableNewRange ?? []),
+      ...(hasOraclePrice ? [parsedOraclePrice] : []),
+    ].filter(Number.isFinite)
+
+    return domainValues.map(value => [value, 0])
+  }, [hasOraclePrice, parsedOraclePrice, renderableCurrentRange, renderableNewRange])
 
   const rangeMarkAreas = useMemo(() => {
     const markAreas: RangeMarkArea[] = []
-    const currentRangeLabel = 'LR'
-    const newRangeLabel = haveCurrentRangeData ? 'LR (new)' : 'LR'
+    const currentRangeLabel = getRangeLabel({ isCurrentRange: true, hasOtherRange: haveNewRangeData })
+    const newRangeLabel = getRangeLabel({ isCurrentRange: false, hasOtherRange: haveCurrentRangeData })
 
     if (renderableCurrentRange) {
-      markAreas.push(
-        createRangeMarkArea({
-          range: renderableCurrentRange,
-          color: chartCurrentRangeColor,
-          label: currentRangeLabel,
-          labelColor: chartRangeLabelColor,
-          showLabel: !haveNewRangeData,
+      markAreas.push([
+        {
+          xAxis: renderableCurrentRange[0],
+          yAxis: FULL_RANGE_Y_AXIS[0],
           z2: 1,
-        }),
-      )
+          itemStyle: { color: chartCurrentRangeColor },
+          label: {
+            show: !haveNewRangeData,
+            position: 'inside',
+            formatter: currentRangeLabel,
+            color: chartRangeLabelColor,
+            fontWeight: FontWeight.Semi_Bold,
+            fontSize: FontSize.xs.desktop,
+          },
+        },
+        { xAxis: renderableCurrentRange[1], yAxis: FULL_RANGE_Y_AXIS[1] },
+      ])
     }
 
     if (renderableNewRange) {
-      markAreas.push(
-        createRangeMarkArea({
-          range: renderableNewRange,
-          yRange: haveCurrentRangeData ? BOTTOM_ALIGNED_INSET_RANGE_Y_AXIS : FULL_RANGE_Y_AXIS,
-          color: chartNewRangeColor,
-          label: newRangeLabel,
-          labelColor: chartRangeLabelColor,
-          showLabel: true,
+      const yRange = haveCurrentRangeData ? BOTTOM_ALIGNED_INSET_RANGE_Y_AXIS : FULL_RANGE_Y_AXIS
+
+      markAreas.push([
+        {
+          xAxis: renderableNewRange[0],
+          yAxis: yRange[0],
           z2: 2,
-        }),
-      )
+          itemStyle: { color: chartNewRangeColor },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: newRangeLabel,
+            color: chartRangeLabelColor,
+            fontWeight: FontWeight.Semi_Bold,
+            fontSize: FontSize.xs.desktop,
+          },
+        },
+        { xAxis: renderableNewRange[1], yAxis: yRange[1] },
+      ])
     }
 
     return markAreas
@@ -163,8 +141,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       grid: { left: 0, top: TOP_PADDING_PX, right: 0, bottom: AXIS_HEIGHT_PX },
       xAxis: {
         type: 'value',
-        min: xMin,
-        max: xMax,
+        boundaryGap: ['10%', '10%'],
         axisLine: {
           onZero: false,
           lineStyle: { color: chartAxisLineColor },
@@ -175,6 +152,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
         },
         splitLine: { show: false },
         axisLabel: {
+          show: hasChartData,
           showMinLabel: true,
           showMaxLabel: true,
           alignMinLabel: 'left',
@@ -189,7 +167,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       series: [
         {
           type: 'line',
-          data: [[xMin, 0]],
+          data: seriesData,
           showSymbol: false,
           silent: true,
           lineStyle: { opacity: 0 },
@@ -204,7 +182,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
               lineStyle: {
                 color: chartReferenceLineColor,
                 width: CHART_REFERENCE_LINE_WIDTH,
-                type: CHART_LINE_DASH_PATTERNS.reference,
+                type: 'solid',
               },
               label: {
                 formatter: t`Oracle`,
@@ -223,40 +201,30 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       chartAxisLabelColor,
       chartAxisLineColor,
       chartReferenceLineColor,
+      hasChartData,
       hasOraclePrice,
       parsedOraclePrice,
       rangeMarkAreas,
-      xMax,
-      xMin,
+      seriesData,
     ],
   )
 
-  const legendPayload: LegendItem[] = [
-    ...(hasOraclePrice
-      ? [
-          {
-            label: t`Oracle Price`,
-            line: { lineStroke: chartReferenceLineColor, dash: CHART_LINE_DASH_PATTERNS.reference },
-          },
-        ]
-      : []),
-    ...(haveCurrentRangeData
-      ? [
-          {
-            label: t`Current Liquidation Range`,
-            box: { fill: chartCurrentRangeColor },
-          },
-        ]
-      : []),
-    ...(haveNewRangeData
-      ? [
-          {
-            label: haveCurrentRangeData ? t`New Liquidation Range` : t`Liquidation Range`,
-            box: { fill: chartNewRangeColor },
-          },
-        ]
-      : []),
-  ]
+  const legendPayload = (
+    [
+      hasOraclePrice && {
+        label: t`Oracle Price`,
+        line: { lineStroke: chartReferenceLineColor },
+      },
+      haveCurrentRangeData && {
+        label: t`Current Liquidation Range`,
+        box: { fill: chartCurrentRangeColor },
+      },
+      haveNewRangeData && {
+        label: getNewRangeLegendLabel(haveCurrentRangeData),
+        box: { fill: chartNewRangeColor },
+      },
+    ] as Array<LegendItem | false>
+  ).filter((item): item is LegendItem => Boolean(item))
 
   return (
     <Stack sx={{ width: '100%' }}>
