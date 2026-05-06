@@ -21,14 +21,8 @@ export const useLendingMuiForm = useStableChannel
 /** New manage loan forms (add/remove/repay) */
 export const useManageLoanMuiForm = useStableChannel
 
-/** New bands chart (BandsChart) */
-export const useNewBandsChart = useStableChannel
-
 /** New card for managing soft liquidations */
 export const useManageSoftLiquidation = useStableChannel
-
-/** Entire new app containing in-depth analyses for knowledgeable users */
-export const useAnalyticsApp = useStableChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
@@ -42,14 +36,8 @@ export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 export const useLLv2 = useBetaChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
-/** New market page layout with forms on the right  */
-export const useRightFormTabsLayout = useStableChannel
-
-/** New market historical borrow and supply rate charts */
-export const useMarketHistoricalRatesChart = useStableChannel
-
 /** New market historical interest rate and utilization chart */
-export const useMarketInterestRatesAndUtilizationChart = useBetaChannel
+export const useMarketInterestRatesAndUtilizationChart = useStableChannel
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel

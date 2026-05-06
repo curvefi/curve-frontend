@@ -100,12 +100,12 @@ export const getSections = () => [
     links: [
       {
         label: t`Audits`,
-        href: 'https://docs.curve.finance/security/security/#security-audits',
+        href: 'https://docs.curve.finance/user/security/audits',
         icon: <BeenhereOutlinedIcon />,
       },
       {
         label: t`Bug Bounty`,
-        href: 'https://docs.curve.finance/security/security/#bug-bounty',
+        href: 'https://docs.curve.finance/user/security/bug-bounty',
         icon: <BugReportOutlinedIcon />,
       },
       {
