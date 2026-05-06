@@ -238,7 +238,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
         label: getNewRangeLegendLabel(hasCurrentRange),
         box: { fill: chartNewRangeColor },
       },
-    ] as Array<LegendItem | false>
+    ] as (LegendItem | false)[]
   ).filter((item): item is LegendItem => Boolean(item))
 
   return (
