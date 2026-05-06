@@ -1,10 +1,8 @@
 import { BrowserProvider } from 'ethers'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
-import type { Address } from '@primitives/address.utils'
 import type { NetworkDef } from '@ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import type { Provider } from '@ui-kit/lib/ethers'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
@@ -22,35 +20,31 @@ type CurveContextValue = {
   provider?: Provider
   network?: NetworkDef
   isHydrated: boolean
-  isReconnecting: boolean
+  isInitialized: boolean
 }
 
 export const CurveContext = createContext<CurveContextValue>({
   connectState: LOADING,
   isHydrated: false,
-  isReconnecting: true,
+  isInitialized: false,
 })
 
 /**
- * Detects if the wallet is in the process of reconnecting.
- * - `isReconnecting` is set when switching pages
- * - `isConnecting` is set when the wallet gets flipped from connecting to connected when loading,
- *   especially without any wallet plugin
- * Therefore, we use a very cumbersome condition to detect if we are reconnecting, and also need some debouncing 😭
+ * Blocks app init until wagmi settles the initial wallet state.
+ * `useConnection()` and `useConnectorClient()` can resolve at different times, so once initialized, we keep returning true.
  */
-function useWagmiIsReconnecting(address?: Address) {
+function useWagmiIsInitialized(hasWallet: boolean) {
   const { isReconnecting, isConnected, isConnecting } = useConnection()
-  const isConnectingDebounced = useDebouncedValue(isConnecting, { defaultValue: true })
-  return !address && (isConnectingDebounced || isReconnecting || isConnected)
+  const [wasInitialized, setWasInitialized] = useState(false)
+
+  const isInitialized = !isConnecting && !isReconnecting && (!isConnected || hasWallet)
+  useEffect(() => setWasInitialized(wasInitialized => isInitialized || wasInitialized), [isInitialized])
+  return isInitialized || wasInitialized // note: use || since `isInitialized` is set one render before `wasInitialized`
 }
 
 /**
- * Separate hook to get the wallet and provider from wagmi.
- * This is moved here so that it's only used once in the context provider.
- *
- * Note: When using private key accounts in Cypress tests, wagmi doesn't automatically
- * expose these accounts through eth_accounts RPC calls. This creates an incompatibility
- * with ethers BrowserProvider, which relies on eth_accounts to determine the signer address.
+ * Reads the wagmi client once for the context provider.
+ * Note: Cypress private key accounts may not expose `eth_accounts`, which BrowserProvider expects.
  */
 export function useWagmiWallet() {
   const { data: client } = useConnectorClient()
@@ -63,7 +57,7 @@ export function useWagmiWallet() {
   )
   useEffect(() => setUser({ address, chainId }), [address, chainId])
   return {
-    isReconnecting: useWagmiIsReconnecting(address),
+    isInitialized: useWagmiIsInitialized(!!address && !!request),
     wallet,
     provider: useMemo(() => wallet && new BrowserProvider(wallet.provider), [wallet]),
   }

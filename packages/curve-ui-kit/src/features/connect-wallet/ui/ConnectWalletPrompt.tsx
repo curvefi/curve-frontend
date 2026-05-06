@@ -11,9 +11,9 @@ import { useWallet } from '../lib/useWallet'
 const { Spacing, MaxWidth } = SizesAndSpaces
 
 export const ConnectWalletPrompt = ({ description, testId }: { description: string; testId?: string }) => {
-  const { isReconnecting, connectState } = useCurve()
+  const { isInitialized, connectState } = useCurve()
   const { connect } = useWallet()
-  const isConnecting = isLoading(connectState) || isReconnecting
+  const isConnecting = isLoading(connectState) || !isInitialized
   return (
     <Stack alignItems="center" marginBlock={Spacing.lg} data-testid={testId}>
       <Stack
