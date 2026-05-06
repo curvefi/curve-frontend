@@ -1,23 +1,23 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
-import Stack from '@mui/material/Stack'
-import { SxProps } from '@mui/material/styles'
+import Grid from '@mui/material/Grid'
+import { useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
+import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaMarketColumnId } from './columns'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
 
 const { Spacing } = SizesAndSpaces
+const TABLE_FILTER_COLUMN_SIZE = { mobile: 12, tablet: 12 / 4, desktop: 12 / 5 } as const
 
 /**
  * Displays a token with its icon and symbol.
@@ -38,14 +38,12 @@ const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<
 }
 
 /**
- * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
+ * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
-export const LendingMarketsFilters = ({
+export const LegacyLendingMarketsFilters = ({
   data,
-  gridSx,
   ...filterProps
 }: FilterProps<LlamaMarketColumnId> & {
-  gridSx?: SxProps
   data: LlamaMarket[]
 }) => {
   // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
@@ -67,11 +65,14 @@ export const LendingMarketsFilters = ({
     [data],
   )
   return (
-    <Stack padding={Spacing.sm} spacing={Spacing.sm}>
-      <TableFilterItem title={t`Network`}>
-        <LlamaChainFilterChips data={markets} {...filterProps} />
-      </TableFilterItem>
-      <TableFilterItem title={t`Collateral Tokens`}>
+    <Grid
+      container
+      spacing={Spacing.sm}
+      paddingBlockStart={Spacing.sm}
+      {...(useNewMarketListLayout() && { paddingBlockEnd: Spacing.sm })}
+      paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
+    >
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
@@ -82,8 +83,9 @@ export const LendingMarketsFilters = ({
           data={markets}
           {...filterProps}
         />
-      </TableFilterItem>
-      <TableFilterItem title={t`Debt Tokens`}>
+      </TableFilterColumn>
+
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
@@ -94,8 +96,9 @@ export const LendingMarketsFilters = ({
           data={markets}
           {...filterProps}
         />
-      </TableFilterItem>
-      <TableFilterItem title={t`TVL`}>
+      </TableFilterColumn>
+
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
         <RangeSliderFilter
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
@@ -106,8 +109,9 @@ export const LendingMarketsFilters = ({
           scale="power"
           {...filterProps}
         />
-      </TableFilterItem>
-      <TableFilterItem title={t`Available liquidity`}>
+      </TableFilterColumn>
+
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Available liquidity`}>
         <RangeSliderFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
@@ -118,8 +122,9 @@ export const LendingMarketsFilters = ({
           scale="power"
           {...filterProps}
         />
-      </TableFilterItem>
-      <TableFilterItem title={t`Utilization`}>
+      </TableFilterColumn>
+
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Utilization`}>
         <RangeSliderFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
@@ -130,7 +135,7 @@ export const LendingMarketsFilters = ({
           max={100}
           {...filterProps}
         />
-      </TableFilterItem>
-    </Stack>
+      </TableFilterColumn>
+    </Grid>
   )
 }

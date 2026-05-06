@@ -10,11 +10,11 @@ const visitErrorBoundary = () => {
       chains: {
         ethereum: {
           data: [
-            // make an error occur on purpose by returning nonsense data (`symbol` should be string)
+            // make an error occur on purpose by returning nonsense data (`address` should be string)
             // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
             {
-              collateral_token: { symbol: 1 },
-              borrowed_token: { symbol: 1 },
+              collateral_token: { symbol: 'ETH', address: 1 },
+              borrowed_token: { symbol: 'crvUSD', address: 1 },
               extra_reward_apr: [],
               vault: '',
               controller: '',
@@ -47,7 +47,8 @@ function check500Error({ context }: { context: object }) {
   expect(actualName).to.equal(expectedName)
   expect(actualMessage).to.contain(expectedMessage)
   if (Cypress.isBrowser('firefox')) {
-    expect(stack).to.match(/lodash/i)
+    // Firefox stack frames use source names in dev, but only bundled TokenIcon chunk names in preview/CI builds.
+    expect(stack).to.match(/TokenIcon(?:\.tsx|-.*\.js)/)
   } else {
     expect(stack).to.contain(expectedName)
     expect(stack).to.contain(expectedMessage)
@@ -57,31 +58,6 @@ function check500Error({ context }: { context: object }) {
 describe('Error Boundary', () => {
   let restoreRemoveChild: (() => void) | undefined
   afterEach(() => cy.then(() => restoreRemoveChild?.()))
-
-  it('should show some guidance when a DOM mutation error occurs', () => {
-    let throwCount = 0
-    const url = '/llamalend/ethereum/markets'
-    cy.visit(url, {
-      timeout: API_LOAD_TIMEOUT.timeout,
-      onBeforeLoad: ({ DOMException, Node }) => {
-        const originalRemoveChild = Node.prototype.removeChild
-        restoreRemoveChild = () => (Node.prototype.removeChild = originalRemoveChild)
-        Node.prototype.removeChild = function <T extends Node>(child: T): T {
-          // Throw twice to make this deterministic in concurrent mode: once is recovered, always causes an infinite loop
-          if (throwCount < 2) {
-            throwCount += 1
-            throw new DOMException(
-              "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
-              'NotFoundError',
-            )
-          }
-          return originalRemoveChild.call(this, child) as T
-        }
-      },
-    })
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
-    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
-  })
 
   // note: this must be the first in the file, as firefox might cache responses from other tests
   it('should show error page when it hits the error boundary', () => {
@@ -137,5 +113,30 @@ describe('Error Boundary', () => {
 
     cy.wait('@sentryReport', LOAD_TIMEOUT)
     cy.get('[data-testid="submit-error-report-modal"]').should('not.exist')
+  })
+
+  it('should show some guidance when a DOM mutation error occurs', () => {
+    let throwCount = 0
+    const url = '/llamalend/ethereum/markets'
+    cy.visit(url, {
+      timeout: API_LOAD_TIMEOUT.timeout,
+      onBeforeLoad: ({ DOMException, Node }) => {
+        const originalRemoveChild = Node.prototype.removeChild
+        restoreRemoveChild = () => (Node.prototype.removeChild = originalRemoveChild)
+        Node.prototype.removeChild = function <T extends Node>(child: T): T {
+          // Throw twice to make this deterministic in concurrent mode: once is recovered, always causes an infinite loop
+          if (throwCount < 2) {
+            throwCount += 1
+            throw new DOMException(
+              "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
+              'NotFoundError',
+            )
+          }
+          return originalRemoveChild.call(this, child) as T
+        }
+      },
+    })
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })
 })

@@ -17,7 +17,7 @@ import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { LendingMarketsFilters } from './LendingMarketsFilters'
+import { LegacyLendingMarketsFilters } from './LegacyLendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
@@ -93,7 +93,7 @@ export const LegacyLlamaMarketsTable = ({
         searchText={globalFilter}
         onSearch={setGlobalFilter}
         leftChildren={<LegacyTableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
+        collapsible={<LegacyLendingMarketsFilters data={data} {...filterProps} />}
         chips={
           <>
             <LlamaChainFilterChips data={data} {...filterProps} />

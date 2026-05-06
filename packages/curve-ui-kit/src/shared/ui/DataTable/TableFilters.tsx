@@ -1,6 +1,5 @@
 import { ReactNode, useRef } from 'react'
 import Box from '@mui/material/Box'
-import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -20,11 +19,10 @@ const { Spacing } = SizesAndSpaces
  */
 export const TableFilters = <ColumnIds extends string>({
   header,
-  filterExpandedKey,
-  filterExpanded,
+  testIdPrefix,
   visibilityGroups,
   toggleVisibility,
-  collapsible,
+  popoverFilters,
   chips,
   filterChip,
   sortChip,
@@ -33,11 +31,10 @@ export const TableFilters = <ColumnIds extends string>({
   onSearch,
 }: {
   header: ReactNode
-  filterExpandedKey: string
-  filterExpanded: boolean
+  testIdPrefix: string
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
-  collapsible?: ReactNode // filters that may be collapsed
+  popoverFilters?: ReactNode // filters shown in the popover menu
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   filterChip?: ReactNode // buttons responsible for filtering
   sortChip?: ReactNode // buttons responsible for sorting
@@ -50,7 +47,6 @@ export const TableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
   const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
-  const isCollapsible = collapsible || (isMobile && chips)
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
@@ -70,7 +66,7 @@ export const TableFilters = <ColumnIds extends string>({
             <TableSearchField
               value={searchValue}
               onChange={setSearchValue}
-              testId={filterExpandedKey}
+              testId={testIdPrefix}
               disableAutoFocus={disableSearchAutoFocus}
             />
           </Box>
@@ -89,7 +85,6 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         )}
       </Grid>
-      {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
 
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
@@ -100,6 +95,7 @@ export const TableFilters = <ColumnIds extends string>({
           onClose={closeVisibilitySettings}
         />
       )}
+      {popoverFilters}
     </Stack>
   )
 }

@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode, RefObject } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -10,8 +10,9 @@ import { LlamaMarketColumnId } from '../columns'
 import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 
 type Props = {
-  filterExpanded: boolean
-  setFilterExpanded: Dispatch<SetStateAction<boolean>>
+  filterChipRef: RefObject<HTMLDivElement | null>
+  filterPopoverOpen: boolean
+  toggleFilterPopover: () => void
   hiddenCount: number
   resetFilters: () => void
   children?: ReactNode
@@ -21,8 +22,9 @@ type Props = {
 } & FilterProps<LlamaMarketColumnId>
 
 export const FilterChip = ({
-  filterExpanded,
-  setFilterExpanded,
+  filterChipRef,
+  filterPopoverOpen,
+  toggleFilterPopover,
   hiddenCount,
   resetFilters,
   hasFavorites,
@@ -42,12 +44,13 @@ export const FilterChip = ({
     />
   ) : (
     <GridChip
+      ref={filterChipRef}
       label={t`Filters`}
       selectableChipSize="medium"
-      selected={filterExpanded}
+      selected={filterPopoverOpen}
       icon={<FilterIcon />}
-      toggle={() => setFilterExpanded(prev => !prev)}
-      data-testid="btn-expand-filters"
+      toggle={toggleFilterPopover}
+      data-testid="btn-open-filters"
     />
   )
 }

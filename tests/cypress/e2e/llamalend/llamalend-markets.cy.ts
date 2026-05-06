@@ -5,8 +5,8 @@ import { oneOf, type TokenType } from '@cy/support/generators'
 import {
   closeDrawer,
   closeSlider,
-  expandFilters,
   expandFirstRowOnMobile,
+  openFilters,
   openDrawer,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
@@ -169,8 +169,10 @@ testCases.forEach(([width, height, breakpoint]) => {
       // Keep the viewport stable for slider width.
       cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        expandFilters(breakpoint)
+        if (breakpoint === 'mobile') {
+          cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
+        }
+        openFilters(breakpoint)
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
         cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
 
@@ -198,10 +200,12 @@ testCases.forEach(([width, height, breakpoint]) => {
       )
 
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        expandFilters(breakpoint)
+        if (breakpoint === 'mobile') {
+          cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
+        }
+        openFilters(breakpoint)
 
-        //  open the chosen filter
+        // open the chosen filter
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
         cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
 
@@ -224,7 +228,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       if (breakpoint == 'mobile') {
         openDrawer(breakpoint, 'filter')
       } else {
-        cy.get(`[data-testid="btn-expand-filters"]`).click()
+        cy.get(`[data-testid="btn-open-filters"]`).click()
       }
       checkCoinSelection('collateral')
       checkCoinSelection('borrowed')
