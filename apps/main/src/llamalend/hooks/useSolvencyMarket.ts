@@ -25,16 +25,21 @@ type SolvencyMarketsQueries = [
 /**
  * Returns solvency data for a single llamalend market.
  */
-export const useSolvencyMarket = ({ blockchainId, controllerAddress }: SolvencyMarketParams, enabled = true) =>
-  useQueries({
+export const useSolvencyMarket = (
+  { blockchainId, controllerAddress, marketType }: SolvencyMarketParams,
+  enabled = true,
+) => {
+  // solvency only computed for lend market, as mint market's solvency is not an user issue
+  const isEnabled = enabled && marketType === LlamaMarketType.Lend
+
+  return useQueries({
     queries: useMemo<SolvencyMarketsQueries>(
-      // solvency only computed for lend market, as mint market's solvency is not an user issue
-      () => [getLendingVaultsOptions({}, enabled), getBadDebtLendMarketsOptions(enabled)],
-      [enabled],
+      () => [getLendingVaultsOptions({}, isEnabled), getBadDebtLendMarketsOptions(isEnabled)],
+      [isEnabled],
     ),
     combine: useCallback(
       (results: QueriesResults<SolvencyMarketsQueries>) => {
-        if (!enabled) {
+        if (!isEnabled) {
           return RESOLVED_QUERY_RESULT
         }
         const [lendingVaults, badDebtLendMarkets] = results
@@ -66,6 +71,7 @@ export const useSolvencyMarket = ({ blockchainId, controllerAddress }: SolvencyM
               : undefined,
         }
       },
-      [enabled, blockchainId, controllerAddress],
+      [isEnabled, blockchainId, controllerAddress],
     ),
   })
+}
