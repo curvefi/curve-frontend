@@ -1,3 +1,4 @@
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState, type FieldsOf } from '@ui-kit/lib'
@@ -27,4 +28,15 @@ export const useUserPrices = (params: UserMarketParams, enabled?: boolean) => {
   const loan = useLoanExists(params, enabled)
   const prices = useUserPricesQuery({ ...params, loanExists: loan.data }, enabled)
   return { ...q(prices), ...combineQueryState(loan, prices) }
+}
+
+export function useRangeToLiquidation({ params }: { params: UserMarketParams }) {
+  const userPrices = useUserPrices(params)
+  const oraclePrice = useMarketOraclePrice(params)
+  const rangeToLiquidation = {
+    data:
+      oraclePrice.data && userPrices.data && ((+oraclePrice.data - +userPrices.data[1]) / +userPrices.data[1]) * 100,
+    ...combineQueryState(userPrices, oraclePrice),
+  }
+  return { rangeToLiquidation, userPrices }
 }

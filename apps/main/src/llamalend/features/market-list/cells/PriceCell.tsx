@@ -14,7 +14,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { requireChainId } from '@ui-kit/utils'
+import { decimal, requireChainId } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
@@ -82,21 +82,21 @@ const getTooltipBody = (
   if (columnId === LlamaMarketColumnId.UserCollateral) {
     return (
       <CollateralMetricTooltipContent
-        collateralValue={{
+        {...{
           collateral: {
-            value: stats?.collateral?.amount,
+            value: decimal(stats?.collateral?.amount),
             usdRate: stats?.collateral?.usdRate,
             symbol: stats?.collateral?.symbol,
           },
           borrow: {
-            value: stats?.borrowToken?.amount,
+            value: decimal(stats?.borrowToken?.amount),
             usdRate: stats?.borrowToken?.usdRate,
             symbol: stats?.borrowToken?.symbol,
           },
-          totalValue:
+          totalValue: `${
             (stats?.collateral?.amount ?? 0) * (stats?.collateral?.usdRate ?? 0) +
-            (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0),
-          loading: isLoading,
+            (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0)
+          }`,
         }}
       />
     )

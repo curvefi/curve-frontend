@@ -11,7 +11,7 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useLoanImplementationKey, useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
@@ -142,13 +142,10 @@ const LendManageSoftLiquidationMenu = [
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
-export const ManageLoanTabs = ({
-  position: {
-    liquidationAlert: { softLiquidation, hardLiquidation },
-  },
-  ...pageProps
-}: ManageLoanProps & { position: BorrowPositionDetailsProps }) => {
-  const shouldUseSoftLiquidation = useManageSoftLiquidation() && (softLiquidation || hardLiquidation)
+export const ManageLoanTabs = (params: ManageLoanProps) => {
+  const status = useLiquidationStatus(params)
+  const shouldUseSoftLiquidation =
+    useManageSoftLiquidation() && status.data && ['softLiquidation', 'hardLiquidation'].includes(status.data)
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
     ? LendManageSoftLiquidationMenu
@@ -156,5 +153,5 @@ export const ManageLoanTabs = ({
       ? LendManageNewMenu
       : LendManageLegacyMenu
   const key = useLoanImplementationKey()
-  return <FormTabs key={key} params={pageProps} menu={menu} shouldWrap={menu === LendManageLegacyMenu} />
+  return <FormTabs key={key} params={params} menu={menu} shouldWrap={menu === LendManageLegacyMenu} />
 }

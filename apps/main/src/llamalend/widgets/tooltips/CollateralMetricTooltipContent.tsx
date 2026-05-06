@@ -1,63 +1,58 @@
-import type { CollateralValue } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
-import { UnavailableNotation, formatMetricValue, formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { formatMetricValue, formatPercentage, UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
+  TooltipDescription,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
-  TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatUsd } from '@ui-kit/utils'
 
-type CollateralMetricTooltipContentProps = {
-  collateralValue: CollateralValue | undefined | null
+type TokenValues = {
+  value: Decimal | undefined | null
+  usdRate: number | undefined | null
+  symbol: string | undefined
 }
 
-export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMetricTooltipContentProps) => {
-  const collateralValueFormatted = formatMetricValue(collateralValue?.collateral?.value)
-  const collateralPercentage = formatPercentage(
-    collateralValue?.collateral?.value,
-    collateralValue?.totalValue,
-    collateralValue?.collateral?.usdRate,
-  )
+type CollateralMetricTooltipContentProps = {
+  totalValue: Decimal | undefined | null
+  collateral: TokenValues
+  borrow: TokenValues
+}
 
-  const borrowValueFormatted = formatMetricValue(collateralValue?.borrow?.value)
-  const borrowPercentage = formatPercentage(
-    collateralValue?.borrow?.value,
-    collateralValue?.totalValue,
-    collateralValue?.borrow?.usdRate,
-  )
-
-  const totalValueFormatted =
-    collateralValue?.totalValue != null
-      ? formatUsd(collateralValue.totalValue, { abbreviate: false })
-      : UnavailableNotation
-
-  const collateralTokenSymbol = collateralValue?.collateral?.symbol ?? '?'
-  const borrowTokenSymbol = collateralValue?.borrow?.symbol ?? '?'
-
+export const CollateralMetricTooltipContent = ({
+  collateral,
+  borrow,
+  totalValue,
+}: CollateralMetricTooltipContentProps) => {
+  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.usdRate)
+  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.usdRate)
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include ${borrowTokenSymbol} due to liquidation protection.`}
+        text={[
+          t`Collateral value is taken by multiplying tokens in collateral by the oracle price.`,
+          t`In soft liquidation, it may include ${borrow?.symbol ?? 'borrow tokens'} due to liquidation protection.`,
+        ].join(' ')}
       />
 
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${collateralValueFormatted} ${collateralTokenSymbol}`}
+            {`${formatMetricValue(collateral?.value)} ${collateral?.symbol ?? '?'}`}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${borrowValueFormatted} ${borrowTokenSymbol}`}
+            {`${formatMetricValue(borrow?.value)} ${borrow?.symbol ?? '?'}`}
             {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
 
       <TooltipItem title={t`Total collateral value`} variant="independent">
-        {totalValueFormatted}
+        {totalValue == null ? UnavailableNotation : formatUsd(totalValue, { abbreviate: false })}
       </TooltipItem>
     </TooltipWrapper>
   )

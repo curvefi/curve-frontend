@@ -10,7 +10,7 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
-import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -58,12 +58,6 @@ export const LendMarketPage = () => {
   const [isLoaded, setLoaded] = useState(false)
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
   const controllerAddress = getControllerAddress(market)
-  const borrowPositionDetails = useBorrowPositionDetails({
-    marketType: LlamaMarketType.Lend,
-    chainId,
-    marketId,
-    market: market ?? null,
-  })
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
@@ -125,7 +119,7 @@ export const LendMarketPage = () => {
         marketId &&
         !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
+          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
           <CreateLoanTabs {...pageProps} params={params} />
         ))
@@ -147,8 +141,9 @@ export const LendMarketPage = () => {
       />
       <PositionDetailsComposite
         hasPosition={loanExists}
-        borrowPositionDetails={borrowPositionDetails}
         events={collateralEvents}
+        market={market}
+        params={{ chainId, marketId, userAddress }}
       />
       <MarketInformationComposite pageProps={pageProps} type="borrow" previewPrices={previewPrices} />
     </DetailPageLayout>

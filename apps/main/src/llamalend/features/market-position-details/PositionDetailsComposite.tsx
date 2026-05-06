@@ -1,27 +1,29 @@
 import { type UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import Stack from '@mui/material/Stack'
 import { findTab } from '@ui-kit/hooks/useTabs'
+import type { UserMarketParams } from '@ui-kit/lib/model'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import type { QueryProp } from '@ui-kit/types/util'
-import type { BorrowPositionDetailsProps } from './BorrowPositionDetails'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 
 export const PositionDetailsComposite = ({
   hasPosition,
-  borrowPositionDetails,
-  events: { data, isLoading, error },
+  market,
+  params,
+  events,
 }: {
   hasPosition: boolean | undefined
-  borrowPositionDetails: BorrowPositionDetailsProps
+  market: LlamaMarketTemplate | undefined
+  params: UserMarketParams
   events: QueryProp<UserCollateralEvents>
 }) => {
   const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({
-    events: data?.events,
+    events: mapQuery(events, e => e.events),
     hasPosition,
-    borrowPositionDetails,
-    activityIsLoading: isLoading,
-    activityIsError: !!error,
+    market,
+    params,
   })
 
   const activeTab = findTab(tabOptions, tab)
