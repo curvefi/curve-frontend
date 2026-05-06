@@ -21,6 +21,10 @@ const currentAndNewRange: SmallLiquidationRangeChartComponentProps['liquidationR
   newRange: [1525, 1900],
 }
 
+const narrowNearOracleRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
+  newRange: [0.985, 0.99],
+}
+
 const emptyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {}
 
 const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
@@ -110,6 +114,20 @@ export const CurrentAndNewRange: Story = {
       description: {
         story:
           'Shows an existing liquidation range with a proposed update inset on top, so both ranges remain visible.',
+      },
+    },
+  },
+}
+
+export const NarrowRangeNearOracle: Story = {
+  args: {
+    liquidationRanges: narrowNearOracleRange,
+    oraclePrice: 1,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Narrow liquidation range near the oracle price remains visible with proportional padding.',
       },
     },
   },

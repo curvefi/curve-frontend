@@ -9,6 +9,7 @@ import { CHART_REFERENCE_LINE_WIDTH } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { LegendSet, type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
+import { getSmallLiquidationRangeChartDomain } from './small-liquidation-range-chart.utils'
 
 const { FontSize, FontWeight, Spacing } = SizesAndSpaces
 
@@ -19,13 +20,13 @@ const PRICE_MARKER_TICK_HEIGHT_PX = 6
 const PRICE_MARKER_LABEL_GAP_PX = 6
 const CHART_BODY_HEIGHT_PX = TRACK_HEIGHT_PX + AXIS_HEIGHT_PX + TOP_PADDING_PX
 
-type LiquidationRange = readonly [Amount, Amount]
-
 const FULL_RANGE_Y_AXIS = [0, 1] as const
 /** When both new and current ranges are present, new range is shortened by 10% to allow some visibility of the current range */
 const BOTTOM_ALIGNED_INSET_RANGE_Y_AXIS = [0, 0.9] as const
 
 type RangeMarkArea = [Record<string, unknown>, Record<string, unknown>]
+type LiquidationRange = readonly [Amount, Amount]
+type RenderableLiquidationRange = readonly [number, number]
 
 export interface SmallLiquidationRangeChartProps {
   liquidationRanges: {
@@ -34,9 +35,6 @@ export interface SmallLiquidationRangeChartProps {
   }
   oraclePrice: Amount | undefined
 }
-
-const toRenderableRange = (range: LiquidationRange | undefined): readonly [number, number] | undefined =>
-  range && [Number(range[0]), Number(range[1])]
 
 const getNewRangeLegendLabel = (hasCurrentRange: boolean) => {
   if (hasCurrentRange) return t`New Liquidation Range`
@@ -48,18 +46,31 @@ const getRangeLabel = ({ isCurrentRange, hasOtherRange }: { isCurrentRange: bool
   return isCurrentRange ? '' : t`LR (new)`
 }
 
+// ECharts value axes behave most predictably when every coordinate uses the same numeric representation.
+const toRenderableRange = (range: LiquidationRange | undefined): RenderableLiquidationRange | undefined =>
+  range && [Number(range[0]), Number(range[1])]
+
 export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: SmallLiquidationRangeChartProps) => {
   const { newRange, currentRange } = liquidationRanges
   const theme = useTheme()
-  const renderableNewRange = toRenderableRange(newRange)
-  const renderableCurrentRange = toRenderableRange(currentRange)
+  const renderableCurrentRange = useMemo(() => toRenderableRange(currentRange), [currentRange])
+  const renderableNewRange = useMemo(() => toRenderableRange(newRange), [newRange])
   const [currentRangeMin, currentRangeMax] = renderableCurrentRange ?? []
   const [newRangeMin, newRangeMax] = renderableNewRange ?? []
-  const hasNewRange = !!newRange
-  const hasCurrentRange = !!currentRange
-  const hasOraclePrice = oraclePrice !== undefined
   const parsedOraclePrice = Number(oraclePrice)
+  const hasNewRange = !!renderableNewRange
+  const hasCurrentRange = !!renderableCurrentRange
+  const hasOraclePrice = oraclePrice !== undefined
   const hasChartData = hasCurrentRange || hasNewRange || hasOraclePrice
+  const xAxisDomain = useMemo(
+    () =>
+      getSmallLiquidationRangeChartDomain({
+        currentRange: renderableCurrentRange,
+        newRange: renderableNewRange,
+        oraclePrice: hasOraclePrice ? parsedOraclePrice : undefined,
+      }),
+    [hasOraclePrice, parsedOraclePrice, renderableCurrentRange, renderableNewRange],
+  )
 
   const {
     design: { Chart, Color, Text },
@@ -72,23 +83,14 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
   const chartNewRangeColor = Chart.LiquidationZone.Future
 
   const seriesData = useMemo(() => {
-    const domainValues: number[] = []
-
-    if (hasCurrentRange) domainValues.push(currentRangeMin!, currentRangeMax!)
-    if (hasNewRange) domainValues.push(newRangeMin!, newRangeMax!)
-    if (hasOraclePrice) domainValues.push(Number(oraclePrice))
+    const domainValues = [
+      ...(renderableCurrentRange ?? []),
+      ...(renderableNewRange ?? []),
+      ...(hasOraclePrice ? [parsedOraclePrice] : []),
+    ]
 
     return domainValues.map(value => [value, 0])
-  }, [
-    currentRangeMax,
-    currentRangeMin,
-    hasCurrentRange,
-    hasNewRange,
-    hasOraclePrice,
-    newRangeMax,
-    newRangeMin,
-    oraclePrice,
-  ])
+  }, [hasOraclePrice, parsedOraclePrice, renderableCurrentRange, renderableNewRange])
 
   const rangeMarkAreas = useMemo(() => {
     const markAreas: RangeMarkArea[] = []
@@ -156,7 +158,8 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       grid: { left: 0, top: TOP_PADDING_PX, right: 0, bottom: AXIS_HEIGHT_PX },
       xAxis: {
         type: 'value',
-        boundaryGap: ['10%', '10%'],
+        min: xAxisDomain?.[0],
+        max: xAxisDomain?.[1],
         axisLine: {
           onZero: false,
           lineStyle: { color: chartAxisLineColor },
@@ -221,6 +224,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       parsedOraclePrice,
       rangeMarkAreas,
       seriesData,
+      xAxisDomain,
     ],
   )
 
