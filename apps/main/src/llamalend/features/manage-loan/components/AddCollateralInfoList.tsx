@@ -7,6 +7,7 @@ import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collater
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -65,6 +66,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
       )}
       prices={q(useAddCollateralPrices(params, isOpen))}
+      oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       {...useLeverageInfoFields({
         leverageEnabled: false,
         leverageValue: useAddCollateralFutureLeverage(params, isOpen),

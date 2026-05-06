@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { CHART_LINE_DASH_PATTERNS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 
 type UseChartLegendTogglesOptions = {
@@ -35,13 +36,13 @@ export const useChartLegendToggles = ({
       notFalsy(
         {
           label: t`Oracle Price`,
-          line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+          line: { lineStroke: theme.palette.primary.main },
           toggled: oraclePriceVisible,
           onToggle: llammaEndpoint ? undefined : toggleOraclePriceVisible,
         },
         hasLiquidationRange && {
           label: t`Liquidation threshold`,
-          line: { lineStroke: theme.design.Chart.Candles.Negative, dash: '4 4' },
+          line: { lineStroke: theme.design.Chart.Candles.Negative, dash: CHART_LINE_DASH_PATTERNS.average },
           toggled: liqRangeCurrentVisible,
           onToggle: toggleLiqRangeCurrentVisible,
         },

@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { t } from '@ui-kit/lib/i18n'
+import { CHART_LINE_DASH_PATTERNS } from '@ui-kit/shared/ui/Chart'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 
@@ -46,7 +47,7 @@ const BasicLegendsWrapper = () => {
   const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
-      line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      line: { lineStroke: theme.palette.primary.main },
     },
     {
       label: t`Conversion zone`,
@@ -97,7 +98,7 @@ const InteractiveLegendsWrapper = () => {
   const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
-      line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      line: { lineStroke: theme.palette.primary.main },
       toggled: visibility.oraclePrice,
       onToggle: toggleVisibility,
     },
@@ -141,7 +142,7 @@ const WithSoftLiquidationWrapper = () => {
   const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
-      line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      line: { lineStroke: theme.palette.primary.main },
     },
     {
       label: t`Conversion zone`,
@@ -184,7 +185,7 @@ const WithToggleButtonsWrapper = () => {
   const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
-      line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      line: { lineStroke: theme.palette.primary.main },
     },
     {
       label: t`Conversion zone`,
@@ -244,7 +245,7 @@ const FullFeaturedWrapper = () => {
   const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
-      line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      line: { lineStroke: theme.palette.primary.main },
       toggled: visibility.oraclePrice,
       onToggle: toggleVisibility,
     },
@@ -291,9 +292,12 @@ const LineLegendsWrapper = () => {
   const theme = useTheme()
 
   const legendSets: LegendItem[] = [
-    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1], dash: 'none' } },
-    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: '4 2' } },
-    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines[3], dash: '2 2' } },
+    { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1] } },
+    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: CHART_LINE_DASH_PATTERNS.compact } },
+    {
+      label: 'Line 3',
+      line: { lineStroke: theme.design.Chart.Lines[3], dash: CHART_LINE_DASH_PATTERNS.movingAverage },
+    },
   ]
 
   return (
@@ -369,7 +373,7 @@ const NarrowContainerWrapper = () => {
   const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
-      line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      line: { lineStroke: theme.palette.primary.main },
     },
     {
       label: t`Conversion zone`,

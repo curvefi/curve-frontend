@@ -6,6 +6,7 @@ import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -122,6 +123,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       gas={q(useRepayEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
+      oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       isFullRepay={isFull}
       debt={q(debt)}
       loanToValue={q(

@@ -1,21 +1,16 @@
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { type Token } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanRouteImage } from '../../../queries/create-loan/create-loan-route-image.query'
-import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces
-
-const chartHeight = 185
 
 export const AdvancedCreateLoanOptions = ({
   network,
@@ -41,24 +36,8 @@ export const AdvancedCreateLoanOptions = ({
   )
 
   return (
-    <Stack gap={Spacing.sm} marginBlock={Spacing.sm}>
+    <Stack gap={Spacing.sm} marginBlock={Spacing.sm} data-testid="advanced-create-loan-options">
       <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
-      <Stack
-        sx={{
-          '--chart_reference_line--color': t => t.design.Color.Primary[500],
-          '--health_mode_healthy_darkBg--color': t => t.design.Text.TextColors.Feedback.Success,
-          '& .recharts-reference-line-line': { strokeDasharray: '6' },
-        }}
-      >
-        <Typography variant="bodyXsRegular" color="textSecondary">{t`Liquidation range`}</Typography>
-        <ChartLiquidationRange
-          data={useLiquidationRangeChartData(params)}
-          healthColorKey="healthy"
-          height={chartHeight}
-          isDetailView
-          showLegend
-        />
-      </Stack>
       {leverageEnabled && (
         <RouteDetails
           network={network}
