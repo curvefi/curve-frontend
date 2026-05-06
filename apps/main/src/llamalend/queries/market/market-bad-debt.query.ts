@@ -13,11 +13,7 @@ const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
   [LlamaMarketType.Mint]: 'crvusd',
 }
 
-export const {
-  useQuery: useBadDebtMarkets,
-  getQueryOptions: getBadDebtMarketsOptionsQuery,
-  invalidate: invalidateBadDebtMarketsQuery,
-} = queryFactory({
+const { getQueryOptions: getBadDebtMarketsOptionsQuery, invalidate: invalidateBadDebtMarketsQuery } = queryFactory({
   queryKey: ({ type }: BadDebtParams) => ['getBadDebt', { type }, 'v1'] as const,
   queryFn: ({ type }: BadDebtParams) => getBadDebt({ endpoint: endpointFromMarketType[type] }),
   category: 'llamalend.market',
