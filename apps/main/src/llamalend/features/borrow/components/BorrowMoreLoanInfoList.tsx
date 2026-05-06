@@ -9,6 +9,7 @@ import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
@@ -58,6 +59,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prices={q(useBorrowMorePrices(params, isOpen))}
+      oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       loanToValue={q(
         useLoanToValueFromUserState(
           {

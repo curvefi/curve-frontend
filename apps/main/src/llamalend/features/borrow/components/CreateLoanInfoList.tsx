@@ -2,6 +2,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
@@ -52,6 +53,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       borrowSymbol={borrowToken?.symbol}
       loanToValue={q(useLoanToValue({ params, collateralToken, borrowToken }, isOpen))}
       prevLoanToValue={constQ('0')}
+      oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
       prevCollateral={constQ('0')}
