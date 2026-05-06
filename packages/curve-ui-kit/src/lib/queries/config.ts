@@ -1,9 +1,13 @@
-export const FETCHING = {
-  isError: false,
-  isLoading: true,
-  isPending: true,
-  isFetching: true,
-  data: undefined,
-  error: null,
+const createQueryStatus = ({ value }: { value: boolean }) => ({ isLoading: value, isPending: value, isFetching: value })
+
+const QUERY_SUCCESS_BASE = { isError: false, data: undefined, error: null }
+
+export const FETCHING_QUERY_RESULT = {
+  ...createQueryStatus({ value: true }),
+  ...QUERY_SUCCESS_BASE,
 } as const
-export const READY = { isError: false, isLoading: false, isPending: false, isFetching: false, error: null } as const
+
+export const RESOLVED_QUERY_RESULT = {
+  ...createQueryStatus({ value: false }),
+  ...QUERY_SUCCESS_BASE,
+} as const

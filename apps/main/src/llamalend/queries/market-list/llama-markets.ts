@@ -14,7 +14,7 @@ import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaig
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
-import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
+import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { useMappedQuery } from '@ui-kit/types/util'
@@ -350,7 +350,7 @@ export const useLlamaMarkets = (
       (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
         if (!enabled) {
           // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
-          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined, error: null }
+          return RESOLVED_QUERY_RESULT
         }
         const [
           lendingVaults,
