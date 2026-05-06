@@ -8,11 +8,16 @@ import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { SearchInput } from '@ui/SearchInput'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
+import { CreateVote } from '../CreateVote'
+
+const { Spacing } = SizesAndSpaces
 
 export const GaugesList = () => {
   const { data: gauges, isSuccess: gaugesIsSuccess, isLoading: gaugesIsLoading, isError: gaugesIsError } = useGauges({})
@@ -46,22 +51,25 @@ export const GaugesList = () => {
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <Header>
         <h3>{t`CURVE GAUGES`}</h3>
-        <SortingWrapper>
-          <StyledSearchInput
-            id="inpSearchProposals"
-            placeholder={t`Search`}
-            variant="small"
-            handleInputChange={val => setSearchValue(val)}
-            handleSearchClose={() => setSearchValue('')}
-            value={searchValue}
-          />
-          <StyledSelectFilter
-            selectedKey={gaugeListSortBy.key}
-            smallScreenBreakpoint={smallScreenBreakpoint}
-            onSelectionChange={handleSortChange}
-            items={GAUGE_VOTES_SORTING_METHODS}
-          />
-        </SortingWrapper>
+        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+          <CreateVote />
+          <SortingWrapper>
+            <StyledSearchInput
+              id="inpSearchProposals"
+              placeholder={t`Search`}
+              variant="small"
+              handleInputChange={val => setSearchValue(val)}
+              handleSearchClose={() => setSearchValue('')}
+              value={searchValue}
+            />
+            <StyledSelectFilter
+              selectedKey={gaugeListSortBy.key}
+              smallScreenBreakpoint={smallScreenBreakpoint}
+              onSelectionChange={handleSortChange}
+              items={GAUGE_VOTES_SORTING_METHODS}
+            />
+          </SortingWrapper>
+        </Stack>
       </Header>
       <GaugeListWrapper>
         {searchValue !== '' && (
