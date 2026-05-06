@@ -47,7 +47,8 @@ function check500Error({ context }: { context: object }) {
   expect(actualName).to.equal(expectedName)
   expect(actualMessage).to.contain(expectedMessage)
   if (Cypress.isBrowser('firefox')) {
-    expect(stack).to.contain('getTokenImageUrl')
+    // Firefox stack frames use source names in dev, but only bundled TokenIcon chunk names in preview/CI builds.
+    expect(stack).to.match(/TokenIcon(?:\.tsx|-.*\.js)/)
   } else {
     expect(stack).to.contain(expectedName)
     expect(stack).to.contain(expectedMessage)
