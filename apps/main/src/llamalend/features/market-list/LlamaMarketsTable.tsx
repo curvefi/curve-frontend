@@ -41,8 +41,8 @@ export const LlamaMarketsTable = ({
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
   const data = useMemo(() => markets ?? [], [markets])
-  const [filtersOpen, , closeFilters, toggleFilters] = useSwitch(false)
-  const refFilters = useRef<HTMLDivElement>(null)
+  const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
+  const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
@@ -104,18 +104,18 @@ export const LlamaMarketsTable = ({
         }
         popoverFilters={
           <LlamaTableFiltersPopover
-            open={filtersOpen}
-            onClose={closeFilters}
-            anchorRef={refFilters}
+            open={filterPopoverOpen}
+            onClose={closeFilterPopover}
+            anchorRef={filterChipRef}
             markets={data}
             {...filterProps}
           />
         }
         filterChip={
           <FilterChip
-            refFilters={refFilters}
-            filtersOpen={filtersOpen}
-            toggleFilters={toggleFilters}
+            filterChipRef={filterChipRef}
+            filterPopoverOpen={filterPopoverOpen}
+            toggleFilterPopover={toggleFilterPopover}
             hiddenCount={getHiddenCount(table)}
             resetFilters={resetFilters}
             hasFavorites={hasFavorites}

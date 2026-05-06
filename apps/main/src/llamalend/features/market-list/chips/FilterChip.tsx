@@ -10,9 +10,9 @@ import { LlamaMarketColumnId } from '../columns'
 import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 
 type Props = {
-  refFilters: RefObject<HTMLDivElement | null>
-  filtersOpen: boolean
-  toggleFilters: () => void
+  filterChipRef: RefObject<HTMLDivElement | null>
+  filterPopoverOpen: boolean
+  toggleFilterPopover: () => void
   hiddenCount: number
   resetFilters: () => void
   children?: ReactNode
@@ -22,9 +22,9 @@ type Props = {
 } & FilterProps<LlamaMarketColumnId>
 
 export const FilterChip = ({
-  refFilters,
-  filtersOpen,
-  toggleFilters,
+  filterChipRef,
+  filterPopoverOpen,
+  toggleFilterPopover,
   hiddenCount,
   resetFilters,
   hasFavorites,
@@ -44,12 +44,12 @@ export const FilterChip = ({
     />
   ) : (
     <GridChip
-      ref={refFilters}
+      ref={filterChipRef}
       label={t`Filters`}
       selectableChipSize="medium"
-      selected={filtersOpen}
+      selected={filterPopoverOpen}
       icon={<FilterIcon />}
-      toggle={toggleFilters}
+      toggle={toggleFilterPopover}
       data-testid="btn-open-filters"
     />
   )
