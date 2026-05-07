@@ -12,16 +12,14 @@ import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { QueryClientProvider } from '@tanstack/react-query'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { useFakeMarket, useTestQueryClient } from '@ui-kit/lib/queries/query.test-util'
+import { TestQueryProvider, useFakeMarket } from '@ui-kit/lib/queries/query.test-util'
 import type { Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { BorrowPositionDetails } from './'
 
 const baseProps = {
-  chainId: 1,
-  marketId: 'one-way-market-7',
+  params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
   healthNotFull: 1.56,
   healthFull: 96,
   userPrices: [`0.47`, `0.69`] as Range<Decimal>,
@@ -35,7 +33,6 @@ const baseProps = {
   borrowSymbol: 'crvUSD',
   borrowUsdPrice: 1,
   borrowAddress: CRVUSD_ADDRESS,
-  userAddress: zeroAddress,
   marketLiquidationBand: null as number | null,
   oraclePrice: -5,
   userBands: [69, 118] as Range<number>,
@@ -58,31 +55,29 @@ const BorrowPositionDetailsStory = ({
   totalDebt,
   marketLiquidationBand,
   leverage,
-  marketId,
-  userAddress,
-  chainId,
-}: typeof baseProps) => {
-  const params = { chainId, marketId, userAddress }
-  const client = useTestQueryClient(
-    [getMarketOraclePriceBandKey(params), oraclePrice],
-    [getUserCurrentLeverageKey(params), `${leverage}`],
-    [getUserBandsKey(params), userBands],
-    [getUserPricesKey(params), userPrices],
-    [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-    [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
-    [getMarketOraclePriceKey(params), `${oraclePrice}`],
-    [getMarketLiquidationBandKey(params), marketLiquidationBand],
-    [getTokenUsdRateKey({ chainId, tokenAddress: collateralAddress }), collateralUsdPrice],
-    [getTokenUsdRateKey({ chainId, tokenAddress: borrowAddress }), borrowUsdPrice],
-    [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
-  )
-  const market = useFakeMarket({ collateralAddress, collateralSymbol, borrowSymbol, borrowAddress })
-  return (
-    <QueryClientProvider client={client}>
-      <BorrowPositionDetails market={market} params={params} />
-    </QueryClientProvider>
-  )
-}
+  params,
+}: typeof baseProps) => (
+  <TestQueryProvider
+    data={[
+      [getMarketOraclePriceBandKey(params), oraclePrice],
+      [getUserCurrentLeverageKey(params), `${leverage}`],
+      [getUserBandsKey(params), userBands],
+      [getUserPricesKey(params), userPrices],
+      [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
+      [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+      [getMarketOraclePriceKey(params), `${oraclePrice}`],
+      [getMarketLiquidationBandKey(params), marketLiquidationBand],
+      [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
+      [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
+      [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+    ]}
+  >
+    <BorrowPositionDetails
+      market={useFakeMarket({ collateralAddress, collateralSymbol, borrowSymbol, borrowAddress })}
+      params={params}
+    />
+  </TestQueryProvider>
+)
 
 const meta: Meta<typeof BorrowPositionDetailsStory> = {
   title: 'Llamalend/BorrowPositionDetails',
