@@ -48,15 +48,16 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
-      if (breakpoint !== 'mobile') cy.viewport(oneMobileViewport()[0], height) // todo: filter by rewards currently only visible on mobile
+      if (breakpoint !== 'mobile') cy.viewport(oneMobileViewport()[0], height)
+      const mobile = 'mobile' // todo: filter by rewards currently only visible on mobile
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      withFilterChips(breakpoint, () => {
+      withFilterChips(mobile, () => {
         cy.get(`[data-testid="chip-rewards"]`).click()
         return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
       })
-      expandFirstRowOnMobile(breakpoint)
+      expandFirstRowOnMobile(mobile)
       cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-      withFilterChips(breakpoint, () => {
+      withFilterChips(mobile, () => {
         cy.get(`[data-testid="chip-rewards"]`).click()
         return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
       })
