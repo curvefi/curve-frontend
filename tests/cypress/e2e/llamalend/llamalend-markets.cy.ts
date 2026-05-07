@@ -48,18 +48,16 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      if (breakpoint === 'mobile') {
-        withFilterChips(breakpoint, () => {
-          cy.get(`[data-testid="chip-rewards"]`).click()
-          return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-        })
-        expandFirstRowOnMobile(breakpoint)
-        cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-        withFilterChips(breakpoint, () => {
-          cy.get(`[data-testid="chip-rewards"]`).click()
-          return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-        })
-      }
+      withFilterChips(breakpoint, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      })
+      expandFirstRowOnMobile(breakpoint)
+      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
+      withFilterChips(breakpoint, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+      })
     })
 
     it('should have sticky headers', () => {
