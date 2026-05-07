@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { formatCollateralNotional, getTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type UserState, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
@@ -26,7 +25,7 @@ const dollarUnitOptions = {
 
 type BorrowInformationProps = {
   params: UserMarketParams
-  market: LlamaMarketTemplate | undefined
+  tokens: Partial<ReturnType<typeof getTokens>>
 }
 
 const useCollateralValue = ({
@@ -46,12 +45,11 @@ const useCollateralValue = ({
   ...combineQueryState(collateralUsdRate, userState),
 })
 
-export const BorrowInformation = ({ params, market }: BorrowInformationProps) => {
+export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue, isLoading: isUserStateLoading } = userState
   const { data: leverageValue, isLoading: isLeverageLoading } = useUserCurrentLeverage(params)
 
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const collateralUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: collateralToken?.address })
   const borrowedUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 

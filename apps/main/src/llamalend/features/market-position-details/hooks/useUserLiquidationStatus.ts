@@ -7,14 +7,14 @@ import type { UserMarketParams } from '@ui-kit/lib/model'
 
 export function useLiquidationStatus(params: UserMarketParams) {
   const userState = useUserState(params)
-  const useUserHealthNotFull = useUserHealth({ ...params, isFull: false })
+  const userHealthNotFull = useUserHealth({ ...params, isFull: false })
   const userBands = useUserBands(params)
   const oraclePrice = useMarketOraclePriceBand(params)
   const liqBand = useMarketLiquidationBand(params)
   const { collateral, stablecoin: borrowed } = userState.data ?? {}
 
   const positionStatus = useMemo(() => {
-    if (!useUserHealthNotFull.data || !userBands.data) return undefined
+    if (!userHealthNotFull.data || !userBands.data) return undefined
     const isCloseToSoftLiquidation = getIsUserCloseToSoftLiquidation(
       userBands.data[0],
       liqBand.data ?? null,
@@ -22,15 +22,15 @@ export function useLiquidationStatus(params: UserMarketParams) {
     )
     const [, lowerBoundary] = userBands.data
     return getLiquidationStatus(
-      useUserHealthNotFull.data,
+      userHealthNotFull.data,
       isCloseToSoftLiquidation,
       isBelowRange(oraclePrice.data, lowerBoundary),
       collateral,
       borrowed,
     )
-  }, [useUserHealthNotFull.data, userBands.data, liqBand.data, oraclePrice.data, collateral, borrowed])
+  }, [userHealthNotFull.data, userBands.data, liqBand.data, oraclePrice.data, collateral, borrowed])
   return {
     data: positionStatus,
-    ...combineQueryState(userState, useUserHealthNotFull, userBands, oraclePrice, liqBand),
+    ...combineQueryState(userState, userHealthNotFull, userBands, oraclePrice, liqBand),
   }
 }

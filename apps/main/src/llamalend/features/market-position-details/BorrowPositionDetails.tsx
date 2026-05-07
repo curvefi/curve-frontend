@@ -34,7 +34,7 @@ export const BorrowPositionDetails = ({ params, market }: BorrowPositionDetailsP
           params={params}
           softLiquidation={mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')}
         />
-        <BorrowInformation params={params} market={market} />
+        <BorrowInformation params={params} tokens={{ borrowToken, collateralToken }} />
       </Stack>
     </Stack>
   )

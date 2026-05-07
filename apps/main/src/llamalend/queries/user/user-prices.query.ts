@@ -12,7 +12,7 @@ import { useLoanExists } from './user-loan-exists.query'
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
 
-const { useQuery: useUserPricesQuery } = queryFactory({
+const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
@@ -40,3 +40,5 @@ export function useRangeToLiquidation({ params }: { params: UserMarketParams }) 
   }
   return { rangeToLiquidation, userPrices }
 }
+
+export { getUserPricesKey }

@@ -122,7 +122,7 @@ export const createMockLendVault = (): MockLendVault => ({
 })
 
 // Supply-side tests rely on the LendMarketTemplate prototype plus vault/gauge APIs.
-export const createMockLendMarket = (overrides: object) =>
+export const createMockLendMarket = (overrides?: object) =>
   Object.assign(Object.create(LendMarketTemplate.prototype), {
     id: 'one-way-market-7',
     llamalend: {
