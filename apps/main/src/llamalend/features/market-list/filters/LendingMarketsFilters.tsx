@@ -1,21 +1,19 @@
-import { keyBy, type Dictionary } from 'lodash'
-import { useMemo } from 'react'
+import type { Dictionary } from 'lodash'
 import Stack from '@mui/material/Stack'
-import { SxProps } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
-import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
-import { LlamaMarketColumnId } from './columns'
-import { MultiSelectFilter } from './filters/MultiSelectFilter'
-import { RangeSliderFilter } from './filters/RangeSliderFilter'
+import { type AssetDetails } from '../../../queries/market-list/llama-markets'
+import { LlamaChainFilterChips } from '../chips/LlamaChainFilterChips'
+import { LlamaMarketColumnId } from '../columns'
+import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './hooks/useLlamaMarketsFilters'
+import { MultiSelectFilter } from './MultiSelectFilter'
+import { RangeSliderFilter } from './RangeSliderFilter'
+import { TableFilterButtonGroup } from './TableFilterButtonGroup'
 
 const { Spacing } = SizesAndSpaces
 
@@ -40,32 +38,19 @@ const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<
 /**
  * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
-export const LendingMarketsFilters = ({
-  data,
-  gridSx,
-  ...filterProps
-}: FilterProps<LlamaMarketColumnId> & {
-  gridSx?: SxProps
-  data: LlamaMarket[]
-}) => {
-  // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
-  // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
-  const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
-  const markets = useMemo(
-    () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
-    [data, selectedChains],
-  )
+export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
+  const {
+    filterProps,
+    markets,
+    tokens,
+    marketTypeValue,
+    marketVersion,
+    onMarketTypeChange,
+    onMarketVersionChange,
+    marketTypeOptions,
+    marketVersionOptions,
+  } = useLlamaMarketsFilters(props)
 
-  // Relies on data and not markets, because you might have a filter active for a token from a chain
-  // before you filtered out that said chain. This would lead to token symbols not loading.
-  const tokens = useMemo(
-    () =>
-      keyBy(
-        data.flatMap(market => [market.assets.collateral, market.assets.borrowed]),
-        i => i.symbol,
-      ),
-    [data],
-  )
   return (
     <Stack padding={Spacing.sm} spacing={Spacing.sm}>
       <TableFilterItem title={t`Network`}>
@@ -131,6 +116,20 @@ export const LendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterItem>
+      <TableFilterButtonGroup
+        title={t`Market type`}
+        value={marketTypeValue}
+        onChange={onMarketTypeChange}
+        ariaLabel={t`Market type filter`}
+        options={marketTypeOptions}
+      />
+      <TableFilterButtonGroup
+        title={t`Market version`}
+        value={marketVersion}
+        onChange={onMarketVersionChange}
+        ariaLabel={t`Market version filter`}
+        options={marketVersionOptions}
+      />
     </Stack>
   )
 }

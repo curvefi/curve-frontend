@@ -20,9 +20,9 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { LlamaTableFiltersPopover } from './filters/LlamaTableFiltersPopover'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaTableFiltersPopover } from './LlamaTableFiltersPopover'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
@@ -108,6 +108,7 @@ export const LlamaMarketsTable = ({
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}
             markets={data}
+            resetFilters={resetFilters}
             {...filterProps}
           />
         }
