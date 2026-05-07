@@ -8,7 +8,7 @@ const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
 export const oneDesktopViewport = () =>
   [oneInt(DESKTOP_BREAKPOINT, MAX_WIDTH), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'desktop'] as const
 
-const oneMobileViewport = () =>
+export const oneMobileViewport = () =>
   [oneInt(MIN_WIDTH, TABLET_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'mobile'] as const
 
 const oneTabletViewport = () =>

@@ -26,6 +26,7 @@ import {
   assertNotInViewport,
   LOAD_TIMEOUT,
   oneDesktopViewport,
+  oneMobileViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
@@ -47,6 +48,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
+      if (breakpoint !== 'mobile') cy.viewport(oneMobileViewport()[0], height) // todo: filter by rewards currently only visible on mobile
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
       withFilterChips(breakpoint, () => {
         cy.get(`[data-testid="chip-rewards"]`).click()
@@ -223,11 +225,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     // todo: filter by chain
 
     it(`should allow filtering by token`, () => {
-      if (breakpoint == 'mobile') {
-        openDrawer(breakpoint, 'filter')
-      } else {
-        cy.get(`[data-testid="btn-open-filters"]`).click()
-      }
+      openFilters(breakpoint)
       checkCoinSelection('collateral')
       checkCoinSelection('borrowed')
     })
