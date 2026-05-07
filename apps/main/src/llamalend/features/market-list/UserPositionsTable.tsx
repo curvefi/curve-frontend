@@ -20,7 +20,7 @@ import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { LendingMarketsFilters } from './LendingMarketsFilters'
+import { LegacyLendingMarketsFilters } from './LegacyLendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
 import { UserPositionSummary } from './UserPositionsSummary'
@@ -179,7 +179,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
           searchText={globalFilter}
           onSearch={setGlobalFilter}
           leftChildren={<LegacyTableFiltersTitles title={t`Your Positions`} />}
-          collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
+          collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
               <LlamaChainFilterChips data={userData} {...filterProps} />
