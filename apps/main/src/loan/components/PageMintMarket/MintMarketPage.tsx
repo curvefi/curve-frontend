@@ -10,7 +10,6 @@ import { MarketInformationComposite } from '@/loan/components/MarketInformationC
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { useMintMarket } from '@/loan/entities/mint-markets'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
@@ -40,10 +39,13 @@ export const MintMarketPage = () => {
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
 
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId: rChainId,
+    marketId,
+    userAddress: address,
+  })
   const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
 
-  const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const network = networks[rChainId]
   const controllerAddress = getControllerAddress(market)
   const borrowPositionDetails = useBorrowPositionDetails({
@@ -83,7 +85,7 @@ export const MintMarketPage = () => {
     }
   }, REFRESH_INTERVAL['1m'])
 
-  const formProps = {
+  const pageProps = {
     curve,
     isReady: !!curve?.signerAddress && !!market,
     market: market ?? null,
@@ -92,21 +94,17 @@ export const MintMarketPage = () => {
     onPricesUpdated: setPreviewPrices,
   }
 
-  const isLoading = !loaded || (loanExists && !loanStatus)
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <DetailPageLayout
       formTabs={
-        !isLoading &&
+        loaded &&
+        !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs
-            {...formProps}
-            collateralEvents={collateralEvents}
-            isInSoftLiquidation={loanStatus !== 'healthy'}
-          />
+          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} position={borrowPositionDetails} />
         ) : (
-          <CreateLoanTabs {...formProps} />
+          <CreateLoanTabs {...pageProps} />
         ))
       }
       header={

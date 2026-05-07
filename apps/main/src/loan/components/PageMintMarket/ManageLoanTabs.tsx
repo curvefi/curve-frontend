@@ -4,6 +4,7 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -158,10 +159,12 @@ const MintManageSoftLiquidationMenu = [
 ] satisfies FormTab<MintManageLoanProps>[]
 
 export const ManageLoanTabs = ({
-  isInSoftLiquidation,
+  position: {
+    liquidationAlert: { softLiquidation, hardLiquidation },
+  },
   ...pageProps
-}: MintManageLoanProps & { isInSoftLiquidation: boolean }) => {
-  const shouldUseSoftLiquidation = useManageSoftLiquidation() && isInSoftLiquidation
+}: MintManageLoanProps & { position: BorrowPositionDetailsProps }) => {
+  const shouldUseSoftLiquidation = useManageSoftLiquidation() && (softLiquidation || hardLiquidation)
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
     ? MintManageSoftLiquidationMenu
