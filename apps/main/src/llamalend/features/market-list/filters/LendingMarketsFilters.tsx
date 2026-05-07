@@ -1,9 +1,8 @@
 import type { Dictionary } from 'lodash'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
@@ -27,16 +26,17 @@ const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDet
 }
 
 /**
- * Displays a selected token with its icon and symbol.
- * This is used in the lending markets filters to display selected collateral and debt tokens.
+ * Displays a selected token, used in the lending markets filters to display selected collateral and debt tokens.
+ * SelectableChip is not being used as real Chip but required to match the design, that's why the interactions are
+ * disabled and it's always selected
  */
-const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
-  const { chain, address = null } = tokens[symbol] ?? {}
-  return <Badge label={symbol} size="small" icon={<TokenIcon blockchainId={chain} address={address} />} />
-}
+const SelectedToken = ({ symbol }: { symbol: string }) => (
+  <SelectableChip label={symbol} selected toggle={() => {}} sx={{ pointerEvents: 'none' }} />
+)
 
 /**
- * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
+ * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and
+ * utilization.
  */
 export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   const {
@@ -61,8 +61,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
-          defaultText={t`All`}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Collateral Tokens`}
           data={markets}
           {...filterProps}
@@ -73,8 +72,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
-          defaultText={t`All`}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Debt Tokens`}
           data={markets}
           {...filterProps}

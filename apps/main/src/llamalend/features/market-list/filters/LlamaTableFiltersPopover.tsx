@@ -63,9 +63,6 @@ export const LlamaTableFiltersPopover = ({
         <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hiddenCount}>
           {t`Reset filters`}
         </Button>
-        <Button color="outlined" size="extraSmall" onClick={onClose}>
-          {t`Apply filters`}
-        </Button>
       </Stack>
     </Stack>
   </Popover>

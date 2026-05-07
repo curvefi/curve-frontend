@@ -19,29 +19,10 @@ import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
 const { Spacing } = SizesAndSpaces
 
-/**  Show only the first few selected values inline so the closed select stays compact. Any remaining selections are
- * collapsed into a single "+N" item. */
-const MAX_VISIBLE_SELECTED_OPTIONS = 3
-
-/** Renders the overflow indicator for selected options hidden behind the MAX_VISIBLE_SELECTED_OPTIONS limit.  */
-const HiddenSelectedOptions = ({
-  selectedOptionsLength,
-  renderItem,
-  selectedItemRender,
-}: {
-  selectedOptionsLength: number
-  renderItem?: (value: string) => ReactNode
-  selectedItemRender?: (value: string) => ReactNode
-}) => {
-  const length = selectedOptionsLength - MAX_VISIBLE_SELECTED_OPTIONS
-  const label = `+${length}`
-  return length > 0 && (selectedItemRender?.(label) ?? renderItem?.(label) ?? label)
-}
-
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
-export const MultiSelectFilter = <TKeys, TColumnId extends string>({
+export const LegacyMultiSelectFilter = <TKeys, TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
   data,
@@ -103,27 +84,21 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         value=""
         data-testid={`multi-select-filter-${id}`}
         size={isMobile ? 'medium' : 'small'}
-        sx={{ '& .MuiSelect-select': { gap: Spacing.xs } }}
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
-            <>
-              {selectedOptions.slice(0, MAX_VISIBLE_SELECTED_OPTIONS).map(optionId => (
-                <MenuItem
-                  key={optionId}
-                  sx={{
-                    display: 'inline-flex', // display inline to avoid wrapping
-                    '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
-                  }}
-                >
-                  {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
-                </MenuItem>
-              ))}
-              <HiddenSelectedOptions
-                selectedOptionsLength={selectedOptions.length}
-                selectedItemRender={selectedItemRender}
-                renderItem={renderItem}
-              />
-            </>
+            selectedOptions.map((optionId, index) => (
+              <MenuItem
+                key={optionId}
+                sx={{
+                  display: 'inline-flex', // display inline to avoid wrapping
+                  '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                  gap: Spacing.xs, // default spacing is too large inline
+                  ...(index > 0 && { ':before': { content: '", "' } }),
+                }}
+              >
+                {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
+              </MenuItem>
+            ))
           ) : (
             <Typography variant="bodySBold">{isMobile ? defaultTextMobile : defaultText}</Typography>
           )
