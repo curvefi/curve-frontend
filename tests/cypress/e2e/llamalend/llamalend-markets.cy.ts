@@ -22,6 +22,7 @@ import {
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
+  API_LOAD_TIMEOUT,
   assertInViewport,
   assertNotInViewport,
   LOAD_TIMEOUT,
@@ -339,7 +340,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visit(path, { ...LOAD_TIMEOUT, ...options })
-  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
 }
 
 function enableGraphColumn() {
