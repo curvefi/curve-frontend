@@ -71,7 +71,7 @@ const PositionDetailsTest = ({
         [getUserBandsKey(params), userBands],
         [getUserPricesKey(params), userPrices],
         [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-        [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+        [getUserHealthKey({ ...params, isFull: false }), healthNotFull == null ? null : `${healthNotFull}`],
         [getMarketOraclePriceKey(params), `${oraclePrice}`],
         [getMarketLiquidationBandKey(params), marketLiquidationBand],
         [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],

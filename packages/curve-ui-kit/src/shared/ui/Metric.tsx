@@ -96,10 +96,10 @@ type MetricValueProps = Pick<MetricProps, 'value' | 'valueOptions' | 'change' | 
 }
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
-  const numberValue = useMemo(() => (isFinite(Number(value)) ? value : null), [value])
+  const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
   const { color = 'textPrimary', abbreviate = true, ...formattingOptions } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
-    numberValue === null ? {} : decomposeNumber(Number(numberValue), { ...formattingOptions, abbreviate })
+    numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
 
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]

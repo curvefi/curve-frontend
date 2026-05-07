@@ -54,7 +54,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const borrowedUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 
   const { collateral, stablecoin: borrowed, debt } = userStateValue ?? {}
-  const collateralV = useCollateralValue({ userState, collateralUsdRate })
+  const collateralValue = useCollateralValue({ userState, collateralUsdRate })
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
 
   return (
@@ -69,9 +69,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           size="small"
           label={t`Collateral value`}
-          value={collateralV.data}
-          loading={collateralV.isLoading}
-          error={collateralV.error}
+          value={collateralValue.data}
+          loading={collateralValue.isLoading}
+          error={collateralValue.error}
           valueOptions={{ unit: 'dollar' }}
           notional={
             collateral
@@ -87,7 +87,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               <CollateralMetricTooltipContent
                 borrow={{ value: borrowed, usdRate: borrowedUsdRate.data, symbol: borrowToken?.symbol }}
                 collateral={{ value: collateral, usdRate: collateralUsdRate.data, symbol: collateralToken?.symbol }}
-                totalValue={collateralV.data}
+                totalValue={collateralValue.data}
               />
             ),
             placement: 'top',
