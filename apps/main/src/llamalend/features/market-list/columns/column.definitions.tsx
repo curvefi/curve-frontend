@@ -209,4 +209,5 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
+  hidden(LlamaMarketColumnId.Version, LlamaMarketColumnId.Version, multiFilterFn),
 ] satisfies LlamaColumn[]

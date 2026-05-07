@@ -5,6 +5,8 @@ import type * as Responses from './responses'
 
 export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
   name: x.name,
+  // backend market versions are numeric, but table list filters serialize selections as strings
+  version: String(x.version),
   controller: x.controller,
   vault: x.vault,
   llamma: x.llamma,

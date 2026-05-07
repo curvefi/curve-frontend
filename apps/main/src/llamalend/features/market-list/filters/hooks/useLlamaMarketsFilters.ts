@@ -1,5 +1,5 @@
 import { keyBy, type Dictionary } from 'lodash'
-import { type MouseEvent, useMemo, useState } from 'react'
+import { type MouseEvent, useMemo } from 'react'
 import { recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -28,8 +28,8 @@ export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
 }
 
 export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFiltersProps) => {
-  const [marketVersion, setMarketVersion] = useState<MarketVersionFilterValue>('all')
   const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Type])
+  const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Version])
   // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
   // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
   const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
@@ -48,7 +48,6 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
   return {
     filterProps,
     tokens,
-    marketVersion,
     markets: useMemo(
       () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
       [data, selectedChains],
@@ -57,11 +56,16 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
       () => (selectedMarketTypes?.length === 1 ? (selectedMarketTypes[0] as LlamaMarketType) : 'all'),
       [selectedMarketTypes],
     ),
+    marketVersionValue: useMemo<MarketVersionFilterValue>(
+      () => (selectedMarketVersions?.length === 1 ? (selectedMarketVersions[0] as MarketVersionFilterValue) : 'all'),
+      [selectedMarketVersions],
+    ),
     onMarketTypeChange: (_: MouseEvent<HTMLElement>, value: MarketTypeFilterValue | null) =>
       value &&
       filterProps.setColumnFilter(LlamaMarketColumnId.Type, value === 'all' ? null : serializeListFilter([value])),
     onMarketVersionChange: (_: MouseEvent<HTMLElement>, value: MarketVersionFilterValue | null) =>
-      value && setMarketVersion(value),
+      value &&
+      filterProps.setColumnFilter(LlamaMarketColumnId.Version, value === 'all' ? null : serializeListFilter([value])),
     marketTypeOptions: recordEntries(MARKET_TYPE_LABELS).map(([value, label]) => ({ value, label })),
     marketVersionOptions: recordEntries(MARKET_VERSION_LABELS).map(([value, label]) => ({ value, label })),
   }

@@ -7,6 +7,7 @@ import type { Timestamp } from '../timestamp'
  */
 export type Market = {
   name: string
+  version: string
   controller: Address
   vault: Address
   llamma: Address

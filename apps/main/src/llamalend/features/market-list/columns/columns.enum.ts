@@ -24,4 +24,5 @@ export enum LlamaMarketColumnId {
   TotalCollateralUsd = 'totalCollateralUsd',
   DeprecatedMessage = 'deprecatedMessage',
   Type = 'type',
+  Version = 'version',
 }

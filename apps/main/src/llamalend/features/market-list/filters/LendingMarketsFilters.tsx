@@ -44,7 +44,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
     markets,
     tokens,
     marketTypeValue,
-    marketVersion,
+    marketVersionValue,
     onMarketTypeChange,
     onMarketVersionChange,
     marketTypeOptions,
@@ -125,7 +125,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
       />
       <TableFilterButtonGroup
         title={t`Market version`}
-        value={marketVersion}
+        value={marketVersionValue}
         onChange={onMarketVersionChange}
         ariaLabel={t`Market version filter`}
         options={marketVersionOptions}
