@@ -15,7 +15,9 @@ export const TableFiltersHeader = ({ title, rightChildren }: { title: string; ri
     // cannot use Stack + gap because the background color need to be this one and not the default
     paddingBlockEnd={Spacing.xs}
   >
-    <Typography variant="headingSBold">{title}</Typography>
+    <Typography variant="headingSBold" color="textSecondary" sx={{ paddingInlineStart: Spacing.sm }}>
+      {title}
+    </Typography>
     {rightChildren}
   </Stack>
 )
