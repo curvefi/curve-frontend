@@ -83,8 +83,7 @@ export const MarketHistoricalRatesChart = ({
     const sorted = sortBy(
       [
         ...snapshots.map(snapshot => ({
-          // timestamp is typed as Date but may be a string after JSON serialization (e.g. React Query cache)
-          timestamp: new Date(snapshot.timestamp).getTime(),
+          timestamp: snapshot.timestamp,
           rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
         })),
         ...(onChainRate == null ? [] : [{ timestamp: Date.now(), rate: Number(onChainRate) }]),
