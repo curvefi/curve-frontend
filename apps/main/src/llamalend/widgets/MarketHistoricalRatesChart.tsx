@@ -9,6 +9,7 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
+import { notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
@@ -81,13 +82,13 @@ export const MarketHistoricalRatesChart = ({
   const chartData = useMemo<RateChartPoint[]>(() => {
     const onChainRate = rateMode === 'borrow' ? marketRates?.borrowApr : marketRates?.lendApy
     const sorted = sortBy(
-      [
+      notFalsy(
         ...snapshots.map(snapshot => ({
           timestamp: snapshot.timestamp,
           rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
         })),
-        ...(onChainRate == null ? [] : [{ timestamp: Date.now(), rate: Number(onChainRate) }]),
-      ],
+        onChainRate != null && { timestamp: Date.now(), rate: Number(onChainRate) },
+      ),
       item => item.timestamp,
     )
 
