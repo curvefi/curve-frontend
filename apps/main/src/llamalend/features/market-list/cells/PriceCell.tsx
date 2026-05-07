@@ -68,12 +68,10 @@ const getTooltipTitle = (columnId: LlamaMarketColumnId) =>
  *
  * @param columnId - The column identifier
  * @param stats - The user's market statistics
- * @param isLoading - Whether the stats are still loading
  */
 const getTooltipBody = (
   columnId: LlamaMarketColumnId,
   stats: ReturnType<typeof useUserMarketStats>['data'],
-  isLoading: boolean,
 ): ReactNode | undefined => {
   if (columnId === LlamaMarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
@@ -190,7 +188,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
 
   const tooltipTitle =
     getTooltipTitle(columnId) ?? `${formatNumber(primaryValue, { decimals: 5 })} ${primaryAsset.symbol}`
-  const tooltipBody = getTooltipBody(columnId, stats, isLoadingStats)
+  const tooltipBody = getTooltipBody(columnId, stats)
 
   const primaryUsdValue = primaryPrice && primaryValue * primaryPrice
   const secondaryUsdValue = secondaryPrice && secondaryValue && secondaryValue * secondaryPrice

@@ -1,24 +1,7 @@
-import { type ReactNode, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
-
-export function TestQueryProvider({
-  children,
-  data,
-}: {
-  children: ReactNode
-  data: Parameters<QueryClient['setQueryData']>[]
-}) {
-  const client = useMemo(() => new QueryClient({ defaultOptions: { queries: { retry: false } } }), [])
-  useEffect(
-    () => data.forEach(([key, data]) => void client.setQueryData(key, data)),
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [client],
-  )
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>
-}
 
 export const useFakeMarket = ({
   collateralAddress,
