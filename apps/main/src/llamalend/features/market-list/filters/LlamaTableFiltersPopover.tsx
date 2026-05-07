@@ -21,6 +21,7 @@ export const LlamaTableFiltersPopover = ({
   anchorRef: { current: anchorEl },
   markets,
   resetFilters,
+  hiddenCount,
   ...filterProps
 }: {
   open: boolean
@@ -28,6 +29,7 @@ export const LlamaTableFiltersPopover = ({
   anchorRef: RefObject<HTMLDivElement | null>
   markets: LlamaMarket[]
   resetFilters: () => void
+  hiddenCount: number
 } & FilterProps<LlamaMarketColumnId>) => (
   <Popover
     open={open}
@@ -58,7 +60,7 @@ export const LlamaTableFiltersPopover = ({
       </Stack>
       <LendingMarketsFilters data={markets} {...filterProps} />
       <Stack direction="row" justifyContent="space-between" padding={Spacing.sm}>
-        <Button color="ghost" size="extraSmall" onClick={resetFilters}>
+        <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hiddenCount}>
           {t`Reset filters`}
         </Button>
         <Button color="outlined" size="extraSmall" onClick={onClose}>

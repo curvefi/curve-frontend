@@ -19,8 +19,8 @@ const MARKET_TYPE_LABELS: Record<MarketTypeFilterValue, string> = {
 
 const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
   all: t`All`,
-  [LlamaMarketVersion.v1]: 'V1',
-  [LlamaMarketVersion.v2]: 'V2',
+  [LlamaMarketVersion.v1]: 'v1',
+  [LlamaMarketVersion.v2]: 'v2',
 }
 
 export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
@@ -67,6 +67,9 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
       value &&
       filterProps.setColumnFilter(LlamaMarketColumnId.Version, value === 'all' ? null : serializeListFilter([value])),
     marketTypeOptions: recordEntries(MARKET_TYPE_LABELS).map(([value, label]) => ({ value, label })),
-    marketVersionOptions: recordEntries(MARKET_VERSION_LABELS).map(([value, label]) => ({ value, label })),
+    marketVersionOptions: recordEntries(MARKET_VERSION_LABELS)
+      .map(([value, label]) => ({ value, label }))
+      // numeric like object keys (e.g. "1") are returned first, so we sort `all` back to the front for the button group
+      .sort(({ value: left }, { value: right }) => Number(right === 'all') - Number(left === 'all')),
   }
 }
