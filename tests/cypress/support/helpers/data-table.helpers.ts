@@ -37,11 +37,11 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
-export function expandFilters(breakpoint: Breakpoint) {
+export function openFilters(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
     openDrawer(breakpoint, 'filter')
   } else {
-    cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+    cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
   }
 }
 
