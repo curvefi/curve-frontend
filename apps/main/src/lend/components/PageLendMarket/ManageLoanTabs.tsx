@@ -143,7 +143,11 @@ const LendManageSoftLiquidationMenu = [
 ] satisfies FormTab<ManageLoanProps>[]
 
 export const ManageLoanTabs = (params: ManageLoanProps) => {
-  const status = useLiquidationStatus(params)
+  const status = useLiquidationStatus({
+    chainId: params.rChainId,
+    marketId: params.rOwmId,
+    userAddress: params.userAddress,
+  })
   const shouldUseSoftLiquidation =
     useManageSoftLiquidation() && status.data && ['softLiquidation', 'hardLiquidation'].includes(status.data)
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
