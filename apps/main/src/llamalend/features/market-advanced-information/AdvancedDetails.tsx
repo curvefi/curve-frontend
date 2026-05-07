@@ -78,6 +78,15 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           ...TooltipOptions,
         }}
       />
+      {availableLiquidity.borrowCap && (
+        <Metric
+          size="medium"
+          label={t`Borrow cap`}
+          value={+availableLiquidity.borrowCap}
+          loading={availableLiquidity?.loading}
+          valueOptions={{ abbreviate: true }}
+        />
+      )}
       <Metric
         size="medium"
         label={t`Total borrowers`}

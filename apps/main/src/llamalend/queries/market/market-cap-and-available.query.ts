@@ -10,8 +10,8 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
-      const { available, totalAssets } = await market.stats.capAndAvailable(IS_GETTER, USE_API)
-      return { totalAssets: decimal(totalAssets), available: decimal(available) }
+      const { available, totalAssets, borrowCap } = await market.stats.capAndAvailable(IS_GETTER, USE_API)
+      return { totalAssets: decimal(totalAssets), available: decimal(available), borrowCap: decimal(borrowCap) }
     }
     const { available, cap } = await market.stats.capAndAvailable()
     return { totalAssets: decimal(cap), available: decimal(available) }
