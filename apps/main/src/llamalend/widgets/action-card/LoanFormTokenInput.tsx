@@ -5,7 +5,7 @@ import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
-import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui-kit/features/forms'
+import { type FormUpdates, FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -14,7 +14,6 @@ import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInpu
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { type FormUpdates } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 

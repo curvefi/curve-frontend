@@ -15,10 +15,9 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
-import { useForm } from '@ui-kit/features/forms'
+import { useCallbackSync, useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { useCallbackSync, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
