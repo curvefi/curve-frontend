@@ -1,6 +1,9 @@
 import { FormProvider } from 'react-hook-form'
 import { zeroAddress } from 'viem'
 import Button from '@mui/material/Button'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormLabel from '@mui/material/FormLabel'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -68,24 +71,26 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
             </Typography>
           </Stack>
 
-          <TextField
-            label={t`Gauge Address`}
-            placeholder={zeroAddress}
-            value={gaugeAddress}
-            onChange={e => updateForm(form, { gaugeAddress: e.target.value })}
-            error={!!gaugeAddressError}
-            helperText={gaugeAddressError}
-            fullWidth
-          />
+          <FormControl fullWidth error={!!gaugeAddressError}>
+            <FormLabel>{t`Gauge Address`}</FormLabel>
+            <TextField
+              fullWidth
+              placeholder={zeroAddress}
+              value={gaugeAddress}
+              onChange={e => updateForm(form, { gaugeAddress: e.target.value })}
+            />
+            <FormHelperText>{gaugeAddressError ?? t`Enter the gauge contract address`}</FormHelperText>
+          </FormControl>
 
-          <TextField
-            label={t`Vote Description`}
-            value={description}
-            onChange={e => updateForm(form, { description: e.target.value })}
-            error={!!descriptionError}
-            helperText={descriptionError ?? t`A few words describing what this gauge is for`}
-            fullWidth
-          />
+          <FormControl fullWidth error={!!descriptionError}>
+            <FormLabel>{t`Vote Description`}</FormLabel>
+            <TextField
+              fullWidth
+              value={description}
+              onChange={e => updateForm(form, { description: e.target.value })}
+            />
+            <FormHelperText>{descriptionError ?? t`A few words describing what this gauge is for`}</FormHelperText>
+          </FormControl>
 
           <FormAlerts error={createVoteError} formErrors={formErrors} handledErrors={['gaugeAddress', 'description']} />
         </Stack>
