@@ -11,7 +11,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -41,11 +41,11 @@ const useBridgeParams = ({
   userAddress: Address | undefined
 }) => useDebouncedValue(useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]))
 
+const userDefaultValues = { fromChainId: undefined, amount: undefined }
+
 const emptyBridgeForm = () =>
   ({
-    fromChainId: undefined,
-    amount: undefined,
-
+    ...userDefaultValues,
     min: undefined,
     max: undefined,
     walletBalance: undefined,
@@ -102,7 +102,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     onSubmit: onSubmitBridge,
     isPending: isBridging,
     error: bridgeError,
-  } = useBridgeMutation({ chainId, onReset: form.reset })
+  } = useBridgeMutation({ chainId, onReset: () => resetForm(form, userDefaultValues) })
 
   /**
    * Set fromChainId to the chainId passed to this form, which is the chain from the URL.

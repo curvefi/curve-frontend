@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react'
 
+const start = new Date().getTime()
+const showTimeDiff = () => (new Date().getTime() - start).toLocaleString() + 'ms'
+
 export function useTraceProps<T extends Record<string, unknown>>(name: string, props: T) {
   const propsRef = useRef<T>(props)
   useEffect(() => {
@@ -11,15 +14,15 @@ export function useTraceProps<T extends Record<string, unknown>>(name: string, p
     )
     if (Object.keys(changedProps).length) {
       console.info(
-        `useTraceProps ${name} ${new Date().toISOString()}: Changed props`,
+        `useTraceProps ${name} ${showTimeDiff()}: Changed props`,
         Object.entries(changedProps).map(([key, [prev, curr]]) => `${key}: ${toString(prev)} -> ${toString(curr)}`),
       )
     }
     propsRef.current = props
   }, [props, name])
   useEffect(() => {
-    console.info(`useTraceProps ${name} ${new Date().toISOString()}: Mounted`, { ...propsRef.current })
-    return () => console.warn(`useTraceProps ${name} ${new Date().toISOString()}: Unmounted`, { ...propsRef.current })
+    console.info(`useTraceProps ${name} ${showTimeDiff()}: Mounted`, { ...propsRef.current })
+    return () => console.warn(`useTraceProps ${name} ${showTimeDiff()}: Unmounted`, { ...propsRef.current })
   }, [name])
 }
 

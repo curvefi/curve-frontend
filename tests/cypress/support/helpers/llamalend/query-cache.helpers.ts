@@ -1,9 +1,14 @@
 import { type Address, erc20Abi, parseUnits } from 'viem'
+import { getBadDebtLendMarketsOptions } from '@/llamalend/queries/market/market-bad-debt.query'
+import { getLendingVaultsOptions, type LendingVault } from '@/llamalend/queries/market-list/lending-vaults'
+import type { BadDebt } from '@curvefi/prices-api/liquidations'
+import { oneAddress, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryClient } from '@ui-kit/lib/api'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { BlockchainIds } from '@ui-kit/utils/network'
 import { readContractsQueryOptions } from '@wagmi/core/query'
-import { oneInt } from '../../generators'
+import { createMockLendMarket } from './mock-market.helpers'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
 
 export const seedErc20BalanceQuery = ({
@@ -74,3 +79,71 @@ export const seedCrvUsdBalance = ({
     rawBalance: parseUnits(`${oneInt(Math.ceil(Number(min)), Math.ceil(Number(max)))}`, decimals),
     decimals,
   })
+
+export const seedLendMarketSolvencyQueries = ({
+  chainId,
+  market,
+  solvencyPercent,
+}: {
+  chainId: number
+  market: ReturnType<typeof createMockLendMarket>
+  solvencyPercent: number
+}) => {
+  const chain = BlockchainIds[chainId]!
+  const totalAssetsUsd = 100
+  const badDebt = (totalAssetsUsd * (100 - solvencyPercent)) / 100
+  const controllerAddress = market.addresses.controller as Address
+  const vaultAddress = market.addresses.vault as Address
+  const collateralAddress = market.collateral_token.address as Address
+  const borrowedAddress = market.borrowed_token.address as Address
+
+  queryClient.setQueryData(getLendingVaultsOptions({}, true).queryKey, [
+    {
+      controller: controllerAddress,
+      chain,
+      totalAssets: totalAssetsUsd,
+      totalAssetsUsd,
+      totalDebt: 20,
+      totalDebtUsd: 20,
+      vault: vaultAddress,
+      llamma: oneAddress() as Address,
+      collateralToken: {
+        symbol: market.collateral_token.symbol,
+        address: collateralAddress,
+        rebasingYield: null,
+        rebasingYieldApr: null,
+      },
+      borrowedToken: {
+        symbol: market.borrowed_token.symbol,
+        address: borrowedAddress,
+        rebasingYield: null,
+        rebasingYieldApr: null,
+      },
+      borrowedBalanceUsd: 0,
+      collateralBalanceUsd: 0,
+      borrowApy: 0.0825,
+      borrowApr: 0.0825,
+      apyLend: 0.0456,
+      aprLendCrv0Boost: 0,
+      aprLendCrvMaxBoost: 0,
+      leverage: 1,
+      extraRewardApr: [],
+      maxLtv: 80,
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+    } as unknown as LendingVault,
+  ])
+  queryClient.setQueryData(getBadDebtLendMarketsOptions(true).queryKey, [
+    {
+      chain,
+      market: market.id,
+      softLiquidationUsers: 0,
+      controllerAddress,
+      badDebt,
+      liquidatablePositions: 0,
+      liquidatablePosDebtUsd: 0,
+      liquidatableCollateralUsd: 0,
+      liquidatableBorrowedUsd: null,
+      liquidatableStablecoinUsd: null,
+    } as BadDebt[number],
+  ])
+}

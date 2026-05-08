@@ -56,7 +56,7 @@ describe('RepayForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverage: false })
+      selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverageManagement: false })
       writeRepayLoanForm({ amount: borrow })
       checkRepayDetailsLoaded({
         debt: { current: currentDebt, future: futureDebt, symbol: 'crvUSD' },

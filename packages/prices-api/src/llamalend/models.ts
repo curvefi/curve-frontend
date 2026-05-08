@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 /*
  * Note that collateral can be two tokens due to soft-liquidations.
@@ -62,7 +63,7 @@ export type Market = {
     symbol: string
     rate: number
   }[]
-  createdAt: Date
+  createdAt: Timestamp
   maxLtv: number
 }
 
@@ -113,7 +114,7 @@ export type Snapshot = {
     rebasingYield: number | null
     rebasingYieldApr: number | null
   }
-  timestamp: Date
+  timestamp: Timestamp
   maxLtv: number
 }
 
@@ -121,15 +122,15 @@ export type Snapshot = {
 export type UserMarket = {
   name: string
   controller: Address
-  snapshotFirst: Date
-  snapshotLast: Date
+  snapshotFirst: Timestamp
+  snapshotLast: Timestamp
 }
 
 export type UserLendingPosition = {
   marketName: string
   vaultAddress: Address
-  firstDeposit: Date
-  lastActivity: Date
+  firstDeposit: Timestamp
+  lastActivity: Timestamp
   currentShares: number
   currentSharesInGauge: number
   boostMultiplier: number
@@ -154,7 +155,7 @@ export type UserMarketStats = {
   collateralUp: number
   oraclePrice: number
   blockNumber: number
-  timestamp: Date
+  timestamp: Timestamp
 }
 
 export type UserMarketEarnings = {
@@ -189,8 +190,8 @@ export type UserMarketSnapshots = UserMarketStats[]
 
 export type MarketUser = {
   user: string
-  first: Date
-  last: Date
+  first: Timestamp
+  last: Timestamp
   debt: number
   health: number
   healthFull: number
@@ -216,7 +217,7 @@ export type UserCollateralEvents = {
   totalBorrowed: number
   totalBorrowedPrecise: string
   events: {
-    timestamp: Date
+    timestamp: Timestamp
     txHash: Address
     type: 'Borrow' | 'Deposit'
     user: Address

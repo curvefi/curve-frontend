@@ -17,7 +17,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { objectKeys } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-const testCases = objectKeys(LOAN_TEST_MARKETS).map(type => oneLoanTestMarket(type, market => !market.hasLeverage))
+const testCases = objectKeys(LOAN_TEST_MARKETS).map(type =>
+  oneLoanTestMarket(type, market => !market.hasLeverageManagement),
+)
 
 describe('Collateral forms', () => {
   testCases.forEach(

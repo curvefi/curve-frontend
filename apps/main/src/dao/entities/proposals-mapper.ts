@@ -40,7 +40,7 @@ const getProposalStatus = (
 const parseProposalData = (proposal: Proposal) => {
   const quorumVeCrv = proposal.quorum * proposal.totalSupply
   const currentQuorumPercentage = (proposal.votesFor / proposal.totalSupply) * 100
-  const timestamp = proposal.timestamp.getTime() / 1000
+  const timestamp = new Date(proposal.timestamp).getTime() / 1000
 
   const status = getProposalStatus(timestamp, quorumVeCrv, proposal.votesFor, proposal.votesAgainst, proposal.support)
 

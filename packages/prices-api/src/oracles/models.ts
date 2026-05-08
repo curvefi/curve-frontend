@@ -1,5 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { Timestamp } from '../timestamp'
 
 type Oracle = {
   chain: Chain
@@ -10,7 +11,7 @@ type Oracle = {
     hashParent: Address
     stateRoot: Address
     blockNumber: number
-    timestamp: Date
+    timestamp: Timestamp
   }
 }
 

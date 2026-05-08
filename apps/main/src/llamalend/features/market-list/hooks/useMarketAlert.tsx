@@ -8,9 +8,9 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 export const useMarketAlert = <ChainId extends IChainId>(
   rChainId: ChainId,
   controllerAddress: Address | undefined,
-  marketType: LlamaMarketType,
+  marketType: LlamaMarketType | undefined,
 ) =>
   useMemo(
-    () => controllerAddress && MARKETS_ALERTS[marketType][rChainId]?.[getAddress(controllerAddress)],
+    () => controllerAddress && marketType && MARKETS_ALERTS[marketType][rChainId]?.[getAddress(controllerAddress)],
     [rChainId, controllerAddress, marketType],
   )

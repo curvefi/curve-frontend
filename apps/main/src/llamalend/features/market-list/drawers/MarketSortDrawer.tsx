@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react'
-import { Button, MenuItem } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { CaretSortIcon } from '@ui-kit/shared/icons/CaretSort'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
@@ -22,7 +23,7 @@ type Props = {
 }
 
 export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
-  const [open, openDrawer, closeDrawer] = useSwitch(false)
+  const [open, , closeDrawer, toggleDrawer] = useSwitch(false)
   const sortOptions = useLlamaMarketSortOptions()
   const menuRef = useRef<HTMLLIElement | null>(null)
 
@@ -40,15 +41,13 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
     <SwipeableDrawer
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
       button={
-        <Button
-          variant="outlined"
-          size="small"
-          fullWidth
-          onClick={openDrawer}
+        <SelectableChip
+          size="medium"
+          selected={open}
+          icon={<CaretSortIcon />}
+          toggle={toggleDrawer}
           data-testid="btn-drawer-sort-lamalend-markets"
-        >
-          {t`Sort`} <CaretSortIcon sx={{ marginLeft: Spacing.sm }} />
-        </Button>
+        />
       }
       open={open}
       setOpen={closeDrawer}

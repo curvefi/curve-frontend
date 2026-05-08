@@ -86,9 +86,12 @@ export const validateLeverageSupported = (
   })
 }
 
-export const validateLeverageValuesSupported = (marketId: string | null | undefined) => {
+export const validateLeverageValuesSupported = (
+  marketId: LlamaMarketTemplate | string | null | undefined,
+  required = true,
+) => {
   const market = tryGetLlamaMarket(marketId)
-  skipWhen(!market, () => {
+  skipWhen(!market || !required, () => {
     test('marketId', 'Market does not support leverage values', () => {
       enforce(market && hasLeverageValue(market)).isTruthy()
     })
@@ -120,9 +123,9 @@ export const validateMaxBorrowed = (
       enforce(maxBorrowed).isDecimal()
     })
   })
-  skipWhen(userBorrowed == null || maxBorrowed == null, () => {
+  skipWhen(maxBorrowed == null, () => {
     test('userBorrowed', `The maximum ${label} is ${maxBorrowed}`, () => {
-      enforce(userBorrowed).lessThanOrEquals(maxBorrowed)
+      enforce(userBorrowed ?? '0').lessThanOrEquals(maxBorrowed)
     })
   })
 }

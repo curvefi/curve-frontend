@@ -50,6 +50,9 @@ export const useReleaseChannel = () =>
     oldKey: 'beta',
   })
 
+export const useDisableZapV2 = () => useLocalStorage('disableZapV2', false)
+export const isZapV2Disabled = () => getFromLocalStorage<boolean>('disableZapV2') === true
+
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
@@ -106,8 +109,6 @@ const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Ba
 }
 
 export const useDismissAaveBanner = () => useDismissBanner('aave-v2-frozen-avalanche-polygon')
-
-export const useDismissFastBridgeBanner = () => useDismissBanner('fast-bridge-paused', 'Daily')
 
 export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
 

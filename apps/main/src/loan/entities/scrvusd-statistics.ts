@@ -31,16 +31,12 @@ const VAULT_ABI = [
  * If a provider is provided, the data is fetched from the vault contract directly.
  * That provides more accurate data and works even if our servers are down.
  */
-async function _fetchSavingsStatistics(): Promise<Statistics> {
+async function _fetchSavingsStatistics(): Promise<Omit<Statistics, 'lastUpdated' | 'lastUpdatedBlock'>> {
   const { provider } = useWallet.getState()
 
   if (provider) {
     const vault = new Contract(SCRVUSD_VAULT_ADDRESS, VAULT_ABI, provider)
-    const [profitUnlockingRate, supply, block] = await Promise.all([
-      vault.profitUnlockingRate(),
-      vault.totalSupply(),
-      provider.getBlock('latest'),
-    ])
+    const [profitUnlockingRate, supply] = await Promise.all([vault.profitUnlockingRate(), vault.totalSupply()])
 
     const profitUnlockingRateNum = Number(profitUnlockingRate)
     const supplyNum = Number(supply)
@@ -48,8 +44,6 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
     const apy = (1 + apr / 100 / 365.25) ** 365.25 - 1
 
     return {
-      lastUpdated: new Date(block?.timestamp ?? 0),
-      lastUpdatedBlock: block?.number ?? 0,
       apyProjected: apy * 100,
       supply: weiToEther(supplyNum),
     }

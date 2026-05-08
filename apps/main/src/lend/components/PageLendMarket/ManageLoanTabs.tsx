@@ -11,10 +11,10 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
+import { useLoanImplementationKey, useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -142,18 +142,20 @@ const LendManageSoftLiquidationMenu = [
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
-export const ManageLoanTabs = ({
-  position: {
-    liquidationAlert: { softLiquidation, hardLiquidation },
-  },
-  ...pageProps
-}: ManageLoanProps & { position: BorrowPositionDetailsProps }) => {
-  const shouldUseSoftLiquidation = useManageSoftLiquidation() && (softLiquidation || hardLiquidation)
+export const ManageLoanTabs = (params: ManageLoanProps) => {
+  const status = useLiquidationStatus({
+    chainId: params.rChainId,
+    marketId: params.rOwmId,
+    userAddress: params.userAddress,
+  })
+  const shouldUseSoftLiquidation =
+    useManageSoftLiquidation() && status.data && ['softLiquidation', 'hardLiquidation'].includes(status.data)
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
     ? LendManageSoftLiquidationMenu
     : shouldUseManageLoanMuiForm
       ? LendManageNewMenu
       : LendManageLegacyMenu
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu === LendManageLegacyMenu} />
+  const key = useLoanImplementationKey()
+  return <FormTabs key={key} params={params} menu={menu} shouldWrap={menu === LendManageLegacyMenu} />
 }

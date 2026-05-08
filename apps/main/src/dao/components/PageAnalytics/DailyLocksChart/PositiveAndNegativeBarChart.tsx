@@ -25,7 +25,7 @@ export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndN
       <XAxis
         dataKey="day"
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickFormatter={(value: string) => formatDate(new Date(value))}
+        tickFormatter={(value: string) => formatDate(value)}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         minTickGap={20}

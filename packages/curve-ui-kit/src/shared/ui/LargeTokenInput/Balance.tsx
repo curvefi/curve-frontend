@@ -1,5 +1,5 @@
 import type { SvgIcon } from '@mui/material'
-import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -36,6 +36,8 @@ export type Props<T> = {
   buttonTestId?: string
   /** Callback function when balance is clicked (if enabled). */
   onClick?: () => void
+  /** Whether the balance should be displayed inline */
+  inline?: boolean
 }
 
 export const Balance = <T extends Amount>({
@@ -49,6 +51,7 @@ export const Balance = <T extends Amount>({
   onClick,
   disabled = false,
   buttonTestId,
+  inline = false,
 }: Props<T>) => (
   <WithWrapper
     Wrapper={BalanceButton}
@@ -58,9 +61,9 @@ export const Balance = <T extends Amount>({
     testId={buttonTestId}
   >
     <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
-      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+      <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
         {typeof Prefix === 'string' ? (
-          <Typography variant="bodyXsRegular" color="textTertiary">
+          <Typography variant="bodyXsRegular" color="textTertiary" {...(inline && { component: 'span' })}>
             {Prefix}
           </Typography>
         ) : (
@@ -74,26 +77,29 @@ export const Balance = <T extends Amount>({
               }}
             />
           )
-        )}
-
-        <BalanceAmount disabled={disabled} loading={loading}>
+        )}{' '}
+        <BalanceAmount disabled={disabled} loading={loading} sx={{ ...(inline && { display: 'inline' }) }}>
           {balance}
-        </BalanceAmount>
-
+        </BalanceAmount>{' '}
         <Typography
           variant="highlightXs"
           color={disabled ? 'textDisabled' : 'textPrimary'}
           sx={{ ...VERTICAL_CENTER_TEXT }}
+          {...(inline && { component: 'span' })}
         >
           {symbol}
-        </Typography>
-
+        </Typography>{' '}
         {notionalValueUsd != null && notionalValueUsd !== 0 && !loading && (
-          <Typography variant="bodyXsRegular" color="textTertiary" sx={{ ...VERTICAL_CENTER_TEXT }}>
+          <Typography
+            variant="bodyXsRegular"
+            color="textTertiary"
+            sx={{ ...VERTICAL_CENTER_TEXT }}
+            {...(inline && { component: 'span' })}
+          >
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
           </Typography>
-        )}
-      </Stack>
+        )}{' '}
+      </Box>
     </Tooltip>
   </WithWrapper>
 )

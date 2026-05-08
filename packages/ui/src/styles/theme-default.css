@@ -130,17 +130,17 @@ body.theme-default {
   --button_filled-hover-contrast--background-color: var(--primary-300);
   --button_outlined--color: var(--text-400);
   --button_outlined--border-color: var(--border-400);
-  --button_outlined--hover--color: var(--primary-400);
+  --button_outlined--hover--color: var(--link-400);
   --button_outlined--hover--background-color: var(--primary-400a10);
-  --button_outlined_darkbg--hover--color: var(--primary-400);
+  --button_outlined_darkbg--hover--color: var(--link-400);
   --button_outlined_darkbg--hover--background-color: var(--primary-400a10);
-  --button_icon--hover--color: var(--primary-400);
+  --button_icon--hover--color: var(--link-400);
   --button_icon--hover--background-color: var(--primary-400a10);
-  --button_text--color: var(--primary-400);
+  --button_text--color: var(--link-400);
   --button-text-contrast--color: var(--primary-700);
-  --button_text--hover--color: var(--primary-400);
-  --button_text_darkbg--hover--color: var(--primary-400);
-  --button_text_darkbg--color: var(--primary-400);
+  --button_text--hover--color: var(--link-400);
+  --button_text_darkbg--hover--color: var(--link-400);
+  --button_text_darkbg--color: var(--link-400);
   --box_action--button--text-transform: capitalize;
 
   /*  Health Mode  */

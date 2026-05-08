@@ -5,11 +5,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 /** Returns whether the planned repay fully closes the loan, whether repayment comes from debt token, wallet collateral, or position collateral. */
-export const {
-  useQuery: useRepayIsFull,
-  invalidate: invalidateRepayIsFull,
-  refetchQuery: refetchRepayIsFull,
-} = queryFactory({
+export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,6 +13,7 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -25,6 +22,7 @@ export const {
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -34,12 +32,14 @@ export const {
     userCollateral,
     userBorrowed,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     switch (type) {

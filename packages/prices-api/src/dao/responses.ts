@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { TimestampResponse } from '../timestamp'
 
 export type GetVotesOverviewResponse = {
   data: {
@@ -12,7 +13,7 @@ export type GetVotesOverviewResponse = {
 
 export type GetLocksDailyResponse = {
   locks: {
-    day: string
+    day: TimestampResponse
     amount: string
   }[]
 }
@@ -31,7 +32,7 @@ export type GetSupplyResponse = {
       },
     ]
     block_number: number
-    dt: string
+    dt: TimestampResponse
     transaction_hash: Address
   }[]
 }
@@ -39,15 +40,15 @@ export type GetSupplyResponse = {
 export type GetUserLocksResponse = {
   locks: {
     amount: string
-    unlock_time: number
+    unlock_time: TimestampResponse
     lock_type: string
     locked_balance: string
-    dt: string
+    dt: TimestampResponse
     transaction_hash: string
   }[]
 }
 
-type Locker = { user: Address; locked: string; weight: string; weight_ratio: string; unlock_time: number }
+type Locker = { user: Address; locked: string; weight: string; weight_ratio: string; unlock_time: TimestampResponse }
 
 export type GetLockersResponse = {
   locks: Locker[]

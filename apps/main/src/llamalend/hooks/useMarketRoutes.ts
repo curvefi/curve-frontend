@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useState } from 'react'
+import { useCallback, useEffect, useEffectEvent, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
 import { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
@@ -38,6 +38,7 @@ export function useMarketRoutes({
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
+  const [isTransitioning, startTransition] = useTransition()
 
   const { data, refetch, isLoading, error } = useRouterApi(
     {
@@ -59,7 +60,7 @@ export function useMarketRoutes({
     data?.[0]
 
   const onChangeEffect = useEffectEvent(onChangeProp)
-  useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
+  useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
   const onChange = useCallback(
     async (option: RouteResponse | undefined) => {
@@ -70,6 +71,14 @@ export function useMarketRoutes({
   )
 
   return enabled
-    ? { data, isLoading, error, selectedRoute, onChange, onRefresh: refetch, tokenOut: { ...tokenOut, usdRate } }
+    ? {
+        data,
+        isLoading: isLoading || isTransitioning,
+        error,
+        selectedRoute,
+        onChange,
+        onRefresh: refetch,
+        tokenOut: { ...tokenOut, usdRate },
+      }
     : undefined
 }

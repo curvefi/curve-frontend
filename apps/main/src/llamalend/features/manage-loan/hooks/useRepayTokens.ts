@@ -64,8 +64,8 @@ export const useRepayTokens = ({
 }) => {
   const [token, onToken] = useState<RepayTokenOption | undefined>()
   const tokens = useMemo(() => getRepayTokenOptions({ market, networkId }), [market, networkId])
-  const leverageEnabled = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
-  const field = leverageEnabled === true ? 'stateCollateral' : leverageEnabled === false ? 'userBorrowed' : undefined
+  const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
+  const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find(t => t.field === field)
   useEffect(() => {
     // override the user's choice when we get to know they have a (non)-leveraged position

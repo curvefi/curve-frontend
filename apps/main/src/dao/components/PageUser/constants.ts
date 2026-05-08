@@ -1,7 +1,7 @@
 import type { Column } from '@/dao/components/PaginatedTable'
-import type { UserGaugeVoteFormatted } from '@/dao/entities/user-gauge-votes'
 import type { UserLockFormatted } from '@/dao/entities/user-locks'
 import type { UserProposalVoteFormatted } from '@/dao/entities/user-proposal-votes'
+import type { UserGaugeVote } from '@curvefi/prices-api/gauge/models'
 
 export const LOCKS_LABELS: Column<UserLockFormatted>[] = [
   { key: 'lockType', label: 'Lock Type', disabled: true },
@@ -19,7 +19,7 @@ export const VOTES_LABELS: Column<UserProposalVoteFormatted>[] = [
   { key: 'voteClose', label: 'End' },
 ]
 
-export const GAUGE_VOTES_LABELS: Column<UserGaugeVoteFormatted>[] = [
+export const GAUGE_VOTES_LABELS: Column<UserGaugeVote>[] = [
   { key: 'gaugeName', label: 'Gauge Name', disabled: true },
   { key: 'timestamp', label: 'Date' },
   { key: 'weight', label: 'Weight' },

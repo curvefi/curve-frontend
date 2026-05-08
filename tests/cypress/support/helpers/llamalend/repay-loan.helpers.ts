@@ -9,13 +9,13 @@ const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="te
 export function selectRepayToken({
   symbol,
   tokenAddress,
-  hasLeverage,
+  hasLeverageManagement,
 }: {
   symbol: string
   tokenAddress: string
-  hasLeverage: boolean
+  hasLeverageManagement: boolean
 }) {
-  if (!hasLeverage) {
+  if (!hasLeverageManagement) {
     return cy.get(`[data-testid="token-icon-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT).should('be.visible')
   }
   cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()

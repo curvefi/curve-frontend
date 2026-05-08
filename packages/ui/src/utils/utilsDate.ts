@@ -77,28 +77,3 @@ export const formatTime = (timestamp: number | Date | string) =>
  */
 export const formatDateFromTimestamp = (unixTime: number, variant: 'short' | 'long' = 'short') =>
   formatDate(new Date(unixTime * 1000), variant)
-
-/**
- * Converts a Unix timestamp to a locale-adjusted timestamp by accounting for the local timezone offset.
- * This function subtracts the timezone offset (in seconds) from the Unix timestamp.
- *
- * @param unixTime - The Unix timestamp in seconds to be converted
- * @returns The adjusted timestamp in seconds, accounting for the local timezone offset
- */
-export const convertToLocaleTimestamp = (unixTime: number) => unixTime - new Date().getTimezoneOffset() * 60
-
-/**
- * Formats a Unix timestamp into a human-readable date string adjusted for the local timezone.
- * @param unixTime - The Unix timestamp in seconds
- * @returns A formatted date string adjusted for the local timezone
- */
-export const formatLocaleDateFromTimestamp = (unixTime: number) =>
-  formatDateFromTimestamp(convertToLocaleTimestamp(unixTime))
-
-/**
- * Formats a Unix timestamp in milliseconds into a human-readable date string adjusted for the local timezone.
- *
- * @param unixTimeMs - The Unix timestamp in milliseconds. If wished this can be easily expanded to accept Date or string types.
- * @returns A formatted date string adjusted for the local timezone
- */
-export const formatLocaleDate = (unixTimeMs: number) => formatDate(unixTimeMs - new Date().getTimezoneOffset() * 60000)

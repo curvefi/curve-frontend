@@ -306,6 +306,16 @@ const eurtPoolsAlert = (): PoolAlert => ({
   ),
 })
 
+// recovery pool following CRV-long LlamaLend market bad debt on 10/10/2025
+const crvLongMarketRecoveryPoolAlert = (): PoolAlert => ({
+  alertType: 'info',
+  banner: {
+    title: t`CRV LLAMMA Recovery Pool`,
+    subtitle: t` A dedicated market for absorbing distressed CRV long positions. Liquidity deposited here helps unwind liquidations across LLAMMA bands and restore healthy market conditions. Deposits may be exposed to distressed collateral during recovery.`,
+    learnMoreUrl: 'https://news.curve.finance/building-recovery-in-public-and-building-stronger-systems-next/',
+  },
+})
+
 const Alerts: Record<string, Record<string, PoolAlert>> = {
   ethereum: {
     '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
@@ -335,6 +345,7 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0x3cfaa1596777cad9f5004f9a0c443d912e262243': eurtPoolsAlert(),
     '0xfd5db7463a3ab53fd211b4af195c5bccc1a03890': eurtPoolsAlert(),
     '0xb9446c4ef5ebe66268da6700d26f96273de3d571': eurtPoolsAlert(),
+    '0x516c3ecfe45f0820653e08dd7c93633d71b93cb5': crvLongMarketRecoveryPoolAlert(),
   },
 
   arbitrum: {

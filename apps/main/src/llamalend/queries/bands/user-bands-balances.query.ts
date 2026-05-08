@@ -2,9 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { getUserPositionImplementation, normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
+import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
@@ -41,12 +39,3 @@ export const { useQuery: useUserBandsBalances } = queryFactory({
   category: 'llamalend.user',
   validationSuite: userBandsBalancesValidationSuite,
 })
-
-/**
- * Prefix-based invalidation because the query key includes extra params (loanExists, liquidationBand)
- * that aren't available at invalidation time. User band balances can change even when those params stay the same.
- */
-export const invalidateUserBandsBalances = ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
-  queryClient.invalidateQueries({
-    queryKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), QUERY_KEY],
-  })

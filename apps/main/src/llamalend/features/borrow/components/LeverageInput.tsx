@@ -16,7 +16,7 @@ export const LeverageInput = ({
   maxLeverage,
 }: {
   checked: boolean | undefined
-  leverage: QueryProp<Decimal>
+  leverage: QueryProp<Decimal | null>
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
   maxLeverage: Decimal | undefined
 }) => (

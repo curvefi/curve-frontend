@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const NewTableFiltersHeader = ({ title, rightChildren }: { title: string; rightChildren?: ReactNode }) => (
+export const TableFiltersHeader = ({ title, rightChildren }: { title: string; rightChildren?: ReactNode }) => (
   <Stack
     direction="row"
     justifyContent="space-between"
@@ -15,7 +15,9 @@ export const NewTableFiltersHeader = ({ title, rightChildren }: { title: string;
     // cannot use Stack + gap because the background color need to be this one and not the default
     paddingBlockEnd={Spacing.xs}
   >
-    <Typography variant="headingSBold">{title}</Typography>
+    <Typography variant="headingSBold" color="textSecondary" sx={{ paddingInlineStart: Spacing.sm }}>
+      {title}
+    </Typography>
     {rightChildren}
   </Stack>
 )

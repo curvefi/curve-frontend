@@ -6,11 +6,11 @@ import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
+import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
+import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
@@ -58,7 +58,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
 
   const resultCount = table.getFilteredRowModel().rows.length
   return (
-    <DataTable
+    <LegacyDataTable
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
@@ -69,9 +69,9 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >
-      <TableFilters<PoolColumnId>
+      <LegacyTableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        leftChildren={<TableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
+        leftChildren={<LegacyTableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
         loading={isLoading}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
@@ -91,6 +91,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           />
         }
       />
-    </DataTable>
+    </LegacyDataTable>
   )
 }

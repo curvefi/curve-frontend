@@ -14,7 +14,6 @@ import Infinifi from './Infinifi.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
-import Mellow from './Mellow.json'
 import Noon from './Noon.json'
 import Raac from './Raac.json'
 import Re from './Re.json'
@@ -28,7 +27,6 @@ import Yuzu from './Yuzu.json'
 export {
   Ethena,
   Etherfi,
-  Mellow,
   Symbiotic,
   Fraxtal,
   Lombard,

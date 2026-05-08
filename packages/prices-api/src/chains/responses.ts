@@ -1,5 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import type { Chain } from '..'
+import type { TimestampResponse } from '../timestamp'
 import type { ActivityType } from './models'
 
 export type GetSupportedChainsResponse = {
@@ -23,7 +24,7 @@ export type GetTransactionsResponse = {
     transactions: {
       type: ActivityType
       transactions: number
-      timestamp: string
+      timestamp: TimestampResponse
     }[]
   }[]
 }
@@ -34,7 +35,7 @@ export type GetUsersResponse = {
     users: {
       type: ActivityType
       users: number
-      timestamp: string
+      timestamp: TimestampResponse
     }[]
   }[]
 }

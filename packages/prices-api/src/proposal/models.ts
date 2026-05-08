@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { Timestamp } from '../timestamp'
 
 export const proposalTypes = ['ownership', 'parameter'] as const
 export type ProposalType = (typeof proposalTypes)[number]
@@ -7,7 +8,7 @@ export const proposalStatusses = ['all', 'active', 'denied', 'passed', 'executed
 export type ProposalStatus = (typeof proposalStatusses)[number]
 
 export type Proposal = {
-  timestamp: Date
+  timestamp: Timestamp
   id: number
   type: ProposalType
   metadata: string
@@ -22,7 +23,7 @@ export type Proposal = {
   votesAgainst: number // Voting power in veCRV.
   executed: boolean
   executionTx: Address | null
-  executionDate: Date | null
+  executionDate: Timestamp | null
   totalSupply: number // Voting power in veCRV.
   txCreation: Address
 }

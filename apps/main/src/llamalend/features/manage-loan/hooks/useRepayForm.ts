@@ -15,7 +15,7 @@ import {
   isRepayLeveraged,
   type RepayFormFields,
 } from '@/llamalend/queries/repay/repay-query.helpers'
-import { invalidateOrRefetchRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
+import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -28,7 +28,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors, resetForm, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -81,19 +81,24 @@ const useRepayParams = ({
     ),
   )
 
+const userDefaultValues = {
+  stateCollateral: undefined,
+  userCollateral: undefined,
+  userBorrowed: undefined,
+  routeId: undefined,
+}
+
+const defaultValues = {
+  ...userDefaultValues,
+  maxStateCollateral: undefined,
+  maxCollateral: undefined,
+  maxBorrowed: undefined,
+  isFull: false,
+  slippage: SLIPPAGE_PRESETS.STABLE,
+}
 const formOptions = {
   ...formDefaultOptions,
-  defaultValues: {
-    stateCollateral: undefined,
-    userCollateral: undefined,
-    userBorrowed: undefined,
-    maxStateCollateral: undefined,
-    maxCollateral: undefined,
-    maxBorrowed: undefined,
-    routeId: undefined,
-    isFull: false,
-    slippage: SLIPPAGE_PRESETS.STABLE,
-  },
+  defaultValues,
 } as const
 
 const isRepayRouteRequired = (
@@ -133,7 +138,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   } = useRepayMutation({
     network,
     marketId,
-    onReset: form.reset,
+    onReset: () => resetForm(form, userDefaultValues),
     userAddress,
   })
 
@@ -171,7 +176,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
-        await invalidateOrRefetchRepayRouteQueries(route, { ...params, routeId: route?.id })
+        await invalidateRepayRouteQueries(route, params)
       },
     }),
     formErrors: useMemo(

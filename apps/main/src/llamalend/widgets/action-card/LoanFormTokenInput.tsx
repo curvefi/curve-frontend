@@ -53,7 +53,6 @@ export type LoanFormTokenInputProps<
    * Called after the form value is set.
    */
   onValueChange?: (value: Decimal | undefined) => void
-  onMessageNumberClick?: (value: Decimal | undefined) => void
 }
 
 /**
@@ -77,7 +76,6 @@ export const LoanFormTokenInput = <
   tokenSelector,
   hideBalance,
   onValueChange,
-  onMessageNumberClick,
 }: LoanFormTokenInputProps<TFieldValues, TFieldName, TMaxFieldName>) => {
   const { address: userAddress } = useConnection()
   const {
@@ -146,9 +144,9 @@ export const LoanFormTokenInput = <
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? (
-        <HelperMessage message={errorMessage} onNumberClick={onMessageNumberClick ?? onBalance} isError />
+        <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />
       ) : (
-        message && <HelperMessage onNumberClick={onMessageNumberClick ?? onBalance} message={message} />
+        message && <HelperMessage onNumberClick={onBalance} message={message} />
       )}
     </LargeTokenInput>
   )

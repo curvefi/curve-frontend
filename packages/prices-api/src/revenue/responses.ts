@@ -1,4 +1,5 @@
 import type { Address } from '@primitives/address.utils'
+import type { TimestampResponse } from '../timestamp'
 
 export type GetCushionsResponse = {
   data: {
@@ -28,7 +29,7 @@ export type GetCrvUsdWeeklyResponse = {
     controller: Address
     collateral: string
     fees_usd: number
-    timestamp: string
+    timestamp: TimestampResponse
   }[]
 }
 
@@ -36,13 +37,13 @@ export type GetPoolsWeeklyResponse = {
   fees: {
     chain: string
     fees_usd: number
-    timestamp: string
+    timestamp: TimestampResponse
   }[]
 }
 
 export type GetDistributionsResponse = {
   distributions: {
-    timestamp: string
+    timestamp: TimestampResponse
     fees_usd: number
   }[]
 }
@@ -62,7 +63,7 @@ export type GetCowSwapSettlementsResponse = {
     epoch: number
     tx_hash: Address
     block_number: number
-    dt: string
+    dt: TimestampResponse
   }[]
 }
 

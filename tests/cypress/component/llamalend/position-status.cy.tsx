@@ -1,81 +1,124 @@
-import { BorrowPositionDetails, type BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import { zeroAddress } from 'viem'
+import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
+import {
+  getMarketLiquidationBandKey,
+  getMarketOraclePriceBandKey,
+  getMarketOraclePriceKey,
+} from '@/llamalend/queries/market'
+import { getUserCurrentLeverageKey } from '@/llamalend/queries/user'
+import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
+import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
+import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
+import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
+import { useFakeMarket } from '@ui-kit/lib/queries/useFakeMarket.test'
+import type { Range } from '@ui-kit/types/util'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const ALERT_TEST_ID = '[data-testid="borrow-position-status-alert"]'
 
-const baseProps: BorrowPositionDetailsProps = {
-  liquidationAlert: { softLiquidation: false, hardLiquidation: false, status: 'healthy' },
-  health: { value: 75, loading: false },
-  liquidationRange: { value: [1800, 2200], rangeToLiquidation: 15, loading: false },
-  bandRange: { value: [10, 15], loading: false },
-  leverage: { value: 1, loading: false },
-  collateralValue: {
-    totalValue: 5000,
-    collateral: { value: 1.5, usdRate: 3200, symbol: 'WETH' },
-    borrow: { value: 200, usdRate: 1, symbol: 'crvUSD' },
-    loading: false,
-  },
-  totalDebt: { value: 3000, loading: false },
+const baseProps = {
+  params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
+  healthNotFull: 1.56 as number | null,
+  healthFull: 96,
+  userPrices: [`0.47`, `0.69`] as Range<Decimal>,
+  leverage: 1,
+  totalDebt: 1,
+  collateral: 1.8,
+  collateralSymbol: 'sUSDe',
+  collateralUsdPrice: 0.999,
+  collateralAddress: '0x9d39a5de30e57443bff2a8307a4256c8797a3497' as Address,
+  borrow: 0,
+  borrowSymbol: 'crvUSD',
+  borrowUsdPrice: 1,
+  borrowAddress: CRVUSD_ADDRESS,
+  marketLiquidationBand: null as number | null,
+  oraclePrice: -5,
+  userBands: [69, 118] as Range<number>,
 }
 
-const mountPositionDetails = (props: BorrowPositionDetailsProps) =>
-  cy.mount(
-    <ComponentTestWrapper>
-      <BorrowPositionDetails {...props} />
-    </ComponentTestWrapper>,
-  )
+const PositionDetailsTest = ({
+  healthNotFull,
+  healthFull,
+  collateral,
+  collateralSymbol,
+  collateralAddress,
+  collateralUsdPrice,
+  borrow,
+  borrowSymbol,
+  borrowUsdPrice,
+  borrowAddress,
+  oraclePrice,
+  userPrices,
+  userBands,
+  totalDebt,
+  marketLiquidationBand,
+  leverage,
+  params,
+}: typeof baseProps) => (
+  <ComponentTestWrapper>
+    <TestQueryProvider
+      data={[
+        [getMarketOraclePriceBandKey(params), oraclePrice],
+        [getUserCurrentLeverageKey(params), `${leverage}`],
+        [getUserBandsKey(params), userBands],
+        [getUserPricesKey(params), userPrices],
+        [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
+        [getUserHealthKey({ ...params, isFull: false }), healthNotFull == null ? null : `${healthNotFull}`],
+        [getMarketOraclePriceKey(params), `${oraclePrice}`],
+        [getMarketLiquidationBandKey(params), marketLiquidationBand],
+        [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
+        [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
+        [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+      ]}
+    >
+      <BorrowPositionDetails
+        market={useFakeMarket({ collateralAddress, collateralSymbol, borrowSymbol, borrowAddress })}
+        params={params}
+      />
+    </TestQueryProvider>
+  </ComponentTestWrapper>
+)
 
-const toLiquidationAlert = (status: UserPositionStatusKey | undefined) => ({
-  softLiquidation: status === 'softLiquidation',
-  hardLiquidation: status === 'hardLiquidation',
-  status,
-})
-
-const withSymbols = (
-  status: UserPositionStatusKey | undefined,
-  { collateralSymbol = 'WETH', borrowSymbol = 'crvUSD' }: { collateralSymbol?: string; borrowSymbol?: string } = {},
-): BorrowPositionDetailsProps => ({
-  ...baseProps,
-  liquidationAlert: toLiquidationAlert(status),
-  collateralValue: {
-    ...baseProps.collateralValue,
-    collateral: { ...baseProps.collateralValue.collateral, symbol: collateralSymbol },
-    borrow: { ...baseProps.collateralValue.borrow, symbol: borrowSymbol },
-  },
-})
-
-type StatusCase =
-  | { status: UserPositionStatusKey; hasAlert: false }
-  | { status: UserPositionStatusKey; hasAlert: true; severity: 'warning' | 'error'; title: string }
+type StatusCase = {
+  status: UserPositionStatusKey
+  severity?: 'warning' | 'error'
+  title?: string
+  overrides?: Partial<typeof baseProps>
+}
 
 const statusCases: StatusCase[] = [
-  { status: 'healthy', hasAlert: false },
+  { status: 'healthy' },
   {
     status: 'softLiquidation',
-    hasAlert: true,
     severity: 'warning',
     title: 'Liquidation protection active',
+    overrides: { healthFull: 30, borrow: 1.5 },
   },
   {
     status: 'hardLiquidation',
-    hasAlert: true,
     severity: 'error',
     title: 'Position can be hard-liquidated',
+    overrides: { healthFull: 0, healthNotFull: -2, collateral: 0, borrow: 1 },
   },
   {
     status: 'fullyConverted',
-    hasAlert: true,
     severity: 'warning',
     title: 'Fully converted to crvUSD',
+    overrides: { healthFull: 0, borrow: 1.8, collateral: 0, userBands: [-10, -6] },
   },
   {
     status: 'incompleteConversion',
-    hasAlert: true,
     severity: 'error',
     title: 'Position at risk - incomplete conversion',
+    overrides: { healthFull: 3, borrow: 1.5, collateral: 0.3, userBands: [-10, -6] },
   },
 ]
 
@@ -154,15 +197,16 @@ describe('Position status logic', () => {
 
 describe('BorrowPositionDetails status alerts', () => {
   it('hides market alert when status is undefined', () => {
-    mountPositionDetails(withSymbols(undefined))
+    cy.mount(<PositionDetailsTest {...baseProps} healthNotFull={null} />)
     cy.get(ALERT_TEST_ID).should('not.exist')
   })
 
-  statusCases.forEach(testCase => {
-    it(`${testCase.hasAlert ? 'renders' : 'hides'} market alert for ${testCase.status} status`, () => {
-      mountPositionDetails(withSymbols(testCase.status))
+  statusCases.forEach(({ overrides, severity, status, title }) => {
+    const hasAlert = !!severity
+    it(`${hasAlert ? 'renders' : 'hides'} market alert for ${status} status`, () => {
+      cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)
 
-      if (!testCase.hasAlert) {
+      if (!hasAlert) {
         cy.get(ALERT_TEST_ID).should('not.exist')
         return
       }
@@ -170,12 +214,12 @@ describe('BorrowPositionDetails status alerts', () => {
       cy.get(ALERT_TEST_ID)
         .should('be.visible')
         .within(() => {
-          cy.contains(testCase.title).should('be.visible')
+          cy.contains(title ?? 'no title expected').should('be.visible')
           cy.get('p').invoke('text').should('match', /\S/)
         })
 
       cy.get(ALERT_TEST_ID).invoke('text').should('not.include', 'undefined')
-      cy.get(ALERT_TEST_ID).invoke('attr', 'class').should('match', expectedSeverityClass(testCase.severity))
+      cy.get(ALERT_TEST_ID).invoke('attr', 'class').should('match', expectedSeverityClass(severity))
     })
   })
 
@@ -187,7 +231,8 @@ describe('BorrowPositionDetails status alerts', () => {
 
   symbolInterpolationCases.forEach(({ status, expectedTokens, unexpectedTokens }) => {
     it(`renders symbol-interpolated description for ${status}`, () => {
-      mountPositionDetails(withSymbols(status, { collateralSymbol: 'WBTC', borrowSymbol: 'USDC' }))
+      const overrides = statusCases.find(s => s.status === status)?.overrides
+      cy.mount(<PositionDetailsTest {...baseProps} {...overrides} collateralSymbol="WBTC" borrowSymbol="USDC" />)
 
       cy.get(ALERT_TEST_ID)
         .should('be.visible')

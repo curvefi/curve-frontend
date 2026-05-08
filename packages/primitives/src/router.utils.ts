@@ -16,8 +16,7 @@ export type RouteStep = {
 
 export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
 
-export type RouteResponse = {
-  id: string
+export type RouterRouteResponse = {
   router: RouteProvider
   amountIn: [Decimal]
   amountOut: [Decimal]
@@ -28,3 +27,4 @@ export type RouteResponse = {
   isStableswapRoute?: boolean
   tx?: TransactionData
 }
+export type RouteResponse = RouterRouteResponse & { id: string }

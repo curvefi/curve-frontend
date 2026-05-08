@@ -7,11 +7,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayPrices,
-  invalidate: invalidateRepayPrices,
-  refetchQuery: refetchRepayPrices,
-} = queryFactory({
+export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -19,6 +15,7 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
     isFull,
   }: RepayParams) =>
@@ -28,6 +25,7 @@ export const {
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
       { isFull },
     ] as const,
@@ -36,6 +34,7 @@ export const {
     stateCollateral,
     userCollateral,
     userBorrowed,
+    slippage,
     routeId,
     userAddress,
     isFull,
@@ -45,6 +44,7 @@ export const {
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     // it looks like all implementations have the same signature, but `args` is typed differently for each

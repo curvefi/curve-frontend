@@ -20,7 +20,7 @@ type MarketAlert = TooltipProps & {
 }
 
 const DEFAULT_DEPRECATE: DeprecatedMarketAlert = { message: t`This market is deprecated.` }
-const DEFAULT_ALERT: MarketAlert = {
+export const DEFAULT_ALERT: MarketAlert = {
   alertType: 'danger',
   isBorrowDisabled: true,
   isDepositDisabled: true,
@@ -212,8 +212,8 @@ export const DEPRECATED_LLAMAS: Record<
       '0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3': DEFAULT_DEPRECATE,
       // CRV-crvUSD
       '0xEdA215b7666936DEd834f76f3fBC6F323295110A': {
-        message: t`This market is deprecated, read the governance post to learn more.`,
-        url: 'https://gov.curve.finance/t/crv-long-llamalend-market-next-steps/11045',
+        message: t`This market is deprecated, read the article to learn more.`,
+        url: 'https://news.curve.finance/building-recovery-in-public-and-building-stronger-systems-next/',
       },
       // UwU-crvUSD
       '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,
@@ -345,4 +345,11 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
     '0x7Adcc491f0B7f9BC12837B8F5Edf0e580d176F1f',
     '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D',
   ],
+}
+/** Solvency thresholds for the llamalend markets to handle deprecation, banner and gate keeping forms */
+export const SOLVENCY_THRESHOLDS = {
+  // Market above this threshold are considered fully solvent
+  solvent: 99.9,
+  low: 90,
+  insolvent: 0,
 }

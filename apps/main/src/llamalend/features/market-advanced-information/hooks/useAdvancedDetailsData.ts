@@ -46,9 +46,9 @@ export const useAdvancedDetailsData = ({
     tokenAddress: borrowToken?.address,
   })
   const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
-    type: marketType,
     blockchainId,
     controllerAddress,
+    marketType,
   })
   const { data: marketUsers, isLoading: marketUsersLoading } = useMarketUsers({
     endpoint,
@@ -88,6 +88,7 @@ export const useAdvancedDetailsData = ({
     availableLiquidity: {
       available: capAndAvailable?.available,
       totalAssets: capAndAvailable?.totalAssets,
+      borrowCap: capAndAvailable?.borrowCap,
       loading: !market || capAndAvailableLoading,
     },
     totalBorrowers: {

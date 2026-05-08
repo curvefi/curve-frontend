@@ -3,7 +3,6 @@ import Grid from '@mui/material/Grid'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useRightFormTabsLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
@@ -64,13 +63,12 @@ export const DetailPageLayout = ({
   testId?: string
 }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
-  const isNewLayout = useRightFormTabsLayout()
   const isMobile = useIsMobile()
   // header ref needed to compute the top position of the sticky forms
   const headerRef = useRef<HTMLDivElement>(null)
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef) ?? []
 
-  const renderHeader = header && (
+  const headerStack = header && (
     <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>
       {header}
     </Stack>
@@ -82,18 +80,16 @@ export const DetailPageLayout = ({
       data-testid={testId ?? 'detail-page-layout'}
       spacing={PAGE_SPACING}
       sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
-      direction={isNewLayout ? 'row-reverse' : 'row'}
+      direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
     >
-      {isMobile && <Grid size={12}>{renderHeader}</Grid>}
+      {isMobile && <Grid size={12}>{headerStack}</Grid>}
       {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
           Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
       {formTabs !== null && (
         <Grid
           size={{ mobile: 12, tablet: 5, desktop: 4 }}
           maxWidth={{ desktop: MaxWidth.actionCard }}
-          sx={{
-            ...(isNewLayout && stickyFormTabsSx(navHeight, pageHeaderHeight)),
-          }}
+          sx={{ ...stickyFormTabsSx(navHeight, pageHeaderHeight) }}
         >
           {formTabs || <FormSkeleton />}
         </Grid>
@@ -101,7 +97,7 @@ export const DetailPageLayout = ({
       <Grid size="grow">
         {/* Additional Stack because no gap between the page header and the children */}
         <Stack>
-          {!isMobile && renderHeader}
+          {!isMobile && headerStack}
           <Stack flexGrow={1} gap={PAGE_SPACING}>
             {children}
           </Stack>

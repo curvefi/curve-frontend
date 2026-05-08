@@ -9,7 +9,6 @@ export const {
   useQuery: useCreateLoanIsApproved,
   fetchQuery: fetchCreateLoanIsApproved,
   invalidate: invalidateCreateLoanIsApproved,
-  refetchQuery: refetchCreateLoanIsApproved,
 } = queryFactory({
   queryKey: ({
     chainId,

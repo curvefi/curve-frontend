@@ -8,11 +8,7 @@ import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
-export const {
-  useQuery: useBorrowMoreHealth,
-  invalidate: invalidateBorrowMoreHealth,
-  refetchQuery: refetchBorrowMoreHealth,
-} = queryFactory({
+export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -22,6 +18,7 @@ export const {
     debt = '0',
     maxDebt,
     leverageEnabled,
+    slippage,
     routeId,
   }: BorrowMoreParams) =>
     [
@@ -32,6 +29,7 @@ export const {
       { debt },
       { maxDebt },
       { leverageEnabled },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -40,6 +38,7 @@ export const {
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
+    slippage,
     routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
@@ -47,6 +46,7 @@ export const {
       userBorrowed,
       debt,
       leverageEnabled,
+      slippage,
       routeId,
     })
     switch (type) {

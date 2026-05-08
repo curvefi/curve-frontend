@@ -3,11 +3,7 @@ import { repayValidationSuite } from '@/llamalend/queries/validation/repay.valid
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayIsAvailable,
-  invalidate: invalidateRepayIsAvailable,
-  refetchQuery: refetchRepayIsAvailable,
-} = queryFactory({
+export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvailable } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,6 +11,7 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
     routeId,
   }: RepayParams) =>
     [
@@ -23,6 +20,7 @@ export const {
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
       { routeId },
     ] as const,
   queryFn: async ({
@@ -32,12 +30,14 @@ export const {
     userCollateral,
     userBorrowed,
     userAddress,
+    slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
+      slippage,
       routeId,
     })
     switch (type) {

@@ -7,11 +7,7 @@ import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/b
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
-export const {
-  useQuery: useCreateLoanPriceImpact,
-  invalidate: invalidateCreateLoanPriceImpact,
-  refetchQuery: refetchCreateLoanPriceImpact,
-} = queryFactory({
+export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateLoanPriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

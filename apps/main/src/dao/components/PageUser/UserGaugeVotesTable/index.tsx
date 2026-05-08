@@ -2,16 +2,13 @@ import lodash from 'lodash'
 import { useMemo } from 'react'
 import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
-import {
-  type UserGaugeVoteFormatted,
-  useUserGaugeVoteQuery,
-  invalidateUserGaugeVoteQuery,
-} from '@/dao/entities/user-gauge-votes'
+import { useUserGaugeVoteQuery, invalidateUserGaugeVoteQuery } from '@/dao/entities/user-gauge-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
+import type { UserGaugeVote } from '@curvefi/prices-api/gauge/models'
 import Box from '@mui/material/Box'
-import { formatLocaleDateFromTimestamp } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber, shortenAddress } from '@ui-kit/utils'
@@ -23,7 +20,7 @@ interface UserGaugeVotesTableProps {
 }
 
 const sortUserGaugeVotes = (
-  userGaugeVotes: UserGaugeVoteFormatted[],
+  userGaugeVotes: UserGaugeVote[],
   sortBy: { key: UserGaugeVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
@@ -44,7 +41,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
 
   return (
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-      <PaginatedTable<UserGaugeVoteFormatted>
+      <PaginatedTable<UserGaugeVote>
         data={sortedUserGaugeVotes}
         minWidth={tableMinWidth}
         isLoading={isLoading}
@@ -61,7 +58,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
           <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
             <TableData className="align-left">{gaugeVote.gaugeName}</TableData>
             <TableData className={`right-padding ${userGaugeVotesSortBy.key === 'timestamp' ? 'sortby-active' : ''}`}>
-              {formatLocaleDateFromTimestamp(gaugeVote.timestamp)}
+              {formatDate(gaugeVote.timestamp)}
             </TableData>
             <TableData
               className={userGaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}

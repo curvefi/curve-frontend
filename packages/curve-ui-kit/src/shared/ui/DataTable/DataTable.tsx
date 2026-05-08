@@ -111,7 +111,6 @@ export const DataTable = <T extends TableItem>({
     position: 'sticky',
     top: maxHeight ? 0 : top,
     zIndex: t.zIndex.tableHeader,
-    backgroundColor: t.design.Table.Header.Fill,
     marginBlock: Sizing.sm,
   })
   const showFooter = showPagination || showViewAllButton || footerRow
@@ -120,7 +119,6 @@ export const DataTable = <T extends TableItem>({
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
         sx={{
-          backgroundColor: t => t.design.Layer[1].Fill,
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
         }}
         data-testid={!loading && 'data-table'}
@@ -162,7 +160,7 @@ export const DataTable = <T extends TableItem>({
         </TableBody>
         {showFooter && (
           <TableFooter>
-            {footerRow && <TableRow sx={{ verticalAlign: rowProps.verticalAlign }}>{footerRow}</TableRow>}
+            {footerRow && <TableRow>{footerRow}</TableRow>}
             {showViewAllButton && (
               <TableRow>
                 <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>

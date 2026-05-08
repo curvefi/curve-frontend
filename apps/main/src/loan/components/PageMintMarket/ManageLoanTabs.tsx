@@ -4,6 +4,7 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -17,7 +18,7 @@ import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
+import { useLoanImplementationKey, useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -157,16 +158,17 @@ const MintManageSoftLiquidationMenu = [
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
-export const ManageLoanTabs = ({
-  isInSoftLiquidation,
-  ...pageProps
-}: MintManageLoanProps & { isInSoftLiquidation: boolean }) => {
-  const shouldUseSoftLiquidation = useManageSoftLiquidation() && isInSoftLiquidation
+export const ManageLoanTabs = (params: MintManageLoanProps) => {
+  const { market, curve, rChainId } = params
+  const status = useLiquidationStatus({ chainId: rChainId, marketId: market?.id, userAddress: curve?.signerAddress })
+  const shouldUseSoftLiquidation =
+    useManageSoftLiquidation() && status.data && ['softLiquidation', 'hardLiquidation'].includes(status.data)
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
     ? MintManageSoftLiquidationMenu
     : shouldUseManageLoanMuiForm
       ? MintManageNewMenu
       : MintManageLegacyMenu
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu === MintManageLegacyMenu} />
+  const key = useLoanImplementationKey()
+  return <FormTabs key={key} params={params} menu={menu} shouldWrap={menu === MintManageLegacyMenu} />
 }

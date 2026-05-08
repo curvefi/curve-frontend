@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode, RefObject } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -7,11 +7,12 @@ import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns'
-import { NewMarketListFilterDrawer } from '../drawers/NewMarketListFilterDrawer'
+import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 
 type Props = {
-  filterExpanded: boolean
-  setFilterExpanded: Dispatch<SetStateAction<boolean>>
+  filterChipRef: RefObject<HTMLDivElement | null>
+  filterPopoverOpen: boolean
+  toggleFilterPopover: () => void
   hiddenCount: number
   resetFilters: () => void
   children?: ReactNode
@@ -20,9 +21,10 @@ type Props = {
   userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
-export const NewFilterChip = ({
-  filterExpanded,
-  setFilterExpanded,
+export const FilterChip = ({
+  filterChipRef,
+  filterPopoverOpen,
+  toggleFilterPopover,
   hiddenCount,
   resetFilters,
   hasFavorites,
@@ -32,7 +34,7 @@ export const NewFilterChip = ({
 }: Props) => {
   const isMobile = useIsMobile()
   return isMobile ? (
-    <NewMarketListFilterDrawer
+    <MarketListFilterDrawer
       hasFavorites={hasFavorites}
       data={data}
       hiddenCount={hiddenCount}
@@ -42,12 +44,13 @@ export const NewFilterChip = ({
     />
   ) : (
     <GridChip
+      ref={filterChipRef}
       label={t`Filters`}
       selectableChipSize="medium"
-      selected={filterExpanded}
+      selected={filterPopoverOpen}
       icon={<FilterIcon />}
-      toggle={() => setFilterExpanded(prev => !prev)}
-      data-testid="btn-expand-filters"
+      toggle={toggleFilterPopover}
+      data-testid="btn-open-filters"
     />
   )
 }

@@ -30,7 +30,7 @@ export const Analytics = () => {
   }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
   return (
-    <DetailPageLayout formTabs={null} testId="gauges-page">
+    <DetailPageLayout formTabs={null} testId="analytics-page">
       <CrvStats />
       <Stack>
         <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />

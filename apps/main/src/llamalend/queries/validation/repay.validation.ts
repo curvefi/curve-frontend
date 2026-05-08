@@ -5,6 +5,7 @@ import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-quer
 import {
   validateIsFull,
   validateLeverageSupported,
+  validateLeverageValuesSupported,
   validateMaxBorrowed,
   validateMaxCollateral,
   validateMaxStateCollateral,
@@ -88,13 +89,14 @@ const repayValidationGroup = (
     maxRequired = validateMax,
   }: { leverageRequired: boolean; validateMax: boolean; maxRequired?: boolean },
 ) => {
+  const market = tryGetLlamaMarket(marketId)
   validateRepayCollateralField('userCollateral', userCollateral)
   validateRepayCollateralField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-  validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed, routeId)
+  validateRepayFieldsForMarket(market, stateCollateral, userCollateral, userBorrowed, routeId)
   validateSlippage({ slippage })
-  validateLeverageSupported(marketId, { required: leverageRequired })
+  validateLeverageSupported(market, { required: leverageRequired })
   validateIsFull(isFull)
 
   skipWhen(!validateMax, () => {
@@ -107,13 +109,17 @@ const repayValidationGroup = (
 export const repayValidationSuite = ({
   leverageRequired,
   validateMax,
+  requireLeverageValue = leverageRequired,
 }: {
   leverageRequired: boolean
   validateMax: boolean
+  requireLeverageValue?: boolean
 }) =>
   createValidationSuite(({ chainId, marketId, userAddress, ...params }: RepayParams) => {
+    const market = tryGetLlamaMarket(marketId)
     userMarketValidationSuite({ chainId, marketId, userAddress })
-    repayValidationGroup(marketId, params, { leverageRequired, validateMax })
+    repayValidationGroup(market, params, { leverageRequired, validateMax })
+    validateLeverageValuesSupported(market, requireLeverageValue)
   })
 
 export const repayFormValidationSuite = (market: LlamaMarketTemplate | undefined) =>

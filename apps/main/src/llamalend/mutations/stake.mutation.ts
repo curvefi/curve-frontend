@@ -57,7 +57,7 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
     ...props,
   })
 
-  const onSubmit = useCallback(async (form: StakeForm) => mutate(form as StakeMutation), [mutate])
+  const onSubmit = useCallback((form: StakeForm) => mutate(form as StakeMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }
 }

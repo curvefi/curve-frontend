@@ -1,4 +1,5 @@
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
+import type { TimestampResponse } from '@curvefi/prices-api/timestamp'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import { fromEntries, range } from '@primitives/objects.utils'
@@ -81,7 +82,7 @@ const oneLendingPool = (
       rebasing_yield_apr: null,
     },
     extra_reward_apr: [],
-    created_at: oneDate().toISOString(),
+    created_at: (oneDate().getTime() / 1000) as unknown as TimestampResponse,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }

@@ -4,7 +4,7 @@ import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/m
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-soft-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { hasLeverage } from '@/llamalend/llama.utils'
+import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserPrices } from '@/llamalend/queries/user'
@@ -19,6 +19,7 @@ import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
@@ -99,10 +100,14 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const swapRequired = selectedToken !== borrowToken
+  const showLeverage = selectedToken !== borrowToken && !!market && hasLeverageValue(market)
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const { data: maxAmountInBorrowToken } = useTokenAmountConversion({
+  const {
+    data: maxAmountInBorrowToken,
+    isLoading: maxAmountInBorrowTokenLoading,
+    error: maxAmountInBorrowTokenError,
+  } = useTokenAmountConversion({
     chainId,
     amountIn: max[selectedField],
     tokenInAddress: selectedToken?.address,
@@ -139,8 +144,7 @@ export const RepayForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           onSlippageChange={value => updateForm(form, { slippage: value })}
-          hasLeverage={market && hasLeverage(market)}
-          swapRequired={swapRequired}
+          showLeverage={showLeverage}
           routes={routes}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}
@@ -169,8 +173,23 @@ export const RepayForm = <ChainId extends IChainId>({
             tokens={tokens}
           />
         }
-        message={`${maxAmountPrefix} ${maxAmountInBorrowToken ?? '-'} ${borrowToken?.symbol}`}
-        onMessageNumberClick={() => updateForm(form, { [selectedField]: max[selectedField].data })}
+        message={
+          maxAmountInBorrowTokenError?.message ?? (
+            <Balance
+              inline
+              prefix={maxAmountPrefix}
+              tooltip={t`Max available to repay`}
+              symbol={borrowToken?.symbol}
+              balance={maxAmountInBorrowToken}
+              loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
+              onClick={() =>
+                updateForm(form, {
+                  [selectedField]: max[selectedField].data,
+                })
+              }
+            />
+          )
+        }
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} />
 

@@ -34,12 +34,18 @@ type RepayOptions = {
 
 const approveRepay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
 ) => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await getLoanImplementation(market).fullRepayApprove()) as Hex[]
   }
-  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
+  const [type, impl] = getRepayImplementation(market.id, {
+    userCollateral,
+    stateCollateral,
+    userBorrowed,
+    routeId,
+    slippage,
+  })
   switch (type) {
     case 'zapV2':
       return (await impl.repayApprove({ userCollateral, userBorrowed })) as Hex[]
@@ -62,14 +68,20 @@ const repay = async (
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await getLoanImplementation(market).fullRepay()) as Hex
   }
-  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
+  const [type, impl] = getRepayImplementation(market, {
+    userCollateral,
+    stateCollateral,
+    userBorrowed,
+    routeId,
+    slippage,
+  })
   switch (type) {
     case 'zapV2':
       return (await impl.repay({
         stateCollateral,
         userCollateral,
         userBorrowed,
-        ...parseMutationRoute(routeId, slippage, impl),
+        ...parseMutationRoute(market, { routeId, slippage, isRepay: true }),
       })) as Hex
     case 'V1':
     case 'V2':

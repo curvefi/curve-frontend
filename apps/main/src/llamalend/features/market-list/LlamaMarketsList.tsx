@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -17,9 +18,9 @@ import {
 } from '../../queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
+import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { NewLlamaMarketsTable } from './NewLlamaMarketsTable'
 import { UserPositionsTable } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
@@ -41,6 +42,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
     void Promise.all([
       invalidateLendingVaults({}),
       invalidateMintMarkets({}),
+      invalidateBadDebtMarkets(),
       invalidateAllUserLendingVaults(userAddress),
       invalidateAllUserLendingSupplies(userAddress),
       invalidateAllUserMintMarkets(userAddress),
@@ -61,11 +63,11 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const showDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
+  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
   const { data, isError, isLoading, isFetching } = useLlamaMarkets({
     userAddress: address,
     enableLLv2: useLLv2(),
-    showDeprecatedMarkets,
+    enableDeprecatedMarkets,
   })
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
@@ -90,9 +92,9 @@ export const LlamaMarketsList = () => {
       )}
 
       {useNewMarketListLayout() ? (
-        <NewLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
-      ) : (
         <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+      ) : (
+        <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
       )}
     </ListPageWrapper>
   )

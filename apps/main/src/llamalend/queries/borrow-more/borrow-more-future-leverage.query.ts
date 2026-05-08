@@ -1,16 +1,14 @@
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
 /** Query to get expected leverage after borrow more with leverage enabled. */
-export const {
-  useQuery: useBorrowMoreFutureLeverage,
-  invalidate: invalidateBorrowMoreFutureLeverage,
-  refetchQuery: refetchBorrowMoreFutureLeverage,
-} = queryFactory({
+export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorrowMoreFutureLeverage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -64,3 +62,10 @@ export const {
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreLeverageValidationSuite,
 })
+
+/** Returns the future leverage for borrowing more, when `params` are valid. Otherwise, returns the current leverage */
+export function useBorrowMoreLeverage(params: BorrowMoreParams) {
+  const current = useUserCurrentLeverage(params)
+  const future = useBorrowMoreFutureLeverage(params)
+  return q(future.enabled ? future : current)
+}

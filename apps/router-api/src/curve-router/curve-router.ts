@@ -5,7 +5,7 @@ import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS, notFalsy } from '@primitives/objects.utils'
-import type { RouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
+import type { RouteResponse, RouterRouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
 import { fromWei, toWei } from '../router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
@@ -63,12 +63,13 @@ function getWarnings(
 const getDecimals = (tokens: Address[], decimals: IDict<number>) =>
   tokens.map(t => decimals[t] ?? decimals[t.toLowerCase()] ?? DEFAULT_DECIMALS)
 
-const buildCurveRouteId = (routes: IRouteStep[]) => `curve:${routes.map(({ poolId }) => poolId).join('-')}`
-
 /**
  * Runs the router to get the optimal route and builds the response.
  */
-export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> {
+export async function buildCurveRouteResponse(
+  query: RoutesQuery,
+  log: FastifyBaseLogger,
+): Promise<RouterRouteResponse[]> {
   const {
     tokenOut: [toToken],
     tokenIn: [fromToken],
@@ -105,7 +106,6 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
 
   return [
     {
-      id: buildCurveRouteId(routes),
       router: 'curve',
       amountIn: [toWei(fromAmount, fromDecimals)],
       amountOut: [toWei(toAmount, toDecimals)],

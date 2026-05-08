@@ -54,6 +54,9 @@ describe('BorrowMoreForm (mocked)', () => {
   afterEach(() => resetLlamaTestContext())
 
   testCases.forEach(({ approved, title, withCollateral, buttonText }) => {
+    const hasLeverageManagement = false
+    const leverageEnabled = false
+
     it(title, () => {
       const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
       const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
@@ -76,11 +79,11 @@ describe('BorrowMoreForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      writeBorrowMoreForm({ debt: borrow, userCollateral })
+      writeBorrowMoreForm({ debt: borrow, userCollateral, hasLeverageManagement, leverageEnabled })
       checkBorrowMoreDetailsLoaded({
         expectedCurrentDebt,
         expectedFutureDebt,
-        leverageEnabled: false,
+        leverageEnabled,
       })
       cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 

@@ -19,6 +19,7 @@ const config = [
     ignores: [
       '**/dist/**',
       '**/build/**',
+      '**/.vercel/**',
       '**/*.config.js',
       '**/*.config.ts',
       '**/*.config.mjs',

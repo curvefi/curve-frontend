@@ -16,6 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { decimal } from '@ui-kit/utils'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
@@ -78,6 +79,15 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           ...TooltipOptions,
         }}
       />
+      {availableLiquidity.borrowCap && (
+        <Metric
+          size="medium"
+          label={t`Borrow cap`}
+          value={availableLiquidity.borrowCap}
+          loading={availableLiquidity?.loading}
+          valueOptions={{ abbreviate: true }}
+        />
+      )}
       <Metric
         size="medium"
         label={t`Total borrowers`}
@@ -103,10 +113,10 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
             ? undefined
             : formatCollateralNotional(
                 {
-                  value: collateral?.totalCollateral ?? null,
+                  value: decimal(collateral?.totalCollateral),
                   symbol: collateral?.collateralSymbol ?? undefined,
                 },
-                { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
+                { value: decimal(collateral?.totalBorrowed), symbol: collateral?.borrowedSymbol ?? undefined },
               )
         }
         valueTooltip={{
@@ -133,7 +143,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Max leverage`}
-          value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
+          value={maxLeverage?.value == null ? undefined : maxLeverage.value}
           loading={maxLeverage?.loading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
