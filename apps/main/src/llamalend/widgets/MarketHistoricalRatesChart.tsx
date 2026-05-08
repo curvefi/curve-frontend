@@ -13,6 +13,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
+import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import {
   ChartStateWrapper,
   ChartFooter,
@@ -24,10 +25,12 @@ import {
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
+const WEEK_MS = 7 * TIME_FRAMES.DAY_MS
 
 type RateMode = 'borrow' | 'supply'
 
@@ -47,6 +50,8 @@ type MarketHistoricalRatesChartProps = {
   marketId: string
   rateMode: RateMode
 }
+
+type RateMetricPoint = Pick<RateChartPoint, 'timestamp' | 'rate'>
 
 const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'rate', label: t`Borrow APR` },
@@ -74,12 +79,20 @@ export const MarketHistoricalRatesChart = ({
     design: { Color },
   } = useTheme()
 
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
+
   const {
     data: snapshots = [],
-    isLoading,
+    isLoading: isSnapshotsLoading,
     error,
   } = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), { kind: 'timeRange', timeOption })
-  const { data: marketRates } = useMarketRates({ chainId, marketId })
+
+  const currentLiveRate = useMemo(() => {
+    const liveRate = rateMode === 'borrow' ? marketRates?.borrowApr : marketRates?.lendApy
+    const numericRate = Number(liveRate)
+
+    return Number.isFinite(numericRate) ? numericRate : null
+  }, [marketRates?.borrowApr, marketRates?.lendApy, rateMode])
 
   const chartData = useMemo<RateChartPoint[]>(() => {
     const onChainRate = rateMode === 'borrow' ? marketRates?.borrowApr : marketRates?.lendApy
@@ -100,6 +113,27 @@ export const MarketHistoricalRatesChart = ({
       d => d.timestamp,
     )
   }, [snapshots, rateMode, marketRates])
+
+  const oneWeekAverageRate = useMemo(() => {
+    const now = Date.now()
+    const cutoff = now - WEEK_MS
+    const snapshotPoints = snapshots.map<RateMetricPoint>(snapshot => {
+      const timestamp = new Date(snapshot.timestamp).getTime()
+      const snapshotRate =
+        rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : null
+      const rate = Number(snapshotRate)
+
+      return { timestamp, rate }
+    })
+    const weeklyPoints = [
+      ...snapshotPoints,
+      ...(currentLiveRate == null ? [] : [{ timestamp: now, rate: currentLiveRate }]),
+    ].filter(({ timestamp, rate }) => timestamp >= cutoff && timestamp <= now && Number.isFinite(rate))
+
+    if (weeklyPoints.length === 0) return null
+
+    return weeklyPoints.reduce((sum, { rate }) => sum + rate, 0) / weeklyPoints.length
+  }, [currentLiveRate, snapshots, rateMode])
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
     () => ({ rate: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -131,14 +165,30 @@ export const MarketHistoricalRatesChart = ({
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}
-            isLoading={isLoading || !market}
+            isLoading={isSnapshotsLoading || !market}
           />
         }
       />
       <CardContent component={Stack} gap={Spacing.md}>
+        <Stack direction="row" gap={Spacing.xl} flexWrap="wrap">
+          <Metric
+            size="small"
+            label={rateMode === 'borrow' ? t`Current APR` : t`Current APY`}
+            value={currentLiveRate}
+            loading={currentLiveRate == null && (isMarketRatesLoading || !market)}
+            valueOptions={{ unit: 'percentage' }}
+          />
+          <Metric
+            size="small"
+            label={rateMode === 'borrow' ? t`1W Avg APR` : t`1W Avg APY`}
+            value={oneWeekAverageRate}
+            loading={oneWeekAverageRate == null && (isSnapshotsLoading || isMarketRatesLoading || !market)}
+            valueOptions={{ unit: 'percentage' }}
+          />
+        </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
-          isLoading={isLoading || !market}
+          isLoading={isSnapshotsLoading || !market}
           error={error}
           errorMessage={t`Unable to fetch historical rates data.`}
         >
