@@ -54,7 +54,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   return (
     <Stack padding={Spacing.sm} spacing={Spacing.sm}>
       <TableFilterItem title={t`Network`}>
-        <LlamaChainFilterChips data={markets} {...filterProps} />
+        <LlamaChainFilterChips data={props.data} {...filterProps} />
       </TableFilterItem>
       <TableFilterItem title={t`Collateral Tokens`}>
         <MultiSelectFilter
