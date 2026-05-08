@@ -65,38 +65,44 @@ export const RangeFilter = <TKey, TColumnId extends string>({
     [range, setRange],
   )
 
+  const renderInputField = ({
+    positionIndex,
+    placeholder,
+    testId,
+  }: {
+    positionIndex: 0 | 1
+    placeholder: string
+    testId: string
+  }) => (
+    <NumericTextField
+      size="small"
+      variant="outlined"
+      fullWidth
+      value={decimal(range[positionIndex])}
+      min={decimal(min)}
+      max={decimal(maxValue)}
+      onChange={handleInputChange(positionIndex)}
+      onBlur={handleInputBlur(positionIndex)}
+      adornment={adornment}
+      format={value => formatNumber(Number(value), { abbreviate: true })}
+      placeholder={placeholder}
+      data-testid={`range-filter-${id}-${testId}`}
+      sx={{ flex: 1 }}
+    />
+  )
+
   return (
-    <Stack direction="row" gap={Spacing.sm} width="100%">
-      <NumericTextField
-        size="small"
-        variant="standard"
-        fullWidth
-        value={decimal(range[0])}
-        min={decimal(min)}
-        max={decimal(maxValue)}
-        onChange={handleInputChange(0)}
-        onBlur={handleInputBlur(0)}
-        adornment={adornment}
-        format={value => formatNumber(Number(value), { abbreviate: true })}
-        placeholder={t`Min`}
-        data-testid={`range-filter-${id}-min`}
-        sx={{ flex: 1 }}
-      />
-      <NumericTextField
-        size="small"
-        variant="standard"
-        fullWidth
-        value={decimal(range[1])}
-        min={decimal(min)}
-        max={decimal(maxValue)}
-        onChange={handleInputChange(1)}
-        onBlur={handleInputBlur(1)}
-        adornment={adornment}
-        format={value => formatNumber(Number(value), { abbreviate: true })}
-        placeholder={t`Max`}
-        data-testid={`range-filter-${id}-max`}
-        sx={{ flex: 1 }}
-      />
+    <Stack direction="row" gap={Spacing.sm}>
+      {renderInputField({
+        positionIndex: 0,
+        placeholder: t`Min`,
+        testId: 'min',
+      })}
+      {renderInputField({
+        positionIndex: 1,
+        placeholder: t`Min`,
+        testId: 'min',
+      })}
     </Stack>
   )
 }

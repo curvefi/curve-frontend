@@ -126,6 +126,7 @@ export const NumericTextField = ({
   min,
   max,
   size = 'medium',
+  variant = 'standard',
   onChange,
   onBlur,
   onFocus,
@@ -151,6 +152,7 @@ export const NumericTextField = ({
     <TextField
       {...props}
       size={size}
+      variant={variant}
       type="text"
       value={inputValue}
       inputMode="decimal"
