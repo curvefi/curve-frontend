@@ -11,6 +11,7 @@ import { LlamaMarketColumnId } from '../columns'
 import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './hooks/useLlamaMarketsFilters'
 import { MultiSelectFilter } from './MultiSelectFilter'
 import { RangeFilter } from './RangeFilter'
+import { RangeSliderRowFilter } from './RangeSliderRowFilter'
 import { TableFilterButtonGroup } from './TableFilterButtonGroup'
 
 const { Spacing } = SizesAndSpaces
@@ -77,6 +78,15 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
+      <TableFilterItem title={t`Borrow APR`}>
+        <RangeFilter
+          id={LlamaMarketColumnId.BorrowRate}
+          field="rates.borrowApr"
+          data={markets}
+          adornment="percentage"
+          {...filterProps}
+        />
+      </TableFilterItem>
       <TableFilterItem title={t`TVL`}>
         <RangeFilter
           id={LlamaMarketColumnId.Tvl}
@@ -99,6 +109,16 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
+          data={markets}
+          adornment="percentage"
+          max={100}
+          {...filterProps}
+        />
+      </TableFilterItem>
+      <TableFilterItem title={t`LTV`}>
+        <RangeSliderRowFilter
+          id={LlamaMarketColumnId.MaxLtv}
+          field={LlamaMarketColumnId.MaxLtv}
           data={markets}
           adornment="percentage"
           max={100}
