@@ -2,12 +2,14 @@ import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
+import { notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
@@ -39,6 +41,8 @@ type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 type MarketHistoricalRatesChartProps = {
   market: LlamaMarketTemplate | undefined | null
   blockchainId: Chain | undefined
+  chainId: number
+  marketId: string
   rateMode: RateMode
 }
 
@@ -54,7 +58,13 @@ const SUPPLY_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash: string }[
   { key: 'totalAverage', label: t`Average APY`, dash: '4 4' },
 ]
 
-export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: MarketHistoricalRatesChartProps) => {
+export const MarketHistoricalRatesChart = ({
+  market,
+  blockchainId,
+  chainId,
+  marketId,
+  rateMode,
+}: MarketHistoricalRatesChartProps) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const activeSeriesConfig = rateMode === 'borrow' ? BORROW_SERIES_CONFIG : SUPPLY_SERIES_CONFIG
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(activeSeriesConfig.map(({ key }) => key))
@@ -67,14 +77,18 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
     isLoading,
     error,
   } = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), { kind: 'timeRange', timeOption })
+  const { data: marketRates } = useMarketRates({ chainId, marketId })
 
   const chartData = useMemo<RateChartPoint[]>(() => {
+    const onChainRate = rateMode === 'borrow' ? marketRates?.borrowApr : marketRates?.lendApy
     const sorted = sortBy(
-      snapshots.map(snapshot => ({
-        // timestamp is typed as Date but may be a string after JSON serialization (e.g. React Query cache)
-        timestamp: new Date(snapshot.timestamp).getTime(),
-        rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
-      })),
+      notFalsy(
+        ...snapshots.map(snapshot => ({
+          timestamp: snapshot.timestamp,
+          rate: Number(rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : 0),
+        })),
+        onChainRate != null && { timestamp: Date.now(), rate: Number(onChainRate) },
+      ),
       item => item.timestamp,
     )
 
@@ -83,7 +97,7 @@ export const MarketHistoricalRatesChart = ({ market, blockchainId, rateMode }: M
       d => d.rate,
       d => d.timestamp,
     )
-  }, [snapshots, rateMode])
+  }, [snapshots, rateMode, marketRates])
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
     () => ({ rate: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),

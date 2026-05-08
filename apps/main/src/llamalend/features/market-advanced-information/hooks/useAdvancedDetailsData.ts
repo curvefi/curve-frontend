@@ -88,6 +88,7 @@ export const useAdvancedDetailsData = ({
     availableLiquidity: {
       available: capAndAvailable?.available,
       totalAssets: capAndAvailable?.totalAssets,
+      borrowCap: capAndAvailable?.borrowCap,
       loading: !market || capAndAvailableLoading,
     },
     totalBorrowers: {
