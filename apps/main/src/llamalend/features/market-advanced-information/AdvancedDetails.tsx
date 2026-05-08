@@ -83,7 +83,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Borrow cap`}
-          value={+availableLiquidity.borrowCap}
+          value={availableLiquidity.borrowCap}
           loading={availableLiquidity?.loading}
           valueOptions={{ abbreviate: true }}
         />
@@ -143,7 +143,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Max leverage`}
-          value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
+          value={maxLeverage?.value == null ? undefined : maxLeverage.value}
           loading={maxLeverage?.loading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
