@@ -1,3 +1,4 @@
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState, type FieldsOf } from '@ui-kit/lib'
@@ -11,7 +12,7 @@ import { useLoanExists } from './user-loan-exists.query'
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
 
-const { useQuery: useUserPricesQuery } = queryFactory({
+const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
@@ -28,3 +29,16 @@ export const useUserPrices = (params: UserMarketParams, enabled?: boolean) => {
   const prices = useUserPricesQuery({ ...params, loanExists: loan.data }, enabled)
   return { ...q(prices), ...combineQueryState(loan, prices) }
 }
+
+export function useRangeToLiquidation({ params }: { params: UserMarketParams }) {
+  const userPrices = useUserPrices(params)
+  const oraclePrice = useMarketOraclePrice(params)
+  const rangeToLiquidation = {
+    data:
+      oraclePrice.data && userPrices.data && ((+oraclePrice.data - +userPrices.data[1]) / +userPrices.data[1]) * 100,
+    ...combineQueryState(userPrices, oraclePrice),
+  }
+  return { rangeToLiquidation, userPrices }
+}
+
+export { getUserPricesKey }
