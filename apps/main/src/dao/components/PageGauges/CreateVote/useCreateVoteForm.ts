@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 
@@ -29,7 +29,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
     onSubmit: onSubmitCreateVote,
     error: createVoteError,
     isPending: isCreatingVote,
-  } = useCreateVoteMutation({ onReset: onSuccess })
+  } = useCreateVoteMutation({ onReset: () => { resetForm(form, defaultValues); onSuccess(); } })
 
   const { formState } = form
   const formErrors = useFormErrors(formState)
