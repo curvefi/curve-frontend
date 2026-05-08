@@ -109,18 +109,16 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
               placeholder={t`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`}
               value={pinataJwt}
               onChange={e => setStoredJwt(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button
-                      size="small"
-                      onClick={() => setShowPinataJwt(!showPinataJwt)}
-                      sx={{ textTransform: 'none' }}
-                    >
-                      {showPinataJwt ? <VisibilityOff /> : <Visibility />}
-                    </Button>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button color="ghost" size="small" onClick={() => setShowPinataJwt(!showPinataJwt)}>
+                        {showPinataJwt ? <VisibilityOff /> : <Visibility />}
+                      </Button>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
             <FormHelperText>
