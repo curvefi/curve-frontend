@@ -36,8 +36,22 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
     <Stack gap={PAGE_SPACING}>
       {isBorrow && <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />}
 
-      {isBorrow && <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="borrow" />}
-      <MarketHistoricalRatesChart market={market} blockchainId={blockchainId} rateMode="supply" />
+      {isBorrow && (
+        <MarketHistoricalRatesChart
+          market={market}
+          blockchainId={blockchainId}
+          chainId={rChainId}
+          marketId={rOwmId}
+          rateMode="borrow"
+        />
+      )}
+      <MarketHistoricalRatesChart
+        market={market}
+        blockchainId={blockchainId}
+        chainId={rChainId}
+        marketId={rOwmId}
+        rateMode="supply"
+      />
 
       {useMarketInterestRatesAndUtilizationChart() && (
         <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
