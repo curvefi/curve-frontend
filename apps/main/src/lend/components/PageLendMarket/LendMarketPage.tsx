@@ -10,17 +10,19 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
-import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { type Chain, isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -29,55 +31,26 @@ import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
-export const LendMarketPage = () => {
-  const { isHydrated } = useCurve()
-  const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId: chainId } = parseMarketParams(params)
-
-  const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
-  const { llamaApi: api = null, provider } = useCurve()
-
+function useLegacyFetching({
+  api,
+  market,
+  loanExists,
+}: {
+  api: LlamaApi | null
+  market: LendMarketTemplate | undefined
+  loanExists: boolean | undefined
+}) {
+  const enabled = useLoanSlices()
+  const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
   const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
   const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
-
-  const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
-  const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const { address: userAddress } = useConnection()
-  useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
-
-  const network = networks[chainId]
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
-
-  const [isLoaded, setLoaded] = useState(false)
-  const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
-  const controllerAddress = getControllerAddress(market)
-  const borrowPositionDetails = useBorrowPositionDetails({
-    marketType: LlamaMarketType.Lend,
-    chainId,
-    marketId,
-    market: market ?? null,
-  })
-  const collateralEvents = useUserCollateralEvents({
-    app: LlamaMarketType.Lend,
-    chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress,
-    userAddress,
-    collateralToken: market?.collateral_token,
-    borrowToken: market?.borrowed_token,
-    network,
-  })
-
   useEffect(() => {
     // delay fetch rest after form details are fetched first
     const timer = setTimeout(async () => {
-      if (!api || !market || !isPageVisible) return
+      if (!api || !market || !isPageVisible || !enabled) return
       await fetchAllMarketDetails(api, market, true)
       if (api.signerAddress) {
         await fetchUserMarketBalances(api, market, true)
@@ -88,6 +61,7 @@ export const LendMarketPage = () => {
     }, REFRESH_INTERVAL['3s'])
     return () => clearTimeout(timer)
   }, [
+    enabled,
     api,
     fetchAllMarketDetails,
     fetchUserMarketBalances,
@@ -98,21 +72,50 @@ export const LendMarketPage = () => {
   ])
 
   useEffect(() => {
-    if (api && market && isPageVisible) {
-      if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
-      setLoaded(true)
-    }
-  }, [api, isPageVisible, loanExists, market, setMarketsStateKey])
+    if (market && loanExists && enabled) setMarketsStateKey('marketDetailsView', 'user')
+  }, [loanExists, setMarketsStateKey, enabled, market])
+  return userActiveKey
+}
+
+export const LendMarketPage = () => {
+  const { isHydrated } = useCurve()
+  const params = useParams<MarketUrlParams>()
+  const { rMarket, rChainId: chainId } = parseMarketParams(params)
+  const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
+  const { llamaApi: api = null, provider } = useCurve()
+
+  const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
+  const { address: userAddress } = useConnection()
+  useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
+
+  const network = networks[chainId]
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId,
+    marketId,
+    userAddress,
+  })
+
+  const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
+  const controllerAddress = getControllerAddress(market)
+  const collateralEvents = useUserCollateralEvents({
+    app: LlamaMarketType.Lend,
+    chain: isPricesApiChain(network.id) ? network.id : undefined,
+    controllerAddress,
+    userAddress,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
+    network,
+  })
 
   const pageProps = {
     params,
     rChainId: chainId,
     rOwmId: marketId,
     userAddress,
-    isLoaded,
+    isLoaded: !!market,
     api,
     market,
-    userActiveKey,
+    userActiveKey: useLegacyFetching({ api, market, loanExists }),
     onPricesUpdated,
   }
 
@@ -121,11 +124,10 @@ export const LendMarketPage = () => {
   ) : provider ? (
     <DetailPageLayout
       formTabs={
-        chainId &&
-        marketId &&
+        market &&
         !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs collateralEvents={collateralEvents} position={borrowPositionDetails} {...pageProps} />
+          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
           <CreateLoanTabs {...pageProps} params={params} />
         ))
@@ -147,8 +149,9 @@ export const LendMarketPage = () => {
       />
       <PositionDetailsComposite
         hasPosition={loanExists}
-        borrowPositionDetails={borrowPositionDetails}
         events={collateralEvents}
+        market={market}
+        params={{ chainId, marketId, userAddress }}
       />
       <MarketInformationComposite pageProps={pageProps} type="borrow" previewPrices={previewPrices} />
     </DetailPageLayout>

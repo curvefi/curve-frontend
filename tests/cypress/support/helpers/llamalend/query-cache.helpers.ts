@@ -1,26 +1,13 @@
 import { type Address, erc20Abi, parseUnits } from 'viem'
-import {
-  getBadDebtLendMarketsOptions,
-  getBadDebtMintMarketsOptions,
-} from '@/llamalend/queries/market/market-bad-debt.query'
-import { getFavoriteMarketOptions } from '@/llamalend/queries/market-list/favorite-markets'
-import {
-  getLendingVaultsOptions,
-  getUserLendingSuppliesOptions,
-  getUserLendingVaultsOptions,
-  type LendingVault,
-} from '@/llamalend/queries/market-list/lending-vaults'
-import { getMintMarketOptions, getUserMintMarketsOptions } from '@/llamalend/queries/market-list/mint-markets'
+import { getBadDebtLendMarketsOptions } from '@/llamalend/queries/market/market-bad-debt.query'
+import { getLendingVaultsOptions, type LendingVault } from '@/llamalend/queries/market-list/lending-vaults'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { oneAddress, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
-import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { queryClient } from '@ui-kit/lib/api'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { BlockchainIds } from '@ui-kit/utils/network'
 import { readContractsQueryOptions } from '@wagmi/core/query'
-import { TEST_ADDRESS } from './mock-loan-test-data'
 import { createMockLendMarket } from './mock-market.helpers'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
 
@@ -109,9 +96,7 @@ export const seedLendMarketSolvencyQueries = ({
   const vaultAddress = market.addresses.vault as Address
   const collateralAddress = market.collateral_token.address as Address
   const borrowedAddress = market.borrowed_token.address as Address
-  const emptyUserMarkets = {} as Record<typeof chain, Address[]>
 
-  // These two seeded query inputs are the ones that actually determine solvency.
   queryClient.setQueryData(getLendingVaultsOptions({}, true).queryKey, [
     {
       controller: controllerAddress,
@@ -161,17 +146,4 @@ export const seedLendMarketSolvencyQueries = ({
       liquidatableStablecoinUsd: null,
     } as BadDebt[number],
   ])
-
-  // The rest are only seeded so the combined `useLlamaMarkets()` query resolves cleanly.
-  queryClient.setQueryData(getMintMarketOptions({}, true).queryKey, [])
-  queryClient.setQueryData(getBadDebtMintMarketsOptions(true).queryKey, [])
-  queryClient.setQueryData(getCampaignsExternalOptions({}, true).queryKey, {})
-  queryClient.setQueryData(getCampaignsMarketsMerklOptions({}, true).queryKey, {})
-  queryClient.setQueryData(getFavoriteMarketOptions({}, true).queryKey, [])
-  queryClient.setQueryData(getUserLendingVaultsOptions({ userAddress: TEST_ADDRESS }, true).queryKey, emptyUserMarkets)
-  queryClient.setQueryData(
-    getUserLendingSuppliesOptions({ userAddress: TEST_ADDRESS }, true).queryKey,
-    emptyUserMarkets,
-  )
-  queryClient.setQueryData(getUserMintMarketsOptions({ userAddress: TEST_ADDRESS }, true).queryKey, emptyUserMarkets)
 }

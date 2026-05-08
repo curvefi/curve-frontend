@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -10,7 +10,6 @@ import { MarketInformationComposite } from '@/loan/components/MarketInformationC
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { useMintMarket } from '@/loan/entities/mint-markets'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
@@ -40,22 +39,20 @@ export const MintMarketPage = () => {
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
 
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
-  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
-
-  const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
-  const network = networks[rChainId]
-  const controllerAddress = getControllerAddress(market)
-  const borrowPositionDetails = useBorrowPositionDetails({
-    marketType: LlamaMarketType.Mint,
+  const userMarketParams = { chainId: rChainId, marketId, userAddress: address }
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId: rChainId,
     marketId,
-    market: market ?? null,
+    userAddress: address,
   })
+  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
+
+  const network = networks[rChainId]
+
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress,
+    controllerAddress: getControllerAddress(market),
     userAddress: curve?.signerAddress,
     collateralToken: market
       ? {
@@ -83,7 +80,7 @@ export const MintMarketPage = () => {
     }
   }, REFRESH_INTERVAL['1m'])
 
-  const formProps = {
+  const pageProps = {
     curve,
     isReady: !!curve?.signerAddress && !!market,
     market: market ?? null,
@@ -92,21 +89,17 @@ export const MintMarketPage = () => {
     onPricesUpdated: setPreviewPrices,
   }
 
-  const isLoading = !loaded || (loanExists && !loanStatus)
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <DetailPageLayout
       formTabs={
-        !isLoading &&
+        loaded &&
+        !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs
-            {...formProps}
-            collateralEvents={collateralEvents}
-            isInSoftLiquidation={loanStatus !== 'healthy'}
-          />
+          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
-          <CreateLoanTabs {...formProps} />
+          <CreateLoanTabs {...pageProps} />
         ))
       }
       header={
@@ -121,8 +114,9 @@ export const MintMarketPage = () => {
     >
       <MarketBanners chainId={rChainId} market={market} />
       <PositionDetailsComposite
+        market={market}
+        params={userMarketParams}
         hasPosition={loanExists}
-        borrowPositionDetails={borrowPositionDetails}
         events={collateralEvents}
       />
       <MarketInformationComposite
