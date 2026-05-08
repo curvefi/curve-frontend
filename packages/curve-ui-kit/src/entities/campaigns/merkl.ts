@@ -2,7 +2,7 @@ import { capitalize, groupBy } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
-import { formatPercent } from '@ui-kit/utils'
+import { formatPercent, isCypress } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
 
@@ -96,7 +96,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
 export const fetchMerklRewards = async (params: object) => {
-  if (window.location.hostname === 'localhost') return {} // todo: ask merkl to add localhost to allowed CORS headers
+  if (window.location.hostname === 'localhost' && !isCypress) return {} // todo: ask merkl to add localhost to allowed CORS headers
   const fetchPage = async (page: number, items: number) => {
     const url = `https://api.merkl.xyz/v4/opportunities${addQueryString({
       ...params,

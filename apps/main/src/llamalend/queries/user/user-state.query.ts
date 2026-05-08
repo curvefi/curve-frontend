@@ -4,7 +4,11 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { QueryData } from '@ui-kit/lib/queries'
 
-export const { useQuery: useUserState, getQueryData: getUserState } = queryFactory({
+export const {
+  useQuery: useUserState,
+  getQueryData: getUserState,
+  queryKey: getUserStateKey,
+} = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userState'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const userState = await getUserPositionImplementation(marketId).userState(userAddress)

@@ -15,9 +15,6 @@ export const HEALTH_THRESHOLDS = {
   GOOD: 50,
 } as const
 
-export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oraclePrice: number) =>
-  ((oraclePrice - upperLiquidationPrice) / upperLiquidationPrice) * 100
-
 export const getHealthValueColor = ({
   theme,
   isFullRepay,

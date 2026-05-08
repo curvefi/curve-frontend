@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
+import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
+import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
@@ -65,8 +66,7 @@ const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn:
     meta: { hidden: true },
   })
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type LlamaColumn = ColumnDef<LlamaMarket, any>
+type LlamaColumn = ColumnDefinition<LlamaMarket>
 
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
