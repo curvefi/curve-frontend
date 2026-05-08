@@ -1,7 +1,8 @@
 import { sumBy } from 'lodash'
 import { createColumnHelper } from '@tanstack/react-table'
-import type { ColumnDef, Row } from '@tanstack/table-core'
+import type { Row } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
+import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, inListFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { PoolTitleCell } from '../cells/PoolTitleCell/PoolTitleCell'
 import { RewardsBaseCell } from '../cells/RewardsBaseCell'
@@ -26,8 +27,7 @@ const headers = {
   [PoolColumnId.Tvl]: t`TVL`,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type PoolColumn = ColumnDef<PoolListItem, any>
+type PoolColumn = ColumnDefinition<PoolListItem>
 
 /** Sorts pool rows by a numeric reward value, placing rows with no value last. */
 const sortByReward =

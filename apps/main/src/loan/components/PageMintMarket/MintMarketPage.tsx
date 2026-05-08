@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -39,6 +39,7 @@ export const MintMarketPage = () => {
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
 
+  const userMarketParams = { chainId: rChainId, marketId, userAddress: address }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId: rChainId,
     marketId,
@@ -47,17 +48,11 @@ export const MintMarketPage = () => {
   const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
 
   const network = networks[rChainId]
-  const controllerAddress = getControllerAddress(market)
-  const borrowPositionDetails = useBorrowPositionDetails({
-    marketType: LlamaMarketType.Mint,
-    chainId: rChainId,
-    marketId,
-    market: market ?? null,
-  })
+
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
-    controllerAddress,
+    controllerAddress: getControllerAddress(market),
     userAddress: curve?.signerAddress,
     collateralToken: market
       ? {
@@ -102,7 +97,7 @@ export const MintMarketPage = () => {
         loaded &&
         !isLoanExistsLoading &&
         (loanExists ? (
-          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} position={borrowPositionDetails} />
+          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
           <CreateLoanTabs {...pageProps} />
         ))
@@ -119,8 +114,9 @@ export const MintMarketPage = () => {
     >
       <MarketBanners chainId={rChainId} market={market} />
       <PositionDetailsComposite
+        market={market}
+        params={userMarketParams}
         hasPosition={loanExists}
-        borrowPositionDetails={borrowPositionDetails}
         events={collateralEvents}
       />
       <MarketInformationComposite

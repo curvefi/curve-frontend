@@ -1,24 +1,88 @@
+import { zeroAddress } from 'viem'
+import {
+  getMarketLiquidationBandKey,
+  getMarketOraclePriceBandKey,
+  getMarketOraclePriceKey,
+} from '@/llamalend/queries/market'
+import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
+import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
+import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
+import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
+import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { BorrowPositionDetails, type BorrowPositionDetailsProps } from './'
+import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
+import { useFakeMarket } from '@ui-kit/lib/queries/useFakeMarket.test'
+import type { Range } from '@ui-kit/types/util'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { BorrowPositionDetails } from './'
 
-const baseProps: BorrowPositionDetailsProps = {
-  liquidationAlert: { softLiquidation: false, hardLiquidation: false, status: 'healthy' },
-  health: { value: 75, loading: false },
-  liquidationRange: { value: [1800, 2200], rangeToLiquidation: 15, loading: false },
-  bandRange: { value: [10, 15], loading: false },
-  leverage: { value: 1, loading: false },
-  collateralValue: {
-    totalValue: 5000,
-    collateral: { value: 1.5, usdRate: 3200, symbol: 'WETH' },
-    borrow: { value: 200, usdRate: 1, symbol: 'crvUSD' },
-    loading: false,
-  },
-  totalDebt: { value: 3000, loading: false },
+const baseProps = {
+  params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
+  healthNotFull: 1.56,
+  healthFull: 96,
+  userPrices: [`0.47`, `0.69`] as Range<Decimal>,
+  leverage: 1,
+  totalDebt: 1,
+  collateral: 1.8,
+  collateralSymbol: 'sUSDe',
+  collateralUsdPrice: 0.999,
+  collateralAddress: '0x9d39a5de30e57443bff2a8307a4256c8797a3497' as Address,
+  borrow: 0,
+  borrowSymbol: 'crvUSD',
+  borrowUsdPrice: 1,
+  borrowAddress: CRVUSD_ADDRESS,
+  marketLiquidationBand: null as number | null,
+  oraclePrice: -5,
+  userBands: [69, 118] as Range<number>,
 }
 
-const meta: Meta<typeof BorrowPositionDetails> = {
+const BorrowPositionDetailsStory = ({
+  healthNotFull,
+  healthFull,
+  collateral,
+  collateralSymbol,
+  collateralAddress,
+  collateralUsdPrice,
+  borrow,
+  borrowSymbol,
+  borrowUsdPrice,
+  borrowAddress,
+  oraclePrice,
+  userPrices,
+  userBands,
+  totalDebt,
+  marketLiquidationBand,
+  leverage,
+  params,
+}: typeof baseProps) => (
+  <TestQueryProvider
+    data={[
+      [getMarketOraclePriceBandKey(params), oraclePrice],
+      [getUserCurrentLeverageKey(params), `${leverage}`],
+      [getUserBandsKey(params), userBands],
+      [getUserPricesKey(params), userPrices],
+      [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
+      [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+      [getMarketOraclePriceKey(params), `${oraclePrice}`],
+      [getMarketLiquidationBandKey(params), marketLiquidationBand],
+      [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
+      [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
+      [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+    ]}
+  >
+    <BorrowPositionDetails
+      market={useFakeMarket({ collateralAddress, collateralSymbol, borrowSymbol, borrowAddress })}
+      params={params}
+    />
+  </TestQueryProvider>
+)
+
+const meta: Meta<typeof BorrowPositionDetailsStory> = {
   title: 'Llamalend/BorrowPositionDetails',
-  component: BorrowPositionDetails,
+  component: BorrowPositionDetailsStory,
   parameters: {
     layout: 'padded',
     docs: {
@@ -34,21 +98,17 @@ const meta: Meta<typeof BorrowPositionDetails> = {
 }
 
 export default meta
-type Story = StoryObj<typeof BorrowPositionDetails>
+type Story = StoryObj<typeof BorrowPositionDetailsStory>
 
 export const Healthy: Story = {
-  args: { ...baseProps },
+  args: baseProps,
   parameters: {
     docs: { description: { story: 'Healthy position with high health. No alert banner is shown.' } },
   },
 }
 
 export const SoftLiquidation: Story = {
-  args: {
-    ...baseProps,
-    liquidationAlert: { softLiquidation: true, hardLiquidation: false, status: 'softLiquidation' },
-    health: { value: 30, loading: false },
-  },
+  args: { ...baseProps, healthFull: 30, borrow: 1.5 },
   parameters: {
     docs: {
       description: {
@@ -61,17 +121,7 @@ export const SoftLiquidation: Story = {
 }
 
 export const FullyConverted: Story = {
-  args: {
-    ...baseProps,
-    liquidationAlert: { softLiquidation: false, hardLiquidation: false, status: 'fullyConverted' },
-    health: { value: 12, loading: false },
-    collateralValue: {
-      totalValue: 3100,
-      collateral: { value: 0, usdRate: 3200, symbol: 'WETH' },
-      borrow: { value: 3100, usdRate: 1, symbol: 'crvUSD' },
-      loading: false,
-    },
-  },
+  args: { ...baseProps, healthFull: 0, borrow: 1.8, collateral: 0, userBands: [-10, -6] },
   parameters: {
     docs: {
       description: {
@@ -84,17 +134,7 @@ export const FullyConverted: Story = {
 }
 
 export const IncompleteConversion: Story = {
-  args: {
-    ...baseProps,
-    liquidationAlert: { softLiquidation: false, hardLiquidation: false, status: 'incompleteConversion' },
-    health: { value: 5, loading: false },
-    collateralValue: {
-      totalValue: 2800,
-      collateral: { value: 0.3, usdRate: 3200, symbol: 'WETH' },
-      borrow: { value: 1840, usdRate: 1, symbol: 'crvUSD' },
-      loading: false,
-    },
-  },
+  args: { ...baseProps, healthFull: 3, borrow: 1.5, collateral: 0.3, userBands: [-10, -6] },
   parameters: {
     docs: {
       description: {
@@ -107,12 +147,7 @@ export const IncompleteConversion: Story = {
 }
 
 export const HardLiquidation: Story = {
-  args: {
-    ...baseProps,
-    liquidationAlert: { softLiquidation: false, hardLiquidation: true, status: 'hardLiquidation' },
-    health: { value: -2, loading: false },
-    liquidationRange: { value: [1800, 2200], rangeToLiquidation: -5, loading: false },
-  },
+  args: { ...baseProps, healthFull: 0, healthNotFull: -2, collateral: 0, borrow: 1 },
   parameters: {
     docs: {
       description: {

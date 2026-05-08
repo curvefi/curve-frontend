@@ -1,8 +1,8 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ColumnDef } from '@tanstack/react-table'
 import { useTableColumnVisibility } from '@ui-kit/hooks/useLocalStorage'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
+import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import type { VisibilityGroup } from '../visibility.types'
 
 /**
@@ -41,7 +41,7 @@ export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds 
   tableTitle: string,
   groups: Record<TVariant, VisibilityGroup<ColumnIds>[]>,
   variant: TVariant,
-  columns: ColumnDef<TData, unknown>[],
+  columns: ColumnDefinition<TData>[],
   migration: MigrationOptions<Record<TVariant, VisibilityGroup<ColumnIds>[]>>,
 ) => {
   /** current visibility settings in grouped format */
