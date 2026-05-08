@@ -109,6 +109,8 @@ body.theme-chad {
   --input_button--hover--color: var(--text-600);
 
   /* Link */
+  --link--hover--color: var(--link-400);
+  --link--underline--hover-color: var(--link-400);
   --link_box--color: var(--text-600);
   --link_box-alternate--background-color: var(--primary-600);
 

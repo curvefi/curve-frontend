@@ -1,7 +1,6 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress, isAddressEqual } from 'viem'
-import { useConnection } from 'wagmi'
+import { ethAddress } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { calculateMarketSolvency, createGetBadDebtMarket, lowSolvencyDeprecatedMessage } from '@/llamalend/llama.utils'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
@@ -13,11 +12,9 @@ import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
-import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
+import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { useMappedQuery } from '@ui-kit/types/util'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
@@ -350,7 +347,7 @@ export const useLlamaMarkets = (
       (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
         if (!enabled) {
           // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
-          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined, error: null }
+          return RESOLVED_QUERY_RESULT
         }
         const [
           lendingVaults,
@@ -432,33 +429,3 @@ export const useLlamaMarkets = (
       [enabled, userAddress, enableLLv2, enableDeprecatedMarkets],
     ),
   })
-
-export const useLlamaMarket = (
-  {
-    blockchainId,
-    controllerAddress,
-    ...llamaMarketsParams
-  }: {
-    blockchainId: Chain | undefined
-    controllerAddress: Address | undefined
-  } & Partial<LlamaMarketParams>,
-  enabled = true,
-) =>
-  useMappedQuery(
-    useLlamaMarkets(
-      {
-        userAddress: useConnection().address,
-        enableLLv2: useLLv2(),
-        enableDeprecatedMarkets: true,
-        ...llamaMarketsParams,
-      },
-      enabled,
-    ),
-    useCallback(
-      ({ markets }) =>
-        blockchainId &&
-        controllerAddress &&
-        markets?.find(item => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress)),
-      [blockchainId, controllerAddress],
-    ),
-  )

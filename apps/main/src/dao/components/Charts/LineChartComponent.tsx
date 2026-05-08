@@ -60,12 +60,12 @@ export const LineChartComponent = ({ data, height = 400 }: Props) => {
         <Line
           type="monotone"
           dataKey="gauge_relative_weight"
-          stroke="var(--primary-400)"
+          stroke="var(--link-400)"
           strokeWidth={2}
           activeDot={{ r: 4 }}
           dot={{
             r: 3,
-            fill: 'var(--primary-400)',
+            fill: 'var(--link-400)',
             stroke: 'var(--chart-purple)',
             strokeWidth: 2,
           }}

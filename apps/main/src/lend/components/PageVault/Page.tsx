@@ -113,7 +113,7 @@ export const Page = () => {
         rewardsBanner={<CampaignRewardsBanner chainId={rChainId} market={market} />}
       />
       {hasSupplyPosition && <SupplyPositionDetails {...supplyPositionDetails} />}
-      <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
+      <MarketInformationComposite pageProps={pageProps} type="supply" />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

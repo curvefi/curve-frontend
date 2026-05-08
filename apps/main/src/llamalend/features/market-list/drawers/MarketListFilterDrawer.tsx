@@ -14,7 +14,7 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaListMarketChips } from '../chips/LlamaListMarketChips'
 import { LlamaListUserChips } from '../chips/LlamaListUserChips'
 import type { LlamaMarketColumnId } from '../columns'
-import { LendingMarketsFilters } from '../LendingMarketsFilters'
+import { LegacyLendingMarketsFilters } from '../LegacyLendingMarketsFilters'
 
 const { Spacing } = SizesAndSpaces
 
@@ -62,7 +62,7 @@ export const MarketListFilterDrawer = ({
           {showUserChips && <LlamaListUserChips hasFavorites={hasFavorites} {...filterProps} />}
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
-        <LendingMarketsFilters {...filterProps} data={data} />
+        <LegacyLendingMarketsFilters {...filterProps} data={data} />
       </DrawerItems>
     </SwipeableDrawer>
   )

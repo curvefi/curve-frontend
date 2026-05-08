@@ -212,8 +212,8 @@ export const DEPRECATED_LLAMAS: Record<
       '0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3': DEFAULT_DEPRECATE,
       // CRV-crvUSD
       '0xEdA215b7666936DEd834f76f3fBC6F323295110A': {
-        message: t`This market is deprecated, read the governance post to learn more.`,
-        url: 'https://gov.curve.finance/t/crv-long-llamalend-market-next-steps/11045',
+        message: t`This market is deprecated, read the article to learn more.`,
+        url: 'https://news.curve.finance/building-recovery-in-public-and-building-stronger-systems-next/',
       },
       // UwU-crvUSD
       '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B': DEFAULT_DEPRECATE,

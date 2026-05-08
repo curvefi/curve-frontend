@@ -3,6 +3,7 @@ import AppBar from '@mui/material/AppBar'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
+import { recordEntries } from '@primitives/objects.utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,7 +17,6 @@ import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
-import { useVisibleAppLinks } from './useVisibleAppLinks'
 import { getHeaderBorder } from './utils'
 
 const HIDE_SCROLLBAR = {
@@ -42,20 +42,19 @@ export const MobileHeader = ({
   const toggleSidebar = useCallback(() => setSidebarOpen(isOpen => !isOpen), [])
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)
-  const appLinks = useVisibleAppLinks()
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
   const otherAppSections = useMemo(
     () =>
-      appLinks
+      recordEntries(APP_LINK)
         .filter(([appName]) => appName != currentMenu)
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
           pages: routes.map(p => routeToPage(p, { networkId, pathname })),
         })),
-    [appLinks, currentMenu, networkId, pathname],
+    [currentMenu, networkId, pathname],
   )
   return (
     <AppBar
