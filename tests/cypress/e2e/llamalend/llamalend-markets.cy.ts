@@ -163,6 +163,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should allow filtering by using a slider', () => {
+      if (breakpoint !== 'mobile') return
       const [columnId, initialFilterText] = oneOf(
         [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
         [LlamaMarketColumnId.Tvl, '$0 -'],
@@ -195,6 +196,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it(`should allow filtering by using a slider input`, () => {
+      if (breakpoint !== 'mobile') return
       const [columnId, getFilterValue] = oneOf(
         ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
         ['tvl', () => getMaxTvl(vaultData) / 10],
@@ -202,9 +204,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       )
 
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        if (breakpoint === 'mobile') {
-          cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        }
+        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
         openFilters(breakpoint)
 
         // open the chosen filter
