@@ -9,11 +9,13 @@ import { createVoteFormValidationSuite } from './create-vote.validation'
 export type CreateVoteForm = {
   gaugeAddress: string
   description: string
+  pinataJwt: string
 }
 
 const defaultValues: CreateVoteForm = {
   gaugeAddress: '',
   description: t`Add a gauge for the following pool: `,
+  pinataJwt: '',
 } satisfies CreateVoteForm
 
 export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSuccess: () => void }) => {
@@ -47,6 +49,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
     // Errors
     gaugeAddressError: formErrors.find(([f]) => f === 'gaugeAddress')?.[1],
     descriptionError: formErrors.find(([f]) => f === 'description')?.[1],
+    pinataJwtError: formErrors.find(([f]) => f === 'pinataJwt')?.[1],
     createVoteError,
     formErrors,
   }

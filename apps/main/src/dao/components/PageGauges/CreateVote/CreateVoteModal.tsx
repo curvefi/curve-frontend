@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { zeroAddress } from 'viem'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormLabel from '@mui/material/FormLabel'
+import InputAdornment from '@mui/material/InputAdornment'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -26,15 +30,18 @@ type CreateVoteModalProps = {
 export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModalProps) => {
   const {
     form,
-    values: { gaugeAddress, description },
+    values: { gaugeAddress, description, pinataJwt },
     isPending,
     isDisabled,
     onSubmit,
     gaugeAddressError,
     descriptionError,
+    pinataJwtError,
     createVoteError,
     formErrors,
   } = useCreateVoteForm({ gauge, onSuccess: onClose })
+
+  const [showPinataJwt, setShowPinataJwt] = useState(false)
 
   return (
     <ModalDialog
@@ -92,7 +99,52 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
             <FormHelperText>{descriptionError ?? t`A few words describing what this gauge is for`}</FormHelperText>
           </FormControl>
 
-          <FormAlerts error={createVoteError} formErrors={formErrors} handledErrors={['gaugeAddress', 'description']} />
+          <FormControl fullWidth error={!!pinataJwtError}>
+            <FormLabel>{t`Pinata JWT Token`}</FormLabel>
+            <TextField
+              fullWidth
+              type={showPinataJwt ? 'text' : 'password'}
+              placeholder={t`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`}
+              value={pinataJwt}
+              onChange={e => updateForm(form, { pinataJwt: e.target.value })}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button
+                      size="small"
+                      onClick={() => setShowPinataJwt(!showPinataJwt)}
+                      sx={{ textTransform: 'none' }}
+                    >
+                      {showPinataJwt ? <VisibilityOff /> : <Visibility />}
+                    </Button>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <FormHelperText>
+              {pinataJwtError ?? (
+                <>
+                  <Typography variant="bodySRegular">
+                    {t`The vote description is uploaded to IPFS via Pinata. You need a Pinata API key to proceed.`}{' '}
+                    <InlineLink to="https://docs.pinata.cloud/account-management/api-keys" hideIcon>
+                      {t`Here's an explanation on how to create one`}
+                    </InlineLink>
+                    <br />
+                    <br />
+                    <Typography component="span" variant="bodySRegular" color="warning">
+                      {t`IMPORTANT: You must enable the "pinFileToIPFS" legacy endpoint when creating your API key, otherwise it will not work.`}
+                    </Typography>
+                  </Typography>
+                </>
+              )}
+            </FormHelperText>
+          </FormControl>
+
+          <FormAlerts
+            error={createVoteError}
+            formErrors={formErrors}
+            handledErrors={['gaugeAddress', 'description', 'pinataJwt']}
+          />
         </Stack>
       </FormProvider>
     </ModalDialog>

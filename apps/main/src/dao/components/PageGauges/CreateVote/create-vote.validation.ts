@@ -2,9 +2,12 @@ import { enforce, test } from 'vest'
 import { addressValidationFn, createValidationSuite } from '@ui-kit/lib/validation'
 import type { CreateVoteForm } from './useCreateVoteForm'
 
-export const createVoteFormValidationSuite = createValidationSuite(({ gaugeAddress, description }: CreateVoteForm) => {
+export const createVoteFormValidationSuite = createValidationSuite(({ gaugeAddress, description, pinataJwt }: CreateVoteForm) => {
   test('gaugeAddress', () => addressValidationFn(gaugeAddress))
   test('description', 'Description is required', () => {
     enforce(description).isNotEmpty()
+  })
+  test('pinataJwt', 'Pinata JWT is required', () => {
+    enforce(pinataJwt).isNotEmpty()
   })
 })

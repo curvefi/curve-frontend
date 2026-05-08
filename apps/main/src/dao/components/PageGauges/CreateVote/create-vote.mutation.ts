@@ -13,10 +13,6 @@ import { writeContract } from '@wagmi/core'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 import type { CreateVoteForm } from './useCreateVoteForm'
 
-// Free account to push some IPFS vote description data. Exposing API keys in code is bad, but this is just a free account.
-const PINATA_JWT =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJlMzExMTg5NS0xOTc5LTQyYmYtOTllOC0xOGI0OTk5NTI3NjQiLCJlbWFpbCI6IjB4YWx1bmFyYUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiYjUyYWE3Y2QwOTk0ZmM3MWI0ZWQiLCJzY29wZWRLZXlTZWNyZXQiOiJmMTBkNjY5NDU0NDk3NWRhMGIxMGY4NDRlZWU3Y2EzOTlmMDA0YTgyMGNjNjYxMmViZWFhMzMzZThhYmU2MzgyIiwiZXhwIjoxODA5Mjc4Mjk4fQ.USkSoDAdJLnVz3JFL8e3wJ1i-rv0GBfTLwgTHM3eYvc'
-
 const buildEvmScript = (gaugeAddress: Address) => {
   const callData = encodeFunctionData({
     abi: abiGauge,
@@ -37,7 +33,7 @@ const buildEvmScript = (gaugeAddress: Address) => {
   return `0x00000001${ARAGON_OWNERSHIP_AGENT.substring(2)}${length}${agentCalldata}` as Hex
 }
 
-const uploadDescriptionToIpfs = async (description: string) => {
+const uploadDescriptionToIpfs = async (description: string, pinataJwt: string) => {
   const voteDescription = description.replace(/(\r\n|\n|\r)/gm, '')
 
   const formData = new FormData()
@@ -51,7 +47,7 @@ const uploadDescriptionToIpfs = async (description: string) => {
 
   const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${PINATA_JWT}` },
+    headers: { Authorization: `Bearer ${pinataJwt}` },
     body: formData,
   })
 
@@ -69,9 +65,9 @@ export const useCreateVoteMutation = ({ onReset }: { onReset: () => void }) => {
 
   const { mutate, error, isPending } = useTransactionMutation<CreateVoteForm>({
     mutationKey: [...rootKeys.chain({ chainId: mainnet.id }), 'create-gauge-vote'] as const,
-    mutationFn: async ({ gaugeAddress, description }) => {
+    mutationFn: async ({ gaugeAddress, description, pinataJwt }) => {
       const evmScript = buildEvmScript(gaugeAddress as Address)
-      const ipfsHash = await uploadDescriptionToIpfs(description)
+      const ipfsHash = await uploadDescriptionToIpfs(description, pinataJwt)
       const hash = await writeContract(config, {
         chainId: mainnet.id,
         abi: abiVoting,
