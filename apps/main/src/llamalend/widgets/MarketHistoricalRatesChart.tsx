@@ -77,7 +77,7 @@ export const MarketHistoricalRatesChart = ({
     isLoading,
     error,
   } = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), { kind: 'timeRange', timeOption })
-  const { data: marketRates } = useMarketRates({ chainId, marketId }, Boolean(market))
+  const { data: marketRates } = useMarketRates({ chainId, marketId })
 
   const chartData = useMemo<RateChartPoint[]>(() => {
     const onChainRate = rateMode === 'borrow' ? marketRates?.borrowApr : marketRates?.lendApy
