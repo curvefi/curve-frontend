@@ -5,13 +5,12 @@ import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { type AssetDetails } from '../../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from '../chips/LlamaChainFilterChips'
 import { LlamaMarketColumnId } from '../columns'
 import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './hooks/useLlamaMarketsFilters'
 import { MultiSelectFilter } from './MultiSelectFilter'
-import { RangeSliderFilter } from './RangeSliderFilter'
+import { RangeFilter } from './RangeFilter'
 import { TableFilterButtonGroup } from './TableFilterButtonGroup'
 
 const { Spacing } = SizesAndSpaces
@@ -79,35 +78,27 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         />
       </TableFilterItem>
       <TableFilterItem title={t`TVL`}>
-        <RangeSliderFilter
+        <RangeFilter
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
-          title={t`TVL`}
-          format={formatUsd}
           data={markets}
           adornment="dollar"
-          scale="power"
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`Available liquidity`}>
-        <RangeSliderFilter
+      <TableFilterItem title={t`Liquidity`}>
+        <RangeFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
-          title={t`Liquidity`}
-          format={formatUsd}
           data={markets}
           adornment="dollar"
-          scale="power"
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterItem title={t`Utilization`}>
-        <RangeSliderFilter
+        <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
-          title={t`Utilization`}
-          format={formatPercent}
           data={markets}
           adornment="percentage"
           max={100}
