@@ -23,6 +23,8 @@ type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> &
   max?: number
 }
 
+type InputIndex = 0 | 1
+
 export const RangeFilter = <TKey, TColumnId extends string>({
   data,
   field,
@@ -36,23 +38,25 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
 
   const handleInputChange = useCallback(
-    (index: 0 | 1) => (newValue: string | undefined) => {
+    (index: InputIndex) => (newValue: string | undefined) => {
       const nextFirst = index === 0 ? Number(newValue) : range[0]
-      let nextSecond = index === 1 ? Number(newValue) : range[1]
+      const nextSecond = index === 1 ? Number(newValue) : range[1]
 
-      if (nextFirst > nextSecond) {
-        // Keep the left bound from moving past the right one while typing.
-        if (index === 0) nextSecond = nextFirst
-        else return
-      }
+      const nextRange: Range<number> | null =
+        nextFirst > nextSecond
+          ? // Keep the left bound from moving past the right one while typing.
+            index === 0
+            ? [nextFirst, nextFirst]
+            : null
+          : [nextFirst, nextSecond]
 
-      setRange([nextFirst, nextSecond])
+      if (nextRange) setRange(nextRange)
     },
     [range, setRange],
   )
 
   const handleInputBlur = useCallback(
-    (index: 0 | 1) => (blurValue: Decimal | undefined) => {
+    (index: InputIndex) => (blurValue: Decimal | undefined) => {
       if (blurValue == null) return
 
       setRange(
@@ -66,23 +70,22 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   )
 
   const renderInputField = ({
-    positionIndex,
+    index,
     placeholder,
     testId,
   }: {
-    positionIndex: 0 | 1
+    index: InputIndex
     placeholder: string
     testId: string
   }) => (
     <NumericTextField
       size="small"
-      variant="outlined"
       fullWidth
-      value={decimal(range[positionIndex])}
+      value={decimal(range[index])}
       min={decimal(min)}
       max={decimal(maxValue)}
-      onChange={handleInputChange(positionIndex)}
-      onBlur={handleInputBlur(positionIndex)}
+      onChange={handleInputChange(index)}
+      onBlur={handleInputBlur(index)}
       adornment={adornment}
       format={value => formatNumber(Number(value), { abbreviate: true })}
       placeholder={placeholder}
@@ -94,14 +97,14 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   return (
     <Stack direction="row" gap={Spacing.sm}>
       {renderInputField({
-        positionIndex: 0,
+        index: 0,
         placeholder: t`Min`,
         testId: 'min',
       })}
       {renderInputField({
-        positionIndex: 1,
-        placeholder: t`Min`,
-        testId: 'min',
+        index: 1,
+        placeholder: t`Max`,
+        testId: 'max',
       })}
     </Stack>
   )

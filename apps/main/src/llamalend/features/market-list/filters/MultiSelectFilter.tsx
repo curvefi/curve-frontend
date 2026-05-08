@@ -103,7 +103,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         value=""
         data-testid={`multi-select-filter-${id}`}
         size="medium"
-        sx={{ '& .MuiSelect-select': { gap: Spacing.xs }, '& .MuiSelect-icon': { rotate: '-90deg' } }}
+        sx={{ '& .MuiSelect-select': { gap: Spacing.xs } }}
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             <>

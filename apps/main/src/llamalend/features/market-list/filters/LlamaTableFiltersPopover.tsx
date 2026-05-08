@@ -59,7 +59,7 @@ export const LlamaTableFiltersPopover = ({
         </IconButton>
       </Stack>
       <LendingMarketsFilters data={markets} {...filterProps} />
-      <Stack direction="row" justifyContent="space-between" padding={Spacing.sm}>
+      <Stack direction="row" padding={Spacing.sm}>
         <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hiddenCount}>
           {t`Reset filters`}
         </Button>

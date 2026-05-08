@@ -25,31 +25,6 @@ const NumericTextFieldWrapper = (props: NumericTextFieldProps) => {
   )
 }
 
-const VariantStory = () => (
-  <Grid
-    container
-    spacing={Spacing.lg.desktop}
-    // different background needed because inputs have the same background of the app
-    sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.lg.desktop }}
-  >
-    {variants.flatMap(variant =>
-      sizes.map(size => (
-        <Grid key={`${variant}-${size}`} size={4}>
-          <NumericTextFieldWrapper
-            value="123456"
-            min="0"
-            placeholder="Amount"
-            adornment="dollar"
-            variant={variant}
-            size={size}
-            fullWidth
-          />
-        </Grid>
-      )),
-    )}
-  </Grid>
-)
-
 const meta: Meta<typeof NumericTextField> = {
   title: 'UI Kit/Widgets/NumericTextField',
   component: NumericTextField,
@@ -193,7 +168,30 @@ export const WithBandsAdornment: Story = {
 }
 
 export const VariantsBySize: Story = {
-  render: () => <VariantStory />,
+  render: () => (
+    <Grid
+      container
+      spacing={Spacing.lg.desktop}
+      // different background needed because inputs have the same background of the app
+      sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.lg.desktop }}
+    >
+      {variants.flatMap(variant =>
+        sizes.map(size => (
+          <Grid key={`${variant}-${size}`} size={4}>
+            <NumericTextFieldWrapper
+              value="123456"
+              min="0"
+              placeholder="Amount"
+              adornment="dollar"
+              variant={variant}
+              size={size}
+              fullWidth
+            />
+          </Grid>
+        )),
+      )}
+    </Grid>
+  ),
   parameters: {
     docs: {
       description: {
