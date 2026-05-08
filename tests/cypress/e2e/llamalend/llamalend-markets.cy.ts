@@ -22,10 +22,12 @@ import {
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
+  API_LOAD_TIMEOUT,
   assertInViewport,
   assertNotInViewport,
   LOAD_TIMEOUT,
   oneDesktopViewport,
+  oneMobileViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
@@ -47,19 +49,19 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
+      if (breakpoint !== 'mobile') cy.viewport(oneMobileViewport()[0], height)
+      const mobile = 'mobile' // todo: filter by rewards currently only visible on mobile
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      if (breakpoint === 'mobile') {
-        withFilterChips(breakpoint, () => {
-          cy.get(`[data-testid="chip-rewards"]`).click()
-          return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-        })
-        expandFirstRowOnMobile(breakpoint)
-        cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-        withFilterChips(breakpoint, () => {
-          cy.get(`[data-testid="chip-rewards"]`).click()
-          return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-        })
-      }
+      withFilterChips(mobile, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      })
+      expandFirstRowOnMobile(mobile)
+      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
+      withFilterChips(mobile, () => {
+        cy.get(`[data-testid="chip-rewards"]`).click()
+        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+      })
     })
 
     it('should have sticky headers', () => {
@@ -225,11 +227,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     // todo: filter by chain
 
     it(`should allow filtering by token`, () => {
-      if (breakpoint == 'mobile') {
-        openDrawer(breakpoint, 'filter')
-      } else {
-        cy.get(`[data-testid="btn-open-filters"]`).click()
-      }
+      openFilters(breakpoint)
       checkCoinSelection('collateral')
       checkCoinSelection('borrowed')
     })
@@ -342,7 +340,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visit(path, { ...LOAD_TIMEOUT, ...options })
-  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
 }
 
 function enableGraphColumn() {

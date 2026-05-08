@@ -2,7 +2,7 @@ import { getPricesImplementation } from '@/llamalend/queries/market/market.query
 import { MarketParams, type MarketQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 
-export const { useQuery: useMarketOraclePriceBand } = queryFactory({
+export const { useQuery: useMarketOraclePriceBand, queryKey: getMarketOraclePriceBandKey } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'oraclePriceBand'] as const,
   queryFn: ({ marketId }: MarketQuery): Promise<number> => getPricesImplementation(marketId).oraclePriceBand(),
   category: 'llamalend.market',
