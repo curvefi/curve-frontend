@@ -5,7 +5,7 @@ import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/u
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getControllerAddress, getTokens, getMarketType, isRouterRequired } from '@/llamalend/llama.utils'
+import { getControllerAddress, getMarketType, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -32,11 +32,11 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { resetForm, updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
-const useBorrowMoreParams = <ChainId>({
+const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   userCollateral,
   userBorrowed,
   debt,
@@ -182,7 +182,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: isRouteRequired(market, values.leverageEnabled),
       onChange: async (route: RouteResponse | undefined) => {
-        updateForm(form, { routeId: route?.id })
+        form.updateForm({ routeId: route?.id })
         await invalidateBorrowMoreRouteQueries(route, params)
       },
     }),

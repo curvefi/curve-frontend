@@ -1,5 +1,7 @@
-// eslint-disable-next-line no-restricted-imports
-import { DefaultValues, useForm as _useForm, type ResolverResult, type ResolverOptions } from 'react-hook-form'
+import { useCallback } from 'react'
+import { DefaultValues, type ResolverOptions, type ResolverResult, useForm as _useForm } from 'react-hook-form'
+import { recordEntries } from '@primitives/objects.utils'
+import type { FormUpdates } from '@ui-kit/utils/react-form.utils'
 import type { FieldValues, FormErrors, PartialFields, UseFormReturn } from './form.types'
 
 /**
@@ -36,9 +38,32 @@ export const useForm = <T extends FieldValues = FieldValues>({
     handleSubmit: handleSubmit as UseFormReturn<T>['handleSubmit'],
     trigger,
     reset,
-    watch,
+    watchValue: watch,
+    watchValues: watch,
     getValues,
-    setValue,
+    getValue: getValues,
+    /**
+     * react-hook-form update helper that uses a fixed update policy and then runs a full `form.trigger()` once per call.
+     * This is necessary because form.setValue() doesn't revalidate all fields.
+     * Any validation in the form root or in other fields can leave the form in an invalid state.
+     * We prefer to have this helper to force full revalidation to avoid silly mistakes that are hard to debug.
+     * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
+     */
+    updateForm: useCallback(
+      (updates: FormUpdates<T>, { automated = false } = {}) => {
+        const changes = recordEntries(updates).filter(([field, value]) => getValues(field) !== value)
+        if (!changes.length) return // no changes, skip revalidation
+        changes.forEach(([field, value]) =>
+          setValue(field, value, {
+            shouldValidate: false, // we revalidate just below.
+            shouldDirty: !automated,
+            shouldTouch: !automated,
+          }),
+        )
+        trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
+      },
+      [getValues, setValue, trigger],
+    ),
     setError,
     clearErrors,
     formState: {

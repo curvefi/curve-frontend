@@ -28,7 +28,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, resetForm, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors, resetForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -175,7 +175,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
-        updateForm(form, { routeId: route?.id })
+        form.updateForm({ routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
     }),

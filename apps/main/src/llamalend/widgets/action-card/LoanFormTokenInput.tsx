@@ -14,7 +14,7 @@ import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInpu
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
+import { type FormUpdates } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
@@ -69,9 +69,8 @@ export const LoanFormTokenInput = <
   name,
   max,
   form: {
-    getValues,
-    setValue,
-    trigger,
+    getValue,
+    updateForm,
     formState: { errors: formErrors, touchedFields },
   },
   testId,
@@ -115,15 +114,15 @@ export const LoanFormTokenInput = <
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = (name in touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
-  const value = getValues(name)
+  const value = getValue(name)
   const errorMessage = error?.message
 
   const onBalance = useCallback(
     (v?: Decimal) => {
-      updateForm({ getValues, setValue, trigger }, { [name]: v } as FormUpdates<TFieldValues>)
+      updateForm({ [name]: v } as FormUpdates<TFieldValues>)
       onValueChange?.(v)
     },
-    [getValues, name, onValueChange, setValue, trigger],
+    [name, onValueChange, updateForm],
   )
   return (
     <LargeTokenInput

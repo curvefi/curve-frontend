@@ -7,36 +7,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
 }>
 
-type FormUpdater<TFieldValues extends FieldValues> = Pick<
-  UseFormReturn<TFieldValues>,
-  'getValues' | 'setValue' | 'trigger'
->
-
-/**
- * react-hook-form update helper that uses a fixed update policy and then runs a full `form.trigger()` once per call.
- * This is necessary because form.setValue() doesn't revalidate all fields.
- * Any validation in the form root or in other fields can leave the form in an invalid state.
- * We prefer to have this helper to force full revalidation to avoid silly mistakes that are hard to debug.
- * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
- */
-export function updateForm<TFieldValues extends FieldValues>(
-  form: FormUpdater<TFieldValues>,
-  updates: FormUpdates<TFieldValues>,
-  { automated = false }: { automated?: boolean } = {},
-): void {
-  const changes = recordEntries(updates).filter(([field, value]) => form.getValues(field) !== value)
-  if (!changes.length) return // no changes, skip revalidation
-  changes.forEach(([field, value]) =>
-    // eslint-disable-next-line no-restricted-syntax
-    form.setValue(field as FieldPath<TFieldValues>, value, {
-      shouldValidate: false, // we revalidate just below.
-      shouldDirty: !automated,
-      shouldTouch: !automated,
-    }),
-  )
-  // eslint-disable-next-line no-restricted-syntax
-  form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
-}
+type FormUpdater<TFieldValues extends FieldValues> = Pick<UseFormReturn<TFieldValues>, 'updateForm'>
 
 export const resetForm = <TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
@@ -47,13 +18,13 @@ export const resetForm = <TFieldValues extends FieldValues>(
  * Syncs the form with the given values. IMPORTANT: This only works if you always pass the same keys in the same order!
  */
 export const useFormSync = <TFieldValues extends FieldValues>(
-  { getValues, setValue, trigger }: FormUpdater<TFieldValues>,
+  { updateForm }: FormUpdater<TFieldValues>,
   values: FormUpdates<TFieldValues>,
 ) => {
   useEffect(
-    () => updateForm({ getValues, setValue, trigger }, values, { automated: true }),
+    () => updateForm(values, { automated: true }),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [getValues, setValue, trigger, ...Object.values(values)],
+    [updateForm, ...Object.values(values)],
   )
 }
 

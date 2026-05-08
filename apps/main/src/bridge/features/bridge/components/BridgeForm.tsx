@@ -6,7 +6,6 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS, decimal, requireBlockchainId } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import type { BridgeFormParams } from '../BridgeFormTabs'
@@ -81,7 +80,7 @@ export const BridgeForm = ({
         isConnected={isConnected}
         isConnecting={isConnecting}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
-        onAmount={amount => updateForm(form, { amount })}
+        onAmount={amount => form.updateForm({ amount })}
         onConnect={() => connect()}
         onChangeNetwork={() =>
           navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))

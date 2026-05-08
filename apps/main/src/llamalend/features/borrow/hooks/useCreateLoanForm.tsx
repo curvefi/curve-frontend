@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getControllerAddress, getTokens, getMarketType, hasZapV2 } from '@/llamalend/llama.utils'
+import { getControllerAddress, getMarketType, getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
@@ -19,7 +19,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { resetForm, updateForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { resetForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
@@ -180,7 +180,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteResponse | undefined) => {
-        updateForm(form, { routeId: route?.id })
+        form.updateForm({ routeId: route?.id })
         await invalidateCreateLoanRouteQueries(route, params)
       },
     }),

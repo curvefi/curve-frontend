@@ -25,9 +25,9 @@ export const TokenSelector = ({
 }) => {
   const { curveApi } = useCurve()
   const aliasesCrv = curveApi?.getNetworkConstants()?.ALIASES?.crv
-  const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
+  const { getValue, updateForm, watchValue } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
-  const rewardTokenId = watch('rewardTokenId')
+  const rewardTokenId = watchValue('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
 
   const [isOpen, openModal, closeModal] = useSwitch()
@@ -64,15 +64,15 @@ export const TokenSelector = ({
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
 
-    const rewardTokenId = getValues('rewardTokenId')
+    const rewardTokenId = getValue('rewardTokenId')
 
     const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(gaugeRewardToken =>
       isAddressEqual(gaugeRewardToken as Address, rewardTokenId!),
     )
     if (filteredTokens.length > 0 && (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress)) {
-      setValue('rewardTokenId', filteredTokens[0].address, { shouldValidate: true })
+      updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
-  }, [gaugeRewardsDistributors, getValues, setValue, isGaugeRewardsDistributorsSuccess, filteredTokens])
+  }, [gaugeRewardsDistributors, getValue, isGaugeRewardsDistributorsSuccess, filteredTokens, updateForm])
 
   return (
     <FlexItemToken>
@@ -84,10 +84,7 @@ export const TokenSelector = ({
         onOpen={openModal}
         onClose={closeModal}
       >
-        <TokenList
-          tokens={filteredTokens}
-          onToken={token => setValue('rewardTokenId', token.address, { shouldValidate: true })}
-        />
+        <TokenList tokens={filteredTokens} onToken={token => updateForm({ rewardTokenId: token.address })} />
       </TokenSelectorUIKit>
     </FlexItemToken>
   )

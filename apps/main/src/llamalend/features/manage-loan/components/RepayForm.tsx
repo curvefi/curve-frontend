@@ -24,7 +24,6 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useCrvSwapUrl } from '../../manage-soft-liquidation/hooks/useCrvSwapUrl'
@@ -102,9 +101,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const showLeverage = selectedToken !== borrowToken && !!market && hasLeverageValue(market)
   const {
-    getValues,
-    setValue,
-    trigger,
+    updateForm,
     formState: { dirtyFields },
   } = form
 
@@ -131,10 +128,10 @@ export const RepayForm = <ChainId extends IChainId>({
     () => () => {
       // Reset when selectedField changes and the field is dirty (unmounting the field)
       if (selectedField in dirtyFields) {
-        updateForm({ getValues, setValue, trigger }, { [selectedField]: undefined }, { automated: true })
+        updateForm({ [selectedField]: undefined }, { automated: true })
       }
     },
-    [dirtyFields, getValues, selectedField, setValue, trigger],
+    [dirtyFields, selectedField, updateForm],
   )
 
   return (
@@ -149,7 +146,7 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={value => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm({ slippage: value })}
           showLeverage={showLeverage}
           routes={routes}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
@@ -189,9 +186,12 @@ export const RepayForm = <ChainId extends IChainId>({
               balance={maxAmountInBorrowToken}
               loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
               onClick={() =>
-                updateForm(form, {
-                  [selectedField]: max[selectedField].data,
-                })
+                updateForm(
+                  {
+                    [selectedField]: max[selectedField].data,
+                  },
+                  { automated: false },
+                )
               }
             />
           )
