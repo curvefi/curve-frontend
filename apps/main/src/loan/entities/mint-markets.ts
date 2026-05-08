@@ -10,14 +10,17 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
  * Primarily useful fetching mint markets via URL.
  */
 const useMintMarketMapping = ({ chainId }: { chainId: ChainId | undefined }) => {
-  const { llamaApi: api } = useCurve()
+  const { llamaApi: api, isHydrated } = useCurve()
 
-  return useMemo(
-    () =>
-      api &&
-      chainId &&
-      fromEntries(api.mintMarkets.getMarketList().map(name => [api.getMintMarket(name).controller as Address, name])),
-    [api, chainId],
+  return (
+    useMemo(
+      () =>
+        api &&
+        chainId &&
+        isHydrated &&
+        fromEntries(api.mintMarkets.getMarketList().map(name => [api.getMintMarket(name).controller as Address, name])),
+      [api, chainId, isHydrated],
+    ) || undefined
   )
 }
 

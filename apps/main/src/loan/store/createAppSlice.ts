@@ -2,9 +2,11 @@ import { produce } from 'immer'
 import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
+import { USE_API } from '@/llamalend/queries/market/market.constants'
 import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
+import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -31,28 +33,28 @@ const DEFAULT_STATE: SliceState = {
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
-  hydrate: async (_config, curveApi, prevCurveApi) => {
-    if (!curveApi) return
+  hydrate: async (_config, llamalend, prevLlamalend) => {
+    if (!llamalend) return
 
     const { loans } = get()
 
-    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
-    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
-    log('Hydrate crvUSD', curveApi?.chainId, {
-      isNetworkSwitched,
-      isUserSwitched,
-    })
+    const { mintMarkets, signerAddress, chainId, getMintMarket } = llamalend
+    const isNetworkSwitched = !!prevLlamalend?.chainId && prevLlamalend.chainId !== chainId
+    const isUserSwitched = !!prevLlamalend?.signerAddress && prevLlamalend.signerAddress !== signerAddress
+    const start = new Date()
+    log('Hydrate crvUSD', chainId, { isNetworkSwitched, isUserSwitched })
 
     // reset stores
-    if (isUserSwitched || !curveApi.signerAddress) {
+    if (isUserSwitched || !signerAddress) {
       loans.setStateByKey('userWalletBalancesMapper', {})
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    const markets = curveApi.mintMarkets.getMarketList().map(name => curveApi.getMintMarket(name))
-    await loans.fetchLoansDetails(curveApi, markets)
+    await mintMarkets.fetchMintMarkets({ useApi: USE_API })
+    const markets = mintMarkets.getMarketList().map(name => getMintMarket(name))
+    await loans.fetchLoansDetails(llamalend, markets)
 
-    log('Hydrate crvUSD - Complete')
+    log(`Hydrated crvUSD - Complete in ${formatTimeDiff(start)}`)
   },
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

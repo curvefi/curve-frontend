@@ -90,7 +90,11 @@ export const MintMarketPage = () => {
   }
 
   return isHydrated && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+    <ErrorPage
+      title="404"
+      subtitle={`${t`Market`} ${rCollateralId} ${t`Not Found`}`}
+      continueUrl={getCollateralListPathname(params)}
+    />
   ) : provider ? (
     <DetailPageLayout
       formTabs={
