@@ -11,6 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -42,6 +43,7 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
   } = useCreateVoteForm({ gauge, onSuccess: onClose })
 
   const [showPinataJwt, setShowPinataJwt] = useState(false)
+  const [, setStoredJwt] = usePinataJwt()
 
   return (
     <ModalDialog
@@ -100,13 +102,13 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
           </FormControl>
 
           <FormControl fullWidth error={!!pinataJwtError}>
-            <FormLabel>{t`Pinata JWT Token`}</FormLabel>
+            <FormLabel>{t`Pinata JWT`}</FormLabel>
             <TextField
               fullWidth
               type={showPinataJwt ? 'text' : 'password'}
               placeholder={t`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`}
               value={pinataJwt}
-              onChange={e => updateForm(form, { pinataJwt: e.target.value })}
+              onChange={e => setStoredJwt(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

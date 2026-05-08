@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { vestResolver } from '@hookform/resolvers/vest'
+import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { resetForm, updateForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 
@@ -25,13 +26,21 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
     defaultValues,
   })
 
-  useFormSync(form, { gaugeAddress: gauge.toLowerCase() })
+  const [storedJwt] = usePinataJwt()
+
+  useFormSync(form, { gaugeAddress: gauge.toLowerCase(), pinataJwt: storedJwt })
 
   const {
     onSubmit: onSubmitCreateVote,
     error: createVoteError,
     isPending: isCreatingVote,
-  } = useCreateVoteMutation({ onReset: () => { resetForm(form, defaultValues); onSuccess(); } })
+  } = useCreateVoteMutation({
+    onReset: () => {
+      resetForm(form, defaultValues)
+      updateForm(form, { pinataJwt: storedJwt })
+      onSuccess()
+    },
+  })
 
   const { formState } = form
   const formErrors = useFormErrors(formState)
