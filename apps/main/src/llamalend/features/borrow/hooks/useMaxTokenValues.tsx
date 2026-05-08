@@ -17,7 +17,7 @@ import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
  *
  * @param collateralToken - The collateral token object containing its address.
  * @param params - The parameters required to fetch max borrowable amounts, including chainId, marketId, and userAddress.
- * @param form - The react-hook-form instance managing the create loan form state.
+ * @param form - The form instance managing the create loan form state.
  */
 export function useMaxTokenValues(
   collateralToken: Address | undefined,

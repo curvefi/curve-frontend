@@ -28,12 +28,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
 }>
 
-/**
- * The value returned by the useForm hook.
- * In this current form, it's the subset of the react-hook-form useForm return type that we use in our components.
- * In the future, we might be able to get rid of it by inferring the type from the hook itself.
- * For now, it will help us refactor the format of the hook without depending on react-hook-form directly.
- */
+/** The value returned by the useForm hook. */
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
   handleSubmit: UseFormHandleSubmit<T>
   trigger: (field?: FieldPath<T>) => Promise<boolean>

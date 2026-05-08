@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useMemo } from 'react'
+import { MouseEvent, useCallback, useEffect, useMemo } from 'react'
 import { Address, ethAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import {
@@ -60,32 +60,24 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
       .map(([tokenId]) => tokenId)
 
-    const filteredTokens = Object.values(tokensMapper)
+    return Object.values(tokensMapper)
       .filter(
         (token): token is Token =>
           !!token &&
           activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map(toTokenOption(networkId))
+  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, networkId])
 
+  useEffect(() => {
     if (
       rewardTokenId &&
-      filteredTokens.length > 0 &&
+      filteredTokens.length &&
       !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
     ) {
       updateForm({ rewardTokenId: filteredTokens[0].address })
     }
-
-    return filteredTokens
-  }, [
-    isPendingRewardDistributors,
-    rewardDistributors,
-    signerAddress,
-    tokensMapper,
-    rewardTokenId,
-    networkId,
-    updateForm,
-  ])
+  }, [filteredTokens, rewardTokenId, updateForm])
 
   const token = filteredTokens.find(x => x.address === rewardTokenId)
   const tokenAddresses = filteredTokens.map(t => t.address)
