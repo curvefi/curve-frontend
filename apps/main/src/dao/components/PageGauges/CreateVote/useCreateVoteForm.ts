@@ -28,7 +28,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
 
   const [storedJwt] = usePinataJwt()
 
-  useFormSync(form, { gaugeAddress: gauge.toLowerCase(), pinataJwt: storedJwt })
+  useFormSync(form, { gaugeAddress: gauge.toLowerCase(), pinataJwt: storedJwt ?? '' })
 
   const {
     onSubmit: onSubmitCreateVote,
@@ -37,7 +37,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
   } = useCreateVoteMutation({
     onReset: () => {
       resetForm(form, defaultValues)
-      updateForm(form, { pinataJwt: storedJwt })
+      updateForm(form, { pinataJwt: storedJwt ?? '' })
       onSuccess()
     },
   })

@@ -117,4 +117,4 @@ export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-d
 export const useDismissPoolBanner = (network: string, poolId: string) =>
   useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
 
-export const usePinataJwt = () => useLocalStorage<string>('pinataJwt', '')
+export const usePinataJwt = () => useLocalStorage<string | null>('pinataJwt', null)
