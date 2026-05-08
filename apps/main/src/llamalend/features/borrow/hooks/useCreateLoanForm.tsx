@@ -15,7 +15,6 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
@@ -58,7 +57,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
   const formOptions = {
-    ...formDefaultOptions,
     resolver,
     defaultValues: {
       ...userDefaultValues,
@@ -71,7 +69,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   }
   const form = useForm<CreateLoanForm>(formOptions)
 
-  const values = watchForm(form)
+  const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({

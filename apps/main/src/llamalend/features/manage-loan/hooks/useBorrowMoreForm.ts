@@ -29,7 +29,6 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { resetForm, useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
@@ -113,12 +112,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const form = useForm<BorrowMoreForm>({
-    ...formDefaultOptions,
     resolver: vestResolver(borrowMoreFormValidationSuite),
     defaultValues: emptyBorrowMoreForm(),
   })
 
-  const values = watchForm(form)
+  const values = form.watchValues()
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
   const {
     onSubmit: onMutationSubmit,

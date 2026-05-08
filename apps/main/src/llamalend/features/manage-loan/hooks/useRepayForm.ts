@@ -25,7 +25,6 @@ import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { filterFormErrors, resetForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
@@ -97,7 +96,6 @@ const defaultValues = {
   slippage: SLIPPAGE_PRESETS.STABLE,
 }
 const formOptions = {
-  ...formDefaultOptions,
   defaultValues,
 } as const
 
@@ -128,7 +126,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     resolver: vestResolver(useMemo(() => repayFormValidationSuite(market), [market])),
   })
 
-  const values = watchForm(form)
+  const values = form.watchValues()
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {

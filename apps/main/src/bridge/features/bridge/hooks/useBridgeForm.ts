@@ -9,7 +9,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useForm } from '@ui-kit/features/forms'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
@@ -52,7 +51,6 @@ const emptyBridgeForm = () =>
   }) satisfies BridgeForm
 
 const formProps = {
-  ...formDefaultOptions,
   resolver: vestResolver(bridgeFormValidationSuite),
   defaultValues: emptyBridgeForm(),
 }
@@ -60,7 +58,7 @@ const formProps = {
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
   const form = useForm<BridgeForm>(formProps)
 
-  const values = watchForm(form)
+  const values = form.watchValues()
 
   const { address: userAddress } = useConnection()
   const params = useBridgeParams({ chainId, userAddress, ...values })

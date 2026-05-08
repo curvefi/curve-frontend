@@ -16,7 +16,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 import { resetForm, useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
@@ -26,7 +25,6 @@ const defaultValues = {
   maxCollateral: undefined,
 }
 const formOptions = {
-  ...formDefaultOptions,
   resolver: vestResolver(addCollateralFormValidationSuite),
   defaultValues,
 }
@@ -53,7 +51,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<CollateralForm>(formOptions)
 
-  const values = watchForm(form)
+  const values = form.watchValues()
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
