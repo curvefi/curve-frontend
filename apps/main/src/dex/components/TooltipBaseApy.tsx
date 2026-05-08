@@ -2,8 +2,9 @@ import { styled } from 'styled-components'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import Box from '@mui/material/Box'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const TooltipBaseApy = ({
   baseApy,
@@ -32,8 +33,8 @@ export const TooltipBaseApy = ({
         {label} <Chip size="xs">(annualized)</Chip>
       </Title>
       <ul>
-        <li>Daily: {formatNumber(baseApy?.day, FORMAT_OPTIONS.PERCENT)}</li>
-        <li>Weekly: {formatNumber(baseApy?.week, FORMAT_OPTIONS.PERCENT)}</li>
+        <li>Daily: {formatNumber(amount(baseApy?.day), FORMAT_OPTIONS.PERCENT) ?? '-'}</li>
+        <li>Weekly: {formatNumber(amount(baseApy?.week), FORMAT_OPTIONS.PERCENT) ?? '-'}</li>
       </ul>
 
       {baseApy?.day && Number(baseApy.day) < 0 && (

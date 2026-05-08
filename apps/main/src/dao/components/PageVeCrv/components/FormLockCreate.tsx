@@ -16,12 +16,13 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatDate, formatNumber, scanTxPath } from '@ui/utils'
+import { formatDate, scanTxPath } from '@ui/utils'
 import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -112,7 +113,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
         const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
-        const notifyMessage = t`Please confirm locking ${formatNumber(formValues.lockedAmt)} CRV until ${localUtcDate}.`
+        const notifyMessage = t`Please confirm locking ${formatNumber(amount(formValues.lockedAmt), { abbreviate: false }) ?? '-'} CRV until ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
 

@@ -15,12 +15,12 @@ import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
-import { formatDate, formatNumber, getFractionDigitsOptions, scanTokenPath } from '@ui/utils'
+import { formatDate, getFractionDigitsOptions, scanTokenPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
 type PoolParametersProps = {
@@ -47,14 +47,15 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   const { gamma, A, future_A, future_A_time, initial_A, initial_A_time, priceOracle, priceScale } = poolParameters ?? {}
 
   const isFxSwap = poolMetadata?.hasDonations ?? false
-  const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
-  const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
-  const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { decimals: 5 })
+  const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5, abbreviate: false })
+  const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5, abbreviate: false })
+  const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { decimals: 5, abbreviate: false })
   const convertA = (a: number | string | undefined) => {
     if (!isFxSwap || a == null) return a
     return formatCryptoA(a, FXSWAP)
   }
-  const formatADisplay = (a: number | string | undefined) => formatNumber(convertA(a))
+  const formatADisplay = (a: number | string | undefined) =>
+    formatNumber(amount(convertA(a)), { abbreviate: false }) ?? '-'
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -299,7 +300,9 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
           {snapshotData.maHalfTime !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Moving Average Time:`}</PoolParameterTitle>
-              <PoolParameterValue>{formatNumber(snapshotData.maHalfTime, { useGrouping: false })}</PoolParameterValue>
+              <PoolParameterValue>
+                {formatNumber(snapshotData.maHalfTime, { useGrouping: false, abbreviate: false })}
+              </PoolParameterValue>
             </PoolParameter>
           )}
         </SectionWrapper>
@@ -315,7 +318,9 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                 return (
                   <StatsContainer key={p}>
                     <StatsSymbol>{symbol}:</StatsSymbol>
-                    <StatsData>{formatNumber(p, { ...getFractionDigitsOptions(p, 10) })}</StatsData>
+                    <StatsData>
+                      {formatNumber(amount(p), { ...getFractionDigitsOptions(p, 10), abbreviate: false }) ?? '-'}
+                    </StatsData>
                   </StatsContainer>
                 )
               })}
@@ -332,7 +337,9 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
               return (
                 <StatsContainer key={p}>
                   <StatsSymbol>{symbol}:</StatsSymbol>
-                  <StatsData>{formatNumber(p, { ...getFractionDigitsOptions(p, 10) })}</StatsData>
+                  <StatsData>
+                    {formatNumber(amount(p), { ...getFractionDigitsOptions(p, 10), abbreviate: false }) ?? '-'}
+                  </StatsData>
                 </StatsContainer>
               )
             })}

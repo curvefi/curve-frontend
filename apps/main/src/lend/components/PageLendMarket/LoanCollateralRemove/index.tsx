@@ -25,13 +25,13 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { scanTxPath, formatNumber } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -228,9 +228,9 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
         isError={!!formValues.collateralError}
         message={
           formValues.collateralError === 'too-much'
-            ? t`Amount > wallet balance ${formatNumber(userBalances?.collateral)}`
+            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.collateral), { abbreviate: false }) ?? '-'}`
             : formValues.collateralError === 'too-much-max'
-              ? t`Amount > max removable ${formatNumber(maxRemovable)}`
+              ? t`Amount > max removable ${formatNumber(amount(maxRemovable), { abbreviate: false }) ?? '-'}`
               : undefined
         }
         disabled={disabled}

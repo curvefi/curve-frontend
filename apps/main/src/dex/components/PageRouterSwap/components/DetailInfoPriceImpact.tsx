@@ -1,7 +1,8 @@
 import { DetailInfo } from '@ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const DetailInfoPriceImpact = ({
   loading,
@@ -25,6 +26,10 @@ export const DetailInfoPriceImpact = ({
     }
     testId="price-impact"
   >
-    {formatNumber(priceImpact, { style: 'percent', ...getFractionDigitsOptions(priceImpact, 5) })}
+    {formatNumber(priceImpact, {
+      ...getFractionDigitsOptions(priceImpact, 5),
+      unit: 'percentage',
+      abbreviate: false,
+    }) ?? '-'}
   </DetailInfo>
 )

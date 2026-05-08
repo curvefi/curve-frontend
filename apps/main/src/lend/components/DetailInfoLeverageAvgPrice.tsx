@@ -1,6 +1,6 @@
 import { DetailInfo } from '@ui/DetailInfo'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const DetailInfoLeverageAvgPrice = ({
   avgPrice,
@@ -10,6 +10,6 @@ export const DetailInfoLeverageAvgPrice = ({
   loading: boolean
 }) => (
   <DetailInfo label={t`Expected avg. price:`} loading={loading} loadingSkeleton={[60, 20]}>
-    <strong>{formatNumber(avgPrice, { defaultValue: '-' })}</strong>
+    <strong>{formatNumber(amount(avgPrice), { abbreviate: false }) ?? '-'}</strong>
   </DetailInfo>
 )

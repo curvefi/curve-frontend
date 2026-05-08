@@ -26,13 +26,13 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const CollateralDecrease = ({
   curve,
@@ -217,7 +217,7 @@ export const CollateralDecrease = ({
   }, [confirmedHealthWarning, healthMode?.message, llamma?.id, haveSigner, formEstGas.loading, formStatus, formValues])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const disabled = !chainId || !llamma || formStatus.isInProgress || maxRemovable === ''
+  const disabled = !chainId || !llamma || formStatus.isInProgress || String(maxRemovable).length === 0
 
   return (
     <>
@@ -228,7 +228,7 @@ export const CollateralDecrease = ({
           label={t`Collateral to remove`}
           isError={!!formValues.collateralError}
           {...(formValues.collateralError === 'too-much' && {
-            message: t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`,
+            message: t`Cannot be greater than ${formatNumber(amount(maxRemovable), { abbreviate: false }) ?? '-'}`,
           })}
           disabled={disabled}
           inputBalanceUsd={decimal(

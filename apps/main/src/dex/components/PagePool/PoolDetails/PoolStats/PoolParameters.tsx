@@ -10,12 +10,12 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { FORMAT_OPTIONS, formatDate, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS, formatDate } from '@ui/utils'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Chain, weiToEther } from '@ui-kit/utils'
+import { Chain, weiToEther, formatNumber, amount } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -44,8 +44,8 @@ export const PoolParameters = ({
     () =>
       tvl && volume
         ? +tvl && +volume
-          ? formatNumber((+volume / +tvl) * 100, FORMAT_OPTIONS.PERCENT)
-          : formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })
+          ? (formatNumber(amount((+volume / +tvl) * 100), FORMAT_OPTIONS.PERCENT) ?? '-')
+          : formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })
         : '-',
     [tvl, volume],
   )
@@ -74,10 +74,7 @@ export const PoolParameters = ({
       <Stack gap={Spacing.sm}>
         {!isLite && (
           <>
-            <ActionInfo
-              label={t`Daily USD volume`}
-              value={formatNumber(volume, { notation: 'compact', defaultValue: '-' })}
-            />
+            <ActionInfo label={t`Daily USD volume`} value={formatNumber(amount(volume), { abbreviate: true }) ?? '-'} />
             <ActionInfo
               label={t`Liquidity utilization`}
               value={liquidityUtilization}
@@ -91,10 +88,9 @@ export const PoolParameters = ({
           value={
             staked?.gaugeTotalSupply === 'string'
               ? staked.gaugeTotalSupply
-              : formatNumber(staked?.gaugeTotalSupply && weiToEther(+staked.gaugeTotalSupply), {
-                  notation: 'compact',
-                  defaultValue: '-',
-                })
+              : (formatNumber(amount(staked?.gaugeTotalSupply && weiToEther(+staked.gaugeTotalSupply)), {
+                  abbreviate: true,
+                }) ?? '-')
           }
         />
         <ActionInfo
@@ -102,31 +98,34 @@ export const PoolParameters = ({
           value={
             typeof staked?.totalStakedPercent === 'string'
               ? staked.totalStakedPercent
-              : formatNumber(staked?.totalStakedPercent, { style: 'percent', defaultValue: '-' })
+              : formatNumber(staked.totalStakedPercent, { unit: 'percentage', abbreviate: false })
           }
         />
 
         <ActionInfo
           label={t`Fee`}
           loading={isLoadingParameters}
-          value={formatNumber(fee, { style: 'percent', maximumFractionDigits: 4 })}
+          value={formatNumber(amount(fee), { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'}
         />
 
         <ActionInfo
           label={t`DAO fee`}
           loading={isLoadingParameters}
           valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-          value={formatNumber(isEymaPools ? +adminFee / 2 : adminFee, {
-            style: 'percent',
-            maximumFractionDigits: 4,
-          })}
+          value={
+            formatNumber(amount(isEymaPools ? +adminFee / 2 : adminFee), {
+              maximumFractionDigits: 4,
+              unit: 'percentage',
+              abbreviate: false,
+            }) ?? '-'
+          }
         />
         {isEymaPools && <ActionInfo label={`EYWA fee`} loading={isLoadingParameters} value={+adminFee / 2} />}
 
         <ActionInfo
           label={t`Virtual price`}
           loading={isLoadingParameters}
-          value={formatNumber(parameters?.virtualPrice, { maximumFractionDigits: 8, defaultValue: '-' })}
+          value={formatNumber(amount(parameters?.virtualPrice), { maximumFractionDigits: 8, abbreviate: false }) ?? '-'}
           valueTooltip={t`Measures pool growth; this is not a dollar value`}
         />
       </Stack>
@@ -140,7 +139,8 @@ export const PoolParameters = ({
               label={t`Price Oracle`}
               value={priceOracle.map((p, idx) => (
                 <strong key={p}>
-                  {poolData.pool.wrappedCoins[idx + 1]}: {formatNumber(p, { maximumFractionDigits: 10 })}
+                  {poolData.pool.wrappedCoins[idx + 1]}:{' '}
+                  {formatNumber(amount(p), { maximumFractionDigits: 10, abbreviate: false }) ?? '-'}
                 </strong>
               ))}
             />
@@ -150,7 +150,8 @@ export const PoolParameters = ({
               label={t`Price Scale`}
               value={priceScale.map((p, idx) => (
                 <strong key={p}>
-                  {poolData.pool.wrappedCoins[idx + 1]}: {formatNumber(p, { maximumFractionDigits: 10 })}
+                  {poolData.pool.wrappedCoins[idx + 1]}:{' '}
+                  {formatNumber(amount(p), { maximumFractionDigits: 10, abbreviate: false }) ?? '-'}
                 </strong>
               ))}
             />
@@ -161,11 +162,16 @@ export const PoolParameters = ({
       {!pricesApi && (
         <Stack spacing={Spacing.sm}>
           <Title>{t`Pool Parameters`}</Title>
-          {gamma && <ActionInfo label={t`Gamma`} value={formatNumber(gamma, { useGrouping: false })} />}
+          {gamma && (
+            <ActionInfo
+              label={t`Gamma`}
+              value={formatNumber(amount(gamma), { useGrouping: false, abbreviate: false }) ?? '-'}
+            />
+          )}
           {virtualPrice && (
             <ActionInfo
               label={t`A`}
-              value={formatNumber(A, { useGrouping: false })}
+              value={formatNumber(amount(A), { useGrouping: false, abbreviate: false }) ?? '-'}
               valueTooltip={
                 <Stack gap={Spacing.sm}>
                   {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
@@ -185,8 +191,8 @@ export const PoolParameters = ({
               <ActionInfo
                 label={t`Ramping A`}
                 valueTooltip={t`Slowly changing up A so that it doesn't negatively change virtual price growth of shares`}
-                prevValue={formatNumber(initial_A, { useGrouping: false })}
-                value={formatNumber(future_A, { useGrouping: false })}
+                prevValue={formatNumber(amount(initial_A), { useGrouping: false, abbreviate: false }) ?? '-'}
+                value={formatNumber(amount(future_A), { useGrouping: false, abbreviate: false }) ?? '-'}
               />
               <ActionInfo
                 label=" "

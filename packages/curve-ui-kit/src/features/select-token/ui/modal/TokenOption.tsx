@@ -2,13 +2,13 @@ import { useRef } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
@@ -77,13 +77,13 @@ export const TokenOption = ({
           <Stack direction="column" alignItems="end">
             {hasBalance && (
               <Typography variant="bodyMBold" color={primary}>
-                {formatNumber(balance, { decimals: 5 })}
+                {formatNumber(amount(balance), { decimals: 5, abbreviate: false }) ?? '-'}
               </Typography>
             )}
 
             {hasBalanceUsd && (
               <Typography variant="bodyXsRegular" color={secondary}>
-                {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD)}
+                {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD) ?? '-'}
               </Typography>
             )}
 

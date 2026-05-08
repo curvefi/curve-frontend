@@ -8,8 +8,9 @@ import { ChainId } from '@/lend/types/lend.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type Data = {
   label: string
@@ -73,7 +74,7 @@ export const DetailInfoCrvIncentives = ({
       {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => (
         <DetailInfo
           key={`${label}${idx}`}
-          loading={aprCurr === ''}
+          loading={String(aprCurr).length === 0}
           loadingSkeleton={skeleton ?? [140, 23]}
           label={label}
           tooltip={
@@ -107,7 +108,11 @@ function _getDataApr(
   gaugeTotalSupply: number | null,
   lpTokenAmount: string,
 ) {
-  const resp = { aprCurr: formatNumber(currApr, FORMAT_OPTIONS.PERCENT), aprNew: '', ratio: 0 }
+  const resp = {
+    aprCurr: formatNumber(amount(currApr), FORMAT_OPTIONS.PERCENT) ?? '-',
+    aprNew: '',
+    ratio: 0,
+  }
 
   if (+currApr > 0 && gaugeTotalSupply && +(gaugeTotalSupply || '0') > 0 && +lpTokenAmount > 0) {
     const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupply

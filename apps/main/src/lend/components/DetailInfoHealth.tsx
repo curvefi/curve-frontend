@@ -11,8 +11,8 @@ import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
@@ -121,7 +121,13 @@ export const DetailInfoHealth = ({
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
-      return formatNumber(healthMode.percent, { style: 'percent', maximumFractionDigits: 2 })
+      return (
+        formatNumber(toAmount(healthMode.percent), {
+          maximumFractionDigits: 2,
+          unit: 'percentage',
+          abbreviate: false,
+        }) ?? '-'
+      )
     }
     return ''
   }, [healthMode.percent])
@@ -152,7 +158,11 @@ export const DetailInfoHealth = ({
         healthPercent && currentHealthMode.percent ? (
           <span>
             <HealthPercent colorKey={currentHealthMode.colorKey}>
-              {formatNumber(currentHealthMode.percent, { style: 'percent', maximumFractionDigits: 2 })}
+              {formatNumber(toAmount(currentHealthMode.percent), {
+                maximumFractionDigits: 2,
+                unit: 'percentage',
+                abbreviate: false,
+              }) ?? '-'}
             </HealthPercent>{' '}
             <HealthPercent colorKey={healthMode.colorKey}>
               <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}

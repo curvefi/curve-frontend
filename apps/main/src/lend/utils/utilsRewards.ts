@@ -1,5 +1,6 @@
 import { RewardOther } from '@/lend/types/lend.types'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export function getTotalApr(lendApy: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
   const othersTotal = (others ?? []).reduce((prev, curr) => {
@@ -15,7 +16,7 @@ export function getTotalApr(lendApy: number, crvBase: number, crvBoost: number, 
     max,
     minMax:
       min === max
-        ? formatNumber(min, FORMAT_OPTIONS.PERCENT)
-        : `${formatNumber(min, FORMAT_OPTIONS.PERCENT)} - ${formatNumber(max, FORMAT_OPTIONS.PERCENT)}`,
+        ? (formatNumber(amount(min), FORMAT_OPTIONS.PERCENT) ?? '-')
+        : `${formatNumber(amount(min), FORMAT_OPTIONS.PERCENT) ?? '-'} - ${formatNumber(amount(max), FORMAT_OPTIONS.PERCENT) ?? '-'}`,
   }
 }

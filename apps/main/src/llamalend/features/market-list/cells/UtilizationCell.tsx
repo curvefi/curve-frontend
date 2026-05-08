@@ -5,14 +5,13 @@ import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
-import { formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { formatPercent } from '@ui-kit/utils'
+import { formatPercent, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,9 +31,7 @@ const Currency = ({
   <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={1} component="span" display="inline-flex">
     <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
     <span>
-      {balance != null
-        ? formatNumber(balance, { ...(isUsd(symbol) && { currency: 'USD' }), notation: 'compact' })
-        : '-'}
+      {formatNumber(balance, { unit: isUsd(symbol) ? 'dollar' : undefined, abbreviate: true }) ?? '-'}
       {!isUsd(symbol) && ` ${symbol}`}
     </span>
   </Stack>

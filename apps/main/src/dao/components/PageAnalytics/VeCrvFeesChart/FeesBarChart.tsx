@@ -1,6 +1,7 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import type { Distribution } from '@curvefi/prices-api/revenue'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
 type FeesBarChartProps = {
@@ -36,7 +37,9 @@ export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={value => `${formatNumber(value, { ...(value > 10 && { decimals: 0 }) })}`}
+        tickFormatter={value =>
+          `${formatNumber(amount(value), { ...(value > 10 && { decimals: 0 }), abbreviate: false }) ?? '-'}`
+        }
         tickCount={10}
       />
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />

@@ -5,9 +5,9 @@ import { styled } from 'styled-components'
 import { useChainId } from 'wagmi'
 import { Icon } from '@ui/Icon'
 import { Spinner } from '@ui/Spinner'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress, formatNumber } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -47,7 +47,7 @@ interface ChipTokenProps extends AriaButtonProps {
 export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const chainId = useChainId()
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
-  const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
+  const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, abbreviate: false }) ?? '-'
 
   const handleMouseEnter = useCallback(() => {
     if (usdRate == null) {

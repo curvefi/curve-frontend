@@ -7,10 +7,10 @@ import type { ProposalType } from '@curvefi/prices-api/proposal/models'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber } from '@ui-kit/utils'
 
 type Props = {
   totalVotes: number
@@ -31,13 +31,13 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
         <Box>
           <SubTitle>{t`Total Votes`}</SubTitle>
           <Box>
-            <Data>{formatNumber(totalVotes, { notation: 'compact' })} veCRV</Data>
+            <Data>{formatNumber(totalVotes, { abbreviate: true })} veCRV</Data>
           </Box>
         </Box>
         <Box>
           <SubTitle>{t`Voters`}</SubTitle>
           <Box>
-            <Data className="align-right">{formatNumber(pricesProposal?.voteCount, { notation: 'compact' })}</Data>
+            <Data className="align-right">{formatNumber(pricesProposal?.voteCount, { abbreviate: true }) ?? '-'}</Data>
           </Box>
         </Box>
       </TotalWrapper>
@@ -62,8 +62,9 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
                 </Box>
                 <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], vote.txHash)}>
                   <Data>
-                    {formatNumber(+vote.stake, { notation: 'compact' })} (
-                    {formatNumber(vote.relativePower, { notation: 'compact' })}%)
+                    {formatNumber(+vote.stake, { abbreviate: true })} (
+                    {formatNumber(vote.relativePower, { abbreviate: true })}
+                    %)
                   </Data>
                 </StyledExternalLink>
               </DataRow>

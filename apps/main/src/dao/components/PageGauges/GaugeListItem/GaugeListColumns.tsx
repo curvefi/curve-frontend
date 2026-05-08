@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import { formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type GaugeListColumnsProps = {
   gaugeData: GaugeFormattedData
@@ -14,11 +14,7 @@ export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
     <>
       <BoxColumn>
         <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
-          {formatNumber(gaugeData.gauge_relative_weight, {
-            notation: 'compact',
-            decimals: 5,
-          })}
-          %
+          {formatNumber(gaugeData.gauge_relative_weight!, { decimals: 5, abbreviate: true })}%
         </GaugeData>
       </BoxColumn>
       <BoxColumn>
@@ -32,10 +28,7 @@ export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
           } ${gaugeListSortBy.key === 'gauge_relative_weight_7d_delta' ? 'bold' : ''}`}
         >
           {gaugeData.gauge_relative_weight_7d_delta
-            ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, {
-                notation: 'compact',
-                decimals: 5,
-              })}%`
+            ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, { decimals: 5, abbreviate: true })}%`
             : 'N/A'}
         </GaugeData>
       </BoxColumn>
@@ -50,9 +43,7 @@ export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
           } ${gaugeListSortBy.key === 'gauge_relative_weight_60d_delta' ? 'bold' : ''}`}
         >
           {gaugeData.gauge_relative_weight_60d_delta
-            ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, {
-                notation: 'compact',
-              })}%`
+            ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: true })}%`
             : 'N/A'}
         </GaugeData>
       </BoxColumn>

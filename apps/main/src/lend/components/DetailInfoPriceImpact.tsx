@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { DetailInfo } from '@ui/DetailInfo'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const DetailInfoPriceImpact = ({
   loading,
@@ -14,7 +14,8 @@ export const DetailInfoPriceImpact = ({
 }) => {
   const formattedPriceImpact = useMemo(() => {
     if (priceImpact === 'N/A') return 'N/A'
-    if (!isNaN(+priceImpact)) return `≈${formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}`
+    if (!Number.isNaN(+priceImpact))
+      return `≈${formatNumber(amount(priceImpact), { maximumSignificantDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'}`
     return ''
   }, [priceImpact])
 

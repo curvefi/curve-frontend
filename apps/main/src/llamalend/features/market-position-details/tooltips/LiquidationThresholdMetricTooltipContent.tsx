@@ -7,10 +7,11 @@ import {
   TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Decimal } from '@primitives/decimal.utils'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
+import { FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import type { QueryProp, Range } from '@ui-kit/types/util'
+import { formatNumber } from '@ui-kit/utils'
 
 type LiquidationThresholdTooltipContentProps = {
   userPrices: QueryProp<Range<Decimal>>
@@ -34,14 +35,17 @@ export const LiquidationThresholdTooltipContent = ({
       />
       <TooltipItems secondary>
         <TooltipItem title={t`Distance to LT`} variant="independent">
-          {rangeToLiquidation ? formatNumber(rangeToLiquidation, { ...FORMAT_OPTIONS.PERCENT }) : UnavailableNotation}
+          {rangeToLiquidation
+            ? formatNumber(rangeToLiquidation, { ...FORMAT_OPTIONS.PERCENT, abbreviate: false })
+            : UnavailableNotation}
         </TooltipItem>
         <TooltipItem title={t`Liquidation range`} variant="independent">
-          {liquidationRange?.map(price => formatNumber(price, { ...FORMAT_OPTIONS.USD })).join(' to ') ??
-            UnavailableNotation}
+          {liquidationRange
+            ?.map(price => formatNumber(price, { ...FORMAT_OPTIONS.USD, abbreviate: false }))
+            .join(' to ') ?? UnavailableNotation}
         </TooltipItem>
         <TooltipItem title={t`Amount of bands`} variant="independent">
-          {bandRange ? formatNumber(Math.abs(bandRange[0] - bandRange[1])) : UnavailableNotation}
+          {bandRange ? formatNumber(Math.abs(bandRange[0] - bandRange[1]), { abbreviate: false }) : UnavailableNotation}
         </TooltipItem>
         <TooltipItem title={t`Band range`} variant="independent">
           {bandRange ? `${bandRange[0]} to ${bandRange[1]}` : UnavailableNotation}

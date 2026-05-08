@@ -9,8 +9,9 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Spinner } from '@ui/Spinner'
 import { Stats } from '@ui/Stats'
 import { Chip } from '@ui/Typography/Chip'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
 type AllTotal = {
@@ -75,10 +76,10 @@ export const SummaryClaimable = ({ title }: Props) => {
             <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
               <Chip
                 size="md"
-                tooltip={`${formatNumber(1)} ${symbol} = ${formatNumber(price, FORMAT_OPTIONS.USD)}`}
+                tooltip={`${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, FORMAT_OPTIONS.USD)}`}
                 tooltipProps={tooltipProps}
               >
-                {formatNumber(total)}
+                {formatNumber(total, { abbreviate: false })}
               </Chip>
             </StyledStats>
           ))}

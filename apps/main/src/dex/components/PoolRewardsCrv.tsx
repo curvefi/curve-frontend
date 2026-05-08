@@ -5,8 +5,9 @@ import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const PoolRewardsCrv = ({
   isHighlight,
@@ -25,7 +26,7 @@ export const PoolRewardsCrv = ({
     if (isLoading || typeof poolData === 'undefined') {
       return ''
     } else if (rewardsNeedNudging || areCrvRewardsStuckInBridge) {
-      return `${formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })} CRV`
+      return `${formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })} CRV`
     } else if (rewardsApy?.crv && (rewardsApy?.crv[0] !== 0 || rewardsApy?.crv[1] !== 0)) {
       const [base, boosted] = rewardsApy.crv
       if (!base && !boosted) return null

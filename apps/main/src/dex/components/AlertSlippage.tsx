@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { AlertBox } from '@ui/AlertBox'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
 import { Trans } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type Props = {
   maxSlippage: string
@@ -21,11 +22,16 @@ export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
     <AlertBox alertType="warning">
       <div>
         <Trans>
-          With your current slippage tolerance setting ({formatNumber(maxSlippage, FORMAT_OPTIONS.PERCENT)}), the
-          expected output displayed above might incur up to{' '}
+          With your current slippage tolerance setting (
+          {formatNumber(amount(maxSlippage), FORMAT_OPTIONS.PERCENT) ?? '-'}
+          ), the expected output displayed above might incur up to{' '}
           <strong>
-            {formatNumber(maxUsdSlippage, { maximumFractionDigits: 0, currency: 'USD', style: 'currency' })} worth of
-            slippage
+            {formatNumber(maxUsdSlippage, {
+              maximumFractionDigits: 0,
+              unit: 'dollar',
+              abbreviate: false,
+            })}{' '}
+            worth of slippage
           </strong>{' '}
           (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above.
         </Trans>

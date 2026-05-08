@@ -26,14 +26,14 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const LoanDecrease = ({
   curve,
@@ -235,10 +235,10 @@ export const LoanDecrease = ({
         isError={!!formValues.debtError}
         message={
           formValues.debtError === 'too-much'
-            ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(userState?.debt ?? 0)}.`
+            ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'}.`
             : formValues.debtError === 'not-enough'
               ? t`The specified amount exceeds the current balance in the wallet.`
-              : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
+              : t`Debt ${formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'}`
         }
         disabled={disable || formValues.isFullRepay}
         inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}

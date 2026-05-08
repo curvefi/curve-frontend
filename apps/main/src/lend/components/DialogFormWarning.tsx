@@ -3,8 +3,8 @@ import { styled } from 'styled-components'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Checkbox } from '@ui/Checkbox'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type PriceImpact = { priceImpact: string; swapFrom: string; swapTo: string }
 
@@ -23,10 +23,7 @@ export function DialogFormWarning({
     const resp = { title: '', warning: '' }
     const { priceImpact: priceImpactPercent, swapFrom, swapTo } = priceImpact
     resp.title = t`High price impact!`
-    resp.warning = t`There is a price impact of ${formatNumber(priceImpactPercent, {
-      style: 'percent',
-      maximumSignificantDigits: 4,
-    })} when swapping from ${swapFrom} to ${swapTo}.`
+    resp.warning = t`There is a price impact of ${formatNumber(amount(priceImpactPercent), { maximumSignificantDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'} when swapping from ${swapFrom} to ${swapTo}.`
     return resp
   }, [])
 

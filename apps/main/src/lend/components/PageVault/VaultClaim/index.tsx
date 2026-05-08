@@ -16,9 +16,10 @@ import { Stats } from '@ui/Stats'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -162,13 +163,13 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 <>
                   {haveClaimableCrv && (
                     <Stats isOneLine isBorderBottom={rewards.length > 0} label="CRV">
-                      {formatNumber(crv)}
+                      {formatNumber(toAmount(crv), { abbreviate: false }) ?? '-'}
                     </Stats>
                   )}
 
                   {rewards.map(({ token, symbol, amount }, idx) => (
                     <Stats isOneLine isBorderBottom={idx !== rewards.length - 1} key={token} label={symbol}>
-                      {formatNumber(amount)}
+                      {formatNumber(toAmount(amount), { abbreviate: false }) ?? '-'}
                     </Stats>
                   ))}
                 </>

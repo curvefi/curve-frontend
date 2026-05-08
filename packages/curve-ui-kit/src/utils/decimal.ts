@@ -1,6 +1,14 @@
 import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
-import type { Decimal } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
+
+/** Converts loose numeric input to an Amount for formatting, returning undefined for empty or non-numeric values. */
+export const amount = (value: number | string | BigNumber | bigint | null | undefined): Amount | undefined => {
+  if (value == null || value === '') return undefined
+  if (typeof value === 'number') return Number.isNaN(value) ? undefined : value
+
+  return decimal(value)
+}
 
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {

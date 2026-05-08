@@ -3,8 +3,7 @@ import { styled } from 'styled-components'
 import { TOP_HOLDERS } from '@/dao/constants'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
-import { formatNumber } from '@ui/utils'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
@@ -79,7 +78,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={value =>
-              filter === 'weightRatio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
+              filter === 'weightRatio' ? `${value}%` : (formatNumber(amount(value), { abbreviate: true }) ?? '-')
             }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}

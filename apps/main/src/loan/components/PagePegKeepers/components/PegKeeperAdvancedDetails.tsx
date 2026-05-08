@@ -1,12 +1,11 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import type { PegKeeper, PegKeeperDetails, Pool } from '../types'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -48,7 +47,7 @@ export const PegKeeperAdvancedDetails = ({
     <ActionInfo
       label={t`Est. rebalance profit`}
       loading={estCallerProfit == null}
-      value={formatNumber(estCallerProfit, { decimals: 5 })}
+      value={formatNumber(amount(estCallerProfit), { decimals: 5, abbreviate: false }) ?? '-'}
       valueRight={
         <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
           <InfoOutlinedIcon

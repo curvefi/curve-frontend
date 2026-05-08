@@ -19,14 +19,14 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
@@ -190,9 +190,9 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
           isError={!!formValues.amountError}
           message={
             formValues.amountError === 'too-much-wallet'
-              ? t`Amount > wallet balance ${formatNumber(userBalances?.borrowed ?? '')}`
+              ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.borrowed), { abbreviate: false }) ?? '-'}`
               : formValues.amountError === 'too-much-max'
-                ? t`Amount > max deposit amount ${formatNumber(maxResp?.max ?? '')}`
+                ? t`Amount > max deposit amount ${formatNumber(amount(maxResp?.max), { abbreviate: false }) ?? '-'}`
                 : undefined
           }
           disabled={disabled}
@@ -230,7 +230,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
           loadingSkeleton={[100, 20]}
           label={t`Expected vault shares:`}
         >
-          <strong>{formatNumber(detailInfo?.preview, { defaultValue: '-' })}</strong>
+          <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false }) ?? '-'}</strong>
         </DetailInfo>
         <DetailInfoRate isBorrow={false} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
 

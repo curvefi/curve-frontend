@@ -32,7 +32,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -43,7 +43,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoutes } from './components/DetailInfoTradeRoutes'
 
@@ -281,8 +281,8 @@ export const LoanDeleverage = ({
         isError={!!formValues.collateralError}
         message={
           formValues.collateralError === 'too-much'
-            ? t`Amount must be <= ${formatNumber(userState?.collateral)}`
-            : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
+            ? t`Amount must be <= ${formatNumber(amount(userState?.collateral), { abbreviate: false }) ?? '-'}`
+            : t`Debt ${formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'} ${stablecoinName}`
         }
         disabled={disable}
         inputBalanceUsd={decimal(

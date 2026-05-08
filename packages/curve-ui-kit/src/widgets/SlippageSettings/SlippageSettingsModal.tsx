@@ -15,12 +15,11 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { MAX_RECOMMENDED_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_PRESETS } from './slippage.utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -33,8 +32,18 @@ type FormValues = {
   error?: Error
 }
 
-const FORMATTED_STABLE = formatNumber(SLIPPAGE_PRESETS.STABLE, { style: 'percent', maximumFractionDigits: 1 })
-const FORMATTED_CRYPTO = formatNumber(SLIPPAGE_PRESETS.CRYPTO, { style: 'percent', maximumFractionDigits: 1 })
+const FORMATTED_STABLE =
+  formatNumber(SLIPPAGE_PRESETS.STABLE, {
+    maximumFractionDigits: 1,
+    unit: 'percentage',
+    abbreviate: false,
+  }) ?? '-'
+const FORMATTED_CRYPTO =
+  formatNumber(SLIPPAGE_PRESETS.CRYPTO, {
+    maximumFractionDigits: 1,
+    unit: 'percentage',
+    abbreviate: false,
+  }) ?? '-'
 
 const inputErrorMapper = {
   'too-high': {

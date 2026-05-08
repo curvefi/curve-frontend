@@ -5,7 +5,8 @@ import { useStore } from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useMarketRates } from '@/llamalend/queries/market'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS } from '@ui/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 export function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const market = useOneWayMarket(rChainId, rOwmId).data

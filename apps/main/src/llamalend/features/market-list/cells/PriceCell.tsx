@@ -7,14 +7,13 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, requireChainId } from '@ui-kit/utils'
+import { decimal, requireChainId, formatNumber } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
@@ -120,7 +119,7 @@ const AssetValue = ({
   <WithSkeleton loading={isValueLoading}>
     <Tooltip title={tooltipTitle} body={tooltipBody}>
       <Stack direction="row" spacing={Spacing.xs} alignItems="center">
-        <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
+        <Typography variant="tableCellMBold">{formatNumber(value, { abbreviate: true }) ?? '-'}</Typography>
         <TokenIcon blockchainId={asset.chain} address={asset.address} size="mui-md" />
       </Stack>
     </Tooltip>
@@ -136,9 +135,9 @@ const AssetUsdValue = ({
   isPriceLoading: boolean
 }) => (
   <WithSkeleton loading={isPriceLoading}>
-    <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
+    <Tooltip title={formatNumber(usdValue, { decimals: 5, unit: 'dollar', abbreviate: false }) ?? '-'}>
       <Typography variant="bodySRegular" color="text.secondary">
-        {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
+        {formatNumber(usdValue, { unit: 'dollar', abbreviate: true }) ?? '-'}
       </Typography>
     </Tooltip>
   </WithSkeleton>
@@ -187,7 +186,8 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   }
 
   const tooltipTitle =
-    getTooltipTitle(columnId) ?? `${formatNumber(primaryValue, { decimals: 5 })} ${primaryAsset.symbol}`
+    getTooltipTitle(columnId) ??
+    `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
   const tooltipBody = getTooltipBody(columnId, stats)
 
   const primaryUsdValue = primaryPrice && primaryValue * primaryPrice

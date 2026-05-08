@@ -3,8 +3,9 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { styled } from 'styled-components'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 import { Box } from '@ui/Box'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload?.length) {
@@ -25,7 +26,7 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(feesUsd, { currency: 'USD', notation: 'compact' })}</TooltipData>
+            <TooltipData>{formatNumber(feesUsd, { unit: 'dollar', abbreviate: true }) ?? '-'}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>

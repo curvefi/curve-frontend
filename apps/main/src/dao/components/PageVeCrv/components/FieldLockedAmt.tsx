@@ -2,13 +2,12 @@ import { useCallback, useMemo } from 'react'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { MAINNET_CRV_ADDRESS, decimal } from '@ui-kit/utils'
+import { MAINNET_CRV_ADDRESS, decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const FieldLockedAmt = ({
   curve,
@@ -55,7 +54,8 @@ export const FieldLockedAmt = ({
       message={
         !!crv && lockedAmtError ? (
           <>
-            Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
+            Amount is greater than balance ({formatNumber(amount(crv), { abbreviate: false }) ?? '-'}
+            ). Get more{' '}
             <RouterLink
               sx={{ color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary }}
               href={getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}
@@ -65,20 +65,20 @@ export const FieldLockedAmt = ({
             .
           </>
         ) : (
-          isAdjustCrv && t`CRV Locked: ${formatNumber(lockedAmount)}`
+          isAdjustCrv && t`CRV Locked: ${formatNumber(amount(lockedAmount), { abbreviate: false }) ?? '-'}`
         )
       }
       onBalance={onBalance}
       walletBalance={{
         balance: decimal(crv),
-        loading: haveSigner && crv === '',
+        loading: haveSigner && typeof crv === 'string' && String(crv).length === 0,
         symbol: 'CRV',
       }}
       tokenSelector={<TokenLabel blockchainId="ethereum" address={MAINNET_CRV_ADDRESS} label="CRV" />}
     >
       {isAdjustCrv && lockedAmt && Number(lockedAmt) != 0 && futureVeCrv != null && (
         <HelperMessage
-          message={`${t`Future veCRV:`} ${formatNumber(vecrvInfo.veCrv)} → ${formatNumber(futureVeCrv)}`}
+          message={`${t`Future veCRV:`} ${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false }) ?? '-'} → ${formatNumber(futureVeCrv, { abbreviate: false })}`}
         />
       )}
     </LargeTokenInput>

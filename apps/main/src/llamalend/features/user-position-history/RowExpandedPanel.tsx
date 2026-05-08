@@ -1,10 +1,10 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
 const { Spacing } = SizesAndSpaces
@@ -28,7 +28,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
             }
           >
             {collateralChange > 0 ? '+' : ''}
-            {collateralChange === 0 ? '-' : formatNumber(collateralChange)}{' '}
+            {collateralChange === 0 ? '-' : formatNumber(collateralChange, { abbreviate: false })}{' '}
             {collateralChange != null && collateralChange !== 0 && collateralChangeUsd !== 0 && collateralToken?.symbol}
           </Typography>
         </Stack>
@@ -39,7 +39,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
             color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
           >
             {loanChange > 0 ? '+' : ''}
-            {loanChange !== 0 ? formatNumber(loanChange) : '-'}{' '}
+            {formatNumber(loanChange, { abbreviate: false })}{' '}
             {loanChange != null && loanChange !== 0 && borrowToken?.symbol}
           </Typography>
         </Stack>

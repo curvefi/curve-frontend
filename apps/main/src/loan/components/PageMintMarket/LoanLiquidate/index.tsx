@@ -22,10 +22,11 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 export const LoanLiquidate = ({
@@ -210,7 +211,7 @@ export const LoanLiquidate = ({
   return (
     <>
       <InputReadOnly title={t`Self-liquidation amount`}>
-        {formatNumber(liquidationAmt, { maximumFractionDigits: 2, defaultValue: '-' })}
+        {formatNumber(amount(liquidationAmt), { maximumFractionDigits: 2, abbreviate: false }) ?? '-'}
       </InputReadOnly>
 
       {/* detail info */}

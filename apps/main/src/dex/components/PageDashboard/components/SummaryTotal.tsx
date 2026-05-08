@@ -8,8 +8,8 @@ import {
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { Spinner } from '@ui/Spinner'
 import { Chip } from '@ui/Typography'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const SummaryTotal = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()
@@ -29,8 +29,8 @@ export const SummaryTotal = () => {
             <Spinner />
           </SummarySpinnerWrapper>
         )}
-        <TotalBalancesValue tooltip={formatNumber(total)} tooltipProps={{ noWrap: true }}>
-          {total === null ? '?' : formatNumber(total, { currency: 'USD', notation: 'compact', defaultValue: '-' })}
+        <TotalBalancesValue tooltip={formatNumber(total, { abbreviate: false }) ?? '-'} tooltipProps={{ noWrap: true }}>
+          {total === null ? '?' : formatNumber(total, { unit: 'dollar', abbreviate: true })}
         </TotalBalancesValue>
       </SummaryInnerContent>
     </StyledTotalBalanceWrapper>

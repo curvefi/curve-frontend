@@ -3,8 +3,8 @@ import type { FormLpTokenExpected } from '@/dex/components/PagePool/Deposit/type
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const DetailInfoEstLpTokens = ({
   formLpTokenExpected,
@@ -17,7 +17,7 @@ export const DetailInfoEstLpTokens = ({
 }) => {
   const { referenceAsset } = poolDataCacheOrApi.pool
   const showTooltip = referenceAsset !== 'CRYPTO'
-  const parsedVirtualPrice = `${formatNumber(formLpTokenExpected.virtualPrice)} ${referenceAsset}`
+  const parsedVirtualPrice = `${formatNumber(amount(formLpTokenExpected.virtualPrice), { abbreviate: false }) ?? '-'} ${referenceAsset}`
 
   // min lp tokens received including slippage
   const lpTokensExpectedWithSlippage = useMemo(() => {
@@ -38,14 +38,14 @@ export const DetailInfoEstLpTokens = ({
       tooltip={
         showTooltip ? (
           <IconTooltip placement="top-end" noWrap>
-            {formatNumber(1)} LP token = {parsedVirtualPrice}
+            {formatNumber(1, { abbreviate: false })} LP token = {parsedVirtualPrice}
           </IconTooltip>
         ) : (
           ''
         )
       }
     >
-      {formatNumber(lpTokensExpectedWithSlippage)}
+      {formatNumber(amount(lpTokensExpectedWithSlippage), { abbreviate: false }) ?? '-'}
     </DetailInfo>
   )
 }

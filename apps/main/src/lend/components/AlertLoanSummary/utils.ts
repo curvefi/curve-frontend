@@ -1,9 +1,9 @@
-import { formatNumber, NumberFormatOptions } from '@ui/utils'
+import { formatNumber, type NumberFormatOptions, amount } from '@ui-kit/utils'
 
 export function format(val: string | number | undefined) {
-  const options: NumberFormatOptions =
+  const options: Partial<NumberFormatOptions> =
     val && +val > 10
       ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
       : { minimumFractionDigits: 5, maximumFractionDigits: 5 }
-  return formatNumber(val, options)
+  return formatNumber(amount(val), { ...options, abbreviate: false }) ?? '-'
 }

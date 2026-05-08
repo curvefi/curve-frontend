@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
-import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { format } from '../utils'
 
 export const RouteToken = ({
@@ -28,8 +28,10 @@ export const RouteToken = ({
         <strong>{tokenSymbol}</strong>
       </Label>{' '}
       <Box grid className="right">
-        <strong>{format(value || undefined, { defaultValue: '-' })}</strong>
-        <AvgPrice>{parsedAvgPrice && `Avg. price: ${formatNumber(parsedAvgPrice, { defaultValue: '-' })}`}</AvgPrice>
+        <strong>{format(value || undefined)}</strong>
+        <AvgPrice>
+          {parsedAvgPrice && `Avg. price: ${formatNumber(amount(parsedAvgPrice), { abbreviate: false }) ?? '-'}`}{' '}
+        </AvgPrice>
       </Box>
     </Wrapper>
   )

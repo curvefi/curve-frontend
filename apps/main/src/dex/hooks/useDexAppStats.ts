@@ -5,9 +5,10 @@ import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { FORMAT_OPTIONS, formatNumber, type NetworkDef } from '@ui/utils'
+import { FORMAT_OPTIONS, type NetworkDef } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { formatNumber } from '@ui-kit/utils'
 import { useNetworkByChain } from '../entities/networks'
 
 export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean) => {
@@ -17,16 +18,19 @@ export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean
     enabled && [
       {
         label: t`Total Deposits`,
-        value: formatNumber(tvlTotal, { currency: 'USD', notation: 'compact' }),
+        value: formatNumber(tvlTotal, { unit: 'dollar', abbreviate: true }) ?? '-',
       },
       ...notFalsyArray(
         !isLite && [
           // only show total deposits on curve-lite networks
           {
             label: t`Daily Volume`,
-            value: formatNumber(volumeTotal?.totalVolume, { currency: 'USD', notation: 'compact' }),
+            value: formatNumber(volumeTotal?.totalVolume, { unit: 'dollar', abbreviate: true }) ?? '-',
           },
-          { label: t`Crypto Volume Share`, value: formatNumber(volumeTotal?.cryptoShare, FORMAT_OPTIONS.PERCENT) },
+          {
+            label: t`Crypto Volume Share`,
+            value: formatNumber(volumeTotal?.cryptoShare, FORMAT_OPTIONS.PERCENT) ?? '-',
+          },
         ],
       ),
     ],

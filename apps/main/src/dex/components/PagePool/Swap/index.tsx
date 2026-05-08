@@ -29,7 +29,7 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
@@ -41,11 +41,11 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const { cloneDeep, isNaN, isUndefined } = lodash
+const { cloneDeep, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
 export const Swap = ({
@@ -415,7 +415,7 @@ export const Swap = ({
           }
           {...(formValues.fromError && {
             isError: true,
-            message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
+            message: t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false }) ?? '-'}`,
           })}
           disabled={isDisabled}
           walletBalance={{
@@ -557,7 +557,7 @@ export const Swap = ({
       <AlertSlippage
         maxSlippage={maxSlippage}
         usdAmount={
-          !isUndefined(toUsdRate) && !isNaN(toUsdRate)
+          !isUndefined(toUsdRate) && !Number.isNaN(toUsdRate)
             ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
             : ''
         }

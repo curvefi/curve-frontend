@@ -2,8 +2,9 @@ import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Chip } from '@ui/Typography/Chip'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const DetailInfoExchangeRate = ({
   exchangeRates,
@@ -35,10 +36,10 @@ export const DetailInfoExchangeRate = ({
               isBold
               noWrap
               size="md"
-              tooltip={`${formatNumber(1)} ${from} = ${formatNumber(value, { decimals: 5 })} ${to}`}
+              tooltip={`${formatNumber(1, { abbreviate: false })} ${from} = ${formatNumber(value, { decimals: 5, abbreviate: false })} ${to}`}
               tooltipProps={{ placement: 'bottom-end', noWrap: true }}
             >
-              {formatNumber(value, { ...getFractionDigitsOptions(value, 5) })}
+              {formatNumber(value, { ...getFractionDigitsOptions(value, 5), abbreviate: false })}
             </Chip>
           </Box>
         ))}

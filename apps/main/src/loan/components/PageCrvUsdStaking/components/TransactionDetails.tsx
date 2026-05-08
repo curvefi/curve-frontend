@@ -5,12 +5,12 @@ import { useEstimateGasConversion } from '@/loan/hooks/useEstimateGasConversion'
 import { useStore } from '@/loan/store/useStore'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import { Stack, Typography } from '@mui/material'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 const { IconSize } = SizesAndSpaces
 
@@ -31,17 +31,24 @@ export const TransactionDetails = () => {
   const gasLoading = hasWallet && isLoading(fetchStatus)
 
   const symbol = stakingModule === 'deposit' ? t`scrvUSD` : t`crvUSD`
-  const receive = formatNumber(preview.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
-  const valueGas = formatNumber(estGasCostUsd, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+  const receive =
+    formatNumber(amount(preview.value), {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+      abbreviate: false,
+    }) ?? '-'
+  const valueGas =
+    formatNumber(estGasCostUsd, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+      abbreviate: false,
+    }) ?? '-'
 
   const title = (
     <WithSkeleton loading={exchangeRateLoading}>
       <Typography variant="highlightM" color="textPrimary">
         {exchangeRateReady
-          ? t`1 crvUSD = ${formatNumber(scrvUsdExchangeRate.value, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 4,
-            })} scrvUSD`
+          ? t`1 crvUSD = ${formatNumber(amount(scrvUsdExchangeRate.value), { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false }) ?? '-'} scrvUSD`
           : '-'}
       </Typography>
     </WithSkeleton>
