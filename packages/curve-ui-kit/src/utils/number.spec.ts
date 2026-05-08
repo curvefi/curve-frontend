@@ -432,6 +432,10 @@ describe('formatNumber', () => {
       ).toBe('2.5b%')
       expect(formatNumber(1500000, { abbreviate: true, unit: 'dollar', decimals: 0 })).toBe('$2m')
     })
+
+    it('should return undefined if value is undefined', () => {
+      expect(formatNumber(undefined, { abbreviate: false })).toBeUndefined()
+    })
   })
 
   describe('unit types', () => {

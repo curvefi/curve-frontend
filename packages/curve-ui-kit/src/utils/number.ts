@@ -261,7 +261,11 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
  * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.0000"
  */
-export const formatNumber = (value: Amount, options: NumberFormatOptions) => {
+export function formatNumber(value: Amount, options: NumberFormatOptions): string
+export function formatNumber(value: Amount | null | undefined, options: NumberFormatOptions): string | undefined
+export function formatNumber(value: Amount | null | undefined, options: NumberFormatOptions) {
+  if (value == null) return undefined
+
   const decomposed = decomposeNumber(value, options)
   const isNegative = decomposed.mainValue.startsWith('-')
   const sign = isNegative ? '-' : ''
