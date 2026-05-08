@@ -15,7 +15,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
-import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const userDefaultValues = { stakeAmount: undefined }
@@ -72,7 +72,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     onSubmit: onMutationSubmit,
     isPending: isStaking,
     error: stakeError,
-  } = useStakeMutation({ marketId, network, onReset: () => resetForm(form, userDefaultValues), userAddress })
+  } = useStakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
 
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },

@@ -15,7 +15,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
-import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const userDefaultValues = { unstakeAmount: undefined }
@@ -73,7 +73,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   } = useUnstakeMutation({
     marketId,
     network,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 

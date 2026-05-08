@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
+// eslint-disable-next-line no-restricted-imports
 import { DefaultValues, type ResolverOptions, type ResolverResult, useForm as _useForm } from 'react-hook-form'
 import { recordEntries } from '@primitives/objects.utils'
-import type { FormUpdates } from '@ui-kit/utils/react-form.utils'
-import type { FieldValues, FormErrors, PartialFields, UseFormReturn } from './form.types'
+import type { FieldValues, FormErrors, FormUpdates, PartialFields, UseFormReturn } from './form.types'
 
 /**
  * Hook used to manage form state and validation. For now, simply delegates the call to react-hook-form.
@@ -37,7 +37,10 @@ export const useForm = <T extends FieldValues = FieldValues>({
   return {
     handleSubmit: handleSubmit as UseFormReturn<T>['handleSubmit'],
     trigger,
-    reset,
+    reset: useCallback(
+      (valuesToReset: FormUpdates<T>): void => reset({ ...getValues(), ...valuesToReset }),
+      [getValues, reset],
+    ),
     watchValue: watch,
     watchValues: watch,
     getValues,

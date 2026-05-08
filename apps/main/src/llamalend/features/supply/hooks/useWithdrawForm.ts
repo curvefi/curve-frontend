@@ -13,7 +13,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { resetForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { withdrawAmount: undefined, userVaultShares: undefined }
 
@@ -64,7 +64,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     onSubmit,
     isPending: isWithdrawing,
     error: withdrawError,
-  } = useWithdrawMutation({ marketId, network, onReset: () => resetForm(form, userDefaultValues), userAddress })
+  } = useWithdrawMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
 
   const { formState } = form
 

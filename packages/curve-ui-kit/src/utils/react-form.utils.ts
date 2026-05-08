@@ -9,11 +9,6 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 
 type FormUpdater<TFieldValues extends FieldValues> = Pick<UseFormReturn<TFieldValues>, 'updateForm'>
 
-export const resetForm = <TFieldValues extends FieldValues>(
-  form: UseFormReturn<TFieldValues>,
-  valuesToReset: FormUpdates<TFieldValues>,
-): void => form.reset({ ...form.getValues(), ...valuesToReset })
-
 /**
  * Syncs the form with the given values. IMPORTANT: This only works if you always pass the same keys in the same order!
  */

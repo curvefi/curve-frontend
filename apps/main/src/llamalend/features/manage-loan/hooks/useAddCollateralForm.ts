@@ -17,7 +17,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { Range } from '@ui-kit/types/util'
-import { resetForm, useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = {
@@ -69,7 +69,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
     network,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 

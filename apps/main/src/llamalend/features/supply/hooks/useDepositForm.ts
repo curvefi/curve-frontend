@@ -17,7 +17,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { resetForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { depositAmount: undefined }
 
@@ -60,7 +60,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   } = useDepositMutation({
     marketId,
     network,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 

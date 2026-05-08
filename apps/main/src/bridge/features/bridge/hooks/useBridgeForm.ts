@@ -10,7 +10,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -100,7 +100,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     onSubmit: onSubmitBridge,
     isPending: isBridging,
     error: bridgeError,
-  } = useBridgeMutation({ chainId, onReset: () => resetForm(form, userDefaultValues) })
+  } = useBridgeMutation({ chainId, onReset: () => form.reset(userDefaultValues) })
 
   /**
    * Set fromChainId to the chainId passed to this form, which is the chain from the URL.

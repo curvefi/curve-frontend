@@ -36,7 +36,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
   handleSubmit: UseFormHandleSubmit<T>
   trigger: (field?: FieldPath<T>) => Promise<boolean>
-  reset: (values?: T) => void
+  reset: (userDefaultValues: FormUpdates<T>) => void
   watchValues: () => T
   watchValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
   getValues: () => T
