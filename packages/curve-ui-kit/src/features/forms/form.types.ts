@@ -13,6 +13,7 @@ export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, t
 export type FormState<T extends FieldValues> = {
   isSubmitting: boolean
   errors: FormErrors<T>
+  visibleErrors: [ErrorKey<T>, string][]
   touchedFields: PartialFields<T>
   isDirty: boolean
   isValid: boolean
@@ -44,5 +45,6 @@ export type UseFormReturn<T extends FieldValues = FieldValues> = {
   updateForm(updates: FormUpdates<T>, options?: { automated?: boolean }): void
   setError: (field: ErrorKey<T>, error: Error | { type?: 'server' | 'manual'; message: string }) => void
   clearErrors: (field: ErrorKey<T>) => void
+  isTouched: (...fields: FieldPath<T>[]) => boolean
   formState: FormState<T>
 }

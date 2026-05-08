@@ -13,7 +13,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { decimal, decimalNegate } from '@ui-kit/utils'
-import { filterFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
@@ -86,8 +85,8 @@ export function useClosePositionForm({
     userAddress,
   })
 
-  const formState = form.formState
-  const isPending = formState.isSubmitting || isClosing
+  const { isSubmitting, visibleErrors } = form.formState
+  const isPending = isSubmitting || isClosing
 
   // Combine all user state balances with their token data and USD rates
   const collateralAmount = useMemo(
@@ -227,7 +226,7 @@ export function useClosePositionForm({
     borrowedBalance: borrowed,
     error,
     closeError,
-    formErrors: useMemo(() => filterFormErrors(formState), [formState]),
+    formErrors: visibleErrors,
     isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),
     onSubmit: form.handleSubmit(onSubmit),
   }

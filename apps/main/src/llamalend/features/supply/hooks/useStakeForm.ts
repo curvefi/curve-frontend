@@ -15,7 +15,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const userDefaultValues = { stakeAmount: undefined }
@@ -108,7 +108,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     max: maxUserStake,
     isApproved: useStakeIsApproved(params, enabled),
     hasGauge: marketHasGauge,
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal: {
       isOpen,

@@ -31,7 +31,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { useCallbackSync, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -165,7 +165,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     error: borrowError ?? solvencyError,
     isApproved: useBorrowMoreIsApproved(params, enabled),
     priceImpact,
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal: {
       isOpen,

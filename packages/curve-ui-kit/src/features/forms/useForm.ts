@@ -1,8 +1,16 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 // eslint-disable-next-line no-restricted-imports
 import { DefaultValues, type ResolverOptions, type ResolverResult, useForm as _useForm } from 'react-hook-form'
-import { recordEntries } from '@primitives/objects.utils'
-import type { FieldValues, FormErrors, FormUpdates, PartialFields, UseFormReturn } from './form.types'
+import { notFalsy, recordEntries } from '@primitives/objects.utils'
+import type {
+  ErrorKey,
+  FieldPath,
+  FieldValues,
+  FormErrors,
+  FormUpdates,
+  PartialFields,
+  UseFormReturn,
+} from './form.types'
 
 /**
  * Hook used to manage form state and validation. For now, simply delegates the call to react-hook-form.
@@ -34,6 +42,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
     delayError: 150,
     criteriaMode: 'all',
   })
+
   return {
     handleSubmit: handleSubmit as UseFormReturn<T>['handleSubmit'],
     trigger,
@@ -69,9 +78,24 @@ export const useForm = <T extends FieldValues = FieldValues>({
     ),
     setError,
     clearErrors,
+    isTouched: useCallback(
+      (...fields: FieldPath<T>[]) => fields.some(field => field in touchedFields),
+      [touchedFields],
+    ),
     formState: {
       isSubmitting,
       errors: errors as FormErrors<T>,
+      visibleErrors: useMemo(
+        () =>
+          notFalsy(
+            ...recordEntries(errors)
+              .filter(
+                ([field, error]) => (field in touchedFields || (field.startsWith('root') && isDirty)) && error?.message,
+              )
+              .map(([field, error]) => [field, error!.message] as [ErrorKey<T>, string]),
+          ),
+        [errors, touchedFields, isDirty],
+      ),
       touchedFields: touchedFields as PartialFields<T>,
       isDirty,
       isValid,

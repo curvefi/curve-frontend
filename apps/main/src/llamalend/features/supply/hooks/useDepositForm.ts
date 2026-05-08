@@ -17,7 +17,6 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { depositAmount: undefined }
 
@@ -93,7 +92,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     error: depositError ?? solvencyError,
     max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }, enabled),
     isApproved: useDepositIsApproved(params, enabled),
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal: {
       isOpen,

@@ -17,7 +17,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { Range } from '@ui-kit/types/util'
-import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = {
@@ -90,7 +90,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     collateralToken,
     borrowToken,
     isApproved: useAddCollateralIsApproved(params),
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
     maxCollateral,
   }
 }

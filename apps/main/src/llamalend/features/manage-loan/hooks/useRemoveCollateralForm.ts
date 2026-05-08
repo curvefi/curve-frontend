@@ -18,7 +18,7 @@ import type { BaseConfig } from '@ui/utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { useCallbackSync, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
@@ -92,6 +92,6 @@ export const useRemoveCollateralForm = <
     positionCollateral: mapQuery(useUserState(params, enabled), d => d.collateral),
     collateralToken,
     borrowToken,
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
   }
 }

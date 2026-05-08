@@ -10,7 +10,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
+import { useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -119,7 +119,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
 
   // Form errors
   const { formState } = form
-  const formErrors = useFormErrors(form.formState)
+  const formErrors = form.formState.visibleErrors
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
 
   return {

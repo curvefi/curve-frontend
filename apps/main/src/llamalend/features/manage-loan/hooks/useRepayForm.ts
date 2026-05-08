@@ -20,14 +20,14 @@ import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.v
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
-import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
+import { notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, useCallbackSync } from '@ui-kit/utils/react-form.utils'
+import { useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -179,9 +179,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
-      () =>
-        isEmpty(formState.errors) ? notFalsy(isAvailable === false && NOT_AVAILABLE) : filterFormErrors(formState),
-      [formState, isAvailable],
+      () => (formState.isValid ? notFalsy(isAvailable === false && NOT_AVAILABLE) : formState.visibleErrors),
+      [formState.visibleErrors, formState.isValid, isAvailable],
     ),
     isFull,
     max,

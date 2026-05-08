@@ -13,7 +13,6 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { withdrawAmount: undefined, userVaultShares: undefined }
 
@@ -81,7 +80,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     withdrawError,
     max,
     maxStakedShares,
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
     isFull,
   }
 }
