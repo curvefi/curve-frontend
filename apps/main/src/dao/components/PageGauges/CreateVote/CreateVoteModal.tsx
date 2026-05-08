@@ -3,6 +3,7 @@ import { FormProvider } from 'react-hook-form'
 import { zeroAddress } from 'viem'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
@@ -124,17 +125,15 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
             <FormHelperText>
               {pinataJwtError ?? (
                 <>
-                  <Typography variant="bodySRegular">
-                    {t`The vote description is uploaded to IPFS via Pinata. You need a Pinata API key to proceed.`}{' '}
-                    <InlineLink to="https://docs.pinata.cloud/account-management/api-keys" hideIcon>
-                      {t`Here's an explanation on how to create one`}
-                    </InlineLink>
-                    <br />
-                    <br />
-                    <Typography component="span" variant="bodySRegular" color="warning">
-                      {t`IMPORTANT: You must enable the "pinFileToIPFS" legacy endpoint when creating your API key, otherwise it will not work.`}
-                    </Typography>
-                  </Typography>
+                  {t`The vote description is uploaded to IPFS via Pinata. You need a Pinata API key to proceed.`}{' '}
+                  <InlineLink to="https://docs.pinata.cloud/account-management/api-keys" hideIcon>
+                    {t`Here's an explanation on how to create one`}
+                  </InlineLink>
+                  <br />
+                  <br />
+                  <Box component="span" sx={{ color: t => t.palette.warning.main }}>
+                    {t`IMPORTANT: You must enable the "pinFileToIPFS" legacy endpoint when creating your API key, otherwise it will not work.`}
+                  </Box>
                 </>
               )}
             </FormHelperText>
