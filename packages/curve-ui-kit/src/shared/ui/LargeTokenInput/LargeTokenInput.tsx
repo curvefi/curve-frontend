@@ -1,14 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import {
-  type ReactNode,
-  type Ref,
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useId,
-  useImperativeHandle,
-  useState,
-} from 'react'
+import { type ReactNode, type Ref, useCallback, useId, useImperativeHandle } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,7 +12,6 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { SelectableChip } from '../SelectableChip'
-import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'
 
@@ -79,12 +69,10 @@ export type LargeTokenInputProps = {
   /** Optional wallet balance configuration. Omits onClick as clicking the wallet balance is controlled behavior (sets the value in the input field) */
   walletBalance?: Omit<BalanceProps<Decimal>, 'onClick'>
 
-  /** Optional configuration for max balance behavior, which for now are the slider and chips. */
+  /** Optional configuration for max balance behavior, currently used by the quick-select chips. */
   maxBalance?: {
     isLoading?: boolean
     balance?: Decimal
-    /** Whether to display the percentage slider. */
-    showSlider?: boolean
     /** Custom or preset chips to show. */
     chips?: ChipsPreset | InputChip[]
   }
@@ -127,9 +115,6 @@ export type LargeTokenInputProps = {
    */
   onBalance?: (balance: Decimal | undefined) => void
 
-  /** Optional props forwarded to the slider */
-  sliderProps?: SliderInputProps<Decimal>['sliderProps']
-
   /** Optional children to be rendered below the input */
   children?: ReactNode
 }
@@ -152,27 +137,8 @@ function calculateNewBalance(max: Decimal, newPercentage: Decimal): Decimal {
   return new BigNumber(max).times(newPercentage).div(100).toFixed() as Decimal
 }
 
-/**
- * Calculate percentage based on the new balance and round to 2 decimal places.
- *
- * This function is the inverse of `calculateNewBalance` and is used to update the slider
- * position when the user directly inputs a balance amount. It converts the current balance
- * to a percentage value that can be displayed on UI elements like sliders or progress bars.
- *
- * @param newBalance - The current balance amount to convert to percentage
- * @param max - The maximum balance to calculate percentage against
- */
-const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
-  new BigNumber(newBalance)
-    .div(max)
-    .times(100)
-    .toFixed(2)
-    .replace(/\.?0+$/, '') as Decimal
-
 /** Converts two decimals to BigNumber for comparison */
 const bigNumEquals = (a?: Decimal, b?: Decimal) => a == b || (a != null && b != null && new BigNumber(a).isEqualTo(b))
-
-const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
 
 export const LargeTokenInput = ({
   ref,
@@ -188,10 +154,8 @@ export const LargeTokenInput = ({
   balance: externalBalance,
   inputBalanceUsd,
   testId,
-  sliderProps,
   children,
 }: LargeTokenInputProps) => {
-  const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
     callback: onBalance,
@@ -199,20 +163,9 @@ export const LargeTokenInput = ({
     equals: bigNumEquals,
   })
 
-  const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
   const chipDisabled = disabled || maxBalance?.isLoading
-
-  const maxBalanceValue = maxBalance?.balance
-  const handlePercentageChange = useCallback(
-    (newPercentage: Decimal | undefined) => {
-      setPercentage(newPercentage)
-      if (maxBalanceValue != null)
-        setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalanceValue, newPercentage))
-    },
-    [maxBalanceValue, setBalance],
-  )
 
   const handleBalanceChange = useCallback(
     (newBalance: string | undefined) => {
@@ -235,24 +188,15 @@ export const LargeTokenInput = ({
       }
 
       setBalance(decimalBalance)
-      setPercentage(maxBalanceValue && newBalance ? calculateNewPercentage(decimalBalance, maxBalanceValue) : undefined)
     },
-    [maxBalanceValue, setBalance, cancelSetBalance, onBalance],
+    [setBalance, cancelSetBalance, onBalance],
   )
 
-  const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
-    setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
-  })
-
-  /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
-  useEffect(() => updatePercentageOnNewMaxBalance(maxBalanceValue), [maxBalanceValue])
-
   const resetBalance = useCallback(() => {
-    setPercentage(undefined)
     setBalance(undefined)
   }, [setBalance])
 
-  // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
+  // Expose reset balance function for parent user without lifting the field state up.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
   const onWalletBalance = useCallback(() => {
@@ -352,22 +296,6 @@ export const LargeTokenInput = ({
             )}
 
             {walletBalance && <Balance disabled={disabled} {...walletBalance} onClick={onWalletBalance} />}
-          </Stack>
-        )}
-
-        {/** Fourth row showing optional slider for max balance. */}
-        {showSlider && (
-          <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
-            <SliderInput
-              name={name}
-              disabled={disabled}
-              value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={value => handlePercentageChange(value as Decimal)}
-              sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
-              min={MIN_PERCENTAGE}
-              max={MAX_PERCENTAGE}
-              inputProps={{ variant: 'standard', adornment: 'percentage' }}
-            />
           </Stack>
         )}
       </Stack>
