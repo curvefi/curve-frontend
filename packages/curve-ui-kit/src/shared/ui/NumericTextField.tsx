@@ -17,7 +17,7 @@ type NumericTextFieldAdornments = 'dollar' | 'percentage' | 'bands'
  * Extends Material-UI's TextFieldProps while replacing value and onChange
  * to handle numeric input specifically.
  */
-export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
+export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur' | 'label'> & {
   /** The numeric value of the input field */
   value: Decimal | undefined
   /** Minimum allowed value (default: 0) */
@@ -32,6 +32,8 @@ export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onC
   format?: (value: Decimal | undefined) => string
   /** Optional adornment variant for dollar or percentage display */
   adornment?: NumericTextFieldAdornments
+  /** MUI text field variants supported by NumericTextField. */
+  variant?: Exclude<TextFieldProps['variant'], 'filled'>
 }
 
 /**
@@ -91,33 +93,31 @@ const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
 const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) =>
   val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
-const AdornmentTypography = ({ children }: { children: ReactNode }) => (
-  <Typography variant="bodySBold" color="textTertiary">
+const AdornmentTypography = ({ children, size }: { children: ReactNode; size: NumericTextFieldProps['size'] }) => (
+  <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} color="textSecondary">
     {children}
   </Typography>
 )
 
 const adornments: Record<
   NumericTextFieldAdornments,
-  { textAlign: Property.TextAlign; inputStartAdornment?: ReactNode; inputEndAdornment?: ReactNode }
+  {
+    textAlign: Property.TextAlign
+    inputEndAdornment?: (size: NumericTextFieldProps['size']) => ReactNode
+    inputStartAdornment?: (size: NumericTextFieldProps['size']) => ReactNode
+  }
 > = {
   dollar: {
     textAlign: 'left',
-    inputStartAdornment: <AdornmentTypography>$</AdornmentTypography>,
+    inputEndAdornment: size => <AdornmentTypography size={size}>$</AdornmentTypography>,
   },
   percentage: {
-    textAlign: 'right',
-    inputEndAdornment: <AdornmentTypography>%</AdornmentTypography>,
+    textAlign: 'left',
+    inputEndAdornment: size => <AdornmentTypography size={size}>%</AdornmentTypography>,
   },
   bands: {
     textAlign: 'left',
-    inputEndAdornment: (
-      <Typography
-        sx={{ marginInlineEnd: Spacing.sm }}
-        variant="highlightM"
-        color="text.secondary"
-      >{t`Bands`}</Typography>
-    ),
+    inputEndAdornment: size => <AdornmentTypography size={size}>{t`Bands`}</AdornmentTypography>,
   },
 }
 
@@ -125,6 +125,7 @@ export const NumericTextField = ({
   value,
   min,
   max,
+  size = 'medium',
   onChange,
   onBlur,
   onFocus,
@@ -149,6 +150,7 @@ export const NumericTextField = ({
   return (
     <TextField
       {...props}
+      size={size}
       type="text"
       value={inputValue}
       inputMode="decimal"
@@ -204,15 +206,13 @@ export const NumericTextField = ({
         ...(adornment && {
           input: {
             sx: {
-              paddingInlineStart: Spacing.xs,
+              paddingInline: Spacing.xs,
               '& input': {
-                // the normal input font size is too small for the "Bands" adornment
-                ...(adornment === 'bands' && { color: 'text.primary', fontSize: 'bodyMBold' }),
                 textAlign: adornments[adornment].textAlign,
               },
             },
-            endAdornment: adornments[adornment].inputEndAdornment,
-            startAdornment: adornments[adornment].inputStartAdornment,
+            endAdornment: adornments[adornment].inputEndAdornment?.(size),
+            startAdornment: adornments[adornment].inputStartAdornment?.(size),
           },
         }),
         ...slotProps,
