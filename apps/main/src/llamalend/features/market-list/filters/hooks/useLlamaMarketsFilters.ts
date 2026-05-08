@@ -53,11 +53,11 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
       [data, selectedChains],
     ),
     marketTypeValue: useMemo<MarketTypeFilterValue>(
-      () => (selectedMarketTypes?.length === 1 ? (selectedMarketTypes[0] as LlamaMarketType) : 'all'),
+      () => (selectedMarketTypes?.length ? (selectedMarketTypes[0] as LlamaMarketType) : 'all'),
       [selectedMarketTypes],
     ),
     marketVersionValue: useMemo<MarketVersionFilterValue>(
-      () => (selectedMarketVersions?.length === 1 ? (selectedMarketVersions[0] as MarketVersionFilterValue) : 'all'),
+      () => (selectedMarketVersions?.length ? (selectedMarketVersions[0] as MarketVersionFilterValue) : 'all'),
       [selectedMarketVersions],
     ),
     onMarketTypeChange: (_: MouseEvent<HTMLElement>, value: MarketTypeFilterValue | null) =>

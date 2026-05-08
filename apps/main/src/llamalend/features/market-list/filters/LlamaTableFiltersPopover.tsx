@@ -11,7 +11,7 @@ import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns'
-import { LendingMarketsFilters } from './LendingMarketsFilters'
+import { LendingMarketsFilters } from '../LendingMarketsFilters'
 
 const { Spacing, Width, MinHeight } = SizesAndSpaces
 
