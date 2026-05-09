@@ -5,11 +5,6 @@ import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils'
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })
 export const BN = BigNumber
 
-export const FORMAT_OPTIONS = {
-  PERCENT: { unit: 'percentage', abbreviate: false },
-  USD: { unit: 'dollar', abbreviate: false },
-} as const
-
 export function getFractionDigitsOptions(val: number | string | undefined | null, defaultDecimal: number) {
   function getDecimal(val: number | string, defaultDecimal: number) {
     const decimal = val.toString().split('.')[1]?.length ?? 0

@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -83,7 +82,7 @@ export const TokenOption = ({
 
             {hasBalanceUsd && (
               <Typography variant="bodyXsRegular" color={secondary}>
-                {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD) ?? '-'}
+                {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false }) ?? '-'}
               </Typography>
             )}
 

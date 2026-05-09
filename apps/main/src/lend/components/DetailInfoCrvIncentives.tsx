@@ -8,7 +8,6 @@ import { ChainId } from '@/lend/types/lend.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
@@ -109,7 +108,7 @@ function _getDataApr(
   lpTokenAmount: string,
 ) {
   const resp = {
-    aprCurr: formatNumber(amount(currApr), FORMAT_OPTIONS.PERCENT) ?? '-',
+    aprCurr: formatNumber(amount(currApr), { unit: 'percentage', abbreviate: false }) ?? '-',
     aprNew: '',
     ratio: 0,
   }
@@ -117,7 +116,7 @@ function _getDataApr(
   if (+currApr > 0 && gaugeTotalSupply && +(gaugeTotalSupply || '0') > 0 && +lpTokenAmount > 0) {
     const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupply
     const aprNew = (gaugeTotalSupply / newGaugeTotalLocked) * +currApr
-    resp.aprNew = formatNumber(aprNew, FORMAT_OPTIONS.PERCENT)
+    resp.aprNew = formatNumber(aprNew, { unit: 'percentage', abbreviate: false })
     resp.ratio = +currApr / aprNew
   }
   return resp

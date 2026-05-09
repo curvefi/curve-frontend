@@ -9,7 +9,6 @@ import { ChainId, TokensMapper } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard, formatNumber, amount } from '@ui-kit/utils'
 
@@ -54,7 +53,7 @@ export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
       <StyledStats flex flexJustifyContent="space-between">
         {t`USD total`}
         <StyledChip size="md">
-          {formatNumber(amount(tvl), FORMAT_OPTIONS.USD) ?? '-'}{' '}
+          {formatNumber(amount(tvl), { unit: 'dollar', abbreviate: false }) ?? '-'}{' '}
           <IconTooltip placement="bottom-end">{t`USD total balance updates every ~5 minute`}</IconTooltip>
         </StyledChip>
       </StyledStats>

@@ -2,7 +2,6 @@ import { ChainId, FutureRates } from '@/lend/types/lend.types'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
@@ -40,12 +39,12 @@ export const DetailInfoRate = ({
           '?'
         ) : (
           <strong>
-            {formatNumber(rate, { ...FORMAT_OPTIONS.PERCENT, abbreviate: false }) ?? '-'}
+            {formatNumber(rate, { unit: 'percentage', abbreviate: false }) ?? '-'}
             {typeof futureRates !== 'undefined' && (
               <>
                 {' '}
                 <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
-                {formatNumber(amount(futureRate), { ...FORMAT_OPTIONS.PERCENT, abbreviate: false }) ?? '-'}
+                {formatNumber(amount(futureRate), { unit: 'percentage', abbreviate: false }) ?? '-'}
               </>
             )}
           </strong>

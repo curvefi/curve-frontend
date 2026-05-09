@@ -1,5 +1,4 @@
 import { RewardsApy } from '@/dex/types/main.types'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { formatNumber } from '@ui-kit/utils'
 
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
@@ -32,10 +31,10 @@ export function haveRewardsApy({ base, other, crv }: Partial<RewardsApy>) {
 
 export function rewardsApyCrvText([base, boosted]: number[]) {
   if (!base && !boosted) return ''
-  const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
+  const formattedBase = formatNumber(base, { unit: 'percentage', abbreviate: false })
 
   if (boosted) {
-    return `${formattedBase} → ${formatNumber(boosted, FORMAT_OPTIONS.PERCENT)} CRV`
+    return `${formattedBase} → ${formatNumber(boosted, { unit: 'percentage', abbreviate: false })} CRV`
   } else {
     return `${formattedBase} CRV`
   }

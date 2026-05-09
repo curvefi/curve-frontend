@@ -1,6 +1,5 @@
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
@@ -27,7 +26,7 @@ export const TableCellClaimables = ({
     })}
     <div>
       {isHighLight && claimablesTotalUsd > 0 && (
-        <DetailText>{formatNumber(claimablesTotalUsd, { ...FORMAT_OPTIONS.USD, abbreviate: false })}</DetailText>
+        <DetailText>{formatNumber(claimablesTotalUsd, { unit: 'dollar', abbreviate: false })}</DetailText>
       )}
     </div>
     {isMobile && !claimableCrv && claimableOthers?.length === 0 && t`None`}

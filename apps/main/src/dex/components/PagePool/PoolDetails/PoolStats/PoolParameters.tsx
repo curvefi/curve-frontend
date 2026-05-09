@@ -10,7 +10,7 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { FORMAT_OPTIONS, formatDate } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
@@ -44,7 +44,7 @@ export const PoolParameters = ({
     () =>
       tvl && volume
         ? +tvl && +volume
-          ? (formatNumber(amount((+volume / +tvl) * 100), FORMAT_OPTIONS.PERCENT) ?? '-')
+          ? (formatNumber(amount((+volume / +tvl) * 100), { unit: 'percentage', abbreviate: false }) ?? '-')
           : formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })
         : '-',
     [tvl, volume],

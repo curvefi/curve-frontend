@@ -5,7 +5,6 @@ import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
@@ -31,13 +30,15 @@ export const PoolRewardsCrv = ({
       const [base, boosted] = rewardsApy.crv
       if (!base && !boosted) return null
       if (base < 0.01) return '< 0.01% CRV' // Anything less is basically not worth the time
-      const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
+      const formattedBase = formatNumber(base, { unit: 'percentage', abbreviate: false })
 
       if (boosted) {
         return (
           <>
             {formattedBase} →{' '}
-            <span style={{ whiteSpace: 'nowrap' }}>{formatNumber(boosted, FORMAT_OPTIONS.PERCENT)} CRV</span>
+            <span style={{ whiteSpace: 'nowrap' }}>
+              {formatNumber(boosted, { unit: 'percentage', abbreviate: false })} CRV
+            </span>
           </>
         )
       } else {

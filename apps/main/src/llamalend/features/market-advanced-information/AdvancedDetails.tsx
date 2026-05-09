@@ -11,7 +11,6 @@ import {
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
-import { FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -30,7 +29,7 @@ type AdvancedDetailsProps = {
 }
 
 const formatLiquidity = (value: number) =>
-  `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD, abbreviate: false })}${scaleSuffix(value).toUpperCase()}`
+  `${formatNumber(abbreviateNumber(value), { unit: 'dollar', abbreviate: false })}${scaleSuffix(value).toUpperCase()}`
 
 type AvailableLiquidityValues = {
   available?: Decimal

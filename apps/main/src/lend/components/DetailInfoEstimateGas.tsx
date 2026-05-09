@@ -5,7 +5,6 @@ import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -62,7 +61,7 @@ export const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, est
         estGasCostUsd == null ? (
           t`Unable to get USD rate`
         ) : (
-          <strong>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</strong>
+          <strong>{formatNumber(estGasCostUsd, { unit: 'dollar', abbreviate: false })}</strong>
         )
       ) : (
         ''

@@ -8,7 +8,6 @@ import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { formatNumber } from '@ui-kit/utils'
 import { TableCellRewardsBase } from '../../TableCellRewardsBase'
@@ -60,9 +59,11 @@ export const TableCellRewards = ({
           size="md"
         >
           <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
-            {`${formatNumber(userCrvApy, { ...FORMAT_OPTIONS.PERCENT, abbreviate: false })} CRV`}
+            {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
           </WithWrapper>{' '}
-          {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText> : null}
+          {boostedCrvApy ? (
+            <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
+          ) : null}
         </Chip>
       ) : null}
       <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />

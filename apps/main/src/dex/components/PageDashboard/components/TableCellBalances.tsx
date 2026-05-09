@@ -1,7 +1,6 @@
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { formatNumber, amount } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
@@ -15,7 +14,7 @@ export const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: 
       isNumber
       isBold={isHighLight}
       size="md"
-      tooltip={formatNumber(amount(liquidityUsd), FORMAT_OPTIONS.USD) ?? '-'}
+      tooltip={formatNumber(amount(liquidityUsd), { unit: 'dollar', abbreviate: false }) ?? '-'}
       tooltipProps={tooltipProps}
     >
       {formatNumber(amount(liquidityUsd), { unit: 'dollar', abbreviate: true }) ?? '-'}
@@ -23,7 +22,7 @@ export const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: 
     <div>
       {percentStaked && (
         <DetailText>
-          {formatNumber(amount(percentStaked), { ...FORMAT_OPTIONS.PERCENT, abbreviate: false }) ?? '-'} staked
+          {formatNumber(amount(percentStaked), { unit: 'percentage', abbreviate: false }) ?? '-'} staked
         </DetailText>
       )}
     </div>

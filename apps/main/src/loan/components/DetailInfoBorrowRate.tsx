@@ -2,7 +2,6 @@ import lodash from 'lodash'
 import { LoanParameter } from '@/loan/types/loan.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
@@ -18,11 +17,9 @@ export const DetailInfoBorrowRate = ({ parameters }: Props) => {
   return (
     <DetailInfo loading={loading} loadingSkeleton={[100, 20]} label={t`Borrow APR:`}>
       <span>
-        {formatNumber(amount(borrowApr), { ...FORMAT_OPTIONS.PERCENT, abbreviate: false }) ?? '-'}{' '}
+        {formatNumber(amount(borrowApr), { unit: 'percentage', abbreviate: false }) ?? '-'}{' '}
         <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
-        <strong>
-          {formatNumber(amount(futureBorrowApr), { ...FORMAT_OPTIONS.PERCENT, abbreviate: false }) ?? '-'}
-        </strong>
+        <strong>{formatNumber(amount(futureBorrowApr), { unit: 'percentage', abbreviate: false }) ?? '-'}</strong>
       </span>
     </DetailInfo>
   )

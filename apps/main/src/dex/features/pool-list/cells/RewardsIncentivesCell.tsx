@@ -3,7 +3,6 @@ import { RewardsApy } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { formatNumber } from '@ui-kit/utils'
 import { PoolColumnId } from '../columns'
@@ -25,7 +24,7 @@ export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolDa
           fontWeight={isSortedBy(table, PoolColumnId.RewardsIncentives) ? 'bold' : 'normal'}
           key={o.tokenAddress}
         >
-          {formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} {o.symbol}
+          {formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} {o.symbol}
         </Typography>
       ))}
       {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} />}

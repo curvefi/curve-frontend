@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 import { RewardsApy } from '@/dex/types/main.types'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { formatNumber } from '@ui-kit/utils'
 
 type Prop = {
@@ -19,7 +18,7 @@ export const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
       {rewardsApy?.other?.map(o => (
         <Fragment key={o.tokenAddress}>
           <Chip size="md" isBold={isHighlight}>
-            {formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} {o.symbol}
+            {formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} {o.symbol}
           </Chip>
           <br />
         </Fragment>

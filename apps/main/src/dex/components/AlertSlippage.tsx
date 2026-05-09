@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { AlertBox } from '@ui/AlertBox'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { Trans } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
@@ -23,7 +22,7 @@ export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
       <div>
         <Trans>
           With your current slippage tolerance setting (
-          {formatNumber(amount(maxSlippage), FORMAT_OPTIONS.PERCENT) ?? '-'}
+          {formatNumber(amount(maxSlippage), { unit: 'percentage', abbreviate: false }) ?? '-'}
           ), the expected output displayed above might incur up to{' '}
           <strong>
             {formatNumber(maxUsdSlippage, {

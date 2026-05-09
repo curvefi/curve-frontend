@@ -5,7 +5,7 @@ import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { FORMAT_OPTIONS, type NetworkDef } from '@ui/utils'
+import { type NetworkDef } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { formatNumber } from '@ui-kit/utils'
@@ -29,7 +29,7 @@ export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean
           },
           {
             label: t`Crypto Volume Share`,
-            value: formatNumber(volumeTotal?.cryptoShare, FORMAT_OPTIONS.PERCENT) ?? '-',
+            value: formatNumber(volumeTotal?.cryptoShare, { unit: 'percentage', abbreviate: false }) ?? '-',
           },
         ],
       ),

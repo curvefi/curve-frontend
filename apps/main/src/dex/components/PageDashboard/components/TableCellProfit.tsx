@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData, SortId } from '@/dex/components/PageDashboard/types'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { formatNumber, amount } from '@ui-kit/utils'
 
 type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & {
@@ -36,7 +35,7 @@ export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTo
 
       <div>
         {isHighLight && profitsTotalUsd > 0 && (
-          <DetailText>{formatNumber(profitsTotalUsd, { ...FORMAT_OPTIONS.USD, abbreviate: false })}</DetailText>
+          <DetailText>{formatNumber(profitsTotalUsd, { unit: 'dollar', abbreviate: false })}</DetailText>
         )}
       </div>
     </>

@@ -12,7 +12,6 @@ import { Box } from '@ui/Box'
 import { Stats } from '@ui/Stats'
 import { Table } from '@ui/Table'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -53,11 +52,11 @@ export const MySharesStats = ({
   const userShareLabel = useMemo(() => {
     if (userLpShare && Number(userLpShare)) {
       if (Number(userLpShare) > 0.01) {
-        return formatNumber(amount(userLpShare), FORMAT_OPTIONS.PERCENT) ?? '-'
+        return formatNumber(amount(userLpShare), { unit: 'percentage', abbreviate: false }) ?? '-'
       }
-      return `< ${formatNumber(0.01, FORMAT_OPTIONS.PERCENT)}`
+      return `< ${formatNumber(0.01, { unit: 'percentage', abbreviate: false })}`
     }
-    return formatNumber(0, FORMAT_OPTIONS.PERCENT)
+    return formatNumber(0, { unit: 'percentage', abbreviate: false })
   }, [userLpShare])
 
   const withdrawTotal = useMemo(() => {
@@ -83,15 +82,17 @@ export const MySharesStats = ({
         <CrvRewardsTooltipWrapper>
           <tbody>
             <tr>
-              <td className="right">{formatNumber(crvRewards[0], FORMAT_OPTIONS.PERCENT) ?? '-'}</td>
+              <td className="right">{formatNumber(crvRewards[0], { unit: 'percentage', abbreviate: false }) ?? '-'}</td>
               <td>&nbsp;({t`min. CRV tAPR %`})</td>
             </tr>
             <tr>
-              <td className="right">x {formatNumber(amount(userBoostApy), FORMAT_OPTIONS.PERCENT) ?? '-'}</td>
+              <td className="right">
+                x {formatNumber(amount(userBoostApy), { unit: 'percentage', abbreviate: false }) ?? '-'}
+              </td>
               <td>&nbsp;({t`your boost`})</td>
             </tr>
             <tr>
-              <td className="right">= {formatNumber(userCrvApyValue, FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">= {formatNumber(userCrvApyValue, { unit: 'percentage', abbreviate: false })}</td>
               <td>%</td>
             </tr>
           </tbody>
@@ -133,7 +134,8 @@ export const MySharesStats = ({
               </Chip>
             ) : (
               <Chip size="md" tooltip={crvRewardsTooltipText} tooltipProps={{ minWidth: '350px' }}>
-                {t`Your CRV Rewards tAPR:`} <strong>{formatNumber(userCrvApyValue, FORMAT_OPTIONS.PERCENT)}</strong>
+                {t`Your CRV Rewards tAPR:`}{' '}
+                <strong>{formatNumber(userCrvApyValue, { unit: 'percentage', abbreviate: false })}</strong>
               </Chip>
             )}
             {haveBoosting && (
@@ -191,8 +193,7 @@ export const MySharesStats = ({
           )}
           <Stats isOneLine label={t`USD balance`}>
             <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-              {formatNumber(amount(userPoolInfo?.userLiquidityUsd), { ...FORMAT_OPTIONS.USD, abbreviate: false }) ??
-                '-'}
+              {formatNumber(amount(userPoolInfo?.userLiquidityUsd), { unit: 'dollar', abbreviate: false }) ?? '-'}
             </Chip>
           </Stats>
         </TokensBalanceWrapper>

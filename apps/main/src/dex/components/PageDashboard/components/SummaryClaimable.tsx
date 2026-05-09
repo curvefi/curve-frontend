@@ -9,7 +9,6 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Spinner } from '@ui/Spinner'
 import { Stats } from '@ui/Stats'
 import { Chip } from '@ui/Typography/Chip'
-import { FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
@@ -76,7 +75,7 @@ export const SummaryClaimable = ({ title }: Props) => {
             <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
               <Chip
                 size="md"
-                tooltip={`${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, FORMAT_OPTIONS.USD)}`}
+                tooltip={`${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`}
                 tooltipProps={tooltipProps}
               >
                 {formatNumber(total, { abbreviate: false })}
@@ -85,7 +84,7 @@ export const SummaryClaimable = ({ title }: Props) => {
           ))}
         <Stats isOneLine label={t`USD Total`}>
           <Chip isBold isNumber size="md">
-            ≈ {formatNumber(totalUsd, FORMAT_OPTIONS.USD)}
+            ≈ {formatNumber(totalUsd, { unit: 'dollar', abbreviate: false })}
           </Chip>
         </Stats>
       </SummaryInnerContent>
