@@ -392,8 +392,8 @@ export function calculateGas(
 
   const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
   const tooltip =
-    `${formatNumber(estGasCost, { abbreviate: false }) ?? '-'} ${networkSymbol} at ` +
-    `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false }) ?? '-'} ${gasPricesUnit}`
+    `${formatNumber(estGasCost, { abbreviate: false })} ${networkSymbol} at ` +
+    `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false })} ${gasPricesUnit}`
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
 

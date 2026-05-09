@@ -98,7 +98,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
             }
           >
             <h5>
-              {formatNumber(emissions, { abbreviate: false }) ?? '-'}
+              {formatNumber(emissions, { abbreviate: false })}
               {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
             </h5>
           </Chip>

@@ -14,7 +14,7 @@ export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
     <>
       <BoxColumn>
         <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
-          {formatNumber(gaugeData.gauge_relative_weight!, { decimals: 5, abbreviate: true })}%
+          {formatNumber(gaugeData.gauge_relative_weight, { decimals: 5, abbreviate: true })}%
         </GaugeData>
       </BoxColumn>
       <BoxColumn>
