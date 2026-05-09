@@ -285,3 +285,8 @@ export const formatPercent = (value?: Amount | null) =>
 
 export const formatUsd = (value: Amount, options?: NumberFormatOptions) =>
   formatNumber(value, { unit: 'dollar', abbreviate: true, ...options })
+
+export const formatNumberRange = (numbers: number[] | null | undefined) =>
+  !numbers || numbers?.some(n => n == null) || numbers.every(n => !n)
+    ? ''
+    : numbers.map(n => formatNumber(n, { abbreviate: false })).join(' - ')

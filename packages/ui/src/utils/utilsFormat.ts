@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils'
+import type { NumberFormatOptions } from '@ui-kit/utils'
 
 // At the moment of writing there's a Notion ticket to remove BigNumber.js
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })
@@ -19,8 +19,3 @@ export function getFractionDigitsOptions(val: number | string | undefined | null
   }
   return formatOptions
 }
-
-export const formatNumberRange = (numbers: number[] | null | undefined) =>
-  !numbers || numbers?.some(n => n == null) || numbers.every(n => !n)
-    ? ''
-    : numbers.map(n => formatNumber(n, { abbreviate: false })).join(' - ')

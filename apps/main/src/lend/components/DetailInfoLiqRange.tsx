@@ -9,9 +9,8 @@ import { Button } from '@ui/Button'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
-import { formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { formatNumber, amount, formatNumberRange } from '@ui-kit/utils'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 export const DetailInfoLiqRange = ({
