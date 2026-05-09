@@ -120,7 +120,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           hideBalance
           testId="borrow-debt-input"
           network={network}
-          message={
+          maxMessage={
             <Balance
               inline
               prefix={t`Max borrow:`}
