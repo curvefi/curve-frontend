@@ -7,7 +7,31 @@ import {
   abbreviateNumber,
   scaleSuffix,
   log10Exp,
+  getFractionDigitsOptions,
 } from './number'
+
+describe('getFractionDigitsOptions', () => {
+  it('uses the source value decimal count when it is below the default cap', () => {
+    expect(getFractionDigitsOptions('1.23', 5)).toEqual({
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  })
+
+  it('caps the fraction digits at the default decimal count', () => {
+    expect(getFractionDigitsOptions('1.234567', 5)).toEqual({
+      minimumFractionDigits: 5,
+      maximumFractionDigits: 5,
+    })
+  })
+
+  it('keeps formatter defaults for empty, zero, nullish, or negative values', () => {
+    expect(getFractionDigitsOptions('', 5)).toEqual({})
+    expect(getFractionDigitsOptions(0, 5)).toEqual({})
+    expect(getFractionDigitsOptions(null, 5)).toEqual({})
+    expect(getFractionDigitsOptions(-1.23, 5)).toEqual({})
+  })
+})
 
 describe('log10Exp', () => {
   describe('basic functionality', () => {

@@ -290,3 +290,30 @@ export const formatNumberRange = (numbers: number[] | null | undefined) =>
   !numbers || numbers?.some(n => n == null) || numbers.every(n => !n)
     ? ''
     : numbers.map(n => formatNumber(n, { abbreviate: false })).join(' - ')
+
+/**
+ * Builds fraction digit options that preserve the precision already present in a source value.
+ *
+ * This exists for values that are derived from user-entered amounts or protocol calculations where the UI should not
+ * always pad to the formatter's default decimal count. For example, a value of `1.2` with a default of `5` should render
+ * with one decimal, while `1.234567` should be capped at five decimals.
+ *
+ * Returns an empty object for empty, nullish, zero, or negative values so `formatNumber` can keep its normal defaults.
+ */
+export function getFractionDigitsOptions(
+  val: number | string | undefined | null,
+  defaultDecimal: number,
+): Partial<NumberFormatOptions> {
+  function getDecimal(val: number | string, defaultDecimal: number) {
+    const decimal = val.toString().split('.')[1]?.length ?? 0
+    return decimal > defaultDecimal ? defaultDecimal : decimal
+  }
+
+  const formatOptions: Partial<NumberFormatOptions> = {}
+  if (val && Number(val) >= 0) {
+    const decimal = getDecimal(val, defaultDecimal)
+    formatOptions.minimumFractionDigits = decimal
+    formatOptions.maximumFractionDigits = decimal
+  }
+  return formatOptions
+}

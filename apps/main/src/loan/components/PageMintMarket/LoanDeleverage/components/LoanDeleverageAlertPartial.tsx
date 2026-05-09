@@ -5,9 +5,8 @@ import { getTokenName } from '@/loan/utils/utilsLoan'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
-import { getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { formatNumber, amount, getFractionDigitsOptions } from '@ui-kit/utils'
 
 // Deleverage partial payment will only result in state change, user will not receive any tokens to wallet.
 // 1. userState.collateral = old userState.collateral - formValues.collateral
