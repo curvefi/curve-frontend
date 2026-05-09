@@ -1,22 +1,25 @@
 import { useForm } from 'react-hook-form'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
+import type { FieldsOf } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { resetForm, updateForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 
-export type CreateVoteForm = {
+export type CreateVoteMutation = {
   gaugeAddress: string
   description: string
   pinataJwt: string
 }
 
+export type CreateVoteForm = FieldsOf<CreateVoteMutation>
+
 const defaultValues: CreateVoteForm = {
-  gaugeAddress: '',
+  gaugeAddress: undefined,
   description: t`Add a gauge for the following pool: `,
-  pinataJwt: '',
+  pinataJwt: undefined,
 } satisfies CreateVoteForm
 
 export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSuccess: () => void }) => {
@@ -28,7 +31,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
 
   const [storedJwt] = usePinataJwt()
 
-  useFormSync(form, { gaugeAddress: gauge.toLowerCase(), pinataJwt: storedJwt ?? '' })
+  useFormSync(form, { gaugeAddress: gauge.toLowerCase(), pinataJwt: storedJwt })
 
   const {
     onSubmit: onSubmitCreateVote,
@@ -37,7 +40,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
   } = useCreateVoteMutation({
     onReset: () => {
       resetForm(form, defaultValues)
-      updateForm(form, { pinataJwt: storedJwt ?? '' })
+      updateForm(form, { pinataJwt: storedJwt })
       onSuccess()
     },
   })

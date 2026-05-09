@@ -11,7 +11,7 @@ import { useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactio
 import { ARAGON_OWNERSHIP_AGENT, ARAGON_OWNERSHIP_VOTING, GAUGE_CONTROLLER } from '@ui-kit/utils'
 import { writeContract } from '@wagmi/core'
 import { createVoteFormValidationSuite } from './create-vote.validation'
-import type { CreateVoteForm } from './useCreateVoteForm'
+import type { CreateVoteForm, CreateVoteMutation } from './useCreateVoteForm'
 
 const buildEvmScript = (gaugeAddress: Address) => {
   const callData = encodeFunctionData({
@@ -63,7 +63,7 @@ const uploadDescriptionToIpfs = async (description: string, pinataJwt: string) =
 export const useCreateVoteMutation = ({ onReset }: { onReset: () => void }) => {
   const config = useConfig()
 
-  const { mutate, error, isPending } = useTransactionMutation<CreateVoteForm>({
+  const { mutate, error, isPending } = useTransactionMutation<CreateVoteMutation>({
     mutationKey: [...rootKeys.chain({ chainId: mainnet.id }), 'create-gauge-vote'] as const,
     mutationFn: async ({ gaugeAddress, description, pinataJwt }) => {
       const evmScript = buildEvmScript(gaugeAddress as Address)
@@ -84,7 +84,7 @@ export const useCreateVoteMutation = ({ onReset }: { onReset: () => void }) => {
     onReset,
   })
 
-  const onSubmit = useCallback((form: CreateVoteForm) => mutate(form), [mutate])
+  const onSubmit = useCallback((form: CreateVoteForm) => mutate(form as CreateVoteMutation), [mutate])
 
   return { onSubmit, error, isPending }
 }
