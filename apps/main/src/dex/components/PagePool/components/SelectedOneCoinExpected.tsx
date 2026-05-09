@@ -63,7 +63,7 @@ export const SelectedOneCoinExpected = ({
                 <Loader skeleton={[90, 20]} />
               ) : (
                 <TextEllipsis smMaxWidth="15rem">
-                  {formatNumber(amount(amounts[idx]?.value || 0)!, { abbreviate: false })}
+                  {formatNumber(amount(amounts[idx]?.value || 0), { abbreviate: false })}
                 </TextEllipsis>
               )}
             </Radio>
