@@ -1,11 +1,9 @@
 import { useMemo } from 'react'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
-import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { RouteResponse } from '@primitives/router.utils'
+import { notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import type { RouteQueries, RouteResponse } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
@@ -18,7 +16,7 @@ import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparis
 import { RouteProviderCard, type RouteProviderCardProps } from './RouteProviderCard'
 import { RouteProviderIcons } from './RouteProviderIcons'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const providerLabels = {
   curve: t`Curve`,
@@ -27,104 +25,113 @@ const providerLabels = {
 }
 
 export type RouteProviderProps = {
-  data: RouteResponse[] | undefined
+  queries: RouteQueries
+  enabled: boolean
   selectedRoute: RouteResponse | undefined
   onChange: (route: RouteResponse) => void
   tokenOut: RouteProviderCardProps['tokenOut']
   isExpanded: boolean
-  isLoading: boolean
-  error: Error | null | undefined
   onToggle: () => void
   onRefresh: () => void
 }
 
 export const RouteProvidersAccordion = ({
-  data: routes,
+  queries,
+  enabled,
   selectedRoute,
   onChange,
   tokenOut,
-  isLoading,
-  error,
   isExpanded,
   onToggle,
   onRefresh,
 }: RouteProviderProps) => {
-  const maxAmountOut = useMemo(() => routes && decimalMax(...routes.flatMap(route => route.amountOut)), [routes])
+  const queryList = useMemo(() => recordValues(queries).filter(Boolean), [queries])
+  const maxAmountOut = useMemo(
+    () => queries && decimalMax(...notFalsy(...queryList.flatMap(route => route.data?.amountOut))),
+    [queryList, queries],
+  )
   const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.router] : null
+  const allError = queryList.every(r => r.error)
+  const allLoading = queryList.every(r => r.isLoading)
+  const anyLoading = queryList.some(r => r.isLoading)
+  const anyData = queryList.some(route => route.data)
   return (
-    <Accordion
-      ghost
-      title={t`Route provider`}
-      size="extraSmall"
-      testId="route-provider-accordion"
-      info={
-        error ? (
-          <ErrorIconButton error={error} size="extraExtraSmall" />
-        ) : (
-          !isExpanded &&
-          (selectedRoute || isLoading ? (
-            <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-              {Icon && <Icon />}
-              <WithSkeleton loading={isLoading}>
-                <Typography variant="bodyXsRegular" color="textPrimary">
-                  {selectedRoute ? providerLabels[selectedRoute.router] : t`Loading routes`}
-                </Typography>
-              </WithSkeleton>
-              {selectedRoute && <RouteComparisonChip maxAmountOut={maxAmountOut} amountOut={selectedRoute.amountOut} />}
-            </Stack>
+    enabled && (
+      <Accordion
+        ghost
+        title={t`Route provider`}
+        size="extraSmall"
+        testId="route-provider-accordion"
+        info={
+          allError ? (
+            <ErrorIconButton error={t`Cannot fetch any routes. Please try again later.`} size="extraExtraSmall" />
           ) : (
-            '-'
-          ))
-        )
-      }
-      expanded={isExpanded}
-      toggle={onToggle}
-    >
-      <Stack paddingBlock={Spacing.sm} gap={Spacing.sm}>
-        <Stack>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography variant="headingXsBold" color="textSecondary">
-              {routes?.length
-                ? t`Select a route`
-                : isLoading
-                  ? t`Finding the best route...`
-                  : routes === undefined
-                    ? t`Please fill in the form to get routes.`
-                    : t`No routes available`}
+            !isExpanded &&
+            (selectedRoute || allLoading ? (
+              <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+                {Icon && <Icon />}
+                <WithSkeleton loading={allLoading}>
+                  <Typography variant="bodyXsRegular" color="textPrimary">
+                    {selectedRoute ? providerLabels[selectedRoute.router] : t`Loading routes`}
+                  </Typography>
+                </WithSkeleton>
+                {selectedRoute && (
+                  <RouteComparisonChip maxAmountOut={maxAmountOut} amountOut={selectedRoute.amountOut} />
+                )}
+              </Stack>
+            ) : (
+              '-'
+            ))
+          )
+        }
+        expanded={isExpanded}
+        toggle={onToggle}
+      >
+        <Stack paddingBlock={Spacing.sm} gap={Spacing.sm}>
+          <Stack>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="headingXsBold" color="textSecondary">
+                {anyData
+                  ? t`Select a route`
+                  : allLoading
+                    ? t`Finding the best route...`
+                    : queries === undefined
+                      ? t`Please fill in the form to get routes.`
+                      : t`No routes available`}
+              </Typography>
+              <IconButton
+                size="extraExtraSmall"
+                onClick={onRefresh}
+                aria-label={t`Refresh routes`}
+                disabled={anyLoading}
+              >
+                <ReloadIcon sx={{ ...(anyLoading && LoadingAnimation) }} />
+              </IconButton>
+            </Stack>
+            <Typography variant="bodyXsRegular" color="textTertiary">
+              {queryList.length === 0 && !anyLoading
+                ? t`We could not find any routes with your parameters.`
+                : selectedRoute || allLoading
+                  ? t`Best route is selected based on net output after gas fees (only when possible to calculate).`
+                  : t`Please fill in the form to get routes.`}
             </Typography>
-            <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
-              <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
-            </IconButton>
           </Stack>
-          <Typography variant="bodyXsRegular" color="textTertiary">
-            {routes?.length === 0
-              ? t`We could not find any routes with your parameters.`
-              : routes || isLoading
-                ? t`Best route is selected based on net output after gas fees (only when possible to calculate).`
-                : t`Please fill in the form to get routes.`}
-          </Typography>
+          <Stack gap={Spacing.xs}>
+            {recordEntries(queries).map(([key, query]) => (
+              <RouteProviderCard
+                key={key}
+                tokenOut={tokenOut}
+                isSelected={key === selectedRoute?.router}
+                providerLabel={providerLabels[key]}
+                query={query}
+                bestOutputAmount={maxAmountOut}
+                onSelect={onChange}
+                icon={RouteProviderIcons[key]()}
+              />
+            ))}
+          </Stack>
         </Stack>
-        <Stack gap={Spacing.xs}>
-          {routes?.map(route => (
-            <RouteProviderCard
-              key={route.id}
-              tokenOut={tokenOut}
-              isSelected={route.id === selectedRoute?.id}
-              providerLabel={providerLabels[route.router]}
-              route={route}
-              bestOutputAmount={maxAmountOut}
-              onSelect={onChange}
-              icon={RouteProviderIcons[route.router]()}
-            />
-          ))}
-          {!routes?.length && isLoading && <Skeleton width="100%" height={ButtonSize.lg} />}
-          {error?.message && (
-            <Alert severity="error">
-              <AlertTitle>{error.message}</AlertTitle>
-            </Alert>
-          )}
-        </Stack>
-      </Stack>
-    </Accordion>
+      </Accordion>
+    )
   )
 }

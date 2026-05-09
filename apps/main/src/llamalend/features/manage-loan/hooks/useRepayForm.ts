@@ -22,7 +22,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
-import type { RouteResponse } from '@primitives/router.utils'
+import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'

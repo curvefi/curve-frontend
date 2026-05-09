@@ -1,12 +1,14 @@
+import { useCallback } from 'react'
 import { enforce, test } from 'vest'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
-import { type RouteResponse } from '@primitives/router.utils'
+import { RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
-import type { RoutesParams, RoutesQuery } from './router-api.types'
+import { mapQuery } from '@ui-kit/types/util'
+import type { RouteQueries, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
 import { routerApiValidation } from './router-api.validation'
 
 type RouteByIdQuery = { routeId: string }
@@ -46,7 +48,22 @@ export const getRouteById = (routeId: string | undefined) =>
     'routeId is required for zapV2',
   )
 
-export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
+const createHash = async (
+  input: (number | string | null | undefined | number[] | string[])[],
+  algorithm = 'SHA-256',
+): Promise<string> =>
+  Array.from(
+    new Uint8Array(
+      await crypto.subtle.digest(
+        algorithm,
+        new TextEncoder().encode(input.map(v => toArray<number | string>(v).join(',')).join('-')),
+      ),
+    ),
+  )
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('')
+
+const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
       'router-api',
@@ -83,10 +100,43 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     )
 
     toArray(router).forEach(router => query.append('router', router))
-    const routes = await fetchJson<RouteResponse[]>(`/api/router/v1/routes?${query}`)
-    routes.forEach(route => setRouteQueryData({ routeId: route.id }, route))
-    return routes
+    const routes = await fetchJson<RouterRouteResponse[]>(`/api/router/v1/routes?${query}`)
+    return await Promise.all(
+      routes.map(async response => {
+        const { amountOut, tx, router } = response
+        const id = `${router}:${await createHash([
+          chainId,
+          tokenIn,
+          tokenOut,
+          amountIn,
+          slippage,
+          userAddress,
+          amountOut,
+          tx?.data,
+        ])}`
+        const route = { ...response, id }
+        setRouteQueryData({ routeId: id }, route)
+        return route
+      }),
+    )
   },
   validationSuite: routerApiValidation,
   category: 'global.routerApi',
+})
+
+export { useRouterApi, fetchApiRoutes }
+
+/**
+ * Calls the route providers in parallel, returning the first route of each.
+ */
+export const useRouters = (params: Omit<RoutesParams, 'router'>, enabled?: boolean) => ({
+  queries: {
+    curve: mapQuery(useRouterApi({ ...params, router: 'curve' }, enabled), ([data]) => data),
+    enso: mapQuery(useRouterApi({ ...params, router: 'enso' }, enabled), ([data]) => data),
+    odos: mapQuery(useRouterApi({ ...params, router: 'odos' }, enabled), ([data]) => data),
+  } satisfies RouteQueries,
+  onRefresh: useCallback(
+    () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
+    [params],
+  ),
 })

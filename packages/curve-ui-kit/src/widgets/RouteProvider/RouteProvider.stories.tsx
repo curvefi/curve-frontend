@@ -13,7 +13,7 @@ const meta: Meta<typeof RouteProvidersAccordion> = {
   title: 'UI Kit/Widgets/RouteProvidersAccordion',
   component: RouteProvidersAccordion,
   args: {
-    data: mockRoutes,
+    queries: mockRoutes,
     selectedRoute: mockRoutes[0],
     tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },
     isExpanded: false,
@@ -32,7 +32,7 @@ type Story = StoryObj<typeof meta>
 const RouteProviderStory = ({
   isExpanded: givenExpanded,
   isLoading: givenIsLoading,
-  data: givenRoutes,
+  queries: givenRoutes,
   selectedRoute: givenSelectedRoute,
   ...args
 }: RouteProviderProps) => {
@@ -49,7 +49,7 @@ const RouteProviderStory = ({
     <Box sx={{ maxWidth: MaxWidth.actionCard }}>
       <RouteProvidersAccordion
         {...args}
-        data={routes}
+        queries={routes}
         selectedRoute={selectedRoute}
         isLoading={isLoading}
         onChange={useCallback(route => setSelectedRoute(route), [])}
@@ -77,7 +77,7 @@ export const Expanded: Story = {
 }
 
 export const SingleRoute: Story = {
-  args: { data: [mockRoutes[0]] },
+  args: { queries: [mockRoutes[0]] },
   render: args => <RouteProviderStory {...args} />,
 }
 

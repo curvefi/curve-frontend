@@ -1,5 +1,5 @@
 import { zeroAddress } from 'viem'
-import type { RouteResponse } from '@primitives/router.utils'
+import type { RouteResponse } from '@ui-kit/entities/router-api'
 
 export const mockRoutes: RouteResponse[] = [
   {

@@ -17,7 +17,7 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
   cy.mount(
     <ComponentTestWrapper>
       <RouteProviderCard
-        route={{
+        query={{
           id: 'curve',
           router: 'curve',
           amountIn: ['694241694241'],

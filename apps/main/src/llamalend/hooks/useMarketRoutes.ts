@@ -1,19 +1,27 @@
-import { useCallback, useEffect, useEffectEvent, useState, useTransition } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
+import { decimalCompare, decimalMax } from 'router-api/src/router.utils'
 import { useConnection } from 'wagmi'
 import { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { type RouteProvider, RouteProviders, type RouteResponse } from '@primitives/router.utils'
-import { useRouterApi } from '@ui-kit/entities/router-api'
+import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
+import { type RouteQueries, type RouteResponse, useRouters } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { q, type Query, type QueryProp } from '@ui-kit/types/util'
+import { q, type QueryProp } from '@ui-kit/types/util'
 import { toWei } from '@ui-kit/utils'
 
-export type MarketRoutes = Query<RouteResponse[]> & {
+export type MarketRoutes = {
+  queries: RouteQueries
+  sortedRoutes: RouteResponse[]
+  enabled: boolean
   selectedRoute: RouteResponse | undefined
   onChange: (option: RouteResponse | undefined) => Promise<void>
   onRefresh: () => void
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
 }
+
+const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
+  decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
+  (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
 
 /**
  * Queries and converts the routes for leveraging on llamalend markets.
@@ -24,7 +32,6 @@ export function useMarketRoutes({
   tokenOut,
   amountIn,
   slippage,
-  routeId,
   enabled,
   onChange: onChangeProp,
 }: {
@@ -33,20 +40,18 @@ export function useMarketRoutes({
   tokenOut: { symbol: string; address: Address; decimals: number } | undefined
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
-  routeId: string | undefined
   enabled: boolean
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
-  const [isTransitioning, startTransition] = useTransition()
+  const [, startTransition] = useTransition() // todo: use isTransitioning for something
 
-  const { data, refetch, isLoading, error } = useRouterApi(
+  const { queries, onRefresh } = useRouters(
     {
       chainId,
       tokenIn: tokenIn?.address,
       tokenOut: tokenOut?.address,
       amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
-      router: RouteProviders,
       userAddress,
       slippage,
     },
@@ -54,10 +59,16 @@ export function useMarketRoutes({
   )
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
 
-  const selectedRoute =
-    (routeId && data?.find(({ id }) => id === routeId)) ||
-    (chosenRouter && data?.find(({ router }) => router === chosenRouter)) ||
-    data?.[0]
+  const sortedRoutes = useMemo(
+    () =>
+      [queries.curve, queries.enso, queries.odos]
+        .map(q => q.data)
+        .filter((q): q is RouteResponse => !!q)
+        .sort(sortRoutes),
+    [queries.curve, queries.enso, queries.odos],
+  )
+
+  const selectedRoute = (chosenRouter && queries[chosenRouter]?.data) || sortedRoutes?.[0]
 
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
@@ -70,15 +81,13 @@ export function useMarketRoutes({
     [onChangeProp],
   )
 
-  return enabled
-    ? {
-        data,
-        isLoading: isLoading || isTransitioning,
-        error,
-        selectedRoute,
-        onChange,
-        onRefresh: refetch,
-        tokenOut: { ...tokenOut, usdRate },
-      }
-    : undefined
+  return {
+    queries,
+    sortedRoutes,
+    enabled,
+    selectedRoute,
+    onChange,
+    onRefresh,
+    tokenOut: { ...tokenOut, usdRate },
+  }
 }
