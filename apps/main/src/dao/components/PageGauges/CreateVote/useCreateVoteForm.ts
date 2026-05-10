@@ -22,7 +22,7 @@ const defaultValues: CreateVoteForm = {
   pinataJwt: undefined,
 } satisfies CreateVoteForm
 
-export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSuccess: () => void }) => {
+export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const form = useForm<CreateVoteForm>({
     ...formDefaultOptions,
     resolver: vestResolver(createVoteFormValidationSuite),
@@ -31,7 +31,7 @@ export const useCreateVoteForm = ({ gauge, onSuccess }: { gauge: string; onSucce
 
   const [storedJwt] = usePinataJwt()
 
-  useFormSync(form, { gaugeAddress: gauge.toLowerCase(), pinataJwt: storedJwt })
+  useFormSync(form, { pinataJwt: storedJwt })
 
   const {
     onSubmit: onSubmitCreateVote,

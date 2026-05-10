@@ -26,10 +26,9 @@ const { Spacing } = SizesAndSpaces
 type CreateVoteModalProps = {
   isOpen: boolean
   onClose: () => void
-  gauge?: string
 }
 
-export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModalProps) => {
+export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
   const {
     form,
     values: { gaugeAddress, description, pinataJwt },
@@ -41,7 +40,7 @@ export const CreateVoteModal = ({ isOpen, onClose, gauge = '' }: CreateVoteModal
     pinataJwtError,
     createVoteError,
     formErrors,
-  } = useCreateVoteForm({ gauge, onSuccess: onClose })
+  } = useCreateVoteForm({ onSuccess: onClose })
 
   const [showPinataJwt, setShowPinataJwt] = useState(false)
   const [, setStoredJwt] = usePinataJwt()
