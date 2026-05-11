@@ -42,6 +42,7 @@ const testCases = [oneViewport()] as const
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
+    const itMobileOnly = breakpoint === 'mobile' ? it : it.skip
 
     beforeEach(() => {
       vaultData = setupMocks()
@@ -162,8 +163,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
     })
 
-    it('should allow filtering by using a slider', () => {
-      if (breakpoint !== 'mobile') return
+    itMobileOnly('should allow filtering by using a slider', () => {
       const [columnId, initialFilterText] = oneOf(
         [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
         [LlamaMarketColumnId.Tvl, '$0 -'],
@@ -195,8 +195,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       })
     })
 
-    it(`should allow filtering by using a slider input`, () => {
-      if (breakpoint !== 'mobile') return
+    itMobileOnly(`should allow filtering by using a slider input`, () => {
       const [columnId, getFilterValue] = oneOf(
         ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
         ['tvl', () => getMaxTvl(vaultData) / 10],

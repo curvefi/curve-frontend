@@ -241,8 +241,10 @@ const convertMintMarket = (
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
-    // todo: the market's version should come from the backend directly
-    version: LlamaMarketVersion.v1,
+    // todo: the market's version should come from the backend directly like for the lend markets (not supported yet)
+    version: [collateralSymbol, stablecoinToken.symbol].some(symbol => symbol.toLowerCase().includes('llv2'))
+      ? LlamaMarketVersion.v2
+      : LlamaMarketVersion.v1,
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,

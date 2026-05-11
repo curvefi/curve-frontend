@@ -4,8 +4,8 @@ export enum LlamaMarketType {
 }
 
 export enum LlamaMarketVersion {
-  v1 = '1',
-  v2 = '2',
+  v1 = 'v1',
+  v2 = 'v2',
 }
 
 export enum MarketRateType {
