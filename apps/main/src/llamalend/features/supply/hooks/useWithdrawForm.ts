@@ -10,7 +10,6 @@ import {
   WithdrawParams,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 
@@ -38,7 +37,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   const { borrowToken } = market ? getTokens(market) : {}
 
   const form = useForm<WithdrawForm>({
-    resolver: vestResolver(withdrawFormValidationSuite),
+    validation: withdrawFormValidationSuite,
     defaultValues: emptyWithdrawForm(),
   })
 

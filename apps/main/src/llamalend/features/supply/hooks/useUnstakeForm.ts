@@ -9,7 +9,6 @@ import {
   UnstakeParams,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
@@ -52,7 +51,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const maxUserUnstake = mapQuery(userBalances, d => d.stakedShares)
 
   const form = useForm<UnstakeForm>({
-    resolver: vestResolver(unstakeFormValidationSuite),
+    validation: unstakeFormValidationSuite,
     defaultValues: emptyUnstakeForm(),
   })
 

@@ -11,7 +11,6 @@ import {
   HelperFields,
 } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
-import { vestResolver } from '@hookform/resolvers/vest'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
@@ -27,7 +26,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   })
 
   const form = useForm<DepositRewardFormValues>({
-    resolver: vestResolver(depositRewardValidationSuite),
+    validation: depositRewardValidationSuite,
     defaultValues: DepositRewardDefaultValues,
   })
 

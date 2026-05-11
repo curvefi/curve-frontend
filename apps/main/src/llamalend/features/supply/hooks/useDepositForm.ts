@@ -13,7 +13,6 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -23,7 +22,7 @@ const userDefaultValues = { depositAmount: undefined }
 const emptyDepositForm = (): DepositForm => ({ ...userDefaultValues, maxDepositAmount: undefined })
 
 const formOptions = {
-  resolver: vestResolver(depositFormValidationSuite),
+  validation: depositFormValidationSuite,
   defaultValues: emptyDepositForm(),
 }
 export const useDepositForm = <ChainId extends LlamaChainId>({

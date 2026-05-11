@@ -23,7 +23,6 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
@@ -111,7 +110,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const form = useForm<BorrowMoreForm>({
-    resolver: vestResolver(borrowMoreFormValidationSuite),
+    validation: borrowMoreFormValidationSuite,
     defaultValues: emptyBorrowMoreForm(),
   })
 

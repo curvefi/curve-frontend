@@ -8,7 +8,6 @@ import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-appr
 import { type StakeForm, stakeFormValidationSuite, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
@@ -54,7 +53,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const maxUserStake = mapQuery(userBalances, d => d.depositedShares)
 
   const form = useForm<StakeForm>({
-    resolver: vestResolver(stakeFormValidationSuite),
+    validation: stakeFormValidationSuite,
     defaultValues: emptyStakeForm(),
   })
 

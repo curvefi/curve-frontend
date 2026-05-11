@@ -1,10 +1,7 @@
-import { vestResolver } from '@hookform/resolvers/vest'
-import { useForm } from '@ui-kit/features/forms'
+import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
 import type { FieldsOf } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { resetForm, updateForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 
@@ -23,11 +20,7 @@ const defaultValues: CreateVoteForm = {
 } satisfies CreateVoteForm
 
 export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const form = useForm<CreateVoteForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(createVoteFormValidationSuite),
-    defaultValues,
-  })
+  const form = useForm<CreateVoteForm>({ validation: createVoteFormValidationSuite, defaultValues })
 
   const [storedJwt] = usePinataJwt()
 
@@ -39,20 +32,20 @@ export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
     isPending: isCreatingVote,
   } = useCreateVoteMutation({
     onReset: () => {
-      resetForm(form, defaultValues)
-      updateForm(form, { pinataJwt: storedJwt })
+      form.reset(defaultValues)
+      form.updateForm({ pinataJwt: storedJwt })
       onSuccess()
     },
   })
 
   const { formState } = form
-  const formErrors = useFormErrors(formState)
+  const formErrors = formState.visibleErrors
 
   const isPending = formState.isSubmitting || isCreatingVote
 
   return {
     form,
-    values: watchForm(form),
+    values: form.watchValues(),
     isPending,
     isDisabled: !formState.isValid || isPending,
 

@@ -9,7 +9,6 @@ import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
@@ -37,9 +36,11 @@ const userDefaultValues = {
 } satisfies Partial<CreateLoanForm>
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
-const resolver = vestResolver(
-  createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true, collateralRequired: true }),
-)
+const validation = createLoanQueryValidationSuite({
+  debtRequired: false,
+  skipMarketValidation: true,
+  collateralRequired: true,
+})
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -56,7 +57,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
   const formOptions = {
-    resolver,
+    validation,
     defaultValues: {
       ...userDefaultValues,
       leverageEnabled: false,

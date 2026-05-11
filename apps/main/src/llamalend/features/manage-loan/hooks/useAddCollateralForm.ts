@@ -11,7 +11,6 @@ import {
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useCallbackSync, useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
@@ -24,7 +23,7 @@ const defaultValues = {
   maxCollateral: undefined,
 }
 const formOptions = {
-  resolver: vestResolver(addCollateralFormValidationSuite),
+  validation: addCollateralFormValidationSuite,
   defaultValues,
 }
 

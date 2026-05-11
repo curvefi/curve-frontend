@@ -18,7 +18,6 @@ import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-rou
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
@@ -122,7 +121,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<RepayFormData>({
     ...formOptions,
-    resolver: vestResolver(useMemo(() => repayFormValidationSuite(market), [market])),
+    validation: useMemo(() => repayFormValidationSuite(market), [market]),
   })
 
   const values = form.watchValues()

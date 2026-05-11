@@ -1,7 +1,6 @@
 import { noop } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
@@ -50,7 +49,7 @@ const emptyBridgeForm = () =>
   }) satisfies BridgeForm
 
 const formProps = {
-  resolver: vestResolver(bridgeFormValidationSuite),
+  validation: bridgeFormValidationSuite,
   defaultValues: emptyBridgeForm(),
 }
 

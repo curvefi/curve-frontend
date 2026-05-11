@@ -12,7 +12,6 @@ import {
   removeCollateralFormValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
 import { useCallbackSync, useFormSync, useForm } from '@ui-kit/features/forms'
@@ -22,7 +21,7 @@ import { mapQuery, type Range } from '@ui-kit/types/util'
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
 const formOptions = {
-  resolver: vestResolver(removeCollateralFormValidationSuite),
+  validation: removeCollateralFormValidationSuite,
   defaultValues,
 }
 
