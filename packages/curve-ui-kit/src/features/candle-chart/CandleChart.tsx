@@ -273,6 +273,7 @@ export const CandleChart = ({
     if (!chartContainerRef.current) return
 
     chartRef.current = createChart(chartContainerRef.current, {
+      hoveredSeriesOnTop: false,
       timeScale: {
         borderVisible: false,
       },
