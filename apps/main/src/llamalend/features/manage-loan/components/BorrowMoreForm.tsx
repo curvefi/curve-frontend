@@ -43,6 +43,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   const network = networks[chainId]
   const {
     form,
+    form: { getValues, setValue, trigger },
     values,
     params,
     isPending,
@@ -73,8 +74,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
 
   const onLeverageToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
-      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
-    [form],
+      updateForm({ getValues, setValue, trigger }, { leverageEnabled: event.target.checked, routeId: undefined }),
+    [getValues, setValue, trigger],
   )
 
   return (

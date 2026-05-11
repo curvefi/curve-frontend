@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
@@ -15,6 +14,7 @@ import {
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'

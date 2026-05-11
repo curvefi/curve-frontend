@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { getControllerAddress, getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
@@ -11,6 +10,7 @@ import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFor
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
+import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
