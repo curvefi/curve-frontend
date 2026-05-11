@@ -4,6 +4,7 @@ import Stack, { StackProps } from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
 import { FormSkeleton } from './FormSkeleton'
@@ -35,12 +36,10 @@ const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
 const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
   alignSelf: { tablet: 'flex-start' },
   position: { tablet: 'sticky' },
-  top: {
-    // removed page header height as it can be too big for tablet
-    tablet: `calc(${navHeight}px + ${PAGE_MARGIN.marginBlockStart.tablet})`,
-    // page margin block start already included in the header height
-    desktop: `calc(${navHeight}px + ${pageHeaderHeight}px + ${pageHeaderHeight ? '0px' : PAGE_MARGIN.marginBlockStart.desktop})`,
-  },
+  // additional margin to make the forms start at the same height as the page content
+  marginBlockStart: { desktop: `calc(${pageHeaderHeight}px - ${PAGE_MARGIN.marginBlockStart.desktop})` },
+  // mobile breakpoint is not used because sticky only starts at tablet breakpoint
+  top: mapBreakpoints(PAGE_MARGIN.marginBlockStart, marginBlockStart => `calc(${navHeight}px + ${marginBlockStart})`),
 })
 
 /**
