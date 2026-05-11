@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import { helpers } from '@/lend/lib/apiLending'
@@ -22,13 +21,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
+  const { data: market, isSuccess } = useLendMarket(rChainId, rMarket)
   const network = networks[rChainId]
 
   const isPageVisible = useLayoutStore(state => state.isPageVisible)

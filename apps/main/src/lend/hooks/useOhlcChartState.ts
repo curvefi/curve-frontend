@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -17,6 +16,7 @@ import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
+import { useLendMarket } from '../hooks/useLendMarket'
 
 const { Height } = SizesAndSpaces
 
@@ -63,7 +63,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     marketId,
     userAddress,
   })
-  const market = useOneWayMarket(rChainId, marketId).data
+  const market = useLendMarket(rChainId, marketId).data
   const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
   const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
   const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)

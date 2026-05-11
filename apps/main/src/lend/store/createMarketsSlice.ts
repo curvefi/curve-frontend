@@ -1,5 +1,4 @@
 import type { StoreApi } from 'zustand'
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
@@ -13,6 +12,7 @@ import {
   MarketsStatsCapAndAvailableMapper,
   LendMarketTemplate,
 } from '@/lend/types/lend.types'
+import { invalidateMarketDetails } from '../queries/invalidateMarketDetails'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

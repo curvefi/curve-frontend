@@ -3,7 +3,6 @@ import type { StoreApi } from 'zustand'
 import type { FormStatus } from '@/lend/components/PageLendMarket/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
-import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
@@ -13,6 +12,7 @@ import { refetchLoanExists } from '@/llamalend/queries/user'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
