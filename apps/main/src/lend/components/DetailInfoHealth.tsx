@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
@@ -13,13 +12,14 @@ import { ExternalLink } from '@ui/Link/ExternalLink'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useLendMarket } from '../hooks/useLendMarket'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 
 export const DetailInfoHealth = ({
   rChainId,
-  rOwmId,
+  marketId,
   amount,
   bands,
   formType,
@@ -32,7 +32,7 @@ export const DetailInfoHealth = ({
   loading,
   userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'marketId' | 'userActiveKey'> & {
   amount: string
   bands: [number, number]
   formType: FormType
@@ -45,8 +45,8 @@ export const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
-  const market = useOneWayMarket(rChainId, rOwmId).data
-  const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
+  const market = useLendMarket(rChainId, marketId).data
+  const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices?.oraclePriceBand)
   const {
     healthFull: healthFullCurrent,
     healthNotFull: healthNotFullCurrent,

@@ -16,7 +16,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlice'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -33,7 +33,14 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal } from '@ui-kit/utils'
 
-export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const LoanCollateralRemove = ({
+  rChainId,
+  marketId,
+  isLoaded,
+  api,
+  market,
+  userActiveKey,
+}: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralRemove.activeKey)
@@ -73,7 +80,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
   )
 
   const handleBtnClickRemove = useCallback(
-    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
+    async (payloadActiveKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues) => {
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
@@ -98,7 +105,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
     (
       payloadActiveKey: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       healthMode: HealthMode,
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,
@@ -262,7 +269,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
         <DetailInfoLiqRange
           isManage
           rChainId={rChainId}
-          rOwmId={rOwmId}
+          marketId={marketId}
           {...detailInfo}
           healthMode={healthMode}
           userActiveKey={userActiveKey}
@@ -270,7 +277,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
         <DetailInfoHealth
           isManage
           rChainId={rChainId}
-          rOwmId={rOwmId}
+          marketId={marketId}
           {...detailInfo}
           amount={formValues.collateral}
           healthMode={healthMode}

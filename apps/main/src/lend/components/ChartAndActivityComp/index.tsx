@@ -1,4 +1,3 @@
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { networks } from '@/lend/networks'
 import { Api, ChainId } from '@/lend/types/lend.types'
@@ -10,17 +9,18 @@ import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
+import { useLendMarket } from '../../hooks/useLendMarket'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   api: Api | undefined
   previewPrices: Range<Decimal> | undefined
 }
 
-export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ rChainId, marketId, api, previewPrices }: ChartAndActivityCompProps) => {
   const [isBandsVisible] = useBandsChartVisible()
-  const market = useOneWayMarket(rChainId, rOwmId).data
+  const market = useLendMarket(rChainId, marketId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
 
@@ -37,7 +37,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
-    rOwmId,
+    marketId,
     previewPrices,
   })
 
@@ -49,7 +49,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: C
     error: bandsError,
   } = useBandsData({
     chainId: rChainId,
-    marketId: rOwmId,
+    marketId,
     api,
     enabled: isBandsVisible,
   })

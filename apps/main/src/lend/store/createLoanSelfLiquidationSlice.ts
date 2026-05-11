@@ -3,16 +3,16 @@ import type { StoreApi } from 'zustand'
 import type { FormStatus } from '@/lend/components/PageLendMarket/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
-import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, FormWarning, FutureRates, LendMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/user'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -28,12 +28,12 @@ const sliceKey = 'loanSelfLiquidation'
 // prettier-ignore
 export type LoanSelfLiquidationSlice = {
   [sliceKey]: SliceState & {
-    fetchDetails(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
-    fetchEstGasApproval(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
+    fetchDetails(api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
+    fetchEstGasApproval(api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
 
     // step
-    fetchStepApprove(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepLiquidate(api: Api, market: OneWayMarketTemplate, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepLiquidate(api: Api, market: LendMarketTemplate, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void

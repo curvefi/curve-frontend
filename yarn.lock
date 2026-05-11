@@ -1382,17 +1382,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/error-message@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@hookform/error-message@npm:2.0.1"
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-    react-hook-form: ^7.0.0
-  checksum: 10c0/6b608bcdbd797ddb7c6cfc8c42b6bbac40066181a0c582b1f1a342bfa65fa7e8329cdb8e869a76e33988cd46fe8623d521ea597231b9d33e1f0ba3288e36c58e
-  languageName: node
-  linkType: hard
-
 "@hookform/resolvers@npm:5.2.2":
   version: 5.2.2
   resolution: "@hookform/resolvers@npm:5.2.2"
@@ -8180,6 +8169,7 @@ __metadata:
     "@coinbase/wallet-sdk": "npm:4.3.7"
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
+    "@hookform/resolvers": "npm:5.2.2"
     "@mui/icons-material": "npm:7.3.10"
     "@mui/material": "npm:7.3.10"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
@@ -8202,6 +8192,7 @@ __metadata:
     dayjs: "npm:1.11.20"
     eslint: "npm:*"
     lodash: "npm:*"
+    react-hook-form: "npm:7.74.0"
     storybook: "npm:10.3.6"
     typescript: "npm:*"
     viem: "npm:2.48.7"
@@ -9775,9 +9766,9 @@ __metadata:
   linkType: hard
 
 "fast-uri@npm:^3.0.0, fast-uri@npm:^3.0.1":
-  version: 3.1.0
-  resolution: "fast-uri@npm:3.1.0"
-  checksum: 10c0/44364adca566f70f40d1e9b772c923138d47efeac2ae9732a872baafd77061f26b097ba2f68f0892885ad177becd065520412b8ffeec34b16c99433c5b9e2de7
+  version: 3.1.2
+  resolution: "fast-uri@npm:3.1.2"
+  checksum: 10c0/5b35641895959f3f7ab7a7b1b5542bded159346f25ec9f256817b206d50b64eda5828e90d605a2e2fc645c90519a7259c2bab2c942ee728c88b88e5be21b090d
   languageName: node
   linkType: hard
 
@@ -11143,8 +11134,6 @@ __metadata:
   dependencies:
     "@curvefi/api": "npm:*"
     "@curvefi/llamalend-api": "npm:2.0.23"
-    "@hookform/error-message": "npm:2.0.1"
-    "@hookform/resolvers": "npm:5.2.2"
     "@sentry/vite-plugin": "npm:5.2.1"
     "@supercharge/promise-pool": "npm:3.3.0"
     "@tanstack/react-router": "npm:1.169.1"
@@ -11162,7 +11151,6 @@ __metadata:
     lightweight-charts: "npm:5.2.0"
     memoizee: "npm:0.4.17"
     pinst: "npm:3.0.0"
-    react-hook-form: "npm:7.74.0"
     recharts: "npm:2.15.4"
     typescript: "npm:*"
     ui: "npm:*"

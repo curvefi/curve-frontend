@@ -22,7 +22,7 @@ export interface FormStatus extends Fs {
   stepError: string
 }
 
-export type DetailProps = Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'userActiveKey'> & {
+export type DetailProps = Pick<PageContentProps, 'rChainId' | 'marketId' | 'api' | 'userActiveKey'> & {
   activeKey: string
   activeStep: number | null
   healthMode: HealthMode

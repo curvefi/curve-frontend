@@ -17,7 +17,7 @@ import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
@@ -40,7 +40,7 @@ type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
 
 export const LoanBorrowMore = ({
   rChainId,
-  rOwmId,
+  marketId,
   isLoaded,
   api,
   market,
@@ -99,7 +99,7 @@ export const LoanBorrowMore = ({
       payloadActiveKey: string,
       api: Api,
       formValues: FormValues,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       maxSlippage: string,
       isLeverage: boolean,
     ) => {
@@ -128,7 +128,7 @@ export const LoanBorrowMore = ({
     (
       payloadActiveKey: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       healthMode: HealthMode,
       confirmedWarning: boolean,
       formEstGas: FormEstGas,
@@ -322,7 +322,7 @@ export const LoanBorrowMore = ({
 
   const detailInfoProps = {
     rChainId,
-    rOwmId,
+    marketId,
     api,
     market,
     activeKey,
