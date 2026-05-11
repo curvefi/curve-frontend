@@ -36,13 +36,11 @@ const FORMATTED_STABLE = formatNumber(SLIPPAGE_PRESETS.STABLE, {
   maximumFractionDigits: 1,
   unit: 'percentage',
   abbreviate: false,
-  fallback: '-',
 })
 const FORMATTED_CRYPTO = formatNumber(SLIPPAGE_PRESETS.CRYPTO, {
   maximumFractionDigits: 1,
   unit: 'percentage',
   abbreviate: false,
-  fallback: '-',
 })
 
 const inputErrorMapper = {

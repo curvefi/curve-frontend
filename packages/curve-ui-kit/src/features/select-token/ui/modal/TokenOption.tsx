@@ -82,7 +82,7 @@ export const TokenOption = ({
 
             {hasBalanceUsd && (
               <Typography variant="bodyXsRegular" color={secondary}>
-                {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false, fallback: '-' })}
+                {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}
 
