@@ -176,7 +176,7 @@ export const RepayForm = <ChainId extends IChainId>({
             tokens={tokens}
           />
         }
-        message={
+        maxMessage={
           maxAmountInBorrowTokenError?.message ?? (
             <Balance
               inline

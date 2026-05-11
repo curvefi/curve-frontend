@@ -69,7 +69,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           network={network}
           positionBalance={{ position: positionCollateral, tooltip: t`Collateral in position` }}
           max={{ ...q(maxRemovable), fieldName: 'maxCollateral' }}
-          message={
+          maxMessage={
             <Balance
               inline
               prefix={t`Max removable:`}
