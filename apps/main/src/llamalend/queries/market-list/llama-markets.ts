@@ -14,7 +14,7 @@ import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaign
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { type ExtraIncentive, LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
@@ -47,7 +47,7 @@ export type LlamaMarket = {
   controllerAddress: Address
   vaultAddress: Address | null
   assets: Assets
-  version: 'v1' | 'v2'
+  version: LlamaMarketVersion
   maxLtv: number
   utilizationPercent: number
   liquidityUsd: number
@@ -110,6 +110,7 @@ const convertLendingVault = (
     extraRewardApr,
     maxLtv,
     createdAt,
+    version,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
@@ -136,7 +137,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
-    version: 'v1', // todo: get version from backend
+    version: version as LlamaMarketVersion,
     assets: {
       borrowed: {
         ...borrowedToken,
@@ -240,7 +241,10 @@ const convertMintMarket = (
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
-    version: 'v1',
+    // todo: the market's version should come from the backend directly like for the lend markets (not supported yet)
+    version: [collateralSymbol, stablecoinToken.symbol].some(symbol => symbol.toLowerCase().includes('llv2'))
+      ? LlamaMarketVersion.v2
+      : LlamaMarketVersion.v1,
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,

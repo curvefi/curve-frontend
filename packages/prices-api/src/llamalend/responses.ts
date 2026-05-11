@@ -10,6 +10,7 @@ export type GetMarketsResponse = {
   count: number
   data: {
     name: string
+    version: number
     controller: Address
     vault: Address
     llamma: Address

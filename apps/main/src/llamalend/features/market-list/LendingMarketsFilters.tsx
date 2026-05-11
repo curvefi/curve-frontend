@@ -1,21 +1,18 @@
-import { keyBy, type Dictionary } from 'lodash'
-import { useMemo } from 'react'
+import { noop, type Dictionary } from 'lodash'
 import Stack from '@mui/material/Stack'
-import { SxProps } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
-import { Badge } from '@ui-kit/shared/ui/Badge'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercent, formatUsd } from '@ui-kit/utils'
-import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
+import { type AssetDetails } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaMarketColumnId } from './columns'
+import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './filters/hooks/useLlamaMarketsFilters'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
-import { RangeSliderFilter } from './filters/RangeSliderFilter'
+import { RangeFilter } from './filters/RangeFilter'
+import { RangeSliderRowFilter } from './filters/RangeSliderRowFilter'
+import { TableFilterButtonGroup } from './filters/TableFilterButtonGroup'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,55 +26,41 @@ const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDet
 }
 
 /**
- * Displays a selected token with its icon and symbol.
- * This is used in the lending markets filters to display selected collateral and debt tokens.
+ * Displays a selected token, used in the lending markets filters to display selected collateral and debt tokens.
+ * SelectableChip is not being used as real Chip but required to match the design, that's why the interactions are
+ * disabled and it's always selected
  */
-const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
-  const { chain, address = null } = tokens[symbol] ?? {}
-  return <Badge label={symbol} size="small" icon={<TokenIcon blockchainId={chain} address={address} />} />
-}
+const SelectedToken = ({ symbol }: { symbol: string }) => (
+  <SelectableChip label={symbol} selected toggle={noop} sx={{ pointerEvents: 'none' }} />
+)
 
 /**
- * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
+ * Filters for the LlamaLend markets table, including chain, token, APR, and range-based filters.
  */
-export const LendingMarketsFilters = ({
-  data,
-  gridSx,
-  ...filterProps
-}: FilterProps<LlamaMarketColumnId> & {
-  gridSx?: SxProps
-  data: LlamaMarket[]
-}) => {
-  // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
-  // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
-  const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
-  const markets = useMemo(
-    () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
-    [data, selectedChains],
-  )
+export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
+  const {
+    filterProps,
+    markets,
+    tokens,
+    marketTypeValue,
+    marketVersionValue,
+    onMarketTypeChange,
+    onMarketVersionChange,
+    marketTypeOptions,
+    marketVersionOptions,
+  } = useLlamaMarketsFilters(props)
 
-  // Relies on data and not markets, because you might have a filter active for a token from a chain
-  // before you filtered out that said chain. This would lead to token symbols not loading.
-  const tokens = useMemo(
-    () =>
-      keyBy(
-        data.flatMap(market => [market.assets.collateral, market.assets.borrowed]),
-        i => i.symbol,
-      ),
-    [data],
-  )
   return (
     <Stack padding={Spacing.sm} spacing={Spacing.sm}>
       <TableFilterItem title={t`Network`}>
-        <LlamaChainFilterChips data={markets} {...filterProps} />
+        <LlamaChainFilterChips data={props.data} {...filterProps} />
       </TableFilterItem>
       <TableFilterItem title={t`Collateral Tokens`}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
-          defaultText={t`All`}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Collateral Tokens`}
           data={markets}
           {...filterProps}
@@ -88,49 +71,73 @@ export const LendingMarketsFilters = ({
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
-          selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
-          defaultText={t`All`}
+          selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Debt Tokens`}
           data={markets}
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`TVL`}>
-        <RangeSliderFilter
-          id={LlamaMarketColumnId.Tvl}
-          field={LlamaMarketColumnId.Tvl}
-          title={t`TVL`}
-          format={formatUsd}
+      <TableFilterItem title={t`Borrow APR`}>
+        <RangeFilter
+          id={LlamaMarketColumnId.BorrowRate}
+          field="rates.borrowApr"
           data={markets}
-          adornment="dollar"
-          scale="power"
+          adornment="percentage"
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`Available liquidity`}>
-        <RangeSliderFilter
-          id={LlamaMarketColumnId.LiquidityUsd}
-          field={LlamaMarketColumnId.LiquidityUsd}
-          title={t`Liquidity`}
-          format={formatUsd}
+      <TableFilterItem title={t`TVL`}>
+        <RangeFilter
+          id={LlamaMarketColumnId.Tvl}
+          field={LlamaMarketColumnId.Tvl}
           data={markets}
           adornment="dollar"
-          scale="power"
+          {...filterProps}
+        />
+      </TableFilterItem>
+      <TableFilterItem title={t`Liquidity`}>
+        <RangeFilter
+          id={LlamaMarketColumnId.LiquidityUsd}
+          field={LlamaMarketColumnId.LiquidityUsd}
+          data={markets}
+          adornment="dollar"
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterItem title={t`Utilization`}>
-        <RangeSliderFilter
+        <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
-          title={t`Utilization`}
-          format={formatPercent}
           data={markets}
           adornment="percentage"
           max={100}
           {...filterProps}
         />
       </TableFilterItem>
+      <TableFilterItem title={t`LTV`}>
+        <RangeSliderRowFilter
+          id={LlamaMarketColumnId.MaxLtv}
+          field={LlamaMarketColumnId.MaxLtv}
+          data={markets}
+          adornment="percentage"
+          max={100}
+          {...filterProps}
+        />
+      </TableFilterItem>
+      <TableFilterButtonGroup
+        title={t`Market type`}
+        value={marketTypeValue}
+        onChange={onMarketTypeChange}
+        ariaLabel={t`Market type filter`}
+        options={marketTypeOptions}
+      />
+      <TableFilterButtonGroup
+        title={t`Market version`}
+        value={marketVersionValue}
+        onChange={onMarketVersionChange}
+        ariaLabel={t`Market version filter`}
+        options={marketVersionOptions}
+      />
     </Stack>
   )
 }
