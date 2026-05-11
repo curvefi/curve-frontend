@@ -6,7 +6,6 @@ import { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS, notFalsy } from '@primitives/objects.utils'
 import type { RouterRouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
-import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { fromWei, toWei } from '../router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
@@ -48,7 +47,7 @@ function getWarnings(
   toAmount: string,
   isStableswapRoute: boolean,
   toStoredRate: string | undefined,
-): RouteResponse['warnings'] {
+): RouterRouteResponse['warnings'] {
   const exchangeRate = Number(fromAmount) ? new BigNumber(toAmount).dividedBy(fromAmount).toNumber() : 0
   const isExchangeRateLow =
     isStableswapRoute &&

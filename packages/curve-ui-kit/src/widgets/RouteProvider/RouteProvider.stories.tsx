@@ -1,31 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
+import { fromEntries, mapRecord } from '@primitives/objects.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { constQ } from '@ui-kit/types/util'
+import { constQ, q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
-
-const meta: Meta<typeof RouteProvidersAccordion> = {
-  title: 'UI Kit/Widgets/RouteProvidersAccordion',
-  component: RouteProvidersAccordion,
-  args: {
-    queries: mockRoutes,
-    selectedRoute: mockRoutes[0],
-    tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },
-    isExpanded: false,
-    isLoading: false,
-    error: null,
-    onChange: () => undefined,
-    onToggle: () => undefined,
-    onRefresh: () => undefined,
-  },
-}
-
-export default meta
 
 type Story = StoryObj<typeof meta>
 
@@ -35,7 +19,7 @@ const RouteProviderStory = ({
   queries: givenRoutes,
   selectedRoute: givenSelectedRoute,
   ...args
-}: RouteProviderProps) => {
+}: RouteProviderProps & { isLoading?: boolean }) => {
   const [routes, setRoutes] = useState(givenRoutes)
   const [selectedRoute, setSelectedRoute] = useState(givenSelectedRoute)
   const [isLoading, setIsLoading] = useState(givenIsLoading)
@@ -49,9 +33,11 @@ const RouteProviderStory = ({
     <Box sx={{ maxWidth: MaxWidth.actionCard }}>
       <RouteProvidersAccordion
         {...args}
-        queries={routes}
+        queries={useMemo(
+          () => (isLoading ? mapRecord(routes, (_, route) => ({ ...route, isLoading: true })) : routes),
+          [isLoading, routes],
+        )}
         selectedRoute={selectedRoute}
-        isLoading={isLoading}
         onChange={useCallback(route => setSelectedRoute(route), [])}
         isExpanded={isExpanded}
         onToggle={toggle}
@@ -67,21 +53,33 @@ const RouteProviderStory = ({
   )
 }
 
-export const Collapsed: Story = {
-  render: args => <RouteProviderStory {...args} />,
+const meta: Meta<typeof RouteProviderStory> = {
+  title: 'UI Kit/Widgets/RouteProvidersAccordion',
+  component: RouteProviderStory,
+  args: {
+    queries: fromEntries(
+      RouteProviders.map(router => [
+        router,
+        q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+      ]),
+    ),
+    selectedRoute: mockRoutes[0],
+    tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },
+    isExpanded: false,
+    onChange: () => undefined,
+    onToggle: () => undefined,
+    onRefresh: () => undefined,
+  },
 }
+
+export default meta
+
+export const Collapsed: Story = {}
 
 export const Expanded: Story = {
   args: { isExpanded: true },
-  render: args => <RouteProviderStory {...args} />,
-}
-
-export const SingleRoute: Story = {
-  args: { queries: [mockRoutes[0]] },
-  render: args => <RouteProviderStory {...args} />,
 }
 
 export const Loading: Story = {
   args: { isLoading: true },
-  render: args => <RouteProviderStory {...args} />,
 }

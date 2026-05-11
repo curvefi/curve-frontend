@@ -49,9 +49,8 @@ export type RoutesQuery = {
 
 const routeItemSchema = {
   type: 'object',
-  required: ['id', 'router', 'amountOut', 'priceImpact', 'createdAt', 'route'],
+  required: ['router', 'amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
-    id: { type: 'string', minLength: 1 },
     router: { type: 'string', enum: RouteProviders },
     amountIn: WeiAmountArraySchema,
     amountOut: WeiAmountArraySchema,

@@ -2,7 +2,8 @@ import { noop } from 'lodash'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { allViewports } from '@cy/support/ui'
-import { notFalsy } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 
@@ -13,10 +14,15 @@ const getHeight = (testId: string, subelement?: string) =>
     .then($element => $element[0].getBoundingClientRect().height)
 
 const routes = {
-  data: mockRoutes,
-  isLoading: false,
-  error: null,
+  queries: fromEntries(
+    RouteProviders.map(router => [
+      router,
+      q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+    ]),
+  ),
+  sortedRoutes: mockRoutes,
   selectedRoute: mockRoutes[0],
+  enabled: true,
   onChange: async () => undefined,
   onRefresh: () => undefined,
   tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: q({ data: 1, error: null, isLoading: false }) },
