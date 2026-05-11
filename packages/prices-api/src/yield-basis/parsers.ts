@@ -3,8 +3,6 @@ import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
-const parseNumberString = (value: string) => Number(value)
-
 export const parsePool = (pool: Responses.YBPool): Models.YieldBasisPool => ({
   name: pool.name,
   address: pool.address,
@@ -60,14 +58,14 @@ export const parseCrvUsdYieldBasisSupply = (
   response: Responses.YieldBasisSupplyResponse,
 ): Models.CrvUsdYieldBasisSupply => ({
   cachedAt: response.cached_at == null ? undefined : parseTimestamp(response.cached_at),
-  ybFactoryBalance: parseNumberString(response.data.yb_factory_balance),
-  ybTotalAllocated: parseNumberString(response.data.yb_total_allocated),
-  ybTotalAmmBalance: parseNumberString(response.data.yb_total_amm_balance),
-  ybTotalAmmDebt: parseNumberString(response.data.yb_total_amm_debt),
-  ybMaxDebt: parseNumberString(response.data.yb_max_debt),
-  mintPegkeeperDebt: parseNumberString(response.data.mint_pegkeeper_debt),
-  mintMarketDebt: parseNumberString(response.data.mint_market_debt),
-  totalSupply: parseNumberString(response.data.total_supply),
+  ybFactoryBalance: parseFloat(response.data.yb_factory_balance),
+  ybTotalAllocated: parseFloat(response.data.yb_total_allocated),
+  ybTotalAmmBalance: parseFloat(response.data.yb_total_amm_balance),
+  ybTotalAmmDebt: parseFloat(response.data.yb_total_amm_debt),
+  ybMaxDebt: parseFloat(response.data.yb_max_debt),
+  mintPegkeeperDebt: parseFloat(response.data.mint_pegkeeper_debt),
+  mintMarketDebt: parseFloat(response.data.mint_market_debt),
+  totalSupply: parseFloat(response.data.total_supply),
 })
 
 export const parseCrvUsdYieldBasisHistory = (
@@ -75,11 +73,11 @@ export const parseCrvUsdYieldBasisHistory = (
 ): Models.CrvUsdYieldBasisHistory => ({
   chain: response.chain,
   data: response.data.map(item => ({
-    ybFactoryBalance: parseNumberString(item.yb_factory_balance),
-    ybTotalAllocated: parseNumberString(item.yb_total_allocated),
-    ybTotalAmmBalance: parseNumberString(item.yb_total_amm_balance),
-    ybTotalAmmDebt: parseNumberString(item.yb_total_amm_debt),
-    ybMaxDebt: parseNumberString(item.yb_max_debt),
+    ybFactoryBalance: parseFloat(item.yb_factory_balance),
+    ybTotalAllocated: parseFloat(item.yb_total_allocated),
+    ybTotalAmmBalance: parseFloat(item.yb_total_amm_balance),
+    ybTotalAmmDebt: parseFloat(item.yb_total_amm_debt),
+    ybMaxDebt: parseFloat(item.yb_max_debt),
     timestamp: parseTimestamp(item.dt),
     blockNumber: item.block_number,
   })),
