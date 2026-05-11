@@ -87,7 +87,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
       adornment={adornment}
-      format={value => formatNumber(Number(value), { abbreviate: true })}
+      format={value => (value == null ? '' : formatNumber(value, { abbreviate: true }))}
       placeholder={placeholder}
       data-testid={`range-filter-${id}-${testId}`}
       sx={{ flex: 1 }}

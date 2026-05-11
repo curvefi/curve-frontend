@@ -1,6 +1,5 @@
 import type { RefObject } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Popover from '@mui/material/Popover'
@@ -42,7 +41,7 @@ export const LlamaTableFiltersPopover = ({
       },
     }}
   >
-    <Stack divider={<Box sx={{ borderTop: t => `1px solid ${t.design.Layer[1].Outline}` }} />}>
+    <Stack sx={{ '& > * + *': { borderTop: t => `1px solid ${t.design.Layer[1].Outline}` } }}>
       <Stack
         direction="row"
         alignItems="flex-end"

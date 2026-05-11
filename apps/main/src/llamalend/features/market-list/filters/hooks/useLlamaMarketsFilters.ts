@@ -8,17 +8,29 @@ import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { type AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from '../../columns'
 
-type MarketTypeFilterValue = LlamaMarketType | 'all'
-type MarketVersionFilterValue = LlamaMarketVersion | 'all'
+const ALL_FILTER_VALUE = 'all' as const
+
+type AllFilterValue = typeof ALL_FILTER_VALUE
+type MarketTypeFilterValue = LlamaMarketType | AllFilterValue
+type MarketVersionFilterValue = LlamaMarketVersion | AllFilterValue
+
+const getSelectFilterValue = <T extends string>(filter: string[] | undefined) =>
+  (filter?.length ? filter[0] : ALL_FILTER_VALUE) as T | AllFilterValue
+
+const setSelectFilterValue = <T extends string>(
+  setColumnFilter: FilterProps<LlamaMarketColumnId>['setColumnFilter'],
+  columnId: LlamaMarketColumnId,
+  value: T | AllFilterValue | null,
+) => value && setColumnFilter(columnId, value === ALL_FILTER_VALUE ? null : serializeListFilter([value]))
 
 const MARKET_TYPE_LABELS: Record<MarketTypeFilterValue, string> = {
-  all: t`All`,
+  [ALL_FILTER_VALUE]: t`All`,
   [LlamaMarketType.Mint]: t`Mint`,
   [LlamaMarketType.Lend]: t`Lending`,
 }
 
 const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
-  all: t`All`,
+  [ALL_FILTER_VALUE]: t`All`,
   [LlamaMarketVersion.v1]: 'v1',
   [LlamaMarketVersion.v2]: 'v2',
 }
@@ -53,23 +65,23 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
       [data, selectedChains],
     ),
     marketTypeValue: useMemo<MarketTypeFilterValue>(
-      () => (selectedMarketTypes?.length ? (selectedMarketTypes[0] as LlamaMarketType) : 'all'),
+      () => getSelectFilterValue<LlamaMarketType>(selectedMarketTypes),
       [selectedMarketTypes],
     ),
     marketVersionValue: useMemo<MarketVersionFilterValue>(
-      () => (selectedMarketVersions?.length ? (selectedMarketVersions[0] as MarketVersionFilterValue) : 'all'),
+      () => getSelectFilterValue<LlamaMarketVersion>(selectedMarketVersions),
       [selectedMarketVersions],
     ),
     onMarketTypeChange: (_: MouseEvent<HTMLElement>, value: MarketTypeFilterValue | null) =>
-      value &&
-      filterProps.setColumnFilter(LlamaMarketColumnId.Type, value === 'all' ? null : serializeListFilter([value])),
+      setSelectFilterValue(filterProps.setColumnFilter, LlamaMarketColumnId.Type, value),
     onMarketVersionChange: (_: MouseEvent<HTMLElement>, value: MarketVersionFilterValue | null) =>
-      value &&
-      filterProps.setColumnFilter(LlamaMarketColumnId.Version, value === 'all' ? null : serializeListFilter([value])),
+      setSelectFilterValue(filterProps.setColumnFilter, LlamaMarketColumnId.Version, value),
     marketTypeOptions: recordEntries(MARKET_TYPE_LABELS).map(([value, label]) => ({ value, label })),
     marketVersionOptions: recordEntries(MARKET_VERSION_LABELS)
       .map(([value, label]) => ({ value, label }))
       // numeric like object keys (e.g. "1") are returned first, so we sort `all` back to the front for the button group
-      .sort(({ value: left }, { value: right }) => Number(right === 'all') - Number(left === 'all')),
+      .sort(
+        ({ value: left }, { value: right }) => Number(right === ALL_FILTER_VALUE) - Number(left === ALL_FILTER_VALUE),
+      ),
   }
 }

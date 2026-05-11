@@ -1,4 +1,4 @@
-import type { Dictionary } from 'lodash'
+import { noop, type Dictionary } from 'lodash'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
@@ -31,12 +31,11 @@ const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDet
  * disabled and it's always selected
  */
 const SelectedToken = ({ symbol }: { symbol: string }) => (
-  <SelectableChip label={symbol} selected toggle={() => {}} sx={{ pointerEvents: 'none' }} />
+  <SelectableChip label={symbol} selected toggle={noop} sx={{ pointerEvents: 'none' }} />
 )
 
 /**
- * Filters for the llamalend markets table. Includes filters for chain, collateral token, debt token, liquidity, and
- * utilization.
+ * Filters for the LlamaLend markets table, including chain, token, APR, and range-based filters.
  */
 export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   const {

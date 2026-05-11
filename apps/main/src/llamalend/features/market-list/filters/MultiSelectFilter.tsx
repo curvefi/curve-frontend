@@ -19,11 +19,14 @@ import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
 const { Spacing } = SizesAndSpaces
 
-/**  Show only the first few selected values inline so the closed select stays compact. Any remaining selections are
- * collapsed into a single "+N" item. */
-const MAX_VISIBLE_SELECTED_OPTIONS = 3
+/**  Show only the first few selected values inline so the closed select stays compact.
+ * Any remaining selections are collapsed into a single "+N" item, if more than 1 item is hidden */
+const getVisibleSelectedOptionsCount = (selectedOptionsLength: number) => {
+  const maxVisibleSelectedOptions = 4
+  return selectedOptionsLength === maxVisibleSelectedOptions ? maxVisibleSelectedOptions : maxVisibleSelectedOptions - 1
+}
 
-/** Renders the overflow indicator for selected options hidden behind the MAX_VISIBLE_SELECTED_OPTIONS limit.  */
+/** Renders the overflow indicator for selected options hidden behind max selected options limit.  */
 const HiddenSelectedOptions = ({
   selectedOptionsLength,
   renderItem,
@@ -33,9 +36,11 @@ const HiddenSelectedOptions = ({
   renderItem?: (value: string) => ReactNode
   selectedItemRender?: (value: string) => ReactNode
 }) => {
-  const length = selectedOptionsLength - MAX_VISIBLE_SELECTED_OPTIONS
-  const label = `+${length}`
-  return length > 0 && (selectedItemRender?.(label) ?? renderItem?.(label) ?? label)
+  const visibleSelectedOptionsCount = getVisibleSelectedOptionsCount(selectedOptionsLength)
+  const label = `+${selectedOptionsLength - visibleSelectedOptionsCount}`
+  return (
+    selectedOptionsLength > visibleSelectedOptionsCount && (selectedItemRender?.(label) ?? renderItem?.(label) ?? label)
+  )
 }
 
 /**
@@ -107,7 +112,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             <>
-              {selectedOptions.slice(0, MAX_VISIBLE_SELECTED_OPTIONS).map(optionId => (
+              {selectedOptions.slice(0, getVisibleSelectedOptionsCount(selectedOptions.length)).map(optionId => (
                 <MenuItem
                   key={optionId}
                   sx={{
