@@ -87,18 +87,11 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
           : poolsData?.map((item): PoolListItem => {
               const rewards = rewardsApyMapper?.[item.pool.id]
               const hasPosition = userPools?.includes(item.pool.id)
-
+              const [, boostedCrvRewards] = rewards?.crv ?? []
+              const otherRewardsApr = rewards?.other?.map(r => r.apy) ?? []
               return {
                 ...item,
-                totalAPR: sum(
-                  notFalsy<string | number>(
-                    rewards?.base?.day,
-                    ...(rewards?.crv ?? []),
-                    ...(rewards?.other?.map(r => r.apy) ?? []),
-                  )
-                    .map(Number)
-                    .filter(v => !isNaN(v)),
-                ),
+                totalAPR: sum(notFalsy(boostedCrvRewards, ...otherRewardsApr).filter(v => !isNaN(v))),
                 rewards,
                 volume: decimal(volumes?.[item.pool.id]),
                 tvl: decimal(tvls?.[item.pool.id]),
