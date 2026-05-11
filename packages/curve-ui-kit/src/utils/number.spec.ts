@@ -460,6 +460,17 @@ describe('formatNumber', () => {
     it('should return undefined if value is undefined', () => {
       expect(formatNumber(undefined, { abbreviate: false })).toBeUndefined()
     })
+
+    it('uses fallback for missing-like values', () => {
+      expect(formatNumber(undefined, { abbreviate: false, fallback: '-' })).toBe('-')
+      expect(formatNumber(null, { abbreviate: false, fallback: '-' })).toBe('-')
+      expect(formatNumber('', { abbreviate: false, fallback: '-' })).toBe('-')
+      expect(formatNumber(NaN, { abbreviate: false, fallback: '-' })).toBe('-')
+    })
+
+    it('keeps formatting NaN as NaN when no fallback is provided', () => {
+      expect(formatNumber(NaN, { abbreviate: false })).toBe('NaN')
+    })
   })
 
   describe('unit types', () => {

@@ -172,7 +172,7 @@ export type NumberFormatOptions = {
   highPrecision?: boolean
   /** Optional formatter for value */
   formatter?: (value: Amount) => string
-  /** Value returned when the input value is nullish */
+  /** Value returned when the input is nullish, an empty string, or numeric NaN */
   fallback?: string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>
 
@@ -230,26 +230,30 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
   }
 }
 
+type MissingAmount = null | undefined | ''
+
 /**
  * Formats a number according to the specified options by decomposing it into components
  * and reassembling them into a formatted string.
  *
- * @param value - The number to format
- * @param options - Optional formatting configuration options
- * @returns The formatted number as a string with prefix, main value, scale suffix, and suffix combined
+ * @param value - The number to format. Nullish values and empty strings return `options.fallback` or `undefined`.
+ * @param options - Formatting configuration options
+ * @param options.fallback - Returned for nullish values, empty strings, and numeric NaN values
+ * @returns The formatted number as a string with prefix, main value, scale suffix, and suffix combined. Returns
+ * `undefined` for nullish or empty values when no fallback is provided.
  *
  * @example
- * formatNumber(1234.56)
- * // Returns "1.23K" (default abbreviation enabled)
+ * formatNumber(1234.56, { abbreviate: true })
+ * // Returns "1.23k"
  *
- * formatNumber(1000000, { unit: { symbol: '$', position: 'prefix' } })
- * // Returns "$1M"
+ * formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
+ * // Returns "$1m"
  *
  * formatNumber(500, { abbreviate: false })
- * // Returns "500.00"
+ * // Returns "500"
  *
- * formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
- * // Returns "2.5B%"
+ * formatNumber(2500000000, { abbreviate: true, unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
+ * // Returns "2.5b%"
  *
  * formatNumber(-1000, { abbreviate: true, unit: 'dollar' })
  * // Returns "-$1k" (negative sign precedes the prefix symbol)
@@ -262,15 +266,23 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
  *
  * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.0000"
+ *
+ * formatNumber(undefined, { abbreviate: false, fallback: '-' })
+ * // Returns "-"
+ *
+ * formatNumber(NaN, { abbreviate: false, fallback: '-' })
+ * // Returns "-"
+ *
+ * formatNumber(NaN, { abbreviate: false })
+ * // Returns "NaN"
  */
 export function formatNumber(value: Amount, options: NumberFormatOptions): string
-export function formatNumber(
-  value: Amount | null | undefined,
-  options: NumberFormatOptions & { fallback: string },
-): string
-export function formatNumber(value: Amount | null | undefined, options: NumberFormatOptions): string | undefined
-export function formatNumber(value: Amount | null | undefined, options: NumberFormatOptions) {
-  if (value == null) return options.fallback
+export function formatNumber(value: Amount | MissingAmount, options: NumberFormatOptions & { fallback: string }): string
+export function formatNumber(value: Amount | MissingAmount, options: NumberFormatOptions): string | undefined
+export function formatNumber(value: Amount | MissingAmount, options: NumberFormatOptions) {
+  if (value == null || value === '' || (typeof value === 'number' && isNaN(value) && options.fallback !== undefined)) {
+    return options.fallback
+  }
 
   const decomposed = decomposeNumber(value, options)
   const isNegative = decomposed.mainValue.startsWith('-')
