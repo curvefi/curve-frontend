@@ -5,7 +5,7 @@ import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultCl
 import { DEFAULT_FORM_STATUS } from '@/lend/components/PageVault/VaultClaim/utils'
 import { apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, MarketClaimable, LendMarketTemplate } from '@/lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -23,11 +23,11 @@ type SliceState = {
 // prettier-ignore
 export type VaultClaimSlice = {
   [sliceKey]: SliceState & {
-    fetchClaimable(userActiveKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
-    setFormValues(userActiveKey: string, api: Api | null, market: OneWayMarketTemplate | undefined): Promise<void>
+    fetchClaimable(userActiveKey: string, api: Api, market: LendMarketTemplate): Promise<void>
+    setFormValues(userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined): Promise<void>
 
     // steps
-    fetchStepClaim(userActiveKey: string, api: Api, market: OneWayMarketTemplate, type: RewardType): Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
+    fetchStepClaim(userActiveKey: string, api: Api, market: LendMarketTemplate, type: RewardType): Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, userActiveKey: string, value: T): void

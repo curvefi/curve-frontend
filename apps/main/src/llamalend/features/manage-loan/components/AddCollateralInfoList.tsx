@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -16,6 +15,7 @@ import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevL
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'

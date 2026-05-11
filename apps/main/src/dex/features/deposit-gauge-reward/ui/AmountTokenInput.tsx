@@ -1,5 +1,4 @@
 import { MouseEvent, useCallback, useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual, ethAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import {
@@ -22,6 +21,7 @@ import { toTokenOption } from '@/dex/utils'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
 import { formatNumber } from '@ui/utils'
+import { useFormContext } from '@ui-kit/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'

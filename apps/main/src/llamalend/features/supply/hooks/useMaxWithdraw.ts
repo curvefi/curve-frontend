@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import {
   useVaultMaxRedeemShares,
   useVaultMaxWithdrawAmount,
@@ -7,6 +6,7 @@ import {
 import type { WithdrawParams, WithdrawForm } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalEqual } from '@ui-kit/utils'
@@ -43,6 +43,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   },
   enabled?: boolean,
 ) {
+  const { getValues, setValue, trigger } = form
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = useVaultMaxWithdrawAmount(params, enabled)
   const maxRedeemShares = useVaultMaxRedeemShares(params, enabled)
@@ -58,7 +59,10 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
 
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
   useFormSync(form, { userVaultShares: userBalances.data.depositedShares })
-  useEffect(() => (isFull.data == null ? undefined : updateForm(form, { isFull: isFull.data })), [form, isFull.data])
+  useEffect(
+    () => (isFull.data == null ? undefined : updateForm({ getValues, setValue, trigger }, { isFull: isFull.data })),
+    [getValues, isFull.data, setValue, trigger],
+  )
 
   return {
     maxWithdrawAmount: q(maxWithdrawAmount),

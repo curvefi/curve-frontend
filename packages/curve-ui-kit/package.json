@@ -17,6 +17,7 @@
     "@coinbase/wallet-sdk": "4.3.7",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
+    "@hookform/resolvers": "5.2.2",
     "@mui/icons-material": "7.3.10",
     "@mui/material": "7.3.10",
     "@safe-global/safe-apps-provider": "0.18.6",
@@ -30,6 +31,7 @@
     "@walletconnect/ethereum-provider": "2.23.9",
     "dayjs": "1.11.20",
     "lodash": "*",
+    "react-hook-form": "7.74.0",
     "viem": "2.48.7",
     "wagmi": "3.6.9"
   },

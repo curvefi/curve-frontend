@@ -17,7 +17,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 export const DetailInfo = ({
   rChainId,
-  rOwmId,
+  marketId,
   activeKey,
   activeStep,
   api,
@@ -51,7 +51,7 @@ export const DetailInfo = ({
       <DetailInfoLiqRange
         isManage
         rChainId={rChainId}
-        rOwmId={rOwmId}
+        marketId={marketId}
         {...detailInfo}
         isFullRepay={isFullRepay}
         loading={loading}
@@ -98,7 +98,7 @@ export const DetailInfo = ({
         <DetailInfoHealth
           isManage
           rChainId={rChainId}
-          rOwmId={rOwmId}
+          marketId={marketId}
           {...detailInfo}
           loading={loading}
           isPayoff={repayIsFull || formValues.isFullRepay}
@@ -109,7 +109,7 @@ export const DetailInfo = ({
           setHealthMode={setHealthMode}
         />
       )}
-      <DetailInfoRate isBorrow rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
+      <DetailInfoRate isBorrow rChainId={rChainId} marketId={marketId} futureRates={detailInfo?.futureRates} />
 
       {signerAddress && (
         <>
