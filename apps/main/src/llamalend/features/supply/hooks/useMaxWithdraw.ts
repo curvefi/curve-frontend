@@ -43,7 +43,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   },
   enabled?: boolean,
 ) {
-  const { updateForm } = form
+  const { update: updateForm } = form
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = useVaultMaxWithdrawAmount(params, enabled)
   const maxRedeemShares = useVaultMaxRedeemShares(params, enabled)

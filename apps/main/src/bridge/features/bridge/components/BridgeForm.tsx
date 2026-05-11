@@ -80,7 +80,7 @@ export const BridgeForm = ({
         isConnected={isConnected}
         isConnecting={isConnecting}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
-        onAmount={amount => form.updateForm({ amount })}
+        onAmount={amount => form.update({ amount })}
         onConnect={() => connect()}
         onChangeNetwork={() =>
           navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))

@@ -22,7 +22,7 @@ export function useMaxRepayTokenValues(
   },
   enabled?: boolean,
 ) {
-  const { updateForm } = form
+  const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({
     chainId,

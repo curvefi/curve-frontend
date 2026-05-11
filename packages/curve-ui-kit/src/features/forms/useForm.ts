@@ -63,7 +63,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
      * We prefer to have this helper to force full revalidation to avoid silly mistakes that are hard to debug.
      * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
      */
-    updateForm: useCallback(
+    update: useCallback(
       (updates: FormUpdates<T>, { automated = false } = {}) => {
         const changes = recordEntries(updates).filter(([field, value]) => getValues(field) !== value)
         if (!changes.length) return // no changes, skip revalidation

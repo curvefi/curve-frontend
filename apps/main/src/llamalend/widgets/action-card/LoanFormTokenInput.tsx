@@ -69,7 +69,7 @@ export const LoanFormTokenInput = <
   max,
   form: {
     getValue,
-    updateForm,
+    update: updateForm,
     formState: { errors: formErrors, touchedFields },
   },
   testId,

@@ -34,7 +34,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
     values: { address, contact, contactMethod, description },
     onSubmit,
   } = useErrorReportForm(context, onClose)
-  const { updateForm } = form
+  const { update: updateForm } = form
   const { label, placeholder } = contactCopyByMethod[contactMethod]
 
   useEffect(() => {

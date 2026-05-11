@@ -33,7 +33,7 @@ export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
   } = useCreateVoteMutation({
     onReset: () => {
       form.reset(defaultValues)
-      form.updateForm({ pinataJwt: storedJwt })
+      form.update({ pinataJwt: storedJwt })
       onSuccess()
     },
   })

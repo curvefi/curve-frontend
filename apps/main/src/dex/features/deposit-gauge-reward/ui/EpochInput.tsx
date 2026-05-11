@@ -9,7 +9,7 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
+  const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watchValue('rewardTokenId')
   const amount = watchValue('amount')
   const epoch = watchValue('epoch')

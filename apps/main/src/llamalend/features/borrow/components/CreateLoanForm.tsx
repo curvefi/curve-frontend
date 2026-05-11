@@ -73,7 +73,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     onPricesUpdated,
   })
 
-  const { updateForm } = form
+  const { update: updateForm } = form
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],

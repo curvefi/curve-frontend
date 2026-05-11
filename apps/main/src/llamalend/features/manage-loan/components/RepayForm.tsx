@@ -101,7 +101,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const showLeverage = selectedToken !== borrowToken && !!market && hasLeverageValue(market)
   const {
-    updateForm,
+    update: updateForm,
     formState: { dirtyFields },
   } = form
 

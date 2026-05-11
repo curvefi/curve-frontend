@@ -6,7 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { FlexItemDistributor, SubTitle } from './styled'
 
 export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
-  const { updateForm, formState, trigger, watchValue } = useFormContext<AddRewardFormValues>()
+  const { update: updateForm, formState, trigger, watchValue } = useFormContext<AddRewardFormValues>()
   const distributorId = watchValue('distributorId')
 
   return (

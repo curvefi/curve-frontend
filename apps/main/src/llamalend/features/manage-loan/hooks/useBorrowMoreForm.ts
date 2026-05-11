@@ -178,7 +178,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: isRouteRequired(market, values.leverageEnabled),
       onChange: async (route: RouteResponse | undefined) => {
-        form.updateForm({ routeId: route?.id })
+        form.update({ routeId: route?.id })
         await invalidateBorrowMoreRouteQueries(route, params)
       },
     }),

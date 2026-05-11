@@ -24,7 +24,7 @@ export function useMaxTokenValues(
   params: CreateLoanFormQueryParams & { userAddress?: Address },
   form: UseFormReturn<CreateLoanForm>,
 ) {
-  const { updateForm, getValues } = form
+  const { update: updateForm, getValues } = form
   const {
     data: userBalance,
     error: balanceError,

@@ -37,7 +37,7 @@ export type UseFormReturn<T extends FieldValues = FieldValues> = {
   watchValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
   getValues: () => T
   getValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
-  updateForm(updates: FormUpdates<T>, options?: { automated?: boolean }): void
+  update(updates: FormUpdates<T>, options?: { automated?: boolean }): void
   setError: (field: ErrorKey<T>, error: Error | { type?: 'server' | 'manual'; message: string }) => void
   clearErrors: (field: ErrorKey<T>) => void
   isTouched: (...fields: FieldPath<T>[]) => boolean

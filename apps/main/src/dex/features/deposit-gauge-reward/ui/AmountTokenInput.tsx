@@ -29,7 +29,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
+  const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watchValue('rewardTokenId')
   const amount = watchValue('amount')
   const epoch = watchValue('epoch')

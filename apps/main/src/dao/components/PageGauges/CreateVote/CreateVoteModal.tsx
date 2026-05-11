@@ -85,14 +85,14 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
               fullWidth
               placeholder={zeroAddress}
               value={gaugeAddress}
-              onChange={e => form.updateForm({ gaugeAddress: e.target.value })}
+              onChange={e => form.update({ gaugeAddress: e.target.value })}
             />
             <FormHelperText>{gaugeAddressError ?? t`Enter the gauge contract address`}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth error={!!descriptionError}>
             <FormLabel>{t`Vote Description`}</FormLabel>
-            <TextField fullWidth value={description} onChange={e => form.updateForm({ description: e.target.value })} />
+            <TextField fullWidth value={description} onChange={e => form.update({ description: e.target.value })} />
             <FormHelperText>{descriptionError ?? t`A few words describing what this gauge is for`}</FormHelperText>
           </FormControl>
 

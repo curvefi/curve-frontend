@@ -178,7 +178,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteResponse | undefined) => {
-        form.updateForm({ routeId: route?.id })
+        form.update({ routeId: route?.id })
         await invalidateCreateLoanRouteQueries(route, params)
       },
     }),

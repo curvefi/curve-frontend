@@ -68,7 +68,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralEvents,
   })
 
-  const { updateForm } = form
+  const { update: updateForm } = form
   const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 
   const onLeverageToggle = useCallback(

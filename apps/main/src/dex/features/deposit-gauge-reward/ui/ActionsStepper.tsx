@@ -22,7 +22,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   const {
     formState: { isValid, isSubmitting },
     watchValue,
-    updateForm,
+    update: updateForm,
     getValue,
     setError,
     handleSubmit,
