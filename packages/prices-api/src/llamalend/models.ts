@@ -1,12 +1,15 @@
 import type { Address } from '@primitives/address.utils'
 import type { Timestamp } from '../timestamp'
 
+export type MarketVersion = 'v1' | 'v2'
+
 /*
  * Note that collateral can be two tokens due to soft-liquidations.
  * You can have a crvUSD borrow (partially) being collateralized by crvUSD.
  */
 export type Market = {
   name: string
+  version: MarketVersion
   controller: Address
   vault: Address
   llamma: Address

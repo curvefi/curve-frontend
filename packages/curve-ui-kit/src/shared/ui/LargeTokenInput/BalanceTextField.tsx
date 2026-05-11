@@ -16,7 +16,6 @@ type BalanceTextFieldProps = {
 export const BalanceTextField = ({ balance, name, isError, onChange, disabled }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
-    variant="standard"
     value={balance}
     name={name}
     fullWidth

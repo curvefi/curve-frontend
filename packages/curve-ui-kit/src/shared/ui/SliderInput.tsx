@@ -218,7 +218,6 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const renderInput = (inputValue: Decimal | undefined, index: 0 | 1) => (
     <NumericTextField
       size={sliderInputSizeMap[size]}
-      variant="standard"
       value={inputValue}
       min={decimal(min)}
       max={decimal(max)}
