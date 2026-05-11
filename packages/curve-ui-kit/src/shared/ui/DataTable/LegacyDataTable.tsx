@@ -76,9 +76,9 @@ export const LegacyDataTable = <T extends TableItem>({
   maxHeight,
   rowLimit,
   viewAllLabel,
+  disableStickyHeader,
   shouldStickFirstColumn = false,
   hideHeader = false,
-  stickyHeader = true,
   footerRow,
   ...rowProps
 }: {
@@ -89,8 +89,8 @@ export const LegacyDataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
+  disableStickyHeader?: boolean
   hideHeader?: boolean
-  stickyHeader?: boolean
   footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table } = rowProps
@@ -110,7 +110,7 @@ export const LegacyDataTable = <T extends TableItem>({
   useResetPageOnResultChange(table)
   useScrollToTopOnPageChange(table, containerRef)
   const tableHeaderSx = (t: Theme) => ({
-    ...(stickyHeader && {
+    ...(!disableStickyHeader && {
       position: 'sticky',
       top: maxHeight ? 0 : top,
       zIndex: t.zIndex.tableHeader,
@@ -157,7 +157,7 @@ export const LegacyDataTable = <T extends TableItem>({
               <DataRow<T>
                 key={row.id}
                 row={row}
-                isLast={stickyHeader && !hideHeader && index === visibleRows.length - 1}
+                isLast={!disableStickyHeader && !hideHeader && index === visibleRows.length - 1}
                 shouldStickFirstColumn={shouldStickFirstColumn}
                 {...rowProps}
               />
