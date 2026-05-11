@@ -2,6 +2,7 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
@@ -39,7 +40,9 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
     <Stack direction="row" gap={Spacing.xs} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
       <ChainIcon blockchainId={chain} />
 
-      <MarketBadge label={marketVersionLabel[version]} data-testid={`market-version-${type.toLowerCase()}`} />
+      {useLLv2() && (
+        <MarketBadge label={marketVersionLabel[version]} data-testid={`market-version-${type.toLowerCase()}`} />
+      )}
 
       <Tooltip title={marketTypeDetails[type].description}>
         <MarketBadge label={marketTypeDetails[type].label} data-testid={`market-type-${type.toLowerCase()}`} />
