@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { SmallLiquidationRangeChartProps } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp, Range } from '@ui-kit/types/util'
@@ -14,20 +15,21 @@ export const useSmallLiquidationRangeChartData = ({
   prevPrices,
   oraclePrice,
   isFullRepay,
-}: Params): SmallLiquidationRangeChartProps | undefined => {
-  if (isFullRepay) return undefined
+}: Params): SmallLiquidationRangeChartProps | undefined =>
+  useMemo(() => {
+    if (isFullRepay) return undefined
 
-  const currentRange = prevPrices?.data
-  const newRange = prices?.data ?? undefined
-  const chartOraclePrice = oraclePrice?.data ?? undefined
+    const currentRange = prevPrices?.data
+    const newRange = prices?.data ?? undefined
+    const chartOraclePrice = oraclePrice?.data ?? undefined
 
-  if (!currentRange && !newRange && chartOraclePrice == null) return undefined
+    if (!currentRange && !newRange && chartOraclePrice == null) return undefined
 
-  return {
-    liquidationRanges: {
-      ...(currentRange && { currentRange }),
-      ...(newRange && { newRange }),
-    },
-    oraclePrice: chartOraclePrice,
-  }
-}
+    return {
+      liquidationRanges: {
+        ...(currentRange && { currentRange }),
+        ...(newRange && { newRange }),
+      },
+      oraclePrice: chartOraclePrice,
+    }
+  }, [isFullRepay, oraclePrice?.data, prevPrices?.data, prices?.data])
