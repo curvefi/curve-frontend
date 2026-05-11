@@ -20,7 +20,7 @@ type MarkLine = [{ coord: [number, number] }, { coord: [number, number] }] & {
  */
 const createMarkLine = (xStart: number, xEnd: number, yValue: number, color: string): MarkLine => {
   const line: MarkLine = [{ coord: [xStart, yValue] }, { coord: [xEnd, yValue] }] as MarkLine
-  line.lineStyle = { color, type: CHART_LINE_DASH_PATTERNS.reference, width: CHART_REFERENCE_LINE_WIDTH }
+  line.lineStyle = { color, type: CHART_LINE_DASH_PATTERNS.regular, width: CHART_REFERENCE_LINE_WIDTH }
   return line
 }
 

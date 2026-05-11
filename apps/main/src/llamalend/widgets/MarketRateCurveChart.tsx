@@ -36,7 +36,7 @@ type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
 const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'borrowApr', label: t`Borrow APR` },
-  { key: 'supplyApy', label: t`Supply APY`, dash: CHART_LINE_DASH_PATTERNS.alternateSeries },
+  { key: 'supplyApy', label: t`Supply APY`, dash: CHART_LINE_DASH_PATTERNS.wide },
 ]
 
 export const MarketRateCurveChart = ({
@@ -83,7 +83,7 @@ export const MarketRateCurveChart = ({
           value: currentUtilization,
           label: formatPercent(currentUtilization),
           color: Color.Primary[500],
-          dash: CHART_LINE_DASH_PATTERNS.movingAverage,
+          dash: CHART_LINE_DASH_PATTERNS.tight,
         },
       ),
     [currentUtilization, Color.Primary],

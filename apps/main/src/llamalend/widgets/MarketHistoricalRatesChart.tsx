@@ -50,14 +50,14 @@ type MarketHistoricalRatesChartProps = {
 
 const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'rate', label: t`Borrow APR` },
-  { key: 'movingAverage', label: t`7-day MA APR`, dash: CHART_LINE_DASH_PATTERNS.movingAverage },
-  { key: 'totalAverage', label: t`Average APR`, dash: CHART_LINE_DASH_PATTERNS.average },
+  { key: 'movingAverage', label: t`7-day MA APR`, dash: CHART_LINE_DASH_PATTERNS.tight },
+  { key: 'totalAverage', label: t`Average APR`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
 const SUPPLY_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'rate', label: t`Supply APY` },
-  { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.movingAverage },
-  { key: 'totalAverage', label: t`Average APY`, dash: CHART_LINE_DASH_PATTERNS.average },
+  { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
+  { key: 'totalAverage', label: t`Average APY`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
 export const MarketHistoricalRatesChart = ({

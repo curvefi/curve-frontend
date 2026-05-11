@@ -187,9 +187,9 @@ const drawBoundary = (
   ctx.strokeStyle = color
 
   if (lineStyle === LineStyle.Dashed || lineStyle === LineStyle.LargeDashed) {
-    ctx.setLineDash(lineStyle === LineStyle.Dashed ? [6, 6] : [12, 6])
+    ctx.setLineDash(lineStyle === LineStyle.Dashed ? [4, 4] : [12, 12])
   } else if (lineStyle === LineStyle.Dotted) {
-    ctx.setLineDash([2, 4])
+    ctx.setLineDash([2, 2])
   } else if (lineStyle === LineStyle.SparseDotted) {
     ctx.setLineDash([2, 8])
   } else {

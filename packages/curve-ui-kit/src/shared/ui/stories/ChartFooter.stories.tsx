@@ -293,10 +293,10 @@ const LineLegendsWrapper = () => {
 
   const legendSets: LegendItem[] = [
     { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1] } },
-    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: CHART_LINE_DASH_PATTERNS.compact } },
+    { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: CHART_LINE_DASH_PATTERNS.short } },
     {
       label: 'Line 3',
-      line: { lineStroke: theme.design.Chart.Lines[3], dash: CHART_LINE_DASH_PATTERNS.movingAverage },
+      line: { lineStroke: theme.design.Chart.Lines[3], dash: CHART_LINE_DASH_PATTERNS.tight },
     },
   ]
 

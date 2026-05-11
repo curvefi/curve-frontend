@@ -42,7 +42,7 @@ export const useChartLegendToggles = ({
         },
         hasLiquidationRange && {
           label: t`Liquidation threshold`,
-          line: { lineStroke: theme.design.Chart.Candles.Negative, dash: CHART_LINE_DASH_PATTERNS.average },
+          line: { lineStroke: theme.design.Chart.Candles.Negative, dash: CHART_LINE_DASH_PATTERNS.regular },
           toggled: liqRangeCurrentVisible,
           onToggle: toggleLiqRangeCurrentVisible,
         },

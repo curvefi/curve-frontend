@@ -37,8 +37,8 @@ type PriceSeriesKey = 'price' | 'movingAverage' | 'totalAverage'
 
 const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'price', label: t`crvUSD Price` },
-  { key: 'movingAverage', label: t`7-day MA Price`, dash: CHART_LINE_DASH_PATTERNS.movingAverage },
-  { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.average },
+  { key: 'movingAverage', label: t`7-day MA Price`, dash: CHART_LINE_DASH_PATTERNS.tight },
+  { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
 export const CrvUsdPriceChart = () => {

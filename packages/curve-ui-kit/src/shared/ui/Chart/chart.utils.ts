@@ -5,11 +5,11 @@ import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 export type ChartLineDashPattern = number[]
 
 export const CHART_LINE_DASH_PATTERNS = {
-  movingAverage: [2, 2],
-  compact: [4, 2],
-  average: [4, 4],
-  alternateSeries: [8, 8],
-  reference: [8, 4],
+  tight: [2, 2],
+  short: [4, 2],
+  /** Matches lightweight-charts LineStyle.Dashed with the chart line width assumption of 2px.  */
+  regular: [4, 4],
+  wide: [8, 8],
 } satisfies Record<string, ChartLineDashPattern>
 
 export const CHART_REFERENCE_LINE_WIDTH = 2
