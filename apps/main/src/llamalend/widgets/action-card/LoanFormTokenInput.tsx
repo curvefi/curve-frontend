@@ -1,11 +1,11 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
+import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -34,7 +34,7 @@ export type LoanFormTokenInputProps<
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
-  message?: ReactNode
+  maxMessage?: ReactNode
   /**
    * Optional, displays the position balance instead of the wallet balance.
    */
@@ -68,9 +68,14 @@ export const LoanFormTokenInput = <
   blockchainId,
   name,
   max,
-  form,
+  form: {
+    getValues,
+    setValue,
+    trigger,
+    formState: { errors: formErrors, touchedFields },
+  },
   testId,
-  message,
+  maxMessage,
   network,
   positionBalance,
   tokenSelector,
@@ -106,20 +111,19 @@ export const LoanFormTokenInput = <
     [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],
   )
 
-  const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
+  const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, Error>
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
-  const error =
-    (name in form.formState.touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
-  const value = form.getValues(name)
+  const error = (name in touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
+  const value = getValues(name)
   const errorMessage = error?.message
 
   const onBalance = useCallback(
     (v?: Decimal) => {
-      updateForm(form, { [name]: v } as FormUpdates<TFieldValues>)
+      updateForm({ getValues, setValue, trigger }, { [name]: v } as FormUpdates<TFieldValues>)
       onValueChange?.(v)
     },
-    [form, name, onValueChange],
+    [getValues, name, onValueChange, setValue, trigger],
   )
   return (
     <LargeTokenInput
@@ -143,11 +147,8 @@ export const LoanFormTokenInput = <
       maxBalance={max && { balance: max.data, chips: 'range', isLoading: max.isLoading }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
-      {errorMessage ? (
-        <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />
-      ) : (
-        message && <HelperMessage onNumberClick={onBalance} message={message} />
-      )}
+      {maxMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
+      {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />}
     </LargeTokenInput>
   )
 }

@@ -27,21 +27,23 @@ type MarketInformationCompProps = {
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComposite = ({ pageProps, type, previewPrices }: MarketInformationCompProps) => {
-  const { rChainId, rOwmId, market } = pageProps
+  const { rChainId, marketId, market } = pageProps
   const api = getLib('llamaApi')
   const isBorrow = type === 'borrow'
   const blockchainId = networks[rChainId].id as Chain
 
   return (
     <Stack gap={PAGE_SPACING}>
-      {isBorrow && <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />}
+      {isBorrow && (
+        <ChartAndActivityComp rChainId={rChainId} marketId={marketId} api={api} previewPrices={previewPrices} />
+      )}
 
       {isBorrow && (
         <MarketHistoricalRatesChart
           market={market}
           blockchainId={blockchainId}
           chainId={rChainId}
-          marketId={rOwmId}
+          marketId={marketId}
           rateMode="borrow"
         />
       )}
@@ -49,18 +51,18 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
         market={market}
         blockchainId={blockchainId}
         chainId={rChainId}
-        marketId={rOwmId}
+        marketId={marketId}
         rateMode="supply"
       />
 
       {useMarketInterestRatesAndUtilizationChart() && (
-        <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={rOwmId} />
+        <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={marketId} />
       )}
 
       <Card size="small">
         <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
-          <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
+          <AdvancedDetails chainId={rChainId} marketId={marketId} market={market} marketType={LlamaMarketType.Lend} />
           <MarketInfoLayout
             chainId={rChainId}
             marketType={LlamaMarketType.Lend}

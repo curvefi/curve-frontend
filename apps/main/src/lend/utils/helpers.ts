@@ -1,4 +1,4 @@
-import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate } from '@/lend/types/lend.types'
 import { isDevelopment } from '@ui-kit/utils'
 
 export * from './utilsRouter'
@@ -25,7 +25,7 @@ export function _parseStepTokensList(list: { value: string | number; symbol: str
   }
 }
 
-export function _parseActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined) {
+export function _parseActiveKey(api: Api | null, market: LendMarketTemplate | undefined) {
   const { chainId = '', signerAddress = '' } = api ?? {}
   const parsedSignerAddress = signerAddress.slice(0, 10)
   return `${chainId}-${parsedSignerAddress}${market?.id}`

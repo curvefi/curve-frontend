@@ -1,5 +1,5 @@
 import { networks } from '@/lend/networks'
-import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { ChainId, LendMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
@@ -22,7 +22,7 @@ import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 type UseSupplyPositionDetailsProps = {
   chainId: ChainId
-  market: OneWayMarketTemplate | null | undefined
+  market: LendMarketTemplate | null | undefined
   marketId: string
   userAddress: Address | undefined
 }

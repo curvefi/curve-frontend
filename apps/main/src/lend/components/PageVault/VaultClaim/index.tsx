@@ -6,7 +6,7 @@ import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultCl
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, MarketClaimable, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, MarketClaimable, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
@@ -52,7 +52,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
       payloadActiveKey: string,
       claimable: MarketClaimable,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       type: RewardType,
     ) => {
       const { chainId } = api
@@ -85,7 +85,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
     (
       payloadActiveKey: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       claimable: MarketClaimable,
       formStatus: FormStatus,
     ) => {

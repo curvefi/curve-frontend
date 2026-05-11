@@ -19,7 +19,7 @@ import {
   MarketStatBands,
   MarketStatCapAndAvailable,
   MaxRecvLeverageResp,
-  OneWayMarketTemplate,
+  LendMarketTemplate,
   ParsedBandsBalances,
   Provider,
   RewardCrv,
@@ -49,7 +49,7 @@ export const helpers = {
   },
   getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
     isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
-  getUserActiveKey: (api: Api | null, market: OneWayMarketTemplate) => {
+  getUserActiveKey: (api: Api | null, market: LendMarketTemplate) => {
     const { signerAddress } = api ?? {}
     if (!api || !signerAddress || !market) return ''
     return `${market.id}-${shortenAccount(signerAddress)}`
@@ -59,7 +59,7 @@ export const helpers = {
 }
 
 const market = {
-  fetchStatsBands: async (markets: OneWayMarketTemplate[]) => {
+  fetchStatsBands: async (markets: LendMarketTemplate[]) => {
     log('fetchStatsBands', markets.length)
     const results: { [id: string]: MarketStatBands } = {}
 
@@ -103,7 +103,7 @@ const market = {
 
     return results
   },
-  fetchStatsCapAndAvailable: async (markets: OneWayMarketTemplate[]) => {
+  fetchStatsCapAndAvailable: async (markets: LendMarketTemplate[]) => {
     log('fetchStatsCapAndAvailable', markets.length)
     const results: { [id: string]: MarketStatCapAndAvailable } = {}
     const useMultiCall = markets.length > 1
@@ -121,7 +121,7 @@ const market = {
 
     return results
   },
-  fetchMarketsPrices: async (markets: OneWayMarketTemplate[]) => {
+  fetchMarketsPrices: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsPrices', markets.length)
     const results: { [id: string]: MarketPrices } = {}
 
@@ -152,7 +152,7 @@ const market = {
 
     return results
   },
-  fetchMarketsRates: async (markets: OneWayMarketTemplate[]) => {
+  fetchMarketsRates: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsRates', markets.length)
     const useMultiCall = markets.length > 1
     const results: { [id: string]: MarketRates } = {}
@@ -170,7 +170,7 @@ const market = {
 
     return results
   },
-  fetchMarketsVaultsRewards: async (markets: OneWayMarketTemplate[]) => {
+  fetchMarketsVaultsRewards: async (markets: LendMarketTemplate[]) => {
     const useMultiCall = markets.length > 1
     log('fetchMarketsVaultsRewards', markets.length)
     const results: { [id: string]: MarketRewards } = {}
@@ -215,7 +215,7 @@ const market = {
 
     return results
   },
-  fetchMarketsMaxLeverage: async (markets: OneWayMarketTemplate[]) => {
+  fetchMarketsMaxLeverage: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsMaxLeverage', markets.length)
     const results: { [id: string]: MarketMaxLeverage } = {}
 
@@ -235,7 +235,7 @@ const market = {
 }
 
 const user = {
-  fetchLoansDetails: async (api: Api, markets: OneWayMarketTemplate[]) => {
+  fetchLoansDetails: async (api: Api, markets: LendMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
     const results: { [userActiveKey: string]: UserLoanDetails } = {}
     const { signerAddress } = api
@@ -312,7 +312,7 @@ const user = {
 
     return results
   },
-  fetchMarketBalances: async (api: Api, markets: OneWayMarketTemplate[]) => {
+  fetchMarketBalances: async (api: Api, markets: LendMarketTemplate[]) => {
     log('fetchUsersMarketBalances', api.chainId, markets.length)
     const results: { [userActiveKey: string]: UserMarketBalances } = {}
 
@@ -342,7 +342,7 @@ const user = {
 }
 
 const loanCreate = {
-  maxLeverage: async (market: OneWayMarketTemplate, n: number) => {
+  maxLeverage: async (market: LendMarketTemplate, n: number) => {
     log('maxLeverage', n)
     const resp = { n, maxLeverage: '', error: '' }
 
@@ -357,7 +357,7 @@ const loanCreate = {
   },
   maxRecv: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     n: number,
@@ -384,7 +384,7 @@ const loanCreate = {
   },
   detailInfo: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     debt: string,
     n: number,
@@ -421,7 +421,7 @@ const loanCreate = {
   },
   detailInfoLeverage: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     debt: string,
@@ -488,7 +488,7 @@ const loanCreate = {
   },
   liqRanges: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     totalCollateral: string | undefined,
     userCollateral: string,
     userBorrowed: string,
@@ -575,7 +575,7 @@ const loanCreate = {
   },
   estGasApproval: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     debt: string,
@@ -610,7 +610,7 @@ const loanCreate = {
   approve: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     isLeverage: boolean,
@@ -627,7 +627,7 @@ const loanCreate = {
   create: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     debt: string,
@@ -648,7 +648,7 @@ const loanCreate = {
 }
 
 const loanBorrowMore = {
-  maxRecv: async (market: OneWayMarketTemplate, activeKey: string, userCollateral: string) => {
+  maxRecv: async (market: LendMarketTemplate, activeKey: string, userCollateral: string) => {
     userCollateral = userCollateral || '0'
     log('maxRecv', userCollateral)
     const resp = { activeKey, maxRecv: '', error: '' }
@@ -664,7 +664,7 @@ const loanBorrowMore = {
     }
   },
   maxRecvLeverage: async (
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     activeKey: string,
     userCollateral: string,
     userBorrowed: string,
@@ -691,7 +691,7 @@ const loanBorrowMore = {
   detailInfo: async (
     activeKey: string,
     { signerAddress }: Api,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     debt: string,
   ) => {
@@ -729,7 +729,7 @@ const loanBorrowMore = {
   detailInfoLeverage: async (
     activeKey: string,
     { signerAddress }: Api,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     debt: string,
@@ -789,7 +789,7 @@ const loanBorrowMore = {
   },
   estGasApproval: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     debt: string,
@@ -827,7 +827,7 @@ const loanBorrowMore = {
   approve: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     isLeverage: boolean,
@@ -844,7 +844,7 @@ const loanBorrowMore = {
   borrowMore: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
     debt: string,
@@ -865,7 +865,7 @@ const loanBorrowMore = {
 
 const loanRepay = {
   repayIsAvailableLeverage: async (
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     stateCollateral: string,
     userCollateral: string,
     userBorrowed: string,
@@ -888,7 +888,7 @@ const loanRepay = {
   detailInfo: async (
     activeKey: string,
     { signerAddress }: Api,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userBorrowed: string,
     isFullRepay: boolean,
     userStateDebt: string,
@@ -925,7 +925,7 @@ const loanRepay = {
   detailInfoLeverage: async (
     activeKey: string,
     { signerAddress }: Api,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     stateCollateral: string,
     userCollateral: string,
     userBorrowed: string,
@@ -1019,7 +1019,7 @@ const loanRepay = {
   },
   estGasApproval: async (
     activeKey: string,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     stateCollateral: string,
     userCollateral: string,
     userBorrowed: string,
@@ -1071,7 +1071,7 @@ const loanRepay = {
   approve: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     stateCollateral: string,
     userCollateral: string,
     userBorrowed: string,
@@ -1093,7 +1093,7 @@ const loanRepay = {
   repay: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     stateCollateral: string,
     userCollateral: string,
     userBorrowed: string,
@@ -1116,7 +1116,7 @@ const loanRepay = {
 }
 
 const loanSelfLiquidation = {
-  detailInfo: async (market: OneWayMarketTemplate, slippage: string) => {
+  detailInfo: async (market: LendMarketTemplate, slippage: string) => {
     log('detailInfo', slippage)
     const resp: { tokensToLiquidate: string; futureRates: FutureRates | null; error: string } = {
       tokensToLiquidate: '',
@@ -1141,7 +1141,7 @@ const loanSelfLiquidation = {
     }
     return resp
   },
-  estGasApproval: async (market: OneWayMarketTemplate, maxSlippage: string) => {
+  estGasApproval: async (market: LendMarketTemplate, maxSlippage: string) => {
     log('loanSelfLiquidationEstGasApproval', market.collateral_token.symbol, maxSlippage)
     const resp = { isApproved: false, estimatedGas: null as EstimatedGas, error: '', warning: '' }
 
@@ -1157,12 +1157,12 @@ const loanSelfLiquidation = {
       return resp
     }
   },
-  approve: async (provider: Provider, market: OneWayMarketTemplate) => {
+  approve: async (provider: Provider, market: LendMarketTemplate) => {
     log('approve')
     const fn = async () => await market.loan.selfLiquidateApprove()
     return await approve('', fn, provider)
   },
-  selfLiquidate: async (provider: Provider, market: OneWayMarketTemplate, slippage: string) => {
+  selfLiquidate: async (provider: Provider, market: LendMarketTemplate, slippage: string) => {
     log('selfLiquidate', slippage)
     const fn = async () => await market.loan.selfLiquidate(+slippage)
     return await submit('', fn, provider)
@@ -1173,7 +1173,7 @@ const loanCollateralAdd = {
   detailInfo: async (
     activeKey: string,
     { signerAddress }: Api,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     collateral: string,
     address?: string,
   ) => {
@@ -1201,7 +1201,7 @@ const loanCollateralAdd = {
       return resp
     }
   },
-  estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, collateral: string) => {
+  estGasApproval: async (activeKey: string, market: LendMarketTemplate, collateral: string) => {
     log('estGasApproval', collateral)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1221,17 +1221,12 @@ const loanCollateralAdd = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, userCollateral: string) => {
+  approve: async (activeKey: string, provider: Provider, market: LendMarketTemplate, userCollateral: string) => {
     log('approve', userCollateral)
     const fn = async () => await market.loan.addCollateralApprove(userCollateral)
     return await approve(activeKey, fn, provider)
   },
-  addCollateral: async (
-    activeKey: string,
-    provider: Provider,
-    market: OneWayMarketTemplate,
-    userCollateral: string,
-  ) => {
+  addCollateral: async (activeKey: string, provider: Provider, market: LendMarketTemplate, userCollateral: string) => {
     log('addCollateral', userCollateral)
     const fn = async () => await market.loan.addCollateral(userCollateral)
     return await submit(activeKey, fn, provider)
@@ -1239,7 +1234,7 @@ const loanCollateralAdd = {
 }
 
 const loanCollateralRemove = {
-  maxRemovable: async (market: OneWayMarketTemplate) => {
+  maxRemovable: async (market: LendMarketTemplate) => {
     log('loanCollateralRemoveMax', market.collateral_token.symbol)
     const resp = { maxRemovable: '', error: '' }
 
@@ -1256,7 +1251,7 @@ const loanCollateralRemove = {
   detailInfo: async (
     activeKey: string,
     { signerAddress }: Api,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     collateral: string,
     address?: string,
   ) => {
@@ -1284,7 +1279,7 @@ const loanCollateralRemove = {
       return resp
     }
   },
-  estGas: async (activeKey: string, market: OneWayMarketTemplate, collateral: string) => {
+  estGas: async (activeKey: string, market: LendMarketTemplate, collateral: string) => {
     log('loanCollateralRemoveEstGas', market.collateral_token.symbol, collateral)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1304,7 +1299,7 @@ const loanCollateralRemove = {
   removeCollateral: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     userCollateral: string,
   ) => {
     log('removeCollateral', userCollateral)
@@ -1315,7 +1310,7 @@ const loanCollateralRemove = {
 
 // VAULT
 const vaultDeposit = {
-  max: async (market: OneWayMarketTemplate) => {
+  max: async (market: LendMarketTemplate) => {
     log('vaultDepositMax', market.id)
     const resp = { max: '', error: '' }
 
@@ -1328,7 +1323,7 @@ const vaultDeposit = {
       return resp
     }
   },
-  detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  detailInfo: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultDepositPreview', market.id, amount, 'futureRates', [amount, 0])
     const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
@@ -1351,7 +1346,7 @@ const vaultDeposit = {
       return resp
     }
   },
-  estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  estGasApproval: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultDepositEstGas', market.id, amount)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1367,7 +1362,7 @@ const vaultDeposit = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  approve: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultDepositApprove', market.id, amount)
     const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
@@ -1380,7 +1375,7 @@ const vaultDeposit = {
       return resp
     }
   },
-  deposit: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  deposit: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultDeposit', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
@@ -1396,7 +1391,7 @@ const vaultDeposit = {
 }
 
 const vaultMint = {
-  max: async (market: OneWayMarketTemplate) => {
+  max: async (market: LendMarketTemplate) => {
     log('vaultMintMax', market.id)
     const resp = { max: '', error: '' }
 
@@ -1409,7 +1404,7 @@ const vaultMint = {
       return resp
     }
   },
-  detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  detailInfo: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultMintPreview', market.id, amount, 'futureRates', [amount, 0])
     const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
@@ -1432,7 +1427,7 @@ const vaultMint = {
       return resp
     }
   },
-  estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  estGasApproval: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultMintEstGasApproval', market.id, amount)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1448,7 +1443,7 @@ const vaultMint = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  approve: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultMintApprove', market.id, amount)
     const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
@@ -1461,7 +1456,7 @@ const vaultMint = {
       return resp
     }
   },
-  mint: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  mint: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultMint', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
@@ -1477,7 +1472,7 @@ const vaultMint = {
 }
 
 const vaultStake = {
-  estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  estGasApproval: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultStakeEstGasApproval', market.id, amount)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1493,7 +1488,7 @@ const vaultStake = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  approve: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultStakeApprove', market.id, amount)
     const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
@@ -1506,7 +1501,7 @@ const vaultStake = {
       return resp
     }
   },
-  stake: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  stake: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultStake', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
@@ -1522,7 +1517,7 @@ const vaultStake = {
 }
 
 const vaultWithdraw = {
-  max: async (market: OneWayMarketTemplate) => {
+  max: async (market: LendMarketTemplate) => {
     log('vaultWithdrawMax', market.id)
     const resp = { max: '', error: '' }
 
@@ -1535,7 +1530,7 @@ const vaultWithdraw = {
       return resp
     }
   },
-  detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  detailInfo: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultWithdrawPreviewFutureRates', market.id, amount, 'futureRates', [`-${amount}`, 0])
     const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
@@ -1558,7 +1553,7 @@ const vaultWithdraw = {
       return resp
     }
   },
-  estGas: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  estGas: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultWithdrawEstGas', market.id, amount)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1574,7 +1569,7 @@ const vaultWithdraw = {
   withdraw: async (
     activeKey: string,
     provider: Provider,
-    market: OneWayMarketTemplate,
+    market: LendMarketTemplate,
     isFullWithdraw: boolean,
     amount: string,
     vaultShares: string,
@@ -1597,7 +1592,7 @@ const vaultWithdraw = {
 }
 
 const vaultRedeem = {
-  max: async (market: OneWayMarketTemplate) => {
+  max: async (market: LendMarketTemplate) => {
     log('vaultRedeemMax', market.id)
     const resp = { max: '', error: '' }
 
@@ -1610,7 +1605,7 @@ const vaultRedeem = {
       return resp
     }
   },
-  detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  detailInfo: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultRedeemPreview', market.id, amount)
     const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
@@ -1630,7 +1625,7 @@ const vaultRedeem = {
       return resp
     }
   },
-  estGas: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  estGas: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultRedeemEstGas', market.id, amount)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1643,7 +1638,7 @@ const vaultRedeem = {
       return resp
     }
   },
-  redeem: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  redeem: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultRedeem', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
@@ -1659,7 +1654,7 @@ const vaultRedeem = {
 }
 
 const vaultUnstake = {
-  estGas: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
+  estGas: async (activeKey: string, market: LendMarketTemplate, amount: string) => {
     log('vaultUnstakeEstGas', market.id, amount)
     const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1672,7 +1667,7 @@ const vaultUnstake = {
       return resp
     }
   },
-  unstake: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  unstake: async (activeKey: string, provider: Provider, market: LendMarketTemplate, amount: string) => {
     log('vaultUnstake', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
@@ -1692,7 +1687,7 @@ const vaultUnstake = {
 //   { token: '0x6b175474e89094c44da98b954eedeac495271d0f', symbol: 'DAI', amount: '300.54654646134' },
 // ]
 const vaultClaim = {
-  claimable: async (userActiveKey: string, market: OneWayMarketTemplate) => {
+  claimable: async (userActiveKey: string, market: LendMarketTemplate) => {
     log('vaultClaimable', market.id)
     const resp = {
       userActiveKey,
@@ -1711,7 +1706,7 @@ const vaultClaim = {
       return resp
     }
   },
-  claimCrv: async (userActiveKey: string, provider: Provider, market: OneWayMarketTemplate) => {
+  claimCrv: async (userActiveKey: string, provider: Provider, market: LendMarketTemplate) => {
     log('vaultClaim', market.id)
     const resp = { userActiveKey, hash: '', error: '' }
     try {
@@ -1724,7 +1719,7 @@ const vaultClaim = {
       return resp
     }
   },
-  claimRewards: async (userActiveKey: string, provider: Provider, market: OneWayMarketTemplate) => {
+  claimRewards: async (userActiveKey: string, provider: Provider, market: LendMarketTemplate) => {
     log('vaultClaim', market.id)
     const resp = { userActiveKey, hash: '', error: '' }
     try {
@@ -1764,7 +1759,7 @@ export const apiLending = {
 async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
-  market: OneWayMarketTemplate,
+  market: LendMarketTemplate,
   isMarket: boolean,
 ) {
   // filter out bands that doesn't have borrowed or collaterals

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { networks } from '@/lend/networks'
-import { ChainId, type OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { ChainId, type LendMarketTemplate } from '@/lend/types/lend.types'
 import { Box } from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import { Icon } from '@ui/Icon'
@@ -20,7 +20,7 @@ export const TokenLabel = ({
   ...boxProps
 }: BoxProps & {
   rChainId: ChainId
-  token: OneWayMarketTemplate['borrowed_token'] | OneWayMarketTemplate['collateral_token'] | undefined
+  token: LendMarketTemplate['borrowed_token'] | LendMarketTemplate['collateral_token'] | undefined
   isDisplayOnly?: boolean
   isVisible?: boolean
   showLeverageIcon?: boolean

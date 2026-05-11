@@ -10,14 +10,14 @@ import type { Step } from '@ui/Stepper/types'
 
 export const DetailInfo = ({
   rChainId,
-  rOwmId,
+  marketId,
   api,
   activeStep,
   healthMode,
   steps,
   userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'market' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'marketId' | 'api' | 'market' | 'userActiveKey'> & {
   activeStep: number | null
   healthMode: HealthMode
   steps: Step[]
@@ -35,7 +35,7 @@ export const DetailInfo = ({
       <DetailInfoLiqRange
         isManage
         rChainId={rChainId}
-        rOwmId={rOwmId}
+        marketId={marketId}
         {...detailInfo}
         healthMode={healthMode}
         userActiveKey={userActiveKey}
@@ -44,7 +44,7 @@ export const DetailInfo = ({
       <DetailInfoHealth
         isManage
         rChainId={rChainId}
-        rOwmId={rOwmId}
+        marketId={marketId}
         {...detailInfo}
         amount={formValues.debt}
         formType=""
@@ -52,7 +52,7 @@ export const DetailInfo = ({
         userActiveKey={userActiveKey}
         setHealthMode={setHealthMode}
       />
-      <DetailInfoRate isBorrow rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
+      <DetailInfoRate isBorrow rChainId={rChainId} marketId={marketId} futureRates={detailInfo?.futureRates} />
 
       {signerAddress && (
         <DetailInfoEstimateGas

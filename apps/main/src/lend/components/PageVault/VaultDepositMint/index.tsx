@@ -9,7 +9,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -28,7 +28,7 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { decimal } from '@ui-kit/utils'
 
-export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
   const isSubscribed = useRef(false)
   const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
@@ -75,7 +75,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formValues: FormValues,
     ) => {
       const { chainId } = api
@@ -108,7 +108,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[],
@@ -232,7 +232,12 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
         >
           <strong>{formatNumber(detailInfo?.preview, { defaultValue: '-' })}</strong>
         </DetailInfo>
-        <DetailInfoRate isBorrow={false} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
+        <DetailInfoRate
+          isBorrow={false}
+          rChainId={rChainId}
+          marketId={marketId}
+          futureRates={detailInfo?.futureRates}
+        />
 
         {signerAddress && (
           <DetailInfoEstimateGas

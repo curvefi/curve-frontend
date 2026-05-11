@@ -1,6 +1,6 @@
 import type { FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanRepay/types'
 import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
-import { type OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { type LendMarketTemplate } from '@/lend/types/lend.types'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
@@ -24,7 +24,7 @@ function _getIsSwapRequire({ stateCollateral, userCollateral }: FormValues) {
   return haveStateCollateral || haveUserCollateral
 }
 
-function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: OneWayMarketTemplate) {
+function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: LendMarketTemplate) {
   const { userCollateral, stateCollateral, userBorrowed } = formValues
   const collateralTotal = +userCollateral + +stateCollateral
 
