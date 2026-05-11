@@ -56,6 +56,7 @@ export const DAO_ROUTES = {
 
 const ANALYTICS_ROUTES = {
   PAGE_HOME: '/home',
+  PAGE_CRVUSD: '/crvusd',
 }
 
 const BRIDGE_ROUTES = {
@@ -104,7 +105,10 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   },
   analytics: {
     label: 'Analytics',
-    routes: [{ app: 'analytics', route: ANALYTICS_ROUTES.PAGE_HOME, label: () => t`Home` }],
+    routes: [
+      { app: 'analytics', route: ANALYTICS_ROUTES.PAGE_HOME, label: () => t`Home` },
+      { app: 'analytics', route: ANALYTICS_ROUTES.PAGE_CRVUSD, label: () => t`crvUSD` },
+    ],
   },
 }
 

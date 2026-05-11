@@ -29,8 +29,8 @@ const formatter = (val: Amount) =>
   Number(val).toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 
 /** Chart component displaying crvUSD price over time */
-export function ChartCrvUsdPrice() {
-  const [period, setPeriod] = useState<(typeof PERIODS)[number]>('6m')
+export function ChartCrvUsdPrice({ initialPeriod = '6m' }: { initialPeriod?: (typeof PERIODS)[number] }) {
+  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(initialPeriod)
   const [fullscreen, , closeFullscreen, toggleFullscreen] = useSwitch(false)
 
   const { data, isFetching: loading } = useCrvUsdPriceHistory({ days: DAYS[period] })

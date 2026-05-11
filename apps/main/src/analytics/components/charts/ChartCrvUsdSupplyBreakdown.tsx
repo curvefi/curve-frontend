@@ -19,7 +19,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { formatUsd } from '@ui-kit/utils'
-import { useCrvUsdSupply } from '../queries/useCrvUsdSupply.query'
+import { useCrvUsdSupply } from '../../queries/useCrvUsdSupply.query'
 
 /**
  * Hardcoded market names used in the prices API endpoint.
