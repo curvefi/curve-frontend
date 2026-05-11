@@ -18,7 +18,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 export const DetailInfoLeverage = ({
   rChainId,
-  rOwmId,
+  marketId,
   api,
   market,
   activeStep,
@@ -27,7 +27,7 @@ export const DetailInfoLeverage = ({
   steps,
   userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'market' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'marketId' | 'api' | 'market' | 'userActiveKey'> & {
   activeStep: number | null
   healthMode: HealthMode
   isLoaded: boolean
@@ -55,7 +55,7 @@ export const DetailInfoLeverage = ({
       <DetailInfoLiqRange
         isManage
         rChainId={rChainId}
-        rOwmId={rOwmId}
+        marketId={marketId}
         {...detailInfo}
         loading={loading}
         detailInfoLeverage={
@@ -95,7 +95,7 @@ export const DetailInfoLeverage = ({
       <DetailInfoHealth
         isManage
         rChainId={rChainId}
-        rOwmId={rOwmId}
+        marketId={marketId}
         {...detailInfo}
         loading={loading}
         amount={formValues.debt}
@@ -104,7 +104,7 @@ export const DetailInfoLeverage = ({
         userActiveKey={userActiveKey}
         setHealthMode={setHealthMode}
       />
-      <DetailInfoRate isBorrow={true} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
+      <DetailInfoRate isBorrow={true} rChainId={rChainId} marketId={marketId} futureRates={detailInfo?.futureRates} />
 
       {signerAddress && (
         <>

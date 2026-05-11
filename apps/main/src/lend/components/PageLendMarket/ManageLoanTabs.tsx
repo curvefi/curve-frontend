@@ -145,7 +145,7 @@ const LendManageSoftLiquidationMenu = [
 export const ManageLoanTabs = (params: ManageLoanProps) => {
   const status = useLiquidationStatus({
     chainId: params.rChainId,
-    marketId: params.rOwmId,
+    marketId: params.marketId,
     userAddress: params.userAddress,
   })
   const shouldUseSoftLiquidation =

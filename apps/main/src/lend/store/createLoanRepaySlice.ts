@@ -8,16 +8,16 @@ import {
 } from '@/lend/components/PageLendMarket/LoanRepay/utils'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
-import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { apiLending, helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, FormError, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
+import { Api, FormError, LendMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/user'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -36,13 +36,13 @@ const sliceKey = 'loanRepay'
 // prettier-ignore
 export type LoanRepaySlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, userState: UserLoanState): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
-    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, userState: UserLoanState): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
+    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean): Promise<void>
 
     // step
-    fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepRepay(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepRepay(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -319,7 +319,7 @@ export const createLoanRepaySlice = (
 
 function _getActiveKey(
   api: Api | null,
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   formValues: FormValues,
   maxSlippage: string,
 ) {
