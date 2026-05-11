@@ -15,7 +15,7 @@ import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 export const DetailInfoLiqRange = ({
   rChainId,
-  rOwmId,
+  marketId,
   bands: newBands,
   detailInfoLeverage,
   healthMode,
@@ -30,7 +30,7 @@ export const DetailInfoLiqRange = ({
   handleLiqRangesEdit,
 }: {
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   detailInfoLeverage?: ReactNode
   bands: [number, number]
   healthMode: HealthMode | null
@@ -45,7 +45,7 @@ export const DetailInfoLiqRange = ({
   handleLiqRangesEdit?: () => void
 }) => {
   const { prices: currPrices, bands: currBands } = useUserLoanDetails(userActiveKey)
-  const loanPricesResp = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId])
+  const loanPricesResp = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId])
   const { prices: loanPrices } = loanPricesResp ?? {}
   const selectedBands = selectedLiqRange?.bands
   const { parsedNewBands, parsedNewPrices } = useMemo(

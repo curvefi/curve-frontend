@@ -18,6 +18,7 @@ import Noon from './Noon.json'
 import Raac from './Raac.json'
 import Re from './Re.json'
 import Symbiotic from './Symbiotic.json'
+import Tangent from './Tangent.json'
 import TermMax from './TermMax.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
@@ -50,4 +51,5 @@ export {
   Re,
   Raac,
   Yld,
+  Tangent,
 }

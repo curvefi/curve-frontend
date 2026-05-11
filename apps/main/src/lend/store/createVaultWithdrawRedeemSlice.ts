@@ -8,7 +8,7 @@ import { apiLending, helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, ChainId, FutureRates, LendMarketTemplate } from '@/lend/types/lend.types'
 import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -32,13 +32,13 @@ type SliceState = {
 // prettier-ignore
 export type VaultWithdrawRedeemSlice = {
   [sliceKey]: SliceState & {
-    fetchMax(api: Api, formType: FormType, market: OneWayMarketTemplate): Promise<void>
-    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
-    fetchDetails(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchMax(api: Api, formType: FormType, market: LendMarketTemplate): Promise<void>
+    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
+    fetchDetails(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepWithdrawRedeem(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues, vaultShares: string): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepWithdrawRedeem(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues, vaultShares: string): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -206,7 +206,7 @@ export function _isWithdraw(formType: FormType) {
 function _getActiveKey(
   rChainId: ChainId,
   formType: FormType,
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`

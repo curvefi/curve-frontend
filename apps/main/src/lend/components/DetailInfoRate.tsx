@@ -7,12 +7,12 @@ import { formatNumber, amount } from '@ui-kit/utils'
 
 export const DetailInfoRate = ({
   rChainId,
-  rOwmId,
+  marketId,
   isBorrow,
   futureRates,
 }: {
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   isBorrow: boolean
   futureRates?: FutureRates | undefined | null
 }) => {
@@ -22,7 +22,7 @@ export const DetailInfoRate = ({
     error: marketRatesError,
   } = useMarketRates({
     chainId: rChainId,
-    marketId: rOwmId,
+    marketId,
   })
 
   const futureRate = isBorrow ? futureRates?.borrowApr : futureRates?.lendApy

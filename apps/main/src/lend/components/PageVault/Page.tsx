@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import { helpers } from '@/lend/lib/apiLending'
@@ -22,13 +21,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
+  const { data: market, isSuccess } = useLendMarket(rChainId, rMarket)
   const network = networks[rChainId]
 
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
@@ -36,7 +36,7 @@ export const Page = () => {
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
 
-  const rOwmId = market?.id ?? ''
+  const marketId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { address: userAddress } = useConnection()
   const [isLoaded, setLoaded] = useState(false)
@@ -50,7 +50,7 @@ export const Page = () => {
   const supplyPositionDetails = useSupplyPositionDetails({
     chainId: rChainId,
     market,
-    marketId: rOwmId,
+    marketId,
     userAddress,
   })
   useEffect(() => {
@@ -82,7 +82,7 @@ export const Page = () => {
   const pageProps: PageContentProps = {
     params,
     rChainId,
-    rOwmId,
+    marketId,
     userAddress,
     isLoaded,
     api,
@@ -96,11 +96,11 @@ export const Page = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <DetailPageLayout
-      formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}
+      formTabs={rChainId && marketId && <VaultTabs {...pageProps} params={params} />}
       header={
         <PageHeader
           chainId={rChainId}
-          marketId={rOwmId}
+          marketId={marketId}
           isLoading={!isHydrated}
           market={market}
           blockchainId={network.id as Chain}

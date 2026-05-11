@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
+import { prefetchMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'

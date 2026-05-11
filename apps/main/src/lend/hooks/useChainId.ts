@@ -1,7 +1,7 @@
+import { getLib } from 'curve-ui-kit/src/features/connect-wallet'
+import { PartialQueryResult, FETCHING_QUERY_RESULT, RESOLVED_QUERY_RESULT } from 'curve-ui-kit/src/lib/queries'
 import { useMemo } from 'react'
-import { ChainId } from '@/lend/types/lend.types'
-import { getLib } from '@ui-kit/features/connect-wallet'
-import { PartialQueryResult, FETCHING_QUERY_RESULT, RESOLVED_QUERY_RESULT } from '@ui-kit/lib/queries'
+import { ChainId } from '../types/lend.types'
 
 export const useChainId = (): PartialQueryResult<ChainId> => {
   const api = getLib('llamaApi')

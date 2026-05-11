@@ -1,21 +1,21 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { formatNumber } from '@ui-kit/utils'
+import { useLendMarket } from '../hooks/useLendMarket'
 
-export function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
-  const market = useOneWayMarket(rChainId, rOwmId).data
-  const marketRewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[rOwmId])
-  const marketRatesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[rOwmId])
+export function useSupplyTotalApr(rChainId: ChainId, marketId: string) {
+  const market = useLendMarket(rChainId, marketId).data
+  const marketRewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[marketId])
+  const marketRatesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[marketId])
   const {
     data: marketRatesData,
     isError: onChainError,
     isSuccess: onChainSuccess,
-  } = useMarketRates({ chainId: rChainId, marketId: rOwmId })
+  } = useMarketRates({ chainId: rChainId, marketId })
 
   const { gauge } = market?.addresses ?? {}
   const { error: rewardsError } = marketRewardsResp ?? {}

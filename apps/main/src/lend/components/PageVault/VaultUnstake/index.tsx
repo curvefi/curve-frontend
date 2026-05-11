@@ -7,7 +7,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -58,7 +58,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formValues: FormValues,
     ) => {
       const { chainId } = api
@@ -86,7 +86,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[],

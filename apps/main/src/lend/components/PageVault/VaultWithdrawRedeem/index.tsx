@@ -10,7 +10,7 @@ import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { _isWithdraw } from '@/lend/store/createVaultWithdrawRedeemSlice'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Checkbox } from '@ui/Checkbox'
@@ -25,7 +25,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
-export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'withdraw'
   const isSubscribed = useRef(false)
 
@@ -78,7 +78,7 @@ export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, u
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formValues: FormValues,
     ) => {
       const { chainId } = api
@@ -117,7 +117,7 @@ export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, u
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[],
@@ -228,7 +228,12 @@ export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, u
         >
           <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false }) ?? '-'}</strong>
         </DetailInfo>
-        <DetailInfoRate rChainId={rChainId} rOwmId={rOwmId} isBorrow={false} futureRates={detailInfo?.futureRates} />
+        <DetailInfoRate
+          rChainId={rChainId}
+          marketId={marketId}
+          isBorrow={false}
+          futureRates={detailInfo?.futureRates}
+        />
 
         {signerAddress && (
           <DetailInfoEstimateGas
