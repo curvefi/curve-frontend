@@ -1,5 +1,5 @@
-import { useForm } from 'react-hook-form'
 import { vestResolver } from '@hookform/resolvers/vest'
+import { useForm } from '@ui-kit/features/forms'
 import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
 import type { FieldsOf } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
