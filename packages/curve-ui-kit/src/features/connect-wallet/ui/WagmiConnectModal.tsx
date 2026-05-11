@@ -8,6 +8,7 @@ import { createSvgIcon } from '@mui/material/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
+import { MetamaskWalletIcon } from '@ui-kit/shared/icons/MetamaskWalletIcon'
 import { SafeWalletIcon } from '@ui-kit/shared/icons/SafeWalletIcon'
 import { WalletConnectIcon } from '@ui-kit/shared/icons/WalletConnectIcon'
 import { WalletIcon as DefaultWalletIcon } from '@ui-kit/shared/icons/WalletIcon'
@@ -26,6 +27,7 @@ const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
   walletConnect: WalletConnectIcon,
   coinbaseWalletSDK: CoinbaseWalletIcon,
   safe: SafeWalletIcon,
+  metaMaskSDK: MetamaskWalletIcon,
 }
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
