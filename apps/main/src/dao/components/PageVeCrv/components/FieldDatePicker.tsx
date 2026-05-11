@@ -153,7 +153,7 @@ export const FieldDatePicker = ({
         <>
           <Chip size="xs">
             {t`Future veCRV:`}{' '}
-            {!isCreateLock && `${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false }) ?? '-'} → `}{' '}
+            {!isCreateLock && `${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false, fallback: '-' })} → `}{' '}
             {formatNumber(futureVeCrv, { abbreviate: false })}
           </Chip>
           <br />

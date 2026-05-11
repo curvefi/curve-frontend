@@ -130,8 +130,9 @@ export const DetailInfoLiqRange = ({
           <DetailInfo loading={loading} loadingSkeleton={[200, 23]} label={t`Price range:`}>
             {newPrices?.[0] && newPrices?.[1] ? (
               <strong>
-                {formatNumber(amount(newPrices[0]), { maximumSignificantDigits: 5, abbreviate: false }) ?? '-'} to{' '}
-                {formatNumber(amount(newPrices[1]), { maximumSignificantDigits: 5, abbreviate: false }) ?? '-'}
+                {formatNumber(amount(newPrices[0]), { maximumSignificantDigits: 5, abbreviate: false, fallback: '-' })}{' '}
+                to{' '}
+                {formatNumber(amount(newPrices[1]), { maximumSignificantDigits: 5, abbreviate: false, fallback: '-' })}
               </strong>
             ) : null}
           </DetailInfo>

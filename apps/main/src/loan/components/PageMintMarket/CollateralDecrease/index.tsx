@@ -228,7 +228,7 @@ export const CollateralDecrease = ({
           label={t`Collateral to remove`}
           isError={!!formValues.collateralError}
           {...(formValues.collateralError === 'too-much' && {
-            message: t`Cannot be greater than ${formatNumber(amount(maxRemovable), { abbreviate: false }) ?? '-'}`,
+            message: t`Cannot be greater than ${formatNumber(amount(maxRemovable), { abbreviate: false, fallback: '-' })}`,
           })}
           disabled={disabled}
           inputBalanceUsd={decimal(

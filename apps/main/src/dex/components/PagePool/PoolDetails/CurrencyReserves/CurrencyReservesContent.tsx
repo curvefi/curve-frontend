@@ -45,7 +45,7 @@ export const CurrencyReservesContent = ({
         </TokenLabelLink>
 
         <Box flex flexAlignItems="center" gridGap={2}>
-          <Chip opacity={0.7}>{formatNumber(cr?.usdRate, { unit: 'dollar', abbreviate: false }) ?? '-'}</Chip>
+          <Chip opacity={0.7}>{formatNumber(cr?.usdRate, { unit: 'dollar', abbreviate: false, fallback: '-' })}</Chip>
           <TooltipButton clickable onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
             <Icon name="Copy" size={16} />
           </TooltipButton>
@@ -65,14 +65,15 @@ export const CurrencyReservesContent = ({
 
     <Box className={'right'} flex flexDirection="column">
       <Chip size="md" isBold>
-        {formatNumber(cr?.balance, { abbreviate: false }) ?? '-'}{' '}
+        {formatNumber(cr?.balance, { abbreviate: false, fallback: '-' })}{' '}
       </Chip>
       <TokenBalancePercent opacity={0.7}>
         {formatNumber(amount(cr?.percentShareInPool), {
           ...(Number(cr?.percentShareInPool) > 0 ? { minimumIntegerDigits: 2 } : {}),
           unit: 'percentage',
           abbreviate: false,
-        }) ?? '?%'}
+          fallback: '?%',
+        })}
       </TokenBalancePercent>
     </Box>
   </Wrapper>

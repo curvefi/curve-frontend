@@ -172,6 +172,8 @@ export type NumberFormatOptions = {
   highPrecision?: boolean
   /** Optional formatter for value */
   formatter?: (value: Amount) => string
+  /** Value returned when the input value is nullish */
+  fallback?: string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>
 
 /**
@@ -262,9 +264,13 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
  * // Returns "12.0000"
  */
 export function formatNumber(value: Amount, options: NumberFormatOptions): string
+export function formatNumber(
+  value: Amount | null | undefined,
+  options: NumberFormatOptions & { fallback: string },
+): string
 export function formatNumber(value: Amount | null | undefined, options: NumberFormatOptions): string | undefined
 export function formatNumber(value: Amount | null | undefined, options: NumberFormatOptions) {
-  if (value == null) return undefined
+  if (value == null) return options.fallback
 
   const decomposed = decomposeNumber(value, options)
   const isNegative = decomposed.mainValue.startsWith('-')

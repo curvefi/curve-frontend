@@ -157,7 +157,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
         isError={!!formValues.amountError}
         message={
           formValues.amountError === 'too-much-wallet'
-            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.gauge), { abbreviate: false }) ?? '-'}`
+            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.gauge), { abbreviate: false, fallback: '-' })}`
             : undefined
         }
         walletBalance={{

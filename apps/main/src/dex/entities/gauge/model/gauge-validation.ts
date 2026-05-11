@@ -78,6 +78,6 @@ function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApp
 
   enforce(amount).condition(amount => ({
     pass: +amount <= +userBalance!,
-    message: t`Amount ${formatNumber(toAmount(amount), { decimals: 5, abbreviate: false }) ?? '-'} > wallet balance ${formatNumber(toAmount(userBalance), { decimals: 5, abbreviate: false }) ?? '-'}`,
+    message: t`Amount ${formatNumber(toAmount(amount), { decimals: 5, abbreviate: false, fallback: '-' })} > wallet balance ${formatNumber(toAmount(userBalance), { decimals: 5, abbreviate: false, fallback: '-' })}`,
   }))
 }

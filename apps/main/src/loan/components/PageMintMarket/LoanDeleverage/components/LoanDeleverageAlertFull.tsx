@@ -22,7 +22,7 @@ export const LoanDeleverageAlertFull = ({
   userState: UserLoanDetails['userState']
 }) => {
   const format = (val: string | number) =>
-    formatNumber(amount(val), { ...getFractionDigitsOptions(val, 2), abbreviate: false }) ?? '-'
+    formatNumber(amount(val), { ...getFractionDigitsOptions(val, 2), abbreviate: false, fallback: '-' })
   const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)
   const collateralBalance = +userState.collateral - +formValues.collateral
   const stablecoinBalance = +receivedStablecoin + +userState.stablecoin - +userState.debt

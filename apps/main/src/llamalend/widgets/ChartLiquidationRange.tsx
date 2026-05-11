@@ -72,7 +72,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
           <TipTitle>{t`Liquidation range`}</TipTitle>
           <TipContent>
             <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
-            <>{`${formatNumber(amount(cp2), { abbreviate: false }) ?? '-'} - ${formatNumber(amount(cp1), { abbreviate: false }) ?? '-'}`}</>
+            <>{`${formatNumber(amount(cp2), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(cp1), { abbreviate: false, fallback: '-' })}`}</>
           </TipContent>
         </div>
       )}
@@ -81,13 +81,13 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
           <TipTitle>{t`Liquidation range${currPrices ? ' (new)' : ''}`}</TipTitle>
           <TipContent>
             <TipIcon name="StopFilledAlt" fill={chartHealthColor} size={20} />{' '}
-            {`${formatNumber(amount(np1), { abbreviate: false }) ?? '-'} - ${formatNumber(amount(np2), { abbreviate: false }) ?? '-'}`}
+            {`${formatNumber(amount(np1), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(np2), { abbreviate: false, fallback: '-' })}`}
           </TipContent>
         </div>
       )}
       <div>
         <TipTitle>{t`Oracle price`}</TipTitle>
-        <TipContent>{formatNumber(amount(oraclePriceValue), { abbreviate: false }) ?? '-'}</TipContent>
+        <TipContent>{formatNumber(amount(oraclePriceValue), { abbreviate: false, fallback: '-' })}</TipContent>
       </div>
     </ChartTooltip>
   )
@@ -160,7 +160,7 @@ export const ChartLiquidationRange = ({
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
               tickFormatter={tick =>
-                `${formatNumber(amount(tick), { ...(tick > 10 && { decimals: 0 }), abbreviate: false }) ?? '-'}`
+                `${formatNumber(amount(tick), { ...(tick > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
               }
               domain={([dataMin, dataMax]) => {
                 // add 0.1 spacing to min and max data
@@ -312,7 +312,7 @@ export const ChartLiquidationRange = ({
                 wrapperStyle={{ color: chartLabelColor }}
                 payload={[
                   {
-                    value: `${t`Oracle Price`} (${formatNumber(amount(oraclePrice), { unit: 'dollar', abbreviate: false }) ?? '-'})`,
+                    value: `${t`Oracle Price`} (${formatNumber(amount(oraclePrice), { unit: 'dollar', abbreviate: false, fallback: '-' })})`,
                     type: 'line',
                     color: chartReferenceLineColor,
                   },

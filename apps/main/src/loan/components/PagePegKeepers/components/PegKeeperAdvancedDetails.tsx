@@ -47,7 +47,7 @@ export const PegKeeperAdvancedDetails = ({
     <ActionInfo
       label={t`Est. rebalance profit`}
       loading={estCallerProfit == null}
-      value={formatNumber(amount(estCallerProfit), { decimals: 5, abbreviate: false }) ?? '-'}
+      value={formatNumber(amount(estCallerProfit), { decimals: 5, abbreviate: false, fallback: '-' })}
       valueRight={
         <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
           <InfoOutlinedIcon

@@ -456,7 +456,8 @@ export const LoanRepay = ({
       </Stack>
 
       <Typography variant="headingXsMedium">
-        {t`Debt balance`} {formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'} {borrowed_token?.symbol}
+        {t`Debt balance`} {formatNumber(amount(userState?.debt), { abbreviate: false, fallback: '-' })}{' '}
+        {borrowed_token?.symbol}
       </Typography>
 
       <Checkbox

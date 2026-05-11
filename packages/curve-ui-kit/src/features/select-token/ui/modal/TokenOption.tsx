@@ -76,13 +76,13 @@ export const TokenOption = ({
           <Stack direction="column" alignItems="end">
             {hasBalance && (
               <Typography variant="bodyMBold" color={primary}>
-                {formatNumber(amount(balance), { decimals: 5, abbreviate: false }) ?? '-'}
+                {formatNumber(amount(balance), { decimals: 5, abbreviate: false, fallback: '-' })}
               </Typography>
             )}
 
             {hasBalanceUsd && (
               <Typography variant="bodyXsRegular" color={secondary}>
-                {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false }) ?? '-'}
+                {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false, fallback: '-' })}
               </Typography>
             )}
 

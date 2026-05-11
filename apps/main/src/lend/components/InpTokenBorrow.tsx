@@ -38,7 +38,7 @@ export const InpTokenBorrow = ({
       isError={!!inpError}
       message={
         inpError === 'too-much'
-          ? t`Amount > max borrow ${formatNumber(amount(maxRecv), { abbreviate: false }) ?? 0}`
+          ? t`Amount > max borrow ${formatNumber(amount(maxRecv), { abbreviate: false, fallback: '0' })}`
           : undefined
       }
       disabled={inpDisabled}

@@ -9,11 +9,11 @@ type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 
 
 export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd, sortBy }: Props) => {
   const formattedBaseProfit = useMemo(
-    () => formatNumber(amount(profitBase?.day), { abbreviate: false }) ?? '-',
+    () => formatNumber(amount(profitBase?.day), { abbreviate: false, fallback: '-' }),
     [profitBase?.day],
   )
   const formattedCrvProfit = useMemo(
-    () => `${formatNumber(amount(profitCrv?.day), { abbreviate: false }) ?? '-'} CRV`,
+    () => `${formatNumber(amount(profitCrv?.day), { abbreviate: false, fallback: '-' })} CRV`,
     [profitCrv?.day],
   )
   const isHighLight = sortBy === 'profits'
@@ -29,7 +29,7 @@ export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTo
       )}
 
       {profitOthers?.map(({ day, symbol }) => {
-        const formatted = `${formatNumber(amount(day), { abbreviate: false }) ?? '-'} ${symbol}`
+        const formatted = `${formatNumber(amount(day), { abbreviate: false, fallback: '-' })} ${symbol}`
         return Number(day) > 0 && <Info key={symbol}>{isHighLight ? <strong>{formatted}</strong> : formatted}</Info>
       })}
 

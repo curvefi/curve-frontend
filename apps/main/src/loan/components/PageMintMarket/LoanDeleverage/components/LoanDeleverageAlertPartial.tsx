@@ -23,7 +23,7 @@ export const LoanDeleverageAlertPartial = ({
   userState: UserLoanDetails['userState']
 }) => {
   const format = (val: string | number) =>
-    formatNumber(amount(val), { ...getFractionDigitsOptions(val, 2), abbreviate: false }) ?? '-'
+    formatNumber(amount(val), { ...getFractionDigitsOptions(val, 2), abbreviate: false, fallback: '-' })
   const collateralBalance = +userState.collateral - +formValues.collateral
   const debtBalance = +userState.debt - +receivedStablecoin
   const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)

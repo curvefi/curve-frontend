@@ -20,7 +20,7 @@ export const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipP
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(amount, { abbreviate: true }) ?? '-'}</TooltipData>
+            <TooltipData>{formatNumber(amount, { abbreviate: true, fallback: '-' })}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>

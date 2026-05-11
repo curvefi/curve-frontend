@@ -29,11 +29,11 @@ export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<Valu
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(weight, { abbreviate: false }) ?? '-'}</TooltipData>
+            <TooltipData>{formatNumber(weight, { abbreviate: false, fallback: '-' })}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Locked CRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(locked, { abbreviate: false }) ?? '-'}</TooltipData>
+            <TooltipData>{formatNumber(locked, { abbreviate: false, fallback: '-' })}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>

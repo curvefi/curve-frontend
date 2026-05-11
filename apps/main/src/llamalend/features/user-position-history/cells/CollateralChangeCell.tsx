@@ -22,7 +22,7 @@ export const CollateralChangeCell = ({
     </Typography>
     {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
       <Typography variant="bodySRegular">
-        {formatNumber(collateralChangeUsd, { unit: 'dollar', abbreviate: false }) ?? '-'}
+        {formatNumber(collateralChangeUsd, { unit: 'dollar', abbreviate: false, fallback: '-' })}
       </Typography>
     )}
   </InlineTableCell>

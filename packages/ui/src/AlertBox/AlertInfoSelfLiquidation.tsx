@@ -5,7 +5,7 @@ import { DetailInfo } from '../DetailInfo'
 import { TextCaption } from '../TextCaption'
 import { AlertBox } from './AlertBox'
 
-const formatAmount = (value: string | number) => formatNumber(amount(value), { abbreviate: false }) ?? '-'
+const formatAmount = (value: string | number) => formatNumber(amount(value), { abbreviate: false, fallback: '-' })
 
 export const AlertInfoSelfLiquidation = ({
   errorMessage,

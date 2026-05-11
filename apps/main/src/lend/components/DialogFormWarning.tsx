@@ -23,7 +23,7 @@ export function DialogFormWarning({
     const resp = { title: '', warning: '' }
     const { priceImpact: priceImpactPercent, swapFrom, swapTo } = priceImpact
     resp.title = t`High price impact!`
-    resp.warning = t`There is a price impact of ${formatNumber(amount(priceImpactPercent), { maximumSignificantDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'} when swapping from ${swapFrom} to ${swapTo}.`
+    resp.warning = t`There is a price impact of ${formatNumber(amount(priceImpactPercent), { maximumSignificantDigits: 4, unit: 'percentage', abbreviate: false, fallback: '-' })} when swapping from ${swapFrom} to ${swapTo}.`
     return resp
   }, [])
 

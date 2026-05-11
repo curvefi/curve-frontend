@@ -52,7 +52,7 @@ export const LiquidationRangeSlider = ({
           <Slider
             aria-label={t`Liquidation range`}
             size="medium"
-            getAriaValueText={value => formatNumber(value, { unit: 'dollar', abbreviate: false }) ?? '-'}
+            getAriaValueText={value => formatNumber(value, { unit: 'dollar', abbreviate: false, fallback: '-' })}
             value={sliderValue}
             onChange={(_, n) => setSliderValue(n as number)}
             onChangeCommitted={(_, n) => handleSelLiqRange(n as number)}

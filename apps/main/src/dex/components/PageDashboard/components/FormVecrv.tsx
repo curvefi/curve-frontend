@@ -54,7 +54,9 @@ export const FormVecrv = () => {
   const isLockExpired =
     (lookupAddressIsSameAsSignerAddress && getIsLockExpired(lockedAmount, unlockTime)) ||
     parsedFormStatus.formTypeCompleted
-  const lockedAmountDisplay = <strong>{formatNumber(amount(lockedAmount), { abbreviate: false }) ?? '-'}</strong>
+  const lockedAmountDisplay = (
+    <strong>{formatNumber(amount(lockedAmount), { abbreviate: false, fallback: '-' })}</strong>
+  )
   const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(unlockTime, 'long')}</strong> : '-' //
 
   const handleBtnClickWithdraw = useCallback(
@@ -160,9 +162,11 @@ export const FormVecrv = () => {
           <Items listItemMargin="0 0 0.2rem 0">
             <li>
               {t`Balance in voting escrow:`}{' '}
-              <strong>{formatNumber(amount(veCrv), { abbreviate: false }) ?? '-'}</strong> veCRV <br />
+              <strong>{formatNumber(amount(veCrv), { abbreviate: false, fallback: '-' })}</strong> veCRV <br />
               <Chip size="sm">
-                <strong>{formatNumber(amount(veCrvPct), { unit: 'percentage', abbreviate: false }) ?? '-'}</strong>{' '}
+                <strong>
+                  {formatNumber(amount(veCrvPct), { unit: 'percentage', abbreviate: false, fallback: '-' })}
+                </strong>{' '}
                 {t`share of total`}
               </Chip>
             </li>

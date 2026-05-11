@@ -211,7 +211,7 @@ export const LoanLiquidate = ({
   return (
     <>
       <InputReadOnly title={t`Self-liquidation amount`}>
-        {formatNumber(amount(liquidationAmt), { maximumFractionDigits: 2, abbreviate: false }) ?? '-'}
+        {formatNumber(amount(liquidationAmt), { maximumFractionDigits: 2, abbreviate: false, fallback: '-' })}
       </InputReadOnly>
 
       {/* detail info */}

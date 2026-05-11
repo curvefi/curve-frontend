@@ -46,11 +46,11 @@ export const InpToken = ({
     isError={!!inpError}
     message={
       inpError === 'too-much'
-        ? t`Amount > wallet balance ${formatNumber(amount(tokenBalance), { abbreviate: false }) ?? '-'}`
+        ? t`Amount > wallet balance ${formatNumber(amount(tokenBalance), { abbreviate: false, fallback: '-' })}`
         : inpError === 'too-much-debt'
-          ? t`Amount > max debt ${formatNumber(amount(debt), { abbreviate: false }) ?? '-'}`
+          ? t`Amount > max debt ${formatNumber(amount(debt), { abbreviate: false, fallback: '-' })}`
           : inpError === 'too-much-collateral'
-            ? t`Amount > collateral ${formatNumber(amount(tokenBalance), { abbreviate: false }) ?? '-'}`
+            ? t`Amount > collateral ${formatNumber(amount(tokenBalance), { abbreviate: false, fallback: '-' })}`
             : null
     }
     disabled={inpDisabled}

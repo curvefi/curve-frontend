@@ -72,7 +72,9 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`Emissions (CRV)`}
             data={
-              <StyledMetricsColumnData>{formatNumber(emissions, { abbreviate: true }) ?? '-'}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>
+                {formatNumber(emissions, { abbreviate: true, fallback: '-' })}
+              </StyledMetricsColumnData>
             }
           />
         ) : (
@@ -165,7 +167,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`Pool TVL`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, { unit: 'dollar', abbreviate: true }) ?? '-'}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, { unit: 'dollar', abbreviate: true, fallback: '-' })}`}</StyledMetricsColumnData>
             }
           />
         ) : (
@@ -176,7 +178,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`24h Pool Volume`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, { unit: 'dollar', abbreviate: true }) ?? '-'}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, { unit: 'dollar', abbreviate: true, fallback: '-' })}`}</StyledMetricsColumnData>
             }
           />
         ) : (

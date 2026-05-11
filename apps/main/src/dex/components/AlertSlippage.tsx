@@ -22,7 +22,7 @@ export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
       <div>
         <Trans>
           With your current slippage tolerance setting (
-          {formatNumber(amount(maxSlippage), { unit: 'percentage', abbreviate: false }) ?? '-'}
+          {formatNumber(amount(maxSlippage), { unit: 'percentage', abbreviate: false, fallback: '-' })}
           ), the expected output displayed above might incur up to{' '}
           <strong>
             {formatNumber(maxUsdSlippage, {

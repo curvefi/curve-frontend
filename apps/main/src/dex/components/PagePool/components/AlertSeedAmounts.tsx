@@ -28,7 +28,7 @@ export const AlertSeedAmounts = ({ seed, poolData }: Props) => {
       setSeedAmounts(
         tokens.map(
           (token, idx) =>
-            `${formatNumber(amount(seedAmounts[idx]), { decimals: 5, abbreviate: false }) ?? '-'} ${token}`,
+            `${formatNumber(amount(seedAmounts[idx]), { decimals: 5, abbreviate: false, fallback: '-' })} ${token}`,
         ),
       )
     } catch (error) {

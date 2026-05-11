@@ -278,7 +278,7 @@ export const LoanIncrease = ({
         isError={!!formValues.debtError}
         message={
           formValues.debtError === 'too-much'
-            ? t`Borrow amount is greater than ${formatNumber(amount(maxRecv), { abbreviate: false }) ?? '-'}, increase collateral to borrow more`
+            ? t`Borrow amount is greater than ${formatNumber(amount(maxRecv), { abbreviate: false, fallback: '-' })}, increase collateral to borrow more`
             : undefined
         }
         disabled={disabled}
@@ -327,7 +327,7 @@ export const LoanIncrease = ({
           onBalance={onCollateralChanged}
           {...(formValues.collateralError === 'too-much' &&
             userWalletBalances?.collateral && {
-              message: t`Collateral is greater than ${formatNumber(amount(userWalletBalances.collateral), { abbreviate: false }) ?? '-'}`,
+              message: t`Collateral is greater than ${formatNumber(amount(userWalletBalances.collateral), { abbreviate: false, fallback: '-' })}`,
             })}
         />
 

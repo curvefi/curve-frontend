@@ -18,7 +18,7 @@ export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...p
     return +amount * +usdRate
   }, [usdRate, amount])
 
-  const formattedAmountUsd = formatNumber(amountUsd, { unit: 'dollar', abbreviate: false }) ?? '-'
+  const formattedAmountUsd = formatNumber(amountUsd, { unit: 'dollar', abbreviate: false, fallback: '-' })
 
   return (
     <>
@@ -28,7 +28,7 @@ export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...p
         </TextCaption>
       ) : (
         <StyledInpChip className={className} size="xs">
-          x {formatNumber(toAmount(usdRate), { abbreviate: false }) ?? '-'} ≈ {formattedAmountUsd}
+          x {formatNumber(toAmount(usdRate), { abbreviate: false, fallback: '-' })} ≈ {formattedAmountUsd}
         </StyledInpChip>
       )}
     </>

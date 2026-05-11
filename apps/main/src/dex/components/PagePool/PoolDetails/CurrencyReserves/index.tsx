@@ -53,7 +53,7 @@ export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
       <StyledStats flex flexJustifyContent="space-between">
         {t`USD total`}
         <StyledChip size="md">
-          {formatNumber(amount(tvl), { unit: 'dollar', abbreviate: false }) ?? '-'}{' '}
+          {formatNumber(amount(tvl), { unit: 'dollar', abbreviate: false, fallback: '-' })}{' '}
           <IconTooltip placement="bottom-end">{t`USD total balance updates every ~5 minute`}</IconTooltip>
         </StyledChip>
       </StyledStats>

@@ -52,7 +52,7 @@ export const MySharesStats = ({
   const userShareLabel = useMemo(() => {
     if (userLpShare && Number(userLpShare)) {
       if (Number(userLpShare) > 0.01) {
-        return formatNumber(amount(userLpShare), { unit: 'percentage', abbreviate: false }) ?? '-'
+        return formatNumber(amount(userLpShare), { unit: 'percentage', abbreviate: false, fallback: '-' })
       }
       return `< ${formatNumber(0.01, { unit: 'percentage', abbreviate: false })}`
     }
@@ -82,12 +82,14 @@ export const MySharesStats = ({
         <CrvRewardsTooltipWrapper>
           <tbody>
             <tr>
-              <td className="right">{formatNumber(crvRewards[0], { unit: 'percentage', abbreviate: false }) ?? '-'}</td>
+              <td className="right">
+                {formatNumber(crvRewards[0], { unit: 'percentage', abbreviate: false, fallback: '-' })}
+              </td>
               <td>&nbsp;({t`min. CRV tAPR %`})</td>
             </tr>
             <tr>
               <td className="right">
-                x {formatNumber(amount(userBoostApy), { unit: 'percentage', abbreviate: false }) ?? '-'}
+                x {formatNumber(amount(userBoostApy), { unit: 'percentage', abbreviate: false, fallback: '-' })}
               </td>
               <td>&nbsp;({t`your boost`})</td>
             </tr>
@@ -119,10 +121,10 @@ export const MySharesStats = ({
       <LPWrapper>
         <StyledStats label={t`LP Tokens`}>
           <div>
-            {t`Staked:`} <strong>{formatNumber(gaugeTokenBalance, { abbreviate: false }) ?? '-'}</strong>
+            {t`Staked:`} <strong>{formatNumber(gaugeTokenBalance, { abbreviate: false, fallback: '-' })}</strong>
           </div>
           <div>
-            {t`Unstaked:`} <strong>{formatNumber(lpTokenBalance, { abbreviate: false }) ?? '-'}</strong>
+            {t`Unstaked:`} <strong>{formatNumber(lpTokenBalance, { abbreviate: false, fallback: '-' })}</strong>
           </div>
         </StyledStats>
         {(haveCrvRewards || haveBoosting) && (
@@ -144,7 +146,8 @@ export const MySharesStats = ({
                 <Chip size="md">
                   {t`Current Boost:`}{' '}
                   <strong>
-                    {formatNumber(amount(userBoostApy), { maximumFractionDigits: 3, abbreviate: false }) ?? '-'}x
+                    {formatNumber(amount(userBoostApy), { maximumFractionDigits: 3, abbreviate: false, fallback: '-' })}
+                    x
                   </strong>
                 </Chip>
                 {/* TODO: future boost */}
@@ -178,7 +181,7 @@ export const MySharesStats = ({
                   }
                 >
                   <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-                    {formatNumber(amount(userWithdrawAmounts[idx]), { abbreviate: false }) ?? '-'}
+                    {formatNumber(amount(userWithdrawAmounts[idx]), { abbreviate: false, fallback: '-' })}
                   </Chip>
                 </Stats>
               )
@@ -187,13 +190,17 @@ export const MySharesStats = ({
           {!poolDataCacheOrApi.pool.isCrypto && (
             <Stats isOneLine isBorderBottom label={`${poolDataCacheOrApi.tokens.join('+')}`}>
               <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-                {formatNumber(amount(withdrawTotal), { abbreviate: false }) ?? '-'}
+                {formatNumber(amount(withdrawTotal), { abbreviate: false, fallback: '-' })}
               </Chip>
             </Stats>
           )}
           <Stats isOneLine label={t`USD balance`}>
             <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-              {formatNumber(amount(userPoolInfo?.userLiquidityUsd), { unit: 'dollar', abbreviate: false }) ?? '-'}
+              {formatNumber(amount(userPoolInfo?.userLiquidityUsd), {
+                unit: 'dollar',
+                abbreviate: false,
+                fallback: '-',
+              })}
             </Chip>
           </Stats>
         </TokensBalanceWrapper>

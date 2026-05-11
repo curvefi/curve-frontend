@@ -78,7 +78,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
             {!userVeCrv || !userAddress ? (
               <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
-              <h4>{formatNumber(amount(userVeCrv.veCrv), { abbreviate: false }) ?? '-'} veCRV</h4>
+              <h4>{formatNumber(amount(userVeCrv.veCrv), { abbreviate: false, fallback: '-' })} veCRV</h4>
             )}
           </Box>
         )}

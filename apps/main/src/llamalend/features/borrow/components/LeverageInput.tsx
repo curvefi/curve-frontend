@@ -30,7 +30,7 @@ export const LeverageInput = ({
       endContent={
         <ActionInfo
           label={t`Leverage`}
-          value={`${formatNumber(leverage, { maximumFractionDigits: 2, abbreviate: false }) ?? '-'}x`}
+          value={`${formatNumber(leverage, { maximumFractionDigits: 2, abbreviate: false, fallback: '-' })}x`}
           valueColor={leverageError ? 'error' : undefined}
           loading={isLeverageLoading}
           error={leverageError}

@@ -105,7 +105,7 @@ export const WithCustomButton: Story = {
     maxSlippage: '0.1',
     button: ({ onClick, maxSlippage }) => (
       <IconButton onClick={onClick}>
-        {formatNumber(amount(maxSlippage), { decimals: 5, unit: 'percentage', abbreviate: false }) ?? '-'}{' '}
+        {formatNumber(amount(maxSlippage), { decimals: 5, unit: 'percentage', abbreviate: false, fallback: '-' })}{' '}
         <Icon name="Settings" size={16} />
       </IconButton>
     ),

@@ -36,11 +36,11 @@ export const FormClaimFees = () => {
         </div>
         <div>
           <strong>
-            {formatNumber(amount(claimFeesAmounts?.[claimButtonsKey['3CRV']]), { abbreviate: false }) ?? '-'}
+            {formatNumber(amount(claimFeesAmounts?.[claimButtonsKey['3CRV']]), { abbreviate: false, fallback: '-' })}
           </strong>{' '}
           3CRV,{' '}
           <strong>
-            {formatNumber(amount(claimFeesAmounts?.[claimButtonsKey.crvUSD]), { abbreviate: false }) ?? '-'}
+            {formatNumber(amount(claimFeesAmounts?.[claimButtonsKey.crvUSD]), { abbreviate: false, fallback: '-' })}
           </strong>{' '}
           crvUSD
         </div>

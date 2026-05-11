@@ -37,7 +37,7 @@ export function getHealthMode(
       if (currColorKey === newColorKey || currColorKey === 'soft_liquidation') {
         message = t`You are still close to soft liquidation.`
       } else if (newColorKey === 'close_to_liquidation') {
-        const formattedAmount = formatNumber(toAmount(amount), { abbreviate: false }) ?? '-'
+        const formattedAmount = formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {

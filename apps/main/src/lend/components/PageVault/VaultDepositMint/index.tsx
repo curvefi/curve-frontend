@@ -190,9 +190,9 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
           isError={!!formValues.amountError}
           message={
             formValues.amountError === 'too-much-wallet'
-              ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.borrowed), { abbreviate: false }) ?? '-'}`
+              ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.borrowed), { abbreviate: false, fallback: '-' })}`
               : formValues.amountError === 'too-much-max'
-                ? t`Amount > max deposit amount ${formatNumber(amount(maxResp?.max), { abbreviate: false }) ?? '-'}`
+                ? t`Amount > max deposit amount ${formatNumber(amount(maxResp?.max), { abbreviate: false, fallback: '-' })}`
                 : undefined
           }
           disabled={disabled}
@@ -230,7 +230,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
           loadingSkeleton={[100, 20]}
           label={t`Expected vault shares:`}
         >
-          <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false }) ?? '-'}</strong>
+          <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false, fallback: '-' })}</strong>
         </DetailInfo>
         <DetailInfoRate
           isBorrow={false}

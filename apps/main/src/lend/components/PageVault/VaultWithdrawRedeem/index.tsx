@@ -190,9 +190,9 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
         isError={!!formValues.amountError}
         message={
           formValues.amountError === 'too-much-wallet'
-            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.vaultSharesConverted), { abbreviate: false }) ?? '-'}`
+            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.vaultSharesConverted), { abbreviate: false, fallback: '-' })}`
             : formValues.amountError === 'too-much-max'
-              ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(amount(max), { abbreviate: false }) ?? '-'}`
+              ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(amount(max), { abbreviate: false, fallback: '-' })}`
               : undefined
         }
         walletBalance={{
@@ -226,7 +226,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
           loadingSkeleton={[100, 20]}
           label={t`Vault shares required:`}
         >
-          <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false }) ?? '-'}</strong>
+          <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false, fallback: '-' })}</strong>
         </DetailInfo>
         <DetailInfoRate
           rChainId={rChainId}

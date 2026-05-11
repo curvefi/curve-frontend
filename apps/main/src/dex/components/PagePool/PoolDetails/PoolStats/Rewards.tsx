@@ -87,7 +87,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                   <ChipVolatileBaseApy isBold showIcon />
                 ) : (
                   <strong title={value}>
-                    {formatNumber(amount(value), { unit: 'percentage', abbreviate: false }) ?? '-'}
+                    {formatNumber(amount(value), { unit: 'percentage', abbreviate: false, fallback: '-' })}
                   </strong>
                 )}
               </BaseApyItem>

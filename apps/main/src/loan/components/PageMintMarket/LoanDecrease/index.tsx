@@ -235,10 +235,10 @@ export const LoanDecrease = ({
         isError={!!formValues.debtError}
         message={
           formValues.debtError === 'too-much'
-            ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'}.`
+            ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(amount(userState?.debt), { abbreviate: false, fallback: '-' })}.`
             : formValues.debtError === 'not-enough'
               ? t`The specified amount exceeds the current balance in the wallet.`
-              : t`Debt ${formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'}`
+              : t`Debt ${formatNumber(amount(userState?.debt), { abbreviate: false, fallback: '-' })}`
         }
         disabled={disable || formValues.isFullRepay}
         inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}

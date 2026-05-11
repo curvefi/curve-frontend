@@ -121,13 +121,12 @@ export const DetailInfoHealth = ({
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
-      return (
-        formatNumber(toAmount(healthMode.percent), {
-          maximumFractionDigits: 2,
-          unit: 'percentage',
-          abbreviate: false,
-        }) ?? '-'
-      )
+      return formatNumber(toAmount(healthMode.percent), {
+        maximumFractionDigits: 2,
+        unit: 'percentage',
+        abbreviate: false,
+        fallback: '-',
+      })
     }
     return ''
   }, [healthMode.percent])
@@ -162,7 +161,8 @@ export const DetailInfoHealth = ({
                 maximumFractionDigits: 2,
                 unit: 'percentage',
                 abbreviate: false,
-              }) ?? '-'}
+                fallback: '-',
+              })}
             </HealthPercent>{' '}
             <HealthPercent colorKey={healthMode.colorKey}>
               <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}

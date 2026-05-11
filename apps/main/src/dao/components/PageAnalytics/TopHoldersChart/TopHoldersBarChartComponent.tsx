@@ -78,7 +78,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={value =>
-              filter === 'weightRatio' ? `${value}%` : (formatNumber(amount(value), { abbreviate: true }) ?? '-')
+              filter === 'weightRatio' ? `${value}%` : formatNumber(amount(value), { abbreviate: true, fallback: '-' })
             }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}

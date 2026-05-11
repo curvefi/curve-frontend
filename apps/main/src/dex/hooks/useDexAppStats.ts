@@ -18,18 +18,18 @@ export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean
     enabled && [
       {
         label: t`Total Deposits`,
-        value: formatNumber(tvlTotal, { unit: 'dollar', abbreviate: true }) ?? '-',
+        value: formatNumber(tvlTotal, { unit: 'dollar', abbreviate: true, fallback: '-' }),
       },
       ...notFalsyArray(
         !isLite && [
           // only show total deposits on curve-lite networks
           {
             label: t`Daily Volume`,
-            value: formatNumber(volumeTotal?.totalVolume, { unit: 'dollar', abbreviate: true }) ?? '-',
+            value: formatNumber(volumeTotal?.totalVolume, { unit: 'dollar', abbreviate: true, fallback: '-' }),
           },
           {
             label: t`Crypto Volume Share`,
-            value: formatNumber(volumeTotal?.cryptoShare, { unit: 'percentage', abbreviate: false }) ?? '-',
+            value: formatNumber(volumeTotal?.cryptoShare, { unit: 'percentage', abbreviate: false, fallback: '-' }),
           },
         ],
       ),

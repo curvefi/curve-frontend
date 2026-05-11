@@ -163,13 +163,13 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 <>
                   {haveClaimableCrv && (
                     <Stats isOneLine isBorderBottom={rewards.length > 0} label="CRV">
-                      {formatNumber(toAmount(crv), { abbreviate: false }) ?? '-'}
+                      {formatNumber(toAmount(crv), { abbreviate: false, fallback: '-' })}
                     </Stats>
                   )}
 
                   {rewards.map(({ token, symbol, amount }, idx) => (
                     <Stats isOneLine isBorderBottom={idx !== rewards.length - 1} key={token} label={symbol}>
-                      {formatNumber(toAmount(amount), { abbreviate: false }) ?? '-'}
+                      {formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })}
                     </Stats>
                   ))}
                 </>

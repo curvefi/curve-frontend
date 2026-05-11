@@ -38,7 +38,7 @@ export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => 
                   ...(base && Number(base.day) < 0 ? { minWidth: '200px' } : {}),
                 }}
               >
-                {formatNumber(amount(base.day), { unit: 'percentage', abbreviate: false }) ?? '-'}
+                {formatNumber(amount(base.day), { unit: 'percentage', abbreviate: false, fallback: '-' })}
               </Chip>
             )}
           </>

@@ -44,7 +44,7 @@ export const PoolParameters = ({
     () =>
       tvl && volume
         ? +tvl && +volume
-          ? (formatNumber(amount((+volume / +tvl) * 100), { unit: 'percentage', abbreviate: false }) ?? '-')
+          ? formatNumber(amount((+volume / +tvl) * 100), { unit: 'percentage', abbreviate: false, fallback: '-' })
           : formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })
         : '-',
     [tvl, volume],
@@ -74,7 +74,10 @@ export const PoolParameters = ({
       <Stack gap={Spacing.sm}>
         {!isLite && (
           <>
-            <ActionInfo label={t`Daily USD volume`} value={formatNumber(amount(volume), { abbreviate: true }) ?? '-'} />
+            <ActionInfo
+              label={t`Daily USD volume`}
+              value={formatNumber(amount(volume), { abbreviate: true, fallback: '-' })}
+            />
             <ActionInfo
               label={t`Liquidity utilization`}
               value={liquidityUtilization}
@@ -88,9 +91,10 @@ export const PoolParameters = ({
           value={
             staked?.gaugeTotalSupply === 'string'
               ? staked.gaugeTotalSupply
-              : (formatNumber(amount(staked?.gaugeTotalSupply && weiToEther(+staked.gaugeTotalSupply)), {
+              : formatNumber(amount(staked?.gaugeTotalSupply && weiToEther(+staked.gaugeTotalSupply)), {
                   abbreviate: true,
-                }) ?? '-')
+                  fallback: '-',
+                })
           }
         />
         <ActionInfo
@@ -105,27 +109,35 @@ export const PoolParameters = ({
         <ActionInfo
           label={t`Fee`}
           loading={isLoadingParameters}
-          value={formatNumber(amount(fee), { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'}
+          value={formatNumber(amount(fee), {
+            maximumFractionDigits: 4,
+            unit: 'percentage',
+            abbreviate: false,
+            fallback: '-',
+          })}
         />
 
         <ActionInfo
           label={t`DAO fee`}
           loading={isLoadingParameters}
           valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-          value={
-            formatNumber(amount(isEymaPools ? +adminFee / 2 : adminFee), {
-              maximumFractionDigits: 4,
-              unit: 'percentage',
-              abbreviate: false,
-            }) ?? '-'
-          }
+          value={formatNumber(amount(isEymaPools ? +adminFee / 2 : adminFee), {
+            maximumFractionDigits: 4,
+            unit: 'percentage',
+            abbreviate: false,
+            fallback: '-',
+          })}
         />
         {isEymaPools && <ActionInfo label={`EYWA fee`} loading={isLoadingParameters} value={+adminFee / 2} />}
 
         <ActionInfo
           label={t`Virtual price`}
           loading={isLoadingParameters}
-          value={formatNumber(amount(parameters?.virtualPrice), { maximumFractionDigits: 8, abbreviate: false }) ?? '-'}
+          value={formatNumber(amount(parameters?.virtualPrice), {
+            maximumFractionDigits: 8,
+            abbreviate: false,
+            fallback: '-',
+          })}
           valueTooltip={t`Measures pool growth; this is not a dollar value`}
         />
       </Stack>
@@ -140,7 +152,7 @@ export const PoolParameters = ({
               value={priceOracle.map((p, idx) => (
                 <strong key={p}>
                   {poolData.pool.wrappedCoins[idx + 1]}:{' '}
-                  {formatNumber(amount(p), { maximumFractionDigits: 10, abbreviate: false }) ?? '-'}
+                  {formatNumber(amount(p), { maximumFractionDigits: 10, abbreviate: false, fallback: '-' })}
                 </strong>
               ))}
             />
@@ -151,7 +163,7 @@ export const PoolParameters = ({
               value={priceScale.map((p, idx) => (
                 <strong key={p}>
                   {poolData.pool.wrappedCoins[idx + 1]}:{' '}
-                  {formatNumber(amount(p), { maximumFractionDigits: 10, abbreviate: false }) ?? '-'}
+                  {formatNumber(amount(p), { maximumFractionDigits: 10, abbreviate: false, fallback: '-' })}
                 </strong>
               ))}
             />
@@ -165,13 +177,13 @@ export const PoolParameters = ({
           {gamma && (
             <ActionInfo
               label={t`Gamma`}
-              value={formatNumber(amount(gamma), { useGrouping: false, abbreviate: false }) ?? '-'}
+              value={formatNumber(amount(gamma), { useGrouping: false, abbreviate: false, fallback: '-' })}
             />
           )}
           {virtualPrice && (
             <ActionInfo
               label={t`A`}
-              value={formatNumber(amount(A), { useGrouping: false, abbreviate: false }) ?? '-'}
+              value={formatNumber(amount(A), { useGrouping: false, abbreviate: false, fallback: '-' })}
               valueTooltip={
                 <Stack gap={Spacing.sm}>
                   {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
@@ -191,8 +203,8 @@ export const PoolParameters = ({
               <ActionInfo
                 label={t`Ramping A`}
                 valueTooltip={t`Slowly changing up A so that it doesn't negatively change virtual price growth of shares`}
-                prevValue={formatNumber(amount(initial_A), { useGrouping: false, abbreviate: false }) ?? '-'}
-                value={formatNumber(amount(future_A), { useGrouping: false, abbreviate: false }) ?? '-'}
+                prevValue={formatNumber(amount(initial_A), { useGrouping: false, abbreviate: false, fallback: '-' })}
+                value={formatNumber(amount(future_A), { useGrouping: false, abbreviate: false, fallback: '-' })}
               />
               <ActionInfo
                 label=" "

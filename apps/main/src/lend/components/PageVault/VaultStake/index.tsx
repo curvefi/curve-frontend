@@ -173,7 +173,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
         isError={!!formValues.amountError}
         message={
           formValues.amountError === 'too-much-wallet'
-            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.vaultShares), { abbreviate: false }) ?? '-'}`
+            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.vaultShares), { abbreviate: false, fallback: '-' })}`
             : undefined
         }
         walletBalance={{

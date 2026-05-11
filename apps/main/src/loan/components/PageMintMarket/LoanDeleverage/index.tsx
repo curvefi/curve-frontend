@@ -281,8 +281,8 @@ export const LoanDeleverage = ({
         isError={!!formValues.collateralError}
         message={
           formValues.collateralError === 'too-much'
-            ? t`Amount must be <= ${formatNumber(amount(userState?.collateral), { abbreviate: false }) ?? '-'}`
-            : t`Debt ${formatNumber(amount(userState?.debt), { abbreviate: false }) ?? '-'} ${stablecoinName}`
+            ? t`Amount must be <= ${formatNumber(amount(userState?.collateral), { abbreviate: false, fallback: '-' })}`
+            : t`Debt ${formatNumber(amount(userState?.debt), { abbreviate: false, fallback: '-' })} ${stablecoinName}`
         }
         disabled={disable}
         inputBalanceUsd={decimal(

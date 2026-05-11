@@ -38,7 +38,7 @@ export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndN
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         tickFormatter={(value: number) =>
-          `${formatNumber(value, { ...(value > 10 && { decimals: 0 }), abbreviate: false }) ?? '-'}`
+          `${formatNumber(value, { ...(value > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
         }
         tickCount={10}
       />

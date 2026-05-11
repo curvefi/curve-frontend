@@ -22,7 +22,7 @@ export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<Va
             <TooltipDataTitle>{t`Gauge weight 7d delta`}</TooltipDataTitle>
             {sevenDayDelta ? (
               <TooltipData className={sevenDayDelta > 0 ? 'positive' : 'negative'}>
-                {formatNumber(amount(sevenDayDelta), { abbreviate: true }) ?? '-'}%
+                {formatNumber(amount(sevenDayDelta), { abbreviate: true, fallback: '-' })}%
               </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
@@ -32,7 +32,7 @@ export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<Va
             <TooltipDataTitle>{t`Gauge weight 60d delta`}</TooltipDataTitle>
             {sixtyDayDelta ? (
               <TooltipData className={sixtyDayDelta > 0 ? 'positive' : 'negative'}>
-                {formatNumber(amount(sixtyDayDelta), { abbreviate: true }) ?? '-'}%
+                {formatNumber(amount(sixtyDayDelta), { abbreviate: true, fallback: '-' })}%
               </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>

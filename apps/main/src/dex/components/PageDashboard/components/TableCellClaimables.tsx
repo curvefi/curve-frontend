@@ -17,11 +17,11 @@ export const TableCellClaimables = ({
 }: Props) => (
   <>
     {claimableCrv?.map(({ symbol, amount }, idx) => {
-      const formatted = `${formatNumber(toAmount(amount), { abbreviate: false }) ?? '-'} CRV`
+      const formatted = `${formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })} CRV`
       return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
     })}
     {claimableOthers?.map(({ symbol, amount }, idx) => {
-      const formatted = `${formatNumber(toAmount(amount), { abbreviate: false }) ?? '-'} ${symbol}`
+      const formatted = `${formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })} ${symbol}`
       return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
     })}
     <div>

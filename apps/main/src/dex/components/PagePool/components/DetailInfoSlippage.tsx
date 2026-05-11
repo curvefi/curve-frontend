@@ -60,7 +60,7 @@ export const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage 
       label={label}
       tooltip={tip ? <IconTooltip placement="top-end">{tip}</IconTooltip> : null}
     >
-      {formatNumber(slippage, { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'}
+      {formatNumber(slippage, { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false, fallback: '-' })}
     </DetailInfo>
   )
 }

@@ -35,13 +35,13 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
           <StatsRow>
             <StatTitle>{t`7d Delta`}</StatTitle>
             <StatData>
-              {formatNumber(gaugeData.gauge_relative_weight_7d_delta, { abbreviate: false }) ?? 'N/A'}
+              {formatNumber(gaugeData.gauge_relative_weight_7d_delta, { abbreviate: false, fallback: 'N/A' })}
             </StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`60d Delta`}</StatTitle>
             <StatData>
-              {formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: false }) ?? 'N/A'}
+              {formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: false, fallback: 'N/A' })}
             </StatData>
           </StatsRow>
         </Box>
@@ -56,7 +56,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
             <StatTitle>{t`veCRV used`}</StatTitle>
             <Box flex flexAlignItems="center">
               <StatData>
-                {formatNumber(userVeCrv, { abbreviate: false }) ?? '-'}
+                {formatNumber(userVeCrv, { abbreviate: false, fallback: '-' })}
                 {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { abbreviate: false })}`}
               </StatData>
             </Box>

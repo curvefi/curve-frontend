@@ -38,7 +38,7 @@ export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         tickFormatter={value =>
-          `${formatNumber(amount(value), { ...(value > 10 && { decimals: 0 }), abbreviate: false }) ?? '-'}`
+          `${formatNumber(amount(value), { ...(value > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
         }
         tickCount={10}
       />

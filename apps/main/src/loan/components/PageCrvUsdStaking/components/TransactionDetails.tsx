@@ -31,24 +31,24 @@ export const TransactionDetails = () => {
   const gasLoading = hasWallet && isLoading(fetchStatus)
 
   const symbol = stakingModule === 'deposit' ? t`scrvUSD` : t`crvUSD`
-  const receive =
-    formatNumber(amount(preview.value), {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-      abbreviate: false,
-    }) ?? '-'
-  const valueGas =
-    formatNumber(estGasCostUsd, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-      abbreviate: false,
-    }) ?? '-'
+  const receive = formatNumber(amount(preview.value), {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+    abbreviate: false,
+    fallback: '-',
+  })
+  const valueGas = formatNumber(estGasCostUsd, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+    abbreviate: false,
+    fallback: '-',
+  })
 
   const title = (
     <WithSkeleton loading={exchangeRateLoading}>
       <Typography variant="highlightM" color="textPrimary">
         {exchangeRateReady
-          ? t`1 crvUSD = ${formatNumber(amount(scrvUsdExchangeRate.value), { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false }) ?? '-'} scrvUSD`
+          ? t`1 crvUSD = ${formatNumber(amount(scrvUsdExchangeRate.value), { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false, fallback: '-' })} scrvUSD`
           : '-'}
       </Typography>
     </WithSkeleton>

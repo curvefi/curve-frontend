@@ -51,7 +51,7 @@ export const GaugeVotingStats = () => {
           title="veCRV"
           data={
             <MetricsColumnData>
-              {formatNumber(amount(userVeCrv?.veCrv), { abbreviate: false }) ?? '-'}
+              {formatNumber(amount(userVeCrv?.veCrv), { abbreviate: false, fallback: '-' })}
             </MetricsColumnData>
           }
         />
@@ -60,7 +60,7 @@ export const GaugeVotingStats = () => {
           title="veCRV used"
           data={
             <MetricsColumnData>
-              {formatNumber(userGaugeWeightVotes?.veCrvUsed, { abbreviate: false }) ?? '-'}
+              {formatNumber(userGaugeWeightVotes?.veCrvUsed, { abbreviate: false, fallback: '-' })}
             </MetricsColumnData>
           }
         />

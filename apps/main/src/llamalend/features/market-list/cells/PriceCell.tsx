@@ -119,7 +119,7 @@ const AssetValue = ({
   <WithSkeleton loading={isValueLoading}>
     <Tooltip title={tooltipTitle} body={tooltipBody}>
       <Stack direction="row" spacing={Spacing.xs} alignItems="center">
-        <Typography variant="tableCellMBold">{formatNumber(value, { abbreviate: true }) ?? '-'}</Typography>
+        <Typography variant="tableCellMBold">{formatNumber(value, { abbreviate: true, fallback: '-' })}</Typography>
         <TokenIcon blockchainId={asset.chain} address={asset.address} size="mui-md" />
       </Stack>
     </Tooltip>
@@ -135,9 +135,9 @@ const AssetUsdValue = ({
   isPriceLoading: boolean
 }) => (
   <WithSkeleton loading={isPriceLoading}>
-    <Tooltip title={formatNumber(usdValue, { decimals: 5, unit: 'dollar', abbreviate: false }) ?? '-'}>
+    <Tooltip title={formatNumber(usdValue, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
       <Typography variant="bodySRegular" color="text.secondary">
-        {formatNumber(usdValue, { unit: 'dollar', abbreviate: true }) ?? '-'}
+        {formatNumber(usdValue, { unit: 'dollar', abbreviate: true, fallback: '-' })}
       </Typography>
     </Tooltip>
   </WithSkeleton>

@@ -30,7 +30,8 @@ export const RouteToken = ({
       <Box grid className="right">
         <strong>{format(value || undefined)}</strong>
         <AvgPrice>
-          {parsedAvgPrice && `Avg. price: ${formatNumber(amount(parsedAvgPrice), { abbreviate: false }) ?? '-'}`}{' '}
+          {parsedAvgPrice &&
+            `Avg. price: ${formatNumber(amount(parsedAvgPrice), { abbreviate: false, fallback: '-' })}`}{' '}
         </AvgPrice>
       </Box>
     </Wrapper>

@@ -57,7 +57,7 @@ export const InputComp = ({
               <Loader isLightBg skeleton={[36, 14]} />
             ) : (
               <WalletBalance>
-                {`${formatNumber(amount(walletBalance), { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false }) ?? '-'} ${walletBalanceSymbol}`}
+                {`${formatNumber(amount(walletBalance), { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false, fallback: '-' })} ${walletBalanceSymbol}`}
               </WalletBalance>
             )}
           </BalancesWrapper>

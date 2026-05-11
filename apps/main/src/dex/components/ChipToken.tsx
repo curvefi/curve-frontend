@@ -46,7 +46,7 @@ interface ChipTokenProps extends AriaButtonProps {
 export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const chainId = useChainId()
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
-  const parsedUsdRate = formatNumber(usdRate, { unit: 'dollar', abbreviate: false }) ?? '-'
+  const parsedUsdRate = formatNumber(usdRate, { unit: 'dollar', abbreviate: false, fallback: '-' })
 
   const handleMouseEnter = useCallback(() => {
     if (usdRate == null) {

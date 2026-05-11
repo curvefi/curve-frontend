@@ -31,7 +31,7 @@ const Currency = ({
   <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={1} component="span" display="inline-flex">
     <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
     <span>
-      {formatNumber(balance, { unit: isUsd(symbol) ? 'dollar' : undefined, abbreviate: true }) ?? '-'}
+      {formatNumber(balance, { unit: isUsd(symbol) ? 'dollar' : undefined, abbreviate: true, fallback: '-' })}
       {!isUsd(symbol) && ` ${symbol}`}
     </span>
   </Stack>

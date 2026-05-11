@@ -18,7 +18,7 @@ export const GaugeVotingBarChartCustomTooltip = ({ active, payload }: TooltipPro
           <TooltipColumn>
             <TooltipDataTitle>{t`User veCRV`}</TooltipDataTitle>
             <TooltipData>
-              {formatNumber(amount(payload[0].payload.userVeCrv), { abbreviate: true }) ?? '-'} veCRV
+              {formatNumber(amount(payload[0].payload.userVeCrv), { abbreviate: true, fallback: '-' })} veCRV
             </TooltipData>
           </TooltipColumn>
         </Box>

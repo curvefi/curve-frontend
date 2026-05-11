@@ -33,22 +33,22 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: Mar
     <>
       <ActionInfo
         label={t`Base price`}
-        value={formatNumber(amount(basePrice), { abbreviate: false }) ?? '-'}
-        valueTooltip={formatNumber(amount(basePrice), { decimals: 5, abbreviate: false }) ?? '-'}
+        value={formatNumber(amount(basePrice), { abbreviate: false, fallback: '-' })}
+        valueTooltip={formatNumber(amount(basePrice), { decimals: 5, abbreviate: false, fallback: '-' })}
         loading={isLoadingBasePrice || !marketId}
         error={errorBasePrice}
       />
       <ActionInfo
         label={t`Oracle price`}
-        value={formatNumber(oraclePrice, { abbreviate: false }) ?? '-'}
-        valueTooltip={formatNumber(oraclePrice, { decimals: 5, abbreviate: false }) ?? '-'}
+        value={formatNumber(oraclePrice, { abbreviate: false, fallback: '-' })}
+        valueTooltip={formatNumber(oraclePrice, { decimals: 5, abbreviate: false, fallback: '-' })}
         loading={isLoadingOraclePrice || !marketId}
         error={errorOraclePrice}
       />
       {enablePricePerShare && (
         <ActionInfo
           label={t`Price per share`}
-          value={formatNumber(amount(pricePerShare), { decimals: 5, abbreviate: false }) ?? '-'}
+          value={formatNumber(amount(pricePerShare), { decimals: 5, abbreviate: false, fallback: '-' })}
           loading={isLoadingPricePerShare || !marketId}
           error={errorPricePerShare}
         />

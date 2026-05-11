@@ -38,11 +38,11 @@ export const DetailInfoTradeRoutes = ({
             <WithWrapper shouldWrap={isMultiRoutes} Wrapper={Stack} width="100%">
               {parsedRoutes.map((route, i) => {
                 const from =
-                  !i && input && `${formatNumber(amount(input), { abbreviate: false }) ?? '-'} ${inputSymbol}`
+                  !i && input && `${formatNumber(amount(input), { abbreviate: false, fallback: '-' })} ${inputSymbol}`
                 const to =
                   i === parsedRoutes.length - 1 &&
                   output &&
-                  `receive ${formatNumber(amount(output), { abbreviate: false }) ?? '-'} ${outputSymbol}`
+                  `receive ${formatNumber(amount(output), { abbreviate: false, fallback: '-' })} ${outputSymbol}`
                 return (
                   <Stack key={route} direction="row" justifyContent="space-between" title={route}>
                     <Typography

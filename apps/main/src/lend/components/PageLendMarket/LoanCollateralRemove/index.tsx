@@ -235,9 +235,9 @@ export const LoanCollateralRemove = ({
         isError={!!formValues.collateralError}
         message={
           formValues.collateralError === 'too-much'
-            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.collateral), { abbreviate: false }) ?? '-'}`
+            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.collateral), { abbreviate: false, fallback: '-' })}`
             : formValues.collateralError === 'too-much-max'
-              ? t`Amount > max removable ${formatNumber(amount(maxRemovable), { abbreviate: false }) ?? '-'}`
+              ? t`Amount > max removable ${formatNumber(amount(maxRemovable), { abbreviate: false, fallback: '-' })}`
               : undefined
         }
         disabled={disabled}

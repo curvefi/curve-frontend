@@ -53,12 +53,19 @@ export function WarningModal({
   const handleSlippageChange = (isSlippageConfirmed: boolean) => {
     setConfirmed(isSlippageConfirmed)
   }
-  const formattedToAmount = formatNumber(amount(props?.toAmount), { abbreviate: false }) ?? '-'
-  const formattedExchangeRate =
-    formatNumber(amount(props?.exchangeRate), { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false }) ??
-    '-'
-  const formattedValue =
-    formatNumber(amount(props?.value), { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false }) ?? '-'
+  const formattedToAmount = formatNumber(amount(props?.toAmount), { abbreviate: false, fallback: '-' })
+  const formattedExchangeRate = formatNumber(amount(props?.exchangeRate), {
+    maximumFractionDigits: 4,
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+  })
+  const formattedValue = formatNumber(amount(props?.value), {
+    maximumFractionDigits: 4,
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+  })
 
   return (
     <>

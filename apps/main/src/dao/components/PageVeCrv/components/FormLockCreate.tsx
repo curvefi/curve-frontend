@@ -113,7 +113,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
         const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
-        const notifyMessage = t`Please confirm locking ${formatNumber(amount(formValues.lockedAmt), { abbreviate: false }) ?? '-'} CRV until ${localUtcDate}.`
+        const notifyMessage = t`Please confirm locking ${formatNumber(amount(formValues.lockedAmt), { abbreviate: false, fallback: '-' })} CRV until ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
 

@@ -29,6 +29,7 @@ export const DetailInfoPriceImpact = ({
       ...getFractionDigitsOptions(priceImpact, 5),
       unit: 'percentage',
       abbreviate: false,
-    }) ?? '-'}
+      fallback: '-',
+    })}
   </DetailInfo>
 )

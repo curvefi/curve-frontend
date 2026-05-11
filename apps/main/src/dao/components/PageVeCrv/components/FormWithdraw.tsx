@@ -45,12 +45,12 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawTxSuccess = withdrawLockedCrvStatus.transactionState === 'SUCCESS'
 
   const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas)
-  const valueGas =
-    formatNumber(estGasCostUsd, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-      abbreviate: false,
-    }) ?? '-'
+  const valueGas = formatNumber(estGasCostUsd, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+    abbreviate: false,
+    fallback: '-',
+  })
 
   useEffect(() => {
     if (withdrawTxSuccess) {
@@ -70,7 +70,10 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>
           <RowParagraph>
-            {formatNumber(amount(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount), { abbreviate: false }) ?? '-'}
+            {formatNumber(amount(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount), {
+              abbreviate: false,
+              fallback: '-',
+            })}
           </RowParagraph>
         </Box>
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">

@@ -10,6 +10,6 @@ export const DetailInfoLeverageAvgPrice = ({
   loading: boolean
 }) => (
   <DetailInfo label={t`Expected avg. price:`} loading={loading} loadingSkeleton={[60, 20]}>
-    <strong>{formatNumber(amount(avgPrice), { abbreviate: false }) ?? '-'}</strong>
+    <strong>{formatNumber(amount(avgPrice), { abbreviate: false, fallback: '-' })}</strong>
   </DetailInfo>
 )

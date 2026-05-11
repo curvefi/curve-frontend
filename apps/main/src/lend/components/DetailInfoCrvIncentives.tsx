@@ -108,7 +108,7 @@ function _getDataApr(
   lpTokenAmount: string,
 ) {
   const resp = {
-    aprCurr: formatNumber(amount(currApr), { unit: 'percentage', abbreviate: false }) ?? '-',
+    aprCurr: formatNumber(amount(currApr), { unit: 'percentage', abbreviate: false, fallback: '-' }),
     aprNew: '',
     ratio: 0,
   }

@@ -55,7 +55,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
     return formatCryptoA(a, FXSWAP)
   }
   const formatADisplay = (a: number | string | undefined) =>
-    formatNumber(amount(convertA(a)), { abbreviate: false }) ?? '-'
+    formatNumber(amount(convertA(a)), { abbreviate: false, fallback: '-' })
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -319,7 +319,11 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                   <StatsContainer key={p}>
                     <StatsSymbol>{symbol}:</StatsSymbol>
                     <StatsData>
-                      {formatNumber(amount(p), { ...getFractionDigitsOptions(p, 10), abbreviate: false }) ?? '-'}
+                      {formatNumber(amount(p), {
+                        ...getFractionDigitsOptions(p, 10),
+                        abbreviate: false,
+                        fallback: '-',
+                      })}
                     </StatsData>
                   </StatsContainer>
                 )
@@ -338,7 +342,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                 <StatsContainer key={p}>
                   <StatsSymbol>{symbol}:</StatsSymbol>
                   <StatsData>
-                    {formatNumber(amount(p), { ...getFractionDigitsOptions(p, 10), abbreviate: false }) ?? '-'}
+                    {formatNumber(amount(p), { ...getFractionDigitsOptions(p, 10), abbreviate: false, fallback: '-' })}
                   </StatsData>
                 </StatsContainer>
               )

@@ -103,13 +103,12 @@ export const DetailInfoHealth = ({
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
-      return (
-        formatNumber(toAmount(healthMode.percent), {
-          maximumFractionDigits: 2,
-          unit: 'percentage',
-          abbreviate: false,
-        }) ?? '-'
-      )
+      return formatNumber(toAmount(healthMode.percent), {
+        maximumFractionDigits: 2,
+        unit: 'percentage',
+        abbreviate: false,
+        fallback: '-',
+      })
     }
     return ''
   }, [healthMode.percent])

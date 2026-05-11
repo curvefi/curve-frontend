@@ -24,7 +24,7 @@ export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameT
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge Weight`}</TooltipDataTitle>
             {gauge_weight ? (
-              <TooltipData>{formatNumber(amount(gauge_weight), { abbreviate: true }) ?? '-'}</TooltipData>
+              <TooltipData>{formatNumber(amount(gauge_weight), { abbreviate: true, fallback: '-' })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -32,7 +32,9 @@ export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameT
           <TooltipColumn>
             <TooltipDataTitle>{t`Relative Gauge Weight`}</TooltipDataTitle>
             {gauge_relative_weight ? (
-              <TooltipData>{formatNumber(amount(gauge_relative_weight), { abbreviate: true }) ?? '-'}</TooltipData>
+              <TooltipData>
+                {formatNumber(amount(gauge_relative_weight), { abbreviate: true, fallback: '-' })}
+              </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -40,7 +42,7 @@ export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameT
           <TooltipColumn>
             <TooltipDataTitle>{t`Emissions`}</TooltipDataTitle>
             {emissions ? (
-              <TooltipData>{formatNumber(amount(emissions), { abbreviate: true }) ?? '-'}</TooltipData>
+              <TooltipData>{formatNumber(amount(emissions), { abbreviate: true, fallback: '-' })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

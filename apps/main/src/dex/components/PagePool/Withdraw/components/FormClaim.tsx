@@ -194,7 +194,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           <>
             {haveClaimableCrv && (
               <Stats isOneLine isBorderBottom={formValues.claimableRewards.length > 0} label="CRV">
-                {formatNumber(toAmount(formValues.claimableCrv), { abbreviate: false }) ?? '-'}
+                {formatNumber(toAmount(formValues.claimableCrv), { abbreviate: false, fallback: '-' })}
               </Stats>
             )}
 
@@ -205,7 +205,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
                 key={token}
                 label={symbol}
               >
-                {formatNumber(toAmount(amount), { abbreviate: false }) ?? '-'}
+                {formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })}
               </Stats>
             ))}
           </>

@@ -7,7 +7,12 @@ export function getStepStatus(isComplete: boolean, isInProgress: boolean, isVali
 }
 
 export function parseHealthPercent(healthPercent: string) {
-  return formatNumber(amount(healthPercent), { maximumFractionDigits: 2, unit: 'percentage', abbreviate: false }) ?? '-'
+  return formatNumber(amount(healthPercent), {
+    maximumFractionDigits: 2,
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+  })
 }
 
 export function getTokenName(llamma: Llamma | null | undefined) {

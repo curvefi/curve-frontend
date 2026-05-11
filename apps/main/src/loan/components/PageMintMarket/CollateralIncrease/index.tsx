@@ -244,7 +244,7 @@ export const CollateralIncrease = ({
             testId="inpCollateral"
             isError={!!formValues.collateralError}
             {...(formValues.collateralError === 'too-much' && {
-              message: t`Collateral is greater than ${formatNumber(amount(userWalletBalances.collateral), { abbreviate: false }) ?? '-'}`,
+              message: t`Collateral is greater than ${formatNumber(amount(userWalletBalances.collateral), { abbreviate: false, fallback: '-' })}`,
             })}
             disabled={disabled}
             inputBalanceUsd={decimal(

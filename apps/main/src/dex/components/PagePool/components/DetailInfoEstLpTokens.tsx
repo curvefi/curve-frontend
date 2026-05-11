@@ -17,7 +17,7 @@ export const DetailInfoEstLpTokens = ({
 }) => {
   const { referenceAsset } = poolDataCacheOrApi.pool
   const showTooltip = referenceAsset !== 'CRYPTO'
-  const parsedVirtualPrice = `${formatNumber(amount(formLpTokenExpected.virtualPrice), { abbreviate: false }) ?? '-'} ${referenceAsset}`
+  const parsedVirtualPrice = `${formatNumber(amount(formLpTokenExpected.virtualPrice), { abbreviate: false, fallback: '-' })} ${referenceAsset}`
 
   // min lp tokens received including slippage
   const lpTokensExpectedWithSlippage = useMemo(() => {
@@ -45,7 +45,7 @@ export const DetailInfoEstLpTokens = ({
         )
       }
     >
-      {formatNumber(amount(lpTokensExpectedWithSlippage), { abbreviate: false }) ?? '-'}
+      {formatNumber(amount(lpTokensExpectedWithSlippage), { abbreviate: false, fallback: '-' })}
     </DetailInfo>
   )
 }

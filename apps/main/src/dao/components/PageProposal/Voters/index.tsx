@@ -37,7 +37,9 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
         <Box>
           <SubTitle>{t`Voters`}</SubTitle>
           <Box>
-            <Data className="align-right">{formatNumber(pricesProposal?.voteCount, { abbreviate: true }) ?? '-'}</Data>
+            <Data className="align-right">
+              {formatNumber(pricesProposal?.voteCount, { abbreviate: true, fallback: '-' })}
+            </Data>
           </Box>
         </Box>
       </TotalWrapper>
