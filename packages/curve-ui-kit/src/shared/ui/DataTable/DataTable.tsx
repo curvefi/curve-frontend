@@ -92,7 +92,7 @@ export const DataTable = <T extends TableItem>({
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
-} & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
+} & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
@@ -117,6 +117,7 @@ export const DataTable = <T extends TableItem>({
     }),
     marginBlock: Sizing.sm,
   })
+  const shouldStickLastRowToTop = !disableStickyHeader && !hideHeader
   const showFooter = showPagination || showViewAllButton || footerRow
 
   return (
@@ -155,7 +156,8 @@ export const DataTable = <T extends TableItem>({
               <DataRow<T>
                 key={row.id}
                 row={row}
-                isLast={!disableStickyHeader && !hideHeader && index === visibleRows.length - 1}
+                isLastRow={index === visibleRows.length - 1}
+                shouldStickLastRowToTop={shouldStickLastRowToTop}
                 shouldStickFirstColumn={shouldStickFirstColumn}
                 {...rowProps}
               />
