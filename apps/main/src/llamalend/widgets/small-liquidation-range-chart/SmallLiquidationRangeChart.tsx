@@ -94,7 +94,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
           z2: 1,
           itemStyle: { color: chartCurrentRangeColor },
           label: {
-            show: true,
+            show: !hasNewRange,
             position: 'inside',
             formatter: RANGE_LABEL,
             color: chartRangeLabelColor,
