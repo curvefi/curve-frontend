@@ -5,6 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
+export type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 export type { Wallet } from '@ui-kit/features/connect-wallet'
 export type { Provider } from '@ui-kit/lib/ethers'
 
@@ -13,7 +14,6 @@ export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 export type EstimatedGas = number | number[] | null
-export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
 export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string }
@@ -78,16 +78,12 @@ export type ExpectedBorrowed = {
 export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   userAddress: Address | undefined
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null
-  market: OneWayMarketTemplate | undefined
-}
-export type LiqRange = {
-  prices: string[]
-  bands: [number, number]
+  market: LendMarketTemplate | undefined
 }
 export type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]

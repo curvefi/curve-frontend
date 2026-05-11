@@ -15,7 +15,7 @@ import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, FormError, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, FormError, type MarketUrlParams, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
@@ -41,7 +41,7 @@ const { Spacing } = SizesAndSpaces
 
 export const LoanRepay = ({
   rChainId,
-  rOwmId,
+  marketId,
   isLoaded,
   api,
   market,
@@ -101,7 +101,7 @@ export const LoanRepay = ({
     async (
       payloadActiveKey: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formValues: FormValues,
       maxSlippage: string,
     ) => {
@@ -135,7 +135,7 @@ export const LoanRepay = ({
     (
       payloadActiveKey: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       healthMode: HealthMode,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
@@ -477,7 +477,7 @@ export const LoanRepay = ({
       <StyledDetailInfoWrapper>
         <DetailInfo
           rChainId={rChainId}
-          rOwmId={rOwmId}
+          marketId={marketId}
           api={api}
           activeKey={activeKey}
           activeStep={activeStep}

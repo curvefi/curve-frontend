@@ -1,4 +1,3 @@
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { type State, useStore } from '@/lend/store/useStore'
 import { Api } from '@/lend/types/lend.types'
 import { getControllerAddress } from '@/llamalend/llama.utils'
@@ -6,6 +5,7 @@ import { refetchLoanExists } from '@/llamalend/queries/user'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { networks } from '../networks'
+import { invalidateMarketDetails } from './invalidateMarketDetails'
 
 export const refetchUserMarket = async ({
   market,

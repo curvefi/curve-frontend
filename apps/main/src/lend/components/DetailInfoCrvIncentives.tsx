@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { zeroAddress } from 'viem'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useAbiTotalSupply } from '@/lend/hooks/useAbiTotalSupply'
 import { useSupplyTotalApr } from '@/lend/hooks/useSupplyTotalApr'
 import { ChainId } from '@/lend/types/lend.types'
@@ -10,6 +9,7 @@ import { Icon } from '@ui/Icon'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useLendMarket } from '../hooks/useLendMarket'
 
 type Data = {
   label: string
@@ -22,15 +22,15 @@ type Data = {
 
 export const DetailInfoCrvIncentives = ({
   rChainId,
-  rOwmId,
+  marketId,
   lpTokenAmount,
 }: {
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   lpTokenAmount: string
 }) => {
-  const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const gaugeAddress = useOneWayMarket(rChainId, rOwmId).data?.addresses?.gauge
+  const { tooltipValues } = useSupplyTotalApr(rChainId, marketId)
+  const gaugeAddress = useLendMarket(rChainId, marketId).data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
   const isGaugeAddressInvalid = gaugeAddress === zeroAddress
 

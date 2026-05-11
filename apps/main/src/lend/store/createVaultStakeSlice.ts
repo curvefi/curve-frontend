@@ -4,14 +4,14 @@ import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultStake/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultStake/utils'
-import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, ChainId, LendMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -29,12 +29,12 @@ type SliceState = {
 // prettier-ignore
 export type VaultStakeSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepStake(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepStake(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -181,7 +181,7 @@ export const createVaultStake = (
 function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`

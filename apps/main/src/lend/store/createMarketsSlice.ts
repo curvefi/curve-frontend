@@ -1,5 +1,4 @@
 import type { StoreApi } from 'zustand'
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
@@ -11,8 +10,9 @@ import {
   MarketsRewardsMapper,
   MarketsStatsBandsMapper,
   MarketsStatsCapAndAvailableMapper,
-  OneWayMarketTemplate,
+  LendMarketTemplate,
 } from '@/lend/types/lend.types'
+import { invalidateMarketDetails } from '../queries/invalidateMarketDetails'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -32,10 +32,10 @@ const sliceKey = 'markets'
 export type MarketsSlice = {
   [sliceKey]: SliceState & {
     // grouped
-    fetchDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas(key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchAll(api: Api, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchAll(api: Api, OneWayMarketTemplate: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
