@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
-import { TCellRewards } from '@/dex/components/TableCellRewards'
 import { TableCellRewardsOthers } from '@/dex/components/TableCellRewardsOthers'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
@@ -18,6 +17,7 @@ import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { PoolRewardsTooltipContent } from '../../../components/PoolRewardsTooltipContent'
 import { PoolColumnId } from '../columns'
 import type { PoolListItem } from '../types'
 
@@ -48,7 +48,7 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
     address: address as Address,
   })
   const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
-  const { volume, tvl, rewards: rewards } = poolData
+  const { volume, tvl, rewards } = poolData
 
   const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}
   const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
@@ -90,7 +90,7 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
                 valueTooltip={{
                   title: t`Token APR based on current prices of tokens and reward rates`,
                   body: (
-                    <TCellRewards
+                    <PoolRewardsTooltipContent
                       poolData={poolData}
                       isHighlightBase={isSortedBy(table, PoolColumnId.RewardsBase)}
                       isHighlightCrv={isSortedBy(table, PoolColumnId.RewardsCrv)}
