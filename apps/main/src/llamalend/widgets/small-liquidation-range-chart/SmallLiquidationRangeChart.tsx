@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import { useTheme, type Theme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { CHART_LINE_DASH_PATTERNS, CHART_REFERENCE_LINE_WIDTH } from '@ui-kit/shared/ui/Chart/chart.utils'
+import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { getSmallLiquidationRangeChartDomain } from './small-liquidation-range-chart.utils'
@@ -15,7 +15,7 @@ const { FontSize, FontWeight, LineHeight, Spacing } = SizesAndSpaces
 const CHART_LAYOUT = {
   trackHeight: 24,
   axisHeight: 24,
-  rangeBorderGutter: CHART_REFERENCE_LINE_WIDTH,
+  rangeBorderGutter: CHART_LINE_WIDTHS.referenceLine,
   priceMarker: {
     tickHeight: 6,
     labelGap: 6,
@@ -40,7 +40,7 @@ const ORACLE_MARKER_LAYOUT = {
 const CHART_BODY_HEIGHT_PX = CHART_LAYOUT.trackHeight + CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter * 2
 
 const FULL_RANGE_Y_AXIS = [0, 1] as const
-const NEW_RANGE_BORDER_DASH = CHART_LINE_DASH_PATTERNS.average
+const NEW_RANGE_BORDER_DASH = CHART_LINE_DASH_PATTERNS.regular
 
 type RangeMarkArea = [Record<string, unknown>, Record<string, unknown>]
 type LiquidationRange = readonly [Amount, Amount]
@@ -185,7 +185,7 @@ const buildRangeMarkAreas = ({
           color: 'transparent',
           borderColor: colors.newRangeLine,
           borderType: NEW_RANGE_BORDER_DASH,
-          borderWidth: CHART_REFERENCE_LINE_WIDTH,
+          borderWidth: CHART_LINE_WIDTHS.referenceLine,
         },
         label: {
           ...rangeLabelStyle,
