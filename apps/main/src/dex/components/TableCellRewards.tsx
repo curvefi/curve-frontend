@@ -1,8 +1,5 @@
-import { styled } from 'styled-components'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
-import { useLayoutStore } from '@ui-kit/features/layout'
-import { TableCellRewardsBase } from './TableCellRewardsBase'
 import { TableCellRewardsOthers } from './TableCellRewardsOthers'
 
 interface Props {
@@ -13,26 +10,15 @@ interface Props {
   rewardsApy: RewardsApy | undefined
 }
 
-export const TCellRewards = ({ isHighlightBase, isHighlightCrv, isHighlightOther, poolData, rewardsApy }: Props) => {
-  const isMdUp = useLayoutStore(state => state.isMdUp)
-  const isXSmDown = useLayoutStore(state => state.isXSmDown)
+export const PoolRewardsTooltipContent = ({ isHighlightCrv, isHighlightOther, poolData, rewardsApy }: Props) => {
   if (typeof rewardsApy === 'undefined') {
     return <>-</>
   } else {
     return (
-      <div>
-        {!isXSmDown && !isMdUp && (
-          <TableCellRewardsBase base={rewardsApy?.base} isHighlight={isHighlightBase} poolData={poolData} />
-        )}
-        <Wrapper>
-          <PoolRewardsCrv isHighlight={isHighlightCrv} poolData={poolData} rewardsApy={rewardsApy} />
-          <TableCellRewardsOthers isHighlight={isHighlightOther} rewardsApy={rewardsApy} />
-        </Wrapper>
-      </div>
+      <>
+        <PoolRewardsCrv isHighlight={isHighlightCrv} poolData={poolData} rewardsApy={rewardsApy} />
+        <TableCellRewardsOthers isHighlight={isHighlightOther} rewardsApy={rewardsApy} />
+      </>
     )
   }
 }
-
-const Wrapper = styled.div`
-  line-height: 1.2;
-`
