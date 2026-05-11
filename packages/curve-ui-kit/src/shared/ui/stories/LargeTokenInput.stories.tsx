@@ -16,6 +16,7 @@ const TOKEN_OPTIONS: Token[] = [
 
 const DEFAULT_MAX_BALANCE: LargeTokenInputProps['maxBalance'] = {
   balance: '420420.1337',
+  showSlider: true,
   chips: 'range',
 }
 
@@ -83,7 +84,7 @@ const meta: Meta<typeof LargeTokenInput> = {
     },
     maxBalance: {
       control: 'object',
-      description: 'Configuration for max balance behavior, including quick-select chips',
+      description: 'Configuration for max balance behavior, including slider and chips',
     },
     message: {
       control: 'object',
@@ -144,6 +145,23 @@ export const WithoutWalletBalance: Story = {
     docs: {
       description: {
         story: 'Large token input without a wallet balance',
+      },
+    },
+  },
+}
+
+export const WithoutMaxBalanceSlider: Story = {
+  args: {
+    maxBalance: {
+      ...DEFAULT_MAX_BALANCE,
+      showSlider: false,
+    },
+  },
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input without the max balance percentage slider',
       },
     },
   },
