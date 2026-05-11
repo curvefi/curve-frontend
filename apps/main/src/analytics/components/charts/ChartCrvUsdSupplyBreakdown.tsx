@@ -11,6 +11,7 @@ import {
 } from '@/analytics/features/charts'
 import { DAYS, type Period } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
+import { useCrvUsdSupply } from '@/analytics/queries/useCrvUsdSupply.query'
 import { useTheme } from '@mui/material/styles'
 import { fromEntries, mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
@@ -19,7 +20,6 @@ import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { formatNumber } from '@ui-kit/utils'
-import { useCrvUsdSupply } from '../queries/useCrvUsdSupply.query'
 
 /**
  * Hardcoded market names used in the prices API endpoint.
