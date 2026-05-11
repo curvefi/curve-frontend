@@ -110,7 +110,7 @@ export const LendMarketPage = () => {
   const pageProps = {
     params,
     rChainId: chainId,
-    rOwmId: marketId,
+    marketId,
     userAddress,
     isLoaded: !!market,
     api,

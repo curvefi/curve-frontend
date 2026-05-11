@@ -36,7 +36,7 @@ export const Page = () => {
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
 
-  const rOwmId = market?.id ?? ''
+  const marketId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { address: userAddress } = useConnection()
   const [isLoaded, setLoaded] = useState(false)
@@ -50,7 +50,7 @@ export const Page = () => {
   const supplyPositionDetails = useSupplyPositionDetails({
     chainId: rChainId,
     market,
-    marketId: rOwmId,
+    marketId,
     userAddress,
   })
   useEffect(() => {
@@ -82,7 +82,7 @@ export const Page = () => {
   const pageProps: PageContentProps = {
     params,
     rChainId,
-    rOwmId,
+    marketId,
     userAddress,
     isLoaded,
     api,
@@ -96,11 +96,11 @@ export const Page = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <DetailPageLayout
-      formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}
+      formTabs={rChainId && marketId && <VaultTabs {...pageProps} params={params} />}
       header={
         <PageHeader
           chainId={rChainId}
-          marketId={rOwmId}
+          marketId={marketId}
           isLoading={!isHydrated}
           market={market}
           blockchainId={network.id as Chain}

@@ -7,7 +7,7 @@ import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -31,13 +31,13 @@ const sliceKey = 'loanCollateralRemove'
 // prettier-ignore
 export type LoanCollateralRemoveSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxRemovable(api: Api, market: OneWayMarketTemplate): Promise<void>
-    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
-    fetchEstGas(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
-    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean): Promise<void>
+    fetchMaxRemovable(api: Api, market: LendMarketTemplate): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
+    fetchEstGas(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
+    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean): Promise<void>
 
     // step
-    fetchStepDecrease(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepDecrease(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -200,6 +200,6 @@ export const createLoanCollateralRemove = (
   },
 })
 
-function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
+function _getActiveKey(api: Api | null, market: LendMarketTemplate | undefined, collateral: string) {
   return `${_parseActiveKey(api, market)}-${collateral}`
 }

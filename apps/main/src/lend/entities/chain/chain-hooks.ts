@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { networks } from '@/lend/networks'
-import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { ChainId, LendMarketTemplate } from '@/lend/types/lend.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { ChainParams } from '@ui-kit/lib/model/query'
@@ -10,7 +10,7 @@ const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
   const { data: marketNames, isSuccess, error } = useOneWayMarketNames({ chainId, enableLLv2: useLLv2() })
   const { llamaApi: api, isHydrated } = useCurve()
   const apiChainId = api?.chainId
-  const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
+  const data: Record<string, LendMarketTemplate> | undefined = useMemo(
     () =>
       // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
       marketNames && api && chainId == apiChainId && isHydrated

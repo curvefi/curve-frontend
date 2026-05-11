@@ -19,7 +19,7 @@ type FormType = 'create-loan' | 'collateral-decrease' | ''
 
 export const DetailInfoHealth = ({
   rChainId,
-  rOwmId,
+  marketId,
   amount,
   bands,
   formType,
@@ -32,7 +32,7 @@ export const DetailInfoHealth = ({
   loading,
   userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'marketId' | 'userActiveKey'> & {
   amount: string
   bands: [number, number]
   formType: FormType
@@ -45,8 +45,8 @@ export const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
-  const market = useOneWayMarket(rChainId, rOwmId).data
-  const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
+  const market = useOneWayMarket(rChainId, marketId).data
+  const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices?.oraclePriceBand)
   const {
     healthFull: healthFullCurrent,
     healthNotFull: healthNotFullCurrent,

@@ -8,7 +8,7 @@ import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, ChainId, LendMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
@@ -29,11 +29,11 @@ type SliceState = {
 // prettier-ignore
 export type VaultUnstakeSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepUnstake(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepUnstake(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -154,7 +154,7 @@ export const createVaultUnstake = (
 function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`

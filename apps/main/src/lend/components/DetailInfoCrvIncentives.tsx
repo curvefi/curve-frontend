@@ -22,15 +22,15 @@ type Data = {
 
 export const DetailInfoCrvIncentives = ({
   rChainId,
-  rOwmId,
+  marketId,
   lpTokenAmount,
 }: {
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   lpTokenAmount: string
 }) => {
-  const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const gaugeAddress = useOneWayMarket(rChainId, rOwmId).data?.addresses?.gauge
+  const { tooltipValues } = useSupplyTotalApr(rChainId, marketId)
+  const gaugeAddress = useOneWayMarket(rChainId, marketId).data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
   const isGaugeAddressInvalid = gaugeAddress === zeroAddress
 

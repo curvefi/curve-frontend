@@ -8,7 +8,7 @@ import { refetchUserMarket } from '@/lend/entities/invalidate'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, ChainId, FutureRates, LendMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
@@ -31,14 +31,14 @@ type SliceState = {
 // prettier-ignore
 export type VaultDepositMintSlice = {
   [sliceKey]: SliceState & {
-    fetchMax(rChainId: ChainId, formType: FormType, market: OneWayMarketTemplate): Promise<void>
-    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
-    fetchDetails(activeKey: string, formType: FormType, market: OneWayMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchMax(rChainId: ChainId, formType: FormType, market: LendMarketTemplate): Promise<void>
+    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
+    fetchDetails(activeKey: string, formType: FormType, market: LendMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepDepositMint(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepDepositMint(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -221,12 +221,12 @@ function _isDeposit(formType: FormType) {
 function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
 
-export function _getMaxActiveKey(rChainId: ChainId, formType: string | null, market: OneWayMarketTemplate | undefined) {
+export function _getMaxActiveKey(rChainId: ChainId, formType: string | null, market: LendMarketTemplate | undefined) {
   return `${rChainId}-${formType}-${market?.id ?? ''}`
 }

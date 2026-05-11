@@ -15,7 +15,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -26,7 +26,7 @@ import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
+export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralAdd.activeKey)
@@ -55,7 +55,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
   )
 
   const handleBtnClickAdd = useCallback(
-    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
+    async (payloadActiveKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues) => {
       const { chainId } = api
 
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
@@ -76,7 +76,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
     (
       payloadActiveKey: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
@@ -195,7 +195,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
         <DetailInfoLiqRange
           isManage
           rChainId={rChainId}
-          rOwmId={rOwmId}
+          marketId={marketId}
           {...detailInfo}
           healthMode={healthMode}
           userActiveKey={userActiveKey}
@@ -203,7 +203,7 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
         <DetailInfoHealth
           isManage
           rChainId={rChainId}
-          rOwmId={rOwmId}
+          marketId={marketId}
           {...detailInfo}
           amount={formValues.collateral}
           formType=""

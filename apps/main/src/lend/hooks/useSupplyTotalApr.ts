@@ -7,15 +7,15 @@ import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-export function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
-  const market = useOneWayMarket(rChainId, rOwmId).data
-  const marketRewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[rOwmId])
-  const marketRatesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[rOwmId])
+export function useSupplyTotalApr(rChainId: ChainId, marketId: string) {
+  const market = useOneWayMarket(rChainId, marketId).data
+  const marketRewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[marketId])
+  const marketRatesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[marketId])
   const {
     data: marketRatesData,
     isError: onChainError,
     isSuccess: onChainSuccess,
-  } = useMarketRates({ chainId: rChainId, marketId: rOwmId })
+  } = useMarketRates({ chainId: rChainId, marketId })
 
   const { gauge } = market?.addresses ?? {}
   const { error: rewardsError } = marketRewardsResp ?? {}

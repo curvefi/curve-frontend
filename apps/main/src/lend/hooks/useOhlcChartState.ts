@@ -24,7 +24,7 @@ type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
-  rOwmId: string
+  marketId: string
   previewPrices: Range<Decimal> | undefined
 }
 
@@ -55,15 +55,15 @@ const useLegacyChartPrices = () => {
     | undefined
 }
 
-export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcChartStateProps) => {
+export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
   const storePreviewPrices = useLegacyChartPrices()
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
-    marketId: rOwmId,
+    marketId,
     userAddress,
   })
-  const market = useOneWayMarket(rChainId, rOwmId).data
+  const market = useOneWayMarket(rChainId, marketId).data
   const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
   const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
   const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
@@ -79,7 +79,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
   const fetchOraclePoolOhlcData = useStore(state => state.ohlcCharts.fetchOraclePoolOhlcData)
   const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
   const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
-  const priceInfo = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
+  const priceInfo = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices ?? null)
 
   const { oraclePrice } = priceInfo ?? {}
 
@@ -146,7 +146,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
     if (market?.addresses.amm) {
       void fetchLlammaOhlcData(
         rChainId,
-        rOwmId,
+        marketId,
         market.addresses.amm,
         chartInterval,
         timeUnit,
@@ -161,13 +161,13 @@ export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcCh
     fetchOraclePoolOhlcData,
     market,
     rChainId,
-    rOwmId,
+    marketId,
     timeUnit,
   ])
 
   // Eagerly reset chart state as soon as the market identity changes, before the market entity resolves.
   // Without this, stale data from the previous market stays visible during the gap between navigation and fetch.
-  useEffect(() => () => resetOhlcState(), [rChainId, rOwmId, resetOhlcState])
+  useEffect(() => () => resetOhlcState(), [rChainId, marketId, resetOhlcState])
 
   // Fetch chart data once the market entity has resolved (addresses are required for the API calls).
   useEffect(() => {

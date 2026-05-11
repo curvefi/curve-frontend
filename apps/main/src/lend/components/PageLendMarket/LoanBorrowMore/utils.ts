@@ -1,6 +1,6 @@
 import { FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanBorrowMore/types'
 import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { LendMarketTemplate } from '@/lend/types/lend.types'
 import { _parseStepTokensList } from '@/lend/utils/helpers'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
@@ -19,7 +19,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 function _getStepTokensStr(
   { userCollateral, userBorrowed }: FormValues,
-  { collateral_token, borrowed_token }: OneWayMarketTemplate,
+  { collateral_token, borrowed_token }: LendMarketTemplate,
 ) {
   const list = []
   const haveUserCollateral = +userCollateral > 0
