@@ -75,6 +75,8 @@ type LiquidationRangeSeriesApi = ISeriesApi<
   LiquidationRangeSeriesOptions
 >
 
+const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
+
 type Props = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
@@ -157,7 +159,7 @@ export const CandleChart = ({
             topLineColor: memoizedColors.rangeLineTop,
             bottomLineColor: memoizedColors.rangeLineBottom,
             lineWidth: 2,
-            lineStyle: LineStyle.Dashed,
+            lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
             showTopLine: false,
             showBottomLine: false,
           },
@@ -174,7 +176,7 @@ export const CandleChart = ({
             topLineColor: memoizedColors.rangeLineFutureTop,
             bottomLineColor: memoizedColors.rangeLineFutureBottom,
             lineWidth: 2,
-            lineStyle: LineStyle.Dashed,
+            lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
             showTopLine: false,
             showBottomLine: false,
           },
@@ -190,7 +192,7 @@ export const CandleChart = ({
           topLineColor: memoizedColors.rangeLineBottom,
           bottomLineColor: memoizedColors.rangeLineBottom,
           lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
+          lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
           showTopLine: true,
           showBottomLine: true,
         },
@@ -423,7 +425,7 @@ export const CandleChart = ({
       if (!chartRef.current) return
       const series = chartRef.current.addCustomSeries(createLiquidationRangeSeries(), {
         lineWidth: 2,
-        lineStyle: LineStyle.LargeDashed,
+        lineStyle: LineStyle.Solid,
       })
       series.applyOptions(getSeriesAppearance('historical').seriesOptions)
       historicalRangeSeriesRefs.current.push(series)
