@@ -12,7 +12,8 @@ export const DebtChangeCell = ({
   <InlineTableCell>
     <Typography variant="tableCellMBold" color={!loanChange ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}>
       {loanChange > 0 ? '+' : ''}
-      {`${formatNumber(loanChange, { abbreviate: false })} ${borrowToken?.symbol}`}
+      {loanChange == 0 ? '-' : formatNumber(loanChange, { abbreviate: false })}{' '}
+      {loanChange !== 0 && borrowToken?.symbol}
     </Typography>
   </InlineTableCell>
 )

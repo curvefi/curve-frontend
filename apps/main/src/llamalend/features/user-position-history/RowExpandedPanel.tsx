@@ -39,8 +39,8 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
             color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
           >
             {loanChange > 0 ? '+' : ''}
-            {formatNumber(loanChange, { abbreviate: false })}{' '}
-            {loanChange != null && loanChange !== 0 && borrowToken?.symbol}
+            {loanChange === 0 ? '-' : formatNumber(loanChange, { abbreviate: false })}{' '}
+            {loanChange !== 0 && borrowToken?.symbol}
           </Typography>
         </Stack>
       </Stack>

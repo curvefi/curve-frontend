@@ -102,7 +102,7 @@ export const PoolParameters = ({
           value={
             typeof staked?.totalStakedPercent === 'string'
               ? staked.totalStakedPercent
-              : formatNumber(staked.totalStakedPercent, { unit: 'percentage', abbreviate: false })
+              : formatNumber(staked?.totalStakedPercent, { unit: 'percentage', abbreviate: false, fallback: '-' })
           }
         />
 
