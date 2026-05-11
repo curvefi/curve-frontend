@@ -47,7 +47,6 @@ export const useForm = <T extends FieldValues = FieldValues>({
 
   return {
     handleSubmit: handleSubmit as UseFormReturn<T>['handleSubmit'],
-    trigger,
     reset: useCallback(
       (valuesToReset: FormUpdates<T>): void => reset({ ...getValues(), ...valuesToReset }),
       [getValues, reset],
@@ -74,7 +73,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
             shouldTouch: !automated,
           }),
         )
-        trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
+        trigger().catch((error: unknown) => console.error('form update validation failed', error))
       },
       [getValues, setValue, trigger],
     ),

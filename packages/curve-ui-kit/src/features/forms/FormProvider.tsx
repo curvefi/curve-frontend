@@ -6,7 +6,6 @@ export type FormProviderProps<T extends FieldValues> = UseFormReturn<T> & { chil
 export const FormProvider = <T extends FieldValues>({
   children,
   handleSubmit,
-  trigger,
   reset,
   watchValues,
   watchValue,
@@ -16,15 +15,32 @@ export const FormProvider = <T extends FieldValues>({
   setError,
   clearErrors,
   isTouched,
-  formState,
-}: FormProviderProps<T>) => (
-  <FormContext.Provider
-    value={useMemo(
-      /** memoize the provider value to prevent unnecessary re-renders of consuming components */
-      () =>
-        ({
+  formState: { errors, visibleErrors, isValid, isSubmitting, isDirty, dirtyFields, touchedFields },
+}: FormProviderProps<T>) => {
+  const formState = useMemo(
+    () => ({ errors, visibleErrors, isValid, isSubmitting, isDirty, dirtyFields, touchedFields }),
+    [errors, visibleErrors, isValid, isSubmitting, isDirty, dirtyFields, touchedFields],
+  )
+  return (
+    <FormContext.Provider
+      value={useMemo(
+        /** memoize the provider value to prevent unnecessary re-renders of consuming components */
+        () =>
+          ({
+            handleSubmit,
+            reset,
+            watchValues,
+            watchValue,
+            getValues,
+            getValue,
+            update,
+            setError,
+            clearErrors,
+            isTouched,
+            formState,
+          }) as UseFormReturn,
+        [
           handleSubmit,
-          trigger,
           reset,
           watchValues,
           watchValue,
@@ -35,23 +51,10 @@ export const FormProvider = <T extends FieldValues>({
           clearErrors,
           isTouched,
           formState,
-        }) as UseFormReturn,
-      [
-        handleSubmit,
-        trigger,
-        reset,
-        watchValues,
-        watchValue,
-        getValues,
-        getValue,
-        update,
-        setError,
-        clearErrors,
-        isTouched,
-        formState,
-      ],
-    )}
-  >
-    {children}
-  </FormContext.Provider>
-)
+        ],
+      )}
+    >
+      {children}
+    </FormContext.Provider>
+  )
+}
