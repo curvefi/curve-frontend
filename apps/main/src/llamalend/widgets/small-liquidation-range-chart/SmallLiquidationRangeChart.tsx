@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { getSmallLiquidationRangeChartDomain } from './small-liquidation-range-chart.utils'
 
-const { FontSize, FontWeight, LineHeight } = SizesAndSpaces
+const { FontSize, FontWeight, LineHeight, Spacing } = SizesAndSpaces
 
 const CHART_LAYOUT = {
   trackHeight: 24,
@@ -32,8 +32,7 @@ const ORACLE_MARKER_LAYOUT = {
   arrow: ORACLE_MARKER_ARROW,
   label: {
     height: CHART_LAYOUT.trackHeight - ORACLE_MARKER_ARROW.height,
-    minWidth: 64,
-    horizontalPadding: 4,
+    horizontalPadding: Spacing.xs.desktop,
     estimatedCharacterWidthRatio: 0.58,
   },
 } as const
@@ -82,18 +81,18 @@ const RANGE_LABEL = t`LR`
 const toRenderableRange = (range: LiquidationRange | undefined): RenderableLiquidationRange | undefined =>
   range && [Number(range[0]), Number(range[1])]
 
-const toEChartsPixelValue = (value: number | string) => {
+const toEChartsPixelValue = (value: number | string, htmlFontSize: number) => {
   if (typeof value === 'number') return value
 
   const numericValue = Number.parseFloat(value)
-  return value.endsWith('rem') ? numericValue * 16 : numericValue
+  return value.endsWith('rem') ? numericValue * htmlFontSize : numericValue
 }
 
 const getBodyXsRegularChartTextStyle = (theme: Theme): ChartTextStyle => ({
   fontFamily: theme.typography.bodyXsRegular.fontFamily as string,
-  fontSize: toEChartsPixelValue(FontSize.xs.desktop),
+  fontSize: toEChartsPixelValue(FontSize.xs.desktop, theme.typography.htmlFontSize),
   fontWeight: (theme.typography.bodyXsRegular.fontWeight as string | number | undefined) ?? FontWeight.Medium,
-  lineHeight: toEChartsPixelValue(LineHeight.xs.desktop),
+  lineHeight: toEChartsPixelValue(LineHeight.xs.desktop, theme.typography.htmlFontSize),
 })
 
 const getChartColors = (theme: Theme): ChartColors => {
@@ -203,19 +202,26 @@ const buildRangeMarkAreas = ({
   return markAreas
 }
 
-const getOracleMarkerLabelWidth = (text: string, textStyle: ChartTextStyle) => {
+const getOracleMarkerLabelWidth = ({
+  htmlFontSize,
+  text,
+  textStyle,
+}: {
+  htmlFontSize: number
+  text: string
+  textStyle: ChartTextStyle
+}) => {
   // Canvas text measurement is unavailable in ECharts renderItem, so use the common average glyph width estimate.
   const estimatedTextWidth = text.length * textStyle.fontSize * ORACLE_MARKER_LAYOUT.label.estimatedCharacterWidthRatio
+  const horizontalPadding = toEChartsPixelValue(ORACLE_MARKER_LAYOUT.label.horizontalPadding, htmlFontSize)
 
-  return Math.max(
-    ORACLE_MARKER_LAYOUT.label.minWidth,
-    estimatedTextWidth + ORACLE_MARKER_LAYOUT.label.horizontalPadding * 2,
-  )
+  return estimatedTextWidth + horizontalPadding * 2
 }
 
 const getOracleMarkerGeometry = ({
   chartLeft,
   chartWidth,
+  htmlFontSize,
   markerX,
   text,
   textStyle,
@@ -223,12 +229,13 @@ const getOracleMarkerGeometry = ({
 }: {
   chartLeft: number
   chartWidth: number
+  htmlFontSize: number
   markerX: number
   text: string
   textStyle: ChartTextStyle
   trackTopY: number
 }) => {
-  const labelWidth = getOracleMarkerLabelWidth(text, textStyle)
+  const labelWidth = getOracleMarkerLabelWidth({ htmlFontSize, text, textStyle })
   const labelLeft = Math.min(Math.max(markerX - labelWidth / 2, chartLeft), chartLeft + chartWidth - labelWidth)
   const labelTop = trackTopY
 
@@ -246,11 +253,13 @@ const getOracleMarkerGeometry = ({
 const buildOracleMarkerSeries = ({
   colors,
   formattedOraclePrice,
+  htmlFontSize,
   oraclePrice,
   textStyle,
 }: {
   colors: ChartColors
   formattedOraclePrice: string
+  htmlFontSize: number
   oraclePrice: number
   textStyle: ChartTextStyle
 }) => ({
@@ -264,6 +273,7 @@ const buildOracleMarkerSeries = ({
     const geometry = getOracleMarkerGeometry({
       chartLeft: params.coordSys?.x ?? 0,
       chartWidth: params.coordSys?.width ?? 0,
+      htmlFontSize,
       markerX,
       text: formattedOraclePrice,
       textStyle,
@@ -422,6 +432,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
               buildOracleMarkerSeries({
                 colors,
                 formattedOraclePrice,
+                htmlFontSize: theme.typography.htmlFontSize,
                 oraclePrice: parsedOraclePrice,
                 textStyle: chartTextStyle,
               }),
@@ -438,6 +449,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       parsedOraclePrice,
       rangeMarkAreas,
       seriesData,
+      theme.typography.htmlFontSize,
       xAxisDomain,
     ],
   )
