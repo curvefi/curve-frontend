@@ -66,7 +66,8 @@ export const DetailPageLayout = ({
   const isMobile = useIsMobile()
   // header ref needed to compute the top position of the sticky forms
   const headerRef = useRef<HTMLDivElement>(null)
-  const [, pageHeaderHeight = 0] = useResizeObserver(headerRef) ?? []
+  // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
+  const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 }) ?? []
 
   const headerStack = header && (
     <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>
