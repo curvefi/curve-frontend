@@ -32,6 +32,23 @@ const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
 
+/**
+ * Wagmi connectors can expose one rDNS value or multiple aliases.
+ * EIP-6963 injected connectors use the wallet rDNS as their id, while manual connectors can use a custom id.
+ */
+const getConnectorRdnsValues = (connector: Connector) =>
+  typeof connector.rdns === 'string' ? [connector.rdns] : (connector.rdns ?? [])
+
+// EIP-6963 duplicates appear first after reversing, so keep the later manual connector.
+const isLastMatchingWalletConnector = (connector: Connector, index: number, connectors: Connector[]) =>
+  connectors.findLastIndex(
+    otherConnector =>
+      connector.id === otherConnector.id ||
+      getConnectorRdnsValues(connector).includes(otherConnector.id) ||
+      getConnectorRdnsValues(otherConnector).includes(connector.id) ||
+      getConnectorRdnsValues(connector).some(rdns => getConnectorRdnsValues(otherConnector).includes(rdns)),
+  ) === index
+
 const WalletIcon = ({ connector }: { connector: Connector }) =>
   (Icon =>
     Icon ? (
@@ -126,6 +143,8 @@ export const WagmiConnectModal = () => {
           .toReversed()
           // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
           .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
+          // Remove EIP-6963 dupes if there's already a connector manually added
+          .filter(isLastMatchingWalletConnector)
           .map(connector => (
             <WalletListItem
               key={connector.id}
