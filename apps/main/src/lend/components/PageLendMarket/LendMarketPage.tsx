@@ -78,11 +78,10 @@ function useLegacyFetching({
 }
 
 export const LendMarketPage = () => {
-  const { isHydrated } = useCurve()
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
-  const { llamaApi: api = null, provider } = useCurve()
+  const { isHydrated, llamaApi: api = null, provider } = useCurve()
 
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
