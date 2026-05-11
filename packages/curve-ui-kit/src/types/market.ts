@@ -3,6 +3,11 @@ export enum LlamaMarketType {
   Lend = 'Lend',
 }
 
+export enum LlamaMarketVersion {
+  v1 = 'v1',
+  v2 = 'v2',
+}
+
 export enum MarketRateType {
   Borrow = 'Borrow',
   Supply = 'Supply',

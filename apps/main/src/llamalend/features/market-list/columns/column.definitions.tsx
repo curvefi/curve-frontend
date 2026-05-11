@@ -119,6 +119,7 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
     },
     sortUndefined: 'last',
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor('rates.borrowTotalApr', {
     id: LlamaMarketColumnId.NetBorrowRate,
@@ -160,6 +161,7 @@ export const LLAMA_MARKET_COLUMNS = [
     header: headers[LlamaMarketColumnId.MaxLtv],
     cell: PercentCell,
     meta: { type: 'numeric' },
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: headers[LlamaMarketColumnId.UtilizationPercent],
@@ -209,4 +211,5 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
+  hidden(LlamaMarketColumnId.Version, LlamaMarketColumnId.Version, multiFilterFn),
 ] satisfies LlamaColumn[]
