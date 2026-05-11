@@ -1,3 +1,4 @@
+import type { Hex } from '@primitives/address.utils'
 import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -15,7 +16,7 @@ export const parseAdjacentPool = (pool: Responses.AdjacentPoolResponse): Models.
 })
 
 export const parseTransaction = (transaction: Responses.YBTransaction): Models.YieldBasisTransaction => ({
-  txHash: transaction.tx_hash,
+  txHash: transaction.tx_hash as Hex,
   blockNumber: transaction.block_number,
   timestamp: parseTimestamp(transaction.timestamp),
   volume: transaction.volume,

@@ -1,4 +1,4 @@
-import type { Address } from '@primitives/address.utils'
+import type { Address, Hex } from '@primitives/address.utils'
 import type { Chain } from '..'
 import type { Timestamp } from '../timestamp'
 
@@ -13,7 +13,7 @@ export type AdjacentPool = {
 }
 
 export type YieldBasisTransaction = {
-  txHash: string
+  txHash: Hex
   blockNumber: number
   timestamp: Timestamp
   volume: number
