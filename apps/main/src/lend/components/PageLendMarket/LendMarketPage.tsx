@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
@@ -29,6 +28,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 function useLegacyFetching({
@@ -81,7 +81,7 @@ export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
+  const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
   const { llamaApi: api = null, provider } = useCurve()
 
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
@@ -110,7 +110,7 @@ export const LendMarketPage = () => {
   const pageProps = {
     params,
     rChainId: chainId,
-    rOwmId: marketId,
+    marketId,
     userAddress,
     isLoaded: !!market,
     api,

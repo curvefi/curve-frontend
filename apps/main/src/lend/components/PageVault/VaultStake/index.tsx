@@ -8,7 +8,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -21,7 +21,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal } from '@ui-kit/utils'
 
-export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'stake'
   const isSubscribed = useRef(false)
 
@@ -60,7 +60,7 @@ export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActive
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formValues: FormValues,
     ) => {
       const { chainId } = api
@@ -88,7 +88,7 @@ export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActive
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[],
@@ -162,7 +162,7 @@ export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActive
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
   const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
-  const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, rOwmId, lpTokenAmount: formValues.amount })
+  const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, marketId, lpTokenAmount: formValues.amount })
 
   return (
     <>

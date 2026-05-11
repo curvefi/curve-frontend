@@ -1,16 +1,16 @@
+import { useCurve } from 'curve-ui-kit/src/features/connect-wallet'
+import { useLLv2 } from 'curve-ui-kit/src/hooks/useFeatureFlags'
+import { ChainParams } from 'curve-ui-kit/src/lib/model/query'
 import { useMemo } from 'react'
-import { networks } from '@/lend/networks'
-import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
-import { ChainParams } from '@ui-kit/lib/model/query'
-import { useOneWayMarketNames } from './chain-query'
+import { networks } from '../networks'
+import { useLendMarketNames } from '../queries/lend-market-names.query'
+import { ChainId, LendMarketTemplate } from '../types/lend.types'
 
-const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
-  const { data: marketNames, isSuccess, error } = useOneWayMarketNames({ chainId, enableLLv2: useLLv2() })
+const useLendMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
+  const { data: marketNames, isSuccess, error } = useLendMarketNames({ chainId, enableLLv2: useLLv2() })
   const { llamaApi: api, isHydrated } = useCurve()
   const apiChainId = api?.chainId
-  const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
+  const data: Record<string, LendMarketTemplate> | undefined = useMemo(
     () =>
       // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
       marketNames && api && chainId == apiChainId && isHydrated
@@ -29,8 +29,8 @@ const useOneWayMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
   return { data, isSuccess, error }
 }
 
-export const useOneWayMarket = (chainId: ChainId, marketName: string) => {
-  const { data: markets, isSuccess, ...rest } = useOneWayMarketMapping({ chainId })
+export const useLendMarket = (chainId: ChainId, marketName: string) => {
+  const { data: markets, isSuccess, ...rest } = useLendMarketMapping({ chainId })
   const market = markets?.[marketName]
   return { data: market, isSuccess: isSuccess && !!markets, ...rest }
 }

@@ -13,13 +13,7 @@ import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import {
-  Api,
-  type MarketUrlParams,
-  OneWayMarketTemplate,
-  PageContentProps,
-  UserLoanState,
-} from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams, LendMarketTemplate, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { AlertBox } from '@ui/AlertBox'
 import { InputReadyOnly as InputReadOnly } from '@ui/InputReadOnly'
@@ -36,7 +30,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 export const LoanSelfLiquidation = ({
   rChainId,
-  rOwmId,
+  marketId,
   isLoaded,
   api,
   market,
@@ -73,7 +67,7 @@ export const LoanSelfLiquidation = ({
   const getSteps = useCallback(
     (
       api: Api,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       liquidationAmt: string,
@@ -207,7 +201,7 @@ export const LoanSelfLiquidation = ({
 
       {/* detail info */}
       <div>
-        <DetailInfoRate rChainId={rChainId} rOwmId={rOwmId} isBorrow={true} futureRates={futureRates} />
+        <DetailInfoRate rChainId={rChainId} marketId={marketId} isBorrow={true} futureRates={futureRates} />
         <DetailInfoEstimateGas
           isDivider
           chainId={rChainId}
