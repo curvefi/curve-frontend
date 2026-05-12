@@ -5,8 +5,8 @@ import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { Loader } from '@ui/Loader'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type InputCompProps = {
   walletBalance: string
@@ -57,9 +57,7 @@ export const InputComp = ({
               <Loader isLightBg skeleton={[36, 14]} />
             ) : (
               <WalletBalance>
-                {walletBalance
-                  ? `${formatNumber(walletBalance, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} ${walletBalanceSymbol}`
-                  : '-'}
+                {`${formatNumber(amount(walletBalance), { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false, fallback: '-' })} ${walletBalanceSymbol}`}
               </WalletBalance>
             )}
           </BalancesWrapper>

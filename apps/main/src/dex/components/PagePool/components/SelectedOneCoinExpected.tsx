@@ -7,9 +7,8 @@ import { Spacer } from '@ui/Spacer'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
-import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 
 export const SelectedOneCoinExpected = ({
   amounts,
@@ -63,7 +62,9 @@ export const SelectedOneCoinExpected = ({
               {loading ? (
                 <Loader skeleton={[90, 20]} />
               ) : (
-                <TextEllipsis smMaxWidth="15rem">{formatNumber(amounts[idx]?.value || '0')}</TextEllipsis>
+                <TextEllipsis smMaxWidth="15rem">
+                  {formatNumber(amount(amounts[idx]?.value || 0), { abbreviate: false })}
+                </TextEllipsis>
               )}
             </Radio>
           )

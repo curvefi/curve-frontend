@@ -2,8 +2,9 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { formatNumber, formatDate } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { DistributionsChartTooltip } from './DistributionsChartTooltip'
 
 const { FontSize } = SizesAndSpaces
@@ -44,7 +45,7 @@ export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributi
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
               tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
               axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-              tickFormatter={value => `$${formatNumber(value, { notation: 'compact' })}`}
+              tickFormatter={value => `$${formatNumber(amount(value), { abbreviate: true })}`}
             />
             <Tooltip content={DistributionsChartTooltip} cursor={{ opacity: 0.3 }} />
             <Bar dataKey="weeklyRevenue" label={false} fill={barColor} isAnimationActive={false}>

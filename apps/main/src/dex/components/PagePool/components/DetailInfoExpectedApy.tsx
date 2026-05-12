@@ -6,9 +6,8 @@ import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { weiToEther } from '@ui-kit/utils'
+import { weiToEther, formatNumber } from '@ui-kit/utils'
 
 export const DetailInfoExpectedApy = ({
   crvApr,
@@ -48,9 +47,9 @@ export const DetailInfoExpectedApy = ({
           }
         >
           <StyledBox>
-            {formatNumber(crvApr, { style: 'percent', defaultValue: '-' })}
+            {formatNumber(crvApr, { unit: 'percentage', abbreviate: false })}
             <Icon name="ArrowRight" size={16} className="svg-arrow" />
-            {formatNumber(newCrvApr.apr, { style: 'percent', defaultValue: '-' })}
+            {formatNumber(newCrvApr.apr, { unit: 'percentage', abbreviate: false })}
           </StyledBox>
         </DetailInfo>
       ) : null}

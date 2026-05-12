@@ -8,10 +8,9 @@ import { getEthPath } from '@/dao/utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { InternalLink } from '@ui/Link/InternalLink'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { calculateUserPowerStale } from './utils'
 
@@ -50,12 +49,20 @@ export const GaugeVotingStats = () => {
         <MetricsComp
           loading={userVeCrvLoading}
           title="veCRV"
-          data={<MetricsColumnData>{formatNumber(userVeCrv?.veCrv)}</MetricsColumnData>}
+          data={
+            <MetricsColumnData>
+              {formatNumber(amount(userVeCrv?.veCrv), { abbreviate: false, fallback: '-' })}
+            </MetricsColumnData>
+          }
         />
         <MetricsComp
           loading={userGaugeWeightsLoading}
           title="veCRV used"
-          data={<MetricsColumnData>{formatNumber(userGaugeWeightVotes?.veCrvUsed)}</MetricsColumnData>}
+          data={
+            <MetricsColumnData>
+              {formatNumber(userGaugeWeightVotes?.veCrvUsed, { abbreviate: false, fallback: '-' })}
+            </MetricsColumnData>
+          }
         />
         <ComboBoxSelectGauge title={''} />
       </Box>

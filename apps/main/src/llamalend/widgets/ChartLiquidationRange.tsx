@@ -19,10 +19,10 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { Box as LegacyBox } from '@ui/Box'
 import { Icon } from '@ui/Icon'
-import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber, amount } from '@ui-kit/utils'
 import type { HealthColorKey } from '../llamalend.types'
 
 const { Spacing, Sizing } = SizesAndSpaces
@@ -72,7 +72,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
           <TipTitle>{t`Liquidation range`}</TipTitle>
           <TipContent>
             <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
-            <>{`${formatNumber(cp2)} - ${formatNumber(cp1)}`}</>
+            <>{`${formatNumber(amount(cp2), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(cp1), { abbreviate: false, fallback: '-' })}`}</>
           </TipContent>
         </div>
       )}
@@ -81,13 +81,13 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
           <TipTitle>{t`Liquidation range${currPrices ? ' (new)' : ''}`}</TipTitle>
           <TipContent>
             <TipIcon name="StopFilledAlt" fill={chartHealthColor} size={20} />{' '}
-            {`${formatNumber(np1)} - ${formatNumber(np2)}`}
+            {`${formatNumber(amount(np1), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(np2), { abbreviate: false, fallback: '-' })}`}
           </TipContent>
         </div>
       )}
       <div>
         <TipTitle>{t`Oracle price`}</TipTitle>
-        <TipContent>{formatNumber(oraclePriceValue)}</TipContent>
+        <TipContent>{formatNumber(amount(oraclePriceValue), { abbreviate: false, fallback: '-' })}</TipContent>
       </div>
     </ChartTooltip>
   )
@@ -159,7 +159,9 @@ export const ChartLiquidationRange = ({
               interval="preserveStartEnd"
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
-              tickFormatter={tick => `${formatNumber(tick, { ...(tick > 10 && { decimals: 0 }) })}`}
+              tickFormatter={tick =>
+                `${formatNumber(amount(tick), { ...(tick > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
+              }
               domain={([dataMin, dataMax]) => {
                 // add 0.1 spacing to min and max data
                 const min = Math.floor(dataMin - dataMin * 0.1)
@@ -310,12 +312,12 @@ export const ChartLiquidationRange = ({
                 wrapperStyle={{ color: chartLabelColor }}
                 payload={[
                   {
-                    value: `${t`Oracle Price`} (${formatNumber(oraclePrice, { currency: 'USD' })})`,
+                    value: `${t`Oracle Price`} (${formatNumber(amount(oraclePrice), { unit: 'dollar', abbreviate: false, fallback: '-' })})`,
                     type: 'line',
                     color: chartReferenceLineColor,
                   },
                   {
-                    value: `${t`Liquidation Range`} (${data.map(d => d.new.map(n => formatNumber(n, { currency: 'USD' })).join(' - ')).join(', ')})`,
+                    value: `${t`Liquidation Range`} (${data.map(d => d.new.map(n => formatNumber(n, { unit: 'dollar', abbreviate: false })).join(' - ')).join(', ')})`,
                     type: 'rect',
                     color: chartHealthColor,
                   },

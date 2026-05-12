@@ -17,10 +17,10 @@ import { Spacer } from '@ui/Spacer'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber, scanTokenPath } from '@ui/utils'
+import { scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, formatNumber, amount } from '@ui-kit/utils'
 
 type RewardsProps = {
   chainId: ChainId
@@ -81,12 +81,14 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                   <span>
                     -<IconTooltip>Not available currently</IconTooltip>
                   </span>
-                ) : value === '' ? (
+                ) : String(value).length === 0 ? (
                   ''
                 ) : +value > LARGE_APY ? (
                   <ChipVolatileBaseApy isBold showIcon />
                 ) : (
-                  <strong title={value}>{formatNumber(value, FORMAT_OPTIONS.PERCENT)}</strong>
+                  <strong title={value}>
+                    {formatNumber(amount(value), { unit: 'percentage', abbreviate: false, fallback: '-' })}
+                  </strong>
                 )}
               </BaseApyItem>
             ))}
@@ -127,7 +129,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                     </StyledIconButton>
                   </Box>
                   <Chip isBold isNumber size="md">
-                    {formatNumber(apy, FORMAT_OPTIONS.PERCENT)}{' '}
+                    {formatNumber(apy, { unit: 'percentage', abbreviate: false })}{' '}
                   </Chip>
                 </StyledStyledStats>
               ))}

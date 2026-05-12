@@ -12,11 +12,10 @@ import { Box } from '@ui/Box'
 import { Stats } from '@ui/Stats'
 import { Table } from '@ui/Table'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 
 const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
 
@@ -53,11 +52,11 @@ export const MySharesStats = ({
   const userShareLabel = useMemo(() => {
     if (userLpShare && Number(userLpShare)) {
       if (Number(userLpShare) > 0.01) {
-        return formatNumber(userLpShare, FORMAT_OPTIONS.PERCENT)
+        return formatNumber(amount(userLpShare), { unit: 'percentage', abbreviate: false, fallback: '-' })
       }
-      return `< ${formatNumber(0.01, FORMAT_OPTIONS.PERCENT)}`
+      return `< ${formatNumber(0.01, { unit: 'percentage', abbreviate: false })}`
     }
-    return formatNumber(0, FORMAT_OPTIONS.PERCENT)
+    return formatNumber(0, { unit: 'percentage', abbreviate: false })
   }, [userLpShare])
 
   const withdrawTotal = useMemo(() => {
@@ -83,15 +82,19 @@ export const MySharesStats = ({
         <CrvRewardsTooltipWrapper>
           <tbody>
             <tr>
-              <td className="right">{formatNumber(crvRewards[0], FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">
+                {formatNumber(crvRewards[0], { unit: 'percentage', abbreviate: false, fallback: '-' })}
+              </td>
               <td>&nbsp;({t`min. CRV tAPR %`})</td>
             </tr>
             <tr>
-              <td className="right">x {formatNumber(userBoostApy, FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">
+                x {formatNumber(amount(userBoostApy), { unit: 'percentage', abbreviate: false, fallback: '-' })}
+              </td>
               <td>&nbsp;({t`your boost`})</td>
             </tr>
             <tr>
-              <td className="right">= {formatNumber(userCrvApyValue, FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">= {formatNumber(userCrvApyValue, { unit: 'percentage', abbreviate: false })}</td>
               <td>%</td>
             </tr>
           </tbody>
@@ -118,10 +121,10 @@ export const MySharesStats = ({
       <LPWrapper>
         <StyledStats label={t`LP Tokens`}>
           <div>
-            {t`Staked:`} <strong>{formatNumber(gaugeTokenBalance, { defaultValue: '-' })}</strong>
+            {t`Staked:`} <strong>{formatNumber(gaugeTokenBalance, { abbreviate: false, fallback: '-' })}</strong>
           </div>
           <div>
-            {t`Unstaked:`} <strong>{formatNumber(lpTokenBalance, { defaultValue: '-' })}</strong>
+            {t`Unstaked:`} <strong>{formatNumber(lpTokenBalance, { abbreviate: false, fallback: '-' })}</strong>
           </div>
         </StyledStats>
         {(haveCrvRewards || haveBoosting) && (
@@ -134,7 +137,7 @@ export const MySharesStats = ({
             ) : (
               <Chip size="md" tooltip={crvRewardsTooltipText} tooltipProps={{ minWidth: '350px' }}>
                 {t`Your CRV Rewards tAPR:`}{' '}
-                {userCrvApyValue ? <strong>{formatNumber(userCrvApyValue, FORMAT_OPTIONS.PERCENT)}</strong> : '-'}
+                <strong>{formatNumber(userCrvApyValue, { unit: 'percentage', abbreviate: false })}</strong>
               </Chip>
             )}
             {haveBoosting && (
@@ -142,7 +145,10 @@ export const MySharesStats = ({
                 <br />
                 <Chip size="md">
                   {t`Current Boost:`}{' '}
-                  {userBoostApy ? <strong>{formatNumber(userBoostApy, { maximumFractionDigits: 3 })}x</strong> : '-'}
+                  <strong>
+                    {formatNumber(amount(userBoostApy), { maximumFractionDigits: 3, abbreviate: false, fallback: '-' })}
+                    x
+                  </strong>
                 </Chip>
                 {/* TODO: future boost */}
               </>
@@ -175,7 +181,7 @@ export const MySharesStats = ({
                   }
                 >
                   <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-                    {formatNumber(userWithdrawAmounts[idx], { defaultValue: '-' })}
+                    {formatNumber(amount(userWithdrawAmounts[idx]), { abbreviate: false, fallback: '-' })}
                   </Chip>
                 </Stats>
               )
@@ -184,13 +190,17 @@ export const MySharesStats = ({
           {!poolDataCacheOrApi.pool.isCrypto && (
             <Stats isOneLine isBorderBottom label={`${poolDataCacheOrApi.tokens.join('+')}`}>
               <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-                {formatNumber(withdrawTotal)}
+                {formatNumber(amount(withdrawTotal), { abbreviate: false, fallback: '-' })}
               </Chip>
             </Stats>
           )}
           <Stats isOneLine label={t`USD balance`}>
             <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-              {formatNumber(userPoolInfo?.userLiquidityUsd, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })}
+              {formatNumber(amount(userPoolInfo?.userLiquidityUsd), {
+                unit: 'dollar',
+                abbreviate: false,
+                fallback: '-',
+              })}
             </Chip>
           </Stats>
         </TokensBalanceWrapper>

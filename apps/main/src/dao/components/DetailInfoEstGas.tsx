@@ -5,10 +5,10 @@ import { networks } from '@/dao/networks'
 import { ChainId, EstimatedGas } from '@/dao/types/dao.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { formatNumber } from '@ui-kit/utils'
 
 type StepProgress = {
   active: number
@@ -56,7 +56,11 @@ export const DetailInfoEstGas = ({
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>
       {estGasCost &&
-        (estGasCostUsd ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
+        (estGasCostUsd ? (
+          <span>{formatNumber(estGasCostUsd, { unit: 'dollar', abbreviate: false })}</span>
+        ) : (
+          t`Unable to get USD rate`
+        ))}
     </DetailInfo>
   )
 }

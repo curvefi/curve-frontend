@@ -3,19 +3,22 @@ import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
-import { formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
-import { calculateStaleVeCrvPercentage } from './utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight
 }
+
+const calculateStaleVeCrvPercentage = (usedVeCrv: number, futureVeCrv: number) =>
+  ((futureVeCrv - usedVeCrv) / usedVeCrv) * 100
 
 export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
   const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
   const userGaugeVoteWeightsSortBy = useStore(state => state.user.userGaugeVoteWeightsSortBy)
 
   const hasFutureVeCrv = userFutureVeCrv > userVeCrv
+  const staleVeCrvPct = calculateStaleVeCrvPercentage(userVeCrv, userFutureVeCrv)
 
   return (
     <>
@@ -33,6 +36,7 @@ export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeight
                   {formatNumber(userVeCrv, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
+                    abbreviate: false,
                   })}
                 </strong>{' '}
                 {t`to`}{' '}
@@ -40,9 +44,10 @@ export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeight
                   {formatNumber(userFutureVeCrv, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
+                    abbreviate: false,
                   })}
                 </strong>
-                {` (${formatNumber(calculateStaleVeCrvPercentage(userVeCrv, userFutureVeCrv), { style: 'percent' })} increase)`}
+                {` (${formatNumber(staleVeCrvPct, { unit: 'percentage', abbreviate: false })} increase)`}
               </p>
             }
           >
@@ -50,12 +55,10 @@ export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeight
               {formatNumber(userVeCrv, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
+                abbreviate: false,
               })}
               {hasFutureVeCrv &&
-                ` → ${formatNumber(userFutureVeCrv, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}`}
+                ` → ${formatNumber(userFutureVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}`}
             </GaugeData>
           </Tooltip>
         </Box>

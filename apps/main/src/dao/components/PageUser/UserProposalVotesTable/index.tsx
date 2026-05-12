@@ -10,9 +10,10 @@ import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import Box from '@mui/material/Box'
-import { formatDate, formatNumber } from '@ui/utils/'
+import { formatDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { formatNumber } from '@ui-kit/utils'
 import { VOTES_LABELS } from '../constants'
 
 interface UserProposalVotesTableProps {
@@ -73,14 +74,14 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
             <TableData
               className={userProposalVotesSortBy.key === 'voteFor' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(proposalVote.voteFor)}
+              {formatNumber(proposalVote.voteFor, { abbreviate: false })}
             </TableData>
             <TableData
               className={
                 userProposalVotesSortBy.key === 'voteAgainst' ? 'sortby-active right-padding' : 'right-padding'
               }
             >
-              {formatNumber(proposalVote.voteAgainst)}
+              {formatNumber(proposalVote.voteAgainst, { abbreviate: false })}
             </TableData>
             <TableData
               className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}
