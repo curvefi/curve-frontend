@@ -28,7 +28,7 @@ const getVariant = (
         : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
-  version: 2,
+  version: 3,
   migrate: () => null, // reset stored visibility since column ids changed
 }
 
