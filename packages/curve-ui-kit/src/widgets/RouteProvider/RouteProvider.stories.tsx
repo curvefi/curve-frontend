@@ -11,31 +11,32 @@ import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvide
 
 const { MaxWidth } = SizesAndSpaces
 
-type Story = StoryObj<typeof meta>
-
 const RouteProviderStory = ({
   isExpanded: givenExpanded,
   isLoading: givenIsLoading,
+  isFetching: givenIsFetching,
   queries: givenRoutes,
   selectedRoute: givenSelectedRoute,
   ...args
-}: RouteProviderProps & { isLoading?: boolean }) => {
+}: RouteProviderProps & { isLoading?: boolean; isFetching?: boolean }) => {
   const [routes, setRoutes] = useState(givenRoutes)
   const [selectedRoute, setSelectedRoute] = useState(givenSelectedRoute)
-  const [isLoading, setIsLoading] = useState(givenIsLoading)
+  const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
+  const [isFetching, setIsFetching] = useState(false)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
   useEffect(() => setRoutes(givenRoutes), [givenRoutes])
   useEffect(() => setSelectedRoute(givenSelectedRoute), [givenSelectedRoute])
   useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
-  useEffect(() => setIsLoading(givenIsLoading), [givenIsLoading])
+  useEffect(() => setIsLoading(givenIsLoading ?? false), [givenIsLoading])
+  useEffect(() => setIsFetching(givenIsFetching ?? false), [givenIsFetching])
 
   return (
     <Box sx={{ maxWidth: MaxWidth.actionCard }}>
       <RouteProvidersAccordion
         {...args}
         queries={useMemo(
-          () => (isLoading ? mapRecord(routes, (_, route) => ({ ...route, isLoading: true })) : routes),
-          [isLoading, routes],
+          () => mapRecord(routes, (_, route) => ({ ...route, isLoading, isFetching: isLoading || isFetching })),
+          [isLoading, isFetching, routes],
         )}
         selectedRoute={selectedRoute}
         onChange={useCallback(route => setSelectedRoute(route), [])}
@@ -60,7 +61,14 @@ const meta: Meta<typeof RouteProviderStory> = {
     queries: fromEntries(
       RouteProviders.map(router => [
         router,
-        q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+        {
+          ...q({
+            data: mockRoutes.find(route => route.router === router) ?? null,
+            isLoading: false,
+            error: null,
+          }),
+          isFetching: false,
+        },
       ]),
     ),
     selectedRoute: mockRoutes[0],
@@ -69,15 +77,22 @@ const meta: Meta<typeof RouteProviderStory> = {
     onChange: () => undefined,
     onToggle: () => undefined,
     onRefresh: () => undefined,
+    enabled: true,
   },
 }
 
 export default meta
 
+type Story = StoryObj<typeof meta>
+
 export const Collapsed: Story = {}
 
 export const Expanded: Story = {
   args: { isExpanded: true },
+}
+
+export const Fetching: Story = {
+  args: { isExpanded: true, isFetching: true },
 }
 
 export const Loading: Story = {

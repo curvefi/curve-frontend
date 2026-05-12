@@ -53,7 +53,7 @@ export const RouteProvidersAccordion = ({
   const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.router] : null
   const allError = queryList.every(r => r.error)
   const allLoading = queryList.every(r => r.isLoading)
-  const anyLoading = queryList.some(r => r.isLoading)
+  const anyFetching = queryList.some(r => r.isFetching)
   const anyData = queryList.some(route => route.data)
   return (
     enabled && (
@@ -103,13 +103,13 @@ export const RouteProvidersAccordion = ({
                 size="extraExtraSmall"
                 onClick={onRefresh}
                 aria-label={t`Refresh routes`}
-                disabled={anyLoading}
+                disabled={anyFetching}
               >
-                <ReloadIcon sx={{ ...(anyLoading && LoadingAnimation) }} />
+                <ReloadIcon sx={{ ...(anyFetching && LoadingAnimation) }} />
               </IconButton>
             </Stack>
             <Typography variant="bodyXsRegular" color="textTertiary">
-              {queryList.length === 0 && !anyLoading
+              {queryList.length === 0 && !anyFetching
                 ? t`We could not find any routes with your parameters.`
                 : selectedRoute || allLoading
                   ? t`Best route is selected based on net output after gas fees (only when possible to calculate).`

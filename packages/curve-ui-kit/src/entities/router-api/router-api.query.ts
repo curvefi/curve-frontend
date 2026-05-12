@@ -3,12 +3,12 @@ import { enforce, test } from 'vest'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
-import { RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
+import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
-import { mapQuery } from '@ui-kit/types/util'
-import type { RouteQueries, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
+import { q } from '@ui-kit/types/util'
+import type { RouteQueries, RouteQuery, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
 import { routerApiValidation } from './router-api.validation'
 
 type RouteByIdQuery = { routeId: string }
@@ -126,14 +126,22 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
 
 export { useRouterApi, fetchApiRoutes }
 
+function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
+  const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
+  return {
+    ...q({ isLoading, data: data == null ? undefined : (data[0] ?? null), error }),
+    isFetching,
+  }
+}
+
 /**
  * Calls the route providers in parallel, returning the first route of each.
  */
 export const useRouters = (params: Omit<RoutesParams, 'router'>, enabled?: boolean) => ({
   queries: {
-    curve: mapQuery(useRouterApi({ ...params, router: 'curve' }, enabled), ([data]) => data),
-    enso: mapQuery(useRouterApi({ ...params, router: 'enso' }, enabled), ([data]) => data),
-    odos: mapQuery(useRouterApi({ ...params, router: 'odos' }, enabled), ([data]) => data),
+    curve: useRouterQuery(params, 'curve', enabled),
+    enso: useRouterQuery(params, 'enso', enabled),
+    odos: useRouterQuery(params, 'odos', enabled),
   } satisfies RouteQueries,
   onRefresh: useCallback(
     () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),

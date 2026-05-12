@@ -32,4 +32,5 @@ export type RouteMeta = {
  */
 export type RouteMutationMeta = RouteMeta & { minRecv: string }
 export type RouteResponse = RouterRouteResponse & { id: string }
-export type RouteQueries = Record<RouteProvider, QueryProp<RouteResponse | null>>
+export type RouteQuery = QueryProp<RouteResponse | null> & { isFetching: boolean }
+export type RouteQueries = Record<RouteProvider, RouteQuery>
