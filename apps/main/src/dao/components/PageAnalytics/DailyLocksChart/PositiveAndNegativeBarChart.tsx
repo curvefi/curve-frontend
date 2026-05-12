@@ -1,6 +1,7 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
 import { LocksDaily } from '@curvefi/prices-api/dao'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
 type PositiveAndNegativeBarChartProps = {
@@ -36,7 +37,9 @@ export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndN
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={(value: number) => `${formatNumber(value, { ...(value > 10 && { decimals: 0 }) })}`}
+        tickFormatter={(value: number) =>
+          `${formatNumber(value, { ...(value > 10 && { decimals: 0 }), abbreviate: false })}`
+        }
         tickCount={10}
       />
       <Tooltip content={PositiveAndNegativeBarChartTooltip} cursor={{ opacity: 0.3 }} />

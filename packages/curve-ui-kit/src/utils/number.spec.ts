@@ -7,7 +7,31 @@ import {
   abbreviateNumber,
   scaleSuffix,
   log10Exp,
+  getFractionDigitsOptions,
 } from './number'
+
+describe('getFractionDigitsOptions', () => {
+  it('uses the source value decimal count when it is below the default cap', () => {
+    expect(getFractionDigitsOptions('1.23', 5)).toEqual({
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  })
+
+  it('caps the fraction digits at the default decimal count', () => {
+    expect(getFractionDigitsOptions('1.234567', 5)).toEqual({
+      minimumFractionDigits: 5,
+      maximumFractionDigits: 5,
+    })
+  })
+
+  it('keeps formatter defaults for empty, zero, nullish, or negative values', () => {
+    expect(getFractionDigitsOptions('', 5)).toEqual({})
+    expect(getFractionDigitsOptions(0, 5)).toEqual({})
+    expect(getFractionDigitsOptions(null, 5)).toEqual({})
+    expect(getFractionDigitsOptions(-1.23, 5)).toEqual({})
+  })
+})
 
 describe('log10Exp', () => {
   describe('basic functionality', () => {
@@ -431,6 +455,21 @@ describe('formatNumber', () => {
         formatNumber(2500000000, { abbreviate: true, unit: { symbol: '%', position: 'suffix' }, decimals: 1 }),
       ).toBe('2.5b%')
       expect(formatNumber(1500000, { abbreviate: true, unit: 'dollar', decimals: 0 })).toBe('$2m')
+    })
+
+    it('should return undefined if value is undefined', () => {
+      expect(formatNumber(undefined, { abbreviate: false })).toBeUndefined()
+    })
+
+    it('uses fallback for missing-like values', () => {
+      expect(formatNumber(undefined, { abbreviate: false, fallback: '-' })).toBe('-')
+      expect(formatNumber(null, { abbreviate: false, fallback: '-' })).toBe('-')
+      expect(formatNumber('', { abbreviate: false, fallback: '-' })).toBe('-')
+      expect(formatNumber(NaN, { abbreviate: false, fallback: '-' })).toBe('-')
+    })
+
+    it('keeps formatting NaN as NaN when no fallback is provided', () => {
+      expect(formatNumber(NaN, { abbreviate: false })).toBe('NaN')
     })
   })
 

@@ -6,9 +6,9 @@ import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { formatNumber, formatDate, scanAddressPath } from '@ui/utils'
+import { formatDate, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Chain, shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress, formatNumber } from '@ui-kit/utils'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData
@@ -30,24 +30,18 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         <Box flex flexColumn>
           <StatsRow>
             <StatTitle>{t`Weight`}</StatTitle>
-            <StatData>
-              {gaugeData.gauge_relative_weight ? formatNumber(gaugeData.gauge_relative_weight) : 'N/A'}
-            </StatData>
+            <StatData>{formatNumber(gaugeData.gauge_relative_weight, { abbreviate: false })}</StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`7d Delta`}</StatTitle>
             <StatData>
-              {gaugeData.gauge_relative_weight_7d_delta
-                ? formatNumber(gaugeData.gauge_relative_weight_7d_delta)
-                : 'N/A'}
+              {formatNumber(gaugeData.gauge_relative_weight_7d_delta, { abbreviate: false, fallback: 'N/A' })}
             </StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`60d Delta`}</StatTitle>
             <StatData>
-              {gaugeData.gauge_relative_weight_60d_delta
-                ? formatNumber(gaugeData.gauge_relative_weight_60d_delta)
-                : 'N/A'}
+              {formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: false, fallback: 'N/A' })}
             </StatData>
           </StatsRow>
         </Box>
@@ -56,14 +50,14 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         <Box flex flexColumn>
           <StatsRow>
             <StatTitle>{t`User Weight`}</StatTitle>
-            <StatData>{formatNumber(userGaugeWeightVoteData.userPower)}%</StatData>
+            <StatData>{formatNumber(userGaugeWeightVoteData.userPower, { abbreviate: false })}%</StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`veCRV used`}</StatTitle>
             <Box flex flexAlignItems="center">
               <StatData>
-                {formatNumber(userVeCrv)}
-                {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv)}`}
+                {formatNumber(userVeCrv, { abbreviate: false, fallback: '-' })}
+                {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { abbreviate: false })}`}
               </StatData>
             </Box>
           </StatsRow>
@@ -73,7 +67,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         <CategoryTitle>{t`Gauge Information`}</CategoryTitle>
         <StatsRow>
           <StatTitle>{t`Emissions (CRV)`}</StatTitle>
-          <StatData>{emissions ? formatNumber(emissions) : 'N/A'}</StatData>
+          <StatData>{formatNumber(emissions, { abbreviate: false })}</StatData>
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Deployment Date`}</StatTitle>
@@ -93,22 +87,12 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
             <StatsRow>
               <StatTitle>{t`24 Volume`}</StatTitle>
               <StatData>
-                {gaugeData.pool?.trading_volume_24h
-                  ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                      currency: 'USD',
-                    })
-                  : 'N/A'}
+                {formatNumber(gaugeData.pool.trading_volume_24h, { unit: 'dollar', abbreviate: false })}
               </StatData>
             </StatsRow>
             <StatsRow>
               <StatTitle>{t`TVL`}</StatTitle>
-              <StatData>
-                {gaugeData.pool?.tvl_usd
-                  ? formatNumber(gaugeData.pool.tvl_usd, {
-                      currency: 'USD',
-                    })
-                  : 'N/A'}
-              </StatData>
+              <StatData>{formatNumber(gaugeData.pool.tvl_usd, { unit: 'dollar', abbreviate: false })}</StatData>
             </StatsRow>
           </>
         )}

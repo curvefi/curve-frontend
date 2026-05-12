@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import lodash from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
@@ -32,7 +33,6 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
@@ -111,8 +111,8 @@ const pool = {
       if (baseApyResult.status === 'rejected') {
         if (p.inApi) resp.error.base = true
       } else {
-        resp.base.day = new BN(resp.base.day).toFixed(8)
-        resp.base.week = new BN(resp.base.week).toFixed(8)
+        resp.base.day = new BigNumber(resp.base.day).toFixed(8)
+        resp.base.week = new BigNumber(resp.base.week).toFixed(8)
       }
     }
 

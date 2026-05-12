@@ -1,5 +1,4 @@
 import { enforce, group, test } from 'vest'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
@@ -11,6 +10,7 @@ import {
   createValidationSuite,
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
+import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 import {
   AddRewardParams,
   DepositRewardApproveParams,
@@ -78,6 +78,6 @@ function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApp
 
   enforce(amount).condition(amount => ({
     pass: +amount <= +userBalance!,
-    message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(userBalance, { decimals: 5 })}`,
+    message: t`Amount ${formatNumber(toAmount(amount), { decimals: 5, abbreviate: false, fallback: '-' })} > wallet balance ${formatNumber(toAmount(userBalance), { decimals: 5, abbreviate: false, fallback: '-' })}`,
   }))
 }

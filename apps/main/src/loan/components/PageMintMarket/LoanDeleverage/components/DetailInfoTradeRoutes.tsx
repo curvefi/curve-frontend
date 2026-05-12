@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { RouteTrack } from '@ui-kit/widgets/RouteTrack'
 
 const { Spacing } = SizesAndSpaces
@@ -37,8 +37,12 @@ export const DetailInfoTradeRoutes = ({
             {isMultiRoutes && <RouteTrack />}
             <WithWrapper shouldWrap={isMultiRoutes} Wrapper={Stack} width="100%">
               {parsedRoutes.map((route, i) => {
-                const from = !i && input && `${formatNumber(input)} ${inputSymbol}`
-                const to = i === parsedRoutes.length - 1 && output && `receive ${formatNumber(output)} ${outputSymbol}`
+                const from =
+                  !i && input && `${formatNumber(amount(input), { abbreviate: false, fallback: '-' })} ${inputSymbol}`
+                const to =
+                  i === parsedRoutes.length - 1 &&
+                  output &&
+                  `receive ${formatNumber(amount(output), { abbreviate: false, fallback: '-' })} ${outputSymbol}`
                 return (
                   <Stack key={route} direction="row" justifyContent="space-between" title={route}>
                     <Typography

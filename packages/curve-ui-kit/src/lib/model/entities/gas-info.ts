@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { assert } from '@primitives/objects.utils'
-import { type BaseConfig, formatNumber } from '@ui/utils'
+import { type BaseConfig } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
 import type { Provider } from '@ui-kit/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import type { Query as QueryResult } from '@ui-kit/types/util'
-import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
+import { Chain, gweiToEther, gweiToWai, weiToGwei, formatNumber } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
@@ -392,8 +392,8 @@ export function calculateGas(
 
   const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
   const tooltip =
-    `${formatNumber(estGasCost)} ${networkSymbol} at ` +
-    `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })} ${gasPricesUnit}`
+    `${formatNumber(estGasCost, { abbreviate: false })} ${networkSymbol} at ` +
+    `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false })} ${gasPricesUnit}`
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
 
