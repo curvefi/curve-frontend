@@ -193,11 +193,7 @@ export const LoanActionInfoList = ({
               testId="borrow-ltv"
             />
           )}
-          {smallLiquidationRangeChartData && (
-            <Stack data-testid="borrow-liquidation-range-chart">
-              <SmallLiquidationRangeChart {...smallLiquidationRangeChartData} />
-            </Stack>
-          )}
+          {smallLiquidationRangeChartData && <SmallLiquidationRangeChart {...smallLiquidationRangeChartData} />}
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
