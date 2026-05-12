@@ -12,8 +12,10 @@ import {
   type PriceToCoordinateConverter,
   type Time,
 } from 'lightweight-charts'
+import { CHART_LINE_DASH_PATTERNS } from '@ui-kit/shared/ui/Chart/chart.utils'
 
 type Coordinate = number
+type LiquidationRangeLineStyle = LineStyle.Solid | LineStyle.Dashed
 
 export type LiquidationRangePoint = CustomData<Time> & {
   upper: number
@@ -28,7 +30,7 @@ export type LiquidationRangeSeriesOptions = CustomSeriesOptions & {
   topLineColor: string
   bottomLineColor: string
   lineWidth: number
-  lineStyle: LineStyle
+  lineStyle: LiquidationRangeLineStyle
   showTopLine?: boolean
   showBottomLine?: boolean
 }
@@ -58,6 +60,11 @@ type RendererPayload = {
   data: PaneRendererCustomData<Time, LiquidationRangePoint> | null
   options: LiquidationRangeSeriesOptions
 }
+
+const CANVAS_LINE_DASH_BY_STYLE = {
+  [LineStyle.Solid]: [],
+  [LineStyle.Dashed]: CHART_LINE_DASH_PATTERNS.regular,
+} satisfies Record<LiquidationRangeLineStyle, number[]>
 
 // Tiny factory that keeps payload state outside the renderer object LW charts consumes.
 const createRenderer = () => {
@@ -185,16 +192,7 @@ const drawBoundary = (
   ctx.beginPath()
   ctx.lineWidth = lineWidth
   ctx.strokeStyle = color
-
-  if (lineStyle === LineStyle.Dashed || lineStyle === LineStyle.LargeDashed) {
-    ctx.setLineDash(lineStyle === LineStyle.Dashed ? [6, 6] : [12, 6])
-  } else if (lineStyle === LineStyle.Dotted) {
-    ctx.setLineDash([2, 4])
-  } else if (lineStyle === LineStyle.SparseDotted) {
-    ctx.setLineDash([2, 8])
-  } else {
-    ctx.setLineDash([])
-  }
+  ctx.setLineDash(CANVAS_LINE_DASH_BY_STYLE[lineStyle])
 
   ctx.moveTo(points[0].x, points[0][key])
   points.forEach(point => ctx.lineTo(point.x, point[key]))
