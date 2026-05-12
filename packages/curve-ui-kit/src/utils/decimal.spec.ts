@@ -1,5 +1,6 @@
+import { BigNumber } from 'bignumber.js'
 import { describe, expect, it } from 'vitest'
-import { decimal } from './decimal'
+import { amount, decimal } from './decimal'
 
 describe('decimal', () => {
   it('handles basic, normal numbers', () => {
@@ -47,4 +48,32 @@ describe('decimal', () => {
     expect(decimal(0)).toBe('0')
     expect(decimal(3.14)).toBe('3.14')
   })
+})
+
+describe('amount', () => {
+  it('preserves valid numbers', () => {
+    expect(amount(0)).toBe(0)
+    expect(amount(3.14)).toBe(3.14)
+    expect(amount(Infinity)).toBe(Infinity)
+  })
+
+  it('accepts numeric strings without normalizing them', () => {
+    expect(amount('0')).toBe('0')
+    expect(amount('1')).toBe('1')
+    expect(amount('3.14')).toBe('3.14')
+    expect(amount('-4.20')).toBe('-4.20')
+    expect(amount('1.55e20')).toBe('1.55e20')
+  })
+
+  it('converts BigNumber and bigint inputs to decimal strings', () => {
+    expect(amount(new BigNumber('123.45'))).toBe('123.45')
+    expect(amount(123n)).toBe('123')
+  })
+
+  it.each([undefined, null, '', '?', '-', NaN, 'abc', '12.34.56', '12a34', 'Infinity'])(
+    'returns undefined for invalid values',
+    invalidValue => {
+      expect(amount(invalidValue as string | number | undefined | null)).toBe(undefined)
+    },
+  )
 })

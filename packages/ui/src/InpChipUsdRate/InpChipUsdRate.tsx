@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { TextCaption } from '@ui/TextCaption'
 import { Chip } from '@ui/Typography/Chip'
 import type { ChipProps } from '@ui/Typography/types'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export type InpChipUsdRateProps = ChipProps & {
   className?: string
@@ -18,7 +18,7 @@ export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...p
     return +amount * +usdRate
   }, [usdRate, amount])
 
-  const formattedAmountUsd = formatNumber(amountUsd, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
+  const formattedAmountUsd = formatNumber(amountUsd, { unit: 'dollar', abbreviate: false, fallback: '-' })
 
   return (
     <>
@@ -28,7 +28,7 @@ export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...p
         </TextCaption>
       ) : (
         <StyledInpChip className={className} size="xs">
-          x {formatNumber(usdRate)} ≈{formattedAmountUsd}
+          x {formatNumber(toAmount(usdRate), { abbreviate: false, fallback: '-' })} ≈ {formattedAmountUsd}
         </StyledInpChip>
       )}
     </>

@@ -8,9 +8,9 @@ import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
 import type { Step } from '@ui/Stepper/types'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const FormClaimFees = () => {
   const {
@@ -35,8 +35,14 @@ export const FormClaimFees = () => {
           <Tooltip>{t`Trading fees distributed to CRV lockers`}</Tooltip>:{' '}
         </div>
         <div>
-          <strong>{formatNumber(claimFeesAmounts?.[claimButtonsKey['3CRV']], { defaultValue: '-' })}</strong> 3CRV,{' '}
-          <strong>{formatNumber(claimFeesAmounts?.[claimButtonsKey.crvUSD], { defaultValue: '-' })}</strong> crvUSD
+          <strong>
+            {formatNumber(amount(claimFeesAmounts?.[claimButtonsKey['3CRV']]), { abbreviate: false, fallback: '-' })}
+          </strong>{' '}
+          3CRV,{' '}
+          <strong>
+            {formatNumber(amount(claimFeesAmounts?.[claimButtonsKey.crvUSD]), { abbreviate: false, fallback: '-' })}
+          </strong>{' '}
+          crvUSD
         </div>
       </div>
       {parsedFormStatus.error && <AlertFormError errorKey={parsedFormStatus.error} />}

@@ -6,11 +6,11 @@ import {
   TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { formatNumber } from '@ui-kit/utils'
 
-const format = (value: number) => formatNumber(value, { currency: 'USD', notation: 'compact' })
+const format = (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true })
 
 export const LiquidityUsdTooltipContent = ({
   market: {

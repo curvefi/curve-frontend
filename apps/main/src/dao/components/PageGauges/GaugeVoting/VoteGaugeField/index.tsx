@@ -8,8 +8,9 @@ import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { NumberField } from './NumberField'
 
@@ -66,13 +67,18 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
                     {formatNumber(userPower, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
+                      abbreviate: false,
                     })}
                     %
                   </MetricsColumnData>
                 }
               />
               <AbsoluteData>
-                {formatNumber(userGaugeVoteData.userVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{' '}
+                {formatNumber(userGaugeVoteData.userVeCrv, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                  abbreviate: false,
+                })}{' '}
                 veCRV
               </AbsoluteData>
             </Box>
@@ -82,12 +88,22 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
                 title="Available voting power"
                 data={
                   <MetricsColumnData>
-                    {formatNumber(availablePower, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                    {formatNumber(availablePower, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                      abbreviate: false,
+                    })}
+                    %
                   </MetricsColumnData>
                 }
               />
               <AbsoluteData>
-                {formatNumber(availableVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} veCRV
+                {formatNumber(availableVeCrv, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                  abbreviate: false,
+                })}{' '}
+                veCRV
               </AbsoluteData>
             </Box>
           </Box>
@@ -105,6 +121,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
                     {formatNumber(availablePower, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
+                      abbreviate: false,
                     })}
                     %
                   </strong>{' '}
@@ -112,6 +129,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
                   {formatNumber(availableVeCrv, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
+                    abbreviate: false,
                   })}{' '}
                   veCRV)
                 </LabelData>
@@ -128,6 +146,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
             {formatNumber(power * userVeCrv, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
+              abbreviate: false,
             })}{' '}
             veCRV
           </AbsoluteData>
@@ -143,6 +162,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
           {formatNumber(power * userVeCrv, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
+            abbreviate: false,
           })}{' '}
           veCRV
         </NewVoteAbsoluteData>

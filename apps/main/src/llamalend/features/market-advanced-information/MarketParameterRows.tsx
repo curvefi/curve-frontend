@@ -1,8 +1,8 @@
 import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type MarketPricesRowsProps = {
   chainId: IChainId
@@ -27,15 +27,15 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: Mar
     <>
       <ActionInfo
         label={t`Oracle price`}
-        value={formatNumber(oraclePrice)}
-        valueTooltip={oraclePrice == null ? undefined : formatNumber(oraclePrice, { decimals: 5 })}
+        value={formatNumber(oraclePrice, { abbreviate: false, fallback: '-' })}
+        valueTooltip={formatNumber(oraclePrice, { decimals: 5, abbreviate: false, fallback: '-' })}
         loading={isLoadingOraclePrice || !marketId}
         error={errorOraclePrice}
       />
       {enablePricePerShare && (
         <ActionInfo
           label={t`Price per share`}
-          value={formatNumber(pricePerShare, { decimals: 5 })}
+          value={formatNumber(amount(pricePerShare), { decimals: 5, abbreviate: false, fallback: '-' })}
           loading={isLoadingPricePerShare || !marketId}
           error={errorPricePerShare}
         />

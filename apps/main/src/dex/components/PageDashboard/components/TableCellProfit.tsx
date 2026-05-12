@@ -1,15 +1,21 @@
 import { useMemo } from 'react'
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData, SortId } from '@/dex/components/PageDashboard/types'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & {
   sortBy: SortId
 }
 
 export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd, sortBy }: Props) => {
-  const formattedBaseProfit = useMemo(() => formatNumber(profitBase?.day || 0), [profitBase?.day])
-  const formattedCrvProfit = useMemo(() => `${formatNumber(profitCrv?.day || '0')} CRV`, [profitCrv?.day])
+  const formattedBaseProfit = useMemo(
+    () => formatNumber(amount(profitBase?.day), { abbreviate: false, fallback: '-' }),
+    [profitBase?.day],
+  )
+  const formattedCrvProfit = useMemo(
+    () => `${formatNumber(amount(profitCrv?.day), { abbreviate: false, fallback: '-' })} CRV`,
+    [profitCrv?.day],
+  )
   const isHighLight = sortBy === 'profits'
 
   return (
@@ -23,13 +29,13 @@ export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTo
       )}
 
       {profitOthers?.map(({ day, symbol }) => {
-        const formatted = `${formatNumber(day)} ${symbol}`
+        const formatted = `${formatNumber(amount(day), { abbreviate: false, fallback: '-' })} ${symbol}`
         return Number(day) > 0 && <Info key={symbol}>{isHighLight ? <strong>{formatted}</strong> : formatted}</Info>
       })}
 
       <div>
         {isHighLight && profitsTotalUsd > 0 && (
-          <DetailText>{formatNumber(profitsTotalUsd, { ...FORMAT_OPTIONS.USD })}</DetailText>
+          <DetailText>{formatNumber(profitsTotalUsd, { unit: 'dollar', abbreviate: false })}</DetailText>
         )}
       </div>
     </>

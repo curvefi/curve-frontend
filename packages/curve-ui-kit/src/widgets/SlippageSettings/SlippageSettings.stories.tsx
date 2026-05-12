@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton/IconButton'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { SlippageSettings } from './SlippageSettings'
 
 const SlippageSettingsComponent = ({
@@ -105,7 +105,7 @@ export const WithCustomButton: Story = {
     maxSlippage: '0.1',
     button: ({ onClick, maxSlippage }) => (
       <IconButton onClick={onClick}>
-        {formatNumber(maxSlippage, { style: 'percent', decimals: 5, defaultValue: '-' })}{' '}
+        {formatNumber(amount(maxSlippage), { decimals: 5, unit: 'percentage', abbreviate: false, fallback: '-' })}{' '}
         <Icon name="Settings" size={16} />
       </IconButton>
     ),

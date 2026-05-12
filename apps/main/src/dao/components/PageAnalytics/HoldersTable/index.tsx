@@ -7,10 +7,10 @@ import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Stack from '@mui/material/Stack'
-import { formatNumber, formatDate } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber } from '@ui-kit/utils'
 
 export const TopHoldersTable = () => {
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
@@ -55,15 +55,15 @@ export const TopHoldersTable = () => {
               </span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.weight.fromWei(), { notation: 'compact' })}
+              {formatNumber(holder.weight.fromWei(), { abbreviate: true })}
             </TableData>
             <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.locked.fromWei(), { notation: 'compact' })}
+              {formatNumber(holder.locked.fromWei(), { abbreviate: true })}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'weightRatio' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(holder.weightRatio, { style: 'percent', notation: 'compact' })}
+              {formatNumber(holder.weightRatio, { unit: 'percentage', abbreviate: true })}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
