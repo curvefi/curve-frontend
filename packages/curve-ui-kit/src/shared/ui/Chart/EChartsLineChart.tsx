@@ -1,6 +1,7 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
+import type { ChartLineDashPattern } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -10,7 +11,7 @@ export type LineSeriesConfig<TSeriesKey extends string> = {
   key: TSeriesKey
   label: string
   color: string
-  dash?: string
+  dash?: ChartLineDashPattern
   strokeWidth?: number
 }
 
@@ -19,7 +20,7 @@ type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: string }
+type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: ChartLineDashPattern }
 
 /** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
 const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
@@ -34,14 +35,6 @@ const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extend
   const max = Math.max(...values)
   const padding = min === max ? 1 : (max - min) * paddingRatio
   return { yMin: min - padding, yMax: max + padding }
-}
-
-const parseDashType = (dash?: string): 'solid' | number[] => {
-  const segments = dash
-    ?.split(' ')
-    .map(segment => Number(segment))
-    .filter(segment => Number.isFinite(segment) && segment > 0)
-  return segments?.length ? segments : 'solid'
 }
 
 export const EChartsLineChart = <
@@ -190,7 +183,7 @@ export const EChartsLineChart = <
         lineStyle: {
           color: line.color,
           width: line.strokeWidth ?? 2,
-          type: parseDashType(line.dash),
+          ...(line.dash && { type: line.dash }),
         },
         ...(index === 0 &&
           markLines?.length && {
@@ -219,7 +212,7 @@ export const EChartsLineChart = <
                   ...((markLine.color || markLine.dash) && {
                     lineStyle: {
                       ...(markLine.color && { color: markLine.color }),
-                      ...(markLine.dash && { type: parseDashType(markLine.dash) }),
+                      ...(markLine.dash && { type: markLine.dash }),
                     },
                   }),
                 })),
