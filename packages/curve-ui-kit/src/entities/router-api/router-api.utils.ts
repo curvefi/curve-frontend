@@ -55,7 +55,7 @@ export const getExpectedFn =
       tokenIn: tokenIn as Address,
       tokenOut: tokenOut as Address,
       amountIn: `${amountIn}` as Decimal,
-      router,
+      router: router ?? 'curve', // use curve router for getting the maximum amounts
       slippage,
       userAddress,
     })
