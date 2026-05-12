@@ -410,9 +410,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
+    "@types/node": "npm:*"
     eslint: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
+    vitest: "npm:*"
     zod: "npm:4.4.3"
   peerDependencies:
     typescript: "*"
