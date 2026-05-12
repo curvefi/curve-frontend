@@ -107,7 +107,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => ({
-    eventType: eventTypes[i % eventTypes.length],
+    liquidityEventType: eventTypes[i % eventTypes.length],
     tokenAmounts: [Math.random() * 10000, Math.random() * 0.5, Math.random() * 2],
     fees: [Math.random() * 10, Math.random() * 0.001, Math.random() * 0.01],
     tokenSupply: 1000000 + Math.random() * 500000,

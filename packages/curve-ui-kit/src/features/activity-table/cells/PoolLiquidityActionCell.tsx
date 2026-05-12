@@ -17,7 +17,7 @@ type PoolLiquidityActionCellProps = {
 const isAddLiquidity = (eventType: PoolLiquidityEventType): boolean => eventType === 'AddLiquidity'
 
 export const PoolLiquidityActionCell = ({ event }: PoolLiquidityActionCellProps) => {
-  const isAdd = isAddLiquidity(event.eventType)
+  const isAdd = isAddLiquidity(event.liquidityEventType)
   const label = isAdd ? t`Add` : t`Remove`
   const Icon = isAdd ? DownloadIcon : UploadIcon
 

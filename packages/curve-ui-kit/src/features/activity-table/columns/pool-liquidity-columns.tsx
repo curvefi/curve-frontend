@@ -6,7 +6,7 @@ import { PoolLiquidityActionCell } from '../cells/PoolLiquidityActionCell'
 import type { PoolLiquidityRow } from '../types'
 
 export enum PoolLiquidityColumnId {
-  Action = 'eventType',
+  Action = 'liquidityEventType',
   User = 'provider',
   Time = 'time',
 }
@@ -39,9 +39,9 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
       id: getTokenAmountColumnId(index),
       header: token.symbol ?? t`Token ${index + 1}`,
       cell: ({ row }) => {
-        const { tokenAmounts, network, eventType } = row.original
+        const { tokenAmounts, network, liquidityEventType } = row.original
         const amount = tokenAmounts[index] ?? 0
-        const isAdd = eventType === 'AddLiquidity'
+        const isAdd = liquidityEventType === 'AddLiquidity'
         const displayAmount = isAdd ? amount : -amount
 
         return (

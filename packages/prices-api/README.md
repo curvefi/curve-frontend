@@ -22,9 +22,9 @@ const markets = await getMarkets('ethereum')
 - Chain data (TVL, volumes, fees)
 - crvUSD / LlamaLend markets and user positions
 - DAO data (votes, locks, gauges)
+- Runtime-validated responses using Zod schemas
 - Typed responses using TypeScript
 - Tree-shakeable exports
-- Zero dependencies
 
 ## Build
 
@@ -32,7 +32,7 @@ const markets = await getMarkets('ethereum')
 yarn workspace @curvefi/prices-api build
 ```
 
-This build is more involved than a typical package build because `prices-api` uses shared `@primitives/*` utilities internally while keeping the published `@curvefi/prices-api` package dependency-free.
+This build is more involved than a typical package build because `prices-api` uses shared `@primitives/*` utilities internally while keeping the published package free of internal workspace runtime dependencies.
 
 ### Build steps
 

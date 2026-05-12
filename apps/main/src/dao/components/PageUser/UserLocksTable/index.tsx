@@ -4,7 +4,7 @@ import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/Tabl
 import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '@/dao/entities/user-locks'
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
-import { LockType } from '@curvefi/prices-api/dao/models'
+import type { LockType } from '@curvefi/prices-api/dao'
 import Box from '@mui/material/Box'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
