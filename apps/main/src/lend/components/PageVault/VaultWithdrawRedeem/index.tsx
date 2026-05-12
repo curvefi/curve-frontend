@@ -19,11 +19,11 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'withdraw'
@@ -190,9 +190,9 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
         isError={!!formValues.amountError}
         message={
           formValues.amountError === 'too-much-wallet'
-            ? t`Amount > wallet balance ${formatNumber(userBalances?.vaultSharesConverted ?? '')}`
+            ? t`Amount > wallet balance ${formatNumber(amount(userBalances?.vaultSharesConverted), { abbreviate: false, fallback: '-' })}`
             : formValues.amountError === 'too-much-max'
-              ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
+              ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(amount(max), { abbreviate: false, fallback: '-' })}`
               : undefined
         }
         walletBalance={{
@@ -226,7 +226,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
           loadingSkeleton={[100, 20]}
           label={t`Vault shares required:`}
         >
-          <strong>{formatNumber(detailInfo?.preview, { defaultValue: '-' })}</strong>
+          <strong>{formatNumber(amount(detailInfo?.preview), { abbreviate: false, fallback: '-' })}</strong>
         </DetailInfo>
         <DetailInfoRate
           rChainId={rChainId}

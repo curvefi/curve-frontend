@@ -5,8 +5,8 @@ import { getTokenName } from '@/loan/utils/utilsLoan'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount, getFractionDigitsOptions } from '@ui-kit/utils'
 
 // Deleverage partial payment will only result in state change, user will not receive any tokens to wallet.
 // 1. userState.collateral = old userState.collateral - formValues.collateral
@@ -22,7 +22,8 @@ export const LoanDeleverageAlertPartial = ({
   llamma: Llamma
   userState: UserLoanDetails['userState']
 }) => {
-  const format = (val: string | number) => formatNumber(val, { ...getFractionDigitsOptions(val, 2) })
+  const format = (val: string | number) =>
+    formatNumber(amount(val), { ...getFractionDigitsOptions(val, 2), abbreviate: false, fallback: '-' })
   const collateralBalance = +userState.collateral - +formValues.collateral
   const debtBalance = +userState.debt - +receivedStablecoin
   const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)

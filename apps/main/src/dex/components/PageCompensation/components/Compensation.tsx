@@ -11,10 +11,10 @@ import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanAddressPath, scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard, getErrorMessage, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, getErrorMessage, shortenAddress, formatNumber } from '@ui-kit/utils'
 
 export const Compensation = ({
   rChainId,
@@ -82,7 +82,8 @@ export const Compensation = ({
     setTxInfoBar(null)
   }, [curve?.signerAddress])
 
-  const formattedBalance = balance && formatNumber(balance, { minimumFractionDigits: 5, maximumFractionDigits: 5 })
+  const formattedBalance =
+    balance && formatNumber(balance, { minimumFractionDigits: 5, maximumFractionDigits: 5, abbreviate: false })
 
   const disabled =
     balance === 0 || haveBalancesError || !curve || step === 'claimed' || step === 'error' || step === 'claiming'
@@ -108,7 +109,11 @@ export const Compensation = ({
             <div>
               <strong>Remaining vested:</strong>{' '}
               {vestedTotal > 0
-                ? formatNumber(vestedTotal, { minimumFractionDigits: 5, maximumFractionDigits: 5 })
+                ? formatNumber(vestedTotal, {
+                    minimumFractionDigits: 5,
+                    maximumFractionDigits: 5,
+                    abbreviate: false,
+                  })
                 : '-'}
             </div>
           )}

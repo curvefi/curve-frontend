@@ -29,13 +29,13 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 // Borrow more
 export const LoanIncrease = ({
   curve,
@@ -278,7 +278,7 @@ export const LoanIncrease = ({
         isError={!!formValues.debtError}
         message={
           formValues.debtError === 'too-much'
-            ? t`Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more`
+            ? t`Borrow amount is greater than ${formatNumber(amount(maxRecv), { abbreviate: false, fallback: '-' })}, increase collateral to borrow more`
             : undefined
         }
         disabled={disabled}
@@ -327,7 +327,7 @@ export const LoanIncrease = ({
           onBalance={onCollateralChanged}
           {...(formValues.collateralError === 'too-much' &&
             userWalletBalances?.collateral && {
-              message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
+              message: t`Collateral is greater than ${formatNumber(amount(userWalletBalances.collateral), { abbreviate: false, fallback: '-' })}`,
             })}
         />
 
