@@ -18,7 +18,6 @@ import Re from './Re.json'
 import Symbiotic from './Symbiotic.json'
 import Tangent from './Tangent.json'
 import TermMax from './TermMax.json'
-import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import Yld from './Yld.json'
 import Yuzu from './Yuzu.json'
@@ -31,7 +30,6 @@ export {
   Lombard,
   DTrinity,
   YieldFi,
-  Vnx,
   Fx,
   Infinifi,
   GoNuts,
