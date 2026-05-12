@@ -1,5 +1,4 @@
 import Aegis from './Aegis.json'
-import Asymmetry from './Asymmetry.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
 import Ethena from './Ethena.json'
@@ -8,7 +7,6 @@ import Falcon from './Falcon.json'
 import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
 import GoNuts from './GoNuts.json'
-import Hinkal from './Hinkal.json'
 import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
 import Liquity from './Liquity.json'
@@ -31,13 +29,11 @@ export {
   Symbiotic,
   Fraxtal,
   Lombard,
-  Hinkal,
   DTrinity,
   YieldFi,
   Vnx,
   Fx,
   Infinifi,
-  Asymmetry,
   GoNuts,
   Falcon,
   Hyperwave,
