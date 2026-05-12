@@ -11,6 +11,7 @@ import {
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useMarketInterestRatesAndUtilizationChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -58,6 +59,8 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       marketType,
     })
   const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
+  const hasRateCurveMetrics = useMarketInterestRatesAndUtilizationChart()
+  const showRateCurveMetrics = marketType === LlamaMarketType.Lend && hasRateCurveMetrics
 
   return (
     <Box
@@ -65,19 +68,21 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       gap={Spacing.lg}
       gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
     >
-      <Metric
-        size="medium"
-        label={t`Utilization`}
-        value={utilization}
-        loading={availableLiquidity?.loading}
-        valueOptions={{ unit: 'percentage' }}
-        notional={utilization == null ? undefined : utilizationBreakdown}
-        valueTooltip={{
-          title: t`Utilization ${MarketTypeSuffix[marketType]}`,
-          body: <UtilizationTooltip marketType={marketType} />,
-          ...TooltipOptions,
-        }}
-      />
+      {!showRateCurveMetrics && (
+        <Metric
+          size="medium"
+          label={t`Utilization`}
+          value={utilization}
+          loading={availableLiquidity?.loading}
+          valueOptions={{ unit: 'percentage' }}
+          notional={utilization == null ? undefined : utilizationBreakdown}
+          valueTooltip={{
+            title: t`Utilization ${MarketTypeSuffix[marketType]}`,
+            body: <UtilizationTooltip marketType={marketType} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {availableLiquidity.borrowCap && (
         <Metric
           size="medium"
@@ -101,29 +106,31 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         loading={averageHealth?.loading}
         valueOptions={{ decimals: 1 }}
       />
-      <Metric
-        size="medium"
-        label={t`Total collateral`}
-        value={collateral?.combinedCollateralUsdValue}
-        loading={collateral?.loading}
-        valueOptions={{ unit: 'dollar' }}
-        notional={
-          collateral?.loading
-            ? undefined
-            : formatCollateralNotional(
-                {
-                  value: decimal(collateral?.totalCollateral),
-                  symbol: collateral?.collateralSymbol ?? undefined,
-                },
-                { value: decimal(collateral?.totalBorrowed), symbol: collateral?.borrowedSymbol ?? undefined },
-              )
-        }
-        valueTooltip={{
-          title: t`Total Collateral`,
-          body: <TotalCollateralTooltip {...collateral} />,
-          ...TooltipOptions,
-        }}
-      />
+      {!showRateCurveMetrics && (
+        <Metric
+          size="medium"
+          label={t`Total collateral`}
+          value={collateral?.combinedCollateralUsdValue}
+          loading={collateral?.loading}
+          valueOptions={{ unit: 'dollar' }}
+          notional={
+            collateral?.loading
+              ? undefined
+              : formatCollateralNotional(
+                  {
+                    value: decimal(collateral?.totalCollateral),
+                    symbol: collateral?.collateralSymbol ?? undefined,
+                  },
+                  { value: decimal(collateral?.totalBorrowed), symbol: collateral?.borrowedSymbol ?? undefined },
+                )
+          }
+          valueTooltip={{
+            title: t`Total Collateral`,
+            body: <TotalCollateralTooltip {...collateral} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {solvency && (
         <Metric
           size="medium"
