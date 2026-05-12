@@ -18,6 +18,7 @@ const visitErrorBoundary = () => {
               extra_reward_apr: [],
               vault: '',
               controller: '',
+              version: 1,
               created_at: '2023-01-01T00:00:00Z',
             },
           ],

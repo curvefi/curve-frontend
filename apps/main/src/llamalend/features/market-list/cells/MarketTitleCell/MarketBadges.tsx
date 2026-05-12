@@ -2,58 +2,58 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
-import { Badge } from '@ui-kit/shared/ui/Badge'
+import { Badge, BadgeProps } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { FavoriteMarketButton } from '../../chips/FavoriteMarketButton'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-const poolTypeNames: Record<LlamaMarketType, () => string> = {
-  [LlamaMarketType.Lend]: () => t`Lend`,
-  [LlamaMarketType.Mint]: () => t`Mint`,
+const marketTypeDetails: Record<LlamaMarketType, { label: string; description: string }> = {
+  [LlamaMarketType.Lend]: {
+    label: t`Lend`,
+    description: t`Lending markets let users earn by lending assets or borrow using collateral.`,
+  },
+  [LlamaMarketType.Mint]: {
+    label: t`Mint`,
+    description: t`Mint markets lets users borrow by minting crvUSD against collateral.`,
+  },
 }
 
-const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
-  [LlamaMarketType.Lend]: () => t`Lending markets let users earn by lending assets or borrow using collateral.`,
-  [LlamaMarketType.Mint]: () => t`Mint markets lets users borrow by minting crvUSD against collateral.`,
+const marketVersionLabel: Record<LlamaMarketVersion, string> = {
+  [LlamaMarketVersion.v1]: t`V1`,
+  [LlamaMarketVersion.v2]: t`V2`,
 }
 
-/** Displays badges for a pool, such as the chain icon and the pool type. */
+const MarketBadge = ({ ...props }: Omit<BadgeProps, 'size'>) => <Badge size="extraSmall" {...props} />
+
+/** Displays badges for a market, such as the chain icon and market type. */
 export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
-  const { favoriteKey, type, leverage, deprecatedMessage, chain } = market
+  const { favoriteKey, type, leverage, deprecatedMessage, chain, version } = market
   const isSmall = useMediaQuery('(max-width:1250px)')
   return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
+    <Stack direction="row" gap={Spacing.xs} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
       <ChainIcon blockchainId={chain} />
 
-      <Tooltip title={poolTypeTooltips[type]()}>
-        <Badge
-          size="extraSmall"
-          color="default"
-          label={
-            <Typography variant="bodyXsBold" component="span">
-              {poolTypeNames[type]()}
-            </Typography>
-          }
-          data-testid={`pool-type-${type.toLowerCase()}`}
-        />
+      {useLLv2() && (
+        <MarketBadge label={marketVersionLabel[version]} data-testid={`market-version-${type.toLowerCase()}`} />
+      )}
+
+      <Tooltip title={marketTypeDetails[type].description}>
+        <MarketBadge label={marketTypeDetails[type].label} data-testid={`market-type-${type.toLowerCase()}`} />
       </Tooltip>
 
       {leverage && (
         <Tooltip title={t`How much you can leverage your position`}>
           {isMobile ? (
-            <Typography variant="bodyXsRegular">🔥</Typography>
+            <Typography variant="bodyXsBold">🔥</Typography>
           ) : (
-            <Badge
-              size="extraSmall"
-              color="highlight"
-              label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`}
-            />
+            <MarketBadge color="highlight" label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`} />
           )}
         </Tooltip>
       )}
@@ -61,8 +61,8 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
       {deprecatedMessage && (
         <Tooltip title={deprecatedMessage}>
           <Typography variant="bodyXsRegular" color="warning" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <ExclamationTriangleIcon fontSize="small" />
             {!isSmall && t`Deprecated`}
-            <ExclamationTriangleIcon />
           </Typography>
         </Tooltip>
       )}

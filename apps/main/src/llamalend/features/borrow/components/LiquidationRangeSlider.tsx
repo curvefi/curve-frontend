@@ -44,7 +44,7 @@ export const LiquidationRangeSlider = ({
           min={minValue}
           max={maxValue}
           sliderProps={{ 'data-rail-background': 'safe' }}
-          inputProps={{ variant: 'standard', adornment: 'bands' }}
+          inputProps={{ adornment: 'bands' }}
         />
       </Grid>
     </Grid>
