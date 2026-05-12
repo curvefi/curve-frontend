@@ -39,7 +39,7 @@ export function ChartCrvUsdPrice() {
   const palette = createPalette({ theme })
 
   const legendSets: LegendItem[] = useMemo(
-    () => [{ label: PRICE_LABEL, line: { lineStroke: palette.colors[0], dash: 'none' } }],
+    () => [{ label: PRICE_LABEL, line: { lineStroke: palette.colors[0] } }],
     [palette.colors],
   )
 

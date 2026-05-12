@@ -13,7 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from './columns'
-import { MultiSelectFilter } from './filters/MultiSelectFilter'
+import { LegacyMultiSelectFilter } from './filters/LegacyMultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
 
 const { Spacing } = SizesAndSpaces
@@ -73,12 +73,11 @@ export const LegacyLendingMarketsFilters = ({
       paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
     >
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
-        <MultiSelectFilter
+        <LegacyMultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
-          defaultText={t`All`}
           defaultTextMobile={t`All Collateral Tokens`}
           data={markets}
           {...filterProps}
@@ -86,12 +85,11 @@ export const LegacyLendingMarketsFilters = ({
       </TableFilterColumn>
 
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
-        <MultiSelectFilter
+        <LegacyMultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} tokens={tokens} />}
-          defaultText={t`All`}
           defaultTextMobile={t`All Debt Tokens`}
           data={markets}
           {...filterProps}

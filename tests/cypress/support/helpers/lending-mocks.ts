@@ -33,6 +33,7 @@ const oneLendingPool = (
   const borrowedBalance = borrowedBalanceUsd / borrowedPrice
   return {
     name: [collateral.symbol, borrowed.symbol].join('-'),
+    version: oneOf(1, 2),
     controller: oneAddress(),
     vault: oneAddress(),
     llamma: oneAddress(),

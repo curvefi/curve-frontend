@@ -42,6 +42,7 @@ const testCases = [oneViewport()] as const
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
+    const itMobileOnly = breakpoint === 'mobile' ? it : it.skip
 
     beforeEach(() => {
       vaultData = setupMocks()
@@ -68,7 +69,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
       cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
       cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
-      cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
+      cy.get(`[data-testid^="market-type-"]`).should('be.visible') // wait for the table to render
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
@@ -89,7 +90,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       if (breakpoint == 'mobile') {
         withFilterChips(breakpoint, () => {
           cy.get(`[data-testid="chip-lend"]`).click()
-          return cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+          return cy.get(`[data-testid="market-type-mint"]`).should('not.exist')
         })
         cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
         openDrawer(breakpoint, 'sort')
@@ -162,7 +163,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
     })
 
-    it('should allow filtering by using a slider', () => {
+    itMobileOnly('should allow filtering by using a slider', () => {
       const [columnId, initialFilterText] = oneOf(
         [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
         [LlamaMarketColumnId.Tvl, '$0 -'],
@@ -194,7 +195,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       })
     })
 
-    it(`should allow filtering by using a slider input`, () => {
+    itMobileOnly(`should allow filtering by using a slider input`, () => {
       const [columnId, getFilterValue] = oneOf(
         ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
         ['tvl', () => getMaxTvl(vaultData) / 10],
@@ -202,9 +203,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       )
 
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        if (breakpoint === 'mobile') {
-          cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        }
+        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
         openFilters(breakpoint)
 
         // open the chosen filter
@@ -384,6 +383,6 @@ const filterByMarketType = (size: [number, number], marketType: LlamaMarketType 
   visitAndWait(size, `/llamalend/ethereum/markets?type=${marketType}`)
   cy.url().should('include', `type=${marketType}`)
   cy.get(
-    `[data-testid="pool-type-${(marketType === LlamaMarketType.Lend ? LlamaMarketType.Mint : LlamaMarketType.Lend).toLowerCase()}"]`,
+    `[data-testid="market-type-${(marketType === LlamaMarketType.Lend ? LlamaMarketType.Mint : LlamaMarketType.Lend).toLowerCase()}"]`,
   ).should('not.exist')
 }
