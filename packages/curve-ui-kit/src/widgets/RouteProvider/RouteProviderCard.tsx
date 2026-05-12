@@ -4,7 +4,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { BaseConfig } from '@ui/utils'
 import type { RouteQuery, RouteResponse } from '@ui-kit/entities/router-api'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { SelectableCard } from '@ui-kit/shared/ui/SelectableCard'
@@ -26,6 +28,8 @@ export type RouteProviderCardProps = {
   providerLabel: string
   onSelect: (provider: RouteResponse) => void
   icon: ReactNode
+  networks: Record<number, BaseConfig>
+  chainId: number
 }
 
 export const RouteProviderCard = ({
@@ -36,6 +40,8 @@ export const RouteProviderCard = ({
   providerLabel,
   onSelect,
   icon: Icon,
+  chainId,
+  networks,
 }: RouteProviderCardProps) => {
   const {
     symbol: toTokenSymbol,
@@ -43,6 +49,7 @@ export const RouteProviderCard = ({
     decimals,
   } = tokenOut
   const amountOut = decimals == null || !route ? null : fromWei(route.amountOut[0], decimals)
+  const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas && +route?.gas)
   return (
     <SelectableCard
       onClick={useCallback(() => route && onSelect(route), [onSelect, route])}
@@ -83,6 +90,12 @@ export const RouteProviderCard = ({
                 {amountOut == null || usdRate == null ? '-' : `~${formatUsd(parseFloat(amountOut) * usdRate)}`}
               </Typography>
             </WithSkeleton>
+            {gasEstimate?.estGasCostUsd != null && !isFetching && (
+              <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-gas">
+                {' - '}
+                {formatUsd(gasEstimate.estGasCostUsd)}
+              </Typography>
+            )}
             {isFetching && <ReloadIcon sx={{ ...LoadingAnimation, width: IconSize.xxs, height: IconSize.xxs }} />}
           </Stack>
           <Stack direction="row" alignItems="center" gap={Spacing.xxs}>

@@ -20,6 +20,7 @@ export type RouterRouteResponse = {
   router: RouteProvider
   amountIn: [Decimal]
   amountOut: [Decimal]
+  gas: Decimal | [Decimal, Decimal] | null
   priceImpact: number | null
   createdAt: number
   warnings: ('high-slippage' | 'low-exchange-rate')[]

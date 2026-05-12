@@ -128,8 +128,10 @@ export { useRouterApi, fetchApiRoutes }
 
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
+  const route = data == null ? undefined : (data[0] ?? null)
+
   return {
-    ...q({ isLoading, data: data == null ? undefined : (data[0] ?? null), error }),
+    ...q({ isLoading, data: route, error }),
     isFetching,
   }
 }
@@ -137,7 +139,7 @@ function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvi
 /**
  * Calls the route providers in parallel, returning the first route of each.
  */
-export const useRouters = (params: Omit<RoutesParams, 'router'>, enabled?: boolean) => ({
+export const useRouterQueries = (params: Omit<RoutesParams, 'router'>, enabled?: boolean) => ({
   queries: {
     curve: useRouterQuery(params, 'curve', enabled),
     enso: useRouterQuery(params, 'enso', enabled),

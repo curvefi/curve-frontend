@@ -4,7 +4,8 @@ import { useConnection } from 'wagmi'
 import { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
-import { type RouteQueries, type RouteResponse, useRouters } from '@ui-kit/entities/router-api'
+import type { BaseConfig } from '@ui/utils'
+import { type RouteQueries, type RouteResponse, useRouterQueries } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@ui-kit/types/util'
 import { toWei } from '@ui-kit/utils'
@@ -17,6 +18,8 @@ export type MarketRoutes = {
   onChange: (option: RouteResponse | undefined) => Promise<void>
   onRefresh: () => void
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
+  networks: Record<number, BaseConfig>
+  chainId: number
 }
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
@@ -34,6 +37,7 @@ export function useMarketRoutes({
   slippage,
   enabled,
   onChange: onChangeProp,
+  networks,
 }: {
   chainId: number
   tokenIn: { symbol: string; address: Address; decimals: number } | undefined
@@ -41,12 +45,13 @@ export function useMarketRoutes({
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
   enabled: boolean
+  networks: Record<number, BaseConfig>
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
   const [, startTransition] = useTransition() // todo: use isTransitioning for something
 
-  const { queries, onRefresh } = useRouters(
+  const { queries, onRefresh } = useRouterQueries(
     {
       chainId,
       tokenIn: tokenIn?.address,
@@ -82,6 +87,8 @@ export function useMarketRoutes({
   )
 
   return {
+    networks,
+    chainId,
     queries,
     sortedRoutes,
     enabled,

@@ -11,6 +11,7 @@ export const RoutesPath = '/api/router/v1/routes'
 const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
+const DecimalTupleSchema = { type: 'array', items: DecimalSchema, minItems: 2, maxItems: 2 } as const
 const WeiAmountSchema = { type: 'string', pattern: WEI_AMOUNT_PATTERN } as const
 const WeiAmountArraySchema = { type: 'array', items: WeiAmountSchema, minItems: 1, maxItems: 1 } as const
 
@@ -54,6 +55,7 @@ const routeItemSchema = {
     router: { type: 'string', enum: RouteProviders },
     amountIn: WeiAmountArraySchema,
     amountOut: WeiAmountArraySchema,
+    gas: { anyOf: [DecimalSchema, DecimalTupleSchema, { type: 'null' }] },
     priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
     createdAt: { type: 'integer' },
     isStableswapRoute: { type: 'boolean' },

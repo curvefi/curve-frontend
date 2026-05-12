@@ -6,7 +6,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getControllerAddress, getTokens, getMarketType, isRouterRequired } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
@@ -22,7 +22,7 @@ import {
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
-import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
@@ -94,19 +94,20 @@ const isRouteRequired = (market: LlamaMarketTemplate | undefined, leverageEnable
 
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
-  network,
+  networks,
+  chainId,
   enabled,
   onPricesUpdated,
   collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: { id: LlamaNetworkId; chainId: ChainId; name: string }
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
   enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const { address: userAddress } = useConnection()
-  const { chainId } = network
   const marketId = market?.id
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
 
@@ -125,7 +126,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isPending: isBorrowing,
     error: borrowError,
   } = useBorrowMoreMutation({
-    network,
+    network: networks[chainId],
     marketId,
     onReset: () => resetForm(form, userDefaultValues),
     userAddress,
@@ -185,6 +186,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
         updateForm(form, { routeId: route?.id })
         await invalidateBorrowMoreRouteQueries(route, params)
       },
+      networks,
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
     isLeverageEnabled,

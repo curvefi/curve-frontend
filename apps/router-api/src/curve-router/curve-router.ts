@@ -113,6 +113,7 @@ export async function buildCurveRouteResponse(
       createdAt: Date.now(),
       isStableswapRoute,
       warnings,
+      gas: null, // curve-js doesn't return gas estimates without a signer.
       tx: tx as TransactionData | undefined,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({

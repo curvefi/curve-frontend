@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
@@ -17,7 +17,7 @@ import {
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
@@ -108,17 +108,18 @@ const isRepayRouteRequired = (
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
-  network,
+  networks,
+  chainId,
   enabled,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: { id: LlamaNetworkId; chainId: ChainId; name: string }
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
   enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
-  const { chainId } = network
   const marketId = market?.id
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
@@ -136,7 +137,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isPending: isRepaying,
     error: repayError,
   } = useRepayMutation({
-    network,
+    network: networks[chainId],
     marketId,
     onReset: () => resetForm(form, userDefaultValues),
     userAddress,
@@ -178,6 +179,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
         updateForm(form, { routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
+      networks,
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors

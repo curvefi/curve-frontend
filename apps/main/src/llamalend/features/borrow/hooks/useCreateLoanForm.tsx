@@ -3,12 +3,12 @@ import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getControllerAddress, getTokens, getMarketType, hasZapV2 } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
-import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
@@ -45,13 +45,14 @@ const resolver = vestResolver(
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
-  network,
-  network: { chainId },
+  networks,
+  chainId,
   preset,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: { id: LlamaNetworkId; chainId: ChainId }
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
   preset: LoanPreset
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) {
@@ -110,7 +111,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isPending: isCreating,
     error: creationError,
   } = useCreateLoanMutation({
-    network,
+    network: networks[chainId],
     marketId: market?.id,
     onReset: () => resetForm(form, userDefaultValues),
     userAddress,
@@ -183,6 +184,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         updateForm(form, { routeId: route?.id })
         await invalidateCreateLoanRouteQueries(route, params)
       },
+      networks,
     }),
   }
 }

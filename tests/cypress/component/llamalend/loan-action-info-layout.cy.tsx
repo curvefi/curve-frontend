@@ -1,4 +1,5 @@
 import { noop } from 'lodash'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { allViewports } from '@cy/support/ui'
@@ -13,13 +14,18 @@ const getHeight = (testId: string, subelement?: string) =>
     .should('be.visible')
     .then($element => $element[0].getBoundingClientRect().height)
 
-const routes = {
+const routes: MarketRoutes = {
   queries: fromEntries(
     RouteProviders.map(router => [
       router,
-      q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+      {
+        ...q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+        isFetching: false,
+      },
     ]),
   ),
+  networks: {},
+  chainId: 1,
   sortedRoutes: mockRoutes,
   selectedRoute: mockRoutes[0],
   enabled: true,

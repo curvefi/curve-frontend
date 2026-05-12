@@ -3,6 +3,7 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import type { BaseConfig } from '@ui/utils'
 import type { RouteQueries, RouteResponse } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -33,6 +34,8 @@ export type RouteProviderProps = {
   isExpanded: boolean
   onToggle: () => void
   onRefresh: () => void
+  networks: Record<number, BaseConfig>
+  chainId: number
 }
 
 export const RouteProvidersAccordion = ({
@@ -44,6 +47,8 @@ export const RouteProvidersAccordion = ({
   isExpanded,
   onToggle,
   onRefresh,
+  networks,
+  chainId,
 }: RouteProviderProps) => {
   const queryList = useMemo(() => recordValues(queries).filter(Boolean), [queries])
   const maxAmountOut = useMemo(
@@ -127,6 +132,8 @@ export const RouteProvidersAccordion = ({
                 bestOutputAmount={maxAmountOut}
                 onSelect={onChange}
                 icon={RouteProviderIcons[key]()}
+                networks={networks}
+                chainId={chainId}
               />
             ))}
           </Stack>

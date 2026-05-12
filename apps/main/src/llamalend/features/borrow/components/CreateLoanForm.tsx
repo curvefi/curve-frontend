@@ -69,7 +69,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isHighLiquidationRisk,
   } = useCreateLoanForm({
     market,
-    network,
+    networks,
+    chainId,
     preset,
     onPricesUpdated,
   })
