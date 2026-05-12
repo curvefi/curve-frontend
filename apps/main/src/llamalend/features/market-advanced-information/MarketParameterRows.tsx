@@ -1,4 +1,4 @@
-import { useMarketBasePrice, useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
+import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -11,12 +11,6 @@ type MarketPricesRowsProps = {
 }
 
 export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: MarketPricesRowsProps) => {
-  const {
-    data: basePrice,
-    isLoading: isLoadingBasePrice,
-    error: errorBasePrice,
-  } = useMarketBasePrice({ chainId, marketId })
-
   const {
     data: oraclePrice,
     isLoading: isLoadingOraclePrice,
@@ -31,13 +25,6 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: Mar
 
   return (
     <>
-      <ActionInfo
-        label={t`Base price`}
-        value={formatNumber(basePrice)}
-        valueTooltip={basePrice == null ? undefined : formatNumber(basePrice, { decimals: 5 })}
-        loading={isLoadingBasePrice || !marketId}
-        error={errorBasePrice}
-      />
       <ActionInfo
         label={t`Oracle price`}
         value={formatNumber(oraclePrice)}
