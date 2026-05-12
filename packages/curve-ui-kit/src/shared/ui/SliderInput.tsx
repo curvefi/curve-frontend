@@ -239,7 +239,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   const renderSlider = (
-    <Stack width="100%">
+    <Stack flexGrow={1}>
       {sliderLabel}
       <Slider
         size={size}
@@ -261,7 +261,12 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   return (
-    <Stack direction={layoutDirection} alignItems="end" columnGap={Spacing.sm} rowGap={Spacing.xs}>
+    <Stack
+      direction={layoutDirection}
+      alignItems={layoutDirection === 'row' ? 'end' : 'stretch'}
+      columnGap={Spacing.sm}
+      rowGap={Spacing.xs}
+    >
       {layoutDirection === 'row' ? (
         <>
           {isRange && renderInput(currentFirst, 0)}
@@ -277,7 +282,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
             justifyContent={isRange ? 'space-between' : 'flex-end'}
             columnGap={Spacing.sm}
             rowGap={Spacing.xs}
-            width="100%"
+            flexGrow={1}
           >
             {isRange && renderInput(currentFirst, 0)}
             {renderInput(currentSecond, 1)}
