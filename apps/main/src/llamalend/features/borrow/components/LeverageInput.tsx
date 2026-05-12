@@ -31,7 +31,7 @@ export const LeverageInput = ({
         <ActionInfo
           label={t`Leverage`}
           value={
-            leverage && leverage !== '0'
+            leverage && +leverage > 0
               ? `${formatNumber(leverage, { maximumFractionDigits: 2, abbreviate: false })}x`
               : '-'
           }
