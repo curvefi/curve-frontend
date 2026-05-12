@@ -82,7 +82,7 @@ const meta: Meta<typeof SliderInputComponent> = {
       description: 'Callback triggered when the value changes.',
     },
     sliderLabel: {
-      control: false,
+      control: 'text',
       description: 'Label of the slider',
     },
   },
