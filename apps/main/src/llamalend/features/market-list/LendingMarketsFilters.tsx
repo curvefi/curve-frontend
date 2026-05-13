@@ -83,6 +83,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           field="rates.borrowApr"
           data={markets}
           adornment="percentage"
+          loading={props.loading}
           {...filterProps}
         />
       </TableFilterItem>
@@ -92,6 +93,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           field={LlamaMarketColumnId.Tvl}
           data={markets}
           adornment="dollar"
+          loading={props.loading}
           {...filterProps}
         />
       </TableFilterItem>
@@ -101,6 +103,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           field={LlamaMarketColumnId.LiquidityUsd}
           data={markets}
           adornment="dollar"
+          loading={props.loading}
           {...filterProps}
         />
       </TableFilterItem>

@@ -16,9 +16,13 @@ export const useMaxValue = <TKey>({
 }) => {
   const maxValue = useMemo(
     // todo: round this to a nice number
-    () => max ?? Math.ceil(data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0)),
+    () =>
+      max ??
+      (data.length
+        ? Math.ceil(data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0))
+        : undefined),
     [max, data, field],
   )
-  const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
+  const step = useMemo(() => (maxValue == null ? undefined : Math.ceil(+maxValue.toPrecision(2) / 100)), [maxValue])
   return { maxValue, step }
 }

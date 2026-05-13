@@ -21,9 +21,11 @@ type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> &
   adornment?: NumericTextFieldProps['adornment']
   min?: number
   max?: number
+  loading?: boolean
 }
 
 type InputIndex = 0 | 1
+const parseNullableNumber = (value: string | undefined | null) => (value == null ? null : Number(value))
 
 export const RangeFilter = <TKey, TColumnId extends string>({
   data,
@@ -31,19 +33,20 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   id,
   adornment,
   max,
+  loading = false,
   min = 0,
   ...filterProps
 }: RangeFilterProps<TKey, TColumnId>) => {
   const { maxValue } = useMaxValue<TKey>({ max, data, field })
-  const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
+  const [range, setRange] = useRangeFilter({ isLoading: loading, id, maxValue, ...filterProps })
 
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
-      const nextFirst = index === 0 ? Number(newValue) : range[0]
-      const nextSecond = index === 1 ? Number(newValue) : range[1]
+      const nextFirst = index === 0 ? parseNullableNumber(newValue) : range[0]
+      const nextSecond = index === 1 ? parseNullableNumber(newValue) : range[1]
 
-      const nextRange: Range<number> | null =
-        nextFirst > nextSecond
+      const nextRange: Range<number | null> | null =
+        nextFirst != null && nextSecond != null && nextFirst > nextSecond
           ? // Keep the left bound from moving past the right one while typing.
             index === 0
             ? [nextFirst, nextFirst]
@@ -86,6 +89,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
       max={decimal(maxValue)}
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
+      disabled={loading}
       adornment={adornment}
       format={value => (value == null ? '' : formatNumber(value, { abbreviate: true }))}
       placeholder={placeholder}

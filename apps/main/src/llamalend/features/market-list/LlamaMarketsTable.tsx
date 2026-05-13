@@ -105,6 +105,7 @@ export const LlamaMarketsTable = ({
         popoverFilters={
           <LlamaTableFiltersPopover
             hiddenCount={getHiddenCount(table)}
+            loading={loading}
             open={filterPopoverOpen}
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}

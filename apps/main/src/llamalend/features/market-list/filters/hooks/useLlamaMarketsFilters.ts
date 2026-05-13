@@ -37,6 +37,7 @@ const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
 
 export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
   data: LlamaMarket[]
+  loading?: boolean
 }
 
 export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFiltersProps) => {

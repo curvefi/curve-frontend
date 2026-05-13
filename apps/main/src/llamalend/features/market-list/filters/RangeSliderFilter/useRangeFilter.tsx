@@ -7,19 +7,23 @@ import { Range } from '@ui-kit/types/util'
 const defaultMin = 0
 
 export function useRangeFilter<TColumnId extends string>({
+  isLoading = false,
   columnFiltersById,
   setColumnFilter,
   id,
   maxValue,
-}: FilterProps<TColumnId> & { id: TColumnId; maxValue: number }) {
+}: FilterProps<TColumnId> & { id: TColumnId; maxValue: number | undefined; isLoading?: boolean }) {
   return useUniqueDebounce({
     // Separate default and applied range, the input's onBlur event that didn’t change anything could trigger the callback and clear the filter
-    defaultValue: useMemo((): Range<number> => {
+    defaultValue: useMemo((): Range<number | null> => {
       const [minFilter, maxFilter] = parseRangeFilter(columnFiltersById[id]) ?? []
-      return [minFilter ?? defaultMin, maxFilter ?? maxValue]
-    }, [columnFiltersById, id, maxValue]),
+      return [
+        minFilter ?? (isLoading ? null : defaultMin),
+        maxFilter ?? (isLoading || maxValue == null ? null : maxValue),
+      ]
+    }, [columnFiltersById, id, isLoading, maxValue]),
     callback: useCallback(
-      (newRange: Range<number>) =>
+      (newRange: Range<number | null>) =>
         setColumnFilter(
           id,
           serializeRangeFilter(
