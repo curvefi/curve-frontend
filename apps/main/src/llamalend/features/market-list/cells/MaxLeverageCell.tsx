@@ -7,9 +7,7 @@ export const MaxLeverageCell = ({ getValue }: CellContext<LlamaMarket, number | 
   const value = getValue()
   return (
     <Typography variant="tableCellMBold">
-      {value == null
-        ? '-'
-        : formatNumber(value, { abbreviate: false, maximumSignificantDigits: 2, unit: 'multiplier' })}
+      {formatNumber(value, { abbreviate: false, fallback: '-', maximumSignificantDigits: 2, unit: 'multiplier' })}
     </Typography>
   )
 }
