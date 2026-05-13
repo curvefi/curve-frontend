@@ -39,15 +39,33 @@ const oraclePool = z
 const oracleOHLC = z
   .object({
     time: timestampResponse,
-    open: z.number(),
-    close: z.number(),
-    high: z.number(),
-    low: z.number(),
-    base_price: z.number(),
-    oracle_price: z.number(),
+    open: z.number().nullable().optional(),
+    close: z.number().nullable().optional(),
+    high: z.number().nullable().optional(),
+    low: z.number().nullable().optional(),
+    base_price: z.number().nullable().optional(),
+    oracle_price: z.number().nullable().optional(),
   })
   .transform(camelizeKeys)
   .transform(data => ({ ...data, time: parseTimestamp(data.time) }))
+
+type RawOracleOHLC = z.infer<typeof oracleOHLC>
+type CompleteOracleOHLC = RawOracleOHLC & {
+  close: number
+  high: number
+  low: number
+  open: number
+}
+
+const isCompleteOracleOHLC = (data: RawOracleOHLC): data is CompleteOracleOHLC =>
+  data.close !== null &&
+  data.close !== undefined &&
+  data.high !== null &&
+  data.high !== undefined &&
+  data.low !== null &&
+  data.low !== undefined &&
+  data.open !== null &&
+  data.open !== undefined
 
 export const getOracleResponse = z
   .object({
@@ -58,7 +76,11 @@ export const getOracleResponse = z
     data: z.array(oracleOHLC),
   })
   .transform(camelizeKeys)
-  .transform(data => ({ ...data, pools: data.priceSourcePools, ohlc: data.data }))
+  .transform(data => {
+    const ohlc = data.data.filter(isCompleteOracleOHLC)
+
+    return { ...data, data: ohlc, pools: data.priceSourcePools, ohlc }
+  })
 
 const liquidation = z
   .object({
@@ -174,7 +196,7 @@ export const getRateCurveResponse = z
 export type LoanDistribution = z.infer<typeof getLoanDistributionResponse>
 export type Oracle = z.infer<typeof getOracleResponse>
 export type OraclePool = z.infer<typeof oraclePool>
-export type OracleOHLC = z.infer<typeof oracleOHLC>
+export type OracleOHLC = CompleteOracleOHLC
 export type UserCollateralEvent = z.infer<typeof userCollateralEvent>
 export type UserCollateralEvents = z.infer<typeof getUserCollateralEventsResponse>
 export type RateCurvePoint = z.infer<typeof rateCurvePoint>
