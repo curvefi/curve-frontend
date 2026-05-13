@@ -9,8 +9,8 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Spinner } from '@ui/Spinner'
 import { Stats } from '@ui/Stats'
 import { Chip } from '@ui/Typography/Chip'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
 type TotalOtherProfit = {
@@ -85,11 +85,11 @@ export const TotalRecurrence = ({ title }: Props) => {
                   {...(token === 'base'
                     ? {}
                     : {
-                        tooltip: `${formatNumber(1)} ${symbol} = ${formatNumber(price, FORMAT_OPTIONS.USD)}`,
+                        tooltip: `${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`,
                         tooltipProps,
                       })}
                 >
-                  {formatNumber(day)}
+                  {formatNumber(day, { abbreviate: false })}
                 </Chip>
               </StyledStats>
             )
@@ -97,7 +97,7 @@ export const TotalRecurrence = ({ title }: Props) => {
 
         <Stats label={t`USD Total`} isOneLine>
           <Chip isBold size="md">
-            ≈ {formatNumber(totalUsd, FORMAT_OPTIONS.USD)}
+            ≈ {formatNumber(totalUsd, { unit: 'dollar', abbreviate: false })}
           </Chip>
         </Stats>
       </SummaryInnerContent>

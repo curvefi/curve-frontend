@@ -172,6 +172,8 @@ export type NumberFormatOptions = {
   highPrecision?: boolean
   /** Optional formatter for value */
   formatter?: (value: Amount) => string
+  /** Value returned when the input is nullish, an empty string, or numeric NaN */
+  fallback?: string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>
 
 /**
@@ -228,26 +230,30 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
   }
 }
 
+type MissingAmount = null | undefined | ''
+
 /**
  * Formats a number according to the specified options by decomposing it into components
  * and reassembling them into a formatted string.
  *
- * @param value - The number to format
- * @param options - Optional formatting configuration options
- * @returns The formatted number as a string with prefix, main value, scale suffix, and suffix combined
+ * @param value - The number to format. Nullish values and empty strings return `options.fallback` or `undefined`.
+ * @param options - Formatting configuration options
+ * @param options.fallback - Returned for nullish values, empty strings, and numeric NaN values
+ * @returns The formatted number as a string with prefix, main value, scale suffix, and suffix combined. Returns
+ * `undefined` for nullish or empty values when no fallback is provided.
  *
  * @example
- * formatNumber(1234.56)
- * // Returns "1.23K" (default abbreviation enabled)
+ * formatNumber(1234.56, { abbreviate: true })
+ * // Returns "1.23k"
  *
- * formatNumber(1000000, { unit: { symbol: '$', position: 'prefix' } })
- * // Returns "$1M"
+ * formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
+ * // Returns "$1m"
  *
  * formatNumber(500, { abbreviate: false })
- * // Returns "500.00"
+ * // Returns "500"
  *
- * formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
- * // Returns "2.5B%"
+ * formatNumber(2500000000, { abbreviate: true, unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
+ * // Returns "2.5b%"
  *
  * formatNumber(-1000, { abbreviate: true, unit: 'dollar' })
  * // Returns "-$1k" (negative sign precedes the prefix symbol)
@@ -260,8 +266,24 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
  *
  * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.0000"
+ *
+ * formatNumber(undefined, { abbreviate: false, fallback: '-' })
+ * // Returns "-"
+ *
+ * formatNumber(NaN, { abbreviate: false, fallback: '-' })
+ * // Returns "-"
+ *
+ * formatNumber(NaN, { abbreviate: false })
+ * // Returns "NaN"
  */
-export const formatNumber = (value: Amount, options: NumberFormatOptions) => {
+export function formatNumber(value: Amount, options: NumberFormatOptions): string
+export function formatNumber(value: Amount | MissingAmount, options: NumberFormatOptions & { fallback: string }): string
+export function formatNumber(value: Amount | MissingAmount, options: NumberFormatOptions): string | undefined
+export function formatNumber(value: Amount | MissingAmount, options: NumberFormatOptions) {
+  if (value == null || value === '' || (typeof value === 'number' && isNaN(value) && options.fallback !== undefined)) {
+    return options.fallback
+  }
+
   const decomposed = decomposeNumber(value, options)
   const isNegative = decomposed.mainValue.startsWith('-')
   const sign = isNegative ? '-' : ''
@@ -281,3 +303,35 @@ export const formatPercent = (value?: Amount | null) =>
 
 export const formatUsd = (value: Amount, options?: NumberFormatOptions) =>
   formatNumber(value, { unit: 'dollar', abbreviate: true, ...options })
+
+export const formatNumberRange = (numbers: number[] | null | undefined) =>
+  !numbers || numbers?.some(n => n == null) || numbers.every(n => !n)
+    ? ''
+    : numbers.map(n => formatNumber(n, { abbreviate: false })).join(' - ')
+
+/**
+ * Builds fraction digit options that preserve the precision already present in a source value.
+ *
+ * This exists for values that are derived from user-entered amounts or protocol calculations where the UI should not
+ * always pad to the formatter's default decimal count. For example, a value of `1.2` with a default of `5` should render
+ * with one decimal, while `1.234567` should be capped at five decimals.
+ *
+ * Returns an empty object for empty, nullish, zero, or negative values so `formatNumber` can keep its normal defaults.
+ */
+export function getFractionDigitsOptions(
+  val: number | string | undefined | null,
+  defaultDecimal: number,
+): Partial<NumberFormatOptions> {
+  function getDecimal(val: number | string, defaultDecimal: number) {
+    const decimal = val.toString().split('.')[1]?.length ?? 0
+    return decimal > defaultDecimal ? defaultDecimal : decimal
+  }
+
+  const formatOptions: Partial<NumberFormatOptions> = {}
+  if (val && Number(val) >= 0) {
+    const decimal = getDecimal(val, defaultDecimal)
+    formatOptions.minimumFractionDigits = decimal
+    formatOptions.maximumFractionDigits = decimal
+  }
+  return formatOptions
+}

@@ -27,8 +27,7 @@ export const ExpectedSummary = ({
         <Item key={`${amount}${idx}`} {...($minWidth ? { $minWidth } : {})}>
           <span>{label}</span>{' '}
           <span>
-            {format(value, { defaultValue: '-' })} {swapFromSymbol} <Icon name="ArrowRight" size={16} />{' '}
-            {format(amount, { defaultValue: '-' })} {swapToSymbol}
+            {format(value)} {swapFromSymbol} <Icon name="ArrowRight" size={16} /> {format(amount)} {swapToSymbol}
           </span>
         </Item>
       )
@@ -36,11 +35,11 @@ export const ExpectedSummary = ({
     <Item>
       <span>{nonSwapAmount.label}</span>
       <span>
-        {format(nonSwapAmount.value, { defaultValue: '-' })} {swapToSymbol}
+        {format(nonSwapAmount.value)} {swapToSymbol}
       </span>
     </Item>
     <Item $isTotal>
-      {format(total, { defaultValue: '-' })} {swapToSymbol}
+      {format(total)} {swapToSymbol}
     </Item>
   </Wrapper>
 )

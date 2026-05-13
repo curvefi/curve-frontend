@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { cloneDeep } from 'lodash'
 import {
   getIsUserCloseToSoftLiquidation,
@@ -14,7 +15,6 @@ import { type BandBalance, ChainId, LlamaApi, Llamma, type Provider, UserLoanDet
 import { fulfilledValue, log } from '@/loan/utils/helpers'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import PromisePool from '@supercharge/promise-pool'
-import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { getErrorMessage } from '@ui-kit/utils'
 import { ROUTE_AGGREGATOR_LABELS, RouteAggregator } from '../constants'
@@ -56,8 +56,8 @@ const DEFAULT_PARAMETERS = {
 function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   const smallAmount = 0.00000001
   const resp = cloneDeep(userLoss)
-  resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
-  resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
+  resp.loss = resp.loss && BigNumber(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
+  resp.loss_pct = resp.loss_pct && BigNumber(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
 
   return resp
 }
@@ -85,13 +85,13 @@ async function fetchChartBandBalancesData(
   const { results } = await PromisePool.for(ns).process(async n => {
     const { collateral, stablecoin } = bandBalances[n]
     const [p_up, p_down] = await llamma.calcBandPrices(+n)
-    const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
-    const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toFixed(5)
-    const collateralUsd = new BN(collateral).multipliedBy(sqrt)
+    const sqrt = new BigNumber(p_up).multipliedBy(p_down).squareRoot()
+    const pUpDownMedian = new BigNumber(p_up).plus(p_down).dividedBy(2).toFixed(5)
+    const collateralUsd = new BigNumber(collateral).multipliedBy(sqrt)
 
     return {
       collateral,
-      collateralUsd: collateralUsd.toString(),
+      collateralUsd: collateralUsd.toFixed(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
       isOraclePriceBand: false, // update this with detail info oracle price
       isNGrouped: false,

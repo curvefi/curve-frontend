@@ -16,12 +16,13 @@ import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { Chip } from '@ui/Typography'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { NETWORK_BASE_CONFIG, scanTxPath } from '@ui/utils/utilsNetworks'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
@@ -53,7 +54,9 @@ export const FormVecrv = () => {
   const isLockExpired =
     (lookupAddressIsSameAsSignerAddress && getIsLockExpired(lockedAmount, unlockTime)) ||
     parsedFormStatus.formTypeCompleted
-  const lockedAmountDisplay = <strong>{formatNumber(lockedAmount, { defaultValue: '-' })}</strong>
+  const lockedAmountDisplay = (
+    <strong>{formatNumber(amount(lockedAmount), { abbreviate: false, fallback: '-' })}</strong>
+  )
   const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(unlockTime, 'long')}</strong> : '-' //
 
   const handleBtnClickWithdraw = useCallback(
@@ -158,13 +161,11 @@ export const FormVecrv = () => {
         <SummaryInnerContent grid gridRowGap={3}>
           <Items listItemMargin="0 0 0.2rem 0">
             <li>
-              {t`Balance in voting escrow:`} <strong>{formatNumber(veCrv, { defaultValue: '-' })}</strong> veCRV <br />
+              {t`Balance in voting escrow:`}{' '}
+              <strong>{formatNumber(amount(veCrv), { abbreviate: false, fallback: '-' })}</strong> veCRV <br />
               <Chip size="sm">
                 <strong>
-                  {formatNumber(veCrvPct, {
-                    style: 'percent',
-                    defaultValue: '-',
-                  })}
+                  {formatNumber(amount(veCrvPct), { unit: 'percentage', abbreviate: false, fallback: '-' })}
                 </strong>{' '}
                 {t`share of total`}
               </Chip>

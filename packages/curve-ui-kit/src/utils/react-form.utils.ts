@@ -62,7 +62,8 @@ export const filterFormErrors = <TFieldValues extends FieldValues>(formState: Fo
     ...recordEntries(formState.errors)
       .filter(
         ([field, error]) =>
-          (field in formState.touchedFields || (field === 'root' && formState.isDirty)) && error?.message,
+          (field in formState.touchedFields || (field === 'root' && Object.keys(formState.touchedFields).length > 0)) &&
+          error?.message,
       )
       .map(([field, error]) => [field, error!.message!] as const),
   )

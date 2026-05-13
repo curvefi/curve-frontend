@@ -2,8 +2,9 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
-import { formatDateFromTimestamp, formatNumber } from '@ui/utils'
+import { formatDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload?.length) {
@@ -23,11 +24,7 @@ export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameT
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge Weight`}</TooltipDataTitle>
             {gauge_weight ? (
-              <TooltipData>
-                {formatNumber(gauge_weight, {
-                  notation: 'compact',
-                })}
-              </TooltipData>
+              <TooltipData>{formatNumber(amount(gauge_weight), { abbreviate: true, fallback: '-' })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -36,9 +33,7 @@ export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameT
             <TooltipDataTitle>{t`Relative Gauge Weight`}</TooltipDataTitle>
             {gauge_relative_weight ? (
               <TooltipData>
-                {formatNumber(gauge_relative_weight, {
-                  notation: 'compact',
-                })}
+                {formatNumber(amount(gauge_relative_weight), { abbreviate: true, fallback: '-' })}
               </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
@@ -47,11 +42,7 @@ export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameT
           <TooltipColumn>
             <TooltipDataTitle>{t`Emissions`}</TooltipDataTitle>
             {emissions ? (
-              <TooltipData>
-                {formatNumber(emissions, {
-                  notation: 'compact',
-                })}
-              </TooltipData>
+              <TooltipData>{formatNumber(amount(emissions), { abbreviate: true, fallback: '-' })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

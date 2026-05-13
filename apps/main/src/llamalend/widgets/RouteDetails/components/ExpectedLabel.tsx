@@ -28,7 +28,7 @@ export const ExpectedLabel = ({
         <Loader skeleton={[80, 18]} />
       ) : (
         <strong>
-          {format(total, { defaultValue: '-' })} {swapToSymbol}
+          {format(total)} {swapToSymbol}
         </strong>
       )}
       <DetailsButton

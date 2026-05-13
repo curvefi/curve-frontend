@@ -48,15 +48,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
         <MarketBadge label={marketTypeDetails[type].label} data-testid={`market-type-${type.toLowerCase()}`} />
       </Tooltip>
 
-      {leverage && (
-        <Tooltip title={t`How much you can leverage your position`}>
-          {isMobile ? (
-            <Typography variant="bodyXsBold">🔥</Typography>
-          ) : (
-            <MarketBadge color="highlight" label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`} />
-          )}
-        </Tooltip>
-      )}
+      {leverage && isMobile && <Typography variant="bodyXsBold">🔥</Typography>}
 
       {deprecatedMessage && (
         <Tooltip title={deprecatedMessage}>

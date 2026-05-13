@@ -4,8 +4,9 @@ import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useStore } from '@/dao/store/useStore'
 import MuiBox from '@mui/material/Box'
 import { Box } from '@ui/Box'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 import { SpinnerComponent as Spinner } from '../../Spinner'
 import { VeCrvFeesChart } from '../VeCrvFeesChart'
 
@@ -47,20 +48,13 @@ export const VeCrcFees = () => {
                           {formatDate(item.timestamp)}
                           {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
                         </FeeDate>
-                        <FeeData>
-                          {formatNumber(item.feesUsd, {
-                            currency: 'USD',
-                            notation: 'compact',
-                          })}
-                        </FeeData>
+                        <FeeData>{formatNumber(item.feesUsd, { unit: 'dollar', abbreviate: true })}</FeeData>
                       </FeeRow>
                     ))}
                   </FeesContainer>
                   <TotalFees>
                     <FeeDate>{t`Total Fees:`}</FeeDate>
-                    <FeeData>
-                      {formatNumber(veCrvFees.veCrvTotalFees, { currency: 'USD', notation: 'compact' })}
-                    </FeeData>
+                    <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, { unit: 'dollar', abbreviate: true })}</FeeData>
                   </TotalFees>
                 </>
               )}

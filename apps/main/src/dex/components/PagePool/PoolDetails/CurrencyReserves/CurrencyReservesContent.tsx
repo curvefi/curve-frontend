@@ -9,11 +9,11 @@ import { TextEllipsis } from '@ui/TextEllipsis'
 import { TooltipButton } from '@ui/Tooltip/TooltipButton'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography/Chip'
-import { breakpoints, formatNumber, scanTokenPath } from '@ui/utils'
+import { breakpoints, scanTokenPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 
 export const CurrencyReservesContent = ({
   cr,
@@ -45,7 +45,7 @@ export const CurrencyReservesContent = ({
         </TokenLabelLink>
 
         <Box flex flexAlignItems="center" gridGap={2}>
-          <Chip opacity={0.7}>{formatNumber(cr?.usdRate, { currency: 'USD' })}</Chip>
+          <Chip opacity={0.7}>{formatNumber(cr?.usdRate, { unit: 'dollar', abbreviate: false, fallback: '-' })}</Chip>
           <TooltipButton clickable onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
             <Icon name="Copy" size={16} />
           </TooltipButton>
@@ -65,15 +65,15 @@ export const CurrencyReservesContent = ({
 
     <Box className={'right'} flex flexDirection="column">
       <Chip size="md" isBold>
-        {formatNumber(cr?.balance)}{' '}
+        {formatNumber(cr?.balance, { abbreviate: false, fallback: '-' })}{' '}
       </Chip>
       <TokenBalancePercent opacity={0.7}>
-        {cr?.percentShareInPool == null || cr.percentShareInPool === 'NaN'
-          ? '?%'
-          : formatNumber(cr.percentShareInPool, {
-              style: 'percent',
-              ...(Number(cr.percentShareInPool) > 0 ? { minimumIntegerDigits: 2 } : {}),
-            })}
+        {formatNumber(amount(cr?.percentShareInPool), {
+          ...(Number(cr?.percentShareInPool) > 0 ? { minimumIntegerDigits: 2 } : {}),
+          unit: 'percentage',
+          abbreviate: false,
+          fallback: '?%',
+        })}
       </TokenBalancePercent>
     </Box>
   </Wrapper>

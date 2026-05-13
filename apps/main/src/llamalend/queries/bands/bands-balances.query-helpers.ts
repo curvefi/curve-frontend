@@ -1,9 +1,9 @@
+import BigNumber from 'bignumber.js'
 import lodash from 'lodash'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import PromisePool from '@supercharge/promise-pool'
-import { BN } from '@ui/utils'
 import { decimal } from '@ui-kit/utils/decimal'
 
 type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
@@ -36,9 +36,9 @@ export async function fetchChartBandBalancesData(
   const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(bands).process(async b => {
     const { collateral, borrowed, band: n } = b
     const [p_up, p_down] = await getPricesImplementation(market).calcBandPrices(n)
-    const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
-    const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toString()
-    const collateralUsd = new BN(collateral).multipliedBy(sqrt)
+    const sqrt = new BigNumber(p_up).multipliedBy(p_down).squareRoot()
+    const pUpDownMedian = new BigNumber(p_up).plus(p_down).dividedBy(2).toFixed()
+    const collateralUsd = new BigNumber(collateral).multipliedBy(sqrt)
 
     return {
       borrowed: decimal(borrowed)!,

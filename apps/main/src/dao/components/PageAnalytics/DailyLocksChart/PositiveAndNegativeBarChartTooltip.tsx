@@ -3,8 +3,9 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { styled } from 'styled-components'
 import type { LocksDaily } from '@curvefi/prices-api/dao'
 import { Box } from '@ui/Box'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload?.length) {
@@ -19,7 +20,7 @@ export const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipP
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(amount, { notation: 'compact' })}</TooltipData>
+            <TooltipData>{formatNumber(amount, { abbreviate: true, fallback: '-' })}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>

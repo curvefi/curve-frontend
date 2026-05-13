@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Paper, Stack, Typography } from '@mui/material'
+import type { ChartLineDashPattern } from '@ui-kit/shared/ui/Chart'
 import { LegendLine } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -44,7 +45,7 @@ export const ChartTooltipSeriesRow = ({
   label: ReactNode
   value: ReactNode
   lineColor: string
-  dash?: string
+  dash?: ChartLineDashPattern
 }) => (
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     <Stack direction="row" spacing={Spacing.xs} alignItems="center">

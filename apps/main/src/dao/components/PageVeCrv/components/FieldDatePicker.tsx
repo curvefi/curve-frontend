@@ -8,9 +8,9 @@ import { Button } from '@ui/Button'
 import { DatePicker } from '@ui/DatePicker'
 import { Chip } from '@ui/Typography'
 import { formatDate } from '@ui/utils'
-import { formatNumber } from '@ui/utils/utilsFormat'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
@@ -152,7 +152,9 @@ export const FieldDatePicker = ({
       {curve && typeof futureVeCrv === 'number' && (
         <>
           <Chip size="xs">
-            {t`Future veCRV:`} {!isCreateLock && `${formatNumber(vecrvInfo.veCrv)} → `} {formatNumber(futureVeCrv)}
+            {t`Future veCRV:`}{' '}
+            {!isCreateLock && `${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false, fallback: '-' })} → `}{' '}
+            {formatNumber(futureVeCrv, { abbreviate: false })}
           </Chip>
           <br />
         </>
