@@ -2,6 +2,7 @@ import { noop } from 'lodash'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
@@ -53,7 +54,7 @@ allViewports().forEach(([width, height, viewport]) => {
     testCases.forEach(({ label, isLoading = false, error = null, ...state }) => {
       it(`has consistent heights ${label}`, () => {
         cy.mount(
-          <ComponentTestWrapper>
+          <ComponentTestWrapper config={mockedWagmiConfig}>
             <LoanActionInfoList
               isOpen
               prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
