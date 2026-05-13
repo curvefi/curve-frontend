@@ -185,7 +185,7 @@ export const RepayForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={maxAmountInBorrowToken}
               loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-              onClick={() => updateForm({ [selectedField]: max[selectedField].data }, { automated: false })}
+              onClick={() => updateForm({ [selectedField]: max[selectedField].data })}
             />
           )
         }
