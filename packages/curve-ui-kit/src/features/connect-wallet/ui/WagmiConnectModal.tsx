@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { BaseError } from 'viem'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -75,6 +75,27 @@ export const WagmiConnectModal = () => {
   const { connectors, connect, showModal, closeModal } = useWallet()
   const [error, setError] = useState<unknown>(null)
   const [connectingToId, setConnectingToId] = useState<string | null>(null)
+  const isSafeApp = typeof window !== 'undefined' && window !== window.parent
+
+  const visibleConnectors = useMemo(
+    () =>
+      connectors
+        // Safe connector only works inside Safe applications, which are loaded in iframes
+        .filter(connector => connector.type !== 'safe' || isSafeApp)
+        // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
+        .toReversed()
+        // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
+        .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
+        // Remove EIP-6963 dupes if there's already a connector manually added
+        // Keep the last duplicate so manual connectors win after EIP-6963 connectors are moved to the top.
+        .filter(
+          (connector, index, connectors) =>
+            connectors.findLastIndex(other =>
+              getConnectorWalletIds(connector).some(id => getConnectorWalletIds(other).includes(id)),
+            ) === index,
+        ),
+    [connectors, isSafeApp],
+  )
 
   const onConnect = useCallback(
     async (connector: Connector) => {
@@ -123,29 +144,14 @@ export const WagmiConnectModal = () => {
         </Alert>
       ) : null}
       <MenuList>
-        {connectors
-          // Safe connector only works inside Safe applications, which are loaded in iframes
-          .filter(connector => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent))
-          // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
-          .toReversed()
-          // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
-          .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
-          // Remove EIP-6963 dupes if there's already a connector manually added
-          // Keep the last duplicate so manual connectors win after EIP-6963 connectors are moved to the top.
-          .filter(
-            (connector, index, connectors) =>
-              connectors.findLastIndex(other =>
-                getConnectorWalletIds(connector).some(id => getConnectorWalletIds(other).includes(id)),
-              ) === index,
-          )
-          .map(connector => (
-            <WalletListItem
-              key={connector.id}
-              connector={connector}
-              onConnect={onConnect}
-              isLoading={connectingToId == connector.id}
-            />
-          ))}
+        {visibleConnectors.map(connector => (
+          <WalletListItem
+            key={connector.id}
+            connector={connector}
+            onConnect={onConnect}
+            isLoading={connectingToId == connector.id}
+          />
+        ))}
       </MenuList>
     </ModalDialog>
   )
