@@ -7,7 +7,7 @@ import { useLendMarketNames } from '../queries/lend-market-names.query'
 import { ChainId, LendMarketTemplate } from '../types/lend.types'
 
 const useLendMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
-  const { data: marketNames, isSuccess, error } = useLendMarketNames({ chainId, enableLLv2: useLLv2() })
+  const { data: marketNames, error, isLoading } = useLendMarketNames({ chainId, enableLLv2: useLLv2() })
   const { llamaApi: api, isHydrated } = useCurve()
   const apiChainId = api?.chainId
   const data: Record<string, LendMarketTemplate> | undefined = useMemo(
@@ -26,11 +26,10 @@ const useLendMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
         : undefined,
     [api, apiChainId, chainId, isHydrated, marketNames],
   )
-  return { data, isSuccess, error }
+  return { data, isSuccess: !!data, error, isLoading }
 }
 
 export const useLendMarket = (chainId: ChainId, marketName: string) => {
-  const { data: markets, isSuccess, ...rest } = useLendMarketMapping({ chainId })
-  const market = markets?.[marketName]
-  return { data: market, isSuccess: isSuccess && !!markets, ...rest }
+  const { data: markets, ...rest } = useLendMarketMapping({ chainId })
+  return { data: markets?.[marketName], ...rest }
 }

@@ -1,7 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@ui-kit/lib/model'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { convertRates } from '../../rates.utils'
 import { IS_GETTER, USE_API } from './market.constants'
 
@@ -16,5 +16,5 @@ export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = q
     )
   },
   category: 'llamalend.market',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
