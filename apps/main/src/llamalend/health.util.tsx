@@ -1,7 +1,7 @@
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { Icon } from '@ui/Icon'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 import { getIsUserCloseToSoftLiquidation } from './llama.utils'
 
 export const DEFAULT_BORROW_TOKEN_SYMBOL = 'crvUSD' as const
@@ -37,7 +37,7 @@ export function getHealthMode(
       if (currColorKey === newColorKey || currColorKey === 'soft_liquidation') {
         message = t`You are still close to soft liquidation.`
       } else if (newColorKey === 'close_to_liquidation') {
-        const formattedAmount = formatNumber(amount)
+        const formattedAmount = formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {

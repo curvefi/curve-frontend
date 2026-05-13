@@ -9,8 +9,8 @@ import { Button } from '@ui/Button'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
-import { formatNumber, formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount, formatNumberRange } from '@ui-kit/utils'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 export const DetailInfoLiqRange = ({
@@ -130,8 +130,9 @@ export const DetailInfoLiqRange = ({
           <DetailInfo loading={loading} loadingSkeleton={[200, 23]} label={t`Price range:`}>
             {newPrices?.[0] && newPrices?.[1] ? (
               <strong>
-                {formatNumber(newPrices[0], { maximumSignificantDigits: 5 })} to{' '}
-                {formatNumber(newPrices[1], { maximumSignificantDigits: 5 })}
+                {formatNumber(amount(newPrices[0]), { maximumSignificantDigits: 5, abbreviate: false, fallback: '-' })}{' '}
+                to{' '}
+                {formatNumber(amount(newPrices[1]), { maximumSignificantDigits: 5, abbreviate: false, fallback: '-' })}
               </strong>
             ) : null}
           </DetailInfo>

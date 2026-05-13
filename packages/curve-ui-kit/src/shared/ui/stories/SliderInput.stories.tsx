@@ -81,12 +81,22 @@ const meta: Meta<typeof SliderInputComponent> = {
       control: false,
       description: 'Callback triggered when the value changes.',
     },
+    sliderLabel: {
+      control: 'text',
+      description: 'Label of the slider',
+    },
   },
 }
 
 type Story = StoryObj<typeof SliderInput>
 
 export const Default: Story = {}
+
+export const WithLabel: Story = {
+  args: {
+    sliderLabel: 'Bands',
+  },
+}
 
 export const ColumnLayout: Story = {
   args: {

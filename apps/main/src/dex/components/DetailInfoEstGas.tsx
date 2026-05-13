@@ -5,10 +5,10 @@ import { ethAddress } from 'viem'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { formatNumber } from '@ui-kit/utils'
 import { useNetworkByChain, useNetworks } from '../entities/networks'
 
 type StepProgress = {
@@ -61,7 +61,11 @@ export const DetailInfoEstGas = ({
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>
       {estGasCostUsd &&
-        (haveUsdRate ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
+        (haveUsdRate ? (
+          <span>{formatNumber(estGasCostUsd, { unit: 'dollar', abbreviate: false })}</span>
+        ) : (
+          t`Unable to get USD rate`
+        ))}
     </DetailInfo>
   )
 }

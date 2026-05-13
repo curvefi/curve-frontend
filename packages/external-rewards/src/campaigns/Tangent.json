@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0x97ba10115da528c113462ede9c20d7adc806d93f",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "tangent points",
       "tags": ["points"],
       "lock": "false"
     },
@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0xefc056790bb19702b2164ec6ea6ba3ae01d81195",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "tangent points",
       "tags": ["points"],
       "lock": "false"
     }

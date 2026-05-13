@@ -2,8 +2,8 @@ import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
 import { AlertBox } from '@ui/AlertBox'
 import { Checkbox } from '@ui/Checkbox'
-import { formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type SharedProps = {
   confirmed: boolean
@@ -53,9 +53,19 @@ export function WarningModal({
   const handleSlippageChange = (isSlippageConfirmed: boolean) => {
     setConfirmed(isSlippageConfirmed)
   }
-  const formattedToAmount = formatNumber(props?.toAmount)
-  const formattedExchangeRate = formatNumber(props?.exchangeRate, { style: 'percent', maximumFractionDigits: 4 })
-  const formattedValue = formatNumber(props?.value, { style: 'percent', maximumFractionDigits: 4 })
+  const formattedToAmount = formatNumber(amount(props?.toAmount), { abbreviate: false, fallback: '-' })
+  const formattedExchangeRate = formatNumber(amount(props?.exchangeRate), {
+    maximumFractionDigits: 4,
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+  })
+  const formattedValue = formatNumber(amount(props?.value), {
+    maximumFractionDigits: 4,
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+  })
 
   return (
     <>

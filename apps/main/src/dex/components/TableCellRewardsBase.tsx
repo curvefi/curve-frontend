@@ -2,7 +2,7 @@ import { LARGE_APY } from '@/dex/constants'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
 import { TooltipBaseApy } from './TooltipBaseApy'
 
@@ -38,7 +38,7 @@ export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => 
                   ...(base && Number(base.day) < 0 ? { minWidth: '200px' } : {}),
                 }}
               >
-                {formatNumber(base.day, FORMAT_OPTIONS.PERCENT)}
+                {formatNumber(amount(base.day), { unit: 'percentage', abbreviate: false, fallback: '-' })}
               </Chip>
             )}
           </>

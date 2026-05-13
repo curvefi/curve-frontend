@@ -1,4 +1,3 @@
-export * from './market-base-price.query'
 export * from './market-bad-debt.query'
 export * from './market-future-rates.query'
 export * from './market-liquidation-band.query'
