@@ -3,15 +3,21 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import { LlamaMarketColumnId } from '../columns'
 
+const { IconSize } = SizesAndSpaces
+
 export const LlamaChainFilterChips = ({
   data,
+  loading = false,
   columnFiltersById,
   setColumnFilter,
 }: {
   data: LlamaMarket[]
+  loading?: boolean
 } & FilterProps<LlamaMarketColumnId>) => {
   const chains = useMemo(
     () =>
@@ -41,5 +47,9 @@ export const LlamaChainFilterChips = ({
     [selectedChains, setColumnFilter],
   )
 
-  return <ChainFilterChips chains={chains} selectedChains={selectedChains} toggleChain={toggleChain} />
+  return (
+    <WithSkeleton loading={loading} width={'100%'} height={IconSize.md.desktop} variant="rectangular">
+      <ChainFilterChips chains={chains} selectedChains={selectedChains} toggleChain={toggleChain} />
+    </WithSkeleton>
+  )
 }
