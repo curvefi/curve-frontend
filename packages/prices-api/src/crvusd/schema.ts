@@ -158,7 +158,7 @@ const userMarketStats = z
     n1: z.number(),
     n2: z.number(),
     n: z.number(),
-    active_band: z.number(),
+    active_band: z.number().nullable(),
     debt: z.number(),
     collateral: z.number(),
     stablecoin: z.number(),
@@ -184,7 +184,7 @@ const collateralEvent = z
     user: address,
     collateral_change: z.number(),
     collateral_change_usd: z.number().nullable(),
-    loan_change: z.number(),
+    loan_change: z.number().nullable().transform(value => value ?? 0),
     loan_change_usd: z.number().nullable(),
     liquidation: z
       .object({

@@ -17,8 +17,8 @@ const proposalShape = {
   creator: address,
   start_date: z.number(),
   snapshot_block: z.number(),
-  ipfs_metadata: z.string(),
-  metadata: z.string().optional(),
+  ipfs_metadata: z.string().nullable().optional(),
+  metadata: z.string().nullable().optional(),
   votes_for: z.string(),
   votes_against: z.string(),
   vote_count: z.number(),
@@ -82,14 +82,14 @@ export const getProposalsResponse = z
 export const getProposalDetailsResponse = z
   .object({
     ...proposalShape,
-    script: z.string(),
+    script: z.string().nullable(),
     votes: z.array(vote),
   })
   .transform(camelizeKeys)
   .transform(data => ({
     ...transformProposal(data),
     txExecution: data.executionTx ? data.executionTx : undefined,
-    script: data.script,
+    script: data.script ?? '',
     votes: data.votes.map(item => ({
       voter: item.voter,
       supports: item.supports,

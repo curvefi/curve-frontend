@@ -57,9 +57,9 @@ const volume = z
 const tvl = z
   .object({
     timestamp: timestampResponse,
-    tvl_usd: z.number().optional(),
+    tvl_usd: z.number().nullable().optional(),
     balances: z.array(z.number()),
-    token_prices: z.array(z.number()),
+    token_prices: z.array(z.number().nullable()),
   })
   .transform(camelizeKeys)
   .transform(data => {
@@ -68,7 +68,7 @@ const tvl = z
       timestamp: parseTimestamp(timestamp),
       tvlUSD: tvlUsd ?? 0,
       balances: [...balances],
-      tokenPrices: [...tokenPrices],
+      tokenPrices: tokenPrices.map(price => price ?? 0),
     }
   })
 

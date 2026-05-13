@@ -215,7 +215,7 @@ const userMarketStats = z
     n1: z.number(),
     n2: z.number(),
     n: z.number(),
-    active_band: z.number(),
+    active_band: z.number().nullable(),
     debt: z.number(),
     collateral: z.number(),
     borrowed: z.number(),
@@ -325,11 +325,11 @@ const collateralEvent = z
   .object({
     dt: timestampResponse,
     transaction_hash: address,
-    type: z.enum(['Borrow', 'Deposit']),
+    type: z.enum(['Borrow', 'Deposit', 'Liquidate', 'Repay', 'RemoveCollateral']),
     user: address,
     collateral_change: z.number(),
     collateral_change_usd: z.number().nullable(),
-    loan_change: z.number(),
+    loan_change: z.number().nullable().transform(value => value ?? 0),
     loan_change_usd: z.number().nullable(),
     liquidation: z
       .object({
@@ -350,13 +350,13 @@ const collateralEvent = z
         user: address,
         user_borrowed: z.number(),
         user_collateral: z.number(),
-        user_collateral_from_borrowed: z.number(),
-        user_collateral_used: z.number(),
-        debt: z.number(),
-        leverage_collateral: z.number(),
-        state_collateral_used: z.number(),
-        borrowed_from_state_collateral: z.number(),
-        borrowed_from_user_collateral: z.number(),
+        user_collateral_from_borrowed: z.number().nullable(),
+        user_collateral_used: z.number().nullable(),
+        debt: z.number().nullable(),
+        leverage_collateral: z.number().nullable(),
+        state_collateral_used: z.number().nullable(),
+        borrowed_from_state_collateral: z.number().nullable(),
+        borrowed_from_user_collateral: z.number().nullable(),
       })
       .transform(camelizeKeys)
       .nullable(),
