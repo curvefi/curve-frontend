@@ -21,12 +21,14 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
+export const isLendMarketId = (id: string) => id.startsWith('one-way')
+
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
  * Throws an error if no market is found with the given ID.
  */
 export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
-  typeof id === 'string' ? (id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)) : id
+  typeof id === 'string' ? (isLendMarketId(id) ? lib.getLendMarket(id) : lib.getMintMarket(id)) : id
 
 /**
  * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
