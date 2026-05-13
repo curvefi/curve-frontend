@@ -13,10 +13,10 @@ const { Spacing } = SizesAndSpaces
 
 export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
   row: {
-    original: { txUrl, tokenAmounts, poolTokens, provider, network, liquidityEventType },
+    original: { txUrl, tokenAmounts, poolTokens, provider, network, eventType },
   },
 }) => {
-  const isAdd = liquidityEventType === 'AddLiquidity'
+  const isAdd = eventType === 'AddLiquidity'
 
   // Filter out zero amounts
   const nonZeroAmounts = tokenAmounts

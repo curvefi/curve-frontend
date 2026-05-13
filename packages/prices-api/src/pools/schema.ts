@@ -188,9 +188,10 @@ const poolLiquidityEvent = z
   })
   .transform(camelizeKeys)
   .transform(data => {
-    const { time, transactionHash, tokenAmounts, fees, tokenSupply, ...event } = data
+    const { time, transactionHash, tokenAmounts, fees, tokenSupply, liquidityEventType, ...event } = data
     return {
       ...event,
+      eventType: liquidityEventType,
       tokenAmounts: tokenAmounts ? [...tokenAmounts] : [],
       fees: fees ? [...fees] : [],
       tokenSupply: tokenSupply ?? 0,
