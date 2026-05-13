@@ -67,11 +67,10 @@ const revenue = z
     timestamp: parseTimestamp(data.dt),
   }))
 
-export const getEventsResponse = z
-  .object({
-    count: z.number(),
-    events: z.array(event),
-  })
+export const getEventsResponse = z.object({
+  count: z.number(),
+  events: z.array(event),
+})
 
 export const getYieldResponse = z
   .object({

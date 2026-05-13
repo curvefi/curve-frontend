@@ -119,7 +119,10 @@ const userCollateralEvent = z
     user: address,
     collateral_change: z.number(),
     collateral_change_usd: z.number().nullable(),
-    loan_change: z.number().nullable().transform(value => value ?? 0),
+    loan_change: z
+      .number()
+      .nullable()
+      .transform(value => value ?? 0),
     loan_change_usd: z.number().nullable(),
     liquidation: liquidation.nullable().optional(),
     leverage: leverage.nullable().optional(),

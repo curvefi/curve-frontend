@@ -12,11 +12,10 @@ const coin = z
   })
   .transform(camelizeKeys)
 
-const chainRevenue = z
-  .object({
-    chain: z.string(),
-    totalDailyFeesUSD: z.number(),
-  })
+const chainRevenue = z.object({
+  chain: z.string(),
+  totalDailyFeesUSD: z.number(),
+})
 
 const currentChainRevenue = z
   .object({
@@ -29,11 +28,10 @@ const currentChainRevenue = z
     totalDailyFeesUSD: data.totalFees,
   }))
 
-const chainTopPoolRevenue = z
-  .object({
-    name: z.string(),
-    totalDailyFeesUSD: z.number(),
-  })
+const chainTopPoolRevenue = z.object({
+  name: z.string(),
+  totalDailyFeesUSD: z.number(),
+})
 
 const currentChainTopPoolRevenue = z
   .object({

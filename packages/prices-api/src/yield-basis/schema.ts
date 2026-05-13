@@ -48,16 +48,18 @@ const aggregatedStats = z
   })
   .transform(camelizeKeys)
 
-const yieldBasisSupplyWithMint = z.object({
-  yb_factory_balance: z.string(),
-  yb_total_allocated: z.string(),
-  yb_total_amm_balance: z.string(),
-  yb_total_amm_debt: z.string(),
-  yb_max_debt: z.string(),
-  mint_pegkeeper_debt: z.string(),
-  mint_market_debt: z.string(),
-  total_supply: z.string(),
-}).transform(camelizeKeys)
+const yieldBasisSupplyWithMint = z
+  .object({
+    yb_factory_balance: z.string(),
+    yb_total_allocated: z.string(),
+    yb_total_amm_balance: z.string(),
+    yb_total_amm_debt: z.string(),
+    yb_max_debt: z.string(),
+    mint_pegkeeper_debt: z.string(),
+    mint_market_debt: z.string(),
+    total_supply: z.string(),
+  })
+  .transform(camelizeKeys)
 
 const yieldBasisHistoryItem = z
   .object({
@@ -95,11 +97,10 @@ export const ybPoolVolumeResponse = z
   })
   .transform(camelizeKeys)
 
-export const ybAggregatedVolumeResponse = z
-  .object({
-    chain,
-    stats: aggregatedStats,
-  })
+export const ybAggregatedVolumeResponse = z.object({
+  chain,
+  stats: aggregatedStats,
+})
 
 export const yieldBasisSupplyResponse = z
   .object({
@@ -119,11 +120,10 @@ export const yieldBasisSupplyResponse = z
     totalSupply: parseFloat(data.data.totalSupply),
   }))
 
-export const yieldBasisHistoryResponse = z
-  .object({
-    chain,
-    data: z.array(yieldBasisHistoryItem),
-  })
+export const yieldBasisHistoryResponse = z.object({
+  chain,
+  data: z.array(yieldBasisHistoryItem),
+})
 
 export type YieldBasisPool = z.infer<typeof yieldBasisPool>
 export type AdjacentPool = z.infer<typeof adjacentPool>

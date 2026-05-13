@@ -36,27 +36,27 @@ const rawProposal = z.object(proposalShape).transform(camelizeKeys)
 type RawProposal = z.infer<typeof rawProposal>
 
 const transformProposal = (data: RawProposal) => ({
-    timestamp: parseTimestamp(data.dt),
-    id: data.voteId,
-    type: normalizeProposalType(data.voteType),
-    metadata: data.metadata?.startsWith('"') // Remove weird starting quote, if present.
-      ? data.metadata.substring(1)
-      : (data.metadata ?? ''),
-    proposer: data.creator,
-    block: data.snapshotBlock,
-    start: data.startDate,
-    end: data.startDate + 604800,
-    quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18, // Voting power in veCRV.
-    support: Number(BigInt(data.supportRequired)) / 10 ** 18, // Voting power in veCRV.
-    voteCount: data.voteCount, // An actual vote *count*
-    votesFor: Number(BigInt(data.votesFor)) / 10 ** 18, // Voting power in veCRV.
-    votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18, // Voting power in veCRV.
-    executionTx: data.executionTx,
-    executionDate: data.executionDate ? parseTimestamp(data.executionDate) : null,
-    executed: data.executed,
-    totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18, // Voting power in veCRV.
-    txCreation: data.transactionHash,
-  })
+  timestamp: parseTimestamp(data.dt),
+  id: data.voteId,
+  type: normalizeProposalType(data.voteType),
+  metadata: data.metadata?.startsWith('"') // Remove weird starting quote, if present.
+    ? data.metadata.substring(1)
+    : (data.metadata ?? ''),
+  proposer: data.creator,
+  block: data.snapshotBlock,
+  start: data.startDate,
+  end: data.startDate + 604800,
+  quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18, // Voting power in veCRV.
+  support: Number(BigInt(data.supportRequired)) / 10 ** 18, // Voting power in veCRV.
+  voteCount: data.voteCount, // An actual vote *count*
+  votesFor: Number(BigInt(data.votesFor)) / 10 ** 18, // Voting power in veCRV.
+  votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18, // Voting power in veCRV.
+  executionTx: data.executionTx,
+  executionDate: data.executionDate ? parseTimestamp(data.executionDate) : null,
+  executed: data.executed,
+  totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18, // Voting power in veCRV.
+  txCreation: data.transactionHash,
+})
 
 const proposal = rawProposal.transform(transformProposal)
 

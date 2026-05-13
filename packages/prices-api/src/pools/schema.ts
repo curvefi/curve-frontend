@@ -81,48 +81,46 @@ const tradeToken = z
   })
   .transform(camelizeKeys)
 
-const poolTradeData = z.object({
-  sold_id: z.number(),
-  bought_id: z.number(),
-  token_sold: address.optional(),
-  token_bought: address.optional(),
-  token_sold_symbol: z.string().optional(),
-  token_bought_symbol: z.string().optional(),
-  tokens_sold: z.number(),
-  tokens_sold_usd: z.number().nullable(),
-  tokens_bought: z.number(),
-  tokens_bought_usd: z.number().nullable(),
-  block_number: z.number(),
-  time: timestampResponse,
-  transaction_hash: address,
-  buyer: address,
-  usd_fee: z.number().nullable(),
-}).transform(camelizeKeys)
+const poolTradeData = z
+  .object({
+    sold_id: z.number(),
+    bought_id: z.number(),
+    token_sold: address.optional(),
+    token_bought: address.optional(),
+    token_sold_symbol: z.string().optional(),
+    token_bought_symbol: z.string().optional(),
+    tokens_sold: z.number(),
+    tokens_sold_usd: z.number().nullable(),
+    tokens_bought: z.number(),
+    tokens_bought_usd: z.number().nullable(),
+    block_number: z.number(),
+    time: timestampResponse,
+    transaction_hash: address,
+    buyer: address,
+    usd_fee: z.number().nullable(),
+  })
+  .transform(camelizeKeys)
 
 type TradeTokenData = z.infer<typeof tradeToken>
 type PoolTradeData = z.infer<typeof poolTradeData>
 
-const transformPoolTrade = (
-  data: PoolTradeData,
-  tokenSold?: TradeTokenData,
-  tokenBought?: TradeTokenData,
-) => ({
-    soldId: data.soldId,
-    boughtId: data.boughtId,
-    tokenSold: data.tokenSold ?? requireTradeToken(tokenSold, data.soldId).address,
-    tokenBought: data.tokenBought ?? requireTradeToken(tokenBought, data.boughtId).address,
-    tokenSoldSymbol: data.tokenSoldSymbol ?? requireTradeToken(tokenSold, data.soldId).symbol,
-    tokenBoughtSymbol: data.tokenBoughtSymbol ?? requireTradeToken(tokenBought, data.boughtId).symbol,
-    tokensSold: data.tokensSold,
-    tokensSoldUsd: data.tokensSoldUsd ?? 0,
-    tokensBought: data.tokensBought,
-    tokensBoughtUsd: data.tokensBoughtUsd ?? 0,
-    blockNumber: data.blockNumber,
-    time: parseTimestamp(data.time),
-    txHash: data.transactionHash,
-    buyer: data.buyer,
-    usdFee: data.usdFee ?? 0,
-  })
+const transformPoolTrade = (data: PoolTradeData, tokenSold?: TradeTokenData, tokenBought?: TradeTokenData) => ({
+  soldId: data.soldId,
+  boughtId: data.boughtId,
+  tokenSold: data.tokenSold ?? requireTradeToken(tokenSold, data.soldId).address,
+  tokenBought: data.tokenBought ?? requireTradeToken(tokenBought, data.boughtId).address,
+  tokenSoldSymbol: data.tokenSoldSymbol ?? requireTradeToken(tokenSold, data.soldId).symbol,
+  tokenBoughtSymbol: data.tokenBoughtSymbol ?? requireTradeToken(tokenBought, data.boughtId).symbol,
+  tokensSold: data.tokensSold,
+  tokensSoldUsd: data.tokensSoldUsd ?? 0,
+  tokensBought: data.tokensBought,
+  tokensBoughtUsd: data.tokensBoughtUsd ?? 0,
+  blockNumber: data.blockNumber,
+  time: parseTimestamp(data.time),
+  txHash: data.transactionHash,
+  buyer: data.buyer,
+  usdFee: data.usdFee ?? 0,
+})
 
 const requireTradeToken = (token: TradeTokenData | undefined, tokenId: number) => {
   if (!token) {
