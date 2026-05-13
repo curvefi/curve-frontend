@@ -1,4 +1,5 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
 import { constQ, q } from '@ui-kit/types/util'
@@ -15,7 +16,7 @@ const hexToRgb = (value: string) => {
 const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } = {}) => {
   const { curve: Curve } = RouteProviderIcons
   cy.mount(
-    <ComponentTestWrapper>
+    <ComponentTestWrapper config={mockedWagmiConfig}>
       <RouteProviderCard
         query={{
           isFetching: false,

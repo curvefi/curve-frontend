@@ -3,6 +3,7 @@ import { decimalCompare, decimalMax } from 'router-api/src/router.utils'
 import { useConnection } from 'wagmi'
 import { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
+import { recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import { type RouteQueries, type RouteResponse, useRouterQueries } from '@ui-kit/entities/router-api'
@@ -12,7 +13,6 @@ import { toWei } from '@ui-kit/utils'
 
 export type MarketRoutes = {
   queries: RouteQueries
-  sortedRoutes: RouteResponse[]
   enabled: boolean
   selectedRoute: RouteResponse | undefined
   onChange: (option: RouteResponse | undefined) => Promise<void>
@@ -63,17 +63,16 @@ export function useMarketRoutes({
     enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
-
-  const sortedRoutes = useMemo(
+  const selectedRoute = useMemo(
     () =>
-      [queries.curve, queries.enso, queries.odos]
+      (chosenRouter && queries[chosenRouter]?.data) ||
+      recordValues(queries)
         .map(q => q.data)
         .filter((q): q is RouteResponse => !!q)
-        .sort(sortRoutes),
-    [queries.curve, queries.enso, queries.odos],
+        .sort(sortRoutes)[0],
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+    [chosenRouter, ...recordValues(queries)],
   )
-
-  const selectedRoute = (chosenRouter && queries[chosenRouter]?.data) || sortedRoutes?.[0]
 
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
@@ -90,7 +89,6 @@ export function useMarketRoutes({
     networks,
     chainId,
     queries,
-    sortedRoutes,
     enabled,
     selectedRoute,
     onChange,

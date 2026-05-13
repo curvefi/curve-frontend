@@ -4,6 +4,7 @@ import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
+import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
@@ -47,21 +48,6 @@ export const getRouteById = (routeId: string | undefined) =>
     }),
     'routeId is required for zapV2',
   )
-
-const createHash = async (
-  input: (number | string | null | undefined | number[] | string[])[],
-  algorithm = 'SHA-256',
-): Promise<string> =>
-  Array.from(
-    new Uint8Array(
-      await crypto.subtle.digest(
-        algorithm,
-        new TextEncoder().encode(input.map(v => toArray<number | string>(v).join(',')).join('-')),
-      ),
-    ),
-  )
-    .map(byte => byte.toString(16).padStart(2, '0'))
-    .join('')
 
 const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
@@ -124,8 +110,6 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   category: 'global.routerApi',
 })
 
-export { useRouterApi, fetchApiRoutes }
-
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
   const route = data == null ? undefined : (data[0] ?? null)
@@ -150,3 +134,5 @@ export const useRouterQueries = (params: Omit<RoutesParams, 'router'>, enabled?:
     [params],
   ),
 })
+
+export { useRouterApi, fetchApiRoutes }

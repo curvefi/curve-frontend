@@ -2,6 +2,7 @@ import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Address } from '@primitives/address.utils'
+import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { formatUnits } from '@ui-kit/utils'
@@ -62,3 +63,18 @@ export const getExpectedFn =
     const route = assert(routes?.[0], 'No route available')
     return parseRoute(route.id).quote
   }
+
+export const createHash = async (
+  input: (number | string | null | undefined | number[] | string[])[],
+  algorithm = 'SHA-256',
+): Promise<string> =>
+  Array.from(
+    new Uint8Array(
+      await crypto.subtle.digest(
+        algorithm,
+        new TextEncoder().encode(input.map(v => toArray<number | string>(v).join(',')).join('-')),
+      ),
+    ),
+  )
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('')

@@ -78,7 +78,7 @@ export const RouteProviderCard = ({
             )}
           </Box>
           {error ? (
-            <ErrorIconButton error={error} size="small" />
+            <ErrorIconButton error={error} size="extraSmall" />
           ) : (
             route && <RouteComparisonChip maxAmountOut={bestOutputAmount} amountOut={route.amountOut} />
           )}

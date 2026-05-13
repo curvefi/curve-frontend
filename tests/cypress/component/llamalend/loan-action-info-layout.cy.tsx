@@ -27,7 +27,6 @@ const routes: MarketRoutes = {
   ),
   networks: {},
   chainId: 1,
-  sortedRoutes: mockRoutes,
   selectedRoute: mockRoutes[0],
   enabled: true,
   onChange: async () => undefined,
