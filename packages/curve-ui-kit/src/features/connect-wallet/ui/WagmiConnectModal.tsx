@@ -5,6 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { createSvgIcon } from '@mui/material/utils'
+import { toArray } from '@primitives/array.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
@@ -32,10 +33,8 @@ const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
 
-const getConnectorWalletIds = (connector: Connector) => [
-  connector.id,
-  ...(typeof connector.rdns === 'string' ? [connector.rdns] : (connector.rdns ?? [])),
-]
+/** The same wallet can have different IDs for its normal connector and the EIP-6963 instances, so we include rDNS as a good additional candidate */
+const getConnectorWalletIds = (connector: Connector) => [connector.id, ...toArray(connector.rdns)]
 
 const WalletIcon = ({ connector }: { connector: Connector }) =>
   (Icon =>
