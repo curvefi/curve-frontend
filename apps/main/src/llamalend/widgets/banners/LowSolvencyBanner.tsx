@@ -29,6 +29,7 @@ export const LowSolvencyBanner = ({ solvencyPercent }: Props) => {
         severity={banner.severity}
         subtitle={t`Market solvency is ${formatPercent(solvencyPercent)}. Part of the supplied funds is no longer fully covered.`}
         testId={`bad-debt-banner-${banner.id}`}
+        learnMoreUrl="https://docs.curve.finance/user/llamalend/bad-debt"
       >
         {t`Low Market Solvency`}
       </Banner>
