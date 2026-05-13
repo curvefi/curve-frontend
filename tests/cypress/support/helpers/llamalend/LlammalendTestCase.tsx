@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { prefetchMarkets } from '@/lend/queries/lend-market-names.query'
+import { prefetchLendMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -14,6 +14,7 @@ import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { prefetchMintMarkets } from '@/loan/entities/mint-markets.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -26,6 +27,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
@@ -84,15 +86,24 @@ function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTest
   )
 }
 
-export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
+export type LlammalendTestCaseProps = LlammalendTestProps &
+  TenderlyWagmiConfigFromVNet & { marketType: LlamaMarketType }
 
-export const LlammalendTestCase = ({ vnet, privateKey, chainId, ...props }: LlammalendTestCaseProps) => (
+export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider
       app="llamalend"
       network={llamaNetworks[chainId]}
       onChainUnavailable={console.error}
-      hydrate={useMemo(() => ({ llamalend: () => prefetchMarkets({ chainId, enableLLv2: true }) }), [chainId])}
+      hydrate={useMemo(
+        () => ({
+          llamalend: {
+            [LlamaMarketType.Lend]: () => prefetchLendMarkets({ chainId, enableLLv2: true }),
+            [LlamaMarketType.Mint]: () => prefetchMintMarkets({ chainId }),
+          }[marketType],
+        }),
+        [chainId, marketType],
+      )}
     >
       <Box sx={{ maxWidth: 520 }}>
         <LlammalendTest {...props} chainId={chainId} />
