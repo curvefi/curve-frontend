@@ -1,13 +1,17 @@
-/* eslint-disable no-restricted-imports */
-import { type FieldValues, type Path, type PathValue } from 'react-hook-form'
 import { type PartialRecord } from '@primitives/objects.utils'
 
-export { type FieldValues, type FieldPathByValue } from 'react-hook-form'
-
-export type FieldPath<T extends FieldValues> = Path<T>
-export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = PathValue<T, TFieldPath>
+export type FieldValues = object
+export type FieldPath<T extends FieldValues> = Extract<keyof T, string>
+export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = T[TFieldPath]
+export type FieldPathByValue<T extends FieldValues, TValue> = {
+  [K in Extract<keyof T, string>]: T[K] extends TValue ? K : never
+}[Extract<keyof T, string>]
+export type FormError = { type?: string; message: string }
+export type RootFormError = { general?: FormError; serverError?: FormError }
 export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root' | `root.serverError`
-export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<ErrorKey<T>, Error>
+export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<FieldPath<T>, FormError> & {
+  root?: RootFormError
+}
 export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, true>
 
 export type FormState<T extends FieldValues> = {
@@ -37,7 +41,7 @@ export type UseFormReturn<T extends FieldValues = FieldValues> = {
   getValues: () => T
   getValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
   update(updates: FormUpdates<T>, options?: { automated?: true }): void
-  setError: (field: ErrorKey<T>, error: Error | { type?: 'server' | 'manual'; message: string }) => void
+  setError: (field: ErrorKey<T>, error: FormError) => void
   clearErrors: (field: ErrorKey<T>) => void
   isTouched: (...fields: FieldPath<T>[]) => boolean
   formState: FormState<T>
