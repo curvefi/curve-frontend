@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
 import type { NetworkConfig } from '@/lend/types/lend.types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const InpToken = ({
   id,
@@ -47,11 +46,11 @@ export const InpToken = ({
     isError={!!inpError}
     message={
       inpError === 'too-much'
-        ? t`Amount > wallet balance ${formatNumber(tokenBalance)}`
+        ? t`Amount > wallet balance ${formatNumber(amount(tokenBalance), { abbreviate: false, fallback: '-' })}`
         : inpError === 'too-much-debt'
-          ? t`Amount > max debt ${formatNumber(debt)}`
+          ? t`Amount > max debt ${formatNumber(amount(debt), { abbreviate: false, fallback: '-' })}`
           : inpError === 'too-much-collateral'
-            ? t`Amount > collateral ${formatNumber(tokenBalance)}`
+            ? t`Amount > collateral ${formatNumber(amount(tokenBalance), { abbreviate: false, fallback: '-' })}`
             : null
     }
     disabled={inpDisabled}

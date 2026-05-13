@@ -8,8 +8,8 @@ import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+import { formatNumber } from '@ui-kit/utils'
 import { TableCellRewardsBase } from '../../TableCellRewardsBase'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
@@ -34,7 +34,7 @@ export const TableCellRewards = ({
   const { haveCrv, haveOther } = haveRewardsApy(rewardsApy ?? {})
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
-  const haveUserCrvApy = userCrvApy && !isNaN(userCrvApy)
+  const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
@@ -59,9 +59,11 @@ export const TableCellRewards = ({
           size="md"
         >
           <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
-            {`${formatNumber(userCrvApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })} CRV`}
+            {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
           </WithWrapper>{' '}
-          {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText> : null}
+          {boostedCrvApy ? (
+            <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
+          ) : null}
         </Chip>
       ) : null}
       <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />

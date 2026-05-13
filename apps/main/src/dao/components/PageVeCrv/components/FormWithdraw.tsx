@@ -13,10 +13,10 @@ import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { IconSize } = SizesAndSpaces
@@ -45,7 +45,12 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawTxSuccess = withdrawLockedCrvStatus.transactionState === 'SUCCESS'
 
   const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas)
-  const valueGas = formatNumber(estGasCostUsd, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+  const valueGas = formatNumber(estGasCostUsd, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+    abbreviate: false,
+    fallback: '-',
+  })
 
   useEffect(() => {
     if (withdrawTxSuccess) {
@@ -64,7 +69,12 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>
-          <RowParagraph>{formatNumber(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount)}</RowParagraph>
+          <RowParagraph>
+            {formatNumber(amount(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount), {
+              abbreviate: false,
+              fallback: '-',
+            })}
+          </RowParagraph>
         </Box>
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`Unlock Time`}:</p>

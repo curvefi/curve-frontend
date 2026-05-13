@@ -5,8 +5,8 @@ import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 export const PoolRewardsCrv = ({
   isHighlight,
@@ -25,18 +25,20 @@ export const PoolRewardsCrv = ({
     if (isLoading || typeof poolData === 'undefined') {
       return ''
     } else if (rewardsNeedNudging || areCrvRewardsStuckInBridge) {
-      return `${formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })} CRV`
+      return `${formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })} CRV`
     } else if (rewardsApy?.crv && (rewardsApy?.crv[0] !== 0 || rewardsApy?.crv[1] !== 0)) {
       const [base, boosted] = rewardsApy.crv
       if (!base && !boosted) return null
       if (base < 0.01) return '< 0.01% CRV' // Anything less is basically not worth the time
-      const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
+      const formattedBase = formatNumber(base, { unit: 'percentage', abbreviate: false })
 
       if (boosted) {
         return (
           <>
             {formattedBase} →{' '}
-            <span style={{ whiteSpace: 'nowrap' }}>{formatNumber(boosted, FORMAT_OPTIONS.PERCENT)} CRV</span>
+            <span style={{ whiteSpace: 'nowrap' }}>
+              {formatNumber(boosted, { unit: 'percentage', abbreviate: false })} CRV
+            </span>
           </>
         )
       } else {

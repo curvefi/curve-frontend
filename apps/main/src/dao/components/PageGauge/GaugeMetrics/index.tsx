@@ -9,9 +9,9 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@ui/Box'
-import { formatDate, formatNumber, scanAddressPath } from '@ui/utils/'
+import { formatDate, scanAddressPath } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
-import { Chain, shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress, formatNumber } from '@ui-kit/utils'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined
@@ -71,7 +71,11 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           <MetricsComp
             loading={dataLoading}
             title={t`Emissions (CRV)`}
-            data={<StyledMetricsColumnData>{formatNumber(emissions, { notation: 'compact' })}</StyledMetricsColumnData>}
+            data={
+              <StyledMetricsColumnData>
+                {formatNumber(emissions, { abbreviate: true, fallback: '-' })}
+              </StyledMetricsColumnData>
+            }
           />
         ) : (
           <MetricsComp
@@ -86,7 +90,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           data={
             <StyledMetricsColumnData>
               {gaugeData?.gauge_relative_weight
-                ? `${formatNumber(gaugeData?.gauge_relative_weight, { notation: 'compact' })}%`
+                ? `${formatNumber(gaugeData.gauge_relative_weight, { abbreviate: true })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -105,7 +109,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               }`}
             >
               {gaugeData?.gauge_relative_weight_7d_delta
-                ? `${formatNumber(gaugeData?.gauge_relative_weight_7d_delta, { notation: 'compact' })}%`
+                ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, { abbreviate: true })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -124,7 +128,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               }`}
             >
               {gaugeData?.gauge_relative_weight_60d_delta
-                ? `${formatNumber(gaugeData?.gauge_relative_weight_60d_delta, { notation: 'compact' })}%`
+                ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: true })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -163,10 +167,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`Pool TVL`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, {
-                currency: 'USD',
-                notation: 'compact',
-              })}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, { unit: 'dollar', abbreviate: true, fallback: '-' })}`}</StyledMetricsColumnData>
             }
           />
         ) : (
@@ -177,10 +178,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`24h Pool Volume`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, {
-                notation: 'compact',
-                currency: 'USD',
-              })}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, { unit: 'dollar', abbreviate: true, fallback: '-' })}`}</StyledMetricsColumnData>
             }
           />
         ) : (

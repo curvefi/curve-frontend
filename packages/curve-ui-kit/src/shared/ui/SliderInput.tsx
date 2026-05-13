@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -31,6 +31,8 @@ export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
   max?: number
   /** Step increment for the slider */
   step?: number
+  /** Optional label placed on top of the slider */
+  sliderLabel?: ReactNode
   /** Propagated to both inputs and slider */
   disabled?: boolean
   /** The debounce time in milliseconds for the slider and inputs */
@@ -91,6 +93,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   onChange,
   min = 0,
   max = Infinity,
+  sliderLabel,
   step,
   disabled,
   sliderProps,
@@ -236,26 +239,34 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   const renderSlider = (
-    <Slider
-      size={size}
-      value={sliderValue}
-      onChange={handleSliderChange}
-      onChangeCommitted={(event, newValue) => {
-        handleSliderCommit(event, newValue)
-        sliderOnChangeCommitted?.(event, newValue)
-      }}
-      min={sliderMinValue}
-      max={sliderMaxValue}
-      step={sliderStepValue}
-      disabled={disabled}
-      scale={mapFromSliderValue}
-      data-testid={`slider-${name}`}
-      {...restSliderProps}
-    />
+    <Stack flexGrow={1}>
+      {sliderLabel}
+      <Slider
+        size={size}
+        value={sliderValue}
+        onChange={handleSliderChange}
+        onChangeCommitted={(event, newValue) => {
+          handleSliderCommit(event, newValue)
+          sliderOnChangeCommitted?.(event, newValue)
+        }}
+        min={sliderMinValue}
+        max={sliderMaxValue}
+        step={sliderStepValue}
+        disabled={disabled}
+        scale={mapFromSliderValue}
+        data-testid={`slider-${name}`}
+        {...restSliderProps}
+      />
+    </Stack>
   )
 
   return (
-    <Stack direction={layoutDirection} alignItems="center" columnGap={Spacing.sm} rowGap={Spacing.xs} width="100%">
+    <Stack
+      direction={layoutDirection}
+      alignItems={layoutDirection === 'row' ? 'end' : 'stretch'}
+      columnGap={Spacing.sm}
+      rowGap={Spacing.xs}
+    >
       {layoutDirection === 'row' ? (
         <>
           {isRange && renderInput(currentFirst, 0)}
@@ -271,7 +282,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
             justifyContent={isRange ? 'space-between' : 'flex-end'}
             columnGap={Spacing.sm}
             rowGap={Spacing.xs}
-            width="100%"
+            flexGrow={1}
           >
             {isRange && renderInput(currentFirst, 0)}
             {renderInput(currentSecond, 1)}

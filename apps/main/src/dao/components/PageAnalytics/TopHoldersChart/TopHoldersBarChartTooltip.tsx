@@ -3,8 +3,9 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { styled } from 'styled-components'
 import type { Locker } from '@curvefi/prices-api/dao'
 import { Box } from '@ui/Box'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 type Payload = Omit<Locker, 'weight' | 'locked'> & {
   weight: number
@@ -28,11 +29,11 @@ export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<Valu
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(weight)}</TooltipData>
+            <TooltipData>{formatNumber(weight, { abbreviate: false, fallback: '-' })}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Locked CRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(locked)}</TooltipData>
+            <TooltipData>{formatNumber(locked, { abbreviate: false, fallback: '-' })}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>

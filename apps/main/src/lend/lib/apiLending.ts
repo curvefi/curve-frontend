@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { zeroAddress } from 'viem'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
@@ -37,7 +38,7 @@ import {
 } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
-import { BN, shortenAccount } from '@ui/utils'
+import { shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { getErrorMessage } from '@ui-kit/utils'
 
@@ -45,7 +46,7 @@ export const helpers = {
   isTooMuch: (val1: string | number | undefined, val2: string | number | undefined) => {
     val1 = val1 || '0'
     val2 = val2 || '0'
-    return BN(val1).isGreaterThan(val2)
+    return BigNumber(val1).isGreaterThan(val2)
   },
   getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
     isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
@@ -1776,14 +1777,14 @@ async function fetchChartBandBalancesData(
   const { results } = await PromisePool.for(ns).process(async n => {
     const { collateral, borrowed } = bandsBalances[n]
     const [p_up, p_down] = await market.prices.calcBandPrices(+n)
-    const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
-    const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toString()
-    const collateralUsd = new BN(collateral).multipliedBy(sqrt)
+    const sqrt = new BigNumber(p_up).multipliedBy(p_down).squareRoot()
+    const pUpDownMedian = new BigNumber(p_up).plus(p_down).dividedBy(2).toFixed()
+    const collateralUsd = new BigNumber(collateral).multipliedBy(sqrt)
 
     return {
       borrowed,
       collateral,
-      collateralUsd: collateralUsd.toString(),
+      collateralUsd: collateralUsd.toFixed(),
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
       isOraclePriceBand: false, // update this with detail info oracle price

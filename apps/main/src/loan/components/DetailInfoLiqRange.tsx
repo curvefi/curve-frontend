@@ -8,8 +8,8 @@ import { Button } from '@ui/Button'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
-import { formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumberRange } from '@ui-kit/utils'
 
 export const DetailInfoLiqRange = ({
   bands: newBands,

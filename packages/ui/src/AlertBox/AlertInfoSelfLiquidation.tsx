@@ -1,9 +1,11 @@
 import { styled } from 'styled-components'
+import { formatNumber, amount } from '@ui-kit/utils'
 import { Box } from '../Box'
 import { DetailInfo } from '../DetailInfo'
 import { TextCaption } from '../TextCaption'
-import { formatNumber } from '../utils'
 import { AlertBox } from './AlertBox'
+
+const formatAmount = (value: string | number) => formatNumber(amount(value), { abbreviate: false, fallback: '-' })
 
 export const AlertInfoSelfLiquidation = ({
   errorMessage,
@@ -41,12 +43,12 @@ export const AlertInfoSelfLiquidation = ({
                 {titleSelfLiquidation}
               </TextCaption>
               <div>
-                <StyledDetailInfo label="Debt">{formatNumber(debtAmount, { defaultValue: '-' })}</StyledDetailInfo>
+                <StyledDetailInfo label="Debt">{formatAmount(debtAmount)}</StyledDetailInfo>
                 <StyledDetailInfo label={`Collateral (${borrowedSymbol})`}>
-                  {formatNumber(borrowedAmount, { defaultValue: '-' })}
+                  {formatAmount(borrowedAmount)}
                 </StyledDetailInfo>
                 <StyledDetailInfo isDivider label="">
-                  {formatNumber(liquidationAmt)}
+                  {formatAmount(liquidationAmt)}
                 </StyledDetailInfo>
               </div>
             </div>
@@ -56,9 +58,9 @@ export const AlertInfoSelfLiquidation = ({
                 {titleReceive}
               </TextCaption>
               <div>
-                <StyledDetailInfo label={`${collateralSymbol}:`}>{formatNumber(collateralAmount)}</StyledDetailInfo>
+                <StyledDetailInfo label={`${collateralSymbol}:`}>{formatAmount(collateralAmount)}</StyledDetailInfo>
                 {showReturnedBorrowed && (
-                  <StyledDetailInfo label={`${borrowedSymbol}:`}>{formatNumber(returnedBorrowed)}</StyledDetailInfo>
+                  <StyledDetailInfo label={`${borrowedSymbol}:`}>{formatAmount(returnedBorrowed)}</StyledDetailInfo>
                 )}
               </div>
             </div>

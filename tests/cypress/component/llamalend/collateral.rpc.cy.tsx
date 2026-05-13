@@ -23,7 +23,17 @@ const testCases = objectKeys(LOAN_TEST_MARKETS).map(type =>
 
 describe('Collateral forms', () => {
   testCases.forEach(
-    ({ borrow, chainId, collateral, collateralAddress, controllerAddress, collateralDecimals, id, label }) =>
+    ({
+      borrow,
+      chainId,
+      collateral,
+      collateralAddress,
+      controllerAddress,
+      collateralDecimals,
+      id,
+      label,
+      marketType,
+    }) =>
       describe(label, () => {
         skipTestsAfterFailure() // the remove collateral test needs the collateral to be added first
 
@@ -50,6 +60,7 @@ describe('Collateral forms', () => {
             marketId={id}
             userAddress={address}
             onPricesUpdated={onPricesUpdated}
+            marketType={marketType}
           />
         )
 

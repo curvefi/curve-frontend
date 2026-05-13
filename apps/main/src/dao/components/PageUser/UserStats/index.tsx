@@ -3,9 +3,10 @@ import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Stack from '@mui/material/Stack'
 import { Box } from '@ui/Box'
-import { formatNumber, formatDate } from '@ui/utils/'
+import { formatDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,12 +22,16 @@ export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
       <MetricsComp
         loading={holdersLoading}
         title={t`Total veCRV`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.weight.fromWei())}</MetricsColumnData>}
+        data={
+          <MetricsColumnData>{formatNumber(veCrvHolder.weight.fromWei(), { abbreviate: false })}</MetricsColumnData>
+        }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Locked CRV`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.locked.fromWei())}</MetricsColumnData>}
+        data={
+          <MetricsColumnData>{formatNumber(veCrvHolder.locked.fromWei(), { abbreviate: false })}</MetricsColumnData>
+        }
       />
       <MetricsComp
         loading={holdersLoading}
@@ -38,7 +43,7 @@ export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
       <MetricsComp
         loading={holdersLoading}
         title={t`Weight Ratio`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.weightRatio)}%</MetricsColumnData>}
+        data={<MetricsColumnData>{formatNumber(veCrvHolder.weightRatio, { abbreviate: false })}%</MetricsColumnData>}
       />
     </MetricsContainer>
   </Stack>
