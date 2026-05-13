@@ -62,12 +62,8 @@ export const RangeFilter = <TKey, TColumnId extends string>({
     (index: InputIndex) => (blurValue: Decimal | undefined) => {
       if (blurValue == null) return
 
-      setRange(
-        sortBy([
-          Number(index === 0 ? blurValue : range[0]),
-          Number(index === 1 ? blurValue : range[1]),
-        ]) as Range<number>,
-      )
+      const nextRange = range.map((value, i) => (i === index ? blurValue : value)) as Range<number | null>
+      setRange(nextRange[0] != null && nextRange[1] != null ? (sortBy(nextRange) as Range<number>) : nextRange)
     },
     [range, setRange],
   )
