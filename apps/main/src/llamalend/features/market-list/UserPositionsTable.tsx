@@ -14,6 +14,7 @@ import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilte
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
+import { QueryProp } from '@ui-kit/types/util'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
@@ -103,17 +104,16 @@ const buildVaultUrl = (market: LlamaMarket) =>
 
 type UserPositionsTableProps = {
   onReload: () => void
-  result: LlamaMarketsResult | undefined
-  isError: boolean
-  loading: boolean
+  llamaQuery: QueryProp<LlamaMarketsResult>
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({ onReload, result, loading, isError }: UserPositionsTableProps) => {
-  const { markets = [], userHasPositions } = result ?? {}
-  const [tab, setTab, tabs] = useTabs(result)
+export const UserPositionsTable = ({ onReload, llamaQuery }: UserPositionsTableProps) => {
+  const { markets = [], userHasPositions } = llamaQuery.data ?? {}
+  const [isLoading, isError] = [llamaQuery.isLoading, !!llamaQuery.error]
+  const [tab, setTab, tabs] = useTabs(llamaQuery.data)
 
   const userData = useMemo(
     () =>
@@ -147,7 +147,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(result),
+    ...getTableOptions(llamaQuery.data),
   })
   return (
     <LegacyDataTable
@@ -165,12 +165,12 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={loading}
+      loading={isLoading}
     >
       <Stack>
         <LegacyTableFilters<LlamaMarketColumnId>
           filterExpandedKey={title}
-          loading={loading}
+          loading={isLoading}
           onReload={onReload}
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
@@ -182,7 +182,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
           collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
-              <LlamaChainFilterChips data={userData} {...filterProps} />
+              <LlamaChainFilterChips markets={{ ...llamaQuery, data: userData }} {...filterProps} />
               <LegacyLlamaListChips
                 hiddenCount={getHiddenCount(table)}
                 resetFilters={resetFilters}

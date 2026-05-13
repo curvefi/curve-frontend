@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Range } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
@@ -15,30 +15,30 @@ import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 const { Spacing } = SizesAndSpaces
 
 type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  data: TKey[]
+  queryData: QueryProp<TKey[]>
   field: DeepKeys<TKey>
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
   min?: number
   max?: number
-  loading?: boolean
 }
 
 type InputIndex = 0 | 1
 const parseNullableNumber = (value: string | undefined | null) => (value == null ? null : Number(value))
 
 export const RangeFilter = <TKey, TColumnId extends string>({
-  data,
+  queryData,
   field,
   id,
   adornment,
   max,
-  loading = false,
   min = 0,
   ...filterProps
 }: RangeFilterProps<TKey, TColumnId>) => {
+  const data = queryData.data ?? []
+  const isLoading = queryData.isLoading
   const { maxValue } = useMaxValue<TKey>({ max, data, field })
-  const [range, setRange] = useRangeFilter({ isLoading: loading, id, maxValue, ...filterProps })
+  const [range, setRange] = useRangeFilter({ isLoading, id, maxValue, ...filterProps })
 
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
@@ -85,7 +85,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
       max={decimal(maxValue)}
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
-      disabled={loading}
+      disabled={isLoading}
       adornment={adornment}
       format={value => (value == null ? '' : formatNumber(value, { abbreviate: true }))}
       placeholder={placeholder}

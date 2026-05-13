@@ -10,6 +10,7 @@ import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { q } from '@ui-kit/types/util'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateAllUserLendingSupplies,
@@ -64,19 +65,18 @@ export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
   const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
-  const { data, isError, isLoading, isFetching } = useLlamaMarkets({
+  const llamaQuery = useLlamaMarkets({
     userAddress: address,
     enableLLv2: useLLv2(),
     enableDeprecatedMarkets,
   })
+  const { data, isError, isLoading, isFetching } = llamaQuery
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
-        data?.userHasPositions && (
-          <UserPositionsTable onReload={onReload} result={data} isError={isError} loading={loading} />
-        )
+        data?.userHasPositions && <UserPositionsTable onReload={onReload} llamaQuery={q(llamaQuery)} />
       ) : (
         <Box paddingBlock={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
@@ -92,7 +92,7 @@ export const LlamaMarketsList = () => {
       )}
 
       {useNewMarketListLayout() ? (
-        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+        <LlamaMarketsTable onReload={onReload} llamaQuery={q(llamaQuery)} />
       ) : (
         <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
       )}

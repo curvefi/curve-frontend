@@ -5,27 +5,26 @@ import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import { LlamaMarketColumnId } from '../columns'
 
 const { IconSize } = SizesAndSpaces
 
 export const LlamaChainFilterChips = ({
-  data,
-  loading = false,
+  markets,
   columnFiltersById,
   setColumnFilter,
 }: {
-  data: LlamaMarket[]
-  loading?: boolean
+  markets: QueryProp<LlamaMarket[]>
 } & FilterProps<LlamaMarketColumnId>) => {
   const chains = useMemo(
     () =>
       getUniqueSortedStrings(
-        data.filter(market => !market.deprecatedMessage || market.userHasPositions),
+        (markets.data ?? []).filter(market => !market.deprecatedMessage || market.userHasPositions),
         LlamaMarketColumnId.Chain,
       ),
-    [data],
+    [markets.data],
   )
   const selectedChains = useMemo(
     () => parseListFilter(columnFiltersById[LlamaMarketColumnId.Chain]),
@@ -48,7 +47,7 @@ export const LlamaChainFilterChips = ({
   )
 
   return (
-    <WithSkeleton loading={loading} width={'100%'} height={IconSize.md.desktop} variant="rectangular">
+    <WithSkeleton loading={markets.isLoading} width={'100%'} height={IconSize.md.desktop} variant="rectangular">
       <ChainFilterChips chains={chains} selectedChains={selectedChains} toggleChain={toggleChain} />
     </WithSkeleton>
   )

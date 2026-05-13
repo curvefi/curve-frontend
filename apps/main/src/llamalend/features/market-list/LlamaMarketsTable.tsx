@@ -15,6 +15,7 @@ import { TableButton } from '@ui-kit/shared/ui/DataTable/TableButton'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { FilterChip } from './chips/FilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
@@ -30,17 +31,14 @@ const pagination = { pageIndex: 0, pageSize: 200 }
 
 export const LlamaMarketsTable = ({
   onReload,
-  result,
-  isError,
-  loading,
+  llamaQuery,
 }: {
   onReload: () => void
-  result: LlamaMarketsResult | undefined
-  isError: boolean
-  loading: boolean
+  llamaQuery: QueryProp<LlamaMarketsResult>
 }) => {
-  const { markets, userHasPositions, hasFavorites } = result ?? {}
-  const data = useMemo(() => markets ?? [], [markets])
+  const { markets: resultMarkets, userHasPositions, hasFavorites } = llamaQuery.data ?? {}
+  const [isLoading, isError] = [llamaQuery.isLoading, !!llamaQuery.error]
+  const data = useMemo(() => resultMarkets ?? [], [resultMarkets])
   const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
@@ -66,7 +64,7 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(result),
+    ...getTableOptions(llamaQuery.data),
   })
 
   return (
@@ -87,7 +85,7 @@ export const LlamaMarketsTable = ({
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={loading}
+      isLoading={isLoading}
     >
       <TableFilters<LlamaMarketColumnId>
         testIdPrefix={LOCAL_STORAGE_KEY}
@@ -99,17 +97,16 @@ export const LlamaMarketsTable = ({
         header={
           <TableFiltersHeader
             title={t`Markets`}
-            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
+            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />}
           />
         }
         popoverFilters={
           <LlamaTableFiltersPopover
             hiddenCount={getHiddenCount(table)}
-            loading={loading}
             open={filterPopoverOpen}
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}
-            markets={data}
+            markets={mapQuery(llamaQuery, d => d.markets)}
             resetFilters={resetFilters}
             {...filterProps}
           />

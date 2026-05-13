@@ -9,6 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { QueryProp } from '@ui-kit/types/util'
 import { LlamaMarketColumnId } from '../columns'
 import { LendingMarketsFilters } from '../LendingMarketsFilters'
 
@@ -19,7 +20,6 @@ export const LlamaTableFiltersPopover = ({
   onClose,
   anchorRef: { current: anchorEl },
   markets,
-  loading,
   resetFilters,
   hiddenCount,
   ...filterProps
@@ -27,8 +27,7 @@ export const LlamaTableFiltersPopover = ({
   open: boolean
   onClose: () => void
   anchorRef: RefObject<HTMLDivElement | null>
-  markets: LlamaMarket[]
-  loading: boolean
+  markets: QueryProp<LlamaMarket[]>
   resetFilters: () => void
   hiddenCount: number
 } & FilterProps<LlamaMarketColumnId>) => (
@@ -59,7 +58,7 @@ export const LlamaTableFiltersPopover = ({
           <Cross2Icon />
         </IconButton>
       </Stack>
-      <LendingMarketsFilters data={markets} loading={loading} {...filterProps} />
+      <LendingMarketsFilters markets={markets} {...filterProps} />
       <Stack direction="row" padding={Spacing.sm}>
         <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hiddenCount}>
           {t`Reset filters`}

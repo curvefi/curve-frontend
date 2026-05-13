@@ -15,6 +15,7 @@ import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTabl
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
 const { Spacing } = SizesAndSpaces
@@ -49,7 +50,7 @@ const HiddenSelectedOptions = ({
 export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
-  data,
+  queryData,
   defaultText = t`All`,
   defaultTextMobile,
   renderItem,
@@ -57,7 +58,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   field,
   id,
 }: FilterProps<TColumnId> & {
-  data: TKeys[]
+  queryData: QueryProp<TKeys[]>
   defaultText?: string
   defaultTextMobile: string
   field: DeepKeys<TKeys>
@@ -70,7 +71,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
+  const options = useMemo(() => getUniqueSortedStrings(queryData.data ?? [], field), [queryData.data, field])
   const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {

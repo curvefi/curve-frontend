@@ -53,7 +53,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   return (
     <Stack padding={Spacing.sm} spacing={Spacing.sm}>
       <TableFilterItem title={t`Network`}>
-        <LlamaChainFilterChips loading={props.loading} data={props.data} {...filterProps} />
+        <LlamaChainFilterChips markets={props.markets} {...filterProps} />
       </TableFilterItem>
       <TableFilterItem title={t`Collateral Tokens`}>
         <MultiSelectFilter
@@ -62,7 +62,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Collateral Tokens`}
-          data={markets}
+          queryData={markets}
           {...filterProps}
         />
       </TableFilterItem>
@@ -73,7 +73,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Debt Tokens`}
-          data={markets}
+          queryData={markets}
           {...filterProps}
         />
       </TableFilterItem>
@@ -81,9 +81,8 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         <RangeFilter
           id={LlamaMarketColumnId.BorrowRate}
           field="rates.borrowApr"
-          data={markets}
+          queryData={markets}
           adornment="percentage"
-          loading={props.loading}
           {...filterProps}
         />
       </TableFilterItem>
@@ -91,9 +90,8 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         <RangeFilter
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
-          data={markets}
+          queryData={markets}
           adornment="dollar"
-          loading={props.loading}
           {...filterProps}
         />
       </TableFilterItem>
@@ -101,9 +99,8 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         <RangeFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
-          data={markets}
+          queryData={markets}
           adornment="dollar"
-          loading={props.loading}
           {...filterProps}
         />
       </TableFilterItem>
@@ -111,7 +108,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
-          data={markets}
+          queryData={markets}
           adornment="percentage"
           max={100}
           {...filterProps}
@@ -121,7 +118,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         <RangeSliderRowFilter
           id={LlamaMarketColumnId.MaxLtv}
           field={LlamaMarketColumnId.MaxLtv}
-          data={markets}
+          queryData={markets}
           adornment="percentage"
           max={100}
           {...filterProps}

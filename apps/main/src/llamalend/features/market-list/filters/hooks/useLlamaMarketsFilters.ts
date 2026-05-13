@@ -5,6 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
+import type { QueryProp } from '@ui-kit/types/util'
 import { type AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from '../../columns'
 
@@ -36,11 +37,10 @@ const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
 }
 
 export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
-  data: LlamaMarket[]
-  loading?: boolean
+  markets: QueryProp<LlamaMarket[]>
 }
 
-export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFiltersProps) => {
+export const useLlamaMarketsFilters = ({ markets, ...filterProps }: LlamaMarketsFiltersProps) => {
   const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Type])
   const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Version])
   // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
@@ -52,19 +52,25 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
   const tokens = useMemo<Dictionary<AssetDetails>>(
     () =>
       keyBy(
-        data.flatMap(market => [market.assets.collateral, market.assets.borrowed]),
+        (markets.data ?? []).flatMap(market => [market.assets.collateral, market.assets.borrowed]),
         asset => asset.symbol,
       ),
-    [data],
+    [markets.data],
   )
 
   return {
     filterProps,
     tokens,
-    markets: useMemo(
-      () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
-      [data, selectedChains],
-    ),
+    markets: {
+      ...markets,
+      data: useMemo(
+        () =>
+          selectedChains?.length
+            ? (markets.data ?? []).filter(market => selectedChains.includes(market.chain))
+            : markets.data,
+        [markets.data, selectedChains],
+      ),
+    },
     marketTypeValue: useMemo<MarketTypeFilterValue>(
       () => getSelectFilterValue<LlamaMarketType>(selectedMarketTypes),
       [selectedMarketTypes],
