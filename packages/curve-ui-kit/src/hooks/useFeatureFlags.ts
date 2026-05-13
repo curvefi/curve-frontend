@@ -44,3 +44,4 @@ export const useNewMarketListLayout = useBetaChannel
 
 export const useLoanSlices = () =>
   ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)
+export const isLoanSlicesEnabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Legacy

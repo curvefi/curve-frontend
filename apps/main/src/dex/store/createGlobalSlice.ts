@@ -7,6 +7,7 @@ import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
+import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 import { fetchNetworks } from '../entities/networks'
 import { refetchPoolTvls } from '../queries/pool-tvl.query'
 import { refetchPoolVolumes } from '../queries/pool-volume.query'
@@ -76,6 +77,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     const isNetworkSwitched = prevCurveApi?.chainId !== curveApi.chainId
     const isUserSwitched = prevCurveApi?.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
+    const start = new Date()
     log('Hydrating DEX', curveApi?.chainId, {
       isNetworkSwitched,
       isUserSwitched,
@@ -104,7 +106,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     await Promise.all([refetchPoolVolumes({ chainId }), refetchPoolTvls({ chainId })])
     await state.pools.fetchPools(curveApi, poolIds)
 
-    log('Hydrating DEX - Complete')
+    log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(

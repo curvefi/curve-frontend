@@ -8,7 +8,8 @@ import { recordEntries } from '@primitives/objects.utils'
 import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { log } from '@ui-kit/lib/logging'
 import { ReleaseChannel } from '@ui-kit/utils'
-import { prefetchMarkets } from '../queries/lend-market-names.query'
+import { formatTimeDiff } from '@ui-kit/utils/time.utils'
+import { prefetchLendMarkets } from '../queries/lend-market-names.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -32,6 +33,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== api.signerAddress
     const state = get()
 
+    const start = new Date()
     log('Hydrating Lend', api.chainId, {
       chainId: [prevApi?.chainId, api.chainId],
       signerAddress: [prevApi?.signerAddress, api.signerAddress],
@@ -50,9 +52,9 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     }
 
     // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
-    await prefetchMarkets({ chainId: api.chainId, enableLLv2: isLLv2Enabled(releaseChannel) })
+    await prefetchLendMarkets({ chainId: api.chainId, enableLLv2: isLLv2Enabled(releaseChannel) })
 
-    log('Hydrating Lend - Complete')
+    log(`Hydrated Lend - Complete in ${formatTimeDiff(start)}`)
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(

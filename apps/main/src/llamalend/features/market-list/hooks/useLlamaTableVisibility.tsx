@@ -1,5 +1,7 @@
+import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import { mapRecord } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
@@ -27,9 +29,27 @@ const getVariant = (
         ? userHasPositions // show variant for a specific market rate type
         : 'hasPositions' // show the general market table, for users with positions
 
+const mergeVisibilityGroups = (
+  oldGroups: VisibilityGroup<LlamaMarketColumnId>[],
+  initialGroups: VisibilityGroup<LlamaMarketColumnId>[],
+) =>
+  initialGroups.map((group, index) => {
+    const previousGroup = oldGroups.find(({ label }) => label === group.label) ?? oldGroups[index]
+    return {
+      ...group,
+      options: group.options.map(option => ({
+        ...option,
+        active:
+          previousGroup?.options.find(previousOption => isEqual(previousOption.columns, option.columns))?.active ??
+          option.active,
+      })),
+    }
+  })
+
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
-  version: 2,
-  migrate: () => null, // reset stored visibility since column ids changed
+  version: 3,
+  migrate: (oldValue, initialValue) =>
+    mapRecord(initialValue, (variant, initialGroups) => mergeVisibilityGroups(oldValue[variant] ?? [], initialGroups)),
 }
 
 /**
