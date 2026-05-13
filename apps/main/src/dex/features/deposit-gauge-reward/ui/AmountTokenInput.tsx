@@ -75,7 +75,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       filteredTokens.length &&
       !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
     ) {
-      updateForm({ rewardTokenId: filteredTokens[0].address })
+      updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
   }, [filteredTokens, rewardTokenId, updateForm])
 
