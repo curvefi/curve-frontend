@@ -1,5 +1,6 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
+import { useCrvUsdTotalSupply } from '@/llamalend/queries/crvusd-total-supply.query'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -8,6 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import {
@@ -21,8 +23,10 @@ import {
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { Chain, CRVUSD_ADDRESS, formatNumber } from '@ui-kit/utils'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -51,6 +55,11 @@ export const CrvUsdPriceChart = () => {
   const days = Math.round(TIME_OPTION_MS[timeOption] / TIME_FRAMES.DAY_MS)
 
   const { data: priceHistory = [], isLoading, isPlaceholderData, error } = useCrvUsdPriceHistory({ days })
+  const { data: currentPrice, isLoading: isCurrentPriceLoading } = useTokenUsdRate({
+    chainId: Chain.Ethereum,
+    tokenAddress: CRVUSD_ADDRESS,
+  })
+  const { data: totalSupply, isLoading: isTotalSupplyLoading } = useCrvUsdTotalSupply({})
   // keepPreviousData is enabled on this query for analytics, so isLoading stays false when switching time options.
   // Check isPlaceholderData to show the loader while fresh data is being fetched.
   const showLoading = isLoading || isPlaceholderData
@@ -70,6 +79,22 @@ export const CrvUsdPriceChart = () => {
       d => d.timestamp,
     )
   }, [priceHistory])
+
+  const oneWeekDeviation = useMemo(() => {
+    const now = Date.now()
+    const points = priceHistory.map(item => ({
+      timestamp: new Date(item.timestamp).getTime(),
+      price: Number(item.price),
+    }))
+
+    return (
+      calculateAverageRates(
+        [...points, ...(currentPrice == null ? [] : [{ timestamp: now, price: currentPrice }])],
+        7,
+        { deviation: ({ price }) => Math.abs(price - 1) * 100 },
+      )?.deviation ?? null
+    )
+  }, [currentPrice, priceHistory])
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
     () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -106,6 +131,29 @@ export const CrvUsdPriceChart = () => {
         }
       />
       <CardContent component={Stack} gap={Spacing.md}>
+        <Stack direction="row" gap={Spacing.xl} flexWrap="wrap">
+          <Metric
+            size="small"
+            label={t`Current price`}
+            value={currentPrice}
+            loading={currentPrice == null && isCurrentPriceLoading}
+            valueOptions={{ unit: 'dollar' }}
+          />
+          <Metric
+            size="small"
+            label={t`1W deviation`}
+            value={oneWeekDeviation}
+            loading={oneWeekDeviation == null && (showLoading || isCurrentPriceLoading)}
+            valueOptions={{ unit: 'percentage' }}
+          />
+          <Metric
+            size="small"
+            label={t`Total supply`}
+            value={totalSupply}
+            loading={totalSupply == null && isTotalSupplyLoading}
+            valueOptions={{ unit: 'dollar' }}
+          />
+        </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}

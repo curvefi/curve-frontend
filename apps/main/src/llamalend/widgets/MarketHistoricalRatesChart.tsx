@@ -13,7 +13,6 @@ import { notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import {
   ChartStateWrapper,
   ChartFooter,
@@ -28,9 +27,9 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 const { Spacing, Height } = SizesAndSpaces
-const WEEK_MS = 7 * TIME_FRAMES.DAY_MS
 
 type RateMode = 'borrow' | 'supply'
 
@@ -50,8 +49,6 @@ type MarketHistoricalRatesChartProps = {
   marketId: string
   rateMode: RateMode
 }
-
-type RateMetricPoint = Pick<RateChartPoint, 'timestamp' | 'rate'>
 
 const BORROW_SERIES_CONFIG: { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'rate', label: t`Borrow APR` },
@@ -116,23 +113,20 @@ export const MarketHistoricalRatesChart = ({
 
   const oneWeekAverageRate = useMemo(() => {
     const now = Date.now()
-    const cutoff = now - WEEK_MS
-    const snapshotPoints = snapshots.map<RateMetricPoint>(snapshot => {
+    const snapshotPoints = snapshots.map(snapshot => {
       const timestamp = new Date(snapshot.timestamp).getTime()
-      const snapshotRate =
-        rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : null
-      const rate = Number(snapshotRate)
+      const rate = rateMode === 'borrow' ? snapshot.borrowApr : 'lendApy' in snapshot ? snapshot.lendApy * 100 : null
 
       return { timestamp, rate }
     })
-    const weeklyPoints = [
-      ...snapshotPoints,
-      ...(currentLiveRate == null ? [] : [{ timestamp: now, rate: currentLiveRate }]),
-    ].filter(({ timestamp, rate }) => timestamp >= cutoff && timestamp <= now && Number.isFinite(rate))
 
-    if (weeklyPoints.length === 0) return null
-
-    return weeklyPoints.reduce((sum, { rate }) => sum + rate, 0) / weeklyPoints.length
+    return (
+      calculateAverageRates(
+        [...snapshotPoints, ...(currentLiveRate == null ? [] : [{ timestamp: now, rate: currentLiveRate }])],
+        7,
+        { rate: ({ rate }) => rate },
+      )?.rate ?? null
+    )
   }, [currentLiveRate, snapshots, rateMode])
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
