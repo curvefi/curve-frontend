@@ -104,16 +104,16 @@ const buildVaultUrl = (market: LlamaMarket) =>
 
 type UserPositionsTableProps = {
   onReload: () => void
-  llamaQuery: QueryProp<LlamaMarketsResult>
+  tableQuery: QueryProp<LlamaMarketsResult>
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({ onReload, llamaQuery }: UserPositionsTableProps) => {
-  const { markets = [], userHasPositions } = llamaQuery.data ?? {}
-  const [isLoading, isError] = [llamaQuery.isLoading, !!llamaQuery.error]
-  const [tab, setTab, tabs] = useTabs(llamaQuery.data)
+export const UserPositionsTable = ({ onReload, tableQuery }: UserPositionsTableProps) => {
+  const { markets = [], userHasPositions } = tableQuery.data ?? {}
+  const [isLoading, isError] = [tableQuery.isLoading, !!tableQuery.error]
+  const [tab, setTab, tabs] = useTabs(tableQuery.data)
 
   const userData = useMemo(
     () =>
@@ -147,7 +147,7 @@ export const UserPositionsTable = ({ onReload, llamaQuery }: UserPositionsTableP
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(llamaQuery.data),
+    ...getTableOptions(tableQuery.data),
   })
   return (
     <LegacyDataTable
@@ -182,7 +182,7 @@ export const UserPositionsTable = ({ onReload, llamaQuery }: UserPositionsTableP
           collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
-              <LlamaChainFilterChips markets={{ ...llamaQuery, data: userData }} {...filterProps} />
+              <LlamaChainFilterChips markets={{ ...tableQuery, data: userData }} {...filterProps} />
               <LegacyLlamaListChips
                 hiddenCount={getHiddenCount(table)}
                 resetFilters={resetFilters}

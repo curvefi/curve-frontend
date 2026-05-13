@@ -31,13 +31,13 @@ const pagination = { pageIndex: 0, pageSize: 200 }
 
 export const LlamaMarketsTable = ({
   onReload,
-  llamaQuery,
+  tableQuery,
 }: {
   onReload: () => void
-  llamaQuery: QueryProp<LlamaMarketsResult>
+  tableQuery: QueryProp<LlamaMarketsResult>
 }) => {
-  const { markets: resultMarkets, userHasPositions, hasFavorites } = llamaQuery.data ?? {}
-  const [isLoading, isError] = [llamaQuery.isLoading, !!llamaQuery.error]
+  const { markets: resultMarkets, userHasPositions, hasFavorites } = tableQuery.data ?? {}
+  const [isLoading, isError] = [tableQuery.isLoading, !!tableQuery.error]
   const data = useMemo(() => resultMarkets ?? [], [resultMarkets])
   const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
@@ -64,7 +64,7 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(llamaQuery.data),
+    ...getTableOptions(tableQuery.data),
   })
 
   return (
@@ -106,7 +106,7 @@ export const LlamaMarketsTable = ({
             open={filterPopoverOpen}
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}
-            markets={mapQuery(llamaQuery, d => d.markets)}
+            markets={mapQuery(tableQuery, d => d.markets)}
             resetFilters={resetFilters}
             {...filterProps}
           />

@@ -73,10 +73,11 @@ export const LlamaMarketsList = () => {
   const { data, isError, isLoading, isFetching } = llamaQuery
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
+  const tableQuery = q({ ...llamaQuery, isLoading: loading })
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
-        data?.userHasPositions && <UserPositionsTable onReload={onReload} llamaQuery={q(llamaQuery)} />
+        data?.userHasPositions && <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box paddingBlock={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
@@ -92,7 +93,7 @@ export const LlamaMarketsList = () => {
       )}
 
       {useNewMarketListLayout() ? (
-        <LlamaMarketsTable onReload={onReload} llamaQuery={q(llamaQuery)} />
+        <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
       )}
