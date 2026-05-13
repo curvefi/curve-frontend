@@ -3,7 +3,9 @@ import { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme, type Theme } from '@mui/material/styles'
+import { toArray } from '@primitives/array.utils'
 import type { Amount } from '@primitives/decimal.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -33,6 +35,7 @@ const ORACLE_MARKER_LAYOUT = {
   label: {
     height: CHART_LAYOUT.trackHeight - ORACLE_MARKER_ARROW.height,
     horizontalPadding: Spacing.xs.desktop,
+    // Approximate average glyph width in em for numeric price labels when sizing the custom ECharts marker.
     estimatedCharacterWidthRatio: 0.58,
   },
 } as const
@@ -94,23 +97,16 @@ const getBodyXsRegularChartTextStyle = (theme: Theme): ChartTextStyle => ({
   fontWeight: (theme.typography.bodyXsRegular.fontWeight as string | number | undefined) ?? FontWeight.Medium,
   lineHeight: toEChartsPixelValue(LineHeight.xs.desktop, theme.typography.htmlFontSize),
 })
-
-const getChartColors = (theme: Theme): ChartColors => {
-  const {
-    design: { Chart, Color, Text },
-  } = theme
-
-  return {
-    axisLabel: Text.TextColors.Tertiary,
-    axisLine: Color.Neutral[600],
-    referenceLine: Color.Primary[500],
-    oracleMarkerLabel: Text.TextColors.Highlight,
-    oracleMarkerLabelBackground: Color.Neutral[50],
-    rangeLabel: Text.TextColors.Primary,
-    currentRange: Chart.LiquidationZone.Current,
-    newRangeLine: Chart.LiquidationZone.FutureLine,
-  }
-}
+const getChartColors = ({ design: { Chart, Color, Text } }: Theme): ChartColors => ({
+  axisLabel: Text.TextColors.Tertiary,
+  axisLine: Color.Neutral[600],
+  referenceLine: Color.Primary[500],
+  oracleMarkerLabel: Text.TextColors.Highlight,
+  oracleMarkerLabelBackground: Color.Neutral[50],
+  rangeLabel: Text.TextColors.Primary,
+  currentRange: Chart.LiquidationZone.Current,
+  newRangeLine: Chart.LiquidationZone.FutureLine,
+})
 
 const getRenderableRanges = ({ currentRange, newRange }: SmallLiquidationRangeChartProps['liquidationRanges']) => ({
   currentRange: toRenderableRange(currentRange),
@@ -125,11 +121,7 @@ const getSeriesData = ({
   currentRange?: RenderableLiquidationRange
   newRange?: RenderableLiquidationRange
   oraclePrice?: number
-}) =>
-  [...(currentRange ?? []), ...(newRange ?? []), ...(oraclePrice === undefined ? [] : [oraclePrice])].map(value => [
-    value,
-    0,
-  ])
+}) => notFalsyArray(currentRange, newRange, toArray(oraclePrice)).map(value => [value, 0])
 
 const buildRangeMarkAreas = ({
   colors,
@@ -335,20 +327,20 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
     () => getRenderableRanges({ currentRange, newRange }),
     [currentRange, newRange],
   )
-  const parsedOraclePrice = Number(oraclePrice)
   const hasNewRange = !!renderableNewRange
   const hasCurrentRange = !!renderableCurrentRange
-  const hasOraclePrice = oraclePrice !== undefined
+  const hasOraclePrice = oraclePrice != null
+  const renderableOraclePrice = hasOraclePrice ? Number(oraclePrice) : undefined
   const hasChartData = hasCurrentRange || hasNewRange || hasOraclePrice
-  const formattedOraclePrice = hasOraclePrice ? formatNumber(parsedOraclePrice, { abbreviate: false }) : ''
+  const formattedOraclePrice = formatNumber(oraclePrice, { abbreviate: false }) ?? ''
   const xAxisDomain = useMemo(
     () =>
       getSmallLiquidationRangeChartDomain({
         currentRange: renderableCurrentRange,
         newRange: renderableNewRange,
-        oraclePrice: hasOraclePrice ? parsedOraclePrice : undefined,
+        oraclePrice: renderableOraclePrice,
       }),
-    [hasOraclePrice, parsedOraclePrice, renderableCurrentRange, renderableNewRange],
+    [renderableOraclePrice, renderableCurrentRange, renderableNewRange],
   )
 
   const seriesData = useMemo(
@@ -356,9 +348,9 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       getSeriesData({
         currentRange: renderableCurrentRange,
         newRange: renderableNewRange,
-        oraclePrice: hasOraclePrice ? parsedOraclePrice : undefined,
+        oraclePrice: renderableOraclePrice,
       }),
-    [hasOraclePrice, parsedOraclePrice, renderableCurrentRange, renderableNewRange],
+    [renderableOraclePrice, renderableCurrentRange, renderableNewRange],
   )
 
   const rangeMarkAreas = useMemo(
@@ -427,13 +419,13 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
             data: rangeMarkAreas,
           },
         },
-        ...(hasOraclePrice
+        ...(renderableOraclePrice !== undefined
           ? [
               buildOracleMarkerSeries({
                 colors,
                 formattedOraclePrice,
                 htmlFontSize: theme.typography.htmlFontSize,
-                oraclePrice: parsedOraclePrice,
+                oraclePrice: renderableOraclePrice,
                 textStyle: chartTextStyle,
               }),
             ]
@@ -444,10 +436,9 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
       chartTextStyle,
       colors,
       hasChartData,
-      hasOraclePrice,
       formattedOraclePrice,
-      parsedOraclePrice,
       rangeMarkAreas,
+      renderableOraclePrice,
       seriesData,
       theme.typography.htmlFontSize,
       xAxisDomain,
@@ -455,7 +446,7 @@ export const SmallLiquidationRangeChart = ({ liquidationRanges, oraclePrice }: S
   )
 
   return (
-    <Stack sx={{ width: '100%' }}>
+    <Stack flexGrow={1}>
       <Box
         sx={{
           width: '100%',

@@ -2,6 +2,7 @@ type RenderableLiquidationRange = readonly [number, number]
 type ChartDomain = readonly [number, number]
 
 const DEFAULT_PADDING_RATIO = 0.1
+const DEFAULT_PADDED_MIN_RATIO = 1 - DEFAULT_PADDING_RATIO
 
 type GetChartDomainParams = {
   currentRange?: RenderableLiquidationRange
@@ -11,7 +12,7 @@ type GetChartDomainParams = {
 
 const getExtent = (values: number[]): ChartDomain => [Math.min(...values), Math.max(...values)]
 
-const padDomain = ([domainMin, domainMax]: ChartDomain, values: number[]): ChartDomain => {
+const padDomain = ([domainMin, domainMax]: ChartDomain): ChartDomain => {
   if (domainMin === domainMax) {
     const halfWidth = domainMin === 0 ? 1 : Math.abs(domainMin) * DEFAULT_PADDING_RATIO
     return [domainMin - halfWidth, domainMax + halfWidth]
@@ -21,7 +22,7 @@ const padDomain = ([domainMin, domainMax]: ChartDomain, values: number[]): Chart
   const rawPaddedMin = domainMin - padding
   const paddedMax = domainMax + padding
   // Prices are positive, so avoid wasting chart width by padding down to zero.
-  const paddedMin = rawPaddedMin <= 0 ? Math.min(...values) * (1 - DEFAULT_PADDING_RATIO) : rawPaddedMin
+  const paddedMin = domainMin <= padding ? domainMin * DEFAULT_PADDED_MIN_RATIO : rawPaddedMin
 
   return [paddedMin, paddedMax]
 }
@@ -34,9 +35,5 @@ export const getSmallLiquidationRangeChartDomain = ({
 }: GetChartDomainParams): ChartDomain | undefined => {
   const values = [...(currentRange ?? []), ...(newRange ?? []), ...(oraclePrice === undefined ? [] : [oraclePrice])]
 
-  if (values.length === 0) return undefined
-
-  const baseDomain = getExtent(values)
-
-  return padDomain(baseDomain, values)
+  return values.length === 0 ? undefined : padDomain(getExtent(values))
 }

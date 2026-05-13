@@ -17,19 +17,17 @@ export const useSmallLiquidationRangeChartData = ({
   isFullRepay,
 }: Params): SmallLiquidationRangeChartProps | undefined =>
   useMemo(() => {
-    if (isFullRepay) return undefined
-
     const currentRange = prevPrices?.data
     const newRange = prices?.data ?? undefined
     const chartOraclePrice = oraclePrice?.data ?? undefined
 
-    if (!currentRange && !newRange && chartOraclePrice == null) return undefined
-
-    return {
-      liquidationRanges: {
-        ...(currentRange && { currentRange }),
-        ...(newRange && { newRange }),
-      },
-      oraclePrice: chartOraclePrice,
-    }
+    return (!currentRange && !newRange && chartOraclePrice == null) || isFullRepay
+      ? undefined
+      : {
+          liquidationRanges: {
+            ...(currentRange && { currentRange }),
+            ...(newRange && { newRange }),
+          },
+          oraclePrice: chartOraclePrice,
+        }
   }, [isFullRepay, oraclePrice?.data, prevPrices?.data, prices?.data])
