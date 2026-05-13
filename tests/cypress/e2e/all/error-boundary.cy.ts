@@ -4,11 +4,14 @@ import type { ErrorContext } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
 const visitErrorBoundary = () => {
-  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
+  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, {
+    body: { chains: { ethereum: { count: 0, data: [] } } },
+  })
   cy.intercept(`https://prices.curve.finance/v1/lending/markets`, {
     body: {
       chains: {
         ethereum: {
+          count: 1,
           data: [
             // make an error occur on purpose by returning nonsense data (`address` should be string)
             // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
