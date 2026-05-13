@@ -159,7 +159,11 @@ export const MarketRateCurveChart = ({
     <Card size="small">
       <CardHeader title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} gap={Spacing.md}>
-        <Stack direction="row" gap={Spacing.xl} flexWrap="wrap">
+        <Stack
+          display="grid"
+          gap={Spacing.xl}
+          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}
+        >
           <Metric
             size="small"
             label={t`Utilization`}
