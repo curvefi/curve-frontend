@@ -18,9 +18,10 @@ import { getStepStatus } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -193,7 +194,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           <>
             {haveClaimableCrv && (
               <Stats isOneLine isBorderBottom={formValues.claimableRewards.length > 0} label="CRV">
-                {formatNumber(formValues.claimableCrv)}
+                {formatNumber(toAmount(formValues.claimableCrv), { abbreviate: false, fallback: '-' })}
               </Stats>
             )}
 
@@ -204,7 +205,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
                 key={token}
                 label={symbol}
               >
-                {formatNumber(amount)}
+                {formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })}
               </Stats>
             ))}
           </>
@@ -224,7 +225,10 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
       {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={updateFormValues} />}
       {txInfoBar}
-      {!formStatus.isClaimRewards && !formStatus.isClaimCrv && formStatus.formTypeCompleted === '' ? (
+      {!formStatus.isClaimRewards &&
+      !formStatus.isClaimCrv &&
+      typeof formStatus.formTypeCompleted === 'string' &&
+      formStatus.formTypeCompleted.length === 0 ? (
         <Box grid gridAutoFlow="column" gridColumnGap="3">
           {curve && poolData && (haveClaimableCrv || rewardsNeedNudgingAndHaveGauge) && (
             <Button

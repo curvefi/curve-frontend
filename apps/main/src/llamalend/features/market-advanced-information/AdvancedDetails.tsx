@@ -11,12 +11,11 @@ import {
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { decimal } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
@@ -30,7 +29,7 @@ type AdvancedDetailsProps = {
 }
 
 const formatLiquidity = (value: number) =>
-  `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
+  `${formatNumber(abbreviateNumber(value), { unit: 'dollar', abbreviate: false })}${scaleSuffix(value).toUpperCase()}`
 
 type AvailableLiquidityValues = {
   available?: Decimal

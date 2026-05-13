@@ -3,8 +3,20 @@ import { parseTimestamp } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
 
+const parseMarketVersion = (version: number): Models.MarketVersion => {
+  switch (version) {
+    case 1:
+      return 'v1'
+    case 2:
+      return 'v2'
+    default:
+      throw new Error(`Unsupported LlamaLend market version: ${version}`)
+  }
+}
+
 export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
   name: x.name,
+  version: parseMarketVersion(x.version),
   controller: x.controller,
   vault: x.vault,
   llamma: x.llamma,

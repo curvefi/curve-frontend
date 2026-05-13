@@ -2,8 +2,8 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload?.length) {
@@ -22,7 +22,7 @@ export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<Va
             <TooltipDataTitle>{t`Gauge weight 7d delta`}</TooltipDataTitle>
             {sevenDayDelta ? (
               <TooltipData className={sevenDayDelta > 0 ? 'positive' : 'negative'}>
-                {formatNumber(sevenDayDelta, { notation: 'compact' })}%
+                {formatNumber(amount(sevenDayDelta), { abbreviate: true, fallback: '-' })}%
               </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
@@ -32,7 +32,7 @@ export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<Va
             <TooltipDataTitle>{t`Gauge weight 60d delta`}</TooltipDataTitle>
             {sixtyDayDelta ? (
               <TooltipData className={sixtyDayDelta > 0 ? 'positive' : 'negative'}>
-                {formatNumber(sixtyDayDelta, { notation: 'compact' })}%
+                {formatNumber(amount(sixtyDayDelta), { abbreviate: true, fallback: '-' })}%
               </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>

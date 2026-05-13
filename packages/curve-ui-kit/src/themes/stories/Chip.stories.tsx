@@ -36,7 +36,7 @@ const VariantStory = ({
 )
 
 const meta: Meta<typeof SelectableChip> = {
-  title: 'UI Kit/Primitives/Chips',
+  title: 'UI Kit/Primitives/Chip',
   component: SelectableChip,
   argTypes: {
     variant: {

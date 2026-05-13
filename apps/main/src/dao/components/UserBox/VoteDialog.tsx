@@ -11,8 +11,8 @@ import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 type Props = {
   userAddress?: Address
@@ -24,7 +24,8 @@ type Props = {
   className?: string
 }
 
-const votePercentage = (vote: number, total: number) => `(${formatNumber((vote / total) * 100, { style: 'percent' })})`
+const votePercentage = (vote: number, total: number) =>
+  `(${formatNumber((vote / total) * 100, { unit: 'percentage', abbreviate: false })})`
 
 export const VoteDialog = ({
   userAddress,
@@ -115,7 +116,7 @@ export const VoteDialog = ({
                     <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
                   </VotedRowItem>
                   <VotedRowItem>
-                    {formatNumber(userProposalVotes?.[proposalKey].voteFor)}{' '}
+                    {formatNumber(userProposalVotes?.[proposalKey].voteFor, { abbreviate: false, fallback: '-' })}{' '}
                     {votePercentage(
                       userProposalVotes[proposalKey].voteFor,
                       userProposalVotes[proposalKey].voteTotalSupply,
@@ -129,7 +130,7 @@ export const VoteDialog = ({
                     <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
                   </VotedRowItem>
                   <VotedRowItem>
-                    {formatNumber(userProposalVotes?.[proposalKey].voteAgainst)}{' '}
+                    {formatNumber(userProposalVotes?.[proposalKey].voteAgainst, { abbreviate: false, fallback: '-' })}{' '}
                     {votePercentage(
                       userProposalVotes[proposalKey].voteAgainst,
                       userProposalVotes[proposalKey].voteTotalSupply,

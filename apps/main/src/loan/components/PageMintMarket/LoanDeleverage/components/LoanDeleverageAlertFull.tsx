@@ -4,8 +4,8 @@ import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount, getFractionDigitsOptions } from '@ui-kit/utils'
 
 // Deleverage full repayment will result in the following changes to user wallet:
 // 1. wallet.collateral = userState.collateral - formValues.collateral
@@ -21,7 +21,8 @@ export const LoanDeleverageAlertFull = ({
   llamma: Llamma
   userState: UserLoanDetails['userState']
 }) => {
-  const format = (val: string | number) => formatNumber(val, { ...getFractionDigitsOptions(val, 2) })
+  const format = (val: string | number) =>
+    formatNumber(amount(val), { ...getFractionDigitsOptions(val, 2), abbreviate: false, fallback: '-' })
   const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)
   const collateralBalance = +userState.collateral - +formValues.collateral
   const stablecoinBalance = +receivedStablecoin + +userState.stablecoin - +userState.debt

@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { formatNumber } from '@ui/utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 
 export const DebtChangeCell = ({
@@ -12,7 +12,8 @@ export const DebtChangeCell = ({
   <InlineTableCell>
     <Typography variant="tableCellMBold" color={!loanChange ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}>
       {loanChange > 0 ? '+' : ''}
-      {loanChange ? `${formatNumber(loanChange)} ${borrowToken?.symbol}` : '-'}
+      {loanChange == 0 ? '-' : formatNumber(loanChange, { abbreviate: false })}{' '}
+      {loanChange !== 0 && borrowToken?.symbol}
     </Typography>
   </InlineTableCell>
 )

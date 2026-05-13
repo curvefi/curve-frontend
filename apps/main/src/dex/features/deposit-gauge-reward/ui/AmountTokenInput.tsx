@@ -20,13 +20,13 @@ import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
-import { formatNumber } from '@ui/utils'
 import { useFormContext } from '@ui-kit/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { formatNumber } from '@ui-kit/utils'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
@@ -135,7 +135,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
               signerAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(rewardTokenBalance),
+                description: formatNumber(rewardTokenBalance, { abbreviate: false, fallback: '-' }),
               }
             }
             testId="deposit-amount"

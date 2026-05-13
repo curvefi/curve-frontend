@@ -1,3 +1,8 @@
+import {
+  CHART_LINE_DASH_PATTERNS,
+  CHART_LINE_WIDTHS,
+  type ChartLineDashPattern,
+} from '@ui-kit/shared/ui/Chart/chart.utils'
 import { BandsChartPalette, UserBandsPriceRange } from './types'
 
 /**
@@ -6,8 +11,20 @@ import { BandsChartPalette, UserBandsPriceRange } from './types'
  * Includes lineStyle metadata for label styling
  */
 type MarkLine = [{ coord: [number, number] }, { coord: [number, number] }] & {
-  lineStyle: { color: string; type: string; width: number }
+  lineStyle: { color: string; type: ChartLineDashPattern; width: number }
 }
+
+type MarkLineStyle = MarkLine['lineStyle']
+
+const DEFAULT_MARK_LINE_STYLE = {
+  type: CHART_LINE_DASH_PATTERNS.regular,
+  width: CHART_LINE_WIDTHS.referenceLine,
+} satisfies Omit<MarkLineStyle, 'color'>
+
+const DEFAULT_ORACLE_PRICE_LINE_STYLE = {
+  type: CHART_LINE_DASH_PATTERNS.tight,
+  width: CHART_LINE_WIDTHS.defaultPriceLine,
+} satisfies Omit<MarkLineStyle, 'color'>
 
 /**
  * Creates a standardized mark line configuration using coord format
@@ -18,11 +35,10 @@ const createMarkLine = (
   xEnd: number,
   yValue: number,
   color: string,
-  type = 'dashed',
-  width = 2,
+  style: Omit<MarkLineStyle, 'color'> = DEFAULT_MARK_LINE_STYLE,
 ): MarkLine => {
   const line: MarkLine = [{ coord: [xStart, yValue] }, { coord: [xEnd, yValue] }] as MarkLine
-  line.lineStyle = { color, type, width }
+  line.lineStyle = { color, ...style }
   return line
 }
 
@@ -50,7 +66,7 @@ const createOraclePriceMarkLine = (
   const price = Number(oraclePrice)
   if (!Number.isFinite(price)) return []
 
-  return [createMarkLine(xStart, xEnd, price, palette.oraclePriceLineColor)]
+  return [createMarkLine(xStart, xEnd, price, palette.oraclePriceLineColor, DEFAULT_ORACLE_PRICE_LINE_STYLE)]
 }
 
 export const generateMarkLines = (

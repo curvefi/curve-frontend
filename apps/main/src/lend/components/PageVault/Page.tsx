@@ -93,7 +93,11 @@ export const Page = () => {
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+    <ErrorPage
+      title="404"
+      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
+      continueUrl={getCollateralListPathname(params)}
+    />
   ) : provider ? (
     <DetailPageLayout
       formTabs={rChainId && marketId && <VaultTabs {...pageProps} params={params} />}

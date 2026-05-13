@@ -64,6 +64,10 @@ export const useLlamaMarketSortOptions = () => {
       label: t`Max LTV`,
     },
     {
+      id: LlamaMarketColumnId.MaxLeverage,
+      label: t`Max leverage`,
+    },
+    {
       id: LlamaMarketColumnId.UtilizationPercent,
       label: t`Utilization`,
     },

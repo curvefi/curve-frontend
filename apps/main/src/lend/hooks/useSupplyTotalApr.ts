@@ -4,7 +4,7 @@ import { useStore } from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useMarketRates } from '@/llamalend/queries/market'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { useLendMarket } from '../hooks/useLendMarket'
 
 export function useSupplyTotalApr(rChainId: ChainId, marketId: string) {
@@ -52,12 +52,12 @@ export function useSupplyTotalApr(rChainId: ChainId, marketId: string) {
 
 function _getTooltipValue(lendApr: number, lendApy: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
   return {
-    lendApr: formatNumber(lendApr, FORMAT_OPTIONS.PERCENT),
-    lendApy: `${formatNumber(lendApy, FORMAT_OPTIONS.PERCENT)} APY`,
+    lendApr: formatNumber(lendApr, { unit: 'percentage', abbreviate: false }),
+    lendApy: `${formatNumber(lendApy, { unit: 'percentage', abbreviate: false })} APY`,
     crvBase,
-    crv: crvBase > 0 ? formatNumber(crvBase, FORMAT_OPTIONS.PERCENT) : '',
-    crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, FORMAT_OPTIONS.PERCENT) : '',
-    incentives: others.map(o => `${formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} ${o.symbol}`),
+    crv: crvBase > 0 ? formatNumber(crvBase, { unit: 'percentage', abbreviate: false }) : '',
+    crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, { unit: 'percentage', abbreviate: false }) : '',
+    incentives: others.map(o => `${formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} ${o.symbol}`),
     incentivesObj: others,
   }
 }

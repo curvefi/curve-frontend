@@ -16,6 +16,7 @@ import {
   LiquidityUsdCell,
   LtvCell,
   MarketTitleCell,
+  MaxLeverageCell,
   PercentCell,
   PriceCell,
   RateCell,
@@ -48,6 +49,7 @@ const headers = {
   [LlamaMarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
   [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} borrow APR`,
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
+  [LlamaMarketColumnId.MaxLeverage]: t`Max leverage`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
   [LlamaMarketColumnId.Tvl]: t`TVL`,
@@ -119,6 +121,7 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
     },
     sortUndefined: 'last',
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor('rates.borrowTotalApr', {
     id: LlamaMarketColumnId.NetBorrowRate,
@@ -156,10 +159,18 @@ export const LLAMA_MARKET_COLUMNS = [
     header: headers[LlamaMarketColumnId.BorrowChart],
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
+  columnHelper.accessor('leverage', {
+    id: LlamaMarketColumnId.MaxLeverage,
+    header: headers[LlamaMarketColumnId.MaxLeverage],
+    cell: MaxLeverageCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor(LlamaMarketColumnId.MaxLtv, {
     header: headers[LlamaMarketColumnId.MaxLtv],
     cell: PercentCell,
     meta: { type: 'numeric' },
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: headers[LlamaMarketColumnId.UtilizationPercent],
@@ -209,4 +220,5 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
+  hidden(LlamaMarketColumnId.Version, LlamaMarketColumnId.Version, multiFilterFn),
 ] satisfies LlamaColumn[]

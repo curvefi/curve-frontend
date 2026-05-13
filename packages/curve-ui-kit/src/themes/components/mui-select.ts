@@ -73,6 +73,8 @@ export const defineMuiSelect = (design: DesignSystem): Components['MuiSelect'] =
         // Override InputBase height at root level and desktop size accross all breakpoints
         '&.MuiInputBase-root': { height: height.desktop },
         '& .MuiSelect-select': {
+          // parasite margin inline from MUI
+          marginInline: 0,
           ...handleBreakpoints({
             paddingBlock,
             paddingInlineStart,

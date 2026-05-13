@@ -19,6 +19,30 @@ import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
 const { Spacing } = SizesAndSpaces
 
+/**  Show only the first few selected values inline so the closed select stays compact.
+ * Any remaining selections are collapsed into a single "+N" item, if more than 1 item is hidden */
+const getVisibleSelectedOptionsCount = (selectedOptionsLength: number) => {
+  const maxVisibleSelectedOptions = 4
+  return selectedOptionsLength === maxVisibleSelectedOptions ? maxVisibleSelectedOptions : maxVisibleSelectedOptions - 1
+}
+
+/** Renders the overflow indicator for selected options hidden behind max selected options limit.  */
+const HiddenSelectedOptions = ({
+  selectedOptionsLength,
+  renderItem,
+  selectedItemRender,
+}: {
+  selectedOptionsLength: number
+  renderItem?: (value: string) => ReactNode
+  selectedItemRender?: (value: string) => ReactNode
+}) => {
+  const visibleSelectedOptionsCount = getVisibleSelectedOptionsCount(selectedOptionsLength)
+  const label = `+${selectedOptionsLength - visibleSelectedOptionsCount}`
+  return (
+    selectedOptionsLength > visibleSelectedOptionsCount && (selectedItemRender?.(label) ?? renderItem?.(label) ?? label)
+  )
+}
+
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
@@ -26,7 +50,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
   data,
-  defaultText,
+  defaultText = t`All`,
   defaultTextMobile,
   renderItem,
   selectedItemRender,
@@ -34,7 +58,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   id,
 }: FilterProps<TColumnId> & {
   data: TKeys[]
-  defaultText: string
+  defaultText?: string
   defaultTextMobile: string
   field: DeepKeys<TKeys>
   id: TColumnId
@@ -83,22 +107,28 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         fullWidth
         value=""
         data-testid={`multi-select-filter-${id}`}
-        size={isMobile ? 'medium' : 'small'}
+        size="medium"
+        sx={{ '& .MuiSelect-select': { gap: Spacing.xs } }}
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
-            selectedOptions.map((optionId, index) => (
-              <MenuItem
-                key={optionId}
-                sx={{
-                  display: 'inline-flex', // display inline to avoid wrapping
-                  '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
-                  gap: Spacing.xs, // default spacing is too large inline
-                  ...(index > 0 && { ':before': { content: '", "' } }),
-                }}
-              >
-                {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
-              </MenuItem>
-            ))
+            <>
+              {selectedOptions.slice(0, getVisibleSelectedOptionsCount(selectedOptions.length)).map(optionId => (
+                <MenuItem
+                  key={optionId}
+                  sx={{
+                    display: 'inline-flex', // display inline to avoid wrapping
+                    '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                  }}
+                >
+                  {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
+                </MenuItem>
+              ))}
+              <HiddenSelectedOptions
+                selectedOptionsLength={selectedOptions.length}
+                selectedItemRender={selectedItemRender}
+                renderItem={renderItem}
+              />
+            </>
           ) : (
             <Typography variant="bodySBold">{isMobile ? defaultTextMobile : defaultText}</Typography>
           )

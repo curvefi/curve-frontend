@@ -91,11 +91,13 @@ export const useForm = <T extends FieldValues = FieldValues>({
           notFalsy(
             ...recordEntries(errors)
               .filter(
-                ([field, error]) => (field in touchedFields || (field.startsWith('root') && isDirty)) && error?.message,
+                ([field, error]) =>
+                  (field in touchedFields || (field.startsWith('root') && Object.keys(dirtyFields).length)) &&
+                  error?.message,
               )
               .map(([field, error]) => [field, error!.message] as [ErrorKey<T>, string]),
           ),
-        [errors, touchedFields, isDirty],
+        [errors, touchedFields, dirtyFields],
       ),
       touchedFields: touchedFields as PartialFields<T>,
       isDirty,

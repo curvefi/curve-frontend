@@ -15,25 +15,16 @@
     "campaign": "Lombard.json"
   },
   {
-    "campaign": "Hinkal.json"
-  },
-  {
     "campaign": "DTrinity.json"
   },
   {
     "campaign": "YieldFi.json"
   },
   {
-    "campaign": "Vnx.json"
-  },
-  {
     "campaign": "Fx.json"
   },
   {
     "campaign": "Infinifi.json"
-  },
-  {
-    "campaign": "Asymmetry.json"
   },
   {
     "campaign": "GoNuts.json"
@@ -73,5 +64,8 @@
   },
   {
     "campaign": "Yld.json"
+  },
+  {
+    "campaign": "Tangent.json"
   }
 ]
