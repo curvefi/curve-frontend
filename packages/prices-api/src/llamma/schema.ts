@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import type { Token } from '@primitives/address.utils'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const token = z.object({ symbol: z.string(), address }).transform(data => data as Token)
@@ -14,10 +14,12 @@ const deposit = z.object({
   n2: z.number(),
 })
 
-const withdrawal = z.object({
-  amount_borrowed: z.number(),
-  amount_collateral: z.number(),
-})
+const withdrawal = z
+  .object({
+    amount_borrowed: z.number(),
+    amount_collateral: z.number(),
+  })
+  .transform(camelizeKeys)
 
 const llammaEvent = z
   .object({
@@ -28,6 +30,7 @@ const llammaEvent = z
     timestamp: timestampResponse,
     transaction_hash: address,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     provider: data.provider,
     deposit: data.deposit
@@ -37,15 +40,10 @@ const llammaEvent = z
           n2: data.deposit.n2,
         }
       : null,
-    withdrawal: data.withdrawal
-      ? {
-          amountBorrowed: data.withdrawal.amount_borrowed,
-          amountCollateral: data.withdrawal.amount_collateral,
-        }
-      : null,
-    blockNumber: data.block_number,
+    withdrawal: data.withdrawal ?? null,
+    blockNumber: data.blockNumber,
     timestamp: parseTimestamp(data.timestamp),
-    txHash: data.transaction_hash,
+    txHash: data.transactionHash,
   }))
 
 const llammaTrade = z
@@ -64,26 +62,27 @@ const llammaTrade = z
     timestamp: timestampResponse,
     transaction_hash: address,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    idSold: data.sold_id,
-    idBought: data.bought_id,
+    idSold: data.soldId,
+    idBought: data.boughtId,
     tokenSold: {
-      symbol: data.token_sold.symbol,
-      address: data.token_sold.address,
+      symbol: data.tokenSold.symbol,
+      address: data.tokenSold.address,
     },
     tokenBought: {
-      symbol: data.token_bought.symbol,
-      address: data.token_bought.address,
+      symbol: data.tokenBought.symbol,
+      address: data.tokenBought.address,
     },
-    amountSold: data.amount_sold,
-    amountBought: data.amount_bought,
+    amountSold: data.amountSold,
+    amountBought: data.amountBought,
     price: data.price,
     buyer: data.buyer,
-    feeX: data.fee_x ?? 0,
-    feeY: data.fee_y ?? 0,
-    blockNumber: data.block_number,
+    feeX: data.feeX ?? 0,
+    feeY: data.feeY ?? 0,
+    blockNumber: data.blockNumber,
     timestamp: parseTimestamp(data.timestamp),
-    txHash: data.transaction_hash,
+    txHash: data.transactionHash,
   }))
 
 const llammaOHLC = z
@@ -97,16 +96,11 @@ const llammaOHLC = z
     oracle_price: z.number().nullable(),
     volume: z.number().nullable(),
   })
-  .transform(data => ({
-    time: parseTimestamp(data.time),
-    open: data.open ?? null,
-    close: data.close ?? null,
-    high: data.high ?? null,
-    low: data.low ?? null,
-    basePrice: data.base_price ?? null,
-    oraclePrice: data.oracle_price ?? null,
-    volume: data.volume ?? null,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { time, ...ohlc } = data
+    return { ...ohlc, time: parseTimestamp(time) }
+  })
 
 export const getLlammaEventsResponse = z
   .object({
@@ -115,11 +109,12 @@ export const getLlammaEventsResponse = z
     per_page: z.number().optional(),
     count: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     events: data.data,
     count: data.count,
     page: data.page ?? 1,
-    perPage: data.per_page ?? data.data.length,
+    perPage: data.perPage ?? data.data.length,
   }))
 
 export const getLlammaTradesResponse = z
@@ -129,11 +124,12 @@ export const getLlammaTradesResponse = z
     per_page: z.number().optional(),
     count: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     trades: data.data,
     count: data.count,
     page: data.page ?? 1,
-    perPage: data.per_page ?? data.data.length,
+    perPage: data.perPage ?? data.data.length,
   }))
 
 export const getLlammaOHLCResponse = z

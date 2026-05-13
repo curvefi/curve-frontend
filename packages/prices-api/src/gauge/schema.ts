@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import type { Chain } from '..'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const gauge = z
@@ -47,19 +47,20 @@ const gauge = z
     last_vote_date: timestampResponse.nullable(),
     last_vote_tx: address.nullable(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     address: data.address,
-    type: data.gauge_type,
+    type: data.gaugeType,
     name: data.name ?? undefined,
     version: data.version ?? undefined,
-    lpToken: data.lp_token ? data.lp_token : undefined,
+    lpToken: data.lpToken ? data.lpToken : undefined,
     pool: data.pool
       ? {
           address: data.pool.address,
           name: data.pool.name,
           chain: data.pool.chain as Chain,
-          tvlUsd: data.pool.tvl_usd,
-          tradingVolume24h: data.pool.trading_volume_24h,
+          tvlUsd: data.pool.tvlUsd,
+          tradingVolume24h: data.pool.tradingVolume24h,
         }
       : undefined,
     tokens: (data.tokens ?? []).map(token => ({
@@ -73,18 +74,18 @@ const gauge = z
           chain: data.market.chain as Chain,
         }
       : undefined,
-    killed: data.is_killed,
+    killed: data.isKilled,
     emissions: data.emissions,
-    weight: BigInt(data.gauge_weight),
-    weightDelta7d: data.gauge_weight_7d_delta ? data.gauge_weight_7d_delta : undefined,
-    weightDelta60d: data.gauge_weight_60d_delta ? data.gauge_weight_60d_delta : undefined,
-    weightRelative: data.gauge_relative_weight,
-    weightRelativeDelta7d: data.gauge_relative_weight_7d_delta ? data.gauge_relative_weight_7d_delta : undefined,
-    weightRelativeDelta60d: data.gauge_relative_weight_60d_delta ? data.gauge_relative_weight_60d_delta : undefined,
-    creationTx: data.creation_tx,
-    creationDate: parseTimestamp(data.creation_date),
-    lastVoteTx: data.last_vote_tx ?? undefined,
-    lastVoteDate: data.last_vote_date ? parseTimestamp(data.last_vote_date) : undefined,
+    weight: BigInt(data.gaugeWeight),
+    weightDelta7d: data.gaugeWeight7dDelta ? data.gaugeWeight7dDelta : undefined,
+    weightDelta60d: data.gaugeWeight60dDelta ? data.gaugeWeight60dDelta : undefined,
+    weightRelative: data.gaugeRelativeWeight,
+    weightRelativeDelta7d: data.gaugeRelativeWeight7dDelta ? data.gaugeRelativeWeight7dDelta : undefined,
+    weightRelativeDelta60d: data.gaugeRelativeWeight60dDelta ? data.gaugeRelativeWeight60dDelta : undefined,
+    creationTx: data.creationTx,
+    creationDate: parseTimestamp(data.creationDate),
+    lastVoteTx: data.lastVoteTx ?? undefined,
+    lastVoteDate: data.lastVoteDate ? parseTimestamp(data.lastVoteDate) : undefined,
   }))
 
 const gaugeVote = z
@@ -95,13 +96,8 @@ const gaugeVote = z
     timestamp: timestampResponse,
     transaction: address,
   })
-  .transform(data => ({
-    user: data.user,
-    weight: data.weight,
-    blockNumber: data.block_number,
-    timestamp: parseTimestamp(data.timestamp),
-    tx: data.transaction,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => ({ ...data, timestamp: parseTimestamp(data.timestamp), tx: data.transaction }))
 
 const weightHistory = z
   .object({
@@ -111,10 +107,11 @@ const weightHistory = z
     emissions: z.string(),
     epoch: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    killed: data.is_killed,
-    weight: parseFloat(data.gauge_weight),
-    weightRelative: parseFloat(data.gauge_relative_weight),
+    killed: data.isKilled,
+    weight: parseFloat(data.gaugeWeight),
+    weightRelative: parseFloat(data.gaugeRelativeWeight),
     emissions: parseFloat(data.emissions),
     epoch: data.epoch,
   }))
@@ -129,12 +126,13 @@ export const getDeploymentResponse = z
     block_number: z.number(),
     dt: timestampResponse,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    addressFrom: data.from_address,
-    addressTo: data.to_address ?? undefined,
+    addressFrom: data.fromAddress,
+    addressTo: data.toAddress ?? undefined,
     calldata: data.calldata,
-    calldataDecoded: data.decoded_calldata ?? undefined,
-    blockNumber: data.block_number,
+    calldataDecoded: data.decodedCalldata ?? undefined,
+    blockNumber: data.blockNumber,
     timestamp: parseTimestamp(data.dt),
   }))
 
@@ -147,11 +145,10 @@ const userGaugeVote = z
     timestamp: timestampResponse,
     transaction: address,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    gauge: data.gauge,
-    gaugeName: data.gauge_name ?? undefined,
-    weight: data.weight,
-    blockNumber: data.block_number,
+    ...data,
+    gaugeName: data.gaugeName ?? undefined,
     timestamp: parseTimestamp(data.timestamp),
     txHash: data.transaction,
   }))

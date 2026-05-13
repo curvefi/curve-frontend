@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 export const proposalType = z.enum(['ownership', 'parameter'])
@@ -11,56 +11,63 @@ export type ProposalStatus = z.infer<typeof proposalStatus>
 const normalizeProposalType = (type: ProposalType): ProposalType =>
   type.toLocaleLowerCase() === 'parameter' ? 'parameter' : 'ownership'
 
-const proposal = z
-  .object({
-    vote_id: z.number(),
-    vote_type: proposalType,
-    creator: address,
-    start_date: z.number(),
-    snapshot_block: z.number(),
-    ipfs_metadata: z.string(),
-    metadata: z.string().optional(),
-    votes_for: z.string(),
-    votes_against: z.string(),
-    vote_count: z.number(),
-    support_required: z.string(),
-    min_accept_quorum: z.string(),
-    total_supply: z.string(),
-    executed: z.boolean(),
-    execution_tx: address.nullable(),
-    execution_date: timestampResponse.nullable(),
-    transaction_hash: address,
-    dt: timestampResponse,
-  })
-  .transform(data => ({
+const proposalShape = {
+  vote_id: z.number(),
+  vote_type: proposalType,
+  creator: address,
+  start_date: z.number(),
+  snapshot_block: z.number(),
+  ipfs_metadata: z.string(),
+  metadata: z.string().optional(),
+  votes_for: z.string(),
+  votes_against: z.string(),
+  vote_count: z.number(),
+  support_required: z.string(),
+  min_accept_quorum: z.string(),
+  total_supply: z.string(),
+  executed: z.boolean(),
+  execution_tx: address.nullable(),
+  execution_date: timestampResponse.nullable(),
+  transaction_hash: address,
+  dt: timestampResponse,
+}
+
+const rawProposal = z.object(proposalShape).transform(camelizeKeys)
+type RawProposal = z.infer<typeof rawProposal>
+
+const transformProposal = (data: RawProposal) => ({
     timestamp: parseTimestamp(data.dt),
-    id: data.vote_id,
-    type: normalizeProposalType(data.vote_type),
+    id: data.voteId,
+    type: normalizeProposalType(data.voteType),
     metadata: data.metadata?.startsWith('"') // Remove weird starting quote, if present.
       ? data.metadata.substring(1)
       : (data.metadata ?? ''),
     proposer: data.creator,
-    block: data.snapshot_block,
-    start: data.start_date,
-    end: data.start_date + 604800,
-    quorum: Number(BigInt(data.min_accept_quorum)) / 10 ** 18, // Voting power in veCRV.
-    support: Number(BigInt(data.support_required)) / 10 ** 18, // Voting power in veCRV.
-    voteCount: data.vote_count, // An actual vote *count*
-    votesFor: Number(BigInt(data.votes_for)) / 10 ** 18, // Voting power in veCRV.
-    votesAgainst: Number(BigInt(data.votes_against)) / 10 ** 18, // Voting power in veCRV.
-    executionTx: data.execution_tx,
-    executionDate: data.execution_date ? parseTimestamp(data.execution_date) : null,
+    block: data.snapshotBlock,
+    start: data.startDate,
+    end: data.startDate + 604800,
+    quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18, // Voting power in veCRV.
+    support: Number(BigInt(data.supportRequired)) / 10 ** 18, // Voting power in veCRV.
+    voteCount: data.voteCount, // An actual vote *count*
+    votesFor: Number(BigInt(data.votesFor)) / 10 ** 18, // Voting power in veCRV.
+    votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18, // Voting power in veCRV.
+    executionTx: data.executionTx,
+    executionDate: data.executionDate ? parseTimestamp(data.executionDate) : null,
     executed: data.executed,
-    totalSupply: Number(BigInt(data.total_supply)) / 10 ** 18, // Voting power in veCRV.
-    txCreation: data.transaction_hash,
-  }))
+    totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18, // Voting power in veCRV.
+    txCreation: data.transactionHash,
+  })
 
-const vote = z.object({
-  voter: address,
-  supports: z.boolean(),
-  voting_power: z.string(),
-  transaction_hash: address,
-})
+const proposal = rawProposal.transform(transformProposal)
+
+const vote = z
+  .object({
+    voter: address,
+    supports: z.boolean(),
+    voting_power: z.string(),
+    transaction_hash: address,
+  })
+  .transform(camelizeKeys)
 
 export const getProposalsResponse = z
   .object({
@@ -74,70 +81,35 @@ export const getProposalsResponse = z
 
 export const getProposalDetailsResponse = z
   .object({
-    vote_id: z.number(),
-    vote_type: proposalType,
-    creator: address,
-    start_date: z.number(),
-    snapshot_block: z.number(),
-    ipfs_metadata: z.string(),
-    metadata: z.string().optional(),
-    votes_for: z.string(),
-    votes_against: z.string(),
-    vote_count: z.number(),
-    support_required: z.string(),
-    min_accept_quorum: z.string(),
-    total_supply: z.string(),
-    executed: z.boolean(),
-    execution_tx: address.nullable(),
-    execution_date: timestampResponse.nullable(),
-    transaction_hash: address,
-    dt: timestampResponse,
+    ...proposalShape,
     script: z.string(),
     votes: z.array(vote),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    ...proposal.parse(data),
-    txExecution: data.execution_tx ? data.execution_tx : undefined,
+    ...transformProposal(data),
+    txExecution: data.executionTx ? data.executionTx : undefined,
     script: data.script,
     votes: data.votes.map(item => ({
       voter: item.voter,
       supports: item.supports,
-      votingPower: Number(BigInt(item.voting_power)) / 10 ** 18,
-      txHash: item.transaction_hash,
+      votingPower: Number(BigInt(item.votingPower)) / 10 ** 18,
+      txHash: item.transactionHash,
     })),
   }))
 
 const userProposalVote = z
   .object({
-    proposal: z.object({
-      vote_id: z.number(),
-      vote_type: proposalType,
-      creator: address,
-      start_date: z.number(),
-      snapshot_block: z.number(),
-      ipfs_metadata: z.string(),
-      metadata: z.string().optional(),
-      votes_for: z.string(),
-      votes_against: z.string(),
-      vote_count: z.number(),
-      support_required: z.string(),
-      min_accept_quorum: z.string(),
-      total_supply: z.string(),
-      executed: z.boolean(),
-      execution_tx: address.nullable(),
-      execution_date: timestampResponse.nullable(),
-      transaction_hash: address,
-      dt: timestampResponse,
-    }),
+    proposal: rawProposal,
     votes: z.array(vote),
   })
   .transform(data => ({
-    proposal: proposal.parse(data.proposal),
+    proposal: transformProposal(data.proposal),
     votes: data.votes.map(item => ({
       voter: item.voter,
       supports: item.supports,
-      weight: BigInt(Math.round(parseFloat(item.voting_power))),
-      txHash: item.transaction_hash,
+      weight: BigInt(Math.round(parseFloat(item.votingPower))),
+      txHash: item.transactionHash,
     })),
   }))
 

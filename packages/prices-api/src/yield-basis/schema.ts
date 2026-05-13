@@ -1,26 +1,16 @@
 import { z } from 'zod/v4'
-import { address, chain, hex, timestampResponse } from '../schemas'
+import { address, camelizeKeys, chain, hex, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
-const adjacentPool = z
-  .object({
-    address,
-    name: z.string(),
-  })
-  .transform(data => ({
-    name: data.name,
-    address: data.address,
-  }))
+const adjacentPool = z.object({
+  address,
+  name: z.string(),
+})
 
-const yieldBasisPool = z
-  .object({
-    name: z.string(),
-    address,
-  })
-  .transform(data => ({
-    name: data.name,
-    address: data.address,
-  }))
+const yieldBasisPool = z.object({
+  name: z.string(),
+  address,
+})
 
 const transaction = z
   .object({
@@ -31,14 +21,11 @@ const transaction = z
     adjacent_volume: z.number(),
     adjacent_pools: z.array(adjacentPool),
   })
-  .transform(data => ({
-    txHash: data.tx_hash,
-    blockNumber: data.block_number,
-    timestamp: parseTimestamp(data.timestamp),
-    volume: data.volume,
-    adjacentVolume: data.adjacent_volume,
-    adjacentPools: data.adjacent_pools,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, ...transaction } = data
+    return { ...transaction, timestamp: parseTimestamp(timestamp) }
+  })
 
 const aggregatedStats = z
   .object({
@@ -59,24 +46,7 @@ const aggregatedStats = z
     adjacent_volume_pct_7d: z.number(),
     adjacent_dao_fees_pct_7d: z.number(),
   })
-  .transform(data => ({
-    volume24h: data.volume_24h,
-    adjacentVolume24h: data.adjacent_volume_24h,
-    ybTotalFees24h: data.yb_total_fees_24h,
-    ybDaoFees24h: data.yb_dao_fees_24h,
-    adjacentTotalFees24h: data.adjacent_total_fees_24h,
-    adjacentDaoFees24h: data.adjacent_dao_fees_24h,
-    adjacentVolumePct24h: data.adjacent_volume_pct_24h,
-    adjacentDaoFeesPct24h: data.adjacent_dao_fees_pct_24h,
-    volume7d: data.volume_7d,
-    adjacentVolume7d: data.adjacent_volume_7d,
-    ybTotalFees7d: data.yb_total_fees_7d,
-    ybDaoFees7d: data.yb_dao_fees_7d,
-    adjacentTotalFees7d: data.adjacent_total_fees_7d,
-    adjacentDaoFees7d: data.adjacent_dao_fees_7d,
-    adjacentVolumePct7d: data.adjacent_volume_pct_7d,
-    adjacentDaoFeesPct7d: data.adjacent_dao_fees_pct_7d,
-  }))
+  .transform(camelizeKeys)
 
 const yieldBasisSupplyWithMint = z.object({
   yb_factory_balance: z.string(),
@@ -87,7 +57,7 @@ const yieldBasisSupplyWithMint = z.object({
   mint_pegkeeper_debt: z.string(),
   mint_market_debt: z.string(),
   total_supply: z.string(),
-})
+}).transform(camelizeKeys)
 
 const yieldBasisHistoryItem = z
   .object({
@@ -99,14 +69,15 @@ const yieldBasisHistoryItem = z
     dt: timestampResponse,
     block_number: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    ybFactoryBalance: parseFloat(data.yb_factory_balance),
-    ybTotalAllocated: parseFloat(data.yb_total_allocated),
-    ybTotalAmmBalance: parseFloat(data.yb_total_amm_balance),
-    ybTotalAmmDebt: parseFloat(data.yb_total_amm_debt),
-    ybMaxDebt: parseFloat(data.yb_max_debt),
+    ybFactoryBalance: parseFloat(data.ybFactoryBalance),
+    ybTotalAllocated: parseFloat(data.ybTotalAllocated),
+    ybTotalAmmBalance: parseFloat(data.ybTotalAmmBalance),
+    ybTotalAmmDebt: parseFloat(data.ybTotalAmmDebt),
+    ybMaxDebt: parseFloat(data.ybMaxDebt),
     timestamp: parseTimestamp(data.dt),
-    blockNumber: data.block_number,
+    blockNumber: data.blockNumber,
   }))
 
 export const ybPoolsResponse = z
@@ -122,37 +93,30 @@ export const ybPoolVolumeResponse = z
     pool_name: z.string(),
     transactions: z.array(transaction),
   })
-  .transform(data => ({
-    poolAddress: data.pool_address,
-    poolName: data.pool_name,
-    transactions: data.transactions,
-  }))
+  .transform(camelizeKeys)
 
 export const ybAggregatedVolumeResponse = z
   .object({
     chain,
     stats: aggregatedStats,
   })
-  .transform(data => ({
-    chain: data.chain,
-    stats: data.stats,
-  }))
 
 export const yieldBasisSupplyResponse = z
   .object({
     cached_at: timestampResponse.nullable().optional(),
     data: yieldBasisSupplyWithMint,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    cachedAt: data.cached_at == null ? undefined : parseTimestamp(data.cached_at),
-    ybFactoryBalance: parseFloat(data.data.yb_factory_balance),
-    ybTotalAllocated: parseFloat(data.data.yb_total_allocated),
-    ybTotalAmmBalance: parseFloat(data.data.yb_total_amm_balance),
-    ybTotalAmmDebt: parseFloat(data.data.yb_total_amm_debt),
-    ybMaxDebt: parseFloat(data.data.yb_max_debt),
-    mintPegkeeperDebt: parseFloat(data.data.mint_pegkeeper_debt),
-    mintMarketDebt: parseFloat(data.data.mint_market_debt),
-    totalSupply: parseFloat(data.data.total_supply),
+    cachedAt: data.cachedAt == null ? undefined : parseTimestamp(data.cachedAt),
+    ybFactoryBalance: parseFloat(data.data.ybFactoryBalance),
+    ybTotalAllocated: parseFloat(data.data.ybTotalAllocated),
+    ybTotalAmmBalance: parseFloat(data.data.ybTotalAmmBalance),
+    ybTotalAmmDebt: parseFloat(data.data.ybTotalAmmDebt),
+    ybMaxDebt: parseFloat(data.data.ybMaxDebt),
+    mintPegkeeperDebt: parseFloat(data.data.mintPegkeeperDebt),
+    mintMarketDebt: parseFloat(data.data.mintMarketDebt),
+    totalSupply: parseFloat(data.data.totalSupply),
   }))
 
 export const yieldBasisHistoryResponse = z
@@ -160,10 +124,6 @@ export const yieldBasisHistoryResponse = z
     chain,
     data: z.array(yieldBasisHistoryItem),
   })
-  .transform(data => ({
-    chain: data.chain,
-    data: data.data,
-  }))
 
 export type YieldBasisPool = z.infer<typeof yieldBasisPool>
 export type AdjacentPool = z.infer<typeof adjacentPool>

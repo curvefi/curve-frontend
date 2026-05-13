@@ -1,33 +1,32 @@
 import { z } from 'zod/v4'
 import type { Chain } from '..'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
-const coin = z.object({
-  lp_token: z.boolean(),
-  symbol: z.string(),
-  address,
-  precision: z.number(),
-})
+const coin = z
+  .object({
+    lp_token: z.boolean(),
+    symbol: z.string(),
+    address,
+    precision: z.number(),
+  })
+  .transform(camelizeKeys)
 
 const chainRevenue = z
   .object({
     chain: z.string(),
     totalDailyFeesUSD: z.number(),
   })
-  .transform(data => ({
-    chain: data.chain,
-    totalDailyFeesUSD: data.totalDailyFeesUSD,
-  }))
 
 const currentChainRevenue = z
   .object({
     chain: z.string(),
     total_fees: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     chain: data.chain,
-    totalDailyFeesUSD: data.total_fees,
+    totalDailyFeesUSD: data.totalFees,
   }))
 
 const chainTopPoolRevenue = z
@@ -35,10 +34,6 @@ const chainTopPoolRevenue = z
     name: z.string(),
     totalDailyFeesUSD: z.number(),
   })
-  .transform(data => ({
-    name: data.name,
-    totalDailyFeesUSD: data.totalDailyFeesUSD,
-  }))
 
 const currentChainTopPoolRevenue = z
   .object({
@@ -46,9 +41,10 @@ const currentChainTopPoolRevenue = z
     trading_fee_24h: z.number(),
     liquidity_fee_24h: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     name: data.name,
-    totalDailyFeesUSD: data.trading_fee_24h + data.liquidity_fee_24h,
+    totalDailyFeesUSD: data.tradingFee24h + data.liquidityFee24h,
   }))
 
 const crvUsdWeekly = z
@@ -58,12 +54,11 @@ const crvUsdWeekly = z
     fees_usd: z.number(),
     timestamp: timestampResponse,
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    controller: data.controller,
-    collateral: data.collateral,
-    feesUsd: data.fees_usd,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, ...fees } = data
+    return { ...fees, timestamp: parseTimestamp(timestamp) }
+  })
 
 const poolsWeekly = z
   .object({
@@ -71,11 +66,11 @@ const poolsWeekly = z
     fees_usd: z.number(),
     timestamp: timestampResponse,
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    chain: data.chain as Chain,
-    feesUsd: data.fees_usd,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, ...fees } = data
+    return { ...fees, chain: fees.chain as Chain, timestamp: parseTimestamp(timestamp) }
+  })
 
 const cushion = z
   .object({
@@ -84,19 +79,18 @@ const cushion = z
     admin_fees: z.array(z.number()),
     usd_value: z.number(),
   })
-  .transform(data => ({
-    pool: data.pool,
-    name: data.name,
-    adminFees: data.admin_fees,
-    usdValue: data.usd_value,
-  }))
+  .transform(camelizeKeys)
 
 const distribution = z
   .object({
     timestamp: timestampResponse,
     fees_usd: z.number(),
   })
-  .transform(data => ({ timestamp: parseTimestamp(data.timestamp), feesUsd: data.fees_usd }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, ...fees } = data
+    return { ...fees, timestamp: parseTimestamp(timestamp) }
+  })
 
 const cowSwapSettlement = z
   .object({
@@ -110,21 +104,17 @@ const cowSwapSettlement = z
     block_number: z.number(),
     dt: timestampResponse,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     timestamp: parseTimestamp(data.dt),
-    coin: {
-      lpToken: data.coin.lp_token,
-      symbol: data.coin.symbol,
-      address: data.coin.address,
-      precision: data.coin.precision,
-    },
+    coin: data.coin,
     amount: BigInt(data.amount),
-    amountFee: BigInt(data.fee_amount),
-    amountReceived: data.amount_received,
-    routerReceived: data.router_received,
+    amountFee: BigInt(data.feeAmount),
+    amountReceived: data.amountReceived,
+    routerReceived: data.routerReceived,
     epoch: data.epoch,
-    txHash: data.tx_hash,
-    blockNumber: data.block_number,
+    txHash: data.txHash,
+    blockNumber: data.blockNumber,
   }))
 
 const fees = z
@@ -133,15 +123,16 @@ const fees = z
     amount: z.string(),
     usd_amount: z.string(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     coin: {
-      lpToken: data.coin.lp_token,
+      lpToken: data.coin.lpToken,
       symbol: data.coin.symbol,
       address: data.coin.address,
       decimals: data.coin.precision,
     },
     amount: parseFloat(data.amount),
-    amountUsd: parseFloat(data.usd_amount),
+    amountUsd: parseFloat(data.usdAmount),
   }))
 
 const legacyGetByChainResponse = z

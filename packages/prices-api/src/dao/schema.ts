@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import type { Address } from '@primitives/address.utils'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const lockType = z.enum(['CREATE_LOCK', 'INCREASE_LOCK_AMOUNT', 'INCREASE_UNLOCK_TIME', 'WITHDRAW'])
@@ -14,11 +14,12 @@ const votesOverview = z
     gauge_votes: z.number(),
     epoch: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     proposals: data.proposals,
-    votesProposals: data.prop_votes,
-    votesGauges: data.gauge_votes,
-    votersUnique: data.prop_unique_voters,
+    votesProposals: data.propVotes,
+    votesGauges: data.gaugeVotes,
+    votersUnique: data.propUniqueVoters,
     epoch: data.epoch,
   }))
 
@@ -41,13 +42,14 @@ const userLock = z
     dt: timestampResponse,
     transaction_hash: z.string(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     timestamp: parseTimestamp(data.dt),
     amount: BigInt(Math.round(parseFloat(data.amount))),
-    unlockTime: parseTimestamp(data.unlock_time),
-    lockType: data.lock_type,
-    lockedBalance: BigInt(Math.round(parseFloat(data.locked_balance))),
-    txHash: data.transaction_hash,
+    unlockTime: parseTimestamp(data.unlockTime),
+    lockType: data.lockType,
+    lockedBalance: BigInt(Math.round(parseFloat(data.lockedBalance))),
+    txHash: data.transactionHash,
   }))
 
 const supply = z
@@ -67,19 +69,20 @@ const supply = z
     dt: timestampResponse,
     transaction_hash: address,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     timestamp: parseTimestamp(data.dt),
-    veCrvTotal: BigInt(data.total_vecrv),
-    crvEscrowed: BigInt(data.escrowed_crv),
-    crvSupply: BigInt(data.crv_supply),
-    circulatingSupply: BigInt(data.circulating_supply),
-    lockedSupplyDetails: data.locked_supply_details.map(item => ({
+    veCrvTotal: BigInt(data.totalVecrv),
+    crvEscrowed: BigInt(data.escrowedCrv),
+    crvSupply: BigInt(data.crvSupply),
+    circulatingSupply: BigInt(data.circulatingSupply),
+    lockedSupplyDetails: data.lockedSupplyDetails.map(item => ({
       address: item.address,
       label: item.label,
       locked: BigInt(item.locked),
     })),
-    blockNumber: data.block_number,
-    txHash: data.transaction_hash,
+    blockNumber: data.blockNumber,
+    txHash: data.transactionHash,
   }))
 
 const locker = z
@@ -90,12 +93,13 @@ const locker = z
     weight_ratio: z.string(),
     unlock_time: timestampResponse.nullable(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     user: data.user,
     locked: BigInt(Math.round(parseFloat(data.locked))),
     weight: BigInt(Math.round(parseFloat(data.weight))),
-    weightRatio: parseFloat(data.weight_ratio.slice(0, -1)),
-    unlockTime: data.unlock_time === null ? null : parseTimestamp(data.unlock_time),
+    weightRatio: parseFloat(data.weightRatio.slice(0, -1)),
+    unlockTime: data.unlockTime === null ? null : parseTimestamp(data.unlockTime),
   }))
 
 export const getVotesOverviewResponse = z

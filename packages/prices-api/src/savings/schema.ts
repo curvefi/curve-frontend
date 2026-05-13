@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const numberLike = z.union([z.number(), z.string()]).transform(value => Number(value))
@@ -16,16 +16,17 @@ const event = z
     timestamp: timestampResponse,
     transaction_hash: address,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    type: data.action_type.toLowerCase(),
+    type: data.actionType.toLowerCase(),
     sender: data.sender,
     owner: data.owner,
     receiver: data.receiver ? data.receiver : undefined,
     assets: BigInt(data.assets),
     supply: BigInt(data.shares),
-    blockNumber: data.block_number,
+    blockNumber: data.blockNumber,
     timestamp: parseTimestamp(data.timestamp),
-    txHash: data.transaction_hash,
+    txHash: data.transactionHash,
   }))
 
 const yieldData = z
@@ -35,12 +36,11 @@ const yieldData = z
     supply: z.number(),
     proj_apy: numberLike,
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    assets: data.assets,
-    supply: data.supply,
-    apyProjected: data.proj_apy,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, projApy, ...yieldData } = data
+    return { ...yieldData, timestamp: parseTimestamp(timestamp), apyProjected: projApy }
+  })
 
 const revenue = z
   .object({
@@ -54,15 +54,16 @@ const revenue = z
     tx_hash: address,
     dt: timestampResponse,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     strategy: data.strategy,
     gain: BigInt(data.gain),
     loss: BigInt(data.loss),
-    currentDebt: BigInt(data.current_debt),
-    totalRefunds: BigInt(data.total_refunds),
-    feesTotal: BigInt(data.total_fees),
-    feesProtocol: BigInt(data.protocol_fees),
-    txHash: data.tx_hash,
+    currentDebt: BigInt(data.currentDebt),
+    totalRefunds: BigInt(data.totalRefunds),
+    feesTotal: BigInt(data.totalFees),
+    feesProtocol: BigInt(data.protocolFees),
+    txHash: data.txHash,
     timestamp: parseTimestamp(data.dt),
   }))
 
@@ -71,7 +72,6 @@ export const getEventsResponse = z
     count: z.number(),
     events: z.array(event),
   })
-  .transform(data => ({ count: data.count, events: data.events }))
 
 export const getYieldResponse = z
   .object({
@@ -85,7 +85,11 @@ export const getRevenueResponse = z
     total_distributed: z.string(),
     history: z.array(revenue),
   })
-  .transform(data => ({ totalDistributed: data.total_distributed, history: data.history }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { count: _count, ...revenue } = data
+    return revenue
+  })
 
 export const getStatisticsResponse = z
   .object({
@@ -94,10 +98,11 @@ export const getStatisticsResponse = z
     proj_apy: z.number(),
     supply: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    lastUpdated: parseTimestamp(data.last_updated),
-    lastUpdatedBlock: data.last_updated_block,
-    apyProjected: data.proj_apy,
+    lastUpdated: parseTimestamp(data.lastUpdated),
+    lastUpdatedBlock: data.lastUpdatedBlock,
+    apyProjected: data.projApy,
     supply: data.supply,
   }))
 
@@ -111,13 +116,14 @@ export const getUserStatsResponse = z
     total_transferred_out: z.string(),
     current_balance: z.string(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    totalDeposited: BigInt(data.total_deposited),
-    totalReceived: BigInt(data.total_received ?? data.total_recieved ?? '0'),
-    totalWithdrawn: BigInt(data.total_withdrawn),
-    totalTransferredIn: BigInt(data.total_transferred_in),
-    totalTransferredOut: BigInt(data.total_transferred_out),
-    currentBalance: BigInt(data.current_balance),
+    totalDeposited: BigInt(data.totalDeposited),
+    totalReceived: BigInt(data.totalReceived ?? data.totalRecieved ?? '0'),
+    totalWithdrawn: BigInt(data.totalWithdrawn),
+    totalTransferredIn: BigInt(data.totalTransferredIn),
+    totalTransferredOut: BigInt(data.totalTransferredOut),
+    currentBalance: BigInt(data.currentBalance),
   }))
 
 export type Event = z.infer<typeof event>

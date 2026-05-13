@@ -1,8 +1,7 @@
 import { z } from 'zod/v4'
-import type { Token } from '@primitives/address.utils'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
-import { address, chain, decimal, timestampResponse } from '../schemas'
+import { address, camelizeKeys, chain, decimal, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const token = z
@@ -12,11 +11,12 @@ const token = z
     rebasing_yield: z.number().nullable().optional(),
     rebasing_yield_apr: z.number().nullable().optional(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     symbol: data.symbol,
     address: data.address,
-    rebasingYield: data.rebasing_yield ?? null,
-    rebasingYieldApr: data.rebasing_yield_apr ?? null,
+    rebasingYield: data.rebasingYield ?? null,
+    rebasingYieldApr: data.rebasingYieldApr ?? null,
   }))
 
 const market = z
@@ -45,35 +45,36 @@ const market = z
     created_at: timestampResponse,
     max_ltv: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    name: data.collateral_token.symbol,
+    name: data.collateralToken.symbol,
     address: data.address,
-    factoryAddress: data.factory_address,
+    factoryAddress: data.factoryAddress,
     llamma: data.llamma,
     rate: data.rate,
     // borrowApy = rate * 100
-    borrowApy: data.borrow_apy,
+    borrowApy: data.borrowApy,
     // @deprecated compute this using borrowApy and collateralToken.rebasingYield: borrowTotalApy = borrowApy - collateral_yield_apy
-    borrowTotalApy: data.borrow_total_apy,
-    borrowApr: data.borrow_apr,
+    borrowTotalApy: data.borrowTotalApy,
+    borrowApr: data.borrowApr,
     // @deprecated compute this using borrowApr and collateralToken.rebasingYieldApr
-    borrowTotalApr: data.borrow_total_apr,
-    borrowed: data.total_debt,
-    borrowedUsd: data.total_debt_usd,
+    borrowTotalApr: data.borrowTotalApr,
+    borrowed: data.totalDebt,
+    borrowedUsd: data.totalDebtUsd,
     borrowable: data.borrowable,
     leverage: data.leverage,
-    collateralAmount: data.collateral_amount,
-    collateralAmountUsd: data.collateral_amount_usd,
-    debtCeiling: data.debt_ceiling,
-    loans: data.n_loans,
-    collateralToken: data.collateral_token,
-    stablecoinToken: data.stablecoin_token,
+    collateralAmount: data.collateralAmount,
+    collateralAmountUsd: data.collateralAmountUsd,
+    debtCeiling: data.debtCeiling,
+    loans: data.nLoans,
+    collateralToken: data.collateralToken,
+    stablecoinToken: data.stablecoinToken,
     fees: {
-      pending: data.pending_fees,
-      collected: data.collected_fees,
+      pending: data.pendingFees,
+      collected: data.collectedFees,
     },
-    createdAt: parseTimestamp(data.created_at),
-    maxLtv: data.max_ltv,
+    createdAt: parseTimestamp(data.createdAt),
+    maxLtv: data.maxLtv,
   }))
 
 const snapshot = z
@@ -105,33 +106,13 @@ const snapshot = z
     stablecoin_token: token,
     max_ltv: z.number(),
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.dt),
-    rate: data.rate,
-    borrowApy: data.borrow_apy, // value already in percentage: 0.12 => 0.12%
-    borrowApr: data.borrow_apr, // value already in percentage: 0.12 => 0.12%
-    nLoans: data.n_loans,
-    minted: data.minted,
-    redeemed: data.redeemed,
-    totalCollateral: data.total_collateral,
-    totalCollateralUsd: data.total_collateral_usd,
-    totalStablecoin: data.total_stablecoin,
-    totalStablecoinUsd: data.total_stablecoin_usd,
-    totalDebt: data.total_debt,
-    totalDebtUsd: data.total_debt_usd,
-    priceAMM: data.amm_price,
-    priceOracle: data.price_oracle,
-    borrowable: data.borrowable,
-    discountLiquidation: data.liquidation_discount,
-    discountLoan: data.loan_discount,
-    ammA: data.amm_a,
-    basePrice: data.base_price,
-    minBand: data.min_band,
-    maxBand: data.max_band,
-    sumDebtSquared: data.sum_debt_squared,
-    collateralToken: data.collateral_token,
-    stablecoinToken: data.stablecoin_token,
-    maxLtv: data.max_ltv,
+  .transform(camelizeKeys)
+  .transform(({ dt, ammPrice, liquidationDiscount, loanDiscount, ...snapshot }) => ({
+    ...snapshot,
+    timestamp: parseTimestamp(dt),
+    priceAMM: ammPrice,
+    discountLiquidation: liquidationDiscount,
+    discountLoan: loanDiscount,
   }))
 
 const keeper = z
@@ -144,15 +125,7 @@ const keeper = z
     total_debt: z.number(),
     total_profit: z.number(),
   })
-  .transform(data => ({
-    address: data.address,
-    pool: data.pool,
-    poolAddress: data.pool_address,
-    pair: data.pair.map(item => ({ symbol: item.symbol, address: item.address }) as Token),
-    active: data.active,
-    totalDebt: data.total_debt,
-    totalProfit: data.total_profit,
-  }))
+  .transform(camelizeKeys)
 
 const crvUsdSupply = z
   .object({
@@ -161,12 +134,7 @@ const crvUsdSupply = z
     borrowable: z.number(),
     timestamp: timestampResponse,
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    market: data.market,
-    supply: data.supply,
-    borrowable: data.borrowable,
-  }))
+  .transform(({ timestamp, ...supply }) => ({ ...supply, timestamp: parseTimestamp(timestamp) }))
 
 const userMarket = z
   .object({
@@ -175,11 +143,12 @@ const userMarket = z
     first_snapshot: timestampResponse,
     last_snapshot: timestampResponse,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     collateral: data.collateral,
     controller: data.controller,
-    snapshotFirst: parseTimestamp(data.first_snapshot),
-    snapshotLast: parseTimestamp(data.last_snapshot),
+    snapshotFirst: parseTimestamp(data.firstSnapshot),
+    snapshotLast: parseTimestamp(data.lastSnapshot),
   }))
 
 const userMarketStats = z
@@ -202,27 +171,8 @@ const userMarketStats = z
     block_number: z.number(),
     timestamp: timestampResponse,
   })
-  .transform(data => ({
-    health: data.health,
-    healthFull: data.health_full,
-    n: data.n,
-    n1: data.n1,
-    n2: data.n2,
-    activeBand: data.active_band,
-    /** The amount of borrow token borrowed by the user, so what you'd normally expect as 'borrowed' */
-    debt: data.debt,
-    collateral: data.collateral,
-    /** The amount of collateral token converted into debt token (due to soft liq) */
-    stablecoin: data.stablecoin,
-    softLiquidation: data.soft_liquidation,
-    totalDeposited: data.total_deposited,
-    loss: data.loss,
-    lossPct: data.loss_pct,
-    collateralUp: data.collateral_up,
-    oraclePrice: data.oracle_price,
-    blockNumber: data.block_number,
-    timestamp: parseTimestamp(data.timestamp),
-  }))
+  .transform(camelizeKeys)
+  .transform(data => ({ ...data, timestamp: parseTimestamp(data.timestamp) }))
 
 const collateralEventType = z.enum(['Borrow', 'Liquidate', 'Repay', 'RemoveCollateral'])
 
@@ -247,38 +197,21 @@ const collateralEvent = z
         debt: z.number(),
         debt_usd: z.number(),
       })
+      .transform(camelizeKeys)
       .nullable(),
     n1: z.number(),
     n2: z.number(),
     oracle_price: z.number(),
     is_position_closed: z.boolean(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
+    ...data,
     timestamp: parseTimestamp(data.dt),
-    txHash: data.transaction_hash,
-    type: data.type,
-    user: data.user,
-    collateralChange: data.collateral_change,
-    collateralChangeUsd: data.collateral_change_usd ?? undefined,
-    loanChange: data.loan_change,
-    loanChangeUsd: data.loan_change_usd ?? undefined,
-    liquidation:
-      data.liquidation === null
-        ? undefined
-        : {
-            user: data.liquidation.user,
-            liquidator: data.liquidation.liquidator,
-            collateralReceived: data.liquidation.collateral_received,
-            collateralReceivedUsd: data.liquidation.collateral_received_usd,
-            stablecoinReceived: data.liquidation.stablecoin_received,
-            stablecoinReceivedUsd: data.liquidation.stablecoin_received_usd,
-            debt: data.liquidation.debt,
-            debtUsd: data.liquidation.debt_usd,
-          },
-    n1: data.n1,
-    n2: data.n2,
-    oraclePrice: data.oracle_price,
-    isPositionClosed: data.is_position_closed,
+    txHash: data.transactionHash,
+    collateralChangeUsd: data.collateralChangeUsd ?? undefined,
+    loanChangeUsd: data.loanChangeUsd ?? undefined,
+    liquidation: data.liquidation ?? undefined,
   }))
 
 export const getMarketsResponse = z
@@ -381,19 +314,12 @@ export const getUserCollateralEventsResponse = z
     page: z.number().nullable(),
     data: z.array(collateralEvent),
   })
-  .transform(data => ({
-    controller: data.controller,
-    user: data.user,
-    totalDeposit: data.total_deposit,
-    totalDepositFromUser: data.total_deposit_from_user,
-    totalBorrowed: data.total_borrowed,
-    totalDepositPrecise: data.total_deposit_precise,
-    totalBorrowedPrecise: data.total_borrowed_precise,
-    totalDepositFromUserPrecise: data.total_deposit_from_user_precise,
-    totalDepositFromUserUsdValue: data.total_deposit_from_user_usd_value,
-    totalDepositUsdValue: data.total_deposit_usd_value,
-    events: data.data,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { chain: _chain, count: _count, data: events, page: _page, pagination: _pagination, ...summary } = data
+
+    return { ...summary, events }
+  })
 
 export const getCrvUsdTvlResponse = z.object({
   chain,

@@ -1,12 +1,14 @@
 import { z } from 'zod/v4'
-import { address, chain, timestampResponse } from '../schemas'
+import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
-const coin = z.object({
+const rawCoin = z.object({
   pool_index: z.number(),
   symbol: z.string(),
   address,
 })
+
+const coin = rawCoin.transform(camelizeKeys)
 
 const pool = z
   .object({
@@ -24,21 +26,11 @@ const pool = z
     virtual_price: z.number(),
     pool_methods: z.array(z.string()).optional(),
   })
-  .transform(data => ({
-    name: data.name,
-    address: data.address,
-    numCoins: data.n_coins,
-    tvlUsd: data.tvl_usd,
-    tradingVolume24h: data.trading_volume_24h,
-    tradingFee24h: data.trading_fee_24h,
-    liquidityVolume24h: data.liquidity_volume_24h,
-    liquidityFee24h: data.liquidity_fee_24h,
-    coins: data.coins?.map(item => ({ poolIndex: item.pool_index, symbol: item.symbol, address: item.address })) ?? [],
-    baseDailyApr: data.base_daily_apr,
-    baseWeeklyApr: data.base_weekly_apr,
-    virtualPrice: data.virtual_price,
-    poolMethods: data.pool_methods?.map(item => item) ?? [],
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { nCoins, coins, poolMethods, ...pool } = data
+    return { ...pool, numCoins: nCoins, coins: coins ?? [], poolMethods: poolMethods ?? [] }
+  })
 
 const poolTotals = z
   .object({
@@ -48,13 +40,11 @@ const poolTotals = z
     liquidity_volume_24h: z.number(),
     liquidity_fee_24h: z.number(),
   })
-  .transform(data => ({
-    tvl: data.total_tvl,
-    tradingVolume24h: data.trading_volume_24h,
-    tradingFee24h: data.trading_fee_24h,
-    liquidityVolume24h: data.liquidity_volume_24h,
-    liquidityFee24h: data.liquidity_fee_24h,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { totalTvl, ...totals } = data
+    return { tvl: totalTvl, ...totals }
+  })
 
 const volume = z
   .object({
@@ -62,11 +52,7 @@ const volume = z
     volume: z.number(),
     fees: z.number(),
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    volume: data.volume,
-    fees: data.fees,
-  }))
+  .transform(({ timestamp, ...volume }) => ({ ...volume, timestamp: parseTimestamp(timestamp) }))
 
 const tvl = z
   .object({
@@ -75,12 +61,16 @@ const tvl = z
     balances: z.array(z.number()),
     token_prices: z.array(z.number()),
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    tvlUSD: data.tvl_usd ?? 0,
-    balances: [...data.balances],
-    tokenPrices: [...data.token_prices],
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, tvlUsd, balances, tokenPrices } = data
+    return {
+      timestamp: parseTimestamp(timestamp),
+      tvlUSD: tvlUsd ?? 0,
+      balances: [...balances],
+      tokenPrices: [...tokenPrices],
+    }
+  })
 
 const tradeToken = z
   .object({
@@ -89,12 +79,7 @@ const tradeToken = z
     pool_index: z.number(),
     event_index: z.number(),
   })
-  .transform(data => ({
-    symbol: data.symbol,
-    address: data.address,
-    poolIndex: data.pool_index,
-    eventIndex: data.event_index,
-  }))
+  .transform(camelizeKeys)
 
 const poolTradeData = z.object({
   sold_id: z.number(),
@@ -112,7 +97,7 @@ const poolTradeData = z.object({
   transaction_hash: address,
   buyer: address,
   usd_fee: z.number().nullable(),
-})
+}).transform(camelizeKeys)
 
 type TradeTokenData = z.infer<typeof tradeToken>
 type PoolTradeData = z.infer<typeof poolTradeData>
@@ -122,21 +107,21 @@ const transformPoolTrade = (
   tokenSold?: TradeTokenData,
   tokenBought?: TradeTokenData,
 ) => ({
-    soldId: data.sold_id,
-    boughtId: data.bought_id,
-    tokenSold: data.token_sold ?? requireTradeToken(tokenSold, data.sold_id).address,
-    tokenBought: data.token_bought ?? requireTradeToken(tokenBought, data.bought_id).address,
-    tokenSoldSymbol: data.token_sold_symbol ?? requireTradeToken(tokenSold, data.sold_id).symbol,
-    tokenBoughtSymbol: data.token_bought_symbol ?? requireTradeToken(tokenBought, data.bought_id).symbol,
-    tokensSold: data.tokens_sold,
-    tokensSoldUsd: data.tokens_sold_usd ?? 0,
-    tokensBought: data.tokens_bought,
-    tokensBoughtUsd: data.tokens_bought_usd ?? 0,
-    blockNumber: data.block_number,
+    soldId: data.soldId,
+    boughtId: data.boughtId,
+    tokenSold: data.tokenSold ?? requireTradeToken(tokenSold, data.soldId).address,
+    tokenBought: data.tokenBought ?? requireTradeToken(tokenBought, data.boughtId).address,
+    tokenSoldSymbol: data.tokenSoldSymbol ?? requireTradeToken(tokenSold, data.soldId).symbol,
+    tokenBoughtSymbol: data.tokenBoughtSymbol ?? requireTradeToken(tokenBought, data.boughtId).symbol,
+    tokensSold: data.tokensSold,
+    tokensSoldUsd: data.tokensSoldUsd ?? 0,
+    tokensBought: data.tokensBought,
+    tokensBoughtUsd: data.tokensBoughtUsd ?? 0,
+    blockNumber: data.blockNumber,
     time: parseTimestamp(data.time),
-    txHash: data.transaction_hash,
+    txHash: data.transactionHash,
     buyer: data.buyer,
-    usdFee: data.usd_fee ?? 0,
+    usdFee: data.usdFee ?? 0,
   })
 
 const requireTradeToken = (token: TradeTokenData | undefined, tokenId: number) => {
@@ -169,24 +154,18 @@ const allPoolTrade = z
     token_bought: tradeToken,
     pool_state: z.unknown().nullable(),
   })
-  .transform(data => ({
-    soldId: data.sold_id,
-    boughtId: data.bought_id,
-    tokensSold: data.tokens_sold,
-    tokensSoldUsd: data.tokens_sold_usd ?? 0,
-    tokensBought: data.tokens_bought,
-    tokensBoughtUsd: data.tokens_bought_usd ?? 0,
-    price: data.price,
-    blockNumber: data.block_number,
-    time: parseTimestamp(data.time),
-    txHash: data.transaction_hash,
-    buyer: data.buyer,
-    fee: data.fee,
-    usdFee: data.usd_fee ?? 0,
-    tokenSold: data.token_sold,
-    tokenBought: data.token_bought,
-    poolState: data.pool_state,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { time, transactionHash, tokensSoldUsd, tokensBoughtUsd, usdFee, ...trade } = data
+    return {
+      ...trade,
+      tokensSoldUsd: tokensSoldUsd ?? 0,
+      tokensBoughtUsd: tokensBoughtUsd ?? 0,
+      time: parseTimestamp(time),
+      txHash: transactionHash,
+      usdFee: usdFee ?? 0,
+    }
+  })
 
 const poolLiquidityEventType = z.enum([
   'AddLiquidity',
@@ -207,16 +186,18 @@ const poolLiquidityEvent = z
     transaction_hash: address,
     provider: address,
   })
-  .transform(data => ({
-    eventType: data.liquidity_event_type,
-    tokenAmounts: data.token_amounts ? [...data.token_amounts] : [],
-    fees: data.fees ? [...data.fees] : [],
-    tokenSupply: data.token_supply ?? 0,
-    blockNumber: data.block_number,
-    time: parseTimestamp(data.time),
-    txHash: data.transaction_hash,
-    provider: data.provider,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { time, transactionHash, tokenAmounts, fees, tokenSupply, ...event } = data
+    return {
+      ...event,
+      tokenAmounts: tokenAmounts ? [...tokenAmounts] : [],
+      fees: fees ? [...fees] : [],
+      tokenSupply: tokenSupply ?? 0,
+      time: parseTimestamp(time),
+      txHash: transactionHash,
+    }
+  })
 
 const poolSnapshot = z
   .object({
@@ -241,39 +222,13 @@ const poolSnapshot = z
     price_oracle: z.array(z.number()).nullable(),
     block_number: z.number().nullable(),
   })
-  .transform(data => ({
-    timestamp: data.timestamp,
-    a: data.a,
-    fee: data.fee,
-    adminFee: data.admin_fee,
-    virtualPrice: data.virtual_price,
-    xcpProfit: data.xcp_profit,
-    xcpProfitA: data.xcp_profit_a,
-    baseDailyApr: data.base_daily_apr,
-    baseWeeklyApr: data.base_weekly_apr,
-    offpegFeeMultiplier: data.offpeg_fee_multiplier,
-    gamma: data.gamma,
-    midFee: data.mid_fee,
-    outFee: data.out_fee,
-    feeGamma: data.fee_gamma,
-    allowedExtraProfit: data.allowed_extra_profit,
-    adjustmentStep: data.adjustment_step,
-    maHalfTime: data.ma_half_time,
-    priceScale: data.price_scale,
-    priceOracle: data.price_oracle,
-    blockNumber: data.block_number,
-  }))
+  .transform(camelizeKeys)
 
-const metadataCoin = coin
+const metadataCoin = rawCoin
   .extend({
     decimals: z.number().nullable(),
   })
-  .transform(data => ({
-    poolIndex: data.pool_index,
-    symbol: data.symbol,
-    address: data.address,
-    decimals: data.decimals,
-  }))
+  .transform(camelizeKeys)
 
 const oracle = z
   .object({
@@ -282,12 +237,7 @@ const oracle = z
     method: z.string().nullable(),
     is_verified: z.boolean(),
   })
-  .transform(data => ({
-    oracleAddress: data.oracle_address,
-    methodId: data.method_id,
-    method: data.method,
-    isVerified: data.is_verified,
-  }))
+  .transform(camelizeKeys)
 
 const poolType = z.enum([
   'main',
@@ -338,20 +288,21 @@ export const getPoolTradesResponse = z
     per_page: z.number().optional(),
     count: z.number().optional(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     chain: data.chain,
     address: data.address,
-    mainToken: data.main_token,
-    referenceToken: data.reference_token,
+    mainToken: data.mainToken,
+    referenceToken: data.referenceToken,
     trades: data.data.map(trade =>
       transformPoolTrade(
         trade,
-        getTradeToken(trade.sold_id, data.main_token, data.reference_token),
-        getTradeToken(trade.bought_id, data.main_token, data.reference_token),
+        getTradeToken(trade.soldId, data.mainToken, data.referenceToken),
+        getTradeToken(trade.boughtId, data.mainToken, data.referenceToken),
       ),
     ),
     page: data.page ?? 1,
-    perPage: data.per_page ?? data.data.length,
+    perPage: data.perPage ?? data.data.length,
     count: data.count ?? data.data.length,
   }))
 
@@ -364,14 +315,11 @@ export const getAllPoolTradesResponse = z
     per_page: z.number(),
     count: z.number(),
   })
-  .transform(data => ({
-    chain: data.chain,
-    address: data.address,
-    trades: data.data,
-    page: data.page,
-    perPage: data.per_page,
-    count: data.count,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { data: trades, ...response } = data
+    return { ...response, trades }
+  })
 
 export const getPoolLiquidityEventsResponse = z
   .object({
@@ -382,6 +330,7 @@ export const getPoolLiquidityEventsResponse = z
     per_page: z.number(),
     count: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     ...data,
     events: data.data,
@@ -414,24 +363,17 @@ export const getPoolMetadataResponse = z
     deployment_date: timestampResponse.nullable(),
     has_donations: z.boolean(),
   })
-  .transform(data => ({
-    name: data.name,
-    registry: data.registry,
-    registryType: data.registry_type,
-    lpTokenAddress: data.lp_token_address,
-    coins: data.coins,
-    gauges: [...data.gauges],
-    poolType: data.pool_type,
-    metapool: data.metapool,
-    basePool: data.base_pool,
-    assetTypes: data.asset_types ? [...data.asset_types] : null,
-    oracles: data.oracles?.map(item => (item ? item : null)) ?? null,
-    vyperVersion: data.vyper_version,
-    deploymentTx: data.deployment_tx,
-    deploymentBlock: data.deployment_block,
-    deploymentDate: data.deployment_date ? parseTimestamp(data.deployment_date) : null,
-    hasDonations: data.has_donations,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { deploymentDate, gauges, assetTypes, oracles, ...metadata } = data
+    return {
+      ...metadata,
+      gauges: [...gauges],
+      assetTypes: assetTypes ? [...assetTypes] : null,
+      oracles: oracles?.map(item => (item ? item : null)) ?? null,
+      deploymentDate: deploymentDate ? parseTimestamp(deploymentDate) : null,
+    }
+  })
 
 export type PoolCoin = z.infer<typeof pool>['coins'][number]
 export type PoolsTotals = z.infer<typeof poolTotals>

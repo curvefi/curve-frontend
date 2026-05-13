@@ -10,13 +10,7 @@ const ohlc = z
     high: z.number(),
     low: z.number(),
   })
-  .transform(data => ({
-    time: parseTimestamp(data.time),
-    open: data.open,
-    high: data.high,
-    low: data.low,
-    close: data.close,
-  }))
+  .transform(({ time, ...ohlc }) => ({ ...ohlc, time: parseTimestamp(time) }))
 
 export const getOHLCResponse = z
   .object({

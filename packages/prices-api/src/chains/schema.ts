@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import { chains, type Chain } from '..'
-import { address, chain, timestampResponse } from '../schemas'
+import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const activityType = z.enum(['crvusd', 'lending', 'pools', 'router', 'dao'])
@@ -17,23 +17,13 @@ const transactions = activity
   .extend({
     transactions: z.number(),
   })
-  .transform(data => ({
-    chain: data.chain,
-    timestamp: parseTimestamp(data.timestamp),
-    type: data.type,
-    transactions: data.transactions,
-  }))
+  .transform(({ timestamp, ...item }) => ({ ...item, timestamp: parseTimestamp(timestamp) }))
 
 const users = activity
   .extend({
     users: z.number(),
   })
-  .transform(data => ({
-    chain: data.chain,
-    timestamp: parseTimestamp(data.timestamp),
-    type: data.type,
-    users: data.users,
-  }))
+  .transform(({ timestamp, ...item }) => ({ ...item, timestamp: parseTimestamp(timestamp) }))
 
 export const getSupportedChainsResponse = z
   .object({
@@ -52,14 +42,15 @@ export const getChainInfoResponse = z
       liquidity_fee_24h: z.number(),
     }),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     chain: data.chain,
     total: {
-      tvl: data.total.total_tvl,
-      tradingVolume24h: data.total.trading_volume_24h,
-      tradingFee24h: data.total.trading_fee_24h,
-      liquidityVolume24h: data.total.liquidity_volume_24h,
-      liquidityFee24h: data.total.liquidity_fee_24h,
+      tvl: data.total.totalTvl,
+      tradingVolume24h: data.total.tradingVolume24h,
+      tradingFee24h: data.total.tradingFee24h,
+      liquidityVolume24h: data.total.liquidityVolume24h,
+      liquidityFee24h: data.total.liquidityFee24h,
     },
   }))
 

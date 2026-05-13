@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { address, timestampResponse } from '../schemas'
+import { address, camelizeKeys, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 const oracle = z
@@ -16,16 +16,17 @@ const oracle = z
     }),
     last_updated: z.number(),
   })
-  .transform(({ block_header, ...data }) => ({
+  .transform(camelizeKeys)
+  .transform(({ blockHeader, ...data }) => ({
     chain: data.chain,
     address: data.address,
-    lastConfirmedBlockNumber: data.last_confirmed_block_number,
+    lastConfirmedBlockNumber: data.lastConfirmedBlockNumber,
     blockHeader: {
-      hashBlock: block_header.block_hash,
-      hashParent: block_header.parent_hash,
-      stateRoot: block_header.state_root,
-      blockNumber: block_header.block_number,
-      timestamp: parseTimestamp(block_header.timestamp),
+      hashBlock: blockHeader.blockHash,
+      hashParent: blockHeader.parentHash,
+      stateRoot: blockHeader.stateRoot,
+      blockNumber: blockHeader.blockNumber,
+      timestamp: parseTimestamp(blockHeader.timestamp),
     },
   }))
 
@@ -34,9 +35,6 @@ export const getOraclesResponse = z
     last_recorded_block: z.number(),
     oracles: z.array(oracle),
   })
-  .transform(data => ({
-    lastRecordedBlock: data.last_recorded_block,
-    oracles: data.oracles,
-  }))
+  .transform(camelizeKeys)
 
 export type Oracles = z.infer<typeof getOraclesResponse>

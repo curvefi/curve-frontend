@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { address, chain, timestampResponse } from '../schemas'
+import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
 export const endpoint = z.enum(['crvusd', 'lending'])
@@ -31,21 +31,11 @@ const liquidationDetails = z
     tx: address,
     block: z.number(),
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.dt),
-    user: data.user,
-    liquidator: data.liquidator,
-    self: data.self,
-    collateralReceived: data.collateral_received,
-    collateralReceivedUsd: data.collateral_received_usd,
-    stablecoinReceived: data.stablecoin_received,
-    priceOracle: data.oracle_price,
-    debt: data.debt,
-    n1: data.n1,
-    n2: data.n2,
-    tx: data.tx,
-    block: data.block,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { dt, oraclePrice, ...details } = data
+    return { ...details, timestamp: parseTimestamp(dt), priceOracle: oraclePrice }
+  })
 
 const liquidationAggregate = z
   .object({
@@ -56,14 +46,11 @@ const liquidationAggregate = z
     hard_value: z.number(),
     price: z.number(),
   })
-  .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
-    selfCount: data.self_count,
-    hardCount: data.hard_count,
-    selfValue: data.self_value,
-    hardValue: data.hard_value,
-    price: data.price,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { timestamp, ...aggregate } = data
+    return { ...aggregate, timestamp: parseTimestamp(timestamp) }
+  })
 
 export const getLiqOverviewResponse = z
   .object({
@@ -81,15 +68,16 @@ export const getLiqOverviewResponse = z
     liquidatable_borrowed_usd: z.number().optional(),
     liquidatable_stablecoin_usd: z.number().optional(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    softLiqUsers: data.soft_liquidation_users,
-    liqablePositions: data.liquidatable_positions,
-    liqableDebtUsd: data.liquidatable_pos_debt_usd,
-    liqableCollatUsd: data.liquidatable_collateral_usd,
-    liqableBorrowedUsd: data.liquidatable_borrowed_usd ?? data.liquidatable_stablecoin_usd ?? 0,
-    medianHealth: data.median_health,
-    avgHealth: data.average_health,
-    collatRatio: data.collat_ratio,
+    softLiqUsers: data.softLiquidationUsers,
+    liqablePositions: data.liquidatablePositions,
+    liqableDebtUsd: data.liquidatablePosDebtUsd,
+    liqableCollatUsd: data.liquidatableCollateralUsd,
+    liqableBorrowedUsd: data.liquidatableBorrowedUsd ?? data.liquidatableStablecoinUsd ?? 0,
+    medianHealth: data.medianHealth,
+    avgHealth: data.averageHealth,
+    collatRatio: data.collatRatio,
   }))
 
 const liqLosses = z
@@ -103,14 +91,15 @@ const liqLosses = z
     users_with_losses: z.number(),
     ratio: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
     timestamp: parseTimestamp(data.timestamp),
-    pctLossAverage: data.avg_pct_loss,
-    pctLossMedian: data.median_pct_loss,
-    absoluteLossAverage: data.avg_abs_loss,
-    absoluteLossMedian: data.median_abs_loss,
-    numTotalUsers: data.total_users,
-    numUsersWithLosses: data.users_with_losses,
+    pctLossAverage: data.avgPctLoss,
+    pctLossMedian: data.medianPctLoss,
+    absoluteLossAverage: data.avgAbsLoss,
+    absoluteLossMedian: data.medianAbsLoss,
+    numTotalUsers: data.totalUsers,
+    numUsersWithLosses: data.usersWithLosses,
     ratio: data.ratio,
   }))
 
@@ -123,8 +112,9 @@ const liqHealthDecile = z
     stablecoin: z.number().optional(),
     debt: z.number(),
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    healthDecile: data.health_decile,
+    healthDecile: data.healthDecile,
     collateral: data.collateral,
     debt: data.debt,
     borrowed: data.stablecoin ?? data.borrowed ?? 0,
@@ -143,16 +133,15 @@ const totalOverview = z
     // only for crvusd endpoint
     liquidatable_stablecoin_usd: z.number().optional(),
   })
-  .transform(data => ({
-    chain: data.chain,
-    softLiquidationUsers: data.soft_liquidation_users,
-    badDebt: data.bad_debt,
-    liquidatablePositions: data.liquidatable_positions,
-    liquidatablePosDebtUsd: data.liquidatable_pos_debt_usd,
-    liquidatableCollateralUsd: data.liquidatable_collateral_usd,
-    liquidatableBorrowedUsd: data.liquidatable_borrowed_usd ?? null,
-    liquidatableStablecoinUsd: data.liquidatable_stablecoin_usd ?? null,
-  }))
+  .transform(camelizeKeys)
+  .transform(data => {
+    const { liquidatableBorrowedUsd, liquidatableStablecoinUsd, ...overview } = data
+    return {
+      ...overview,
+      liquidatableBorrowedUsd: liquidatableBorrowedUsd ?? null,
+      liquidatableStablecoinUsd: liquidatableStablecoinUsd ?? null,
+    }
+  })
 
 const badDebtRaw = z
   .object({
@@ -167,10 +156,11 @@ const badDebtRaw = z
     market: z.string(),
     controller_address: address,
   })
+  .transform(camelizeKeys)
   .transform(data => ({
-    ...totalOverview.parse(data),
-    market: data.market,
-    controllerAddress: data.controller_address,
+    ...data,
+    liquidatableBorrowedUsd: data.liquidatableBorrowedUsd ?? null,
+    liquidatableStablecoinUsd: data.liquidatableStablecoinUsd ?? null,
   }))
 
 export const getSoftLiqRatiosResponse = z
