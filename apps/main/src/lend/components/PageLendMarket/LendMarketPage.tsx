@@ -78,10 +78,11 @@ function useLegacyFetching({
 }
 
 export const LendMarketPage = () => {
+  const { isHydrated } = useCurve()
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
-  const { isHydrated, llamaApi: api = null, provider } = useCurve()
+  const { llamaApi: api = null, provider } = useCurve()
 
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
@@ -119,11 +120,7 @@ export const LendMarketPage = () => {
   }
 
   return isSuccess && !market ? (
-    <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
-      continueUrl={getCollateralListPathname(params)}
-    />
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <DetailPageLayout
       formTabs={

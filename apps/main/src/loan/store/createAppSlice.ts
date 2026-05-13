@@ -2,13 +2,9 @@ import { produce } from 'immer'
 import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import { prefetchMintMarkets } from '@/loan/entities/mint-markets.query'
 import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
-import { isLoanSlicesEnabled } from '@ui-kit/hooks/useFeatureFlags'
-import { ReleaseChannel } from '@ui-kit/utils'
-import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -20,13 +16,7 @@ type SliceState = {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(
-    config: Config,
-    curve: LlamaApi | undefined,
-    prevCurveApi: LlamaApi | undefined,
-    wallet: Wallet | undefined,
-    releaseChannel: ReleaseChannel,
-  ): Promise<void>
+  hydrate(config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -41,32 +31,28 @@ const DEFAULT_STATE: SliceState = {
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
-  hydrate: async (_config, llamalend, prevLlamalend, _wallet, releaseChannel) => {
-    if (!llamalend) return
+  hydrate: async (_config, curveApi, prevCurveApi) => {
+    if (!curveApi) return
 
     const { loans } = get()
 
-    const { mintMarkets, signerAddress, chainId, getMintMarket } = llamalend
-    const isNetworkSwitched = !!prevLlamalend?.chainId && prevLlamalend.chainId !== chainId
-    const isUserSwitched = !!prevLlamalend?.signerAddress && prevLlamalend.signerAddress !== signerAddress
-    const start = new Date()
-    log('Hydrate crvUSD', chainId, { isNetworkSwitched, isUserSwitched })
+    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
+    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
+    log('Hydrate crvUSD', curveApi?.chainId, {
+      isNetworkSwitched,
+      isUserSwitched,
+    })
 
     // reset stores
-    if (isUserSwitched || !signerAddress) {
+    if (isUserSwitched || !curveApi.signerAddress) {
       loans.setStateByKey('userWalletBalancesMapper', {})
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    await prefetchMintMarkets({ chainId })
-    if (isLoanSlicesEnabled(releaseChannel)) {
-      await loans.fetchLoansDetails(
-        llamalend,
-        mintMarkets.getMarketList().map(name => getMintMarket(name)),
-      )
-    }
+    const markets = curveApi.mintMarkets.getMarketList().map(name => curveApi.getMintMarket(name))
+    await loans.fetchLoansDetails(curveApi, markets)
 
-    log(`Hydrated crvUSD - Complete in ${formatTimeDiff(start)}`)
+    log('Hydrate crvUSD - Complete')
   },
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

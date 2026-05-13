@@ -24,5 +24,3 @@ export const waitFor = async (
   }
   await handleTimeout<void>(waitUntil(), timeout, message)
 }
-
-export const formatTimeDiff = (start: Date) => `${(new Date().getTime() - start.getTime()).toLocaleString()}ms`
