@@ -27,7 +27,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { useMintMarket } from '../../entities/mint-markets.query'
+import { useMintMarket } from '../../hooks/useMintMarket'
 
 function useLegacyFetching({
   market,
