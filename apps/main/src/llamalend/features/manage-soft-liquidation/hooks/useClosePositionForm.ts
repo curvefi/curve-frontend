@@ -10,11 +10,9 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { notFalsy } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { decimal, decimalNegate } from '@ui-kit/utils'
-import { filterFormErrors, resetForm } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
@@ -22,7 +20,6 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const userDefaultValues = {}
 const formOptions = {
-  ...formDefaultOptions,
   defaultValues: { ...userDefaultValues, slippage: SLIPPAGE_PRESETS.STABLE },
 } as const
 
@@ -76,7 +73,7 @@ export function useClosePositionForm({
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)
 
-  const values = watchForm(form)
+  const values = form.watchValues()
   const {
     onSubmit,
     isPending: isClosing,
@@ -84,12 +81,12 @@ export function useClosePositionForm({
   } = useClosePositionMutation({
     network,
     marketId,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 
-  const formState = form.formState
-  const isPending = formState.isSubmitting || isClosing
+  const { isSubmitting, visibleErrors } = form.formState
+  const isPending = isSubmitting || isClosing
 
   // Combine all user state balances with their token data and USD rates
   const collateralAmount = useMemo(
@@ -229,7 +226,7 @@ export function useClosePositionForm({
     borrowedBalance: borrowed,
     error,
     closeError,
-    formErrors: useMemo(() => filterFormErrors(formState), [formState]),
+    formErrors: visibleErrors,
     isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),
     onSubmit: form.handleSubmit(onSubmit),
   }

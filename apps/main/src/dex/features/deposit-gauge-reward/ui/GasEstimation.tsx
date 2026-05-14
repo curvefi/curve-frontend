@@ -7,14 +7,14 @@ import { useFormContext } from '@ui-kit/features/forms'
 
 export const GasEstimation = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
-    watch,
+    watchValue,
     formState: { isValid },
   } = useFormContext<DepositRewardFormValues>()
-  const rewardTokenId = watch('rewardTokenId')
-  const amount = watch('amount')
-  const epoch = watch('epoch')
-  const step = watch('step')
-  const userBalance = watch('userBalance')
+  const rewardTokenId = watchValue('rewardTokenId')
+  const amount = watchValue('amount')
+  const epoch = watchValue('epoch')
+  const step = watchValue('step')
+  const userBalance = watchValue('userBalance')
 
   const {
     data: estimatedGasDepositRewardApprove,
