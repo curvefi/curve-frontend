@@ -79,7 +79,7 @@ const getCatalogSkipReason = (() => {
   let skipReason: string | undefined
 
   return () => {
-    if (skipReason !== undefined) {
+    if (skipReason) {
       return skipReason
     }
 
@@ -175,7 +175,7 @@ export const getPoolSeed = once(async (): Promise<PoolSeed> => {
     const response = await pools.getPools(chain, requestOptions)
     const candidates = response.pools.filter(item => item.coins.length >= 2)
 
-    if (candidates.length === 0) {
+    if (!candidates.length) {
       continue
     }
 

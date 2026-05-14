@@ -2,6 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 
 export type EndpointModule = string
 export type EndpointId = `${EndpointModule}.${string}`
@@ -43,11 +44,11 @@ export const endpointCatalogIsCurrent = (status: EndpointCatalogStatus) =>
 
 /** Formats catalog drift for the loud catalog test and live-test skip messages. */
 export const formatEndpointCatalogStatus = (status: EndpointCatalogStatus) =>
-  [
-    status.missing.length > 0 ? `missing: ${status.missing.join(', ')}` : undefined,
-    status.staleCases.length > 0 ? `stale cases: ${status.staleCases.join(', ')}` : undefined,
-    status.staleExclusions.length > 0 ? `stale exclusions: ${status.staleExclusions.join(', ')}` : undefined,
-  ]
+  notFalsy(
+    status.missing.length && `missing: ${status.missing.join(', ')}`,
+    status.staleCases.length && `stale cases: ${status.staleCases.join(', ')}`,
+    status.staleExclusions.length && `stale exclusions: ${status.staleExclusions.join(', ')}`,
+  )
     .filter(Boolean)
     .join('; ')
 
@@ -60,13 +61,11 @@ const getExportedAsyncEndpointIds = () =>
     .flatMap(entry => {
       const indexFile = resolve(srcDir, entry.name, 'index.ts')
 
-      if (!existsSync(indexFile)) {
-        return []
-      }
-
-      return matches(readFileSync(indexFile, 'utf8'), exportedAsyncFunctionPattern).map(functionName =>
-        endpointId(entry.name, functionName),
-      )
+      return existsSync(indexFile)
+        ? matches(readFileSync(indexFile, 'utf8'), exportedAsyncFunctionPattern).map(functionName =>
+            endpointId(entry.name, functionName),
+          )
+        : []
     })
 
 const getCatalogEndpointIds = () =>
@@ -80,9 +79,9 @@ const getEndpointIdsFromTestFile = (file: string) => {
   const source = readFileSync(file, 'utf8')
   const moduleName = runEndpointCasesPattern.exec(source)?.[1]
 
-  return moduleName
-    ? matches(source, endpointCasePattern).map(functionName => endpointId(moduleName, functionName))
-    : []
+  return notFalsyArray(
+    moduleName && matches(source, endpointCasePattern).map(functionName => endpointId(moduleName, functionName)),
+  )
 }
 
 const matches = (source: string, pattern: RegExp) =>

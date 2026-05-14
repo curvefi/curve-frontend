@@ -72,15 +72,13 @@ const runEndpointCase = async (endpoint: EndpointCase, annotate: TestContext['an
 }
 
 const endpointLabel = (moduleName: EndpointModule, endpoint: EndpointCase) =>
-  endpoint.labelSuffix
-    ? `${moduleName}.${endpoint.functionName}(${endpoint.labelSuffix})`
-    : `${moduleName}.${endpoint.functionName}`
+  `${moduleName}.${endpoint.functionName}${endpoint.labelSuffix ? `(${endpoint.labelSuffix})` : ''}`
 
 const getCatalogSkipReason = (() => {
   let skipReason: string | undefined
 
   return () => {
-    if (skipReason !== undefined) {
+    if (skipReason) {
       return skipReason
     }
 
