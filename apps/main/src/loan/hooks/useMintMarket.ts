@@ -3,7 +3,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useMintMarkets } from '../entities/mint-markets.query'
 import { ChainId } from '../types/loan.types'
 
-function useMintMarketData(chainId: ChainId, rMarket: string) {
+export function useMintMarketData(chainId: ChainId, rMarket: string) {
   const { data, error, isSuccess } = useMintMarkets({ chainId })
   const marketData = useMemo(() => data?.[rMarket], [data, rMarket])
   return { error, isSuccess, data: marketData }

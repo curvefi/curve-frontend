@@ -18,8 +18,6 @@ import type { Range } from '@ui-kit/types/util'
 
 const { Height } = SizesAndSpaces
 
-type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
-
 type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
@@ -124,7 +122,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     newPrices: newLiqPrices,
   })
 
-  const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])
+  const coins = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 

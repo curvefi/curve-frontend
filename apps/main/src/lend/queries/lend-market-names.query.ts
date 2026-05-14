@@ -3,8 +3,8 @@ import { ChainParams, type ChainQuery, queryFactory, rootKeys } from 'curve-ui-k
 import { llamaApiValidationSuite } from 'curve-ui-kit/src/lib/model/query/curve-api-validation'
 import { Chain } from 'curve-ui-kit/src/utils'
 import { USE_API } from '@/llamalend/queries/market/market.constants'
+import type { IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { IOneWayMarket } from '@curvefi/llamalend-api/src/interfaces'
 import { notFalsy } from '@curvefi/primitives/objects.utils'
 import type { Address } from '@primitives/address.utils'
 

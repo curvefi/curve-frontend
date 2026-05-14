@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
@@ -25,7 +25,6 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useMintMarket } from '../../hooks/useMintMarket'
 
@@ -75,22 +74,15 @@ export const MintMarketPage = () => {
   })
 
   const network = networks[rChainId]
+  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: getControllerAddress(market),
     userAddress: curve?.signerAddress,
-    collateralToken: market
-      ? {
-          symbol: market.collateralSymbol,
-          address: market.collateral,
-          decimals: market.collateralDecimals,
-          name: market.collateralSymbol,
-        }
-      : undefined,
-    borrowToken: CRVUSD,
     network,
+    tokens,
   })
   const loaded = useLegacyFetching({ curve, market, loanExists })
 
@@ -132,7 +124,7 @@ export const MintMarketPage = () => {
     >
       <MarketBanners chainId={rChainId} market={market} />
       <PositionDetailsComposite
-        market={market}
+        tokens={tokens}
         params={userMarketParams}
         hasPosition={loanExists}
         events={collateralEvents}

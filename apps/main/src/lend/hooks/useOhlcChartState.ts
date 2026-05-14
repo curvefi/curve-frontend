@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import { getTokens } from '@/llamalend/llama.utils'
+import { getTokens, type MarketTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -19,8 +19,6 @@ import type { Range } from '@ui-kit/types/util'
 import { useLendMarketData } from '../hooks/useLendMarket'
 
 const { Height } = SizesAndSpaces
-
-type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
@@ -128,7 +126,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     newPrices: newLiqPrices,
   })
 
-  const coins: LendingMarketTokens = useMemo(() => market && getTokens(market), [market])
+  const coins: MarketTokens | undefined = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
