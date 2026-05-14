@@ -3,7 +3,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { ChainParams, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
-export const { useQuery: useMintMarketNames, prefetchQuery: prefetchMintMarkets } = queryFactory({
+export const { useQuery: useMintMarketNames, reset: resetMintMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'mintMarkets.getMarketList'] as const,
   queryFn: async (): Promise<string[]> => {
     const api = requireLib('llamaApi')
