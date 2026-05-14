@@ -11,7 +11,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { AlertAdditionalDebtToken } from '../alerts/AlertAdditionalDebtToken'
@@ -64,7 +63,7 @@ export const ClosePositionForm = ({
           chainId={network.chainId}
           networks={networks}
           values={values}
-          onSlippageChange={slippage => updateForm(form, { slippage })}
+          onSlippageChange={slippage => form.update({ slippage })}
         />
       }
     >

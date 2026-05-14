@@ -12,11 +12,10 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
-import { type ErrorContext, type ContactMethod, useErrorReportForm } from './useErrorReportForm'
+import { type ContactMethod, type ErrorContext, useErrorReportForm } from './useErrorReportForm'
 
 const { Spacing } = SizesAndSpaces
-const contactCopyByMethod = {
+const contactCopyByMethod: Record<ContactMethod, { label: string; placeholder: string }> = {
   email: { label: t`Email address`, placeholder: t`johnthellama@email.com` },
   telegram: { label: t`Telegram`, placeholder: '@johnthellama' },
   discord: { label: t`Discord`, placeholder: '@johnthellama' },
@@ -35,12 +34,13 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
     values: { address, contact, contactMethod, description },
     onSubmit,
   } = useErrorReportForm(context, onClose)
-  const { getValues, setValue, trigger } = form
+  const { update: updateForm } = form
   const { label, placeholder } = contactCopyByMethod[contactMethod]
+
   useEffect(() => {
-    if (isOpen && userAddress)
-      updateForm({ getValues, setValue, trigger }, { address: userAddress }, { automated: true })
-  }, [getValues, isOpen, setValue, trigger, userAddress])
+    if (isOpen && userAddress) updateForm({ address: userAddress }, { automated: true })
+  }, [isOpen, updateForm, userAddress])
+
   return (
     <ModalDialog
       open={isOpen}
@@ -76,7 +76,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
             fullWidth
             placeholder={t`0xab4ed...`}
             value={address}
-            onChange={event => updateForm(form, { address: event.target.value })}
+            onChange={event => updateForm({ address: event.target.value })}
             slotProps={{ htmlInput: { 'data-testid': 'submit-error-report-address' } }}
           />
           <FormHelperText>{t`Submit your address so we can reproduce the issue`}</FormHelperText>
@@ -87,7 +87,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
           value={contactMethod}
           onChange={(_event: MouseEvent<HTMLElement>, nextValue: ContactMethod | null) => {
             if (!nextValue) return // ToggleButtonGroup sets null when clicking the selected value; keep the current selection.
-            updateForm(form, { contactMethod: nextValue })
+            updateForm({ contactMethod: nextValue })
           }}
           size="small"
           data-testid="submit-error-report-contact-method"
@@ -104,7 +104,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
             fullWidth
             placeholder={placeholder}
             value={contact}
-            onChange={event => updateForm(form, { contact: event.target.value })}
+            onChange={event => updateForm({ contact: event.target.value })}
             slotProps={{
               htmlInput: {
                 'data-testid': 'submit-error-report-contact',
@@ -123,7 +123,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
             minRows={8}
             placeholder={t`I clicked on "X" and then hit "confirm"...`}
             value={description}
-            onChange={event => updateForm(form, { description: event.target.value })}
+            onChange={event => updateForm({ description: event.target.value })}
             slotProps={{ htmlInput: { 'data-testid': 'submit-error-report-description' } }}
           />
         </FormControl>
