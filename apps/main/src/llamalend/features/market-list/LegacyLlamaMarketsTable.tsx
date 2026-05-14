@@ -97,7 +97,7 @@ export const LegacyLlamaMarketsTable = ({
         collapsible={<LegacyLendingMarketsFilters data={data} {...filterProps} />}
         chips={
           <>
-            <LlamaChainFilterChips markets={constQ(data)} {...filterProps} />
+            <LlamaChainFilterChips marketsQuery={constQ(data)} {...filterProps} />
             <LegacyLlamaListChips
               hiddenCount={getHiddenCount(table)}
               resetFilters={resetFilters}
