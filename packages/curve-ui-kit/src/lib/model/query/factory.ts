@@ -170,9 +170,6 @@ export function queryFactory<
       // add validation results to the query result via Object.assign so we don't enumerate all react-query properties
       return Object.assign(query, { enabled, validation })
     },
-    /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
-    /** Removes all the cached data for the query **/
-    reset: (params: TParams) => queryClient.resetQueries({ queryKey: queryKey(params) }),
   } as const
 }

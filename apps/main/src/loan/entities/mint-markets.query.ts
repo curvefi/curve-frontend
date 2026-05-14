@@ -44,7 +44,7 @@ const getMarketData = ({
   index,
 })
 
-export const { useQuery: useMintMarkets, reset: resetMintMarkets } = queryFactory({
+export const { useQuery: useMintMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'mintMarkets.getMarketList'] as const,
   queryFn: async (): Promise<Record<string | Address, MintMarketData>> => {
     const api = requireLib('llamaApi')

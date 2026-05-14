@@ -1,6 +1,4 @@
-import { resetMintMarkets } from 'main/src/loan/entities/mint-markets.query'
 import { useMemo } from 'react'
-import { resetLendMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -91,20 +89,7 @@ export type LlammalendTestCaseProps = LlammalendTestProps &
 
 export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
-    <CurveProvider
-      app="llamalend"
-      network={llamaNetworks[chainId]}
-      onChainUnavailable={console.error}
-      hydrate={useMemo(
-        () => ({
-          llamalend: {
-            [LlamaMarketType.Lend]: () => resetLendMarkets({ chainId, enableLLv2: true }),
-            [LlamaMarketType.Mint]: () => resetMintMarkets({ chainId }),
-          }[marketType],
-        }),
-        [chainId, marketType],
-      )}
-    >
+    <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
         <LlammalendTest {...props} chainId={chainId} />
       </Box>
