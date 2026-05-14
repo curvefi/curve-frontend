@@ -25,7 +25,7 @@ export async function getEvents(
     per_page: perPage.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_events/${chain}/${llamma}?${params.toString()}`)
+  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_events/${chain}/${llamma}?${params}`)
 
   return Schema.getLlammaEventsResponse.parse(resp)
 }
@@ -49,7 +49,7 @@ export async function getTrades(
     per_page: perPage.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${chain}/${llamma}?${params.toString()}`)
+  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${chain}/${llamma}?${params}`)
 
   return Schema.getLlammaTradesResponse.parse(resp)
 }
@@ -80,7 +80,7 @@ export async function getOHLC(
     end: range.end.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params.toString()}`)
+  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params}`)
 
   return Schema.getLlammaOHLCResponse.parse(resp)
 }

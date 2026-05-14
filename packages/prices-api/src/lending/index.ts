@@ -45,7 +45,7 @@ export async function getOracle(
     end: range.end.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/oracle_ohlc/${chain}/${controller}?${params.toString()}`)
+  const resp = await fetch(`${host}/v1/${endpointParam}/oracle_ohlc/${chain}/${controller}?${params}`)
 
   return Schema.getOracleResponse.parse(resp)
 }
