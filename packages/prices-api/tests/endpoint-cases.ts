@@ -1,11 +1,6 @@
 /** Shared Vitest harness for live endpoint schema checks. */
 import { describe, expect, it, type TestContext } from 'vitest'
-import {
-  endpointId,
-  getEndpointCatalogSkipReason,
-  type EndpointId,
-  type EndpointModule,
-} from './catalog'
+import { endpointId, getEndpointCatalogSkipReason, type EndpointId, type EndpointModule } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 import { endpointTestSeed } from './seeds'
 
