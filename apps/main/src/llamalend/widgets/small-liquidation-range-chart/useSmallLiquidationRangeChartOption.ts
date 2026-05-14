@@ -3,72 +3,26 @@ import { useMemo } from 'react'
 import { useTheme, type Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { getSmallLiquidationRangeChartDomain } from './small-liquidation-range-chart.utils'
+import { buildContinuousOption, buildRangeMarkAreas, buildSplitOption } from './small-liquidation-range-chart.options'
+import type {
+  ChartColors,
+  ChartTextStyle,
+  LiquidationRange,
+  RenderableLiquidationRange,
+  SplitLayout,
+} from './small-liquidation-range-chart.types'
+import {
+  getSmallLiquidationRangeChartLayout,
+  type SmallLiquidationRangeChartLayout,
+} from './small-liquidation-range-chart.utils'
 import type { SmallLiquidationRangeChartProps } from './SmallLiquidationRangeChart'
 
-const { FontSize, FontWeight, LineHeight, Spacing } = SizesAndSpaces
+const { FontSize, FontWeight, LineHeight } = SizesAndSpaces
 
-const CHART_LAYOUT = {
-  trackHeight: 24,
-  axisHeight: 24,
-  rangeBorderGutter: CHART_LINE_WIDTHS.referenceLine,
-  priceMarker: {
-    tickHeight: 6,
-    labelGap: 6,
-  },
-} as const
-
-const ORACLE_MARKER_ARROW = {
-  width: 11,
-  height: 9,
-  pathData: 'M5.19641 9L0.000234437 -0.0000342871L10.3926 -0.0000333786L5.19641 9Z',
-} as const
-
-const ORACLE_MARKER_LAYOUT = {
-  arrow: ORACLE_MARKER_ARROW,
-  label: {
-    height: CHART_LAYOUT.trackHeight - ORACLE_MARKER_ARROW.height,
-    horizontalPadding: Spacing.xs.desktop,
-    // Approximate average glyph width in em for numeric price labels when sizing the custom ECharts marker.
-    estimatedCharacterWidthRatio: 0.58,
-  },
-} as const
-
-export const SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX =
-  CHART_LAYOUT.trackHeight + CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter * 2
-
-const FULL_RANGE_Y_AXIS = [0, 1] as const
-const NEW_RANGE_BORDER_DASH = CHART_LINE_DASH_PATTERNS.regular
-const RANGE_LABEL = t`LR`
-
-type RangeMarkArea = [Record<string, unknown>, Record<string, unknown>]
-type LiquidationRange = SmallLiquidationRangeChartProps['liquidationRanges']['currentRange']
-type RenderableLiquidationRange = readonly [number, number]
-type ChartTextStyle = {
-  fontFamily: string
-  fontSize: number
-  fontWeight: string | number
-  lineHeight: number
-}
-type ChartColors = {
-  axisLabel: string
-  axisLine: string
-  referenceLine: string
-  oracleMarkerLabel: string
-  oracleMarkerLabelBackground: string
-  rangeLabel: string
-  currentRange: string
-  newRangeLine: string
-}
-type OracleMarkerRenderParams = { coordSys?: { width?: number; x?: number } }
-type OracleMarkerRenderApi = {
-  value: (index: number) => number
-  coord: (point: number[]) => number[]
-}
+const isSplitLayout = (layout?: SmallLiquidationRangeChartLayout): layout is SplitLayout =>
+  layout?.mode === 'split-left' || layout?.mode === 'split-right'
 
 // ECharts value axes behave most predictably when every coordinate uses the same numeric representation.
 const toRenderableRange = (range: LiquidationRange): RenderableLiquidationRange | undefined =>
@@ -114,201 +68,6 @@ const getSeriesData = ({
   oraclePrice?: number
 }) => notFalsyArray(currentRange, newRange, toArray(oraclePrice)).map(value => [value, 0])
 
-const buildRangeMarkAreas = ({
-  colors,
-  currentRange,
-  hasNewRange,
-  newRange,
-  textStyle,
-}: {
-  colors: ChartColors
-  currentRange?: RenderableLiquidationRange
-  hasNewRange: boolean
-  newRange?: RenderableLiquidationRange
-  textStyle: ChartTextStyle
-}) => {
-  const markAreas: RangeMarkArea[] = []
-  const rangeLabelStyle = {
-    fontFamily: textStyle.fontFamily,
-    fontSize: textStyle.fontSize,
-    fontWeight: FontWeight.Semi_Bold,
-    lineHeight: textStyle.lineHeight,
-  }
-
-  if (currentRange) {
-    const [currentRangeMin, currentRangeMax] = currentRange
-
-    markAreas.push([
-      {
-        xAxis: currentRangeMin,
-        yAxis: FULL_RANGE_Y_AXIS[0],
-        z2: 1,
-        itemStyle: { color: colors.currentRange },
-        label: {
-          ...rangeLabelStyle,
-          show: !hasNewRange,
-          position: 'inside',
-          formatter: RANGE_LABEL,
-          color: colors.rangeLabel,
-        },
-      },
-      { xAxis: currentRangeMax, yAxis: FULL_RANGE_Y_AXIS[1] },
-    ])
-  }
-
-  if (newRange) {
-    const [newRangeMin, newRangeMax] = newRange
-
-    markAreas.push([
-      {
-        xAxis: newRangeMin,
-        yAxis: FULL_RANGE_Y_AXIS[0],
-        z2: 2,
-        itemStyle: {
-          color: 'transparent',
-          borderColor: colors.newRangeLine,
-          borderType: NEW_RANGE_BORDER_DASH,
-          borderWidth: CHART_LINE_WIDTHS.referenceLine,
-        },
-        label: {
-          ...rangeLabelStyle,
-          show: true,
-          position: 'inside',
-          formatter: RANGE_LABEL,
-          color: colors.newRangeLine,
-        },
-      },
-      { xAxis: newRangeMax, yAxis: FULL_RANGE_Y_AXIS[1] },
-    ])
-  }
-
-  return markAreas
-}
-
-const getOracleMarkerLabelWidth = ({
-  htmlFontSize,
-  text,
-  textStyle,
-}: {
-  htmlFontSize: number
-  text: string
-  textStyle: ChartTextStyle
-}) => {
-  // Canvas text measurement is unavailable in ECharts renderItem, so use the common average glyph width estimate.
-  const estimatedTextWidth = text.length * textStyle.fontSize * ORACLE_MARKER_LAYOUT.label.estimatedCharacterWidthRatio
-  const horizontalPadding = toEChartsPixelValue(ORACLE_MARKER_LAYOUT.label.horizontalPadding, htmlFontSize)
-
-  return estimatedTextWidth + horizontalPadding * 2
-}
-
-const getOracleMarkerGeometry = ({
-  chartLeft,
-  chartWidth,
-  htmlFontSize,
-  markerX,
-  text,
-  textStyle,
-  trackTopY,
-}: {
-  chartLeft: number
-  chartWidth: number
-  htmlFontSize: number
-  markerX: number
-  text: string
-  textStyle: ChartTextStyle
-  trackTopY: number
-}) => {
-  const labelWidth = getOracleMarkerLabelWidth({ htmlFontSize, text, textStyle })
-  const labelLeft = Math.min(Math.max(markerX - labelWidth / 2, chartLeft), chartLeft + chartWidth - labelWidth)
-  const labelTop = trackTopY
-
-  return {
-    labelLeft,
-    labelTop,
-    labelWidth,
-    labelCenterX: labelLeft + labelWidth / 2,
-    labelCenterY: labelTop + ORACLE_MARKER_LAYOUT.label.height / 2,
-    arrowLeft: markerX - ORACLE_MARKER_LAYOUT.arrow.width / 2,
-    arrowTop: labelTop + ORACLE_MARKER_LAYOUT.label.height,
-  }
-}
-
-const buildOracleMarkerSeries = ({
-  colors,
-  formattedOraclePrice,
-  htmlFontSize,
-  oraclePrice,
-  textStyle,
-}: {
-  colors: ChartColors
-  formattedOraclePrice: string
-  htmlFontSize: number
-  oraclePrice: number
-  textStyle: ChartTextStyle
-}) => ({
-  type: 'custom' as const,
-  data: [[oraclePrice, FULL_RANGE_Y_AXIS[1]]],
-  silent: true,
-  z: 5,
-  encode: { x: 0, y: 1 },
-  renderItem: (params: OracleMarkerRenderParams, api: OracleMarkerRenderApi) => {
-    const [markerX, trackTopY] = api.coord([api.value(0), api.value(1)])
-    const geometry = getOracleMarkerGeometry({
-      chartLeft: params.coordSys?.x ?? 0,
-      chartWidth: params.coordSys?.width ?? 0,
-      htmlFontSize,
-      markerX,
-      text: formattedOraclePrice,
-      textStyle,
-      trackTopY,
-    })
-
-    return {
-      type: 'group',
-      children: [
-        {
-          type: 'rect',
-          shape: {
-            x: geometry.labelLeft,
-            y: geometry.labelTop,
-            width: geometry.labelWidth,
-            height: ORACLE_MARKER_LAYOUT.label.height,
-          },
-          style: {
-            fill: colors.oracleMarkerLabelBackground,
-          },
-        },
-        {
-          type: 'text',
-          style: {
-            x: geometry.labelCenterX,
-            y: geometry.labelCenterY,
-            text: formattedOraclePrice,
-            fill: colors.oracleMarkerLabel,
-            fontSize: textStyle.fontSize,
-            fontWeight: textStyle.fontWeight,
-            lineHeight: textStyle.lineHeight,
-            fontFamily: textStyle.fontFamily,
-            align: 'center',
-            verticalAlign: 'middle',
-          },
-        },
-        {
-          type: 'path',
-          x: geometry.arrowLeft,
-          y: geometry.arrowTop,
-          shape: {
-            pathData: ORACLE_MARKER_LAYOUT.arrow.pathData,
-          },
-          style: {
-            fill: colors.referenceLine,
-          },
-        },
-      ],
-    }
-  },
-})
-
 export const useSmallLiquidationRangeChartOption = ({
   liquidationRanges,
   oraclePrice,
@@ -321,121 +80,68 @@ export const useSmallLiquidationRangeChartOption = ({
     () => getRenderableRanges({ currentRange, newRange }),
     [currentRange, newRange],
   )
-  const hasNewRange = !!renderableNewRange
-  const hasCurrentRange = !!renderableCurrentRange
-  const hasOraclePrice = oraclePrice != null
-  const renderableOraclePrice = hasOraclePrice ? Number(oraclePrice) : undefined
-  const hasChartData = hasCurrentRange || hasNewRange || hasOraclePrice
-  const formattedOraclePrice = formatNumber(oraclePrice, { abbreviate: false }) ?? ''
-  const xAxisDomain = useMemo(
+  const renderableOraclePrice = oraclePrice == null ? undefined : Number(oraclePrice)
+  const chartLayout = useMemo(
     () =>
-      getSmallLiquidationRangeChartDomain({
+      getSmallLiquidationRangeChartLayout({
         currentRange: renderableCurrentRange,
         newRange: renderableNewRange,
         oraclePrice: renderableOraclePrice,
       }),
-    [renderableOraclePrice, renderableCurrentRange, renderableNewRange],
+    [renderableCurrentRange, renderableNewRange, renderableOraclePrice],
   )
 
+  const hasChartData = !!renderableCurrentRange || !!renderableNewRange || renderableOraclePrice !== undefined
+  const formattedOraclePrice = formatNumber(oraclePrice, { abbreviate: false }) ?? ''
   const seriesData = useMemo(
     () =>
       getSeriesData({
         currentRange: renderableCurrentRange,
         newRange: renderableNewRange,
-        oraclePrice: renderableOraclePrice,
+        // In split mode the oracle is rendered on the synthetic rail, so keep the real price off the range axis.
+        oraclePrice: chartLayout?.mode === 'continuous' ? renderableOraclePrice : undefined,
       }),
-    [renderableOraclePrice, renderableCurrentRange, renderableNewRange],
+    [chartLayout?.mode, renderableCurrentRange, renderableNewRange, renderableOraclePrice],
   )
-
   const rangeMarkAreas = useMemo(
     () =>
       buildRangeMarkAreas({
         colors,
         currentRange: renderableCurrentRange,
-        hasNewRange,
+        hasNewRange: !!renderableNewRange,
         newRange: renderableNewRange,
         textStyle: chartTextStyle,
       }),
-    [chartTextStyle, colors, hasNewRange, renderableCurrentRange, renderableNewRange],
+    [chartTextStyle, colors, renderableCurrentRange, renderableNewRange],
   )
-
-  return useMemo(
+  const optionContext = useMemo(
     () => ({
-      animation: false,
-      textStyle: {
-        fontFamily: chartTextStyle.fontFamily,
-      },
-      grid: {
-        left: 0,
-        top: CHART_LAYOUT.rangeBorderGutter,
-        right: 0,
-        bottom: CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter,
-      },
-      xAxis: {
-        type: 'value',
-        min: xAxisDomain?.[0],
-        max: xAxisDomain?.[1],
-        axisLine: {
-          onZero: false,
-          lineStyle: { color: colors.axisLine },
-        },
-        axisTick: {
-          length: CHART_LAYOUT.priceMarker.tickHeight,
-          lineStyle: { color: colors.axisLine },
-        },
-        splitLine: { show: false },
-        axisLabel: {
-          fontFamily: chartTextStyle.fontFamily,
-          fontSize: chartTextStyle.fontSize,
-          fontWeight: chartTextStyle.fontWeight,
-          lineHeight: chartTextStyle.lineHeight,
-          show: hasChartData,
-          showMinLabel: true,
-          showMaxLabel: true,
-          alignMinLabel: 'left',
-          alignMaxLabel: 'right',
-          color: colors.axisLabel,
-          hideOverlap: true,
-          margin: CHART_LAYOUT.priceMarker.labelGap,
-          formatter: (tick: number) => `${formatNumber(tick, { abbreviate: true })}`,
-        },
-      },
-      yAxis: { type: 'value', min: 0, max: 1, show: false },
-      series: [
-        {
-          type: 'line',
-          data: seriesData,
-          showSymbol: false,
-          silent: true,
-          lineStyle: { opacity: 0 },
-          markArea: {
-            silent: true,
-            data: rangeMarkAreas,
-          },
-        },
-        ...(renderableOraclePrice !== undefined
-          ? [
-              buildOracleMarkerSeries({
-                colors,
-                formattedOraclePrice,
-                htmlFontSize: theme.typography.htmlFontSize,
-                oraclePrice: renderableOraclePrice,
-                textStyle: chartTextStyle,
-              }),
-            ]
-          : []),
-      ],
+      chartTextStyle,
+      colors,
+      formattedOraclePrice,
+      hasChartData,
+      htmlFontSize: theme.typography.htmlFontSize,
+      oraclePrice: renderableOraclePrice,
+      rangeMarkAreas,
+      seriesData,
     }),
     [
       chartTextStyle,
       colors,
-      hasChartData,
       formattedOraclePrice,
+      hasChartData,
       rangeMarkAreas,
       renderableOraclePrice,
       seriesData,
       theme.typography.htmlFontSize,
-      xAxisDomain,
     ],
+  )
+
+  return useMemo(
+    () =>
+      isSplitLayout(chartLayout)
+        ? buildSplitOption({ ...optionContext, chartLayout })
+        : buildContinuousOption({ ...optionContext, chartLayout }),
+    [chartLayout, optionContext],
   )
 }

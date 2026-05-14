@@ -2,10 +2,8 @@ import ReactECharts from 'echarts-for-react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Amount } from '@primitives/decimal.utils'
-import {
-  SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX,
-  useSmallLiquidationRangeChartOption,
-} from './useSmallLiquidationRangeChartOption'
+import { SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX } from './small-liquidation-range-chart.constants'
+import { useSmallLiquidationRangeChartOption } from './useSmallLiquidationRangeChartOption'
 
 type LiquidationRange = readonly [Amount, Amount]
 

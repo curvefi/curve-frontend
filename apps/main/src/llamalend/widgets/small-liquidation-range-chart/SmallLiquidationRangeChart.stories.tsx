@@ -25,6 +25,10 @@ const narrowNearOracleRange: SmallLiquidationRangeChartComponentProps['liquidati
   newRange: [0.985, 0.99],
 }
 
+const truncatedOracleRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
+  currentRange: [1843.92, 2139.32],
+}
+
 const emptyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {}
 
 const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
@@ -128,6 +132,34 @@ export const NarrowRangeNearOracle: Story = {
     docs: {
       description: {
         story: 'Narrow liquidation range near the oracle price remains visible with proportional padding.',
+      },
+    },
+  },
+}
+
+export const FarAboveOracleTruncation: Story = {
+  args: {
+    liquidationRanges: truncatedOracleRange,
+    oraclePrice: 98436.1,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Distant oracle price is kept visible on a narrow right-side rail without compressing the range.',
+      },
+    },
+  },
+}
+
+export const FarBelowOracleTruncation: Story = {
+  args: {
+    liquidationRanges: truncatedOracleRange,
+    oraclePrice: 42,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Distant oracle price is kept visible on a narrow left-side rail without compressing the range.',
       },
     },
   },
