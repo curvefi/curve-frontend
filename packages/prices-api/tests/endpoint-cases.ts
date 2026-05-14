@@ -1,10 +1,8 @@
 /** Shared Vitest harness for live endpoint schema checks. */
 import { describe, expect, it, type TestContext } from 'vitest'
 import {
-  endpointCatalogIsCurrent,
   endpointId,
-  formatEndpointCatalogStatus,
-  getEndpointCatalogStatus,
+  getEndpointCatalogSkipReason,
   type EndpointId,
   type EndpointModule,
 } from './catalog'
@@ -42,7 +40,7 @@ export const runEndpointCases = (moduleName: EndpointModule, endpointCases: Endp
   describe(`live endpoint schemas / ${moduleName}`, () => {
     for (const endpoint of endpointCases) {
       it.concurrent(endpointLabel(moduleName, endpoint), async ({ annotate, skip }) => {
-        const skipReason = getCatalogSkipReason()
+        const skipReason = getEndpointCatalogSkipReason()
 
         if (skipReason) {
           skip(skipReason)
@@ -73,21 +71,3 @@ const runEndpointCase = async (endpoint: EndpointCase, annotate: TestContext['an
 
 const endpointLabel = (moduleName: EndpointModule, endpoint: EndpointCase) =>
   `${moduleName}.${endpoint.functionName}${endpoint.labelSuffix ? `(${endpoint.labelSuffix})` : ''}`
-
-const getCatalogSkipReason = (() => {
-  let skipReason: string | undefined
-
-  return () => {
-    if (skipReason) {
-      return skipReason
-    }
-
-    const status = getEndpointCatalogStatus()
-
-    skipReason = endpointCatalogIsCurrent(status)
-      ? ''
-      : `Endpoint catalog is out of date; skipping live endpoint call. ${formatEndpointCatalogStatus(status)}`
-
-    return skipReason
-  }
-})()

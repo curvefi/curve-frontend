@@ -11,7 +11,7 @@ import * as pools from '../src/pools'
 import * as proposal from '../src/proposal'
 import * as savings from '../src/savings'
 import * as yieldBasis from '../src/yield-basis'
-import { endpointCatalogIsCurrent, formatEndpointCatalogStatus, getEndpointCatalogStatus } from './catalog'
+import { getEndpointCatalogSkipReason } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 
 type PoolSeed = {
@@ -53,7 +53,7 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
   let error: Error | undefined
 
   beforeAll(async () => {
-    if (getCatalogSkipReason()) {
+    if (getEndpointCatalogSkipReason()) {
       return
     }
 
@@ -74,24 +74,6 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
     return requireSeed(value, load.name || 'endpointSeed')
   }
 }
-
-const getCatalogSkipReason = (() => {
-  let skipReason: string | undefined
-
-  return () => {
-    if (skipReason) {
-      return skipReason
-    }
-
-    const status = getEndpointCatalogStatus()
-
-    skipReason = endpointCatalogIsCurrent(status)
-      ? ''
-      : `Endpoint catalog is out of date; skipping live endpoint call. ${formatEndpointCatalogStatus(status)}`
-
-    return skipReason
-  }
-})()
 
 const once = <T>(load: () => Promise<T>) => {
   let promise: Promise<T> | undefined

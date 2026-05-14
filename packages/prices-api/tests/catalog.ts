@@ -39,11 +39,11 @@ export const getEndpointCatalogStatus = (): EndpointCatalogStatus => {
 }
 
 /** Returns true when every exported wrapper is tested or intentionally excluded. */
-export const endpointCatalogIsCurrent = (status: EndpointCatalogStatus) =>
+const endpointCatalogIsCurrent = (status: EndpointCatalogStatus) =>
   status.missing.length === 0 && status.staleCases.length === 0 && status.staleExclusions.length === 0
 
 /** Formats catalog drift for the loud catalog test and live-test skip messages. */
-export const formatEndpointCatalogStatus = (status: EndpointCatalogStatus) =>
+const formatEndpointCatalogStatus = (status: EndpointCatalogStatus) =>
   notFalsy(
     status.missing.length && `missing: ${status.missing.join(', ')}`,
     status.staleCases.length && `stale cases: ${status.staleCases.join(', ')}`,
@@ -51,6 +51,25 @@ export const formatEndpointCatalogStatus = (status: EndpointCatalogStatus) =>
   )
     .filter(Boolean)
     .join('; ')
+
+/** Returns a memoized skip reason for live tests when the endpoint catalog is stale. */
+export const getEndpointCatalogSkipReason = (() => {
+  let skipReason: string | undefined
+
+  return () => {
+    if (skipReason) {
+      return skipReason
+    }
+
+    const status = getEndpointCatalogStatus()
+
+    skipReason = endpointCatalogIsCurrent(status)
+      ? ''
+      : `Endpoint catalog is out of date; skipping live endpoint call. ${formatEndpointCatalogStatus(status)}`
+
+    return skipReason
+  }
+})()
 
 const sortedDifference = (sourceIds: Iterable<EndpointId>, targetIds: ReadonlySet<EndpointId>) =>
   [...sourceIds].filter(id => !targetIds.has(id)).sort()
