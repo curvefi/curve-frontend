@@ -58,14 +58,7 @@ type CompleteOracleOHLC = RawOracleOHLC & {
 }
 
 const isCompleteOracleOHLC = (data: RawOracleOHLC): data is CompleteOracleOHLC =>
-  data.close !== null &&
-  data.close !== undefined &&
-  data.high !== null &&
-  data.high !== undefined &&
-  data.low !== null &&
-  data.low !== undefined &&
-  data.open !== null &&
-  data.open !== undefined
+  data.close != null && data.high != null && data.low != null && data.open != null
 
 export const getOracleResponse = z
   .object({
