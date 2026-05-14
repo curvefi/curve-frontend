@@ -64,7 +64,7 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
     } catch (seedError) {
       error = formatSeedError(seedError, load.name || 'endpointSeed', fetchTracker.urls)
     }
-  }, 180_000)
+  })
 
   return () => {
     if (error) {
