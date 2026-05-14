@@ -177,7 +177,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       tokenIn: borrowToken,
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),
-      ...pick(params, 'slippage', 'routeId'),
+      ...pick(params, 'slippage'),
       enabled: isRouteRequired(market, values.leverageEnabled),
       onChange: async (route: RouteResponse | undefined) => {
         form.update({ routeId: route?.id })

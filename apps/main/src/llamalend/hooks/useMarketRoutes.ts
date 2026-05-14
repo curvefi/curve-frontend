@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
-import { decimalCompare, decimalMax } from 'router-api/src/router.utils'
 import { useConnection } from 'wagmi'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
@@ -16,7 +15,7 @@ import {
 } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@ui-kit/types/util'
-import { toWei } from '@ui-kit/utils'
+import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
 
 export type MarketRoutes = {
   queries: RouteQueries

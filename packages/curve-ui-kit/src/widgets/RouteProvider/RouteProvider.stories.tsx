@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { BaseConfig } from '@ui/utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q } from '@ui-kit/types/util'
@@ -58,6 +59,8 @@ const meta: Meta<typeof RouteProviderStory> = {
   title: 'UI Kit/Widgets/RouteProvidersAccordion',
   component: RouteProviderStory,
   args: {
+    chainId: 1,
+    networks: { 1: {} as BaseConfig },
     queries: fromEntries(
       RouteProviders.map(router => [
         router,

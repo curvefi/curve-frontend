@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { type BaseConfig } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
@@ -346,14 +347,16 @@ export const setGasInfoAndUpdateLib = <TChainId extends number>(
 ) => setGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), gasInfo)
 
 // calculates L1+L2 gas for optimistic rollups
-const calculateOptimisticRollupGas = ([l2Gas, l1Gas]: number[], [l2GasPriceWei, l1GasPriceWei]: [number, number]) =>
-  l2Gas * l2GasPriceWei + l1Gas * l1GasPriceWei
+const calculateOptimisticRollupGas = (
+  [l2Gas, l1Gas]: number[] | [Decimal, Decimal],
+  [l2GasPriceWei, l1GasPriceWei]: [number, number],
+) => +l2Gas * l2GasPriceWei + +l1Gas * l1GasPriceWei
 
 /**
  * Calculate estimated gas costs with ETH+USD conversion and tooltip
  */
 export function calculateGas(
-  estimatedGas: number | number[] | null | undefined,
+  estimatedGas: Amount | [Decimal, Decimal] | number[] | null | undefined,
   gasInfo: GasInfo | undefined,
   chainTokenUsdRate: number | undefined,
   {
@@ -382,13 +385,13 @@ export function calculateGas(
 
   const { l1GasPriceWei, l2GasPriceWei } = gasInfo
   const gasCostInWei =
-    L2_NETWORKS_WITH_GAS_PRICE.includes(chainId) && l2GasPriceWei && typeof estimatedGas === 'number'
-      ? l2GasPriceWei * estimatedGas
+    L2_NETWORKS_WITH_GAS_PRICE.includes(chainId) && l2GasPriceWei && !Array.isArray(estimatedGas)
+      ? l2GasPriceWei * +estimatedGas
       : isL2Network && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
         ? calculateOptimisticRollupGas(estimatedGas, [l2GasPriceWei, l1GasPriceWei])
-        : typeof estimatedGas === 'number'
-          ? basePlusPriority * estimatedGas // Default calculation for regular networks
-          : 0
+        : Array.isArray(estimatedGas)
+          ? 0
+          : basePlusPriority * +estimatedGas // Default calculation for regular networks
 
   const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
   const tooltip =
@@ -402,7 +405,7 @@ type GasEstimateConversionResult = ReturnType<typeof calculateGas>
 export const useEstimateGas = (
   networks: Record<number, BaseConfig<string, number>>,
   chainId: number | null | undefined,
-  estimate: number | number[] | null | undefined,
+  estimate: Amount | [Decimal, Decimal] | number[] | null | undefined,
   enabled?: boolean,
 ) => {
   const network = chainId && networks[chainId]
@@ -419,7 +422,7 @@ export const useEstimateGas = (
 
   const data = useMemo(
     (): GasEstimateConversionResult | undefined =>
-      network && estimate ? calculateGas(estimate, gasInfo, ethRate, network) : undefined,
+      network && estimate != null ? calculateGas(estimate, gasInfo, ethRate, network) : undefined,
     [estimate, network, gasInfo, ethRate],
   )
 

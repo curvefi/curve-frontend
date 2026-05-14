@@ -49,7 +49,7 @@ export const RouteProviderCard = ({
     decimals,
   } = tokenOut
   const amountOut = decimals == null || !route ? null : fromWei(route.amountOut[0], decimals)
-  const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas && +route?.gas)
+  const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas)
   return (
     <SelectableCard
       onClick={useCallback(() => route && onSelect(route), [onSelect, route])}
