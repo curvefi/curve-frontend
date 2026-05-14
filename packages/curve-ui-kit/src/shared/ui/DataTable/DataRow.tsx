@@ -30,7 +30,7 @@ export type DataRowProps<T extends TableItem> = {
   isLastRow: boolean
   shouldStickLastRowToTop?: boolean
   shouldStickFirstColumn?: boolean
-  verticalAlign?: 'top' | 'center' | 'bottom'
+  verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
 export const DataRow = <T extends TableItem>({
@@ -40,7 +40,7 @@ export const DataRow = <T extends TableItem>({
   isLastRow,
   shouldStickLastRowToTop,
   shouldStickFirstColumn,
-  verticalAlign = 'center',
+  verticalAlign = 'middle',
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
