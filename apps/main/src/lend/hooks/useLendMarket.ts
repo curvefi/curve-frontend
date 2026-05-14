@@ -1,7 +1,7 @@
 import { useLLv2 } from 'curve-ui-kit/src/hooks/useFeatureFlags'
 import { useMemo } from 'react'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useLendMarkets } from '../queries/lend-market-names.query'
+import { useLendMarkets } from '../queries/lend-markets.query'
 import { ChainId } from '../types/lend.types'
 
 export function useLendMarketData(chainId: ChainId, rMarket: string) {
