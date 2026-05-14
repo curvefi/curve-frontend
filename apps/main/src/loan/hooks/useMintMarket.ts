@@ -1,34 +1,14 @@
 import { useMemo } from 'react'
-import { ChainId } from '@/loan/types/loan.types'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { Address } from '@curvefi/primitives/address.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { ChainParams } from '@ui-kit/lib/model/query'
-import { useMintMarketNames } from '../entities/mint-market-names.query'
+import { useMintMarkets } from '../entities/mint-markets.query'
+import { ChainId } from '../types/loan.types'
 
-const useMintMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
-  const { data: marketNames, error, isLoading } = useMintMarketNames({ chainId })
-  const { llamaApi: api, isHydrated } = useCurve()
-  const apiChainId = api?.chainId
-  const data: Record<string, MintMarketTemplate> | undefined = useMemo(
-    () =>
-      // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
-      marketNames && api && chainId == apiChainId && isHydrated
-        ? Object.fromEntries(
-            marketNames
-              .map(name => [name, api.getMintMarket(name)] as const)
-              .flatMap(([name, market]) => [
-                [name, market],
-                [market.controller, market],
-              ]),
-          )
-        : undefined,
-    [api, apiChainId, chainId, isHydrated, marketNames],
+export const useMintMarket = (chainId: ChainId, rMarket: string) => {
+  const { llamaApi: api } = useCurve()
+  const { data, error, isLoading, isSuccess } = useMintMarkets({ chainId })
+  const market = useMemo(
+    () => (api && data && rMarket in data ? api.getMintMarketByData(data[rMarket].id, data[rMarket]) : undefined),
+    [api, data, rMarket],
   )
-  return { data, isSuccess: !!data, error, isLoading }
-}
-
-export const useMintMarket = ({ chainId, marketId }: { chainId: ChainId; marketId: string | Address }) => {
-  const { data: markets, ...rest } = useMintMarketMapping({ chainId })
-  return { data: markets?.[marketId], ...rest }
+  return { data: market, error, isLoading, isSuccess }
 }

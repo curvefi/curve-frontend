@@ -1,0 +1,64 @@
+import { requireLib } from 'curve-ui-kit/src/features/connect-wallet'
+import { ChainParams, queryFactory, rootKeys } from 'curve-ui-kit/src/lib/model/query'
+import { llamaApiValidationSuite } from 'curve-ui-kit/src/lib/model/query/curve-api-validation'
+import { USE_API } from '@/llamalend/queries/market/market.constants'
+import type { ILlamma } from '@curvefi/llamalend-api/lib/interfaces'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { Address } from '@primitives/address.utils'
+
+type MintMarketData = ILlamma & { id: string }
+
+const getMarketData = ({
+  id,
+  address,
+  controller,
+  monetaryPolicy,
+  collateral,
+  leverageZap,
+  deleverageZap,
+  healthCalculator,
+  collateralSymbol,
+  collateralDecimals,
+  minBands,
+  maxBands,
+  defaultBands,
+  A,
+  isDeleverageSupported,
+  index,
+}: MintMarketTemplate): MintMarketData => ({
+  id,
+  amm_address: address,
+  controller_address: controller,
+  monetary_policy_address: monetaryPolicy,
+  collateral_address: collateral,
+  leverage_zap: leverageZap,
+  deleverage_zap: deleverageZap,
+  health_calculator_zap: healthCalculator,
+  collateral_symbol: collateralSymbol,
+  collateral_decimals: collateralDecimals,
+  min_bands: minBands,
+  max_bands: maxBands,
+  default_bands: defaultBands,
+  A,
+  is_deleverage_supported: isDeleverageSupported,
+  index,
+})
+
+export const { useQuery: useMintMarkets, reset: resetMintMarkets } = queryFactory({
+  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'mintMarkets.getMarketList'] as const,
+  queryFn: async (): Promise<Record<string | Address, MintMarketData>> => {
+    const api = requireLib('llamaApi')
+    await api.mintMarkets.fetchMintMarkets({ useApi: USE_API })
+    return Object.fromEntries(
+      api.mintMarkets
+        .getMarketList()
+        .map(name => [name, getMarketData(api.getMintMarket(name))] as const)
+        .flatMap(([name, market]) => [
+          [name, market],
+          [market.controller_address as Address, market],
+        ]),
+    )
+  },
+  validationSuite: llamaApiValidationSuite,
+  category: 'llamalend.marketList',
+})

@@ -66,7 +66,7 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
-  const { data: market, isSuccess } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const { data: market, isSuccess } = useMintMarket(rChainId, rCollateralId)
   const userMarketParams = { chainId: rChainId, marketId: market?.id, userAddress: address }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId: rChainId,
