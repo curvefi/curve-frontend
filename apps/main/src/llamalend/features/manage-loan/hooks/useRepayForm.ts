@@ -5,6 +5,7 @@ import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
+import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
@@ -179,6 +180,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
         updateForm(form, { routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
+      getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
       networks,
     }),
     formErrors: useMemo(

@@ -9,6 +9,7 @@ import { getControllerAddress, getTokens, getMarketType, isRouterRequired } from
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
+import { getBorrowMoreGasEstimateQueryOptions } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
@@ -186,6 +187,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
         updateForm(form, { routeId: route?.id })
         await invalidateBorrowMoreRouteQueries(route, params)
       },
+      getRouteGasOptions: (routeId: string | undefined) => getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }),
       networks,
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),

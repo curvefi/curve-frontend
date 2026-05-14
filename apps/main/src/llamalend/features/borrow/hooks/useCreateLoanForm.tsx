@@ -4,6 +4,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getControllerAddress, getTokens, getMarketType, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
@@ -184,6 +185,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         updateForm(form, { routeId: route?.id })
         await invalidateCreateLoanRouteQueries(route, params)
       },
+      getRouteGasOptions: (routeId: string | undefined) => getCreateLoanEstimateGasOptions({ ...params, routeId }),
       networks,
     }),
   }

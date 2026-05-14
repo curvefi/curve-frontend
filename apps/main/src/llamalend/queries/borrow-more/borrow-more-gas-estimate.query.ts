@@ -51,7 +51,11 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
     validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: true }),
   })
 
-const { useQuery: useBorrowMoreGasEstimate, invalidate: invalidateBorrowMoreGasEstimateQuery } = queryFactory({
+const {
+  useQuery: useBorrowMoreGasEstimate,
+  invalidate: invalidateBorrowMoreGasEstimateQuery,
+  getQueryOptions: getBorrowMoreGasEstimateQueryOptions,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -114,3 +118,5 @@ export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({
 
 export const invalidateBorrowMoreEstimateGasQueries = async (params: BorrowMoreParams) =>
   await Promise.all([invalidateBorrowMoreApproveGasEstimateQuery(params), invalidateBorrowMoreGasEstimateQuery(params)])
+
+export { getBorrowMoreGasEstimateQueryOptions }

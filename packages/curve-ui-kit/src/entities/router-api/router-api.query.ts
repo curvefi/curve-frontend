@@ -1,14 +1,17 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { enforce, test } from 'vest'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
+import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
 import { q } from '@ui-kit/types/util'
+import { decimal } from '@ui-kit/utils'
 import type { RouteQueries, RouteQuery, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
 import { routerApiValidation } from './router-api.validation'
 
@@ -113,26 +116,52 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
   const route = data == null ? undefined : (data[0] ?? null)
-
-  return {
-    ...q({ isLoading, data: route, error }),
-    isFetching,
-  }
+  return useMemo(
+    () => ({
+      ...q({ isLoading, data: route, error }),
+      isFetching,
+    }),
+    [isLoading, route, error, isFetching],
+  )
 }
+
+export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryKey = QueryKey> = (
+  routeId: string | undefined,
+) => UseQueryOptions<TData, Error, TData, TKey>
 
 /**
  * Calls the route providers in parallel, returning the first route of each.
  */
-export const useRouterQueries = (params: Omit<RoutesParams, 'router'>, enabled?: boolean) => ({
-  queries: {
-    curve: useRouterQuery(params, 'curve', enabled),
-    enso: useRouterQuery(params, 'enso', enabled),
-    odos: useRouterQuery(params, 'odos', enabled),
-  } satisfies RouteQueries,
-  onRefresh: useCallback(
-    () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
-    [params],
-  ),
-})
+export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKey>(
+  params: Omit<RoutesParams, 'router'>,
+  getRouteGasOptions: GetGasCallback<TData, TKey>,
+  enabled?: boolean,
+) => {
+  const curveRoutes = useRouterQuery(params, 'curve', enabled)
+  const { data: gas } = useQuery({
+    ...getRouteGasOptions(curveRoutes.data?.id),
+    enabled: !!curveRoutes.data && enabled,
+  })
+  return {
+    queries: {
+      curve: useMemo(
+        (): RouteQuery =>
+          gas && curveRoutes.data
+            ? {
+                ...curveRoutes,
+                data: { ...curveRoutes.data, gas: decimal(toArray(gas)[0]) ?? null },
+              }
+            : curveRoutes,
+        [curveRoutes, gas],
+      ),
+      enso: useRouterQuery(params, 'enso', enabled),
+      odos: useRouterQuery(params, 'odos', enabled),
+    } satisfies RouteQueries,
+    onRefresh: useCallback(
+      () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
+      [params],
+    ),
+  }
+}
 
 export { useRouterApi, fetchApiRoutes }
