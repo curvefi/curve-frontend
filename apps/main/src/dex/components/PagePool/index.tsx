@@ -19,47 +19,30 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
-import type { NetworkConfig } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { AlertBox } from '@ui/AlertBox'
-import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
+import { AppPageInfoContentWrapper } from '@ui/AppPage'
 import { Box } from '@ui/Box'
-import { ExternalLink } from '@ui/Link'
-import { TextEllipsis } from '@ui/TextEllipsis'
-import { scanAddressPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
-const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
+const { Spacing } = SizesAndSpaces
 
-const TitleComp = ({
-  network,
-  poolAddress,
-  poolName,
-}: {
-  network: NetworkConfig
-  poolAddress: string
-  poolName: string
-}) => (
-  <AppPageFormTitleWrapper>
-    <StyledExternalLink href={scanAddressPath(network, poolAddress)}>
-      <Title as="h1">{poolName}</Title>
-    </StyledExternalLink>
-  </AppPageFormTitleWrapper>
-)
+const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
@@ -71,7 +54,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { tokensMapper } = useTokensMapper(rChainId)
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
-  const isMdUp = useLayoutStore(state => state.isMdUp)
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { pool } = poolDataCacheOrApi
@@ -199,9 +181,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         />
       )}
       <DetailPageLayout
+        header={
+          <Typography variant="headingSBold" paddingBlock={Spacing.sm}>
+            {pool.name || ''}
+          </Typography>
+        }
         formTabs={
           <FormMargins>
-            {!isMdUp && <TitleComp network={network} poolName={pool.name || ''} poolAddress={pool.address} />}
             <TabsSwitcher
               variant="contained"
               value={!rFormType ? 'deposit' : rFormType}
@@ -249,7 +235,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           </FormMargins>
         }
       >
-        {isMdUp && <TitleComp network={network} poolName={pool.name || ''} poolAddress={pool.address} />}
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
@@ -302,19 +287,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     </>
   )
 }
-
-const StyledExternalLink = styled(ExternalLink)`
-  color: var(--nav--page--color);
-`
-
-const Title = styled(TextEllipsis)`
-  color: var(--page--text-color);
-  font-size: var(--font-size-5);
-
-  @media (max-width: ${breakpoints.xxs}rem) {
-    max-width: 7.125rem; // 114px;
-  }
-`
 
 const StatsWrapper = styled(Box)`
   align-items: flex-start;

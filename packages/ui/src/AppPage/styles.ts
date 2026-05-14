@@ -2,22 +2,8 @@ import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
-import { breakpoints } from '@ui/utils'
 
 // PAGE STYLES WITH FORMS
-export const AppPageFormTitleWrapper: IStyledComponent<'web', ComponentPropsWithRef<'header'>> = styled.header`
-  align-items: center;
-  color: var(--page--text-color);
-  display: inline-flex;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  padding-bottom: 1rem;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding-left: 0;
-    padding-bottom: 0;
-  }
-`
 
 type TabContentWrapperProps = BoxProps & { variant?: 'secondary' }
 
