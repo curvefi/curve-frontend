@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import Stack from '@mui/material/Stack'
-import { fromEntries } from '@primitives/objects.utils'
+import { fromEntries, notFalsyArray } from '@primitives/objects.utils'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -14,7 +14,7 @@ import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilte
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
-import { QueryProp } from '@ui-kit/types/util'
+import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
@@ -110,22 +110,30 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({ onReload, tableQuery }: UserPositionsTableProps) => {
-  const { markets = [], userHasPositions } = tableQuery.data ?? {}
-  const [isLoading, isError] = [tableQuery.isLoading, !!tableQuery.error]
-  const [tab, setTab, tabs] = useTabs(tableQuery.data)
+export const UserPositionsTable = ({
+  onReload,
+  tableQuery,
+  tableQuery: { data: queryData, isLoading, error },
+}: UserPositionsTableProps) => {
+  const { markets = [], userHasPositions } = queryData ?? {}
+  const [tab, setTab, tabs] = useTabs(queryData)
 
-  const userData = useMemo(
-    () =>
-      markets
-        .filter(market => market.userHasPositions?.[tab])
-        .map(
-          (
-            market, // For supply positions, navigate to vault page instead of borrow page
-          ) => (tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market),
-        ),
-    [markets, tab],
+  const userQuery = useMappedQuery(
+    tableQuery,
+    useCallback(
+      ({ markets }) =>
+        markets
+          .filter(market => market.userHasPositions?.[tab])
+          .map(
+            (
+              market, // For supply positions, navigate to vault page instead of borrow page
+            ) => (tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market),
+          ),
+      [tab],
+    ),
   )
+
+  const userData = notFalsyArray(userQuery.data)
 
   const title = LOCAL_STORAGE_KEYS[tab]
 
@@ -147,7 +155,7 @@ export const UserPositionsTable = ({ onReload, tableQuery }: UserPositionsTableP
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(tableQuery.data),
+    ...getTableOptions(queryData),
   })
   return (
     <LegacyDataTable
@@ -156,7 +164,7 @@ export const UserPositionsTable = ({ onReload, tableQuery }: UserPositionsTableP
       viewAllLabel="View all positions"
       emptyState={
         <UserPositionsEmptyState
-          state={getEmptyState(isError, userData.length > 0)}
+          state={getEmptyState(!!error, userData?.length > 0)}
           table={table}
           tab={tab}
           onReload={onReload}
@@ -182,7 +190,7 @@ export const UserPositionsTable = ({ onReload, tableQuery }: UserPositionsTableP
           collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
-              <LlamaChainFilterChips markets={{ ...tableQuery, data: userData }} {...filterProps} />
+              <LlamaChainFilterChips marketsQuery={{ ...tableQuery, data: userData }} {...filterProps} />
               <LegacyLlamaListChips
                 hiddenCount={getHiddenCount(table)}
                 resetFilters={resetFilters}

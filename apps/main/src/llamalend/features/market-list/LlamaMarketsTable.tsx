@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
@@ -32,13 +32,13 @@ const pagination = { pageIndex: 0, pageSize: 200 }
 export const LlamaMarketsTable = ({
   onReload,
   tableQuery,
+  tableQuery: { data: queryData, isLoading, error },
 }: {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsResult>
 }) => {
-  const { markets: resultMarkets, userHasPositions, hasFavorites } = tableQuery.data ?? {}
-  const [isLoading, isError] = [tableQuery.isLoading, !!tableQuery.error]
-  const data = useMemo(() => resultMarkets ?? [], [resultMarkets])
+  const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
+  const isError = !!error
   const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
@@ -64,7 +64,7 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(tableQuery.data),
+    ...getTableOptions(queryData),
   })
 
   return (
@@ -106,7 +106,7 @@ export const LlamaMarketsTable = ({
             open={filterPopoverOpen}
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}
-            markets={mapQuery(tableQuery, d => d.markets)}
+            marketsQuery={mapQuery(tableQuery, d => d.markets)}
             resetFilters={resetFilters}
             {...filterProps}
           />

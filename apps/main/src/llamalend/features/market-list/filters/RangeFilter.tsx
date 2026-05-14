@@ -2,20 +2,21 @@ import { sortBy } from 'lodash'
 import { useCallback } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp, Range } from '@ui-kit/types/util'
-import { decimal, formatNumber } from '@ui-kit/utils'
+import { amount, decimal, formatNumber } from '@ui-kit/utils'
 import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 const { Spacing } = SizesAndSpaces
 
 type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  queryData: QueryProp<TKey[]>
+  query: QueryProp<TKey[]>
   field: DeepKeys<TKey>
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
@@ -24,10 +25,9 @@ type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> &
 }
 
 type InputIndex = 0 | 1
-const parseNullableNumber = (value: string | undefined | null) => (value == null ? null : Number(value))
 
 export const RangeFilter = <TKey, TColumnId extends string>({
-  queryData,
+  query,
   field,
   id,
   adornment,
@@ -35,15 +35,15 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   min = 0,
   ...filterProps
 }: RangeFilterProps<TKey, TColumnId>) => {
-  const data = queryData.data ?? []
-  const isLoading = queryData.isLoading
+  const data = notFalsyArray(query.data)
+  const isLoading = query.isLoading
   const { maxValue } = useMaxValue<TKey>({ max, data, field })
   const [range, setRange] = useRangeFilter({ isLoading, id, maxValue, ...filterProps })
 
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
-      const nextFirst = index === 0 ? parseNullableNumber(newValue) : range[0]
-      const nextSecond = index === 1 ? parseNullableNumber(newValue) : range[1]
+      const nextFirst = index === 0 ? (amount(newValue) as number) : range[0]
+      const nextSecond = index === 1 ? (amount(newValue) as number) : range[1]
 
       const nextRange: Range<number | null> | null =
         nextFirst != null && nextSecond != null && nextFirst > nextSecond

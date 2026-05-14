@@ -9,7 +9,7 @@ import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 type RangeSliderRowFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  queryData: QueryProp<TKey[]>
+  query: QueryProp<TKey[]>
   field: DeepKeys<TKey>
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
@@ -18,7 +18,7 @@ type RangeSliderRowFilterProps<TKey, TColumnId extends string> = FilterProps<TCo
 }
 
 export const RangeSliderRowFilter = <TKey, TColumnId extends string>({
-  queryData,
+  query: { data = [] },
   field,
   id,
   adornment,
@@ -26,7 +26,6 @@ export const RangeSliderRowFilter = <TKey, TColumnId extends string>({
   min = 0,
   ...filterProps
 }: RangeSliderRowFilterProps<TKey, TColumnId>) => {
-  const data = queryData.data ?? []
   const { maxValue, step } = useMaxValue<TKey>({ max, data, field })
   const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
 

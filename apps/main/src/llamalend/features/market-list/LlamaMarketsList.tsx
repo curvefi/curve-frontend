@@ -58,22 +58,37 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
   return [isReloading && isFetching, onReload] as const
 }
 
+/** Fetches Llama markets and normalizes loading so initial load and manual reload show a loading state. */
+const useTableLlamaMarkets = (address: Address | undefined) => {
+  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
+  const query = useLlamaMarkets({
+    userAddress: address,
+    enableLLv2: useLLv2(),
+    enableDeprecatedMarkets,
+  })
+  const { data, isError, isLoading, isFetching } = query
+  const [isReloading, onReload] = useOnReload({ address, isFetching })
+  const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
+
+  return {
+    onReload,
+    tableQuery: q({ ...query, isLoading: loading }),
+  }
+}
+
 /**
  * Page for displaying the lending markets table.
  */
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
-  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
-  const llamaQuery = useLlamaMarkets({
-    userAddress: address,
-    enableLLv2: useLLv2(),
-    enableDeprecatedMarkets,
-  })
-  const { data, isError, isLoading, isFetching } = llamaQuery
-  const [isReloading, onReload] = useOnReload({ address, isFetching })
-  const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
-  const tableQuery = q({ ...llamaQuery, isLoading: loading })
+
+  const {
+    tableQuery: { data, isLoading, error },
+    tableQuery,
+    onReload,
+  } = useTableLlamaMarkets(address)
+
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
@@ -95,7 +110,7 @@ export const LlamaMarketsList = () => {
       {useNewMarketListLayout() ? (
         <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
-        <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+        <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={!!error} loading={isLoading} />
       )}
     </ListPageWrapper>
   )
