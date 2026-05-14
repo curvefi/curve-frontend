@@ -173,20 +173,14 @@ export const getPoolSeed = once(async (): Promise<PoolSeed> => {
 
   for (const chain of shuffled(supportedChains)) {
     const response = await pools.getPools(chain, requestOptions)
-    const candidates = response.pools.filter(item => item.coins.length >= 2)
-
-    if (!candidates.length) {
-      continue
-    }
-
-    const pool = randomItem(candidates, `pools.getPools(${chain}) pool with at least two coins`)
+    const pool = randomItem(response.pools, `pools.getPools(${chain})`)
     const mainToken = requireSeed(pool.coins[0]?.address, `pools.getPools(${chain}) main token`)
     const referenceToken = requireSeed(pool.coins[1]?.address, `pools.getPools(${chain}) reference token`)
 
     return { chain, mainToken, poolAddress: pool.address, referenceToken }
   }
 
-  throw new Error('Missing live seed from pools.getPools pool with at least two coins')
+  throw new Error('Missing live seed from pools.getPools pool')
 })
 
 const getGaugesSeed = once(async () => gauge.getGauges(requestOptions))
