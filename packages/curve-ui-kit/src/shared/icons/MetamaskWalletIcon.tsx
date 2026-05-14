@@ -1,3 +1,5 @@
+import { createSvgIcon } from '@mui/material'
+
 export const metamaskSvg = (
   <svg width="34" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -51,3 +53,5 @@ export const metamaskSvg = (
     <path d="M25.1721 30.5142L19.4817 33.9008V30.8346L19.9911 28.9778L25.1721 30.5142Z" fill="#E7EBF6" />
   </svg>
 )
+
+export const MetamaskWalletIcon = createSvgIcon(metamaskSvg, 'MetamaskWallet')

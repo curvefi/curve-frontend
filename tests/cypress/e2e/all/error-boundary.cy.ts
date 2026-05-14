@@ -3,23 +3,75 @@ import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
+const invalidIconAddress = '0x0000000000000000000000000000000000000001' as const
+const borrowedTokenAddress = '0x0000000000000000000000000000000000000002' as const
+const marketAddress = '0x0000000000000000000000000000000000000003' as const
+
 const visitErrorBoundary = () => {
-  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
+  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, {
+    body: { chains: { ethereum: { count: 0, data: [] } } },
+  })
   cy.intercept(`https://prices.curve.finance/v1/lending/markets`, {
     body: {
       chains: {
         ethereum: {
+          count: 1,
           data: [
-            // make an error occur on purpose by returning nonsense data (`address` should be string)
-            // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
+            // Keep the API response valid, then trigger the render error from the icon path below.
             {
-              collateral_token: { symbol: 'ETH', address: 1 },
-              borrowed_token: { symbol: 'crvUSD', address: 1 },
-              extra_reward_apr: [],
-              vault: '',
-              controller: '',
+              name: 'ETH-crvUSD',
               version: 1,
+              controller: marketAddress,
+              vault: marketAddress,
+              llamma: marketAddress,
+              policy: marketAddress,
+              oracle: marketAddress,
+              oracle_pools: [],
+              rate: 0,
+              borrow_apy: 0,
+              borrow_total_apy: 0,
+              borrow_apr: 0,
+              borrow_total_apr: 0,
+              lend_apy: 0,
+              lend_apr: 0,
+              lend_apr_crv_0_boost: 0,
+              lend_apr_crv_max_boost: 0,
+              n_loans: 0,
+              price_oracle: 1,
+              amm_price: 1,
+              base_price: 1,
+              total_debt: 0,
+              total_assets: 0,
+              total_debt_usd: 0,
+              total_assets_usd: 0,
+              minted: 0,
+              redeemed: 0,
+              minted_usd: 0,
+              redeemed_usd: 0,
+              loan_discount: 0,
+              liquidation_discount: 0,
+              min_band: 0,
+              max_band: 0,
+              collateral_balance: 0,
+              borrowed_balance: 0,
+              collateral_balance_usd: 0,
+              borrowed_balance_usd: 0,
+              collateral_token: {
+                symbol: 'ETH',
+                address: invalidIconAddress,
+                rebasing_yield: null,
+                rebasing_yield_apr: null,
+              },
+              borrowed_token: {
+                symbol: 'crvUSD',
+                address: borrowedTokenAddress,
+                rebasing_yield: null,
+                rebasing_yield_apr: null,
+              },
+              leverage: 0,
+              extra_reward_apr: [],
               created_at: '2023-01-01T00:00:00Z',
+              max_ltv: 0,
             },
           ],
         },
@@ -27,7 +79,18 @@ const visitErrorBoundary = () => {
     },
   }).as('error')
   const url = '/llamalend/ethereum/markets'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
+  cy.visit(url, {
+    timeout: API_LOAD_TIMEOUT.timeout,
+    onBeforeLoad: ({ String }) => {
+      const originalToLowerCase = String.prototype.toLowerCase
+      String.prototype.toLowerCase = function (this: string) {
+        if (this.toString() === invalidIconAddress) {
+          throw new TypeError('toLowerCase is not a function')
+        }
+        return originalToLowerCase.call(this)
+      }
+    },
+  })
   cy.wait('@error', LOAD_TIMEOUT)
   return e2eBaseUrl() + url
 }
