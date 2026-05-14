@@ -13,11 +13,11 @@ export async function getProposals(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/dao/proposals?pagination=${pagination}&page=${page}&search_string=${search}&type_filter=${type}&status_filter=${status}`,
   )
 
-  return Schema.getProposalsResponse.parse(resp)
+  return Schema.getProposalsResponse.parse(response)
 }
 
 export async function getProposal(
@@ -27,19 +27,19 @@ export async function getProposal(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/dao/proposals/details/${proposalType}/${proposalId}${txHash ? `?tx_hash=${txHash}` : ''}`,
   )
 
-  return Schema.getProposalDetailsResponse.parse(resp)
+  return Schema.getProposalDetailsResponse.parse(response)
 }
 
 export async function getUserProposalVotes(user: string, page = 1, pagination = 100, options?: Options) {
   try {
     const host = getHost(options)
-    const resp = await fetch(`${host}/v1/dao/proposals/votes/user/${user}?pagination=${pagination}&page=${page}`)
+    const response = await fetch(`${host}/v1/dao/proposals/votes/user/${user}?pagination=${pagination}&page=${page}`)
 
-    return Schema.getUserProposalVotesResponse.parse(resp)
+    return Schema.getUserProposalVotesResponse.parse(response)
   } catch (err) {
     if (err instanceof FetchError) {
       return []

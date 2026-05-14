@@ -21,7 +21,7 @@ export async function getOHLC(chain: Chain, poolAddr: string, tokenMain: string,
     `start=${start}&` +
     `end=${end}`
 
-  const resp = await fetch(url)
+  const response = await fetch(url)
 
-  return Schema.getOHLCResponse.parse(resp)
+  return Schema.getOHLCResponse.parse(response)
 }

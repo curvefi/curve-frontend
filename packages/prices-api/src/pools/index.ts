@@ -8,16 +8,16 @@ export type * from './schema'
 
 export async function getPools(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/chains/${chain}`)
+  const response = await fetch(`${host}/v1/chains/${chain}`)
 
-  return Schema.getPoolsResponse.parse(resp)
+  return Schema.getPoolsResponse.parse(response)
 }
 
 export async function getPool(chain: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/pools/${chain}/${poolAddr}`)
+  const response = await fetch(`${host}/v1/pools/${chain}/${poolAddr}`)
 
-  return Schema.getPoolResponse.parse(resp)
+  return Schema.getPoolResponse.parse(response)
 }
 
 export async function getVolume(chain: Chain, poolAddr: string, options?: Options) {
@@ -25,11 +25,11 @@ export async function getVolume(chain: Chain, poolAddr: string, options?: Option
 
   const { start, end } = getTimeRange({ daysRange: 90 })
 
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/volume/usd/${chain}/${poolAddr}?` + `interval=day&` + `start=${start}&` + `end=${end}`,
   )
 
-  return Schema.getVolumeResponse.parse(resp)
+  return Schema.getVolumeResponse.parse(response)
 }
 
 export async function getTvl(chain: Chain, poolAddr: string, options?: Options) {
@@ -37,11 +37,11 @@ export async function getTvl(chain: Chain, poolAddr: string, options?: Options) 
 
   const { start, end } = getTimeRange({ daysRange: 90 })
 
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/snapshots/${chain}/${poolAddr}/tvl?` + `interval=day&` + `start=${start}&` + `end=${end}`,
   )
 
-  return Schema.getTvlResponse.parse(resp)
+  return Schema.getTvlResponse.parse(response)
 }
 
 type GetPoolTradesParams = {
@@ -65,9 +65,9 @@ export async function getPoolTrades(
     per_page: perPage,
   })
 
-  const resp = await fetch(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
 
-  return Schema.getPoolTradesResponse.parse(resp)
+  return Schema.getPoolTradesResponse.parse(response)
 }
 
 export type GetAllPoolTradesParams = {
@@ -89,9 +89,9 @@ export async function getAllPoolTrades(
     include_state: includeState,
   })
 
-  const resp = await fetch(`${host}/v1/trades/all/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/trades/all/${chain}/${poolAddress}${query}`)
 
-  return Schema.getAllPoolTradesResponse.parse(resp)
+  return Schema.getAllPoolTradesResponse.parse(response)
 }
 
 export type GetPoolLiquidityEventsParams = {
@@ -124,9 +124,9 @@ export type GetPoolMetadataParams = {
 export async function getPoolMetadata({ chain, poolAddress }: GetPoolMetadataParams, options?: Options) {
   const host = getHost(options)
 
-  const resp = await fetch(`${host}/v1/pools/${chain}/${poolAddress}/metadata`)
+  const response = await fetch(`${host}/v1/pools/${chain}/${poolAddress}/metadata`)
 
-  return Schema.getPoolMetadataResponse.parse(resp)
+  return Schema.getPoolMetadataResponse.parse(response)
 }
 
 export type GetPoolSnapshotsParams = {
@@ -144,7 +144,7 @@ export async function getPoolSnapshots(
   const host = getHost(options)
   const query = addQueryString({ start, end, unit })
 
-  const resp = await fetch(`${host}/v1/snapshots/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/snapshots/${chain}/${poolAddress}${query}`)
 
-  return Schema.getPoolSnapshotsResponse.parse(resp)
+  return Schema.getPoolSnapshotsResponse.parse(response)
 }

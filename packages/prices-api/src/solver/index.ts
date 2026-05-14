@@ -7,7 +7,7 @@ export type * from './schema'
 
 export async function getCompetition(tx: Address, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/mainnet/api/v1/solver_competition/by_tx_hash/${tx}`)
+  const response = await fetch(`${host}/mainnet/api/v1/solver_competition/by_tx_hash/${tx}`)
 
-  return Schema.getSolverCompetitionResponse.parse(resp)
+  return Schema.getSolverCompetitionResponse.parse(response)
 }

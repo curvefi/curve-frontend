@@ -25,9 +25,9 @@ export async function getEvents(
     per_page: perPage.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_events/${chain}/${llamma}?${params}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_events/${chain}/${llamma}?${params}`)
 
-  return Schema.getLlammaEventsResponse.parse(resp)
+  return Schema.getLlammaEventsResponse.parse(response)
 }
 
 export type GetTradesParams = {
@@ -49,9 +49,9 @@ export async function getTrades(
     per_page: perPage.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${chain}/${llamma}?${params}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${chain}/${llamma}?${params}`)
 
-  return Schema.getLlammaTradesResponse.parse(resp)
+  return Schema.getLlammaTradesResponse.parse(response)
 }
 
 type GetOHLCParams = {
@@ -80,7 +80,7 @@ export async function getOHLC(
     end: range.end.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params}`)
 
-  return Schema.getLlammaOHLCResponse.parse(resp)
+  return Schema.getLlammaOHLCResponse.parse(response)
 }

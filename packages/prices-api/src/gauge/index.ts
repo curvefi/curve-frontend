@@ -6,42 +6,42 @@ export type * from './schema'
 
 export async function getGauges(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/gauges/overview`)
+  const response = await fetch(`${host}/v1/dao/gauges/overview`)
 
-  return Schema.getGaugesResponse.parse(resp)
+  return Schema.getGaugesResponse.parse(response)
 }
 
 export async function getGauge(gaugeAddress: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/metadata`)
+  const response = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/metadata`)
 
-  return Schema.getGaugeResponse.parse(resp)
+  return Schema.getGaugeResponse.parse(response)
 }
 
 export async function getVotes(gaugeAddress: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/votes`)
+  const response = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/votes`)
 
-  return Schema.getVotesResponse.parse(resp)
+  return Schema.getVotesResponse.parse(response)
 }
 
 export async function getWeightHistory(gaugeAddress: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/weight_history`)
+  const response = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/weight_history`)
 
-  return Schema.getWeightHistoryResponse.parse(resp)
+  return Schema.getWeightHistoryResponse.parse(response)
 }
 
 export async function getDeployment(gaugeAddress: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/deployment`)
+  const response = await fetch(`${host}/v1/dao/gauges/${gaugeAddress}/deployment`)
 
-  return Schema.getDeploymentResponse.parse(resp)
+  return Schema.getDeploymentResponse.parse(response)
 }
 
 export async function getUserGaugeVotes(user: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/gauges/votes/user/${user}`)
+  const response = await fetch(`${host}/v1/dao/gauges/votes/user/${user}`)
 
-  return Schema.getUserGaugeVotesResponse.parse(resp)
+  return Schema.getUserGaugeVotesResponse.parse(response)
 }
