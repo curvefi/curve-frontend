@@ -4,20 +4,6 @@ import type { Chain } from '..'
 import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
 import { parseTimestamp } from '../timestamp'
 
-export const marketVersion = z.enum(['v1', 'v2'])
-export type MarketVersion = z.infer<typeof marketVersion>
-
-const parseMarketVersion = (version: number): MarketVersion => {
-  switch (version) {
-    case 1:
-      return 'v1'
-    case 2:
-      return 'v2'
-    default:
-      throw new Error(`Unsupported LlamaLend market version: ${version}`)
-  }
-}
-
 const token = z
   .object({
     symbol: z.string(),
@@ -89,11 +75,10 @@ const market = z
   })
   .transform(camelizeKeys)
   .transform(data => {
-    const { version, lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, createdAt, ...market } = data
+    const { lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, createdAt, ...market } = data
 
     return {
       ...market,
-      version: parseMarketVersion(version),
       apyLend: lendApy,
       aprLend: lendApr,
       aprLendCrv0Boost: lendAprCrv0Boost,

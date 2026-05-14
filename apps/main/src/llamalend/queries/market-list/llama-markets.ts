@@ -87,6 +87,17 @@ export type LlamaMarketsResult = {
   hasFavorites: boolean
 }
 
+const toMarketVersion = (version: number): LlamaMarketVersion => {
+  switch (version) {
+    case 1:
+      return LlamaMarketVersion.v1
+    case 2:
+      return LlamaMarketVersion.v2
+    default:
+      throw new Error(`Unsupported LlamaLend market version: ${version}`)
+  }
+}
+
 const convertLendingVault = (
   {
     controller,
@@ -137,7 +148,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
-    version: version as LlamaMarketVersion,
+    version: toMarketVersion(version),
     assets: {
       borrowed: {
         ...borrowedToken,
