@@ -19,17 +19,14 @@ import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-rou
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
-import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
+import { notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
-import { useForm } from '@ui-kit/features/forms'
+import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, resetForm, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -98,7 +95,6 @@ const defaultValues = {
   slippage: SLIPPAGE_PRESETS.STABLE,
 }
 const formOptions = {
-  ...formDefaultOptions,
   defaultValues,
 } as const
 
@@ -127,10 +123,10 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<RepayFormData>({
     ...formOptions,
-    resolver: vestResolver(useMemo(() => repayFormValidationSuite(market), [market])),
+    validation: useMemo(() => repayFormValidationSuite(market), [market]),
   })
 
-  const values = watchForm(form)
+  const values = form.watchValues()
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
@@ -140,7 +136,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   } = useRepayMutation({
     network: networks[chainId],
     marketId,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 
@@ -177,7 +173,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       ...pick(params, 'slippage', 'routeId'),
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
-        updateForm(form, { routeId: route?.id })
+        form.update({ routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
       getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
@@ -185,9 +181,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
-      () =>
-        isEmpty(formState.errors) ? notFalsy(isAvailable === false && NOT_AVAILABLE) : filterFormErrors(formState),
-      [formState, isAvailable],
+      () => (formState.isValid ? notFalsy(isAvailable === false && NOT_AVAILABLE) : formState.visibleErrors),
+      [formState.visibleErrors, formState.isValid, isAvailable],
     ),
     isFull,
     max,

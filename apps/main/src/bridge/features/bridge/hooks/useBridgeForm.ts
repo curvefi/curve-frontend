@@ -1,17 +1,14 @@
 import { noop } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useForm } from '@ui-kit/features/forms'
+import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { resetForm, useFormErrors, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -52,15 +49,14 @@ const emptyBridgeForm = () =>
   }) satisfies BridgeForm
 
 const formProps = {
-  ...formDefaultOptions,
-  resolver: vestResolver(bridgeFormValidationSuite),
+  validation: bridgeFormValidationSuite,
   defaultValues: emptyBridgeForm(),
 }
 
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
   const form = useForm<BridgeForm>(formProps)
 
-  const values = watchForm(form)
+  const values = form.watchValues()
 
   const { address: userAddress } = useConnection()
   const params = useBridgeParams({ chainId, userAddress, ...values })
@@ -102,7 +98,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     onSubmit: onSubmitBridge,
     isPending: isBridging,
     error: bridgeError,
-  } = useBridgeMutation({ chainId, onReset: () => resetForm(form, userDefaultValues) })
+  } = useBridgeMutation({ chainId, onReset: () => form.reset(userDefaultValues) })
 
   /**
    * Set fromChainId to the chainId passed to this form, which is the chain from the URL.
@@ -121,7 +117,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
 
   // Form errors
   const { formState } = form
-  const formErrors = useFormErrors(form.formState)
+  const formErrors = form.formState.visibleErrors
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
 
   return {

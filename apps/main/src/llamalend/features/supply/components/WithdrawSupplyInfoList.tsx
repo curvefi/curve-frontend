@@ -10,7 +10,6 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMinus } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
@@ -27,7 +26,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   form,
 }: WithdrawSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, withdrawAmount, isFull } = params
-  const isOpen = isFormTouched(form, 'withdrawAmount')
+  const isOpen = form.isTouched('withdrawAmount')
 
   const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
     { params, reservesDelta: withdrawAmount && decimalMinus('0', withdrawAmount) },

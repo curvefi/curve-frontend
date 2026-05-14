@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ChipInactive } from '@/dex/components/ChipInactive'
-import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import { PoolData, PoolDataCache, RewardsApy } from '@/dex/types/main.types'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
@@ -26,24 +26,21 @@ export const PoolRewardsCrv = ({
       return ''
     } else if (rewardsNeedNudging || areCrvRewardsStuckInBridge) {
       return `${formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })} CRV`
-    } else if (rewardsApy?.crv && (rewardsApy?.crv[0] !== 0 || rewardsApy?.crv[1] !== 0)) {
+    } else if (rewardsApy?.crv?.some(Boolean)) {
       const [base, boosted] = rewardsApy.crv
-      if (!base && !boosted) return null
       if (base < 0.01) return '< 0.01% CRV' // Anything less is basically not worth the time
-      const formattedBase = formatNumber(base, { unit: 'percentage', abbreviate: false })
-
-      if (boosted) {
-        return (
-          <>
-            {formattedBase} →{' '}
+      return (
+        <>
+          {formatNumber(base, { unit: 'percentage', abbreviate: false })}
+          {boosted && ' → '}
+          {boosted && (
             <span style={{ whiteSpace: 'nowrap' }}>
-              {formatNumber(boosted, { unit: 'percentage', abbreviate: false })} CRV
+              {formatNumber(boosted, { unit: 'percentage', abbreviate: false })}
             </span>
-          </>
-        )
-      } else {
-        return <>{formattedBase} CRV</>
-      }
+          )}
+          {' CRV'}
+        </>
+      )
     }
     return ''
   }, [areCrvRewardsStuckInBridge, isLoading, poolData, rewardsApy?.crv, rewardsNeedNudging])

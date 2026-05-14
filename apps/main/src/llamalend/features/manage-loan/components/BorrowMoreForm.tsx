@@ -18,7 +18,6 @@ import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
@@ -43,7 +42,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   const network = networks[chainId]
   const {
     form,
-    form: { getValues, setValue, trigger },
     values,
     params,
     isPending,
@@ -71,12 +69,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralEvents,
   })
 
+  const { update: updateForm } = form
   const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      updateForm({ getValues, setValue, trigger }, { leverageEnabled: event.target.checked, routeId: undefined }),
-    [getValues, setValue, trigger],
+    (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
+    [updateForm],
   )
 
   return (
@@ -92,7 +90,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           routes={routes}
-          onSlippageChange={value => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm({ slippage: value })}
           leverageEnabled={values.leverageEnabled}
         />
       }
@@ -139,7 +137,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={max.debt.data}
               loading={max.debt.isLoading}
-              onClick={() => updateForm(form, { debt: max.debt.data })}
+              onClick={() => updateForm({ debt: max.debt.data })}
             />
           }
         />

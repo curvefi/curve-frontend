@@ -19,10 +19,14 @@ import {
   mockLendingVaults,
   mockMerklCampaigns,
 } from '@cy/support/helpers/lending-mocks'
+import {
+  blockUnmockedLlamaMarketApis,
+  mockEmptyLlamaMarketUserData,
+  mockEmptyLlamaMarketBadDebt,
+} from '@cy/support/helpers/llamalend/market-list-mocks'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
-  API_LOAD_TIMEOUT,
   assertInViewport,
   assertNotInViewport,
   LOAD_TIMEOUT,
@@ -155,9 +159,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('persists search filter across reload', () => {
-      cy.viewport(width, height)
-      cy.visit(`/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
-      cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+      visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
       cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
       cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
@@ -339,7 +341,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visit(path, { ...LOAD_TIMEOUT, ...options })
-  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
 }
 
 function enableGraphColumn() {
@@ -352,6 +354,9 @@ function enableGraphColumn() {
 
 function setupMocks() {
   const generatedData = createLendingVaultChainsResponse()
+  blockUnmockedLlamaMarketApis()
+  mockEmptyLlamaMarketUserData()
+  mockEmptyLlamaMarketBadDebt()
   mockTokenPrices()
   mockLendingVaults(generatedData)
   mockLendingSnapshots().as('lend-snapshots')
