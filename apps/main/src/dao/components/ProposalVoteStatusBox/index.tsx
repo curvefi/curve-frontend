@@ -4,8 +4,9 @@ import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { Box } from '@ui/Box'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
-import { breakpoints, formatNumber } from '@ui/utils'
+import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData
@@ -31,10 +32,15 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>
-              {formatNumber(currentQuorumPercentage, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              {formatNumber(currentQuorumPercentage, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+                abbreviate: false,
+              })}
+              %
             </HighlightedData>{' '}
             <Data>
-              ({formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}% {t`needed`})
+              ({formatNumber(minAcceptQuorumPercent, { abbreviate: true })}% {t`needed`})
             </Data>
             <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
@@ -54,7 +60,12 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>
-              {formatNumber(currentSupport * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              {formatNumber(currentSupport * 100, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+                abbreviate: false,
+              })}
+              %
             </HighlightedData>
             <Data>({t`${minSupport}% needed`})</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
@@ -64,16 +75,26 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData className="for">{t`For`}</HighlightedData>{' '}
-            <Tooltip noWrap tooltip={`${formatNumber(votesFor, { notation: 'compact' })} veCRV`}>
+            <Tooltip noWrap tooltip={`${formatNumber(votesFor, { abbreviate: true })} veCRV`}>
               <HighlightedData>
-                {formatNumber(currentSupport * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                {formatNumber(currentSupport * 100, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                  abbreviate: false,
+                })}
+                %
               </HighlightedData>
             </Tooltip>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <Tooltip noWrap tooltip={`${formatNumber(votesAgainst, { notation: 'compact' })} veCRV`}>
+            <Tooltip noWrap tooltip={`${formatNumber(votesAgainst, { abbreviate: true })} veCRV`}>
               <HighlightedData>
-                {formatNumber(against * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                {formatNumber(against * 100, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                  abbreviate: false,
+                })}
+                %
               </HighlightedData>
             </Tooltip>
             <HighlightedData className="against">{t`Against`}</HighlightedData>

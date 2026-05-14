@@ -4,7 +4,7 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatUsd } from '@ui-kit/utils'
 import type { PoolListItem } from '../types'
 
-export const UsdCell = ({ getValue }: CellContext<PoolListItem, number | undefined>) => {
+export const UsdCell = ({ getValue }: CellContext<PoolListItem, number | null>) => {
   const value = getValue()
   return (
     <Tooltip title={value && formatUsd(value, { abbreviate: false })}>

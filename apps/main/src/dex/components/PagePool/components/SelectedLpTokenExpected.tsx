@@ -6,9 +6,8 @@ import { Loader } from '@ui/Loader'
 import { Spacer } from '@ui/Spacer'
 import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
-import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 
 export const SelectedLpTokenExpected = ({
   amounts,
@@ -45,7 +44,9 @@ export const SelectedLpTokenExpected = ({
           {loading ? (
             <Loader skeleton={[90, 20]} />
           ) : (
-            <TextEllipsis smMaxWidth="15rem">{formatNumber(amounts[idx]?.value || '0')}</TextEllipsis>
+            <TextEllipsis smMaxWidth="15rem">
+              {formatNumber(amount(amounts[idx]?.value || 0), { abbreviate: false })}
+            </TextEllipsis>
           )}
         </Box>
       )

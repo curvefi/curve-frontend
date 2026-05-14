@@ -11,7 +11,6 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type DepositSupplyInfoListProps<ChainId extends IChainId> = {
@@ -28,7 +27,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
   form,
 }: DepositSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, depositAmount } = params
-  const isOpen = isFormTouched(form, 'depositAmount')
+  const isOpen = form.isTouched('depositAmount')
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
 

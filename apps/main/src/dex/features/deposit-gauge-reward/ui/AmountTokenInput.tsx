@@ -1,5 +1,5 @@
-import { MouseEvent, useCallback, useMemo } from 'react'
-import { Address, isAddressEqual, ethAddress } from 'viem'
+import { MouseEvent, useCallback, useEffect, useMemo } from 'react'
+import { Address, ethAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import {
   useDepositRewardApproveIsMutating,
@@ -20,19 +20,19 @@ import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
-import { formatNumber } from '@ui/utils'
 import { useFormContext } from '@ui-kit/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { formatNumber } from '@ui-kit/utils'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
-  const rewardTokenId = watch('rewardTokenId')
-  const amount = watch('amount')
-  const epoch = watch('epoch')
+  const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
+  const rewardTokenId = watchValue('rewardTokenId')
+  const amount = watchValue('amount')
+  const epoch = watchValue('epoch')
 
   const [isOpen, openModal, closeModal] = useSwitch()
 
@@ -60,25 +60,24 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
       .map(([tokenId]) => tokenId)
 
-    const filteredTokens = Object.values(tokensMapper)
+    return Object.values(tokensMapper)
       .filter(
         (token): token is Token =>
           !!token &&
           activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map(toTokenOption(networkId))
+  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, networkId])
 
-    const rewardTokenId = getValues('rewardTokenId')
+  useEffect(() => {
     if (
       rewardTokenId &&
-      filteredTokens.length > 0 &&
+      filteredTokens.length &&
       !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
     ) {
-      setValue('rewardTokenId', filteredTokens[0].address, { shouldValidate: true })
+      updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
-
-    return filteredTokens
-  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
+  }, [filteredTokens, rewardTokenId, updateForm])
 
   const token = filteredTokens.find(x => x.address === rewardTokenId)
   const tokenAddresses = filteredTokens.map(t => t.address)
@@ -97,27 +96,26 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
 
   const onChangeAmount = useCallback(
     (amount: string) => {
-      setValue('amount', amount, { shouldValidate: true })
+      updateForm({ amount })
     },
-    [setValue],
+    [updateForm],
   )
 
   const onChangeToken = useCallback(
     (value: TokenOption) => {
       if (rewardTokenId && isAddressEqual(value.address, rewardTokenId)) return
-      setValue('rewardTokenId', value.address, { shouldValidate: true })
-      setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
+      updateForm({ rewardTokenId: value.address, step: DepositRewardStep.APPROVAL })
     },
-    [rewardTokenId, setValue],
+    [rewardTokenId, updateForm],
   )
 
   const onMaxButtonClick = useCallback(
     (e?: MouseEvent<HTMLButtonElement>) => {
       e?.preventDefault()
       if (!rewardTokenBalance) return
-      setValue('amount', rewardTokenBalance, { shouldValidate: true })
+      updateForm({ amount: rewardTokenBalance })
     },
-    [rewardTokenBalance, setValue],
+    [rewardTokenBalance, updateForm],
   )
 
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
@@ -137,7 +135,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
               signerAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(rewardTokenBalance),
+                description: formatNumber(rewardTokenBalance, { abbreviate: false, fallback: '-' }),
               }
             }
             testId="deposit-amount"

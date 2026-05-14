@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { formatNumber } from '@ui/utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 
 export const CollateralChangeCell = ({
@@ -17,11 +17,13 @@ export const CollateralChangeCell = ({
       }
     >
       {collateralChange > 0 ? '+' : ''}
-      {collateralChange === 0 ? '-' : formatNumber(collateralChange)}{' '}
+      {collateralChange === 0 ? '-' : formatNumber(collateralChange, { abbreviate: false })}{' '}
       {collateralChange != null && collateralChange !== 0 && collateralChangeUsd !== 0 && collateralToken?.symbol}
     </Typography>
     {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
-      <Typography variant="bodySRegular">{formatNumber(collateralChangeUsd, { currency: 'USD' })}</Typography>
+      <Typography variant="bodySRegular">
+        {formatNumber(collateralChangeUsd, { unit: 'dollar', abbreviate: false, fallback: '-' })}
+      </Typography>
     )}
   </InlineTableCell>
 )

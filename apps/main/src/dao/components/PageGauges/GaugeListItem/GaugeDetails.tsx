@@ -11,9 +11,9 @@ import { Icon } from '@ui/Icon'
 import type { IconProps } from '@ui/Icon/Icon'
 import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
-import { formatDate, formatNumber, scanAddressPath } from '@ui/utils'
+import { formatDate, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Chain, shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress, formatNumber } from '@ui-kit/utils'
 
 const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
   opacity: 0.4;
@@ -54,16 +54,18 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
               <h5>
                 {gaugeData.pool?.trading_volume_24h
                   ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                      currency: 'USD',
                       ...(gaugeData.pool.trading_volume_24h > 10 && { decimals: 0 }),
+                      unit: 'dollar',
+                      abbreviate: false,
                     })
                   : 'N/A'}
               </h5>
               <h5>
                 {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
-                      currency: 'USD',
                       ...(gaugeData.pool.tvl_usd > 10 && { decimals: 0 }),
+                      unit: 'dollar',
+                      abbreviate: false,
                     })
                   : 'N/A'}
               </h5>
@@ -96,7 +98,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
             }
           >
             <h5>
-              {emissions ? formatNumber(emissions) : 'N/A'}
+              {formatNumber(emissions, { abbreviate: false })}
               {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
             </h5>
           </Chip>

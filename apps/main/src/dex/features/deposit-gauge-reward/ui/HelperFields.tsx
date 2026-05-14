@@ -6,9 +6,9 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const HelperFields = () => {
-  const { watch } = useFormContext<DepositRewardFormValues>()
-  const rewardTokenId = watch('rewardTokenId')
-  const amount = watch('amount')
+  const { watchValue } = useFormContext<DepositRewardFormValues>()
+  const rewardTokenId = watchValue('rewardTokenId')
+  const amount = watchValue('amount')
 
   const chainId = useChainId()
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId }, !!rewardTokenId)

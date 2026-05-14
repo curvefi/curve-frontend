@@ -1,13 +1,18 @@
 import { Llamma } from '@/loan/types/loan.types'
 import type { StepStatus } from '@ui/Stepper/types'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 export function getStepStatus(isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus {
   return isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending'
 }
 
 export function parseHealthPercent(healthPercent: string) {
-  return formatNumber(healthPercent, { style: 'percent', maximumFractionDigits: 2 })
+  return formatNumber(amount(healthPercent), {
+    maximumFractionDigits: 2,
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+  })
 }
 
 export function getTokenName(llamma: Llamma | null | undefined) {

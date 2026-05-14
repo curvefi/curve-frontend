@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import { Box } from '@ui/Box'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type Props = {
   crv?: RewardCrv[]
@@ -36,7 +36,7 @@ export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoo
     <Box grid gridRowGap={1}>
       <Title>CRV tAPR</Title>
       <div>Min/max: {rewardsApyCrvText(crv)}</div>
-      <div>Your: {formatNumber(userCrvApy, FORMAT_OPTIONS.PERCENT)}</div>
+      <div>Your: {formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })}</div>
       <div>Boost: {boost ? `${lodash.round(+boost, 2)}x` : '-'}</div>
     </Box>
   )

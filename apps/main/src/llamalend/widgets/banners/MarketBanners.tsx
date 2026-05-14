@@ -10,8 +10,8 @@ import Stack from '@mui/material/Stack'
 import { AlertType } from '@ui/AlertBox/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { BlockchainIds } from '@ui-kit/utils/network'
-import { BadDebtBanner } from './BadDebtBanner'
 import { DeprecatedMarketBanner } from './DeprecatedMarketBanner'
+import { LowSolvencyBanner } from './LowSolvencyBanner'
 import { MarketAlertBanner } from './MarketAlertBanner'
 
 const isHighSeverityAlert = (type: AlertType | undefined) => type && ['warning', 'danger'].includes(type)
@@ -43,7 +43,7 @@ export const MarketBanners = <ChainId extends IChainId>({
     <Stack sx={HIDE_IF_EMPTY}>
       {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
       {deprecatedMarket && <DeprecatedMarketBanner {...deprecatedMarket} />}
-      {solvencyMarket && <BadDebtBanner {...solvencyMarket} />}
+      {solvencyMarket && <LowSolvencyBanner {...solvencyMarket} />}
       {!isHighSeverityAlert(marketAlert?.alertType) && rewardsBanner}
     </Stack>
   )

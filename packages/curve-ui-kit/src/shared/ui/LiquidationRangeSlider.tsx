@@ -1,15 +1,13 @@
 import { ReactNode, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { formatNumber } from '@ui-kit/utils'
 import { Slider } from './Slider'
 
 // the real type has more fields, but we only use this one
 type LiqRange = { n: number }
-
-const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
 
 export const LiquidationRangeSlider = ({
   liqRanges,
@@ -54,7 +52,7 @@ export const LiquidationRangeSlider = ({
           <Slider
             aria-label={t`Liquidation range`}
             size="medium"
-            getAriaValueText={format}
+            getAriaValueText={value => formatNumber(value, { unit: 'dollar', abbreviate: false, fallback: '-' })}
             value={sliderValue}
             onChange={(_, n) => setSliderValue(n as number)}
             onChangeCommitted={(_, n) => handleSelLiqRange(n as number)}

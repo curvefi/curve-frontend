@@ -11,14 +11,11 @@ import {
   HelperFields,
 } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
-import { vestResolver } from '@hookform/resolvers/vest'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
-import { FormProvider, useForm } from '@ui-kit/features/forms'
+import { useFormSync, FormProvider, useForm } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchField } from '@ui-kit/lib/model/form'
-import { useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { address: signerAddress } = useConnection()
@@ -29,14 +26,13 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   })
 
   const form = useForm<DepositRewardFormValues>({
-    ...formDefaultOptions,
-    resolver: vestResolver(depositRewardValidationSuite),
+    validation: depositRewardValidationSuite,
     defaultValues: DepositRewardDefaultValues,
   })
 
-  const rewardTokenId = watchField(form, 'rewardTokenId')
+  const tokenAddress = form.watchValue('rewardTokenId')
   const { address: userAddress } = useConnection()
-  const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
+  const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress })
 
   // Sync userBalance from query into form for validation
   useFormSync(form, { userBalance })

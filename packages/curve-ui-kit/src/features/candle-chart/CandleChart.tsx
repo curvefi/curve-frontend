@@ -3,6 +3,7 @@ import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
+import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
@@ -73,6 +74,8 @@ type LiquidationRangeSeriesApi = ISeriesApi<
   LiquidationRangePoint | CustomSeriesWhitespaceData<Time>,
   LiquidationRangeSeriesOptions
 >
+
+const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
 
 type Props = {
   /**
@@ -156,7 +159,7 @@ export const CandleChart = ({
             topLineColor: memoizedColors.rangeLineTop,
             bottomLineColor: memoizedColors.rangeLineBottom,
             lineWidth: 2,
-            lineStyle: LineStyle.Dashed,
+            lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
             showTopLine: false,
             showBottomLine: false,
           },
@@ -173,7 +176,7 @@ export const CandleChart = ({
             topLineColor: memoizedColors.rangeLineFutureTop,
             bottomLineColor: memoizedColors.rangeLineFutureBottom,
             lineWidth: 2,
-            lineStyle: LineStyle.Dashed,
+            lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
             showTopLine: false,
             showBottomLine: false,
           },
@@ -189,7 +192,7 @@ export const CandleChart = ({
           topLineColor: memoizedColors.rangeLineBottom,
           bottomLineColor: memoizedColors.rangeLineBottom,
           lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
+          lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
           showTopLine: true,
           showBottomLine: true,
         },
@@ -270,6 +273,7 @@ export const CandleChart = ({
     if (!chartContainerRef.current) return
 
     chartRef.current = createChart(chartContainerRef.current, {
+      hoveredSeriesOnTop: false,
       timeScale: {
         borderVisible: false,
       },
@@ -422,7 +426,7 @@ export const CandleChart = ({
       if (!chartRef.current) return
       const series = chartRef.current.addCustomSeries(createLiquidationRangeSeries(), {
         lineWidth: 2,
-        lineStyle: LineStyle.LargeDashed,
+        lineStyle: LineStyle.Solid,
       })
       series.applyOptions(getSeriesAppearance('historical').seriesOptions)
       historicalRangeSeriesRefs.current.push(series)
@@ -526,7 +530,7 @@ export const CandleChart = ({
     if (!chartRef.current || oraclePriceSeriesRef.current) return
 
     oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
-      lineWidth: 2 as LineWidth,
+      lineWidth: CHART_LINE_WIDTHS.referenceLine as LineWidth,
       priceLineStyle: LineStyle.Dashed,
       visible: false, // Default visibility, will be updated by separate effect
     })

@@ -6,8 +6,9 @@ import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import { LockType } from '@curvefi/prices-api/dao/models'
 import Box from '@mui/material/Box'
-import { formatDate, formatNumber } from '@ui/utils'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber } from '@ui-kit/utils'
 import { LOCKS_LABELS } from '../constants'
 
 interface UserLocksTableProps {
@@ -59,7 +60,7 @@ export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
           <TableRowWrapper key={index} columns={LOCKS_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
             <TableData className="align-left">{lockTypeLabel(lock.lockType)}</TableData>
             <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(Number(lock.amount))}
+              {formatNumber(lock.amount, { abbreviate: false })}
             </TableData>
             <TableData
               className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}

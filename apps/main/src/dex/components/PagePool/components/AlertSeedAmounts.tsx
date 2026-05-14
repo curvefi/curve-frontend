@@ -3,8 +3,8 @@ import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { PoolData } from '@/dex/types/main.types'
 import { AlertBox } from '@ui/AlertBox'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatNumber, amount } from '@ui-kit/utils'
 
 type Props = {
   seed: Seed
@@ -25,7 +25,12 @@ export const AlertSeedAmounts = ({ seed, poolData }: Props) => {
 
       const seedAmounts = await pool.getSeedAmounts('1', useUnderlying)
 
-      setSeedAmounts(tokens.map((token, idx) => `${formatNumber(seedAmounts[idx], { decimals: 5 })} ${token}`))
+      setSeedAmounts(
+        tokens.map(
+          (token, idx) =>
+            `${formatNumber(amount(seedAmounts[idx]), { decimals: 5, abbreviate: false, fallback: '-' })} ${token}`,
+        ),
+      )
     } catch (error) {
       console.error(error)
     }

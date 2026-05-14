@@ -20,7 +20,7 @@ const BANNER_CONFIG = [
   },
 ] as const
 
-export const BadDebtBanner = ({ solvencyPercent }: Props) => {
+export const LowSolvencyBanner = ({ solvencyPercent }: Props) => {
   const banner =
     solvencyPercent < SOLVENCY_THRESHOLDS.solvent && BANNER_CONFIG.find(config => solvencyPercent >= config.threshold)
   return (
@@ -29,6 +29,7 @@ export const BadDebtBanner = ({ solvencyPercent }: Props) => {
         severity={banner.severity}
         subtitle={t`Market solvency is ${formatPercent(solvencyPercent)}. Part of the supplied funds is no longer fully covered.`}
         testId={`bad-debt-banner-${banner.id}`}
+        learnMoreUrl="https://docs.curve.finance/user/llamalend/bad-debt"
       >
         {t`Low Market Solvency`}
       </Banner>
