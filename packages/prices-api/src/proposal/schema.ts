@@ -8,9 +8,6 @@ export type ProposalType = z.infer<typeof proposalType>
 export const proposalStatus = z.enum(['all', 'active', 'denied', 'passed', 'executed'])
 export type ProposalStatus = z.infer<typeof proposalStatus>
 
-const normalizeProposalType = (type: ProposalType): ProposalType =>
-  type.toLocaleLowerCase() === 'parameter' ? 'parameter' : 'ownership'
-
 const proposalShape = {
   vote_id: z.number(),
   vote_type: proposalType,
@@ -38,7 +35,7 @@ type RawProposal = z.infer<typeof rawProposal>
 const transformProposal = (data: RawProposal) => ({
   timestamp: parseTimestamp(data.dt),
   id: data.voteId,
-  type: normalizeProposalType(data.voteType),
+  type: data.voteType,
   metadata: data.metadata?.startsWith('"') // Remove weird starting quote, if present.
     ? data.metadata.substring(1)
     : (data.metadata ?? ''),
