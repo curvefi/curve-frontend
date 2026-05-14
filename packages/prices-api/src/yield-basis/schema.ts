@@ -22,10 +22,7 @@ const transaction = z
     adjacent_pools: z.array(adjacentPool),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...transaction } = data
-    return { ...transaction, timestamp: parseTimestamp(timestamp) }
-  })
+  .transform(({ timestamp, ...transaction }) => ({ ...transaction, timestamp: parseTimestamp(timestamp) }))
 
 const aggregatedStats = z
   .object({

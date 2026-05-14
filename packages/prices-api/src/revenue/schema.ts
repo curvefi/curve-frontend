@@ -53,10 +53,7 @@ const crvUsdWeekly = z
     timestamp: timestampResponse,
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...fees } = data
-    return { ...fees, timestamp: parseTimestamp(timestamp) }
-  })
+  .transform(({ timestamp, ...fees }) => ({ ...fees, timestamp: parseTimestamp(timestamp) }))
 
 const poolsWeekly = z
   .object({
@@ -65,10 +62,11 @@ const poolsWeekly = z
     timestamp: timestampResponse,
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...fees } = data
-    return { ...fees, chain: fees.chain as Chain, timestamp: parseTimestamp(timestamp) }
-  })
+  .transform(({ timestamp, ...fees }) => ({
+    ...fees,
+    chain: fees.chain as Chain,
+    timestamp: parseTimestamp(timestamp),
+  }))
 
 const cushion = z
   .object({
@@ -85,10 +83,7 @@ const distribution = z
     fees_usd: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...fees } = data
-    return { ...fees, timestamp: parseTimestamp(timestamp) }
-  })
+  .transform(({ timestamp, ...fees }) => ({ ...fees, timestamp: parseTimestamp(timestamp) }))
 
 const cowSwapSettlement = z
   .object({

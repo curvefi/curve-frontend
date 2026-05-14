@@ -318,11 +318,10 @@ export const getUserCollateralEventsResponse = z
     data: z.array(collateralEvent),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { chain: _chain, count: _count, data: events, page: _page, pagination: _pagination, ...summary } = data
-
-    return { ...summary, events }
-  })
+  .transform(({ chain: _chain, count: _count, data: events, page: _page, pagination: _pagination, ...summary }) => ({
+    ...summary,
+    events,
+  }))
 
 export const getCrvUsdTvlResponse = z.object({
   chain,

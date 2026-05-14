@@ -32,10 +32,11 @@ const liquidationDetails = z
     block: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { dt, oraclePrice, ...details } = data
-    return { ...details, timestamp: parseTimestamp(dt), priceOracle: oraclePrice }
-  })
+  .transform(({ dt, oraclePrice, ...details }) => ({
+    ...details,
+    timestamp: parseTimestamp(dt),
+    priceOracle: oraclePrice,
+  }))
 
 const liquidationAggregate = z
   .object({
@@ -47,10 +48,7 @@ const liquidationAggregate = z
     price: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...aggregate } = data
-    return { ...aggregate, timestamp: parseTimestamp(timestamp) }
-  })
+  .transform(({ timestamp, ...aggregate }) => ({ ...aggregate, timestamp: parseTimestamp(timestamp) }))
 
 export const getLiqOverviewResponse = z
   .object({
@@ -134,14 +132,11 @@ const totalOverview = z
     liquidatable_stablecoin_usd: z.number().optional(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { liquidatableBorrowedUsd, liquidatableStablecoinUsd, ...overview } = data
-    return {
-      ...overview,
-      liquidatableBorrowedUsd: liquidatableBorrowedUsd ?? null,
-      liquidatableStablecoinUsd: liquidatableStablecoinUsd ?? null,
-    }
-  })
+  .transform(({ liquidatableBorrowedUsd, liquidatableStablecoinUsd, ...overview }) => ({
+    ...overview,
+    liquidatableBorrowedUsd: liquidatableBorrowedUsd ?? null,
+    liquidatableStablecoinUsd: liquidatableStablecoinUsd ?? null,
+  }))
 
 const badDebtRaw = z
   .object({

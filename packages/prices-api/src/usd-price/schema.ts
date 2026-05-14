@@ -11,10 +11,7 @@ export const getUsdPriceResponse = z
     }),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { lastUpdated, ...price } = data.data
-    return { ...price, lastUpdated: parseTimestamp(lastUpdated) }
-  })
+  .transform(({ data: { lastUpdated, ...price } }) => ({ ...price, lastUpdated: parseTimestamp(lastUpdated) }))
 
 const usdPriceHistory = z
   .object({

@@ -74,18 +74,14 @@ const market = z
     max_ltv: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, createdAt, ...market } = data
-
-    return {
-      ...market,
-      apyLend: lendApy,
-      aprLend: lendApr,
-      aprLendCrv0Boost: lendAprCrv0Boost,
-      aprLendCrvMaxBoost: lendAprCrvMaxBoost,
-      createdAt: parseTimestamp(createdAt),
-    }
-  })
+  .transform(({ lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, createdAt, ...market }) => ({
+    ...market,
+    apyLend: lendApy,
+    aprLend: lendApr,
+    aprLendCrv0Boost: lendAprCrv0Boost,
+    aprLendCrvMaxBoost: lendAprCrvMaxBoost,
+    createdAt: parseTimestamp(createdAt),
+  }))
 
 const snapshot = z
   .object({
@@ -127,8 +123,8 @@ const snapshot = z
     max_ltv: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const {
+  .transform(
+    ({
       borrowTotalApy: _borrowTotalApy,
       borrowTotalApr: _borrowTotalApr,
       extraRewardsApr,
@@ -141,9 +137,7 @@ const snapshot = z
       nLoans,
       timestamp,
       ...snapshot
-    } = data
-
-    return {
+    }) => ({
       ...snapshot,
       lendApy: lendApy / 100,
       lendApr: lendApr / 100,
@@ -154,8 +148,8 @@ const snapshot = z
       discountLiquidation: liquidationDiscount,
       discountLoan: loanDiscount,
       extraRewardApr: extraRewardsApr,
-    }
-  })
+    }),
+  )
 
 const userMarket = z
   .object({
@@ -214,10 +208,7 @@ const userMarketStats = z
     timestamp: timestampResponse,
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...stats } = data
-    return { ...stats, timestamp: parseTimestamp(timestamp) }
-  })
+  .transform(({ timestamp, ...stats }) => ({ ...stats, timestamp: parseTimestamp(timestamp) }))
 
 const userMarketEarnings = z
   .object({
@@ -306,6 +297,11 @@ const marketUser = z
     softLiquidation: data.softLiquidation,
   }))
 
+const transformLeverageEvent = <T extends { eventType: string }>({ eventType, ...leverageEvent }: T) => ({
+  ...leverageEvent,
+  type: eventType,
+})
+
 const collateralEvent = z
   .object({
     dt: timestampResponse,
@@ -353,20 +349,15 @@ const collateralEvent = z
     oracle_price: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { dt, transactionHash, collateralChangeUsd, loanChangeUsd, liquidation, leverage, ...event } = data
-    const { eventType, ...leverageEvent } = leverage ?? {}
-
-    return {
-      ...event,
-      timestamp: parseTimestamp(dt),
-      txHash: transactionHash,
-      collateralChangeUsd: collateralChangeUsd ?? undefined,
-      loanChangeUsd: loanChangeUsd ?? undefined,
-      liquidation: liquidation ?? undefined,
-      leverage: leverage ? { ...leverageEvent, type: eventType } : undefined,
-    }
-  })
+  .transform(({ dt, transactionHash, collateralChangeUsd, loanChangeUsd, liquidation, leverage, ...event }) => ({
+    ...event,
+    timestamp: parseTimestamp(dt),
+    txHash: transactionHash,
+    collateralChangeUsd: collateralChangeUsd ?? undefined,
+    loanChangeUsd: loanChangeUsd ?? undefined,
+    liquidation: liquidation ?? undefined,
+    leverage: leverage ? transformLeverageEvent(leverage) : undefined,
+  }))
 
 export const getChainsResponse = z.object({ data: z.array(chain) }).transform(data => data.data)
 
@@ -494,8 +485,8 @@ export const getUserCollateralEventsResponse = z
     data: z.array(collateralEvent),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const {
+  .transform(
+    ({
       chain: _chain,
       count: _count,
       data: events,
@@ -503,10 +494,8 @@ export const getUserCollateralEventsResponse = z
       pagination: _pagination,
       totalDepositUsdValue,
       ...summary
-    } = data
-
-    return { ...summary, totalDepositUsd: totalDepositUsdValue, events }
-  })
+    }) => ({ ...summary, totalDepositUsd: totalDepositUsdValue, events }),
+  )
 
 export type GetMarketsResponse = z.input<typeof rawGetMarketsResponse>
 

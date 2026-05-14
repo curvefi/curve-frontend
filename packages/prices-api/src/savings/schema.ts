@@ -37,10 +37,11 @@ const yieldData = z
     proj_apy: numberLike,
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, projApy, ...yieldData } = data
-    return { ...yieldData, timestamp: parseTimestamp(timestamp), apyProjected: projApy }
-  })
+  .transform(({ timestamp, projApy, ...yieldData }) => ({
+    ...yieldData,
+    timestamp: parseTimestamp(timestamp),
+    apyProjected: projApy,
+  }))
 
 const revenue = z
   .object({
@@ -85,10 +86,7 @@ export const getRevenueResponse = z
     history: z.array(revenue),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { count: _count, ...revenue } = data
-    return revenue
-  })
+  .transform(({ count: _count, ...revenue }) => revenue)
 
 export const getStatisticsResponse = z
   .object({

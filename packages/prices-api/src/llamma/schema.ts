@@ -97,10 +97,7 @@ const llammaOHLC = z
     volume: z.number().nullable(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { time, ...ohlc } = data
-    return { ...ohlc, time: parseTimestamp(time) }
-  })
+  .transform(({ time, ...ohlc }) => ({ ...ohlc, time: parseTimestamp(time) }))
 
 export const getLlammaEventsResponse = z
   .object({
