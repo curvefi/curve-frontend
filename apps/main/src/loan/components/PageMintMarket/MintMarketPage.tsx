@@ -41,16 +41,16 @@ function useLegacyFetching({
   const [loaded, setLoaded] = useState(!enabled)
   const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
   useEffect(() => {
-    if (curve && market) {
+    if (curve && market && enabled) {
       void (async () => {
         await fetchLoanDetails(curve, market)
         setLoaded(true)
       })()
     }
-  }, [curve, market, fetchLoanDetails])
+  }, [curve, market, fetchLoanDetails, enabled])
 
   usePageVisibleInterval(async () => {
-    if (curve?.signerAddress && market && loanExists) {
+    if (enabled && curve?.signerAddress && market && loanExists) {
       await fetchLoanDetails(curve, market)
     }
   }, REFRESH_INTERVAL['1m'])
@@ -67,11 +67,14 @@ export const MintMarketPage = () => {
 
   const { data: market, isSuccess } = useMintMarket(rChainId, rCollateralId)
   const userMarketParams = { chainId: rChainId, marketId: market?.id, userAddress: address }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: address,
-  })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    {
+      chainId: rChainId,
+      marketId: market?.id,
+      userAddress: address,
+    },
+    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
+  )
 
   const network = networks[rChainId]
   const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])

@@ -43,7 +43,6 @@ export const { useQuery: useLendMarkets } = queryFactory({
         api.lendMarkets.fetchMarkets({ useApi: USE_API, version }),
       ),
     )
-
     return Object.fromEntries(
       api.lendMarkets
         .getMarketList()

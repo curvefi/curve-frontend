@@ -5,8 +5,6 @@ import type { StoreApi } from 'zustand'
 import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
-import { isLoanSlicesEnabled } from '@ui-kit/hooks/useFeatureFlags'
-import { ReleaseChannel } from '@ui-kit/utils'
 import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 
 export type SliceKey = keyof State | ''
@@ -19,12 +17,9 @@ type SliceState = {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(
-    config: Config,
-    curve: LlamaApi | undefined,
+  hydrate(    config: Config, curve: LlamaApi | undefined,
     prevCurveApi: LlamaApi | undefined,
-    wallet: Wallet | undefined,
-    releaseChannel: ReleaseChannel,
+    wallet: Wallet | undefined
   ): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -40,7 +35,7 @@ const DEFAULT_STATE: SliceState = {
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
-  hydrate: async (_config, llamalend, prevLlamalend, _wallet, releaseChannel) => {
+  hydrate: async (_config, llamalend, prevLlamalend, _wallet) => {
     if (!llamalend) return
 
     const { loans } = get()
@@ -57,12 +52,11 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    if (isLoanSlicesEnabled(releaseChannel)) {
-      await loans.fetchLoansDetails(
-        llamalend,
-        mintMarkets.getMarketList().map(name => getMintMarket(name)),
-      )
-    }
+    await mintMarkets.fetchMintMarkets({ useApi: false })
+    await loans.fetchLoansDetails(
+      llamalend,
+      mintMarkets.getMarketList().map(name => getMintMarket(name)),
+    )
 
     log(`Hydrated crvUSD - Complete in ${formatTimeDiff(start)}`)
   },

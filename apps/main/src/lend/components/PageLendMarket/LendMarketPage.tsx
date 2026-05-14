@@ -82,18 +82,20 @@ export const LendMarketPage = () => {
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
-
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
   const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    {
+      chainId,
+      marketId,
+      userAddress,
+    },
+    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
+  )
 
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
   const controllerAddress = getControllerAddress(market)

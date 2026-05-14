@@ -24,17 +24,18 @@ export interface AppSlice {
 }
 
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (_config, api, prevApi, _wallet, releaseChannel) => {
+  hydrate: async (_config, api, prevApi, _wallet) => {
     if (!api) return
 
-    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
-    const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== api.signerAddress
+    const { lendMarkets, signerAddress, chainId } = api
+    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== chainId
+    const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== signerAddress
     const state = get()
 
     const start = new Date()
-    log('Hydrating Lend', api.chainId, {
-      chainId: [prevApi?.chainId, api.chainId],
-      signerAddress: [prevApi?.signerAddress, api.signerAddress],
+    log('Hydrating Lend', chainId, {
+      chainId: [prevApi?.chainId, chainId],
+      signerAddress: [prevApi?.signerAddress, signerAddress],
     })
 
     // reset store
@@ -45,9 +46,11 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
         .forEach(([, state]) => (state as { resetState: () => void }).resetState())
     }
 
-    if (isUserSwitched || !api.signerAddress) {
+    if (isUserSwitched || !signerAddress) {
       state.user.resetState()
     }
+    await lendMarkets.fetchMarkets({ useApi: false })
+
     log(`Hydrated Lend - Complete in ${formatTimeDiff(start)}`)
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
