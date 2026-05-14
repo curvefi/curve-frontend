@@ -16,7 +16,7 @@ import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
-import { useLendMarket } from '../hooks/useLendMarket'
+import { useLendMarketData } from '../hooks/useLendMarket'
 
 const { Height } = SizesAndSpaces
 
@@ -63,7 +63,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     marketId,
     userAddress,
   })
-  const market = useLendMarket(rChainId, marketId).data
+  const market = useLendMarketData(rChainId, marketId).data
   const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
   const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
   const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)

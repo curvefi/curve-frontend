@@ -7,6 +7,7 @@ import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/toolt
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { IOneWayMarket } from '@curvefi/llamalend-api/src/interfaces'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
@@ -124,7 +125,7 @@ export const formatTokenAmounts = (
       `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
   ).join(', ')
 
-export const getTokens = (market: LlamaMarketTemplate) =>
+export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
   market instanceof MintMarketTemplate
     ? {
         collateralToken: {
