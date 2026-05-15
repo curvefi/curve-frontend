@@ -22,9 +22,9 @@ const currentChainRevenue = z
     total_fees: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    chain: data.chain,
-    totalDailyFeesUSD: data.totalFees,
+  .transform(({ chain, totalFees }) => ({
+    chain,
+    totalDailyFeesUSD: totalFees,
   }))
 
 const chainTopPoolRevenue = z.object({
@@ -39,9 +39,9 @@ const currentChainTopPoolRevenue = z
     liquidity_fee_24h: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    name: data.name,
-    totalDailyFeesUSD: data.tradingFee24h + data.liquidityFee24h,
+  .transform(({ name, tradingFee24h, liquidityFee24h }) => ({
+    name,
+    totalDailyFeesUSD: tradingFee24h + liquidityFee24h,
   }))
 
 const crvUsdWeekly = z
@@ -95,16 +95,11 @@ const cowSwapSettlement = z
     dt: timestamp,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    timestamp: data.dt,
-    coin: data.coin,
-    amount: BigInt(data.amount),
-    amountFee: BigInt(data.feeAmount),
-    amountReceived: data.amountReceived,
-    routerReceived: data.routerReceived,
-    epoch: data.epoch,
-    txHash: data.txHash,
-    blockNumber: data.blockNumber,
+  .transform(({ dt, amount, feeAmount, ...data }) => ({
+    ...data,
+    timestamp: dt,
+    amount: BigInt(amount),
+    amountFee: BigInt(feeAmount),
   }))
 
 const fees = z
@@ -114,86 +109,45 @@ const fees = z
     usd_amount: z.string(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
+  .transform(({ coin, amount, usdAmount }) => ({
     coin: {
-      lpToken: data.coin.lpToken,
-      symbol: data.coin.symbol,
-      address: data.coin.address,
-      decimals: data.coin.precision,
+      lpToken: coin.lpToken,
+      symbol: coin.symbol,
+      address: coin.address,
+      decimals: coin.precision,
     },
-    amount: parseFloat(data.amount),
-    amountUsd: parseFloat(data.usdAmount),
+    amount: parseFloat(amount),
+    amountUsd: parseFloat(usdAmount),
   }))
 
-const legacyGetByChainResponse = z
-  .object({
-    revenue: z.array(chainRevenue),
-  })
-  .transform(data => data.revenue)
-
-const currentGetByChainResponse = z
-  .object({
-    chains: z.array(currentChainRevenue),
-  })
-  .transform(data => data.chains)
-
+const legacyGetByChainResponse = z.object({ revenue: z.array(chainRevenue) }).transform(({ revenue }) => revenue)
+const currentGetByChainResponse = z.object({ chains: z.array(currentChainRevenue) }).transform(({ chains }) => chains)
 export const getByChainResponse = z.union([legacyGetByChainResponse, currentGetByChainResponse])
 
 const legacyGetTopPoolsResponse = z
-  .object({
-    revenue: z.array(chainTopPoolRevenue),
-  })
-  .transform(data => data.revenue)
+  .object({ revenue: z.array(chainTopPoolRevenue) })
+  .transform(({ revenue }) => revenue)
 
 const currentGetTopPoolsResponse = z
-  .object({
-    data: z.array(currentChainTopPoolRevenue),
-  })
-  .transform(data => data.data.sort((a, b) => b.totalDailyFeesUSD - a.totalDailyFeesUSD))
+  .object({ data: z.array(currentChainTopPoolRevenue) })
+  .transform(({ data }) => data.sort((a, b) => b.totalDailyFeesUSD - a.totalDailyFeesUSD))
 
 export const getTopPoolsResponse = z.union([legacyGetTopPoolsResponse, currentGetTopPoolsResponse])
 
-export const getCrvUsdWeeklyResponse = z
-  .object({
-    fees: z.array(crvUsdWeekly),
-  })
-  .transform(data => data.fees)
-
-export const getPoolsWeeklyResponse = z
-  .object({
-    fees: z.array(poolsWeekly),
-  })
-  .transform(data => data.fees)
-
-export const getCushionsResponse = z
-  .object({
-    data: z.array(cushion),
-  })
-  .transform(data => data.data)
+export const getCrvUsdWeeklyResponse = z.object({ fees: z.array(crvUsdWeekly) }).transform(({ fees }) => fees)
+export const getPoolsWeeklyResponse = z.object({ fees: z.array(poolsWeekly) }).transform(({ fees }) => fees)
+export const getCushionsResponse = z.object({ data: z.array(cushion) }).transform(({ data }) => data)
 
 export const getDistributionsResponse = z
-  .object({
-    distributions: z.array(distribution),
-  })
-  .transform(data => data.distributions)
+  .object({ distributions: z.array(distribution) })
+  .transform(({ distributions }) => distributions)
 
 export const getCowSwapSettlementsResponse = z
-  .object({
-    data: z.array(cowSwapSettlement),
-  })
-  .transform(data => data.data)
+  .object({ data: z.array(cowSwapSettlement) })
+  .transform(({ data }) => data)
 
-export const getFeesCollectedResponse = z
-  .object({
-    data: z.array(fees),
-  })
-  .transform(data => data.data)
-
-export const getFeesStagedResponse = z
-  .object({
-    data: z.array(fees),
-  })
-  .transform(data => data.data)
+export const getFeesCollectedResponse = z.object({ data: z.array(fees) }).transform(({ data }) => data)
+export const getFeesStagedResponse = z.object({ data: z.array(fees) }).transform(({ data }) => data)
 
 export type ChainRevenue = z.infer<typeof chainRevenue>
 export type ChainTopPoolRevenue = z.infer<typeof chainTopPoolRevenue>

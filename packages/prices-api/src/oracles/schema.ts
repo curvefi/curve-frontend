@@ -17,9 +17,7 @@ const oracle = z
   })
   .transform(camelizeKeys)
   .transform(({ blockHeader, ...data }) => ({
-    chain: data.chain,
-    address: data.address,
-    lastConfirmedBlockNumber: data.lastConfirmedBlockNumber,
+    ...data,
     blockHeader: {
       hashBlock: blockHeader.blockHash,
       hashParent: blockHeader.parentHash,

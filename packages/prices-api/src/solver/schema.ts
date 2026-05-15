@@ -26,11 +26,11 @@ export const getSolverCompetitionResponse = z
       }),
     ),
   })
-  .transform(data => ({
-    auctionStartBlock: data.auctionStartBlock,
-    orders: data.auction.orders.map(order => order),
-    prices: fromEntries(recordEntries(data.auction.prices).map(([key, value]) => [key, BigInt(value)])),
-    solutions: data.solutions.map(solution => ({
+  .transform(({ auctionStartBlock, auction, solutions }) => ({
+    auctionStartBlock,
+    orders: auction.orders.map(order => order),
+    prices: fromEntries(recordEntries(auction.prices).map(([key, value]) => [key, BigInt(value)])),
+    solutions: solutions.map(solution => ({
       solver: solution.solver,
       solverAddress: solution.solverAddress,
       score: BigInt(solution.score),

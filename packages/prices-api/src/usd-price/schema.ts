@@ -22,7 +22,7 @@ export const getUsdPriceHistoryResponse = z
     address,
     data: z.array(usdPriceHistory),
   })
-  .transform(data => data.data)
+  .transform(({ data }) => data)
 
 export type UsdPrice = z.infer<typeof getUsdPriceResponse>
 export type UsdPriceHistory = z.infer<typeof getUsdPriceHistoryResponse>

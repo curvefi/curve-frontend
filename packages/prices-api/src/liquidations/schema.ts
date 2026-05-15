@@ -9,9 +9,9 @@ const softLiqRatio = z
     timestamp,
     proportion: z.number(),
   })
-  .transform(data => ({
-    timestamp: data.timestamp,
-    proportion: data.proportion / 100,
+  .transform(({ proportion, ...data }) => ({
+    ...data,
+    proportion: proportion / 100,
   }))
 
 const liquidationDetails = z
@@ -31,8 +31,8 @@ const liquidationDetails = z
     block: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ dt, oraclePrice, ...details }) => ({
-    ...details,
+  .transform(({ dt, oraclePrice, ...data }) => ({
+    ...data,
     timestamp: dt,
     priceOracle: oraclePrice,
   }))
@@ -65,16 +65,26 @@ export const getLiqOverviewResponse = z
     liquidatable_stablecoin_usd: z.number().optional(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    softLiqUsers: data.softLiquidationUsers,
-    liqablePositions: data.liquidatablePositions,
-    liqableDebtUsd: data.liquidatablePosDebtUsd,
-    liqableCollatUsd: data.liquidatableCollateralUsd,
-    liqableBorrowedUsd: data.liquidatableBorrowedUsd ?? data.liquidatableStablecoinUsd ?? 0,
-    medianHealth: data.medianHealth,
-    avgHealth: data.averageHealth,
-    collatRatio: data.collatRatio,
-  }))
+  .transform(
+    ({
+      softLiquidationUsers,
+      liquidatablePositions,
+      liquidatablePosDebtUsd,
+      liquidatableCollateralUsd,
+      liquidatableBorrowedUsd,
+      liquidatableStablecoinUsd,
+      averageHealth,
+      ...data
+    }) => ({
+      ...data,
+      softLiqUsers: softLiquidationUsers,
+      liqablePositions: liquidatablePositions,
+      liqableDebtUsd: liquidatablePosDebtUsd,
+      liqableCollatUsd: liquidatableCollateralUsd,
+      liqableBorrowedUsd: liquidatableBorrowedUsd ?? liquidatableStablecoinUsd ?? 0,
+      avgHealth: averageHealth,
+    }),
+  )
 
 const liqLosses = z
   .object({
@@ -88,15 +98,14 @@ const liqLosses = z
     ratio: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    timestamp: data.timestamp,
-    pctLossAverage: data.avgPctLoss,
-    pctLossMedian: data.medianPctLoss,
-    absoluteLossAverage: data.avgAbsLoss,
-    absoluteLossMedian: data.medianAbsLoss,
-    numTotalUsers: data.totalUsers,
-    numUsersWithLosses: data.usersWithLosses,
-    ratio: data.ratio,
+  .transform(({ avgPctLoss, medianPctLoss, avgAbsLoss, medianAbsLoss, totalUsers, usersWithLosses, ...data }) => ({
+    ...data,
+    pctLossAverage: avgPctLoss,
+    pctLossMedian: medianPctLoss,
+    absoluteLossAverage: avgAbsLoss,
+    absoluteLossMedian: medianAbsLoss,
+    numTotalUsers: totalUsers,
+    numUsersWithLosses: usersWithLosses,
   }))
 
 const liqHealthDecile = z
@@ -109,11 +118,9 @@ const liqHealthDecile = z
     debt: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    healthDecile: data.healthDecile,
-    collateral: data.collateral,
-    debt: data.debt,
-    borrowed: data.stablecoin ?? data.borrowed ?? 0,
+  .transform(({ stablecoin, borrowed, ...data }) => ({
+    ...data,
+    borrowed: stablecoin ?? borrowed ?? 0,
   }))
 
 const totalOverview = z
@@ -130,8 +137,8 @@ const totalOverview = z
     liquidatable_stablecoin_usd: z.number().optional(),
   })
   .transform(camelizeKeys)
-  .transform(({ liquidatableBorrowedUsd, liquidatableStablecoinUsd, ...overview }) => ({
-    ...overview,
+  .transform(({ liquidatableBorrowedUsd, liquidatableStablecoinUsd, ...data }) => ({
+    ...data,
     liquidatableBorrowedUsd: liquidatableBorrowedUsd ?? null,
     liquidatableStablecoinUsd: liquidatableStablecoinUsd ?? null,
   }))
@@ -150,35 +157,16 @@ const badDebtRaw = z
     controller_address: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
+  .transform(({ liquidatableBorrowedUsd, liquidatableStablecoinUsd, ...data }) => ({
     ...data,
-    liquidatableBorrowedUsd: data.liquidatableBorrowedUsd ?? null,
-    liquidatableStablecoinUsd: data.liquidatableStablecoinUsd ?? null,
+    liquidatableBorrowedUsd: liquidatableBorrowedUsd ?? null,
+    liquidatableStablecoinUsd: liquidatableStablecoinUsd ?? null,
   }))
 
-export const getSoftLiqRatiosResponse = z
-  .object({
-    data: z.array(softLiqRatio),
-  })
-  .transform(data => data.data)
-
-export const getLiqsDetailedResponse = z
-  .object({
-    data: z.array(liquidationDetails),
-  })
-  .transform(data => data.data)
-
-export const getLiqsAggregateResponse = z
-  .object({
-    data: z.array(liquidationAggregate),
-  })
-  .transform(data => data.data)
-
-export const getLiqLossesResponse = z
-  .object({
-    data: z.array(liqLosses),
-  })
-  .transform(data => data.data)
+export const getSoftLiqRatiosResponse = z.object({ data: z.array(softLiqRatio) }).transform(({ data }) => data)
+export const getLiqsDetailedResponse = z.object({ data: z.array(liquidationDetails) }).transform(({ data }) => data)
+export const getLiqsAggregateResponse = z.object({ data: z.array(liquidationAggregate) }).transform(({ data }) => data)
+export const getLiqLossesResponse = z.object({ data: z.array(liqLosses) }).transform(({ data }) => data)
 
 export const getLiqHealthDecilesResponse = z
   .object({
@@ -189,26 +177,17 @@ export const getLiqHealthDecilesResponse = z
     max: z.number(),
     data: z.array(liqHealthDecile),
   })
-  .transform(data => ({
-    meanHealth: data.mean,
-    medianHealth: data.median,
-    stdHealth: data.std ?? 0,
-    minHealth: data.min,
-    maxHealth: data.max,
-    deciles: data.data,
+  .transform(({ mean, median, std, min, max, data }) => ({
+    meanHealth: mean,
+    medianHealth: median,
+    stdHealth: std ?? 0,
+    minHealth: min,
+    maxHealth: max,
+    deciles: data,
   }))
 
-export const getTotalOverviewResponse = z
-  .object({
-    data: z.array(totalOverview),
-  })
-  .transform(data => data.data)
-
-export const getBadDebtResponse = z
-  .object({
-    data: z.array(badDebtRaw),
-  })
-  .transform(data => data.data)
+export const getTotalOverviewResponse = z.object({ data: z.array(totalOverview) }).transform(({ data }) => data)
+export const getBadDebtResponse = z.object({ data: z.array(badDebtRaw) }).transform(({ data }) => data)
 
 export type SoftLiqRatio = z.infer<typeof softLiqRatio>
 export type LiquidationDetails = z.infer<typeof liquidationDetails>

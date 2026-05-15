@@ -52,7 +52,7 @@ const gauge = z
     type: data.gaugeType,
     name: data.name ?? undefined,
     version: data.version ?? undefined,
-    lpToken: data.lpToken ? data.lpToken : undefined,
+    lpToken: data.lpToken ?? undefined,
     pool: data.pool
       ? {
           address: data.pool.address,
@@ -62,7 +62,7 @@ const gauge = z
           tradingVolume24h: data.pool.tradingVolume24h,
         }
       : undefined,
-    tokens: (data.tokens ?? []).map(token => ({
+    tokens: data.tokens?.map(token => ({
       symbol: token.symbol,
       address: token.address,
       precision: token.precision,
@@ -76,11 +76,11 @@ const gauge = z
     killed: data.isKilled,
     emissions: data.emissions,
     weight: BigInt(data.gaugeWeight),
-    weightDelta7d: data.gaugeWeight7dDelta ? data.gaugeWeight7dDelta : undefined,
-    weightDelta60d: data.gaugeWeight60dDelta ? data.gaugeWeight60dDelta : undefined,
+    weightDelta7d: data.gaugeWeight7dDelta ?? undefined,
+    weightDelta60d: data.gaugeWeight60dDelta ?? undefined,
     weightRelative: data.gaugeRelativeWeight,
-    weightRelativeDelta7d: data.gaugeRelativeWeight7dDelta ? data.gaugeRelativeWeight7dDelta : undefined,
-    weightRelativeDelta60d: data.gaugeRelativeWeight60dDelta ? data.gaugeRelativeWeight60dDelta : undefined,
+    weightRelativeDelta7d: data.gaugeRelativeWeight7dDelta ?? undefined,
+    weightRelativeDelta60d: data.gaugeRelativeWeight60dDelta ?? undefined,
     creationTx: data.creationTx,
     creationDate: data.creationDate,
     lastVoteTx: data.lastVoteTx ?? undefined,
@@ -96,7 +96,7 @@ const gaugeVote = z
     transaction: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({ ...data, tx: data.transaction }))
+  .transform(({ transaction, ...data }) => ({ ...data, tx: transaction }))
 
 const weightHistory = z
   .object({
@@ -107,12 +107,12 @@ const weightHistory = z
     epoch: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    killed: data.isKilled,
-    weight: parseFloat(data.gaugeWeight),
-    weightRelative: parseFloat(data.gaugeRelativeWeight),
-    emissions: parseFloat(data.emissions),
-    epoch: data.epoch,
+  .transform(({ isKilled, gaugeWeight, gaugeRelativeWeight, emissions, ...data }) => ({
+    ...data,
+    killed: isKilled,
+    weight: parseFloat(gaugeWeight),
+    weightRelative: parseFloat(gaugeRelativeWeight),
+    emissions: parseFloat(emissions),
   }))
 
 export const getDeploymentResponse = z
@@ -126,13 +126,12 @@ export const getDeploymentResponse = z
     dt: timestamp,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    addressFrom: data.fromAddress,
-    addressTo: data.toAddress ?? undefined,
-    calldata: data.calldata,
-    calldataDecoded: data.decodedCalldata ?? undefined,
-    blockNumber: data.blockNumber,
-    timestamp: data.dt,
+  .transform(({ fromAddress, toAddress, decodedCalldata, dt, ...data }) => ({
+    ...data,
+    addressFrom: fromAddress,
+    addressTo: toAddress ?? undefined,
+    calldataDecoded: decodedCalldata ?? undefined,
+    timestamp: dt,
   }))
 
 const userGaugeVote = z
@@ -145,38 +144,17 @@ const userGaugeVote = z
     transaction: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
+  .transform(({ gaugeName, transaction, ...data }) => ({
     ...data,
-    gaugeName: data.gaugeName ?? undefined,
-    timestamp: data.timestamp,
-    txHash: data.transaction,
+    gaugeName: gaugeName ?? undefined,
+    txHash: transaction,
   }))
 
 export const getGaugeResponse = gauge
-
-export const getGaugesResponse = z
-  .object({
-    gauges: z.array(gauge),
-  })
-  .transform(data => data.gauges)
-
-export const getVotesResponse = z
-  .object({
-    votes: z.array(gaugeVote),
-  })
-  .transform(data => data.votes)
-
-export const getWeightHistoryResponse = z
-  .object({
-    data: z.array(weightHistory),
-  })
-  .transform(data => data.data)
-
-export const getUserGaugeVotesResponse = z
-  .object({
-    votes: z.array(userGaugeVote),
-  })
-  .transform(data => data.votes)
+export const getGaugesResponse = z.object({ gauges: z.array(gauge) }).transform(({ gauges }) => gauges)
+export const getVotesResponse = z.object({ votes: z.array(gaugeVote) }).transform(({ votes }) => votes)
+export const getWeightHistoryResponse = z.object({ data: z.array(weightHistory) }).transform(({ data }) => data)
+export const getUserGaugeVotesResponse = z.object({ votes: z.array(userGaugeVote) }).transform(({ votes }) => votes)
 
 export type Gauge = z.infer<typeof gauge>
 export type GaugeVote = z.infer<typeof gaugeVote>

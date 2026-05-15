@@ -15,6 +15,6 @@ export const getOHLCResponse = z
     address: z.string(),
     data: z.array(ohlc),
   })
-  .transform(data => data.data)
+  .transform(({ data }) => data)
 
 export type OHLC = z.infer<typeof ohlc>

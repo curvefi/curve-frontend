@@ -14,12 +14,11 @@ const votesOverview = z
     epoch: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    proposals: data.proposals,
-    votesProposals: data.propVotes,
-    votesGauges: data.gaugeVotes,
-    votersUnique: data.propUniqueVoters,
-    epoch: data.epoch,
+  .transform(({ propVotes, gaugeVotes, propUniqueVoters, ...data }) => ({
+    ...data,
+    votesProposals: propVotes,
+    votesGauges: gaugeVotes,
+    votersUnique: propUniqueVoters,
   }))
 
 const locksDaily = z
@@ -27,9 +26,9 @@ const locksDaily = z
     day: timestamp,
     amount: z.string(),
   })
-  .transform(data => ({
-    day: data.day,
-    amount: BigInt(data.amount),
+  .transform(({ amount, ...data }) => ({
+    ...data,
+    amount: BigInt(amount),
   }))
 
 const userLock = z
@@ -42,13 +41,12 @@ const userLock = z
     transaction_hash: z.string(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    timestamp: data.dt,
-    amount: BigInt(Math.round(parseFloat(data.amount))),
-    unlockTime: data.unlockTime,
-    lockType: data.lockType,
-    lockedBalance: BigInt(Math.round(parseFloat(data.lockedBalance))),
-    txHash: data.transactionHash,
+  .transform(({ dt, amount, lockedBalance, transactionHash, ...data }) => ({
+    ...data,
+    timestamp: dt,
+    amount: BigInt(Math.round(parseFloat(amount))),
+    lockedBalance: BigInt(Math.round(parseFloat(lockedBalance))),
+    txHash: transactionHash,
   }))
 
 const supply = z
@@ -69,20 +67,31 @@ const supply = z
     transaction_hash: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    timestamp: data.dt,
-    veCrvTotal: BigInt(data.totalVecrv),
-    crvEscrowed: BigInt(data.escrowedCrv),
-    crvSupply: BigInt(data.crvSupply),
-    circulatingSupply: BigInt(data.circulatingSupply),
-    lockedSupplyDetails: data.lockedSupplyDetails.map(item => ({
-      address: item.address,
-      label: item.label,
-      locked: BigInt(item.locked),
-    })),
-    blockNumber: data.blockNumber,
-    txHash: data.transactionHash,
-  }))
+  .transform(
+    ({
+      dt,
+      totalVecrv,
+      escrowedCrv,
+      crvSupply,
+      circulatingSupply,
+      lockedSupplyDetails,
+      blockNumber,
+      transactionHash,
+    }) => ({
+      timestamp: dt,
+      veCrvTotal: BigInt(totalVecrv),
+      crvEscrowed: BigInt(escrowedCrv),
+      crvSupply: BigInt(crvSupply),
+      circulatingSupply: BigInt(circulatingSupply),
+      lockedSupplyDetails: lockedSupplyDetails.map(item => ({
+        address: item.address,
+        label: item.label,
+        locked: BigInt(item.locked),
+      })),
+      blockNumber,
+      txHash: transactionHash,
+    }),
+  )
 
 const locker = z
   .object({
@@ -93,49 +102,19 @@ const locker = z
     unlock_time: timestamp.nullable(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    user: data.user,
-    locked: BigInt(Math.round(parseFloat(data.locked))),
-    weight: BigInt(Math.round(parseFloat(data.weight))),
-    weightRatio: parseFloat(data.weightRatio.slice(0, -1)),
-    unlockTime: data.unlockTime,
+  .transform(({ locked, weight, weightRatio, ...data }) => ({
+    ...data,
+    locked: BigInt(Math.round(parseFloat(locked))),
+    weight: BigInt(Math.round(parseFloat(weight))),
+    weightRatio: parseFloat(weightRatio.slice(0, -1)),
   }))
 
-export const getVotesOverviewResponse = z
-  .object({
-    data: z.array(votesOverview),
-  })
-  .transform(data => data.data)
-
-export const getLocksDailyResponse = z
-  .object({
-    locks: z.array(locksDaily),
-  })
-  .transform(data => data.locks)
-
-export const getSupplyResponse = z
-  .object({
-    supply: z.array(supply),
-  })
-  .transform(data => data.supply)
-
-export const getUserLocksResponse = z
-  .object({
-    locks: z.array(userLock),
-  })
-  .transform(data => data.locks)
-
-export const getLockersResponse = z
-  .object({
-    locks: z.array(locker),
-  })
-  .transform(data => data.locks)
-
-export const getLockersTopResponse = z
-  .object({
-    users: z.array(locker),
-  })
-  .transform(data => data.users)
+export const getVotesOverviewResponse = z.object({ data: z.array(votesOverview) }).transform(({ data }) => data)
+export const getLocksDailyResponse = z.object({ locks: z.array(locksDaily) }).transform(({ locks }) => locks)
+export const getSupplyResponse = z.object({ supply: z.array(supply) }).transform(({ supply }) => supply)
+export const getUserLocksResponse = z.object({ locks: z.array(userLock) }).transform(({ locks }) => locks)
+export const getLockersResponse = z.object({ locks: z.array(locker) }).transform(({ locks }) => locks)
+export const getLockersTopResponse = z.object({ users: z.array(locker) }).transform(({ users }) => users)
 
 export type VotesOverview = z.infer<typeof votesOverview>
 export type LocksDaily = z.infer<typeof locksDaily>

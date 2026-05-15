@@ -2,7 +2,9 @@ import { z } from 'zod/v4'
 import type { Token } from '@primitives/address.utils'
 import { address, camelizeKeys, timestamp } from '../schemas'
 
-const token = z.object({ symbol: z.string(), address }).transform(data => data as Token)
+const token = z
+  .object({ symbol: z.string(), address })
+  .transform(({ symbol, address }) => ({ symbol, address }) as Token)
 
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
@@ -30,19 +32,17 @@ const llammaEvent = z
     transaction_hash: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    provider: data.provider,
-    deposit: data.deposit
+  .transform(({ deposit, withdrawal, transactionHash, ...data }) => ({
+    ...data,
+    deposit: deposit
       ? {
-          amount: data.deposit.amount,
-          n1: data.deposit.n1,
-          n2: data.deposit.n2,
+          amount: deposit.amount,
+          n1: deposit.n1,
+          n2: deposit.n2,
         }
       : null,
-    withdrawal: data.withdrawal ?? null,
-    blockNumber: data.blockNumber,
-    timestamp: data.timestamp,
-    txHash: data.transactionHash,
+    withdrawal: withdrawal ?? null,
+    txHash: transactionHash,
   }))
 
 const llammaTrade = z
@@ -62,26 +62,21 @@ const llammaTrade = z
     transaction_hash: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    idSold: data.soldId,
-    idBought: data.boughtId,
+  .transform(({ soldId, boughtId, tokenSold, tokenBought, feeX, feeY, transactionHash, ...data }) => ({
+    ...data,
+    idSold: soldId,
+    idBought: boughtId,
     tokenSold: {
-      symbol: data.tokenSold.symbol,
-      address: data.tokenSold.address,
+      symbol: tokenSold.symbol,
+      address: tokenSold.address,
     },
     tokenBought: {
-      symbol: data.tokenBought.symbol,
-      address: data.tokenBought.address,
+      symbol: tokenBought.symbol,
+      address: tokenBought.address,
     },
-    amountSold: data.amountSold,
-    amountBought: data.amountBought,
-    price: data.price,
-    buyer: data.buyer,
-    feeX: data.feeX ?? 0,
-    feeY: data.feeY ?? 0,
-    blockNumber: data.blockNumber,
-    timestamp: data.timestamp,
-    txHash: data.transactionHash,
+    feeX: feeX ?? 0,
+    feeY: feeY ?? 0,
+    txHash: transactionHash,
   }))
 
 const llammaOHLC = z
@@ -105,11 +100,11 @@ export const getLlammaEventsResponse = z
     count: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    events: data.data,
-    count: data.count,
-    page: data.page ?? 1,
-    perPage: data.perPage ?? data.data.length,
+  .transform(({ data: events, count, page, perPage }) => ({
+    events,
+    count,
+    page: page ?? 1,
+    perPage: perPage ?? events.length,
   }))
 
 export const getLlammaTradesResponse = z
@@ -120,18 +115,14 @@ export const getLlammaTradesResponse = z
     count: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    trades: data.data,
-    count: data.count,
-    page: data.page ?? 1,
-    perPage: data.perPage ?? data.data.length,
+  .transform(({ data: trades, count, page, perPage }) => ({
+    trades,
+    count,
+    page: page ?? 1,
+    perPage: perPage ?? trades.length,
   }))
 
-export const getLlammaOHLCResponse = z
-  .object({
-    data: z.array(llammaOHLC),
-  })
-  .transform(data => data.data)
+export const getLlammaOHLCResponse = z.object({ data: z.array(llammaOHLC) }).transform(({ data }) => data)
 
 export type LlammaEvent = z.infer<typeof llammaEvent>
 export type LlammaTrade = z.infer<typeof llammaTrade>

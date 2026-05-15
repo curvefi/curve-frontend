@@ -31,6 +31,7 @@ const proposalShape = {
 const rawProposal = z.object(proposalShape).transform(camelizeKeys)
 type RawProposal = z.infer<typeof rawProposal>
 
+// Voting power in veCRV.
 const transformProposal = (data: RawProposal) => ({
   timestamp: data.dt,
   id: data.voteId,
@@ -42,15 +43,15 @@ const transformProposal = (data: RawProposal) => ({
   block: data.snapshotBlock,
   start: data.startDate,
   end: data.startDate + 604800,
-  quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18, // Voting power in veCRV.
-  support: Number(BigInt(data.supportRequired)) / 10 ** 18, // Voting power in veCRV.
+  quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18,
+  support: Number(BigInt(data.supportRequired)) / 10 ** 18,
   voteCount: data.voteCount, // An actual vote *count*
-  votesFor: Number(BigInt(data.votesFor)) / 10 ** 18, // Voting power in veCRV.
-  votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18, // Voting power in veCRV.
+  votesFor: Number(BigInt(data.votesFor)) / 10 ** 18,
+  votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18,
   executionTx: data.executionTx,
   executionDate: data.executionDate ?? null,
   executed: data.executed,
-  totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18, // Voting power in veCRV.
+  totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18,
   txCreation: data.transactionHash,
 })
 
@@ -70,9 +71,9 @@ export const getProposalsResponse = z
     proposals: z.array(proposal),
     count: z.number(),
   })
-  .transform(data => ({
-    proposals: data.proposals,
-    count: data.count,
+  .transform(({ proposals, count }) => ({
+    proposals,
+    count,
   }))
 
 export const getProposalDetailsResponse = z
@@ -82,11 +83,11 @@ export const getProposalDetailsResponse = z
     votes: z.array(vote),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    ...transformProposal(data),
-    txExecution: data.executionTx ? data.executionTx : undefined,
-    script: data.script ?? '',
-    votes: data.votes.map(item => ({
+  .transform(({ executionTx, script, votes, ...details }) => ({
+    ...transformProposal({ ...details, executionTx }),
+    txExecution: executionTx ? executionTx : undefined,
+    script: script ?? '',
+    votes: votes.map(item => ({
       voter: item.voter,
       supports: item.supports,
       votingPower: Number(BigInt(item.votingPower)) / 10 ** 18,
@@ -99,9 +100,9 @@ const userProposalVote = z
     proposal: rawProposal,
     votes: z.array(vote),
   })
-  .transform(data => ({
-    proposal: transformProposal(data.proposal),
-    votes: data.votes.map(item => ({
+  .transform(({ proposal, votes }) => ({
+    proposal: transformProposal(proposal),
+    votes: votes.map(item => ({
       voter: item.voter,
       supports: item.supports,
       weight: BigInt(Math.round(parseFloat(item.votingPower))),
@@ -115,7 +116,7 @@ export const getUserProposalVotesResponse = z
     count: z.number(),
     data: z.array(userProposalVote),
   })
-  .transform(data => data.data)
+  .transform(({ data }) => data)
 
 export const getUserProposalVoteResponse = userProposalVote
 

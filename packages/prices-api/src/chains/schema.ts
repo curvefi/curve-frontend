@@ -12,19 +12,12 @@ const activity = z.object({
   type: activityType,
 })
 
-const transactions = activity.extend({
-  transactions: z.number(),
-})
-
-const users = activity.extend({
-  users: z.number(),
-})
+const transactions = activity.extend({ transactions: z.number() })
+const users = activity.extend({ users: z.number() })
 
 export const getSupportedChainsResponse = z
-  .object({
-    data: z.array(z.object({ name: z.string() })),
-  })
-  .transform(data => data.data.map(item => item.name as Chain).filter(item => chains.includes(item)))
+  .object({ data: z.array(z.object({ name: z.string() })) })
+  .transform(({ data }) => data.map(item => item.name as Chain).filter(item => chains.includes(item)))
 
 export const getChainInfoResponse = z
   .object({
@@ -38,14 +31,14 @@ export const getChainInfoResponse = z
     }),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    chain: data.chain,
+  .transform(({ chain, total }) => ({
+    chain,
     total: {
-      tvl: data.total.totalTvl,
-      tradingVolume24h: data.total.tradingVolume24h,
-      tradingFee24h: data.total.tradingFee24h,
-      liquidityVolume24h: data.total.liquidityVolume24h,
-      liquidityFee24h: data.total.liquidityFee24h,
+      tvl: total.totalTvl,
+      tradingVolume24h: total.tradingVolume24h,
+      tradingFee24h: total.tradingFee24h,
+      liquidityVolume24h: total.liquidityVolume24h,
+      liquidityFee24h: total.liquidityFee24h,
     },
   }))
 
@@ -64,8 +57,8 @@ export const getTransactionsResponse = z
       }),
     ),
   })
-  .transform(data =>
-    data.data.flatMap(item => item.transactions.map(tx => transactions.parse({ ...tx, chain: item.chain }))),
+  .transform(({ data }) =>
+    data.flatMap(item => item.transactions.map(tx => transactions.parse({ ...tx, chain: item.chain }))),
   )
 
 export const getUsersResponse = z
@@ -83,7 +76,7 @@ export const getUsersResponse = z
       }),
     ),
   })
-  .transform(data => data.data.flatMap(item => item.users.map(user => users.parse({ ...user, chain: item.chain }))))
+  .transform(({ data }) => data.flatMap(item => item.users.map(user => users.parse({ ...user, chain: item.chain }))))
 
 export const getPoolFiltersResponse = z
   .object({
@@ -99,7 +92,7 @@ export const getPoolFiltersResponse = z
       }),
     ),
   })
-  .transform(data => data.data.flatMap(item => item.pools.map(pool => ({ chain: item.chain, address: pool.address }))))
+  .transform(({ data }) => data.flatMap(item => item.pools.map(pool => ({ chain: item.chain, address: pool.address }))))
 
 export type ChainInfo = z.infer<typeof getChainInfoResponse>
 export type Activity = z.infer<typeof activity>

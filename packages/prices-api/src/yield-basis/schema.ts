@@ -67,14 +67,14 @@ const yieldBasisHistoryItem = z
     block_number: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    ybFactoryBalance: parseFloat(data.ybFactoryBalance),
-    ybTotalAllocated: parseFloat(data.ybTotalAllocated),
-    ybTotalAmmBalance: parseFloat(data.ybTotalAmmBalance),
-    ybTotalAmmDebt: parseFloat(data.ybTotalAmmDebt),
-    ybMaxDebt: parseFloat(data.ybMaxDebt),
-    timestamp: data.dt,
-    blockNumber: data.blockNumber,
+  .transform(({ ybFactoryBalance, ybTotalAllocated, ybTotalAmmBalance, ybTotalAmmDebt, ybMaxDebt, dt, ...data }) => ({
+    ...data,
+    ybFactoryBalance: parseFloat(ybFactoryBalance),
+    ybTotalAllocated: parseFloat(ybTotalAllocated),
+    ybTotalAmmBalance: parseFloat(ybTotalAmmBalance),
+    ybTotalAmmDebt: parseFloat(ybTotalAmmDebt),
+    ybMaxDebt: parseFloat(ybMaxDebt),
+    timestamp: dt,
   }))
 
 export const ybPoolsResponse = z
@@ -82,7 +82,7 @@ export const ybPoolsResponse = z
     count: z.number(),
     data: z.array(yieldBasisPool),
   })
-  .transform(data => data.data)
+  .transform(({ data }) => data)
 
 export const ybPoolVolumeResponse = z
   .object({
@@ -103,16 +103,16 @@ export const yieldBasisSupplyResponse = z
     data: yieldBasisSupplyWithMint,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    cachedAt: data.cachedAt ?? undefined,
-    ybFactoryBalance: parseFloat(data.data.ybFactoryBalance),
-    ybTotalAllocated: parseFloat(data.data.ybTotalAllocated),
-    ybTotalAmmBalance: parseFloat(data.data.ybTotalAmmBalance),
-    ybTotalAmmDebt: parseFloat(data.data.ybTotalAmmDebt),
-    ybMaxDebt: parseFloat(data.data.ybMaxDebt),
-    mintPegkeeperDebt: parseFloat(data.data.mintPegkeeperDebt),
-    mintMarketDebt: parseFloat(data.data.mintMarketDebt),
-    totalSupply: parseFloat(data.data.totalSupply),
+  .transform(({ cachedAt, data }) => ({
+    cachedAt: cachedAt ?? undefined,
+    ybFactoryBalance: parseFloat(data.ybFactoryBalance),
+    ybTotalAllocated: parseFloat(data.ybTotalAllocated),
+    ybTotalAmmBalance: parseFloat(data.ybTotalAmmBalance),
+    ybTotalAmmDebt: parseFloat(data.ybTotalAmmDebt),
+    ybMaxDebt: parseFloat(data.ybMaxDebt),
+    mintPegkeeperDebt: parseFloat(data.mintPegkeeperDebt),
+    mintMarketDebt: parseFloat(data.mintMarketDebt),
+    totalSupply: parseFloat(data.totalSupply),
   }))
 
 export const yieldBasisHistoryResponse = z.object({
