@@ -33,14 +33,31 @@ import {
 } from '../header-tooltips'
 import { LlamaMarketColumnId } from './columns.enum'
 
+type Tooltip = ColumnMeta<never, never>['tooltip']
+type LlamaColumn = ColumnDefinition<LlamaMarket>
+
 const columnHelper = createColumnHelper<LlamaMarket>()
 
-const titles: Record<LlamaMarketColumnId, string> = {
-  [LlamaMarketColumnId.BorrowedSymbol]: t`Borrowed symbol`,
-  [LlamaMarketColumnId.CollateralSymbol]: t`Collateral symbol`,
-  [LlamaMarketColumnId.DeprecatedMessage]: t`Deprecated message`,
-  [LlamaMarketColumnId.Version]: t`Market version`,
-  [LlamaMarketColumnId.Type]: t`Market type`,
+const createTooltip = (id: keyof typeof LLAMA_MARKET_TITLES, body: ReactNode): Tooltip => ({
+  title: LLAMA_MARKET_TITLES[id],
+  body,
+})
+
+/** Define a hidden column. */
+const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn: FilterFnOption<LlamaMarket>) =>
+  columnHelper.accessor(field, {
+    id,
+    filterFn,
+    header: LLAMA_MARKET_TITLES[id],
+    meta: { hidden: true },
+  })
+
+export const LLAMA_MARKET_TITLES: Record<LlamaMarketColumnId, string> = {
+  [LlamaMarketColumnId.BorrowedSymbol]: t`Debt`,
+  [LlamaMarketColumnId.CollateralSymbol]: t`Collateral`,
+  [LlamaMarketColumnId.DeprecatedMessage]: t`Deprecated Message`,
+  [LlamaMarketColumnId.Version]: t`Market Version`,
+  [LlamaMarketColumnId.Type]: t`Market Type`,
   [LlamaMarketColumnId.Rewards]: t`Rewards`,
   [LlamaMarketColumnId.IsFavorite]: t`Favorites`,
   [LlamaMarketColumnId.Chain]: t`Network`,
@@ -53,11 +70,11 @@ const titles: Record<LlamaMarketColumnId, string> = {
   [LlamaMarketColumnId.UserEarnings]: t`My Earnings`,
   [LlamaMarketColumnId.UserDeposited]: t`Supplied Amount`,
   [LlamaMarketColumnId.BorrowRate]: t`Borrow APR`,
-  [LlamaMarketColumnId.NetBorrowRate]: t`Net borrow APR`,
+  [LlamaMarketColumnId.NetBorrowRate]: t`Net Borrow APR`,
   [LlamaMarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
-  [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} borrow APR`,
+  [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
-  [LlamaMarketColumnId.MaxLeverage]: t`Max leverage`,
+  [LlamaMarketColumnId.MaxLeverage]: t`Max Leverage`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
   [LlamaMarketColumnId.Tvl]: t`TVL`,
@@ -65,51 +82,37 @@ const titles: Record<LlamaMarketColumnId, string> = {
   [LlamaMarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
 } as const
 
-type Tooltip = ColumnMeta<never, never>['tooltip']
-const createTooltip = (id: keyof typeof titles, body: ReactNode): Tooltip => ({ title: titles[id], body })
-
-/** Define a hidden column. */
-const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn: FilterFnOption<LlamaMarket>) =>
-  columnHelper.accessor(field, {
-    id,
-    filterFn,
-    header: titles[id],
-    meta: { hidden: true },
-  })
-
-type LlamaColumn = ColumnDefinition<LlamaMarket>
-
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
-    header: titles[LlamaMarketColumnId.Assets],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserBorrowed,
-    header: titles[LlamaMarketColumnId.UserBorrowed],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserBorrowed],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserCollateral,
-    header: titles[LlamaMarketColumnId.UserCollateral],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserCollateral],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserEarnings,
-    header: titles[LlamaMarketColumnId.UserEarnings],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserEarnings],
     cell: PriceCell,
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserDeposited,
-    header: titles[LlamaMarketColumnId.UserDeposited],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserDeposited],
     cell: PriceCell,
     meta: { type: 'numeric' },
     filterFn: boolFilterFn,
@@ -117,14 +120,14 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserBoostMultiplier,
-    header: titles[LlamaMarketColumnId.UserBoostMultiplier],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserBoostMultiplier],
     cell: BoostCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrowApr', {
     id: LlamaMarketColumnId.BorrowRate,
-    header: titles[LlamaMarketColumnId.BorrowRate],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
@@ -135,7 +138,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor('rates.borrowTotalApr', {
     id: LlamaMarketColumnId.NetBorrowRate,
-    header: titles[LlamaMarketColumnId.NetBorrowRate],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.NetBorrowRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
@@ -145,45 +148,45 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserLtv,
-    header: titles[LlamaMarketColumnId.UserLtv],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserLtv],
     cell: LtvCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,
-    header: titles[LlamaMarketColumnId.UserHealth],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UserHealth],
     cell: HealthCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.lendTotalApyMinBoosted', {
     id: LlamaMarketColumnId.LendRate,
-    header: titles[LlamaMarketColumnId.LendRate],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.LendRate],
     cell: RateCell,
     meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrowApr', {
     id: LlamaMarketColumnId.BorrowChart,
-    header: titles[LlamaMarketColumnId.BorrowChart],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowChart],
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
   columnHelper.accessor('leverage', {
     id: LlamaMarketColumnId.MaxLeverage,
-    header: titles[LlamaMarketColumnId.MaxLeverage],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.MaxLeverage],
     cell: MaxLeverageCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(LlamaMarketColumnId.MaxLtv, {
-    header: titles[LlamaMarketColumnId.MaxLtv],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.MaxLtv],
     cell: PercentCell,
     meta: { type: 'numeric', unit: 'percentage' },
     filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
-    header: titles[LlamaMarketColumnId.UtilizationPercent],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.UtilizationPercent],
     cell: UtilizationCell,
     meta: {
       type: 'numeric',
@@ -193,7 +196,7 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
-    header: titles[LlamaMarketColumnId.LiquidityUsd],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.LiquidityUsd],
     cell: LiquidityUsdCell,
     meta: {
       type: 'numeric',
@@ -203,19 +206,19 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.TotalDebt, {
-    header: titles[LlamaMarketColumnId.TotalDebt],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.TotalDebt],
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(LlamaMarketColumnId.TotalCollateralUsd, {
-    header: titles[LlamaMarketColumnId.TotalCollateralUsd],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.TotalCollateralUsd],
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(LlamaMarketColumnId.Tvl, {
-    header: titles[LlamaMarketColumnId.Tvl],
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.Tvl],
     cell: TvlCell,
     meta: {
       type: 'numeric',
