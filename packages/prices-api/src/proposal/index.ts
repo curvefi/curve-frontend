@@ -51,6 +51,8 @@ export async function getUserProposalVote(
   const pagination = 100
   let page = 1
 
+  // This is a paged search rather than collection pagination: keep fetching until
+  // the matching vote is found, while paginate only collects pages until exhausted.
   while (true) {
     const userVotes = await getUserProposalVotes(user, page, pagination, options)
     const userVote = userVotes.find(
