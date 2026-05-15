@@ -1,10 +1,16 @@
-import { noop } from 'lodash'
+import { useCallback } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { toArray } from '@primitives/array.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
-import type { TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { parseListFilter, parseRangeFilter, RANGE_SEPARATOR } from '@ui-kit/shared/ui/DataTable/filters'
+import type { FilterProps, TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import {
+  parseListFilter,
+  parseRangeFilter,
+  RANGE_SEPARATOR,
+  serializeListFilter,
+} from '@ui-kit/shared/ui/DataTable/filters'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -38,18 +44,46 @@ const getFilterLabels = (serializedFilter: string | undefined, unit?: 'percentag
   return parseListFilter(serializedFilter)
 }
 
-const ActiveFilterChip = ({ label }: { label: string }) => (
-  <SelectableChip selected toggle={noop} label={label} aria-label={label} />
+const removeFilterValue = (
+  id: LlamaMarketColumnId,
+  value: string,
+  clickedValues: string | string[],
+  setColumnFilter: FilterProps<LlamaMarketColumnId>['setColumnFilter'],
+) => {
+  if (value.includes(RANGE_SEPARATOR)) {
+    setColumnFilter(id, null)
+    return
+  }
+
+  const selectedValues = parseListFilter(value)
+  if (!selectedValues?.length || selectedValues.length === 1) {
+    setColumnFilter(id, null)
+    return
+  }
+
+  const remainingValues = selectedValues.filter(selectedValue => !toArray(clickedValues).includes(selectedValue))
+  setColumnFilter(id, serializeListFilter(remainingValues))
+}
+
+const ActiveFilterChip = ({ label, toggle }: { label: string; toggle: () => void }) => (
+  <SelectableChip selected toggle={toggle} label={label} aria-label={label} />
 )
 
 export const LlamaTableFiltersCollapsible = <T extends TableItem>({
   table,
   resetFilters,
+  setColumnFilter,
 }: {
   table: TanstackTable<T>
   resetFilters: () => void
-}) => {
+} & FilterProps<LlamaMarketColumnId>) => {
   const columnFiltersState = table.getState().columnFilters as { id: LlamaMarketColumnId; value: string }[]
+  const toggleFilterValue = useCallback(
+    (id: LlamaMarketColumnId, value: string, clickedValues: string | string[]) =>
+      removeFilterValue(id, value, clickedValues, setColumnFilter),
+    [setColumnFilter],
+  )
+
   return (
     <Stack
       paddingBlock={Spacing.xs}
@@ -71,15 +105,25 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
               <SelectedFilterChips key={`selected-chip-${id}`} title={column?.columnDef.header as string}>
                 {/* Special chip for the chains filter */}
                 {id === LlamaMarketColumnId.Chain ? (
-                  <ChainFilterChips chains={labels} selectedChains={labels} toggleChain={noop} />
+                  <ChainFilterChips
+                    chains={labels}
+                    selectedChains={labels}
+                    toggleChain={clickedValue => toggleFilterValue(id, value, clickedValue)}
+                  />
                 ) : (
                   <>
                     {visibleLabels.map(label => (
-                      <ActiveFilterChip key={`${label}-${id}`} label={label} />
+                      <ActiveFilterChip
+                        key={`${label}-${id}`}
+                        label={label}
+                        toggle={() => toggleFilterValue(id, value, label)}
+                      />
                     ))}
                     <HiddenInlinedItems
                       hiddenSelectedItemsLength={hiddenLabels.length}
-                      renderItem={label => <ActiveFilterChip label={label} />}
+                      renderItem={label => (
+                        <ActiveFilterChip label={label} toggle={() => toggleFilterValue(id, value, hiddenLabels)} />
+                      )}
                     />
                   </>
                 )}
