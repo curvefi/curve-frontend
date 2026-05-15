@@ -68,6 +68,8 @@ export const LlamaMarketsTable = ({
     ...getTableOptions(queryData),
   })
 
+  const hasActiveFilters = !!table.getState().columnFilters.length
+
   return (
     <DataTable
       table={table}
@@ -103,11 +105,11 @@ export const LlamaMarketsTable = ({
         }
         collapsibleFilters={{
           collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
-          hasActiveFilters: !!getHiddenCount(table),
+          hasActiveFilters,
         }}
         popoverFilters={
           <LlamaTableFiltersPopover
-            hiddenCount={getHiddenCount(table)}
+            hasActiveFilters={hasActiveFilters}
             open={filterPopoverOpen}
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}

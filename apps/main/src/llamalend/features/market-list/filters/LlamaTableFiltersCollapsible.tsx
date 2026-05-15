@@ -2,6 +2,7 @@ import { noop } from 'lodash'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 import type { TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, parseRangeFilter, RANGE_SEPARATOR } from '@ui-kit/shared/ui/DataTable/filters'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
@@ -11,7 +12,6 @@ import { LlamaMarketColumnId } from '../columns/columns.enum'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { SelectedFilterChips } from './SelectedFilterChips'
 import { getInlinedItemsVisibility } from './utils'
-import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -39,7 +39,7 @@ const getFilterLabels = (serializedFilter: string | undefined, unit?: 'percentag
 }
 
 const ActiveFilterChip = ({ label }: { label: string }) => (
-  <SelectableChip selected toggle={noop} size="small" label={label} aria-label={label} />
+  <SelectableChip selected toggle={noop} label={label} aria-label={label} />
 )
 
 export const LlamaTableFiltersCollapsible = <T extends TableItem>({
