@@ -23,7 +23,7 @@ const visitErrorBoundary = () => {
   const url = '/llamalend/ethereum/markets'
   cy.visit(url, {
     timeout: API_LOAD_TIMEOUT.timeout,
-    onBeforeLoad: ({ String }) => {
+    onBeforeLoad: ({ String, TypeError }) => {
       const originalToLowerCase = String.prototype.toLowerCase
       String.prototype.toLowerCase = function (this: string) {
         if (this.toString() === invalidIconAddress) {
