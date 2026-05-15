@@ -62,7 +62,7 @@ export const FormProvider = <T extends FieldValues>({
       {isDevelopment && (
         <Accordion title={t`Form state`} ghost size="extraSmall">
           <AccordionDetails>
-            <pre>{JSON.stringify({ values: form.getValues(), ...form.formState }, null, 2).slice(2, -2)}</pre>
+            <pre>{JSON.stringify({ values: getValues(), ...formState }, null, 2).slice(2, -2)}</pre>
           </AccordionDetails>
         </Accordion>
       )}
