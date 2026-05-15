@@ -9,19 +9,25 @@ import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { ChainId, PoolData } from '@/dex/types/main.types'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Stack from '@mui/material/Stack'
 import { Address } from '@primitives/address.utils'
-import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatDate, scanTokenPath } from '@ui/utils'
-import { breakpoints } from '@ui/utils/responsive'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { copyToClipboard, shortenAddress, formatNumber, amount, getFractionDigitsOptions } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
+
+const { Spacing } = SizesAndSpaces
 
 type PoolParametersProps = {
   poolData: PoolData
@@ -101,308 +107,287 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   if (!poolMetadata || !snapshotData) return null
 
   return (
-    <GridContainer variant="secondary">
-      <PoolParametersWrapper>
-        <SectionWrapper>
-          <SectionTitle>{t`Pool Info:`}</SectionTitle>
-          <PoolParameter>
-            <PoolParameterTitle>{t`Pool Type:`}</PoolParameterTitle>
-            <PoolParameterValue>
-              {returnPoolType(poolMetadata.poolType, poolMetadata.coins.length)}
-              {poolMetadata.metapool && `, ${t`Metapool`}`}
-              {basePools?.some(pool => pool.pool === poolAddress) && `, ${t`Basepool`}`}
-            </PoolParameterValue>
-          </PoolParameter>
-          {poolMetadata.basePool && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
-              <DataAddressLink href={scanTokenPath(network, poolMetadata.basePool)}>
-                {shortenAddress(poolMetadata.basePool)}
-              </DataAddressLink>
-            </PoolParameter>
-          )}
-          <PoolParameter>
-            <PoolParameterTitle>{t`Vyper Version:`}</PoolParameterTitle>
-            <PoolParameterValue>{poolMetadata.vyperVersion}</PoolParameterValue>
-          </PoolParameter>
-          <PoolParameter>
-            <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
-            <PoolParameterLink href={scanTokenPath(network, poolMetadata.registry)}>
-              {shortenAddress(poolMetadata.registry)}
-            </PoolParameterLink>
-          </PoolParameter>
-        </SectionWrapper>
-        {/* Coins with Asset types */}
-        {poolData.pool.isNg && poolMetadata.assetTypes && (
-          <SectionWrapper>
-            <SectionTitle>{t`Coins:`}</SectionTitle>
-            {poolData.tokens.map((token, idx) => (
-              <Coin key={`${token}-${idx}`}>
-                <Box flex>
-                  <>
-                    <StyledExternalLink href={scanTokenPath(network, poolData.tokenAddresses[idx])}>
-                      <ExternalLinkTokenWrapper>
-                        <StyledTokenIcon
-                          size="sm"
-                          blockchainId={network?.networkId ?? ''}
-                          tooltip={token}
-                          address={poolData.tokenAddresses[idx]}
-                        />
-                        <ExternalLinkToken>{token}</ExternalLinkToken>
-                      </ExternalLinkTokenWrapper>
-                    </StyledExternalLink>
-                    <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
-                      <Icon name="Copy" size={16} />
-                    </StyledIconButton>
-                  </>
-                  {poolData.pool.isNg && poolMetadata.assetTypes && (
-                    <AssetType>{returnAssetType(poolMetadata.assetTypes[idx])}</AssetType>
-                  )}
-                </Box>
-                {/* Oracle */}
-                {poolMetadata.assetTypes?.[idx] === 1 && poolMetadata.oracles?.[idx] && (
-                  <IndentWrapper>
-                    <Box flex>
-                      <Numeral>├─</Numeral>
-                      <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      {poolMetadata.oracles[idx].oracleAddress ? (
-                        <IndentDataAddressLink href={scanTokenPath(network, poolMetadata.oracles[idx].oracleAddress)}>
-                          {shortenAddress(poolMetadata.oracles[idx].oracleAddress)}
-                        </IndentDataAddressLink>
-                      ) : (
-                        <IndentData>-</IndentData>
-                      )}
-                    </Box>
-                    <Box flex>
-                      <Numeral>├─</Numeral>
-                      <IndentDataTitle>{t`Function:`}</IndentDataTitle>
-                      <IndentData>{poolMetadata.oracles[idx].method ?? '-'}</IndentData>
-                    </Box>
-                    <Box flex>
-                      <Numeral>└─</Numeral>
-                      <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
-                      <IndentData>{poolMetadata.oracles[idx].methodId ?? '-'}</IndentData>
-                    </Box>
-                  </IndentWrapper>
-                )}
-              </Coin>
-            ))}
-          </SectionWrapper>
-        )}
-        <SectionWrapper>
-          <SectionTitle>{t`Pool Parameters:`}</SectionTitle>
-          {snapshotData.midFee !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Mid Fee:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e8(snapshotData.midFee)}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.outFee !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Out Fee:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e8(snapshotData.outFee)}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.a !== null && (
-            <PoolParameter noBorder={rampADetails && rampADetails.isRampUp !== null}>
-              <PoolParameterTitle>{t`A:`}</PoolParameterTitle>
-              <PoolParameterValue>
-                <Chip
-                  isBold
-                  size="sm"
-                  tooltip={
-                    <>
-                      {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
-                      {rampADetails &&
-                        rampADetails?.isFutureATimePassedToday &&
-                        initial_A_time != null &&
-                        future_A_time != null && (
-                          <>
-                            <br />{' '}
-                            {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
-                              future_A_time,
-                              'short',
-                            )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`}
-                          </>
-                        )}
-                    </>
-                  }
-                  tooltipProps={{ minWidth: '200px' }}
-                >
-                  {formatADisplay(A)}
-                  <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-                </Chip>
-              </PoolParameterValue>
-            </PoolParameter>
-          )}
-          {rampADetails && !rampADetails.isFutureATimePassedToday && (
-            <RampUpContainer>
-              <Box flex>
-                <Numeral>├─</Numeral>
-                <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
-                  <PoolParameterTitle>{t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A:`}</PoolParameterTitle>
+    <Card size="small">
+      <CardContent sx={{ padding: '0 !important' }} /** TODO: no data-inline support yet like in header */>
+        <Box display="grid" gap={Spacing.md} gridTemplateColumns="repeat(12, 1fr)">
+          <CardContent sx={{ gridColumn: { mobile: 'span 12', desktop: 'span 8' } }}>
+            <Stack gap={Spacing.lg}>
+              <Stack>
+                <SectionTitle>{t`Pool Info:`}</SectionTitle>
+                <PoolParameter>
+                  <PoolParameterTitle>{t`Pool Type:`}</PoolParameterTitle>
                   <PoolParameterValue>
-                    <StyledChip
-                      isBold
-                      size="md"
-                      tooltip={t`Slowly changing ${
-                        rampADetails.isRampUp ? 'up' : 'down'
-                      } A so that it doesn't negatively change virtual price growth of shares`}
-                      tooltipProps={{ placement: 'bottom-end' }}
-                    >
-                      {formatADisplay(initial_A)} → {formatADisplay(future_A)}{' '}
-                      <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-                    </StyledChip>
+                    {returnPoolType(poolMetadata.poolType, poolMetadata.coins.length)}
+                    {poolMetadata.metapool && `, ${t`Metapool`}`}
+                    {basePools?.some(pool => pool.pool === poolAddress) && `, ${t`Basepool`}`}
                   </PoolParameterValue>
-                </Box>
-              </Box>
-              <Box flex>
-                <Numeral>└─</Numeral>
-                <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
-                  <PoolParameterTitle>{t`Ramp ${
-                    rampADetails.isRampUp ? 'up' : 'down'
-                  } A ends on: `}</PoolParameterTitle>
-                  <PoolParameterValue>{rampUpAEndsTime}</PoolParameterValue>
-                </Box>
-              </Box>
-            </RampUpContainer>
-          )}
-          {snapshotData.offpegFeeMultiplier !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Off Peg Multiplier:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e10(snapshotData.offpegFeeMultiplier)}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.gamma !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Gamma:`}</PoolParameterTitle>
-              <PoolParameterValue>{gamma}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.allowedExtraProfit !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Allowed Extra Profit:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e18(snapshotData.allowedExtraProfit)}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.feeGamma !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Fee Gamma:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e18(snapshotData.feeGamma)}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.adjustmentStep !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Adjustment Step:`}</PoolParameterTitle>
-              <PoolParameterValue>{convert1e18(snapshotData.adjustmentStep)}</PoolParameterValue>
-            </PoolParameter>
-          )}
-          {snapshotData.maHalfTime !== null && (
-            <PoolParameter>
-              <PoolParameterTitle>{t`Moving Average Time:`}</PoolParameterTitle>
-              <PoolParameterValue>
-                {formatNumber(snapshotData.maHalfTime, { useGrouping: false, abbreviate: false })}
-              </PoolParameterValue>
-            </PoolParameter>
-          )}
-        </SectionWrapper>
-      </PoolParametersWrapper>
-      <PoolDataWrapper>
-        {!!poolData && haveWrappedCoins && priceOracle && (
-          <StatsSection>
-            <Box grid>
-              <StatsTitle>{t`Price Oracle:`}</StatsTitle>
-              {priceOracle.map((p, idx) => {
-                const wrappedCoins = poolData.pool.wrappedCoins as string[]
-                const symbol = wrappedCoins[idx + 1]
-                return (
-                  <StatsContainer key={p}>
-                    <StatsSymbol>{symbol}:</StatsSymbol>
-                    <StatsData>
-                      {formatNumber(amount(p), {
-                        ...getFractionDigitsOptions(p, 10),
-                        abbreviate: false,
-                        fallback: '-',
-                      })}
-                    </StatsData>
-                  </StatsContainer>
-                )
-              })}
-            </Box>
-          </StatsSection>
-        )}
+                </PoolParameter>
+                {poolMetadata.basePool && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
+                    <DataAddressLink href={scanTokenPath(network, poolMetadata.basePool)}>
+                      {shortenAddress(poolMetadata.basePool)}
+                    </DataAddressLink>
+                  </PoolParameter>
+                )}
+                <PoolParameter>
+                  <PoolParameterTitle>{t`Vyper Version:`}</PoolParameterTitle>
+                  <PoolParameterValue>{poolMetadata.vyperVersion}</PoolParameterValue>
+                </PoolParameter>
+                <PoolParameter>
+                  <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
+                  <PoolParameterLink href={scanTokenPath(network, poolMetadata.registry)}>
+                    {shortenAddress(poolMetadata.registry)}
+                  </PoolParameterLink>
+                </PoolParameter>
+              </Stack>
 
-        {!!poolData && haveWrappedCoins && priceScale && (
-          <StatsSection>
-            <StatsTitle>{t`Price Scale:`}</StatsTitle>
-            {priceScale.map((p, idx) => {
-              const wrappedCoins = poolData.pool.wrappedCoins as string[]
-              const symbol = wrappedCoins[idx + 1]
-              return (
-                <StatsContainer key={p}>
-                  <StatsSymbol>{symbol}:</StatsSymbol>
-                  <StatsData>
-                    {formatNumber(amount(p), { ...getFractionDigitsOptions(p, 10), abbreviate: false, fallback: '-' })}
-                  </StatsData>
-                </StatsContainer>
-              )
-            })}
-          </StatsSection>
-        )}
+              {/* Coins with Asset types */}
+              {poolData.pool.isNg && poolMetadata.assetTypes && (
+                <Stack>
+                  <SectionTitle>{t`Coins:`}</SectionTitle>
+                  {poolData.tokens.map((token, idx) => (
+                    <Stack key={`${token}-${idx}`}>
+                      <Stack direction="row">
+                        <Stack direction="row">
+                          <StyledExternalLink href={scanTokenPath(network, poolData.tokenAddresses[idx])}>
+                            <ExternalLinkTokenWrapper>
+                              <StyledTokenIcon
+                                size="sm"
+                                blockchainId={network?.networkId ?? ''}
+                                tooltip={token}
+                                address={poolData.tokenAddresses[idx]}
+                              />
+                              <ExternalLinkToken>{token}</ExternalLinkToken>
+                            </ExternalLinkTokenWrapper>
+                          </StyledExternalLink>
+                          <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
+                            <Icon name="Copy" size={16} />
+                          </StyledIconButton>
+                        </Stack>
+                        {poolData.pool.isNg && poolMetadata.assetTypes && (
+                          <AssetType>{returnAssetType(poolMetadata.assetTypes[idx])}</AssetType>
+                        )}
+                      </Stack>
+                      {/* Oracle */}
+                      {poolMetadata.assetTypes?.[idx] === 1 && poolMetadata.oracles?.[idx] && (
+                        <Stack>
+                          <Stack direction="row">
+                            <Numeral>├─</Numeral>
+                            <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
+                            {poolMetadata.oracles[idx].oracleAddress ? (
+                              <IndentDataAddressLink
+                                href={scanTokenPath(network, poolMetadata.oracles[idx].oracleAddress)}
+                              >
+                                {shortenAddress(poolMetadata.oracles[idx].oracleAddress)}
+                              </IndentDataAddressLink>
+                            ) : (
+                              <IndentData>-</IndentData>
+                            )}
+                          </Stack>
+                          <Stack direction="row">
+                            <Numeral>├─</Numeral>
+                            <IndentDataTitle>{t`Function:`}</IndentDataTitle>
+                            <IndentData>{poolMetadata.oracles[idx].method ?? '-'}</IndentData>
+                          </Stack>
+                          <Stack direction="row">
+                            <Numeral>└─</Numeral>
+                            <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
+                            <IndentData>{poolMetadata.oracles[idx].methodId ?? '-'}</IndentData>
+                          </Stack>
+                        </Stack>
+                      )}
+                    </Stack>
+                  ))}
+                </Stack>
+              )}
 
-        {(snapshotData.xcpProfit != null || snapshotData.xcpProfitA != null) && (
-          <StatsSection>
-            {snapshotData.xcpProfit !== null && (
-              <StatsContainer>
-                <StatsSymbol>{t`Xcp Profit:`}</StatsSymbol>
-                <StatsData>{convert1e18(snapshotData.xcpProfit)}</StatsData>
-              </StatsContainer>
-            )}
-            {snapshotData.xcpProfitA !== null && (
-              <StatsContainer>
-                <StatsSymbol>{t`Xcp Profit A:`}</StatsSymbol>
-                <StatsData>{convert1e18(snapshotData.xcpProfitA)}</StatsData>
-              </StatsContainer>
-            )}
-          </StatsSection>
-        )}
-      </PoolDataWrapper>
-    </GridContainer>
+              <Stack>
+                <SectionTitle>{t`Pool Parameters:`}</SectionTitle>
+                {snapshotData.midFee !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Mid Fee:`}</PoolParameterTitle>
+                    <PoolParameterValue>{convert1e8(snapshotData.midFee)}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.outFee !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Out Fee:`}</PoolParameterTitle>
+                    <PoolParameterValue>{convert1e8(snapshotData.outFee)}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.a !== null && (
+                  <PoolParameter noBorder={rampADetails && rampADetails.isRampUp !== null}>
+                    <PoolParameterTitle>{t`A:`}</PoolParameterTitle>
+                    <PoolParameterValue>
+                      <Chip
+                        isBold
+                        size="sm"
+                        tooltip={
+                          <>
+                            {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
+                            {rampADetails &&
+                              rampADetails?.isFutureATimePassedToday &&
+                              initial_A_time != null &&
+                              future_A_time != null && (
+                                <>
+                                  <br />{' '}
+                                  {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
+                                    future_A_time,
+                                    'short',
+                                  )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`}
+                                </>
+                              )}
+                          </>
+                        }
+                        tooltipProps={{ minWidth: '200px' }}
+                      >
+                        {formatADisplay(A)}
+                        <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+                      </Chip>
+                    </PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {rampADetails && !rampADetails.isFutureATimePassedToday && (
+                  <RampUpContainer>
+                    <Stack direction="row">
+                      <Numeral>├─</Numeral>
+                      <Stack margin={'0 0 0 var(--spacing-2)'} justifyContent="space-between">
+                        <PoolParameterTitle>{t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A:`}</PoolParameterTitle>
+                        <PoolParameterValue>
+                          <StyledChip
+                            isBold
+                            size="md"
+                            tooltip={t`Slowly changing ${
+                              rampADetails.isRampUp ? 'up' : 'down'
+                            } A so that it doesn't negatively change virtual price growth of shares`}
+                            tooltipProps={{ placement: 'bottom-end' }}
+                          >
+                            {formatADisplay(initial_A)} → {formatADisplay(future_A)}{' '}
+                            <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+                          </StyledChip>
+                        </PoolParameterValue>
+                      </Stack>
+                    </Stack>
+                    <Stack direction="row">
+                      <Numeral>└─</Numeral>
+                      <Stack margin={'0 0 0 var(--spacing-2)'} justifyContent="space-between">
+                        <PoolParameterTitle>{t`Ramp ${
+                          rampADetails.isRampUp ? 'up' : 'down'
+                        } A ends on: `}</PoolParameterTitle>
+                        <PoolParameterValue>{rampUpAEndsTime}</PoolParameterValue>
+                      </Stack>
+                    </Stack>
+                  </RampUpContainer>
+                )}
+                {snapshotData.offpegFeeMultiplier !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Off Peg Multiplier:`}</PoolParameterTitle>
+                    <PoolParameterValue>{convert1e10(snapshotData.offpegFeeMultiplier)}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.gamma !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Gamma:`}</PoolParameterTitle>
+                    <PoolParameterValue>{gamma}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.allowedExtraProfit !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Allowed Extra Profit:`}</PoolParameterTitle>
+                    <PoolParameterValue>{convert1e18(snapshotData.allowedExtraProfit)}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.feeGamma !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Fee Gamma:`}</PoolParameterTitle>
+                    <PoolParameterValue>{convert1e18(snapshotData.feeGamma)}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.adjustmentStep !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Adjustment Step:`}</PoolParameterTitle>
+                    <PoolParameterValue>{convert1e18(snapshotData.adjustmentStep)}</PoolParameterValue>
+                  </PoolParameter>
+                )}
+                {snapshotData.maHalfTime !== null && (
+                  <PoolParameter>
+                    <PoolParameterTitle>{t`Moving Average Time:`}</PoolParameterTitle>
+                    <PoolParameterValue>
+                      {formatNumber(snapshotData.maHalfTime, { useGrouping: false, abbreviate: false })}
+                    </PoolParameterValue>
+                  </PoolParameter>
+                )}
+              </Stack>
+            </Stack>
+          </CardContent>
+
+          <CardContent
+            sx={{
+              backgroundColor: t => t.design.Layer[2].Fill,
+              gridColumn: { mobile: 'span 12', desktop: 'span 4' },
+            }}
+          >
+            <Stack gap={Spacing.md}>
+              {!!poolData && haveWrappedCoins && priceOracle && (
+                <Stack>
+                  <StatsTitle>{t`Price Oracle:`}</StatsTitle>
+                  {priceOracle.map((p, idx) => {
+                    const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                    const symbol = wrappedCoins[idx + 1]
+                    return (
+                      <ActionInfo
+                        key={p}
+                        label={symbol}
+                        value={formatNumber(amount(p), {
+                          ...getFractionDigitsOptions(p, 10),
+                          abbreviate: false,
+                          fallback: '-',
+                        })}
+                      />
+                    )
+                  })}
+                </Stack>
+              )}
+
+              {!!poolData && haveWrappedCoins && priceScale && (
+                <Stack>
+                  <StatsTitle>{t`Price Scale:`}</StatsTitle>
+                  {priceScale.map((p, idx) => {
+                    const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                    const symbol = wrappedCoins[idx + 1]
+                    return (
+                      <ActionInfo
+                        key={p}
+                        label={symbol}
+                        value={formatNumber(amount(p), {
+                          ...getFractionDigitsOptions(p, 10),
+                          abbreviate: false,
+                          fallback: '-',
+                        })}
+                      />
+                    )
+                  })}
+                </Stack>
+              )}
+
+              {(snapshotData.xcpProfit != null || snapshotData.xcpProfitA != null) && (
+                <Stack>
+                  {snapshotData.xcpProfit !== null && (
+                    <ActionInfo label={t`Xcp Profit:`} value={convert1e18(snapshotData.xcpProfit)} />
+                  )}
+                  {snapshotData.xcpProfitA !== null && (
+                    <ActionInfo label={t`Xcp Profit A:`} value={convert1e18(snapshotData.xcpProfitA)} />
+                  )}
+                </Stack>
+              )}
+            </Stack>
+          </CardContent>
+        </Box>
+      </CardContent>
+    </Card>
   )
 }
-
-const GridContainer = styled(Box)`
-  width: 100%;
-  display: grid;
-  transition: 200ms;
-  grid-template-columns: 1fr;
-  min-height: 14.6875rem;
-  @media (min-width: 75rem) {
-    grid-template-columns: 1fr 24rem;
-  }
-`
-
-const SectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: var(--spacing-4);
-`
-
-const PoolParametersWrapper = styled(Box)`
-  padding: 1.5rem 1rem;
-
-  @media (min-width: ${breakpoints.lg}rem) {
-    padding: 1.5rem;
-  }
-`
-
-const Coin = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  &:first-of-type {
-    margin-top: var(--spacing-3);
-  }
-`
 
 const AssetType = styled.p`
   margin: auto 0 auto auto;
@@ -428,12 +413,6 @@ const ExternalLinkTokenWrapper = styled.div`
 
 const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);
-`
-
-const IndentWrapper = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 var(--spacing-2) var(--spacing-2);
 `
 
 const Numeral = styled.p`
@@ -480,18 +459,6 @@ const PoolParameter = styled.div<{ noBorder?: boolean }>`
   }
 `
 
-const PoolDataWrapper = styled.div`
-  background-color: var(--box--secondary--content--background-color);
-  row-gap: var(--spacing-3);
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 1rem;
-
-  @media (min-width: ${breakpoints.lg}rem) {
-    padding: 1.5rem;
-  }
-`
-
 const StyledChip = styled(Chip)`
   font-size: var(--font-size-2);
 `
@@ -518,11 +485,6 @@ const RampUpContainer = styled.div`
   flex-direction: column;
 `
 
-const StatsSection = styled(Box)`
-  display: flex;
-  flex-direction: column;
-`
-
 const SectionTitle = styled.h3`
   font-size: var(--font-size-1);
   text-transform: uppercase;
@@ -534,23 +496,6 @@ const StatsTitle = styled.h3`
   text-transform: uppercase;
   font-weight: var(--bold);
   margin-bottom: var(--spacing-2);
-`
-
-const StatsContainer = styled(Box)`
-  display: flex;
-  margin-top: var(--spacing-1);
-`
-
-const StatsSymbol = styled.p`
-  padding-right: var(--spacing-2);
-  font-weight: var(--semi-bold);
-  font-size: var(--font-size-2);
-`
-
-const StatsData = styled.p`
-  margin-left: auto;
-  font-weight: var(--bold);
-  font-size: var(--font-size-2);
 `
 
 type SpanProps = ComponentPropsWithRef<'span'>

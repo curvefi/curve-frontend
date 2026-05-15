@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
@@ -26,9 +25,6 @@ import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { AlertBox } from '@ui/AlertBox'
-import { AppPageInfoContentWrapper } from '@ui/AppPage'
-import { Box } from '@ui/Box'
-import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
@@ -237,13 +233,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
-          <PriceAndTradesWrapper variant="secondary">
-            <OhlcAndActivityComp
-              rChainId={rChainId}
-              poolAddress={poolAddress as Address}
-              pricesApiPoolData={pricesApiPoolData}
-            />
-          </PriceAndTradesWrapper>
+          <OhlcAndActivityComp
+            rChainId={rChainId}
+            poolAddress={poolAddress as Address}
+            pricesApiPoolData={pricesApiPoolData}
+          />
         )}
         <Stack>
           <TabsSwitcher
@@ -253,52 +247,27 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             options={poolInfoTabs}
             testIdPrefix="pool-info-tab"
           />
-          <AppPageInfoContentWrapper variant="secondary">
-            {poolInfoTab === 'user' && (
-              <MySharesStats
-                curve={curve}
-                poolData={poolData}
-                poolDataCacheOrApi={poolDataCacheOrApi}
-                routerParams={routerParams}
-                tokensMapper={tokensMapper}
-              />
-            )}
-            {poolInfoTab === 'pool' && (
-              <StatsWrapper
-                as="section"
-                className={!curve || !poolData ? 'loading' : ''}
-                grid
-                gridRowGap="1rem"
-                variant="secondary"
-              >
-                <PoolStats
-                  routerParams={routerParams}
-                  poolData={poolData}
-                  poolDataCacheOrApi={poolDataCacheOrApi}
-                  poolAlert={poolAlert}
-                  tokensMapper={tokensMapper}
-                />
-              </StatsWrapper>
-            )}
-            {poolInfoTab === 'advanced' && poolData && <PoolParameters poolData={poolData} rChainId={rChainId} />}
-          </AppPageInfoContentWrapper>
+          {poolInfoTab === 'user' && (
+            <MySharesStats
+              curve={curve}
+              poolData={poolData}
+              poolDataCacheOrApi={poolDataCacheOrApi}
+              routerParams={routerParams}
+              tokensMapper={tokensMapper}
+            />
+          )}
+          {poolInfoTab === 'pool' && (
+            <PoolStats
+              routerParams={routerParams}
+              poolData={poolData}
+              poolDataCacheOrApi={poolDataCacheOrApi}
+              poolAlert={poolAlert}
+              tokensMapper={tokensMapper}
+            />
+          )}
+          {poolInfoTab === 'advanced' && poolData && <PoolParameters poolData={poolData} rChainId={rChainId} />}
         </Stack>
       </DetailPageLayout>
     </>
   )
 }
-
-const StatsWrapper = styled(Box)`
-  align-items: flex-start;
-  display: grid;
-`
-
-const PriceAndTradesWrapper = styled(Box)`
-  padding: 1.5rem 1rem;
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin-top: 0;
-  }
-  @media (min-width: ${breakpoints.lg}rem) {
-    padding: 1.5rem 1.5rem;
-  }
-`
