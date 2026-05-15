@@ -12,19 +12,21 @@ import { LlamaMarketColumnId } from '../columns'
 const { IconSize } = SizesAndSpaces
 
 export const LlamaChainFilterChips = ({
-  markets,
+  marketsQuery,
   columnFiltersById,
   setColumnFilter,
 }: {
-  markets: QueryProp<LlamaMarket[]>
+  marketsQuery: QueryProp<LlamaMarket[]>
 } & FilterProps<LlamaMarketColumnId>) => {
   const chains = useMemo(
     () =>
-      getUniqueSortedStrings(
-        (markets.data ?? []).filter(market => !market.deprecatedMessage || market.userHasPositions),
-        LlamaMarketColumnId.Chain,
-      ),
-    [markets.data],
+      marketsQuery.data
+        ? getUniqueSortedStrings(
+            marketsQuery.data.filter(market => !market.deprecatedMessage || market.userHasPositions),
+            LlamaMarketColumnId.Chain,
+          )
+        : [],
+    [marketsQuery.data],
   )
   const selectedChains = useMemo(
     () => parseListFilter(columnFiltersById[LlamaMarketColumnId.Chain]),
@@ -47,7 +49,7 @@ export const LlamaChainFilterChips = ({
   )
 
   return (
-    <WithSkeleton loading={markets.isLoading} width={'100%'} height={IconSize.md.desktop} variant="rectangular">
+    <WithSkeleton loading={marketsQuery.isLoading} width={'100%'} height={IconSize.md.desktop} variant="rectangular">
       <ChainFilterChips chains={chains} selectedChains={selectedChains} toggleChain={toggleChain} />
     </WithSkeleton>
   )

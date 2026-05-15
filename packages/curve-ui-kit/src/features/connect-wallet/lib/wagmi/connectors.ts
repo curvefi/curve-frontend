@@ -1,6 +1,6 @@
 import { assert } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { coinbaseWallet, injected, safe, walletConnect } from '@wagmi/connectors'
+import { coinbaseWallet, injected, metaMask, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
 
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
@@ -11,6 +11,7 @@ export const INJECTED_CONNECTOR_ID = 'injected'
 // Order matters for the connect wallet modal, list grows from bottom to top, so first one is shown all the way down.
 export const connectors: CreateConnectorFn[] = [
   coinbaseWallet({ preference: { options: 'all', telemetry: false } }),
+  metaMask(),
   safe(),
   walletConnect({
     projectId: WALLET_CONNECT_PROJECT_ID,

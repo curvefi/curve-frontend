@@ -1,13 +1,15 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { BaseError } from 'viem'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { createSvgIcon } from '@mui/material/utils'
+import { toArray } from '@primitives/array.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
+import { MetamaskWalletIcon } from '@ui-kit/shared/icons/MetamaskWalletIcon'
 import { SafeWalletIcon } from '@ui-kit/shared/icons/SafeWalletIcon'
 import { WalletConnectIcon } from '@ui-kit/shared/icons/WalletConnectIcon'
 import { WalletIcon as DefaultWalletIcon } from '@ui-kit/shared/icons/WalletIcon'
@@ -26,9 +28,13 @@ const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
   walletConnect: WalletConnectIcon,
   coinbaseWalletSDK: CoinbaseWalletIcon,
   safe: SafeWalletIcon,
+  metaMaskSDK: MetamaskWalletIcon,
 }
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
+
+/** The same wallet can have different IDs for its normal connector and the EIP-6963 instances, so we include rDNS as a good additional candidate */
+const getConnectorWalletIds = (connector: Connector) => [connector.id, ...toArray(connector.rdns)]
 
 const WalletIcon = ({ connector }: { connector: Connector }) =>
   (Icon =>
@@ -69,6 +75,27 @@ export const WagmiConnectModal = () => {
   const { connectors, connect, showModal, closeModal } = useWallet()
   const [error, setError] = useState<unknown>(null)
   const [connectingToId, setConnectingToId] = useState<string | null>(null)
+  const isSafeApp = typeof window !== 'undefined' && window !== window.parent
+
+  const visibleConnectors = useMemo(
+    () =>
+      connectors
+        // Safe connector only works inside Safe applications, which are loaded in iframes
+        .filter(connector => connector.type !== 'safe' || isSafeApp)
+        // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
+        .toReversed()
+        // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
+        .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
+        // Remove EIP-6963 dupes if there's already a connector manually added
+        // Keep the last duplicate so manual connectors win after EIP-6963 connectors are moved to the top.
+        .filter(
+          (connector, index, connectors) =>
+            connectors.findLastIndex(other =>
+              getConnectorWalletIds(connector).some(id => getConnectorWalletIds(other).includes(id)),
+            ) === index,
+        ),
+    [connectors, isSafeApp],
+  )
 
   const onConnect = useCallback(
     async (connector: Connector) => {
@@ -117,21 +144,14 @@ export const WagmiConnectModal = () => {
         </Alert>
       ) : null}
       <MenuList>
-        {connectors
-          // Safe connector only works inside Safe applications, which are loaded in iframes
-          .filter(connector => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent))
-          // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
-          .toReversed()
-          // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
-          .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
-          .map(connector => (
-            <WalletListItem
-              key={connector.id}
-              connector={connector}
-              onConnect={onConnect}
-              isLoading={connectingToId == connector.id}
-            />
-          ))}
+        {visibleConnectors.map(connector => (
+          <WalletListItem
+            key={connector.id}
+            connector={connector}
+            onConnect={onConnect}
+            isLoading={connectingToId == connector.id}
+          />
+        ))}
       </MenuList>
     </ModalDialog>
   )

@@ -4,11 +4,18 @@ import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice }
 import { oneToken } from '@cy/support/helpers/tokens'
 import { fromEntries, range } from '@primitives/objects.utils'
 
-const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
+export const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
 
 // keep the general pool TVL below the special HighTVL row to guarantee ordering in tests
 const oneTvl = () => oneFloat(MAX_USD_VALUE)
+
+const oneApiToken = (token: ReturnType<typeof oneToken>) => ({
+  symbol: token.symbol,
+  address: token.address,
+  rebasing_yield: null,
+  rebasing_yield_apr: null,
+})
 
 const oneLendingPool = (
   chain: Chain,
@@ -70,18 +77,8 @@ const oneLendingPool = (
     borrowed_balance: borrowedBalance,
     collateral_balance_usd: collateralBalanceUsd,
     borrowed_balance_usd: borrowedBalanceUsd,
-    collateral_token: {
-      symbol: collateral.symbol,
-      address: collateral.address,
-      rebasing_yield: null,
-      rebasing_yield_apr: null,
-    },
-    borrowed_token: {
-      symbol: borrowed.symbol,
-      address: borrowed.address,
-      rebasing_yield: null,
-      rebasing_yield_apr: null,
-    },
+    collateral_token: oneApiToken(collateral),
+    borrowed_token: oneApiToken(borrowed),
     extra_reward_apr: [],
     created_at: (oneDate().getTime() / 1000) as unknown as TimestampResponse,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
@@ -136,20 +133,56 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
   cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=day&fetch_on_chain=true&limit=7', {
     body: {
       chain,
-      data: range(84).map(i => ({
-        borrow_apy: i / 2, // increasing APY, graph should be green
-        borrow_apr: i / 2, // increasing APR, graph should be green
-        borrow_total_apy: i / 2 - 1,
-        borrow_total_apr: i / 2 - 1,
-        lend_apy: 2 / (i + 1), // decreasing APY, graph should be red
-        lend_apr: 2 / (i + 1),
-        lend_apr_crv_0_boost: 0,
-        lend_apr_crv_max_boost: 0,
-        timestamp: new Date('2024-12-24T').getTime() - i * 4 * HOUR, // 4h intervals
-        extra_rewards_apr: [],
-        collateral_token: oneToken(chain),
-        borrowed_token: oneToken(chain),
-      })),
+      data: range(84).map(i => {
+        const collateral = oneToken(chain)
+        const borrowed = oneToken(chain)
+        const collateralPrice = collateral.usdPrice ?? onePrice()
+        const borrowedPrice = borrowed.usdPrice ?? onePrice()
+        const totalDebt = i + 1
+        const totalAssets = totalDebt + 10
+        const minted = i
+        const redeemed = i / 2
+        const minBand = i
+
+        return {
+          rate: i / 100,
+          borrow_apy: i / 2, // increasing APY, graph should be green
+          borrow_apr: i / 2, // increasing APR, graph should be green
+          borrow_total_apy: i / 2 - 1,
+          borrow_total_apr: i / 2 - 1,
+          lend_apy: 2 / (i + 1), // decreasing APY, graph should be red
+          lend_apr: 2 / (i + 1),
+          lend_apr_crv_0_boost: 0,
+          lend_apr_crv_max_boost: 0,
+          liquidation_discount: 0.04,
+          loan_discount: 0.02,
+          n_loans: i,
+          price_oracle: collateralPrice,
+          amm_price: collateralPrice,
+          base_price: borrowedPrice,
+          total_debt: totalDebt,
+          total_debt_usd: totalDebt * borrowedPrice,
+          total_assets: totalAssets,
+          total_assets_usd: totalAssets * borrowedPrice,
+          minted,
+          redeemed,
+          minted_usd: minted * borrowedPrice,
+          redeemed_usd: redeemed * borrowedPrice,
+          min_band: minBand,
+          max_band: minBand + 10,
+          collateral_balance: totalAssets / collateralPrice,
+          collateral_balance_usd: totalAssets,
+          borrowed_balance: totalDebt / borrowedPrice,
+          borrowed_balance_usd: totalDebt,
+          amm_a: 100,
+          sum_debt_squared: totalDebt * totalDebt,
+          timestamp: new Date(Date.UTC(2024, 11, 24) - i * 4 * HOUR).toISOString(), // 4h intervals
+          extra_rewards_apr: [],
+          collateral_token: oneApiToken(collateral),
+          borrowed_token: oneApiToken(borrowed),
+          max_ltv: 75,
+        }
+      }),
     },
   })
 
