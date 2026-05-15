@@ -10,6 +10,7 @@ import type { TooltipProps } from '../Tooltip'
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     type?: 'numeric' // aligns cell content to the right
+    unit?: 'percentage' | 'dollar' // used when displaying the filter's serialized value
     hidden?: boolean // todo: get rid of this property, use column visibility, it breaks e.g. column.getIsLastColumn()
     variant?: TypographyVariantKey
     tooltip?: Omit<TooltipProps, 'children'>

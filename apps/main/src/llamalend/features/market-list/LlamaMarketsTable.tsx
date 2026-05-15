@@ -21,6 +21,7 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
 import { LlamaTableFiltersPopover } from './filters/LlamaTableFiltersPopover'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
@@ -100,6 +101,10 @@ export const LlamaMarketsTable = ({
             rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />}
           />
         }
+        collapsibleFilters={{
+          collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
+          hasActiveFilters: !!getHiddenCount(table),
+        }}
         popoverFilters={
           <LlamaTableFiltersPopover
             hiddenCount={getHiddenCount(table)}

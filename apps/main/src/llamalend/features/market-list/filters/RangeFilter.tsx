@@ -79,6 +79,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   }) => (
     <NumericTextField
       size="small"
+      variant="outlined"
       fullWidth
       value={decimal(range[index])}
       min={decimal(min)}
