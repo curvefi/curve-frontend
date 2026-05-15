@@ -39,6 +39,8 @@ const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
 // This keeps the layout from re-rendering when the visible range is effectively unchanged.
 const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
+const hasVisiblePriceRangeChanged = (previous: { min: number; max: number }, next: { min: number; max: number }) =>
+  Math.max(Math.abs(previous.min - next.min), Math.abs(previous.max - next.max)) >= VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
 
 type ChartAndActivityLayoutProps = {
   chart: {
@@ -71,9 +73,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
     setCandlePriceRange(previous =>
-      previous && Math.abs(Math.max(previous.min - min, previous.max - max)) < VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
-        ? previous
-        : { min, max },
+      previous && !hasVisiblePriceRangeChanged(previous, { min, max }) ? previous : { min, max },
     )
   }, [])
 
