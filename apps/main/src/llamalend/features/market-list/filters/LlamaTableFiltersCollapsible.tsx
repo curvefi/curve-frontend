@@ -11,6 +11,7 @@ import { LlamaMarketColumnId } from '../columns/columns.enum'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { SelectedFilterChips } from './SelectedFilterChips'
 import { getInlinedItemsVisibility } from './utils'
+import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -66,15 +67,22 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
           const [visibleLabels, hiddenLabels] = getInlinedItemsVisibility(labels)
 
           return (
-            !!visibleLabels.length && (
-              <SelectedFilterChips key={id} title={column?.columnDef.header as string}>
-                {visibleLabels.map(label => (
-                  <ActiveFilterChip key={`${id}-${label}`} label={label} />
-                ))}
-                <HiddenInlinedItems
-                  hiddenSelectedItemsLength={hiddenLabels.length}
-                  renderItem={label => <ActiveFilterChip label={label} />}
-                />
+            !!labels?.length && (
+              <SelectedFilterChips key={`selected-chip-${id}`} title={column?.columnDef.header as string}>
+                {/* Special chip for the chains filter */}
+                {id === LlamaMarketColumnId.Chain ? (
+                  <ChainFilterChips chains={labels} selectedChains={labels} toggleChain={noop} />
+                ) : (
+                  <>
+                    {visibleLabels.map(label => (
+                      <ActiveFilterChip key={`${label}-${id}`} label={label} />
+                    ))}
+                    <HiddenInlinedItems
+                      hiddenSelectedItemsLength={hiddenLabels.length}
+                      renderItem={label => <ActiveFilterChip label={label} />}
+                    />
+                  </>
+                )}
               </SelectedFilterChips>
             )
           )
