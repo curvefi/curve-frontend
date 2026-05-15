@@ -150,18 +150,15 @@ export const useForm = <T extends FieldValues = FieldValues>({
     ),
     setError: useCallback(
       (field, error) =>
-        field === 'root'
-          ? form.setErrorMap({ onSubmit: { form: error, fields: {} } })
-          : form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: error } })),
+        form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: error } })),
       [form],
     ),
     clearErrors: useCallback(
-      field =>
-        field === 'root'
-          ? form.setErrorMap({ onSubmit: undefined })
-          : form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: undefined } })),
+      field => form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: undefined } })),
       [form],
     ),
+    setRootError: useCallback(error => form.setErrorMap({ onSubmit: { form: error, fields: {} } }), [form]),
+    clearRootError: useCallback(() => form.setErrorMap({ onSubmit: undefined }), [form]),
     isTouched: useCallback((...fields) => fields.some(field => touchedFields[field] === true), [touchedFields]),
     formState: {
       isSubmitting: useStore(form.store, state => state.isSubmitting),

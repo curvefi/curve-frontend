@@ -39,7 +39,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     },
   })
   const {
-    setError,
+    setRootError,
     formState: { isSubmitting },
     handleSubmit,
   } = form
@@ -54,17 +54,9 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { data: network } = useNetworkByChain({ chainId })
 
   const onSubmit = useCallback(
-    ({ rewardTokenId, distributorId }: AddRewardFormValues) => {
-      addRewardToken(
-        { rewardTokenId, distributorId },
-        {
-          onError: (error: Error) => {
-            setError('root', { type: 'manual', message: error.message })
-          },
-        },
-      )
-    },
-    [addRewardToken, setError],
+    ({ rewardTokenId, distributorId }: AddRewardFormValues) =>
+      addRewardToken({ rewardTokenId, distributorId }, { onError: setRootError }),
+    [addRewardToken, setRootError],
   )
 
   const isFormDisabled = !isDepositRewardAvailable

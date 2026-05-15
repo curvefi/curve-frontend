@@ -24,7 +24,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     watchValue,
     update: updateForm,
     getValue,
-    setError,
+    setRootError,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
@@ -46,25 +46,13 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   const onSubmitApproval = useCallback(() => {
     const onApproveSuccess = (data: string[]) => {
       updateForm({ step: DepositRewardStep.DEPOSIT }, { automated: true })
-      setLatestTxInfo({
-        description: t`Reward approved`,
-        txHash: scanTxPath(network, data[0]),
-      })
+      setLatestTxInfo({ description: t`Reward approved`, txHash: scanTxPath(network, data[0]) })
     }
-
-    const onApproveError = (error: Error) => {
-      setError('root', { message: error.message })
-    }
-
     depositRewardApprove(
-      {
-        rewardTokenId: getValue('rewardTokenId'),
-        amount: getValue('amount'),
-        userBalance: getValue('userBalance'),
-      },
-      { onSuccess: onApproveSuccess, onError: onApproveError },
+      { rewardTokenId: getValue('rewardTokenId'), amount: getValue('amount'), userBalance: getValue('userBalance') },
+      { onSuccess: onApproveSuccess, onError: setRootError },
     )
-  }, [depositRewardApprove, getValue, network, setError, updateForm])
+  }, [depositRewardApprove, getValue, network, setRootError, updateForm])
 
   const onSubmitDeposit = useCallback(() => {
     depositReward(
@@ -82,12 +70,10 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
             txHash: scanTxPath(network, data),
           })
         },
-        onError: (error: Error) => {
-          setError('root', { message: error.message })
-        },
+        onError: setRootError,
       },
     )
-  }, [depositReward, getValue, network, setError, updateForm])
+  }, [depositReward, getValue, network, setRootError, updateForm])
 
   const { data: isDepositRewardApproved, isLoading: isLoadingDepositRewardApproved } = useGaugeDepositRewardIsApproved({
     chainId,

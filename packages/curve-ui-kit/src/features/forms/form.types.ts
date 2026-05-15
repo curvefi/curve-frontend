@@ -50,8 +50,10 @@ export type UseFormReturn<T extends FieldValues = FieldValues> = {
   getValues: () => T
   getValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
   update(updates: FormUpdates<T>, options?: { automated?: true }): void
-  setError: (field: ErrorKey<T>, error: FormError) => void
-  clearErrors: (field: ErrorKey<T>) => void
+  setError: (field: FieldPath<T>, error: FormError) => void
+  clearErrors: (field: FieldPath<T>) => void
+  setRootError: (error: FormError) => void
+  clearRootError: () => void
   isTouched: (...fields: FieldPath<T>[]) => boolean
   formState: FormState<T>
 }
