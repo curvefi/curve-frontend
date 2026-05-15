@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { parseRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
+import { parseListFilter, parseRangeFilter, RANGE_SEPARATOR } from '@ui-kit/shared/ui/DataTable/filters'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -28,11 +28,11 @@ const getRangeLabel = (serializedRange: string | undefined, unit?: 'percentage' 
 
 // Normalize serialized filter values into chip labels
 const getFilterLabels = (serializedFilter: string | undefined, unit?: 'percentage' | 'dollar') => {
-  if (serializedFilter?.includes('~')) {
+  if (serializedFilter?.includes(RANGE_SEPARATOR)) {
     const label = getRangeLabel(serializedFilter, unit)
     return label ? Array(label) : []
   }
-  return serializedFilter?.split(',').filter(Boolean)
+  return parseListFilter(serializedFilter)
 }
 
 export const LlamaTableFiltersCollapsible = <T extends TableItem>({
