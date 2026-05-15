@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { notFalsyArray } from '@primitives/objects.utils'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
@@ -21,10 +20,12 @@ export const LlamaChainFilterChips = ({
 } & FilterProps<LlamaMarketColumnId>) => {
   const chains = useMemo(
     () =>
-      getUniqueSortedStrings(
-        notFalsyArray(marketsQuery.data).filter(market => !market.deprecatedMessage || market.userHasPositions),
-        LlamaMarketColumnId.Chain,
-      ),
+      marketsQuery.data
+        ? getUniqueSortedStrings(
+            marketsQuery.data.filter(market => !market.deprecatedMessage || market.userHasPositions),
+            LlamaMarketColumnId.Chain,
+          )
+        : [],
     [marketsQuery.data],
   )
   const selectedChains = useMemo(
