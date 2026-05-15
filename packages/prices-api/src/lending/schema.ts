@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, decimal, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, decimal, timestamp } from '../schemas'
 
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
@@ -38,7 +37,7 @@ const oraclePool = z
 
 const oracleOHLC = z
   .object({
-    time: timestampResponse,
+    time: timestamp,
     open: z.number().nullable().optional(),
     close: z.number().nullable().optional(),
     high: z.number().nullable().optional(),
@@ -47,7 +46,6 @@ const oracleOHLC = z
     oracle_price: z.number().nullable().optional(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({ ...data, time: parseTimestamp(data.time) }))
 
 type RawOracleOHLC = z.infer<typeof oracleOHLC>
 type CompleteOracleOHLC = RawOracleOHLC & {
@@ -106,7 +104,7 @@ const leverage = z
 
 const userCollateralEvent = z
   .object({
-    dt: timestampResponse,
+    dt: timestamp,
     transaction_hash: address,
     type: z.enum(['Borrow', 'Liquidate', 'Repay', 'RemoveCollateral']),
     user: address,
@@ -127,7 +125,7 @@ const userCollateralEvent = z
   .transform(camelizeKeys)
   .transform(({ dt, transactionHash, collateralChangeUsd, loanChangeUsd, ...event }) => ({
     ...event,
-    timestamp: parseTimestamp(dt),
+    timestamp: dt,
     txHash: transactionHash,
     collateralChangeUsd: collateralChangeUsd ?? undefined,
     loanChangeUsd: loanChangeUsd ?? undefined,

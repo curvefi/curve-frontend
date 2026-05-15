@@ -1,16 +1,13 @@
 import { z } from 'zod/v4'
-import { timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { timestamp } from '../schemas'
 
-const ohlc = z
-  .object({
-    time: timestampResponse,
-    open: z.number(),
-    close: z.number(),
-    high: z.number(),
-    low: z.number(),
-  })
-  .transform(({ time, ...ohlc }) => ({ ...ohlc, time: parseTimestamp(time) }))
+const ohlc = z.object({
+  time: timestamp,
+  open: z.number(),
+  close: z.number(),
+  high: z.number(),
+  low: z.number(),
+})
 
 export const getOHLCResponse = z
   .object({

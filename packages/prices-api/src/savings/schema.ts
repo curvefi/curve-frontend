@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const numberLike = z.union([z.number(), z.string()]).transform(value => Number(value))
 
@@ -13,7 +12,7 @@ const event = z
     assets: z.string(),
     shares: z.string(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     transaction_hash: address,
   })
   .transform(camelizeKeys)
@@ -25,13 +24,13 @@ const event = z
     assets: BigInt(data.assets),
     supply: BigInt(data.shares),
     blockNumber: data.blockNumber,
-    timestamp: parseTimestamp(data.timestamp),
+    timestamp: data.timestamp,
     txHash: data.transactionHash,
   }))
 
 const yieldData = z
   .object({
-    timestamp: timestampResponse,
+    timestamp,
     assets: z.number(),
     supply: z.number(),
     proj_apy: numberLike,
@@ -39,7 +38,7 @@ const yieldData = z
   .transform(camelizeKeys)
   .transform(({ timestamp, projApy, ...yieldData }) => ({
     ...yieldData,
-    timestamp: parseTimestamp(timestamp),
+    timestamp,
     apyProjected: projApy,
   }))
 
@@ -53,7 +52,7 @@ const revenue = z
     total_fees: z.string(),
     protocol_fees: z.string(),
     tx_hash: address,
-    dt: timestampResponse,
+    dt: timestamp,
   })
   .transform(camelizeKeys)
   .transform(data => ({
@@ -65,7 +64,7 @@ const revenue = z
     feesTotal: BigInt(data.totalFees),
     feesProtocol: BigInt(data.protocolFees),
     txHash: data.txHash,
-    timestamp: parseTimestamp(data.dt),
+    timestamp: data.dt,
   }))
 
 export const getEventsResponse = z.object({
@@ -90,14 +89,14 @@ export const getRevenueResponse = z
 
 export const getStatisticsResponse = z
   .object({
-    last_updated: timestampResponse,
+    last_updated: timestamp,
     last_updated_block: z.number(),
     proj_apy: z.number(),
     supply: z.number(),
   })
   .transform(camelizeKeys)
   .transform(data => ({
-    lastUpdated: parseTimestamp(data.lastUpdated),
+    lastUpdated: data.lastUpdated,
     lastUpdatedBlock: data.lastUpdatedBlock,
     apyProjected: data.projApy,
     supply: data.supply,

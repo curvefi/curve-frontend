@@ -1,7 +1,6 @@
 import { z } from 'zod/v4'
 import type { Chain } from '..'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const gauge = z
   .object({
@@ -43,8 +42,8 @@ const gauge = z
     gauge_relative_weight_7d_delta: z.number().nullable(),
     gauge_relative_weight_60d_delta: z.number().nullable(),
     creation_tx: address,
-    creation_date: timestampResponse,
-    last_vote_date: timestampResponse.nullable(),
+    creation_date: timestamp,
+    last_vote_date: timestamp.nullable(),
     last_vote_tx: address.nullable(),
   })
   .transform(camelizeKeys)
@@ -83,9 +82,9 @@ const gauge = z
     weightRelativeDelta7d: data.gaugeRelativeWeight7dDelta ? data.gaugeRelativeWeight7dDelta : undefined,
     weightRelativeDelta60d: data.gaugeRelativeWeight60dDelta ? data.gaugeRelativeWeight60dDelta : undefined,
     creationTx: data.creationTx,
-    creationDate: parseTimestamp(data.creationDate),
+    creationDate: data.creationDate,
     lastVoteTx: data.lastVoteTx ?? undefined,
-    lastVoteDate: data.lastVoteDate ? parseTimestamp(data.lastVoteDate) : undefined,
+    lastVoteDate: data.lastVoteDate ?? undefined,
   }))
 
 const gaugeVote = z
@@ -93,11 +92,11 @@ const gaugeVote = z
     user: address,
     weight: z.number(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     transaction: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({ ...data, timestamp: parseTimestamp(data.timestamp), tx: data.transaction }))
+  .transform(data => ({ ...data, tx: data.transaction }))
 
 const weightHistory = z
   .object({
@@ -124,7 +123,7 @@ export const getDeploymentResponse = z
     decoded_calldata: z.string().nullable(),
     transaction_hash: address,
     block_number: z.number(),
-    dt: timestampResponse,
+    dt: timestamp,
   })
   .transform(camelizeKeys)
   .transform(data => ({
@@ -133,7 +132,7 @@ export const getDeploymentResponse = z
     calldata: data.calldata,
     calldataDecoded: data.decodedCalldata ?? undefined,
     blockNumber: data.blockNumber,
-    timestamp: parseTimestamp(data.dt),
+    timestamp: data.dt,
   }))
 
 const userGaugeVote = z
@@ -142,14 +141,14 @@ const userGaugeVote = z
     gauge_name: z.string().nullable(),
     weight: z.number(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     transaction: address,
   })
   .transform(camelizeKeys)
   .transform(data => ({
     ...data,
     gaugeName: data.gaugeName ?? undefined,
-    timestamp: parseTimestamp(data.timestamp),
+    timestamp: data.timestamp,
     txHash: data.transaction,
   }))
 

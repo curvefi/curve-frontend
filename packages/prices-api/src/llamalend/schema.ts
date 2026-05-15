@@ -1,8 +1,7 @@
 import { z } from 'zod/v4'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
-import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, timestamp } from '../schemas'
 
 const token = z
   .object({
@@ -70,7 +69,7 @@ const market = z
     borrowed_token: token,
     leverage: z.number(),
     extra_reward_apr: z.array(extraRewardApr),
-    created_at: timestampResponse,
+    created_at: timestamp,
     max_ltv: z.number(),
   })
   .transform(camelizeKeys)
@@ -80,7 +79,7 @@ const market = z
     aprLend: lendApr,
     aprLendCrv0Boost: lendAprCrv0Boost,
     aprLendCrvMaxBoost: lendAprCrvMaxBoost,
-    createdAt: parseTimestamp(createdAt),
+    createdAt,
   }))
 
 const snapshot = z
@@ -119,7 +118,7 @@ const snapshot = z
     extra_rewards_apr: z.array(extraRewardApr),
     collateral_token: token,
     borrowed_token: token,
-    timestamp: timestampResponse,
+    timestamp,
     max_ltv: z.number(),
   })
   .transform(camelizeKeys)
@@ -144,7 +143,7 @@ const snapshot = z
       lendAprCrv0Boost: lendAprCrv0Boost / 100,
       lendAprCrvMaxBoost: lendAprCrvMaxBoost / 100,
       numLoans: nLoans,
-      timestamp: parseTimestamp(timestamp),
+      timestamp,
       discountLiquidation: liquidationDiscount,
       discountLoan: loanDiscount,
       extraRewardApr: extraRewardsApr,
@@ -155,23 +154,23 @@ const userMarket = z
   .object({
     market_name: z.string(),
     controller: address,
-    first_snapshot: timestampResponse,
-    last_snapshot: timestampResponse,
+    first_snapshot: timestamp,
+    last_snapshot: timestamp,
   })
   .transform(camelizeKeys)
   .transform(data => ({
     name: data.marketName,
     controller: data.controller,
-    snapshotFirst: parseTimestamp(data.firstSnapshot),
-    snapshotLast: parseTimestamp(data.lastSnapshot),
+    snapshotFirst: data.firstSnapshot,
+    snapshotLast: data.lastSnapshot,
   }))
 
 const userLendingPosition = z
   .object({
     market_name: z.string(),
     vault_address: address,
-    first_deposit: timestampResponse,
-    last_activity: timestampResponse,
+    first_deposit: timestamp,
+    last_activity: timestamp,
     current_shares: z.string(),
     current_shares_in_gauge: z.string(),
     boost_multiplier: z.number().nullable(),
@@ -180,8 +179,8 @@ const userLendingPosition = z
   .transform(data => ({
     marketName: data.marketName,
     vaultAddress: data.vaultAddress,
-    firstDeposit: parseTimestamp(data.firstDeposit),
-    lastActivity: parseTimestamp(data.lastActivity),
+    firstDeposit: data.firstDeposit,
+    lastActivity: data.lastActivity,
     currentShares: parseFloat(data.currentShares),
     currentSharesInGauge: parseFloat(data.currentSharesInGauge),
     boostMultiplier: data.boostMultiplier,
@@ -205,10 +204,9 @@ const userMarketStats = z
     collateral_up: z.number(),
     oracle_price: z.number(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
   })
   .transform(camelizeKeys)
-  .transform(({ timestamp, ...stats }) => ({ ...stats, timestamp: parseTimestamp(timestamp) }))
 
 const userMarketEarnings = z
   .object({
@@ -270,8 +268,8 @@ const userMarketEarnings = z
 const marketUser = z
   .object({
     user: z.string(),
-    first: timestampResponse,
-    last: timestampResponse,
+    first: timestamp,
+    last: timestamp,
     debt: z.string(),
     health: z.string(),
     health_full: z.string(),
@@ -286,8 +284,8 @@ const marketUser = z
   .transform(camelizeKeys)
   .transform(data => ({
     user: data.user,
-    first: parseTimestamp(data.first),
-    last: parseTimestamp(data.last),
+    first: data.first,
+    last: data.last,
     debt: parseFloat(data.debt),
     health: parseFloat(data.health),
     healthFull: parseFloat(data.healthFull),
@@ -304,7 +302,7 @@ const transformLeverageEvent = <T extends { eventType: string }>({ eventType, ..
 
 const collateralEvent = z
   .object({
-    dt: timestampResponse,
+    dt: timestamp,
     transaction_hash: address,
     type: z.enum(['Borrow', 'Deposit', 'Liquidate', 'Repay', 'RemoveCollateral']),
     user: address,
@@ -351,7 +349,7 @@ const collateralEvent = z
   .transform(camelizeKeys)
   .transform(({ dt, transactionHash, collateralChangeUsd, loanChangeUsd, liquidation, leverage, ...event }) => ({
     ...event,
-    timestamp: parseTimestamp(dt),
+    timestamp: dt,
     txHash: transactionHash,
     collateralChangeUsd: collateralChangeUsd ?? undefined,
     loanChangeUsd: loanChangeUsd ?? undefined,

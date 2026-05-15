@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, hex, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, hex, timestamp } from '../schemas'
 
 const adjacentPool = z.object({
   address,
@@ -16,13 +15,12 @@ const transaction = z
   .object({
     tx_hash: hex,
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     volume: z.number(),
     adjacent_volume: z.number(),
     adjacent_pools: z.array(adjacentPool),
   })
   .transform(camelizeKeys)
-  .transform(({ timestamp, ...transaction }) => ({ ...transaction, timestamp: parseTimestamp(timestamp) }))
 
 const aggregatedStats = z
   .object({
@@ -65,7 +63,7 @@ const yieldBasisHistoryItem = z
     yb_total_amm_balance: z.string(),
     yb_total_amm_debt: z.string(),
     yb_max_debt: z.string(),
-    dt: timestampResponse,
+    dt: timestamp,
     block_number: z.number(),
   })
   .transform(camelizeKeys)
@@ -75,7 +73,7 @@ const yieldBasisHistoryItem = z
     ybTotalAmmBalance: parseFloat(data.ybTotalAmmBalance),
     ybTotalAmmDebt: parseFloat(data.ybTotalAmmDebt),
     ybMaxDebt: parseFloat(data.ybMaxDebt),
-    timestamp: parseTimestamp(data.dt),
+    timestamp: data.dt,
     blockNumber: data.blockNumber,
   }))
 
@@ -101,12 +99,12 @@ export const ybAggregatedVolumeResponse = z.object({
 
 export const yieldBasisSupplyResponse = z
   .object({
-    cached_at: timestampResponse.nullable().optional(),
+    cached_at: timestamp.nullable().optional(),
     data: yieldBasisSupplyWithMint,
   })
   .transform(camelizeKeys)
   .transform(data => ({
-    cachedAt: data.cachedAt == null ? undefined : parseTimestamp(data.cachedAt),
+    cachedAt: data.cachedAt ?? undefined,
     ybFactoryBalance: parseFloat(data.data.ybFactoryBalance),
     ybTotalAllocated: parseFloat(data.data.ybTotalAllocated),
     ybTotalAmmBalance: parseFloat(data.data.ybTotalAmmBalance),

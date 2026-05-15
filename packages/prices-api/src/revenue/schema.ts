@@ -1,7 +1,6 @@
 import { z } from 'zod/v4'
 import type { Chain } from '..'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const coin = z
   .object({
@@ -50,22 +49,21 @@ const crvUsdWeekly = z
     controller: address,
     collateral: z.string(),
     fees_usd: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
   })
   .transform(camelizeKeys)
-  .transform(({ timestamp, ...fees }) => ({ ...fees, timestamp: parseTimestamp(timestamp) }))
 
 const poolsWeekly = z
   .object({
     chain: z.string(),
     fees_usd: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
   })
   .transform(camelizeKeys)
   .transform(({ timestamp, ...fees }) => ({
     ...fees,
     chain: fees.chain as Chain,
-    timestamp: parseTimestamp(timestamp),
+    timestamp,
   }))
 
 const cushion = z
@@ -79,11 +77,10 @@ const cushion = z
 
 const distribution = z
   .object({
-    timestamp: timestampResponse,
+    timestamp,
     fees_usd: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ timestamp, ...fees }) => ({ ...fees, timestamp: parseTimestamp(timestamp) }))
 
 const cowSwapSettlement = z
   .object({
@@ -95,11 +92,11 @@ const cowSwapSettlement = z
     epoch: z.number(),
     tx_hash: address,
     block_number: z.number(),
-    dt: timestampResponse,
+    dt: timestamp,
   })
   .transform(camelizeKeys)
   .transform(data => ({
-    timestamp: parseTimestamp(data.dt),
+    timestamp: data.dt,
     coin: data.coin,
     amount: BigInt(data.amount),
     amountFee: BigInt(data.feeAmount),

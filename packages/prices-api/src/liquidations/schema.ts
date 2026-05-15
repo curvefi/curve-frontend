@@ -1,17 +1,16 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, timestamp } from '../schemas'
 
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
 
 const softLiqRatio = z
   .object({
-    timestamp: timestampResponse,
+    timestamp,
     proportion: z.number(),
   })
   .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
+    timestamp: data.timestamp,
     proportion: data.proportion / 100,
   }))
 
@@ -27,20 +26,20 @@ const liquidationDetails = z
     debt: z.number(),
     n1: z.number(),
     n2: z.number(),
-    dt: timestampResponse,
+    dt: timestamp,
     tx: address,
     block: z.number(),
   })
   .transform(camelizeKeys)
   .transform(({ dt, oraclePrice, ...details }) => ({
     ...details,
-    timestamp: parseTimestamp(dt),
+    timestamp: dt,
     priceOracle: oraclePrice,
   }))
 
 const liquidationAggregate = z
   .object({
-    timestamp: timestampResponse,
+    timestamp,
     self_count: z.number(),
     hard_count: z.number(),
     self_value: z.number(),
@@ -48,7 +47,6 @@ const liquidationAggregate = z
     price: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ timestamp, ...aggregate }) => ({ ...aggregate, timestamp: parseTimestamp(timestamp) }))
 
 export const getLiqOverviewResponse = z
   .object({
@@ -80,7 +78,7 @@ export const getLiqOverviewResponse = z
 
 const liqLosses = z
   .object({
-    timestamp: timestampResponse,
+    timestamp,
     median_pct_loss: z.number(),
     avg_pct_loss: z.number(),
     median_abs_loss: z.number(),
@@ -91,7 +89,7 @@ const liqLosses = z
   })
   .transform(camelizeKeys)
   .transform(data => ({
-    timestamp: parseTimestamp(data.timestamp),
+    timestamp: data.timestamp,
     pctLossAverage: data.avgPctLoss,
     pctLossMedian: data.medianPctLoss,
     absoluteLossAverage: data.avgAbsLoss,

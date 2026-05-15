@@ -1,24 +1,21 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 export const getUsdPriceResponse = z
   .object({
     data: z.object({
       address,
       usd_price: z.number(),
-      last_updated: timestampResponse,
+      last_updated: timestamp,
     }),
   })
   .transform(camelizeKeys)
-  .transform(({ data: { lastUpdated, ...price } }) => ({ ...price, lastUpdated: parseTimestamp(lastUpdated) }))
+  .transform(({ data: { lastUpdated, ...price } }) => ({ ...price, lastUpdated }))
 
-const usdPriceHistory = z
-  .object({
-    price: z.number(),
-    timestamp: timestampResponse,
-  })
-  .transform(data => ({ price: data.price, timestamp: parseTimestamp(data.timestamp) }))
+const usdPriceHistory = z.object({
+  price: z.number(),
+  timestamp,
+})
 
 export const getUsdPriceHistoryResponse = z
   .object({

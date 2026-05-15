@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 export const proposalType = z.enum(['ownership', 'parameter'])
 export type ProposalType = z.infer<typeof proposalType>
@@ -24,16 +23,16 @@ const proposalShape = {
   total_supply: z.string(),
   executed: z.boolean(),
   execution_tx: address.nullable(),
-  execution_date: timestampResponse.nullable(),
+  execution_date: timestamp.nullable(),
   transaction_hash: address,
-  dt: timestampResponse,
+  dt: timestamp,
 }
 
 const rawProposal = z.object(proposalShape).transform(camelizeKeys)
 type RawProposal = z.infer<typeof rawProposal>
 
 const transformProposal = (data: RawProposal) => ({
-  timestamp: parseTimestamp(data.dt),
+  timestamp: data.dt,
   id: data.voteId,
   type: data.voteType,
   metadata: data.metadata?.startsWith('"') // Remove weird starting quote, if present.
@@ -49,7 +48,7 @@ const transformProposal = (data: RawProposal) => ({
   votesFor: Number(BigInt(data.votesFor)) / 10 ** 18, // Voting power in veCRV.
   votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18, // Voting power in veCRV.
   executionTx: data.executionTx,
-  executionDate: data.executionDate ? parseTimestamp(data.executionDate) : null,
+  executionDate: data.executionDate ?? null,
   executed: data.executed,
   totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18, // Voting power in veCRV.
   txCreation: data.transactionHash,

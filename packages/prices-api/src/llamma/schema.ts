@@ -1,7 +1,6 @@
 import { z } from 'zod/v4'
 import type { Token } from '@primitives/address.utils'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const token = z.object({ symbol: z.string(), address }).transform(data => data as Token)
 
@@ -27,7 +26,7 @@ const llammaEvent = z
     deposit: deposit.nullable(),
     withdrawal: withdrawal.nullable().optional(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     transaction_hash: address,
   })
   .transform(camelizeKeys)
@@ -42,7 +41,7 @@ const llammaEvent = z
       : null,
     withdrawal: data.withdrawal ?? null,
     blockNumber: data.blockNumber,
-    timestamp: parseTimestamp(data.timestamp),
+    timestamp: data.timestamp,
     txHash: data.transactionHash,
   }))
 
@@ -59,7 +58,7 @@ const llammaTrade = z
     fee_x: z.number().optional(),
     fee_y: z.number().optional(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     transaction_hash: address,
   })
   .transform(camelizeKeys)
@@ -81,13 +80,13 @@ const llammaTrade = z
     feeX: data.feeX ?? 0,
     feeY: data.feeY ?? 0,
     blockNumber: data.blockNumber,
-    timestamp: parseTimestamp(data.timestamp),
+    timestamp: data.timestamp,
     txHash: data.transactionHash,
   }))
 
 const llammaOHLC = z
   .object({
-    time: timestampResponse,
+    time: timestamp,
     open: z.number().nullable(),
     close: z.number().nullable(),
     high: z.number().nullable(),
@@ -97,7 +96,6 @@ const llammaOHLC = z
     volume: z.number().nullable(),
   })
   .transform(camelizeKeys)
-  .transform(({ time, ...ohlc }) => ({ ...ohlc, time: parseTimestamp(time) }))
 
 export const getLlammaEventsResponse = z
   .object({

@@ -1,7 +1,6 @@
 import { z } from 'zod/v4'
 import type { Address } from '@primitives/address.utils'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const lockType = z.enum(['CREATE_LOCK', 'INCREASE_LOCK_AMOUNT', 'INCREASE_UNLOCK_TIME', 'WITHDRAW'])
 export type LockType = z.infer<typeof lockType>
@@ -25,28 +24,28 @@ const votesOverview = z
 
 const locksDaily = z
   .object({
-    day: timestampResponse,
+    day: timestamp,
     amount: z.string(),
   })
   .transform(data => ({
-    day: parseTimestamp(data.day),
+    day: data.day,
     amount: BigInt(data.amount),
   }))
 
 const userLock = z
   .object({
     amount: z.string(),
-    unlock_time: timestampResponse,
+    unlock_time: timestamp,
     lock_type: lockType,
     locked_balance: z.string(),
-    dt: timestampResponse,
+    dt: timestamp,
     transaction_hash: z.string(),
   })
   .transform(camelizeKeys)
   .transform(data => ({
-    timestamp: parseTimestamp(data.dt),
+    timestamp: data.dt,
     amount: BigInt(Math.round(parseFloat(data.amount))),
-    unlockTime: parseTimestamp(data.unlockTime),
+    unlockTime: data.unlockTime,
     lockType: data.lockType,
     lockedBalance: BigInt(Math.round(parseFloat(data.lockedBalance))),
     txHash: data.transactionHash,
@@ -66,12 +65,12 @@ const supply = z
       }),
     ),
     block_number: z.number(),
-    dt: timestampResponse,
+    dt: timestamp,
     transaction_hash: address,
   })
   .transform(camelizeKeys)
   .transform(data => ({
-    timestamp: parseTimestamp(data.dt),
+    timestamp: data.dt,
     veCrvTotal: BigInt(data.totalVecrv),
     crvEscrowed: BigInt(data.escrowedCrv),
     crvSupply: BigInt(data.crvSupply),
@@ -91,7 +90,7 @@ const locker = z
     locked: z.string(),
     weight: z.string(),
     weight_ratio: z.string(),
-    unlock_time: timestampResponse.nullable(),
+    unlock_time: timestamp.nullable(),
   })
   .transform(camelizeKeys)
   .transform(data => ({
@@ -99,7 +98,7 @@ const locker = z
     locked: BigInt(Math.round(parseFloat(data.locked))),
     weight: BigInt(Math.round(parseFloat(data.weight))),
     weightRatio: parseFloat(data.weightRatio.slice(0, -1)),
-    unlockTime: data.unlockTime === null ? null : parseTimestamp(data.unlockTime),
+    unlockTime: data.unlockTime,
   }))
 
 export const getVotesOverviewResponse = z

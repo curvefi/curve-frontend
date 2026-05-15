@@ -1,29 +1,24 @@
 import { z } from 'zod/v4'
 import { chains, type Chain } from '..'
-import { address, camelizeKeys, chain, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, timestamp } from '../schemas'
 
 const activityType = z.enum(['crvusd', 'lending', 'pools', 'router', 'dao'])
 
 export type ActivityType = z.infer<typeof activityType>
 
 const activity = z.object({
-  timestamp: timestampResponse,
+  timestamp,
   chain,
   type: activityType,
 })
 
-const transactions = activity
-  .extend({
-    transactions: z.number(),
-  })
-  .transform(({ timestamp, ...item }) => ({ ...item, timestamp: parseTimestamp(timestamp) }))
+const transactions = activity.extend({
+  transactions: z.number(),
+})
 
-const users = activity
-  .extend({
-    users: z.number(),
-  })
-  .transform(({ timestamp, ...item }) => ({ ...item, timestamp: parseTimestamp(timestamp) }))
+const users = activity.extend({
+  users: z.number(),
+})
 
 export const getSupportedChainsResponse = z
   .object({
@@ -63,7 +58,7 @@ export const getTransactionsResponse = z
           z.object({
             type: activityType,
             transactions: z.number(),
-            timestamp: timestampResponse,
+            timestamp,
           }),
         ),
       }),
@@ -82,7 +77,7 @@ export const getUsersResponse = z
           z.object({
             type: activityType,
             users: z.number(),
-            timestamp: timestampResponse,
+            timestamp,
           }),
         ),
       }),
