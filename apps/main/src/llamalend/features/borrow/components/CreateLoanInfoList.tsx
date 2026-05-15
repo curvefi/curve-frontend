@@ -8,7 +8,6 @@ import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { constQ, mapQuery, q } from '@ui-kit/types/util'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
@@ -40,7 +39,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   form: UseFormReturn<CreateLoanForm>
 }) => {
-  const isOpen = isFormTouched(form, 'userCollateral', 'debt')
+  const isOpen = form.isTouched('userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   return (
     <LoanActionInfoList

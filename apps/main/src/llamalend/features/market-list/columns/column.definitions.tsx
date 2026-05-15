@@ -24,10 +24,10 @@ import {
   UtilizationCell,
 } from '../cells'
 import {
-  NetBorrowAprHeaderTooltipContent,
   CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
+  NetBorrowAprHeaderTooltipContent,
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
@@ -77,42 +77,42 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: MarketTitleCell,
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
-  columnHelper.display({
+  {
     id: LlamaMarketColumnId.UserBorrowed,
     header: headers[LlamaMarketColumnId.UserBorrowed],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
-  }),
-  columnHelper.display({
+  },
+  {
     id: LlamaMarketColumnId.UserCollateral,
     header: headers[LlamaMarketColumnId.UserCollateral],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
-  }),
-  columnHelper.display({
+  },
+  {
     id: LlamaMarketColumnId.UserEarnings,
     header: headers[LlamaMarketColumnId.UserEarnings],
     cell: PriceCell,
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
-  }),
-  columnHelper.display({
+  },
+  {
     id: LlamaMarketColumnId.UserDeposited,
     header: headers[LlamaMarketColumnId.UserDeposited],
     cell: PriceCell,
     meta: { type: 'numeric' },
     filterFn: boolFilterFn,
     sortUndefined: 'last',
-  }),
-  columnHelper.display({
+  },
+  {
     id: LlamaMarketColumnId.UserBoostMultiplier,
     header: headers[LlamaMarketColumnId.UserBoostMultiplier],
     cell: BoostCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
-  }),
+  },
   columnHelper.accessor('rates.borrowApr', {
     id: LlamaMarketColumnId.BorrowRate,
     header: headers[LlamaMarketColumnId.BorrowRate],
@@ -133,20 +133,20 @@ export const LLAMA_MARKET_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  columnHelper.display({
+  {
     id: LlamaMarketColumnId.UserLtv,
     header: headers[LlamaMarketColumnId.UserLtv],
     cell: LtvCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
-  }),
-  columnHelper.display({
+  },
+  {
     id: LlamaMarketColumnId.UserHealth,
     header: headers[LlamaMarketColumnId.UserHealth],
     cell: HealthCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
-  }),
+  },
   columnHelper.accessor('rates.lendTotalApyMinBoosted', {
     id: LlamaMarketColumnId.LendRate,
     header: headers[LlamaMarketColumnId.LendRate],

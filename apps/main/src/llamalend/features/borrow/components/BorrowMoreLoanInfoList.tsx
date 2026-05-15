@@ -22,7 +22,6 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
@@ -45,7 +44,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<BorrowMoreForm>
   routes: MarketRoutes | undefined
 }) {
-  const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
+  const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
 

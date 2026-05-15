@@ -7,26 +7,22 @@ import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.ty
 import { useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import {
+  type DepositForm,
   depositFormValidationSuite,
   DepositParams,
-  type DepositForm,
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { resetForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const userDefaultValues = { depositAmount: undefined }
 
 const emptyDepositForm = (): DepositForm => ({ ...userDefaultValues, maxDepositAmount: undefined })
 
 const formOptions = {
-  ...formDefaultOptions,
-  resolver: vestResolver(depositFormValidationSuite),
+  validation: depositFormValidationSuite,
   defaultValues: emptyDepositForm(),
 }
 export const useDepositForm = <ChainId extends LlamaChainId>({
@@ -47,8 +43,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<DepositForm>(formOptions)
 
-  const depositAmount = watchField(form, 'depositAmount')
-
+  const depositAmount = form.watchValue('depositAmount')
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): DepositParams<ChainId> => ({ chainId, marketId, userAddress, depositAmount }),
@@ -63,7 +58,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   } = useDepositMutation({
     marketId,
     network,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 
@@ -96,7 +91,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     error: depositError ?? solvencyError,
     max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }, enabled),
     isApproved: useDepositIsApproved(params, enabled),
-    formErrors: useFormErrors(formState),
+    formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal: {
       isOpen,
