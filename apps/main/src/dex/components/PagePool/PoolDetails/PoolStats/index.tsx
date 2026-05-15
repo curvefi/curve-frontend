@@ -8,15 +8,16 @@ import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { useStore } from '@/dex/store/useStore'
 import { PoolAlert, TokensMapper, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { AlertBox } from '@ui/AlertBox'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
+import { cardContentSmallStyles } from '@ui-kit/themes/components/card-content'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -48,48 +49,50 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
 
   return (
     <Card size="small">
-      <CardContent sx={{ padding: '0 !important' }} /** TODO: no data-inline support yet like in header */>
-        <Box display="grid" gap={Spacing.md} gridTemplateColumns="repeat(12, 1fr)">
-          <CardContent sx={{ gridColumn: { mobile: 'span 12', desktop: 'span 8' } }}>
-            <Stack gap={Spacing.md}>
-              <CurrencyReserves chainId={chainId} poolId={poolId ?? ''} tokensMapper={tokensMapper} />
+      <CardContent
+        component={Grid}
+        container
+        columnSpacing={Spacing.md}
+        sx={{ padding: '0 !important' /** The default padding interferes with background colors of the inner grids */ }}
+      >
+        <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
+          <Stack gap={Spacing.md}>
+            <CurrencyReserves chainId={chainId} poolId={poolId ?? ''} tokensMapper={tokensMapper} />
 
-              {poolData && <RewardsComp chainId={chainId} poolData={poolData} rewardsApy={rewardsApy} />}
+            {poolData && <RewardsComp chainId={chainId} poolData={poolData} rewardsApy={rewardsApy} />}
 
-              <Stack gap={Spacing.sm}>
-                {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
-                  <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-                )}
-                {tokenAlert && tokenAlert.isInformationOnly && (
-                  <AlertBox {...tokenAlert}>{tokenAlert.message}</AlertBox>
-                )}
+            <Stack gap={Spacing.sm}>
+              {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
+                <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+              )}
+              {tokenAlert && tokenAlert.isInformationOnly && <AlertBox {...tokenAlert}>{tokenAlert.message}</AlertBox>}
 
-                {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
-                  <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a Cryptoswap pool`}>
-                    {t`Cryptoswap pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools.`}{' '}
-                    <InlineLink to="https://docs.curve.finance/user/dex/overview" external hideIcon>
-                      {t`Click here to learn more about Cryptoswap pools`}
-                    </InlineLink>
-                  </AlertBox>
-                )}
-                <AlertBox alertType="info" flexAlignItems="center">
-                  <InlineLink to={risksPathname} external hideIcon>
-                    {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
+              {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
+                <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a Cryptoswap pool`}>
+                  {t`Cryptoswap pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools.`}{' '}
+                  <InlineLink to="https://docs.curve.finance/user/dex/overview" external hideIcon>
+                    {t`Click here to learn more about Cryptoswap pools`}
                   </InlineLink>
                 </AlertBox>
-              </Stack>
+              )}
+              <AlertBox alertType="info" flexAlignItems="center">
+                <InlineLink to={risksPathname} external hideIcon>
+                  {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
+                </InlineLink>
+              </AlertBox>
             </Stack>
-          </CardContent>
+          </Stack>
+        </Grid>
 
-          <CardContent
-            sx={{
-              backgroundColor: t => t.design.Layer[2].Fill,
-              gridColumn: { mobile: 'span 12', desktop: 'span 4' },
-            }}
-          >
-            <PoolParameters poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} routerParams={routerParams} />
-          </CardContent>
-        </Box>
+        <Grid
+          size={{ mobile: 12, desktop: 4 }}
+          sx={{
+            ...cardContentSmallStyles,
+            backgroundColor: t => t.design.Layer[2].Fill,
+          }}
+        >
+          <PoolParameters poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} routerParams={routerParams} />
+        </Grid>
       </CardContent>
     </Card>
   )
