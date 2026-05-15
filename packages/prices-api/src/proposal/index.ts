@@ -35,16 +35,10 @@ export async function getProposal(
 }
 
 export async function getUserProposalVotes(user: string, page = 1, pagination = 100, options?: Options) {
-  try {
-    const host = getHost(options)
-    const response = await fetch(`${host}/v1/dao/proposals/votes/user/${user}?pagination=${pagination}&page=${page}`)
+  const host = getHost(options)
+  const response = await fetch(`${host}/v1/dao/proposals/votes/user/${user}?pagination=${pagination}&page=${page}`)
 
-    return Schema.getUserProposalVotesResponse.parse(response)
-  } catch (err) {
-    if (err instanceof FetchError) {
-      return []
-    } else throw err
-  }
+  return Schema.getUserProposalVotesResponse.parse(response)
 }
 
 export async function getUserProposalVote(
