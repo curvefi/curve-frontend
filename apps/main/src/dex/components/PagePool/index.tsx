@@ -22,8 +22,10 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Link as TanstackLink } from '@tanstack/react-router'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -91,6 +93,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
+  const hasRefuel = pricesApiPoolData?.poolMethods.includes('donation_shares')
 
   type DetailInfoTab = 'user' | 'pool' | 'advanced'
   const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
@@ -240,13 +243,26 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         )}
         <Stack>
-          <TabsSwitcher
-            variant="contained"
-            value={poolInfoTab}
-            onChange={setPoolInfoTab}
-            options={poolInfoTabs}
-            testIdPrefix="pool-info-tab"
-          />
+          <Stack direction="row">
+            <TabsSwitcher
+              variant="contained"
+              value={poolInfoTab}
+              onChange={setPoolInfoTab}
+              options={poolInfoTabs}
+              testIdPrefix="pool-info-tab"
+            />
+            {hasRefuel && (
+              <Button
+                component={TanstackLink}
+                to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
+                variant="inline"
+                color="ghost"
+                sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
+              >
+                {t`Manage pool`}
+              </Button>
+            )}
+          </Stack>
           {poolInfoTab === 'user' && (
             <MySharesStats
               curve={curve}

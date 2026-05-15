@@ -32,6 +32,7 @@ type ChartCardProps = {
   onCloseFullscreen?: () => void
   /** Content for below the chart, like an optional legend for example */
   children?: ReactNode
+  testId?: string
 }
 
 /** General purpose card for ECharts graphs with optional support of fullscreen mode */
@@ -44,10 +45,11 @@ export const EChartsCard = ({
   fullscreen = false,
   onCloseFullscreen,
   children,
+  testId,
 }: ChartCardProps) => (
   <WithWrapper shouldWrap={fullscreen} Wrapper={DialogFullscreen} onClose={() => onCloseFullscreen?.()}>
     {/** A lot of flex and height code is to make sure the chart expands correctly in fullscreen mode */}
-    <Card component={Stack} height="100%" {...(!fullscreen && { size: 'small' })}>
+    <Card component={Stack} height="100%" data-testid={testId} {...(!fullscreen && { size: 'small' })}>
       <CardHeader
         title={title}
         action={
