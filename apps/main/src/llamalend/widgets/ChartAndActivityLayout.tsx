@@ -151,6 +151,9 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                   borrowToken={bands.borrowToken}
                   chartData={bands.chartData}
                   userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+                  newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
+                  liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
+                  liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
                   oraclePrice={bands.oraclePrice}
                   priceRange={candlePriceRange}
                 />

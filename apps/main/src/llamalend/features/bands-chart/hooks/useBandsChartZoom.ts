@@ -6,6 +6,7 @@ import { ChartDataPoint, DerivedChartData } from '../types'
 
 type MarklinePoint = Record<string, unknown> & { coord: [number, number] }
 type MarklineData = [MarklinePoint, MarklinePoint][]
+type RangeOverlayDataPoint = [number, number, number, number]
 
 type Params = {
   option: EChartsOption
@@ -15,6 +16,21 @@ type Params = {
 }
 
 const CHART_PADDING_MULTIPLIER = 1.1
+
+// Range overlays store their horizontal span inside series data. When synced candle-chart
+// zoom changes the visible price range, the x-axis can shrink, so those spans need the same
+// xMax patch as markLine endpoints to continue reaching the chart edge.
+const isRangeOverlaySeries = (series: { name?: unknown; data?: unknown }) =>
+  typeof series.name === 'string' &&
+  (series.name.includes('Liquidation Range Area') || series.name.includes('Liquidation Range Line')) &&
+  Array.isArray(series.data)
+
+const patchRangeOverlayData = (data: unknown, xMax: number) =>
+  Array.isArray(data)
+    ? data.map(item =>
+        Array.isArray(item) && item.length === 4 ? ([item[0], xMax, item[2], item[3]] as RangeOverlayDataPoint) : item,
+      )
+    : data
 
 export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Params): EChartsOption =>
   useMemo(() => {
@@ -39,8 +55,11 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
     const patchedSeries =
       xMax === undefined
         ? option.series
-        : (option.series as { markLine?: { data?: MarklineData } }[]).map(series => ({
+        : (option.series as { name?: unknown; data?: unknown; markLine?: { data?: MarklineData } }[]).map(series => ({
             ...series,
+            ...(isRangeOverlaySeries(series) && {
+              data: patchRangeOverlayData(series.data, xMax),
+            }),
             ...(series.markLine && {
               markLine: {
                 ...series.markLine,
