@@ -1,18 +1,25 @@
 import { type PartialRecord } from '@primitives/objects.utils'
+import type { DeepValue } from '@tanstack/react-form'
 
 export type FieldValues = object
 export type FieldPath<T extends FieldValues> = Extract<keyof T, string>
-export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = T[TFieldPath]
+export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = DeepValue<T, TFieldPath>
+export type FieldRecord<T extends FieldValues, TValue> = PartialRecord<FieldPath<T>, TValue>
+export type FieldEntry<T extends FieldValues> = {
+  [K in FieldPath<T>]: [K, FieldPathValue<T, K>]
+}[FieldPath<T>]
+export type FieldRecordEntry<T extends FieldValues, TValue> = {
+  [K in FieldPath<T>]: [K, TValue]
+}[FieldPath<T>]
 export type FieldPathByValue<T extends FieldValues, TValue> = {
   [K in Extract<keyof T, string>]: T[K] extends TValue ? K : never
 }[Extract<keyof T, string>]
 export type FormError = { type?: string; message: string }
-export type RootFormError = { general?: FormError; serverError?: FormError }
-export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root' | `root.serverError`
-export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<FieldPath<T>, FormError> & {
-  root?: RootFormError
+export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root'
+export type FormErrors<T extends FieldValues = FieldValues> = FieldRecord<T, FormError> & {
+  root?: FormError
 }
-export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, true>
+export type PartialFields<T extends FieldValues> = FieldRecord<T, true>
 
 export type FormState<T extends FieldValues> = {
   isSubmitting: boolean
@@ -31,6 +38,8 @@ export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
 }>
+
+export type FormUpdateEntry<TFieldValues extends FieldValues> = FieldEntry<TFieldValues>
 
 /** The value returned by the useForm hook. */
 export type UseFormReturn<T extends FieldValues = FieldValues> = {

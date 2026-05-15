@@ -1,4 +1,5 @@
 import { FunctionComponent, useMemo } from 'react'
+import type { ErrorKey } from '@ui-kit/features/forms'
 import { useFormContext } from '@ui-kit/features/forms'
 import { ErrorContainer } from '../styled-containers'
 import type { FormError } from './error-types'
@@ -14,7 +15,7 @@ const getErrorMessage = (error: FormError): string => {
 }
 
 type FormErrorsDisplayProps<T extends Record<string, unknown>> = {
-  errorKeys?: (keyof T)[]
+  errorKeys?: ErrorKey<T>[]
   component: FunctionComponent<{ errorKey: string; handleBtnClose: () => void }>
 }
 
@@ -28,14 +29,10 @@ export const FormErrorsDisplay = <T extends Record<string, unknown>>({
   } = useFormContext<T>()
 
   const filteredErrors = useMemo<[string, unknown][]>(() => {
-    const shouldDisplayError = errorKeys ? (key: string) => errorKeys.includes(key) : () => true
+    const shouldDisplayError = errorKeys ? (key: string) => errorKeys.includes(key as ErrorKey<T>) : () => true
     return [
       ...Object.entries(errors).filter(([key]) => key !== 'root' && shouldDisplayError(key)),
-      ...(errors.root
-        ? Object.entries(errors.root)
-            .filter(([key]) => shouldDisplayError(`root.${key}`))
-            .map(([key, value]): [string, unknown] => [`root.${key}`, value])
-        : []),
+      ...(errors.root && shouldDisplayError('root') ? ([['root', errors.root]] as [string, unknown][]) : []),
     ]
   }, [errorKeys, errors])
 

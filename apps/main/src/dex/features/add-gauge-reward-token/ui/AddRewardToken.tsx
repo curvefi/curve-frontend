@@ -59,7 +59,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
         { rewardTokenId, distributorId },
         {
           onError: (error: Error) => {
-            setError('root.serverError', { type: 'manual', message: error.message })
+            setError('root', { type: 'manual', message: error.message })
           },
         },
       )
@@ -88,7 +88,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
           {isSuccessAddRewardToken && addRewardTokenData && (
             <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
           )}
-          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
+          <FormErrorsDisplay errorKeys={['root']} component={AlertFormError} />
         </FormContainer>
       </form>
     </FormProvider>

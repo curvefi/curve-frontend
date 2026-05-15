@@ -1,39 +1,35 @@
 import { useCallback, useMemo } from 'react'
 import { fromEntries, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
-import { getBy, useForm as useTanStackForm, useStore } from '@tanstack/react-form'
+import { useForm as useTanStackForm, useStore, type AnyFieldMeta } from '@tanstack/react-form'
 import type { ValidationSuite } from '@ui-kit/lib/validation'
 import type {
   ErrorKey,
   FieldPath,
+  FieldRecordEntry,
+  FieldRecord,
   FieldPathValue,
   FieldValues,
   FormError,
+  FormErrors,
+  FormUpdateEntry,
   PartialFields,
-  RootFormError,
   UseFormReturn,
 } from './form.types'
 
-type FormLevelError<T extends FieldValues> = { form?: string; fields: Partial<Record<FieldPath<T>, string>> }
-type FieldErrors<T extends FieldValues> = Partial<Record<FieldPath<T>, FormError>>
-type DefinedUpdateEntry<T extends FieldValues> = [FieldPath<T>, FieldPathValue<T, FieldPath<T>>]
+type FieldErrors<T extends FieldValues> = FieldRecord<T, FormError>
+type FieldMetaSnapshot = Pick<AnyFieldMeta, 'isTouched' | 'isDirty' | 'errorMap'>
 type FieldMetaMap<T extends FieldValues> = Partial<Record<FieldPath<T>, FieldMetaSnapshot>>
-type FormErrorMap<T extends FieldValues> = { onSubmit?: FormError; onChange?: FormLevelError<T> }
+type RootErrorMap = { onSubmit?: unknown }
 
-type FieldMetaSnapshot = {
-  isTouched: boolean
-  isDirty: boolean
-  errorMap: {
-    onSubmit?: string | FormError
-    onChange?: string | FormError
-    onBlur?: string | FormError
-    onMount?: string | FormError
-  }
-}
-
-const toFormError = (value: string | FormError | undefined): FormError | undefined =>
-  typeof value === 'string' ? { message: value } : value
-
-const isServerError = (error: FormError | undefined): boolean => error?.type === 'server'
+const toFormError = (value: unknown): FormError | undefined =>
+  typeof value === 'string'
+    ? { message: value }
+    : value && typeof value === 'object' && 'message' in value && typeof value.message === 'string'
+      ? {
+          message: value.message,
+          ...('type' in value && typeof value.type === 'string' ? { type: value.type } : {}),
+        }
+      : undefined
 
 const collectFieldFlags = <T extends FieldValues>(
   fieldMeta: FieldMetaMap<T>,
@@ -51,40 +47,24 @@ const getPreferredError = (meta: FieldMetaSnapshot): FormError | undefined =>
   toFormError(meta.errorMap.onBlur) ??
   toFormError(meta.errorMap.onMount)
 
-const toRootErrors = <T extends FieldValues>(errorMap: FormErrorMap<T> | undefined): RootFormError | undefined => {
-  const submitError = errorMap?.onSubmit
-  const general = isServerError(submitError)
-    ? errorMap?.onChange?.form
-      ? { message: errorMap.onChange.form }
-      : undefined
-    : (submitError ?? (errorMap?.onChange?.form ? { message: errorMap.onChange.form } : undefined))
-  const serverError = isServerError(submitError) ? submitError : undefined
-  return general || serverError ? { general, serverError } : undefined
-}
+const toRootError = ({ onSubmit: submitError }: RootErrorMap): FormError | undefined =>
+  submitError && typeof submitError === 'object' && 'form' in submitError
+    ? toFormError(submitError.form)
+    : toFormError(submitError)
 
-const getFieldErrors = <T extends FieldValues>(
-  fieldMeta: FieldMetaMap<T>,
-  formErrorMap: FormErrorMap<T> | undefined,
-): FieldErrors<T> =>
+const getFieldErrors = <T extends FieldValues>(fieldMeta: FieldMetaMap<T>): FieldErrors<T> =>
   fromEntries(
     notFalsy(
       ...recordEntries(fieldMeta).map(([field, meta]) => {
         const error = getPreferredError(meta)
-        return error ? ([field, error] as const) : undefined
+        return error ? ([field, error] as FieldRecordEntry<T, FormError>) : undefined
       }),
-      ...(formErrorMap?.onChange
-        ? notFalsy(
-            ...recordEntries(formErrorMap.onChange.fields).map(([field, error]) =>
-              error ? ([field, { message: error }] as const) : undefined,
-            ),
-          )
-        : []),
     ),
   )
 
 const getVisibleErrors = <T extends FieldValues>(
   fieldErrors: FieldErrors<T>,
-  rootErrors: RootFormError | undefined,
+  rootError: FormError | undefined,
   touchedFields: PartialFields<T>,
   dirtyFields: PartialFields<T>,
 ): [ErrorKey<T>, string][] => [
@@ -92,21 +72,25 @@ const getVisibleErrors = <T extends FieldValues>(
     .filter(([field]) => touchedFields[field] === true)
     .map(([field, error]) => [field, error.message] as [ErrorKey<T>, string]),
   ...(objectKeys(dirtyFields).length
-    ? notFalsy<[ErrorKey<T>, string]>(
-        rootErrors?.general?.message ? ['root', rootErrors.general.message] : undefined,
-        rootErrors?.serverError?.message ? ['root.serverError', rootErrors.serverError.message] : undefined,
-      )
+    ? notFalsy<[ErrorKey<T>, string]>(rootError ? ['root', rootError.message] : undefined)
     : []),
 ]
 
-/**
- * `getBy` preserves runtime path lookup but returns `any`, so we reattach the path-based type here.
- * This keeps `watchValue` reactive without changing the external API.
- */
 const watchFieldValue = <T extends FieldValues, TField extends FieldPath<T>>(
   values: T,
   field: TField,
-): FieldPathValue<T, TField> => getBy(values, field) as FieldPathValue<T, TField>
+): FieldPathValue<T, TField> => values[field] as FieldPathValue<T, TField>
+
+const getChangedEntries = <T extends FieldValues>(
+  form: Pick<UseFormReturn<T>, 'getValue'>,
+  updates: Partial<Record<FieldPath<T>, FieldPathValue<T, FieldPath<T>>>>,
+): FormUpdateEntry<T>[] =>
+  objectKeys(updates)
+    .map((field): FormUpdateEntry<T> | undefined => {
+      const value = updates[field]
+      return form.getValue(field) !== value ? ([field, value] as FormUpdateEntry<T>) : undefined
+    })
+    .filter((entry): entry is FormUpdateEntry<T> => !!entry)
 
 /**
  * TanStack Form spike behind the existing wrapper API.
@@ -128,51 +112,39 @@ export const useForm = <T extends FieldValues = FieldValues>({
   })
 
   const values = useStore(form.store, state => state.values)
-  /** TanStack field meta carries validator-specific payload types; this wrapper only needs touched/dirty/errorMap. */
-  const fieldMeta = useStore(form.store, state => state.fieldMeta as FieldMetaMap<T>)
-  /** TanStack form error maps are also validator-shaped; this wrapper narrows them to the parts it reads. */
-  const formErrorMap = useStore(form.store, state => state.errorMap as FormErrorMap<T> | undefined)
+  const fieldMeta = useStore(form.store, (state): FieldMetaMap<T> => state.fieldMeta)
+  const formErrorMap = useStore(form.store, (state): RootErrorMap => state.errorMap)
 
   const touchedFields = useMemo(() => collectFieldFlags(fieldMeta, meta => meta.isTouched), [fieldMeta])
   const dirtyFields = useMemo(() => collectFieldFlags(fieldMeta, meta => meta.isDirty), [fieldMeta])
-  const fieldErrors = useMemo(() => getFieldErrors(fieldMeta, formErrorMap), [fieldMeta, formErrorMap])
-  const rootErrors = useMemo(() => toRootErrors<T>(formErrorMap), [formErrorMap])
+  const fieldErrors = useMemo(() => getFieldErrors(fieldMeta), [fieldMeta])
+  const rootError = useMemo(() => toRootError(formErrorMap), [formErrorMap])
 
   return {
     handleSubmit: useCallback(
       onSubmit => () => form.handleSubmit({ onSubmit: ({ value }: { value: T }) => onSubmit(value) }),
       [form],
     ),
-    reset: useCallback(valuesToReset => form.reset({ ...(form.state.values as T), ...valuesToReset }), [form]),
+    reset: useCallback(valuesToReset => form.reset({ ...form.state.values, ...valuesToReset }), [form]),
     watchValue: useCallback(
       <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField> => watchFieldValue(values, field),
       [values],
     ),
-    watchValues: useCallback(() => values as T, [values]),
-    getValues: useCallback(() => form.state.values as T, [form]),
+    watchValues: useCallback(() => values, [values]),
+    getValues: useCallback(() => form.state.values, [form]),
     getValue: useCallback(
-      // TanStack returns `DeepValue`, while this wrapper exposes its own path-value alias.
-      // They are the same runtime lookup, but TypeScript cannot connect those generic path systems.
-      <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField> =>
-        form.getFieldValue(field) as FieldPathValue<T, TField>,
+      <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField> => form.getFieldValue(field),
       [form],
     ),
     update: useCallback(
-      (updates, { automated = false } = {}) => {
-        const changedEntries = objectKeys(updates)
-          .map(field => [field, updates[field]] as const)
-          .filter(([field, value]) => form.getFieldValue(field) !== value) as DefinedUpdateEntry<T>[]
-
+      (updates, { automated: dontUpdateMeta = false } = {}) => {
+        const changedEntries = getChangedEntries({ getValue: form.getFieldValue }, updates)
         changedEntries.forEach(([field, value]) =>
-          form.setFieldValue(field, value as never, {
-            dontValidate: true,
-            dontRunListeners: true,
-            dontUpdateMeta: automated,
-          }),
+          form.setFieldValue(field, value as never, { dontValidate: true, dontRunListeners: true, dontUpdateMeta }),
         )
-
-        if (changedEntries.length)
+        if (changedEntries.length) {
           Promise.resolve(form.validate('change')).catch(e => console.error('form update validation failed', e))
+        }
       },
       [form],
     ),
@@ -180,14 +152,12 @@ export const useForm = <T extends FieldValues = FieldValues>({
       (field, error) =>
         field === 'root'
           ? form.setErrorMap({ onSubmit: { form: error, fields: {} } })
-          : field === 'root.serverError'
-            ? form.setErrorMap({ onSubmit: { form: { ...error, type: 'server' }, fields: {} } })
-            : form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: error } })),
+          : form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: error } })),
       [form],
     ),
     clearErrors: useCallback(
       field =>
-        field === 'root' || field === 'root.serverError'
+        field === 'root'
           ? form.setErrorMap({ onSubmit: undefined })
           : form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: undefined } })),
       [form],
@@ -195,16 +165,13 @@ export const useForm = <T extends FieldValues = FieldValues>({
     isTouched: useCallback((...fields) => fields.some(field => touchedFields[field] === true), [touchedFields]),
     formState: {
       isSubmitting: useStore(form.store, state => state.isSubmitting),
-      errors: useMemo<UseFormReturn<T>['formState']['errors']>(
-        () =>
-          (rootErrors
-            ? { ...fieldErrors, root: rootErrors }
-            : { ...fieldErrors }) as UseFormReturn<T>['formState']['errors'],
-        [fieldErrors, rootErrors],
+      errors: useMemo<FormErrors<T>>(
+        () => (rootError ? { ...fieldErrors, root: rootError } : fieldErrors),
+        [fieldErrors, rootError],
       ),
       visibleErrors: useMemo(
-        () => getVisibleErrors(fieldErrors, rootErrors, touchedFields, dirtyFields),
-        [fieldErrors, rootErrors, touchedFields, dirtyFields],
+        () => getVisibleErrors(fieldErrors, rootError, touchedFields, dirtyFields),
+        [fieldErrors, rootError, touchedFields, dirtyFields],
       ),
       touchedFields,
       isDirty: useStore(form.store, state => state.isDirty),
