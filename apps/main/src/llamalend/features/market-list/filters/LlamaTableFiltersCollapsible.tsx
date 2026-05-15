@@ -8,7 +8,9 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns/columns.enum'
+import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { SelectedFilterChips } from './SelectedFilterChips'
+import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,6 +37,10 @@ const getFilterLabels = (serializedFilter: string | undefined, unit?: 'percentag
   return parseListFilter(serializedFilter)
 }
 
+const ActiveFilterChip = ({ label }: { label: string }) => (
+  <SelectableChip selected toggle={noop} size="small" label={label} aria-label={label} />
+)
+
 export const LlamaTableFiltersCollapsible = <T extends TableItem>({
   table,
   resetFilters,
@@ -57,21 +63,21 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
         {columnFiltersState.map(({ id, value }) => {
           const column = table.getColumn(id)
           const labels = getFilterLabels(value, column?.columnDef.meta?.unit)
+          const [visibleLabels, hiddenLabels] = getInlinedItemsVisibility(labels)
 
-          return labels?.length ? (
-            <SelectedFilterChips key={id} title={column?.columnDef.header as string}>
-              {labels.map(label => (
-                <SelectableChip
-                  key={`${id}-${label}`}
-                  selected
-                  toggle={noop}
-                  size="small"
-                  label={label}
-                  aria-label={label}
+          return (
+            !!visibleLabels.length && (
+              <SelectedFilterChips key={id} title={column?.columnDef.header as string}>
+                {visibleLabels.map(label => (
+                  <ActiveFilterChip key={`${id}-${label}`} label={label} />
+                ))}
+                <HiddenInlinedItems
+                  hiddenSelectedItemsLength={hiddenLabels.length}
+                  renderItem={label => <ActiveFilterChip label={label} />}
                 />
-              ))}
-            </SelectedFilterChips>
-          ) : null
+              </SelectedFilterChips>
+            )
+          )
         })}
       </Stack>
 
