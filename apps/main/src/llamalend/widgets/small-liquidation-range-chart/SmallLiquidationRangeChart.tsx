@@ -3,7 +3,10 @@ import { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import { SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX } from './small-liquidation-range-chart.constants'
+import {
+  SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX,
+  SMALL_LIQUIDATION_RANGE_CHART_LOADER,
+} from './small-liquidation-range-chart.constants'
 import type {
   SmallLiquidationRangeChartData,
   SmallLiquidationRangeChartProps,
@@ -52,13 +55,19 @@ export const SmallLiquidationRangeChart = (props: SmallLiquidationRangeChartProp
     <Stack flexGrow={1}>
       <Box
         sx={{
-          width: '100%',
+          alignSelf: 'stretch',
           height: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
           minHeight: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
+          ...(loading && {
+            display: 'flex',
+            alignItems: 'center',
+            boxSizing: 'border-box',
+            paddingBlock: SMALL_LIQUIDATION_RANGE_CHART_LOADER.padding,
+          }),
         }}
       >
         {loading ? (
-          <Skeleton variant="rectangular" width="100%" height={SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX} />
+          <Skeleton variant="rectangular" width="100%" height={SMALL_LIQUIDATION_RANGE_CHART_LOADER.height} />
         ) : (
           <ReactECharts
             option={option}

@@ -165,7 +165,7 @@ export const Loading: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Fixed-height skeleton shown while liquidation range and oracle data are initially loading.',
+        story: 'Padded inset skeleton shown while liquidation range and oracle data are initially loading.',
       },
     },
   },

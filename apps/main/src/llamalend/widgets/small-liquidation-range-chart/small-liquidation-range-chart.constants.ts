@@ -35,6 +35,11 @@ export const ORACLE_MARKER_LAYOUT = {
 export const SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX =
   CHART_LAYOUT.trackHeight + CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter * 2
 
+export const SMALL_LIQUIDATION_RANGE_CHART_LOADER = {
+  height: CHART_LAYOUT.trackHeight,
+  padding: Spacing.sm,
+} as const
+
 export const DEFAULT_SMALL_LIQUIDATION_RANGE_CHART_DOMAIN = [0, 10000] as const
 export const FULL_RANGE_Y_AXIS = [0, 1] as const
 export const INSET_RANGE_Y_AXIS = [0.08, 0.92] as const
