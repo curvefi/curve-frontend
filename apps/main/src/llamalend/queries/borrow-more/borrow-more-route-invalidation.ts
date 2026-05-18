@@ -1,5 +1,5 @@
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
-import type { RouteResponse } from '@primitives/router.utils'
+import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { invalidateBorrowMoreExpectedCollateral } from './borrow-more-expected-collateral.query'
 import { invalidateBorrowMoreFutureLeverage } from './borrow-more-future-leverage.query'
 import { invalidateBorrowMoreEstimateGasQueries } from './borrow-more-gas-estimate.query'
