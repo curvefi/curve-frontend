@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import { getTokens, type MarketTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -102,7 +101,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   const currentOraclePriceData = isLlamma ? llammaOraclePriceData : oraclePoolOraclePriceData
   const currentRefetchingCapped = isLlamma ? llammaRefetchingCapped : oraclePoolRefetchingCapped
   const currentLastFetchEndTime = isLlamma ? llammaLastFetchEndTime : oraclePoolLastFetchEndTime
-  const noDataAvailable = !isLoading && currentOraclePriceData.length === 0
+  const ohlcDataUnavailable = !isLoading && currentOraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (oraclePoolOraclePriceData.length > 0) return oraclePoolOraclePriceData
@@ -125,8 +124,6 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     currentPrices: userPrices,
     newPrices: newLiqPrices,
   })
-
-  const coins: MarketTokens | undefined = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
@@ -195,7 +192,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   )
 
   // Determine chart status: loading > error (no data) > ready
-  const chartStatus: FetchingStatus = isLoading ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
+  const chartStatus: FetchingStatus = isLoading ? 'LOADING' : ohlcDataUnavailable ? 'ERROR' : 'READY'
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
@@ -217,13 +214,5 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     latestOraclePrice: oraclePrice,
   }
 
-  return {
-    coins,
-    ohlcDataUnavailable: noDataAvailable,
-    isLoading,
-    selectedChartKey,
-    setTimeOption,
-    legendSets,
-    ohlcChartProps,
-  }
+  return { ohlcDataUnavailable, isLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
 }

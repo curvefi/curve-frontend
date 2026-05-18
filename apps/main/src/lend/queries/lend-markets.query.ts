@@ -14,6 +14,12 @@ const V2 = 'v2' as const
 const v2chains = [Chain.Optimism]
 
 type LendMarketData = IOneWayMarket & { id: string }
+
+/**
+ * Extracts the necessary data from a LendMarketTemplate object so that the object can be recreated later on.
+ * This is done to decouple the llamalend.js internal state with the frontend's data and allows us to recreate or
+ * refresh the object with cached or backend data whenever we want.
+ */
 const getMarketData = ({
   id,
   name,
