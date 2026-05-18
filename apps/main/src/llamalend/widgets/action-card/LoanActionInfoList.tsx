@@ -18,7 +18,6 @@ import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
-import { useSmallLiquidationRangeChartData } from './hooks/useSmallLiquidationRangeChartData'
 import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
@@ -32,7 +31,7 @@ export type LoanActionInfoListProps = {
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
   exchangeRate?: QueryProp<Decimal | null>
-  oraclePrice?: QueryProp<Decimal | null>
+  oraclePrice: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
   prevNetBorrowApr?: QueryProp<Decimal | null>
@@ -130,13 +129,6 @@ export const LoanActionInfoList = ({
     </>
   )
 
-  const smallLiquidationRangeChartData = useSmallLiquidationRangeChartData({
-    prices,
-    prevPrices,
-    oraclePrice,
-    isFullRepay,
-  })
-
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
@@ -193,7 +185,12 @@ export const LoanActionInfoList = ({
               testId="borrow-ltv"
             />
           )}
-          {smallLiquidationRangeChartData && <SmallLiquidationRangeChart {...smallLiquidationRangeChartData} />}
+          <SmallLiquidationRangeChart
+            prices={prices}
+            prevPrices={prevPrices}
+            oraclePrice={oraclePrice}
+            isFullRepay={isFullRepay}
+          />
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}

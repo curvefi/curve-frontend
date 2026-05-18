@@ -12,7 +12,7 @@ import type {
   LiquidationRange,
   RenderableLiquidationRange,
   SmallLiquidationRangeChartLayout,
-  SmallLiquidationRangeChartProps,
+  SmallLiquidationRangeChartOptionProps,
   SplitLayout,
 } from './small-liquidation-range-chart.types'
 import { getSmallLiquidationRangeChartLayout, toEChartsPixelValue } from './small-liquidation-range-chart.utils'
@@ -43,7 +43,7 @@ const getChartColors = ({ design: { Chart, Color, Text } }: Theme): ChartColors 
   newRangeLine: Chart.LiquidationZone.FutureLine,
 })
 
-const getRenderableRanges = ({ currentRange, newRange }: SmallLiquidationRangeChartProps['liquidationRanges']) => ({
+const getRenderableRanges = ({ currentRange, newRange }: SmallLiquidationRangeChartOptionProps['liquidationRanges']) => ({
   currentRange: toRenderableRange(currentRange),
   newRange: toRenderableRange(newRange),
 })
@@ -61,7 +61,7 @@ const getSeriesData = ({
 export const useSmallLiquidationRangeChartOption = ({
   liquidationRanges,
   oraclePrice,
-}: SmallLiquidationRangeChartProps): EChartsOption => {
+}: SmallLiquidationRangeChartOptionProps): EChartsOption => {
   const { newRange, currentRange } = liquidationRanges
   const theme = useTheme()
   const colors = useMemo(() => getChartColors(theme), [theme])
@@ -81,7 +81,7 @@ export const useSmallLiquidationRangeChartOption = ({
     [renderableCurrentRange, renderableNewRange, renderableOraclePrice],
   )
 
-  const hasChartData = !!renderableCurrentRange || !!renderableNewRange || renderableOraclePrice !== undefined
+  const hasChartData = !!chartLayout
   const formattedOraclePrice = formatNumber(oraclePrice, { abbreviate: false }) ?? ''
   const seriesData = useMemo(
     () =>

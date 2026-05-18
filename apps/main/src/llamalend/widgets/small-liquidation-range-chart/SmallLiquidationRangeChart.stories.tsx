@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ, q, type Range } from '@ui-kit/types/util'
 import {
   SmallLiquidationRangeChart as SmallLiquidationRangeChartComponent,
   type SmallLiquidationRangeChartProps as SmallLiquidationRangeChartComponentProps,
@@ -8,28 +10,30 @@ import {
 
 const { Spacing } = SizesAndSpaces
 
-const newOnlyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  newRange: [1550, 1875],
-}
+const emptyPrices = constQ<Range<Decimal> | null>(null)
+const emptyPrevPrices = q<Range<Decimal>>({ data: undefined, isLoading: false, error: null })
+const loadingPrices = q<Range<Decimal> | null>({ data: undefined, isLoading: true, error: null })
+const loadingPrevPrices = q<Range<Decimal>>({ data: undefined, isLoading: true, error: null })
+const loadingOraclePrice = q<Decimal | null>({ data: undefined, isLoading: true, error: null })
 
-const currentOnlyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  currentRange: [1525, 1900],
-}
+const newOnlyRange: Range<Decimal> = ['1550', '1875']
+const currentOnlyRange: Range<Decimal> = ['1525', '1900']
+const currentRange: Range<Decimal> = ['1425', '1900']
+const newRange: Range<Decimal> = ['1525', '1900']
+const narrowNearOracleRange: Range<Decimal> = ['0.985', '0.99']
+const farOracleRange: Range<Decimal> = ['1843.92', '2139.32']
 
-const currentAndNewRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  currentRange: [1425, 1900],
-  newRange: [1525, 1900],
-}
-
-const narrowNearOracleRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  newRange: [0.985, 0.99],
-}
-
-const farOracleRange: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {
-  currentRange: [1843.92, 2139.32],
-}
-
-const emptyRanges: SmallLiquidationRangeChartComponentProps['liquidationRanges'] = {}
+const args = ({
+  prices = emptyPrices,
+  prevPrices = emptyPrevPrices,
+  oraclePrice = constQ<Decimal | null>(null),
+  isFullRepay,
+}: Partial<SmallLiquidationRangeChartComponentProps> = {}): SmallLiquidationRangeChartComponentProps => ({
+  prices,
+  prevPrices,
+  oraclePrice,
+  isFullRepay,
+})
 
 const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
   title: 'Llamalend/Widgets/SmallLiquidationRangeChart',
@@ -58,8 +62,9 @@ const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    liquidationRanges: { control: false },
-    oraclePrice: { control: { type: 'number', min: 0, step: 1 } },
+    prices: { control: false },
+    prevPrices: { control: false },
+    oraclePrice: { control: false },
   },
 }
 
@@ -67,10 +72,7 @@ export default meta
 type Story = StoryObj<typeof SmallLiquidationRangeChartComponent>
 
 export const HealthyPosition: Story = {
-  args: {
-    liquidationRanges: newOnlyRanges,
-    oraclePrice: 1950,
-  },
+  args: args({ prices: constQ(newOnlyRange), oraclePrice: constQ('1950') }),
   parameters: {
     docs: {
       description: {
@@ -81,10 +83,7 @@ export const HealthyPosition: Story = {
 }
 
 export const NewRangeOnly: Story = {
-  args: {
-    liquidationRanges: newOnlyRanges,
-    oraclePrice: 1950,
-  },
+  args: args({ prices: constQ(newOnlyRange), oraclePrice: constQ('1950') }),
   parameters: {
     docs: {
       description: {
@@ -95,10 +94,7 @@ export const NewRangeOnly: Story = {
 }
 
 export const CurrentRangeOnly: Story = {
-  args: {
-    liquidationRanges: currentOnlyRanges,
-    oraclePrice: 1975,
-  },
+  args: args({ prevPrices: constQ(currentOnlyRange), oraclePrice: constQ('1975') }),
   parameters: {
     docs: {
       description: {
@@ -109,10 +105,7 @@ export const CurrentRangeOnly: Story = {
 }
 
 export const CurrentAndNewRange: Story = {
-  args: {
-    liquidationRanges: currentAndNewRange,
-    oraclePrice: 1975,
-  },
+  args: args({ prices: constQ(newRange), prevPrices: constQ(currentRange), oraclePrice: constQ('1975') }),
   parameters: {
     docs: {
       description: {
@@ -124,10 +117,7 @@ export const CurrentAndNewRange: Story = {
 }
 
 export const NarrowRangeNearOracle: Story = {
-  args: {
-    liquidationRanges: narrowNearOracleRange,
-    oraclePrice: 1,
-  },
+  args: args({ prices: constQ(narrowNearOracleRange), oraclePrice: constQ('1') }),
   parameters: {
     docs: {
       description: {
@@ -138,10 +128,7 @@ export const NarrowRangeNearOracle: Story = {
 }
 
 export const FarAboveOracleBreak: Story = {
-  args: {
-    liquidationRanges: farOracleRange,
-    oraclePrice: 98436.1,
-  },
+  args: args({ prevPrices: constQ(farOracleRange), oraclePrice: constQ('98436.1') }),
   parameters: {
     docs: {
       description: {
@@ -152,10 +139,7 @@ export const FarAboveOracleBreak: Story = {
 }
 
 export const FarBelowOracleBreak: Story = {
-  args: {
-    liquidationRanges: farOracleRange,
-    oraclePrice: 42,
-  },
+  args: args({ prevPrices: constQ(farOracleRange), oraclePrice: constQ('42') }),
   parameters: {
     docs: {
       description: {
@@ -166,14 +150,22 @@ export const FarBelowOracleBreak: Story = {
 }
 
 export const EmptyState: Story = {
-  args: {
-    liquidationRanges: emptyRanges,
-    oraclePrice: undefined,
-  },
+  args: args(),
   parameters: {
     docs: {
       description: {
         story: 'Fallback state with no liquidation range and no oracle value.',
+      },
+    },
+  },
+}
+
+export const Loading: Story = {
+  args: args({ prices: loadingPrices, prevPrices: loadingPrevPrices, oraclePrice: loadingOraclePrice }),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Fixed-height skeleton shown while liquidation range and oracle data are initially loading.',
       },
     },
   },

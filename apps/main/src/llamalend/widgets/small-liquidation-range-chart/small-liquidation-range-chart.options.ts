@@ -1,4 +1,10 @@
-import type { EChartsOption, GridComponentOption, SeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts'
+import type {
+  EChartsOption,
+  GridComponentOption,
+  SeriesOption,
+  XAXisComponentOption,
+  YAXisComponentOption,
+} from 'echarts'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -154,7 +160,7 @@ const buildOracleRailAxis = ({
     alignMinLabel: 'left' as const,
     alignMaxLabel: 'right' as const,
     formatter: (tick: number) => {
-      if (tick === SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS.breakTick) return '...'
+      if (tick === SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS.breakTick) return '[...]'
 
       // Only the outer rail edge gets a numeric label; the inner edge visually stitches
       // to the real-price axis and must stay blank.
@@ -170,35 +176,20 @@ const buildOracleRailAxis = ({
 // Grid index 0 always carries the real liquidation-range scale; grid index 1 is the compact oracle rail.
 // Mirroring the grid order keeps the rail on whichever side the distant oracle lives on.
 const buildSplitGrids = (layout: SplitLayout): GridComponentOption[] =>
-  layout.mode === 'split-left'
-    ? [
-        {
-          left: SPLIT_ORACLE_RAIL.width,
-          right: 0,
-          top: CHART_LAYOUT.rangeBorderGutter,
-          bottom: CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter,
-        },
-        {
-          left: 0,
-          width: SPLIT_ORACLE_RAIL.width,
-          top: CHART_LAYOUT.rangeBorderGutter,
-          bottom: CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter,
-        },
-      ]
-    : [
-        {
-          left: 0,
-          right: SPLIT_ORACLE_RAIL.width,
-          top: CHART_LAYOUT.rangeBorderGutter,
-          bottom: CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter,
-        },
-        {
-          right: 0,
-          width: SPLIT_ORACLE_RAIL.width,
-          top: CHART_LAYOUT.rangeBorderGutter,
-          bottom: CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter,
-        },
-      ]
+  [
+    {
+      'split-left': { left: SPLIT_ORACLE_RAIL.width, right: 0 },
+      'split-right': { left: 0, right: SPLIT_ORACLE_RAIL.width },
+    }[layout.mode],
+    {
+      'split-left': { left: 0, width: SPLIT_ORACLE_RAIL.width },
+      'split-right': { right: 0, width: SPLIT_ORACLE_RAIL.width },
+    }[layout.mode],
+  ].map(grid => ({
+    ...grid,
+    top: CHART_LAYOUT.rangeBorderGutter,
+    bottom: CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter,
+  }))
 
 const getSplitOracleMarkerPosition = (layout: SplitLayout) => {
   const { breakTick, max, min } = SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS

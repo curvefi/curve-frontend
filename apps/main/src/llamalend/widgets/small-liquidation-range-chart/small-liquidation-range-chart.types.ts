@@ -1,4 +1,5 @@
-import type { Amount } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 
 export type LiquidationRange = readonly [Amount, Amount]
 export type RenderableLiquidationRange = readonly [number, number]
@@ -6,11 +7,22 @@ export type ChartDomain = readonly [number, number]
 export type SplitMode = 'split-left' | 'split-right'
 
 export interface SmallLiquidationRangeChartProps {
+  prices: QueryProp<Range<Decimal> | null> | undefined
+  prevPrices: QueryProp<Range<Decimal>> | undefined
+  oraclePrice: QueryProp<Decimal | null>
+  isFullRepay: boolean | undefined
+}
+
+export interface SmallLiquidationRangeChartOptionProps {
   liquidationRanges: {
     newRange?: LiquidationRange
     currentRange?: LiquidationRange
   }
   oraclePrice: Amount | undefined
+}
+
+export type SmallLiquidationRangeChartData = SmallLiquidationRangeChartOptionProps & {
+  loading: boolean
 }
 
 export type OracleRailLayout = {

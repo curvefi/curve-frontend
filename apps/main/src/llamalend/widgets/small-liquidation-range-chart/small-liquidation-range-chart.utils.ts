@@ -1,4 +1,5 @@
 import {
+  DEFAULT_SMALL_LIQUIDATION_RANGE_CHART_DOMAIN,
   ORACLE_MARKER_LAYOUT,
   SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS,
 } from './small-liquidation-range-chart.constants'
@@ -141,10 +142,11 @@ export const getSmallLiquidationRangeChartLayout = ({
 
   // Continuous mode uses one real price axis. This is the preferred path unless the oracle
   // is far enough away to damage readability.
-  return continuousValues.length === 0
-    ? undefined
-    : {
-        mode: 'continuous',
-        mainDomain: padDomain(getExtent(continuousValues)),
-      }
+  return {
+    mode: 'continuous',
+    mainDomain:
+      continuousValues.length === 0
+        ? DEFAULT_SMALL_LIQUIDATION_RANGE_CHART_DOMAIN
+        : padDomain(getExtent(continuousValues)),
+  }
 }
