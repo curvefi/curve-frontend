@@ -73,7 +73,9 @@ const BandsChartComponent = ({
     >
       <ChartStateWrapper
         height={height}
-        isLoading={isLoading || !chartData?.length}
+        isLoading={isLoading}
+        isEmpty={chartData.length === 0}
+        emptyMessage={t`No active bands for this market`}
         error={error}
         errorMessage={t`Failed to load bands chart data`}
       >
