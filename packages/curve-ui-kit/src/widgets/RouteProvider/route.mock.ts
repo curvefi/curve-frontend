@@ -31,6 +31,27 @@ export const mockRoutes: RouteResponse[] = [
     tx: { to: '0x0000000000000000000000000000000000000002', data: '0x', from: zeroAddress, value: '0' },
   },
   {
+    id: 'curve-solver',
+    router: 'curve-solver',
+    amountIn: ['69424100000000000000'],
+    amountOut: ['68324100000000000000'],
+    priceImpact: null,
+    gas: `173000`,
+    createdAt: 0,
+    warnings: [],
+    route: [
+      {
+        name: 'Curve Solver',
+        tokenIn: [zeroAddress],
+        tokenOut: [zeroAddress],
+        protocol: 'curve-solver',
+        action: 'swap',
+        chainId: 1,
+      },
+    ],
+    tx: { to: '0x0000000000000000000000000000000000000004', data: '0x', from: zeroAddress, value: '0' },
+  },
+  {
     id: 'odos',
     router: 'odos',
     amountIn: ['69424100000000000000'],

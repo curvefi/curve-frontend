@@ -3,6 +3,7 @@ import lodash from 'lodash'
 import { handleTimeout } from '@primitives/objects.utils'
 import { type RouterRouteResponse } from '@primitives/router.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
+import { buildCurveSolverRouteResponse } from '../curve-solver-router/curve-solver-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'
 import { decimalCompare, decimalMax } from '../router.utils'
@@ -10,7 +11,12 @@ import { type RoutesQuery } from './routes.schemas'
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
-const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse, odos: buildOdosRouteResponse }
+const routers = {
+  curve: buildCurveRouteResponse,
+  'curve-solver': buildCurveSolverRouteResponse,
+  enso: buildEnsoRouteResponse,
+  odos: buildOdosRouteResponse,
+}
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
   decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
