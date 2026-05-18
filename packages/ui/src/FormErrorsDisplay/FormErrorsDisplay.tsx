@@ -1,8 +1,10 @@
 import { FunctionComponent, useMemo } from 'react'
-import type { ErrorKey } from '@ui-kit/features/forms'
+import type { ErrorKey, FieldPath } from '@ui-kit/features/forms'
 import { useFormContext } from '@ui-kit/features/forms'
 import { ErrorContainer } from '../styled-containers'
 import type { FormError } from './error-types'
+
+type DisplayErrorEntry<T extends Record<string, unknown>> = [ErrorKey<T>, FormError]
 
 const getErrorMessage = (error: FormError): string => {
   if (!error) return 'Unknown error'
@@ -26,27 +28,30 @@ export const FormErrorsDisplay = <T extends Record<string, unknown>>({
   const {
     formState: { errors },
     clearErrors,
+    clearRootError,
   } = useFormContext<T>()
 
-  const filteredErrors = useMemo<[string, unknown][]>(() => {
+  const filteredErrors = useMemo<DisplayErrorEntry<T>[]>(() => {
     const shouldDisplayError = errorKeys ? (key: string) => errorKeys.includes(key as ErrorKey<T>) : () => true
     return [
-      ...Object.entries(errors).filter(([key]) => key !== 'root' && shouldDisplayError(key)),
-      ...(errors.root && shouldDisplayError('root') ? ([['root', errors.root]] as [string, unknown][]) : []),
+      ...Object.entries(errors)
+        .filter(([key, error]) => key !== 'root' && !!error && shouldDisplayError(key))
+        .map(([key, error]) => [key as FieldPath<T>, error] as DisplayErrorEntry<T>),
+      ...(errors.root && shouldDisplayError('root') ? ([['root', errors.root]] as DisplayErrorEntry<T>[]) : []),
     ]
   }, [errorKeys, errors])
 
-  if (filteredErrors.length === 0) return null
-
   return (
-    <ErrorContainer>
-      {filteredErrors.map(([key, error]) => (
-        <Component
-          key={key}
-          errorKey={getErrorMessage(error as FormError)}
-          handleBtnClose={() => clearErrors(key as Parameters<typeof clearErrors>[0])}
-        />
-      ))}
-    </ErrorContainer>
+    filteredErrors.length > 0 && (
+      <ErrorContainer>
+        {filteredErrors.map(([key, error]) => (
+          <Component
+            key={key}
+            errorKey={getErrorMessage(error)}
+            handleBtnClose={() => (key === 'root' ? clearRootError() : clearErrors(key as FieldPath<T>))}
+          />
+        ))}
+      </ErrorContainer>
+    )
   )
 }

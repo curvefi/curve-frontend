@@ -1,8 +1,8 @@
 import { type PartialRecord } from '@primitives/objects.utils'
-import type { DeepValue } from '@tanstack/react-form'
+import type { DeepKeys, DeepValue } from '@tanstack/react-form'
 
 export type FieldValues = object
-export type FieldPath<T extends FieldValues> = Extract<keyof T, string>
+export type FieldPath<T extends FieldValues> = DeepKeys<T> & string
 export type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = DeepValue<T, TFieldPath>
 export type FieldRecord<T extends FieldValues, TValue> = PartialRecord<FieldPath<T>, TValue>
 export type FieldEntry<T extends FieldValues> = {
@@ -12,8 +12,8 @@ export type FieldRecordEntry<T extends FieldValues, TValue> = {
   [K in FieldPath<T>]: [K, TValue]
 }[FieldPath<T>]
 export type FieldPathByValue<T extends FieldValues, TValue> = {
-  [K in Extract<keyof T, string>]: T[K] extends TValue ? K : never
-}[Extract<keyof T, string>]
+  [K in FieldPath<T>]: FieldPathValue<T, K> extends TValue ? K : never
+}[FieldPath<T>]
 export type FormError = { type?: string; message: string }
 export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root'
 export type FormErrors<T extends FieldValues = FieldValues> = FieldRecord<T, FormError> & {
