@@ -10,6 +10,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+const TYPOGRAPHY_MAX_WIDTH = '27.5rem' // 440px
+
 export const ErrorMessage = ({
   title,
   subtitle,
@@ -28,16 +30,21 @@ export const ErrorMessage = ({
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
   return (
-    <Stack direction="column" alignItems="center" gap={Spacing.sm} sx={sx}>
+    <Stack flexDirection="column" alignItems="center" gap={Spacing.sm} padding={Spacing.md} sx={sx}>
       <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
-      <Typography variant="bodyMRegular" color="textPrimary" textAlign="center" component="div">
-        {title}
-      </Typography>
-      {subtitle && (
-        <Typography variant="bodySRegular" color="textPrimary" textAlign="center" component="div">
-          {subtitle}
+      <Stack alignItems="center">
+        <Typography variant="headingXsBold" sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center' }}>
+          {title}
         </Typography>
-      )}
+        {subtitle && (
+          <Typography
+            variant="bodySRegular"
+            sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center', color: t => t.design.Text.TextColors.Secondary }}
+          >
+            {subtitle}
+          </Typography>
+        )}
+      </Stack>
       <Stack direction="row" flexWrap="wrap" gap={Spacing.sm} alignItems="center">
         <Button onClick={openReportModal} color="secondary" data-testid="submit-error-report-button">
           {t`Submit error report`}
