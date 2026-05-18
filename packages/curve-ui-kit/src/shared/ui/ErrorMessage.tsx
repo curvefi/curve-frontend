@@ -8,9 +8,7 @@ import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, IconSize } = SizesAndSpaces
-
-const TYPOGRAPHY_MAX_WIDTH = '27.5rem' // 440px
+const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
 export const ErrorMessage = ({
   title,
@@ -33,13 +31,17 @@ export const ErrorMessage = ({
     <Stack flexDirection="column" alignItems="center" gap={Spacing.sm} padding={Spacing.md} sx={sx}>
       <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
       <Stack alignItems="center">
-        <Typography variant="headingXsBold" sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center' }}>
+        <Typography variant="headingXsBold" sx={{ maxWidth: MaxWidth.emptyStateCard, textAlign: 'center' }}>
           {title}
         </Typography>
         {subtitle && (
           <Typography
             variant="bodySRegular"
-            sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center', color: t => t.design.Text.TextColors.Secondary }}
+            sx={{
+              maxWidth: MaxWidth.emptyStateCard,
+              textAlign: 'center',
+              color: t => t.design.Text.TextColors.Secondary,
+            }}
           >
             {subtitle}
           </Typography>
