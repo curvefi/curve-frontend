@@ -1,6 +1,7 @@
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Box, Stack, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
+import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { LegendBox } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
@@ -24,6 +25,8 @@ const formatAbbreviatedNumber = (value: number | undefined): string =>
   typeof value === 'number' ? `${formatNumber(value, { abbreviate: true })}` : '?'
 
 const formatUsdValue = (value: number | undefined): string => (typeof value === 'number' ? formatUsd(value) : '?')
+const formatBandPrice = (value: number): string =>
+  formatChartAxisNumber(value, { unit: 'dollar', abbreviateFrom: false })
 
 export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipContentProps) => {
   const palette = useBandsChartPalette()
@@ -77,7 +80,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             <TooltipItems secondary>
               <TooltipItem title={t`Band range`} sx={{ marginBottom: Spacing.sm }}>
                 {typeof data.p_down === 'number' && typeof data.p_up === 'number'
-                  ? `${formatNumber(data.p_down, { unit: 'dollar', abbreviate: false, highPrecision: true, minimumSignificantDigits: 4, maximumSignificantDigits: 4 })} - ${formatNumber(data.p_up, { unit: 'dollar', abbreviate: false, highPrecision: true, minimumSignificantDigits: 4, maximumSignificantDigits: 4 })}`
+                  ? `${formatBandPrice(data.p_down)} - ${formatBandPrice(data.p_up)}`
                   : '?'}
               </TooltipItem>
               <TooltipItem
