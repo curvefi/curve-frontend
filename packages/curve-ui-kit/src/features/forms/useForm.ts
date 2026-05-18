@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react'
-import { fromEntries, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
+import { type SubmitEvent, useCallback, useMemo, useRef } from 'react'
+import { assert, fromEntries, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
 import { type AnyFieldMeta, getBy, useForm as useTanStackForm, useStore } from '@tanstack/react-form'
 import type { ValidationSuite } from '@ui-kit/lib/validation'
 import type {
@@ -20,7 +20,6 @@ type FieldErrors<T extends FieldValues> = FieldRecord<T, FormError>
 type FieldMetaSnapshot = Pick<AnyFieldMeta, 'isTouched' | 'isDirty' | 'errorMap'>
 type FieldMetaMap<T extends FieldValues> = Partial<Record<FieldPath<T>, FieldMetaSnapshot>>
 type RootErrorMap = { onSubmit?: unknown }
-type FormSubmitEvent = { preventDefault(): void; stopPropagation(): void }
 
 const toFormError = (value: unknown): FormError | undefined =>
   typeof value === 'string'
@@ -103,6 +102,10 @@ export const useForm = <T extends FieldValues = FieldValues>({
   defaultValues: T
   validation?: ValidationSuite
 }): UseFormReturn<T> => {
+  // mutate resets form, but form submits mutation, so we need a ref to avoid circular dependency
+  // that could be cleaned up in the future by letting the form reset itself after successful submission
+  const mutateRef = useRef<(data: T) => void | Promise<void>>(null)
+
   const form = useTanStackForm({
     defaultValues,
     ...(validation && {
@@ -110,6 +113,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
         onChange: ({ value }: { value: T }) => ({ fields: getValidationFieldErrors(validation, value) }),
       },
     }),
+    onSubmit: ({ value }: { value: T }) => assert(mutateRef.current, `No submit handler provided`)(value),
   })
 
   const values = useStore(form.store, state => state.values)
@@ -123,10 +127,11 @@ export const useForm = <T extends FieldValues = FieldValues>({
 
   return {
     handleSubmit: useCallback(
-      onSubmit => (event?: FormSubmitEvent) => {
-        event?.preventDefault()
-        event?.stopPropagation()
-        return form.handleSubmit({ onSubmit: ({ value }: { value: T }) => onSubmit(value) })
+      mutate => (event: SubmitEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        event.stopPropagation()
+        mutateRef.current = mutate
+        return form.handleSubmit()
       },
       [form],
     ),

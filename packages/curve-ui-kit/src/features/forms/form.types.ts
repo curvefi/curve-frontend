@@ -1,3 +1,4 @@
+import type { SubmitEventHandler } from 'react'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { DeepKeys, DeepValue } from '@tanstack/react-form'
 
@@ -33,7 +34,7 @@ export type FormState<T extends FieldValues> = {
 
 export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
   onSubmit: (data: T) => Promise<void> | void,
-) => () => Promise<void> | void
+) => SubmitEventHandler<HTMLFormElement>
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
