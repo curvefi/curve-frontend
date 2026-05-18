@@ -54,6 +54,7 @@ const filterIntegrations = ({
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const integrationsQuery = useIntegrations({})
+  // to do: handle query error
   const { data: integrations = [], isLoading: integrationsLoading } = integrationsQuery
   const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
   const isLoading = integrationsLoading || integrationsTagsLoading
