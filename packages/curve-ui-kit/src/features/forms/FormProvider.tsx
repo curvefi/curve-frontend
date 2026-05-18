@@ -1,4 +1,8 @@
 import { type ReactNode, useMemo } from 'react'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import { t } from '@ui-kit/lib/i18n'
+import { Accordion } from '@ui-kit/shared/ui/Accordion'
+import { isDevelopment } from '@ui-kit/utils'
 import type { FieldValues, UseFormReturn } from './form.types'
 import { FormContext } from './useFormContext'
 
@@ -55,6 +59,13 @@ export const FormProvider = <T extends FieldValues>({
       )}
     >
       {children}
+      {isDevelopment && (
+        <Accordion title={t`Form state`} ghost size="extraSmall">
+          <AccordionDetails sx={{ overflowX: 'auto' }}>
+            <pre>{JSON.stringify({ values: getValues(), ...formState }, null, 2).slice(2, -2)}</pre>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </FormContext.Provider>
   )
 }
