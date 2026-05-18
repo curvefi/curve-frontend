@@ -2,7 +2,6 @@ import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/bor
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { RouteProviders } from '@primitives/router.utils'
 import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -83,9 +82,9 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
             address: userAddress,
             getExpected: getExpectedFn({
               chainId,
-              router: routeId ? getRouteById(routeId).router : RouteProviders,
               userAddress,
               slippage,
+              ...(routeId && { router: getRouteById(routeId).router }),
             }),
           }),
         )

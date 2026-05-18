@@ -1,5 +1,5 @@
 import { zeroAddress } from 'viem'
-import type { RouteResponse } from '@primitives/router.utils'
+import type { RouteResponse } from '@ui-kit/entities/router-api'
 
 export const mockRoutes: RouteResponse[] = [
   {
@@ -8,6 +8,7 @@ export const mockRoutes: RouteResponse[] = [
     amountIn: ['69424100000000000000'],
     amountOut: ['69424100000000000000'],
     priceImpact: 0.01,
+    gas: null,
     createdAt: 0,
     warnings: [],
     route: [
@@ -21,6 +22,7 @@ export const mockRoutes: RouteResponse[] = [
     amountIn: ['69424100000000000000'],
     amountOut: ['67743200000000000000'],
     priceImpact: 0.1,
+    gas: `2100`,
     createdAt: 0,
     warnings: [],
     route: [
@@ -34,6 +36,7 @@ export const mockRoutes: RouteResponse[] = [
     amountIn: ['69424100000000000000'],
     amountOut: ['67014200000000000000'],
     priceImpact: 0.001,
+    gas: `2100`,
     createdAt: 0,
     warnings: [],
     route: [

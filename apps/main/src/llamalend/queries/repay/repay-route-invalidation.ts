@@ -1,5 +1,5 @@
 import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
-import type { RouteResponse } from '@primitives/router.utils'
+import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { invalidateRepayExpectedBorrowed } from './repay-expected-borrowed.query'
 import { invalidateRepayFutureLeverage } from './repay-future-leverage.query'
 import { invalidateRepayEstimateGasQueries } from './repay-gas-estimate.query'
