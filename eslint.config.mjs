@@ -121,6 +121,11 @@ const config = [
                 .map(targetApp => `apps/main/src/${targetApp}`),
               from: `apps/main/src/${importedApp}`, // from ==> the app imported
             })),
+            // forbid importing from the router-api app in app source code
+            {
+              target: ['apps/main/src/**'],
+              from: 'apps/router-api',
+            },
             // forbid `wagmi` external dependency package imports, except from feature
             {
               target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'],

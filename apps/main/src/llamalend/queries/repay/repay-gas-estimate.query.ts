@@ -9,7 +9,11 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
 
-const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstimateGasQuery } = queryFactory({
+const {
+  useQuery: useRepayLoanEstimateGas,
+  invalidate: invalidateRepayLoanEstimateGasQuery,
+  getQueryOptions: getRepayLoanEstimateGasOptions,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -141,3 +145,5 @@ export const useRepayEstimateGas = createApprovedEstimateGasHook({
 
 export const invalidateRepayEstimateGasQueries = async (params: RepayParams) =>
   await Promise.all([invalidateRepayApproveGasEstimateQuery(params), invalidateRepayLoanEstimateGasQuery(params)])
+
+export { getRepayLoanEstimateGasOptions }
