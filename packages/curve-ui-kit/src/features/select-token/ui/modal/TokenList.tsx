@@ -5,6 +5,7 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { TokenSection, type TokenSectionProps } from '@ui-kit/features/select-token/ui/modal/TokenSection'
+import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -52,6 +53,13 @@ export const TokenList = ({
   onSearch,
 }: TokenListProps) => {
   const [search, setSearch] = useState('')
+  const [searchInputValue, setSearchInputValue] = useDebounce({
+    initialValue: '',
+    callback: (value: string) => {
+      setSearch(value)
+      onSearch?.(value)
+    },
+  })
   const [showPreviewMy, , closeShowPreviewMy] = useSwitch(true)
   const [showPreviewAll, , closeShowPreviewAll] = useSwitch(true)
 
@@ -149,15 +157,7 @@ export const TokenList = ({
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
-      {!disableSearch && (
-        <SearchField
-          name="tokenName"
-          onSearch={val => {
-            setSearch(val)
-            onSearch?.(val)
-          }}
-        />
-      )}
+      {!disableSearch && <SearchField value={searchInputValue} name="tokenName" onSearch={setSearchInputValue} />}
 
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}
