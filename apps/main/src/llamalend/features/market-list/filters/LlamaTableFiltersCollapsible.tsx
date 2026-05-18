@@ -13,6 +13,7 @@ import {
 } from '@ui-kit/shared/ui/DataTable/filters'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns/columns.enum'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
@@ -106,7 +107,7 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
                 {/* Special chip for the chains filter */}
                 {id === LlamaMarketColumnId.Chain ? (
                   <ChainFilterChips
-                    chains={labels}
+                    chainsQuery={constQ(labels)}
                     selectedChains={labels}
                     toggleChain={clickedValue => toggleFilterValue(id, value, clickedValue)}
                   />
