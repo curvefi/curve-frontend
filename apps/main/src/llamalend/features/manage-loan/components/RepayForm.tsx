@@ -93,7 +93,7 @@ export const RepayForm = <ChainId extends IChainId>({
     max,
     isFull,
     priceImpact,
-  } = useRepayForm({ market, network, enabled, onPricesUpdated })
+  } = useRepayForm({ market, networks, chainId, enabled, onPricesUpdated })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id, collateralEvents })
 
   const selectedField = token?.field ?? 'userBorrowed'

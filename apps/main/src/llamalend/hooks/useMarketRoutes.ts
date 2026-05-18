@@ -1,63 +1,87 @@
-import { useCallback, useEffect, useEffectEvent, useState, useTransition } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { type RouteProvider, RouteProviders, type RouteResponse } from '@primitives/router.utils'
-import { useRouterApi } from '@ui-kit/entities/router-api'
+import { recordValues } from '@primitives/objects.utils'
+import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
+import type { QueryKey } from '@tanstack/react-query'
+import type { BaseConfig } from '@ui/utils'
+import {
+  type GetGasCallback,
+  type RouteQueries,
+  type RouteResponse,
+  useRouterQueries,
+} from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { q, type Query, type QueryProp } from '@ui-kit/types/util'
-import { toWei } from '@ui-kit/utils'
+import { q, type QueryProp } from '@ui-kit/types/util'
+import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
 
-export type MarketRoutes = Query<RouteResponse[]> & {
+export type MarketRoutes = {
+  queries: RouteQueries
+  enabled: boolean
   selectedRoute: RouteResponse | undefined
   onChange: (option: RouteResponse | undefined) => Promise<void>
   onRefresh: () => void
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
+  networks: Record<number, BaseConfig>
+  chainId: number
 }
+
+const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
+  decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
+  (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
 
 /**
  * Queries and converts the routes for leveraging on llamalend markets.
  */
-export function useMarketRoutes({
+export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends QueryKey>({
   chainId,
   tokenIn,
   tokenOut,
   amountIn,
   slippage,
-  routeId,
   enabled,
   onChange: onChangeProp,
+  networks,
+  getRouteGasOptions,
 }: {
   chainId: number
   tokenIn: { symbol: string; address: Address; decimals: number } | undefined
   tokenOut: { symbol: string; address: Address; decimals: number } | undefined
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
-  routeId: string | undefined
   enabled: boolean
+  networks: Record<number, BaseConfig>
+  getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
-  const [isTransitioning, startTransition] = useTransition()
+  const [, startTransition] = useTransition() // todo: use isTransitioning for something
 
-  const { data, refetch, isLoading, error } = useRouterApi(
+  const { queries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
     {
       chainId,
       tokenIn: tokenIn?.address,
       tokenOut: tokenOut?.address,
       amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
-      router: RouteProviders,
       userAddress,
       slippage,
     },
+    getRouteGasOptions,
     enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
-
-  const selectedRoute =
-    (routeId && data?.find(({ id }) => id === routeId)) ||
-    (chosenRouter && data?.find(({ router }) => router === chosenRouter)) ||
-    data?.[0]
+  const selectedRoute = useMemo(
+    () =>
+      (chosenRouter && queries[chosenRouter]?.data) ||
+      recordValues(queries)
+        .map(q => q.data)
+        .filter((q): q is RouteResponse => !!q)
+        .sort(sortRoutes)[0],
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+    [chosenRouter, ...recordValues(queries)],
+  )
 
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
@@ -70,15 +94,14 @@ export function useMarketRoutes({
     [onChangeProp],
   )
 
-  return enabled
-    ? {
-        data,
-        isLoading: isLoading || isTransitioning,
-        error,
-        selectedRoute,
-        onChange,
-        onRefresh: refetch,
-        tokenOut: { ...tokenOut, usdRate },
-      }
-    : undefined
+  return {
+    networks,
+    chainId,
+    queries,
+    enabled,
+    selectedRoute,
+    onChange,
+    onRefresh,
+    tokenOut: { ...tokenOut, usdRate },
+  }
 }
