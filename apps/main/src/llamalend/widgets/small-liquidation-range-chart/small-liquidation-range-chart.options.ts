@@ -1,4 +1,5 @@
-import type { EChartsOption, GridComponentOption, XAXisComponentOption, YAXisComponentOption } from 'echarts'
+import type { EChartsOption, GridComponentOption, SeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -227,53 +228,49 @@ export const buildRangeMarkAreas = ({
     lineHeight: textStyle.lineHeight,
   }
 
-  return [
-    ...(currentRange
-      ? [
-          [
-            {
-              xAxis: currentRange[0],
-              yAxis: FULL_RANGE_Y_AXIS[0],
-              z2: 1,
-              itemStyle: { color: colors.currentRange },
-              label: {
-                ...rangeLabelStyle,
-                show: !hasNewRange,
-                position: 'inside',
-                formatter: RANGE_LABEL,
-                color: colors.rangeLabel,
-              },
-            },
-            { xAxis: currentRange[1], yAxis: FULL_RANGE_Y_AXIS[1] },
-          ] as RangeMarkArea,
-        ]
-      : []),
-    ...(newRange
-      ? [
-          [
-            {
-              xAxis: newRange[0],
-              yAxis: INSET_RANGE_Y_AXIS[0],
-              z2: 2,
-              itemStyle: {
-                color: 'transparent',
-                borderColor: colors.newRangeLine,
-                borderType: NEW_RANGE_BORDER_DASH,
-                borderWidth: CHART_LINE_WIDTHS.referenceLine,
-              },
-              label: {
-                ...rangeLabelStyle,
-                show: true,
-                position: 'inside',
-                formatter: RANGE_LABEL,
-                color: colors.newRangeLine,
-              },
-            },
-            { xAxis: newRange[1], yAxis: INSET_RANGE_Y_AXIS[1] },
-          ] as RangeMarkArea,
-        ]
-      : []),
-  ]
+  return notFalsyArray(
+    currentRange && [
+      [
+        {
+          xAxis: currentRange[0],
+          yAxis: FULL_RANGE_Y_AXIS[0],
+          z2: 1,
+          itemStyle: { color: colors.currentRange },
+          label: {
+            ...rangeLabelStyle,
+            show: !hasNewRange,
+            position: 'inside',
+            formatter: RANGE_LABEL,
+            color: colors.rangeLabel,
+          },
+        },
+        { xAxis: currentRange[1], yAxis: FULL_RANGE_Y_AXIS[1] },
+      ] as RangeMarkArea,
+    ],
+    newRange && [
+      [
+        {
+          xAxis: newRange[0],
+          yAxis: INSET_RANGE_Y_AXIS[0],
+          z2: 2,
+          itemStyle: {
+            color: 'transparent',
+            borderColor: colors.newRangeLine,
+            borderType: NEW_RANGE_BORDER_DASH,
+            borderWidth: CHART_LINE_WIDTHS.referenceLine,
+          },
+          label: {
+            ...rangeLabelStyle,
+            show: true,
+            position: 'inside',
+            formatter: RANGE_LABEL,
+            color: colors.newRangeLine,
+          },
+        },
+        { xAxis: newRange[1], yAxis: INSET_RANGE_Y_AXIS[1] },
+      ] as RangeMarkArea,
+    ],
+  )
 }
 
 // Continuous mode is a normal real-price chart: range endpoints and oracle all share one axis.
@@ -299,20 +296,18 @@ export const buildContinuousOption = ({
     textStyle: chartTextStyle,
   }),
   yAxis: buildHiddenYAxis(),
-  series: [
-    buildRangeSeries({ rangeMarkAreas, seriesData }),
-    ...(oraclePrice === undefined
-      ? []
-      : [
-          buildOracleMarkerSeries({
-            colors,
-            formattedOraclePrice,
-            htmlFontSize,
-            markerXValue: oraclePrice,
-            textStyle: chartTextStyle,
-          }),
-        ]),
-  ],
+  series: notFalsyArray<SeriesOption>(
+    [buildRangeSeries({ rangeMarkAreas, seriesData })],
+    oraclePrice !== undefined && [
+      buildOracleMarkerSeries({
+        colors,
+        formattedOraclePrice,
+        htmlFontSize,
+        markerXValue: oraclePrice,
+        textStyle: chartTextStyle,
+      }),
+    ],
+  ),
 })
 
 // Split mode intentionally avoids ECharts' native xAxis.breaks renderer.
