@@ -1,3 +1,5 @@
+import { BACKEND_MAINTENANCE_CONFIG } from 'curve-ui-kit/src/features/maintenance/backend-maintenance.constants'
+import { BackendMaintenanceModal } from 'curve-ui-kit/src/features/maintenance/BackendMaintenanceModal'
 import { type ReactNode } from 'react'
 import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
@@ -81,6 +83,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
     >
       <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
     </Box>
+    <BackendMaintenanceModal {...BACKEND_MAINTENANCE_CONFIG} />
     <Footer appName={currentApp} networkId={network.id} />
   </Stack>
 )

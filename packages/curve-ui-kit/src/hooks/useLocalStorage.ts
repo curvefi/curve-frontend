@@ -117,4 +117,15 @@ export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-d
 export const useDismissPoolBanner = (network: string, poolId: string) =>
   useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
 
+export const useDismissBackendMaintenance = (dateISO: string) => {
+  // The local storage key should not depend on the user, so we hardcode the locale and timezone.
+  const formattedDate = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'Europe/Zurich',
+  }).format(new Date(dateISO))
+  return useLocalStorage<boolean | null>(`backend-maintenance-${formattedDate}`, null)
+}
+
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)
