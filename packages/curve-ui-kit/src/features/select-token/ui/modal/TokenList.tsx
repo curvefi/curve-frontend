@@ -1,11 +1,10 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { TokenSection, type TokenSectionProps } from '@ui-kit/features/select-token/ui/modal/TokenSection'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -53,13 +52,13 @@ export const TokenList = ({
   onSearch,
 }: TokenListProps) => {
   const [search, setSearch] = useState('')
-  const [searchInputValue, setSearchInputValue] = useDebounce({
-    initialValue: '',
-    callback: (value: string) => {
-      setSearch(value)
-      onSearch?.(value)
+  const onSearchCallback = useCallback(
+    (val: string) => {
+      setSearch(val)
+      onSearch?.(val)
     },
-  })
+    [setSearch, onSearch],
+  )
   const [showPreviewMy, , closeShowPreviewMy] = useSwitch(true)
   const [showPreviewAll, , closeShowPreviewAll] = useSwitch(true)
 
@@ -157,7 +156,7 @@ export const TokenList = ({
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
-      {!disableSearch && <SearchField value={searchInputValue} name="tokenName" onSearch={setSearchInputValue} />}
+      {!disableSearch && <SearchField name="tokenName" onSearch={onSearchCallback} />}
 
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}

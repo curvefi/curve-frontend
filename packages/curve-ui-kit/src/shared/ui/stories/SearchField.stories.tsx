@@ -1,27 +1,8 @@
-import { type ComponentProps, useRef, useState } from 'react'
+import { useState, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { SearchField } from '../SearchField'
-
-const ControlledSearchField = ({
-  onSearch,
-  value: initialValue = '',
-  ...props
-}: ComponentProps<typeof SearchField>) => {
-  const [value, setValue] = useState(initialValue)
-
-  return (
-    <SearchField
-      {...props}
-      value={value}
-      onSearch={nextValue => {
-        setValue(nextValue)
-        onSearch(nextValue)
-      }}
-    />
-  )
-}
 
 const meta: Meta<typeof SearchField> = {
   title: 'UI Kit/Primitives/SearchField',
@@ -30,7 +11,7 @@ const meta: Meta<typeof SearchField> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Controlled search field. It is cleared and focused when clicking the close button.',
+        component: 'Search field with debounced search. It is cleared and focused when clicking the close button.',
       },
     },
   },
@@ -50,26 +31,20 @@ export default meta
 type Story = StoryObj<typeof SearchField>
 
 export const Default: Story = {
-  render: args => <ControlledSearchField {...args} />,
   args: {
-    value: '',
     onSearch: (value: string) => console.info('Search:', value),
   },
 }
 
 export const WithCustomPlaceholder: Story = {
-  render: args => <ControlledSearchField {...args} />,
   args: {
-    value: '',
     onSearch: (value: string) => console.info('Search:', value),
     placeholder: 'Search networks',
   },
 }
 
 export const Small: Story = {
-  render: args => <ControlledSearchField {...args} />,
   args: {
-    value: '',
     onSearch: (value: string) => console.info('Search:', value),
     size: 'small',
   },
@@ -82,7 +57,7 @@ export const WithInputRef = () => {
 
   return (
     <Box sx={{ width: '300px' }}>
-      <SearchField inputRef={inputRef} value={searchValue} onSearch={setSearchValue} />
+      <SearchField inputRef={inputRef} onSearch={setSearchValue} />
       <Box mt={2}>
         <Button variant="contained" onClick={() => inputRef.current?.focus()}>
           Focus input
@@ -94,9 +69,7 @@ export const WithInputRef = () => {
 }
 
 export const CustomStyled: Story = {
-  render: args => <ControlledSearchField {...args} />,
   args: {
-    value: '',
     onSearch: (value: string) => console.info('Search:', value),
     sx: {
       width: '300px',

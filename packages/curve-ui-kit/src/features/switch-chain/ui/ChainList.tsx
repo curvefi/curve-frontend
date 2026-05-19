@@ -7,7 +7,6 @@ import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
 import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@ui-kit/hooks/router'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
@@ -34,8 +33,6 @@ export function ChainList({
 }) {
   const pathname = usePathname()
   const [searchValue, setSearchValue] = useState('')
-  const [searchInputValue, setSearchInputValue] = useDebounce({ initialValue: '', callback: setSearchValue })
-
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
@@ -65,8 +62,7 @@ export function ChainList({
       <SearchField
         sx={{ marginBottom: 2 }}
         placeholder={t`Search Networks`}
-        value={searchInputValue}
-        onSearch={setSearchInputValue}
+        onSearch={setSearchValue}
         name="chainName"
       />
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
