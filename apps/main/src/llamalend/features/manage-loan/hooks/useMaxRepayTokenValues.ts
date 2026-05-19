@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getTokens } from '@/llamalend/llama.utils'
+import { type MarketTokens } from '@/llamalend/llama.utils'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
@@ -16,7 +16,7 @@ export function useMaxRepayTokenValues(
     borrowToken,
     params,
     form,
-  }: Partial<ReturnType<typeof getTokens>> & {
+  }: Partial<MarketTokens> & {
     params: RepayParams
     form: UseFormReturn<RepayFormData>
   },

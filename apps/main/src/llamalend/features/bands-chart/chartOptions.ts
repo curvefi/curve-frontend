@@ -1,7 +1,7 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { sum, zip } from 'lodash'
+import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { formatNumberWithOptions } from './bands-chart.utils'
 import { generateMarkLines } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
@@ -189,7 +189,7 @@ export const getChartOptions = (
         showMaxLabel: false,
         // label margin matches the lightweight-charts time scale margin used by the adjacent candle chart
         margin: 10,
-        formatter: (value: number) => formatNumberWithOptions(value),
+        formatter: (value: number) => formatChartAxisNumber(value),
       },
       splitLine: {
         show: true,
