@@ -3,13 +3,13 @@ import type { Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type CurveSolverQuoteRequest = {
-  input_token: string
-  output_token: string
-  amount_in: string
+  input_token: Address
+  output_token: Address
+  amount_in: Decimal
   exact: boolean
-  receiver?: string
-  min_out?: string
-  gas_price_gwei?: number
+  receiver?: Address
+  min_out?: Decimal
+  gas_price_gwei?: Decimal
 }
 
 type LlamaStatus = 'NotApplicable' | 'Ok' | 'FetchFailed' | 'ParseFailed'
@@ -21,7 +21,7 @@ type RouteDebug = {
   pool_addresses: Address[]
   swap_params: [number, number, number, number, number]
   coins: [Address, Address][]
-  quote_full: string
+  quote_full: Decimal
   selected: boolean
 }
 
@@ -36,8 +36,8 @@ type OptimizationDebug = {
 type LegDebug = {
   route_id: number
   buckets: number
-  amount: string
-  output: string
+  amount: Decimal
+  output: Decimal
   hops: number
   pools: string[]
   swap_addresses: Address[]
@@ -74,7 +74,7 @@ export type CurveSolverQuoteResponse = {
   ops: number
   final_slot?: number
   final_slots: number[]
-  final_token: string
+  final_token: Address
   snapshot_block: number
   gas_price_gwei: number
   router_address: Address
