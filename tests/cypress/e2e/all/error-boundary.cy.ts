@@ -1,5 +1,6 @@
 import { oneBool } from '@cy/support/generators'
-import { createLendingVaultChainsResponse, mockLendingVaults } from '@cy/support/helpers/lending-mocks'
+import { createLendingVaultChainsResponse } from '@cy/support/helpers/lending-mocks'
+import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
@@ -7,19 +8,18 @@ import { SENTRY_DSN } from '@ui-kit/features/sentry'
 const invalidIconAddress = '0x0000000000000000000000000000000000000001' as const
 
 const visitErrorBoundary = () => {
-  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, {
-    body: { chains: { ethereum: { count: 0, data: [] } } },
-  })
-  const chains = createLendingVaultChainsResponse()
-  chains.ethereum = {
-    ...chains.ethereum,
-    data: chains.ethereum.data.map(market => ({
-      // Keep the API response valid, then trigger the render error from the icon path below.
-      ...market,
-      collateral_token: { ...market.collateral_token, address: invalidIconAddress },
-    })),
-  }
-  mockLendingVaults(chains).as('error')
+  const { ethereum, ...otherChains } = createLendingVaultChainsResponse()
+  setupLlamalendListMocks({
+    ethereum: {
+      ...ethereum,
+      data: ethereum.data.map(market => ({
+        ...market,
+        // Keep the API response valid, then trigger the render error from the icon path below.
+        collateral_token: { ...market.collateral_token, address: invalidIconAddress },
+      })),
+    },
+    ...otherChains,
+  }).lendingVaults.as('error')
   const url = '/llamalend/ethereum/markets'
   cy.visit(url, {
     timeout: API_LOAD_TIMEOUT.timeout,
