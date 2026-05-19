@@ -1,6 +1,5 @@
 import { TOP_HOLDERS } from '@/dao/constants'
-import { getProposal } from '@curvefi/prices-api/proposal/api'
-import { ProposalType } from '@curvefi/prices-api/proposal/models'
+import { getProposal, type ProposalType } from '@curvefi/prices-api/proposal'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 

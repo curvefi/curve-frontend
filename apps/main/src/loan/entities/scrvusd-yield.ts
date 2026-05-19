@@ -1,5 +1,4 @@
-import { getYield } from '@curvefi/prices-api/savings'
-import type { Yield } from '@curvefi/prices-api/savings/models'
+import { getYield, type Yield } from '@curvefi/prices-api/savings'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { timeOptionValidationSuite, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
