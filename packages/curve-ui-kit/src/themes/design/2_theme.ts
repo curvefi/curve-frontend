@@ -45,11 +45,12 @@ export const createLightDesign = (
       Outline: Light.Layer[3].Outline,
     },
     App: {
-      Background: '#f0edeb',
+      Background: Grays[75],
     },
     Feedback: {
       Info: Light.Layer.Feedback.Info,
       Success: Light.Layer.Feedback.Success,
+      Caution: Light.Layer.Feedback.Caution,
       Warning: Light.Layer.Feedback.Warning,
       Danger: Light.Layer.Feedback.Danger,
       Error: Light.Layer.Feedback.Error,
@@ -95,6 +96,7 @@ export const createLightDesign = (
       },
       Feedback: {
         Success: Light.Text.Feedback.Success,
+        Caution: Light.Text.Feedback.Caution,
         Warning: Light.Text.Feedback.Warning,
         Error: Light.Text.Feedback.Error,
         Danger: Light.Text.Feedback.Danger,
@@ -163,6 +165,7 @@ export const createLightDesign = (
     Ghost: {
       Default: {
         Label: Text.TextColors.Highlight,
+        Fill: Transparent,
       },
       Hover: {
         Label: Grays[975],
@@ -170,7 +173,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: Text.TextColors.Disabled,
       },
     },
     Success: {
@@ -207,10 +210,11 @@ export const createLightDesign = (
       },
       Hover: {
         Label: Text.TextColors.Primary,
+        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[10],
-        Fill: Layer.Highlight.Fill,
+        Fill: Blues[600],
       },
     },
     Transition: 'Transition',
@@ -236,9 +240,11 @@ export const createLightDesign = (
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
+        Fill: Layer.App.Background,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
+        Fill: Color.Neutral[900],
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -377,6 +383,16 @@ export const createLightDesign = (
       Selected: Light.Tables.Row.Selected,
       Hover: Light.Tables.Row.Hover,
     },
+    Text: {
+      Default: {
+        Primary: Light.Text.Primary,
+        Secondary: Light.Text.Secondary,
+      },
+      Hover: {
+        Primary: Light.Text.Primary,
+        Secondary: Light.Text.Secondary,
+      },
+    },
   } as const
 
   const Inputs = {
@@ -513,11 +529,12 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Outline: Dark.Layer[3].Outline,
     },
     App: {
-      Background: '#12110f',
+      Background: Grays[975],
     },
     Feedback: {
       Info: Dark.Layer.Feedback.Info,
       Success: Dark.Layer.Feedback.Success,
+      Caution: Dark.Layer.Feedback.Caution,
       Warning: Dark.Layer.Feedback.Warning,
       Error: Dark.Layer.Feedback.Error,
       Danger: Dark.Layer.Feedback.Danger,
@@ -563,6 +580,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Feedback: {
         Success: Dark.Text.Feedback.Success,
+        Caution: Dark.Text.Feedback.Caution,
         Warning: Dark.Text.Feedback.Warning,
         Error: Dark.Text.Feedback.Error,
         Danger: Dark.Text.Feedback.Danger,
@@ -631,6 +649,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Ghost: {
       Default: {
         Label: Text.TextColors.Highlight,
+        Fill: Transparent,
       },
       Hover: {
         Label: Grays[50],
@@ -638,7 +657,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Label: Blues[700],
-        Fill: Transparent,
+        Fill: Grays[850],
       },
     },
     Success: {
@@ -675,10 +694,11 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Hover: {
         Label: Text.TextColors.Primary,
+        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[975],
-        Fill: Layer.Highlight.Fill,
+        Fill: Grays[10],
       },
     },
     Transition: 'Transition',
@@ -704,9 +724,11 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
+        Fill: Layer.App.Background,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
+        Fill: Color.Neutral[900],
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -845,6 +867,16 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Selected: Dark.Tables.Row.Selected,
       Hover: Dark.Tables.Row.Hover,
     },
+    Text: {
+      Default: {
+        Primary: Dark.Text.Primary,
+        Secondary: Dark.Text.Secondary,
+      },
+      Hover: {
+        Primary: Dark.Text.Primary,
+        Secondary: Dark.Text.Secondary,
+      },
+    },
   } as const
 
   const Inputs = {
@@ -942,11 +974,12 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Outline: Chad.Layer[3].Outline,
     },
     App: {
-      Background: '#bdbbec',
+      Background: Color.Primary[200],
     },
     Feedback: {
       Info: Chad.Layer.Feedback.Info,
       Success: Chad.Layer.Feedback.Success,
+      Caution: Chad.Layer.Feedback.Caution,
       Warning: Chad.Layer.Feedback.Warning,
       Danger: Chad.Layer.Feedback.Danger,
       Error: Chad.Layer.Feedback.Error,
@@ -992,6 +1025,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Feedback: {
         Success: Chad.Text.Feedback.Success,
+        Caution: Chad.Text.Feedback.Caution,
         Warning: Chad.Text.Feedback.Warning,
         Error: Chad.Text.Feedback.Error,
         Danger: Chad.Text.Feedback.Danger,
@@ -1008,7 +1042,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
 
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
-    Focus_Outline: Color.Primary[50],
+    Focus_Outline: Color.Primary[300],
     Radius: {
       xs: '0',
       sm: '0',
@@ -1060,6 +1094,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Ghost: {
       Default: {
         Label: Text.TextColors.Highlight,
+        Fill: Transparent,
       },
       Hover: {
         Label: Violets[800],
@@ -1067,7 +1102,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: Text.TextColors.Disabled,
       },
     },
     Success: {
@@ -1104,10 +1139,11 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Hover: {
         Label: Text.TextColors.Primary,
+        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[10],
-        Fill: Layer.Highlight.Fill,
+        Fill: Violets[500],
       },
     },
     Transition: 'Transition',
@@ -1133,9 +1169,11 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
+        Fill: Layer.App.Background,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
+        Fill: Color.Primary[800],
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -1274,6 +1312,16 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Selected: Chad.Tables.Row.Selected,
       Hover: Chad.Tables.Row.Hover,
     },
+    Text: {
+      Default: {
+        Primary: Chad.Text.Primary,
+        Secondary: Chad.Text.Secondary,
+      },
+      Hover: {
+        Primary: Chad.Text.FilledFeedback.Highlight.Primary,
+        Secondary: Chad.Text.FilledFeedback.Highlight.Secondary,
+      },
+    },
   } as const
 
   const Inputs = {
@@ -1304,7 +1352,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Large: {
       Default: {
         Fill: Grays[100],
-        Outline: Grays[200],
+        Outline: Grays[400],
       },
     },
   } as const

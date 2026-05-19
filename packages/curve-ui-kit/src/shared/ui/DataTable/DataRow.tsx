@@ -63,11 +63,15 @@ export const DataRow = <T extends TableItem>({
               cursor: hasUrl ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TransitionFunction}`,
+              '--table-row-text-primary': t => t.design.Table.Text.Default.Primary,
+              '--table-row-text-secondary': t => t.design.Table.Text.Default.Secondary,
               [`& .${DesktopOnlyHoverClass}`]: {
                 opacity: { mobile: 1, desktop: 0 },
                 transition: `opacity ${TransitionFunction}`,
               },
               '&:hover': {
+                '--table-row-text-primary': t => t.design.Table.Text.Hover.Primary,
+                '--table-row-text-secondary': t => t.design.Table.Text.Hover.Secondary,
                 [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {
                   backgroundColor: t => t.design.Table.Row.Hover,

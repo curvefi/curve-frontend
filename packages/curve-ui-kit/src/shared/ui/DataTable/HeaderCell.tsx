@@ -29,13 +29,13 @@ function useHeaderSx<T extends TableItem>({
       verticalAlign: 'bottom',
       padding: Spacing.sm,
       paddingBlockStart: 0,
-      color: `text.${isSorted ? 'primary' : 'secondary'}`,
+      color: t => (isSorted ? t.design.Table.Header['Label_&_icon'].Active : t.design.Table.Header['Label_&_icon'].Default),
       paddingInlineStart,
       paddingInlineEnd,
       ...(canSort && {
         cursor: 'pointer',
         '&:hover': {
-          color: `text.highlight`,
+          color: t => t.design.Table.Header['Label_&_icon'].Hover,
         },
       }),
       ...(isSticky && {
