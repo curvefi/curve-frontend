@@ -5,12 +5,12 @@ import { ChainId } from '@/dex/types/main.types'
 
 export const EstimatedGasInfo = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
-    watch,
+    watchValue,
     formState: { isValid },
   } = useAddRewardTokenFormContext()
 
-  const rewardTokenId = watch('rewardTokenId')
-  const distributorId = watch('distributorId')
+  const rewardTokenId = watchValue('rewardTokenId')
+  const distributorId = watchValue('distributorId')
   const { data: estimatedGas, isFetching: isFetchingGasEstimate } = useEstimateGasAddRewardToken(
     {
       chainId,

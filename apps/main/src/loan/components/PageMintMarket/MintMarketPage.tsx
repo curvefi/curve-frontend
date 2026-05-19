@@ -1,31 +1,61 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
-import { useMintMarket } from '@/loan/entities/mint-markets'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
-import { type CollateralUrlParams } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, type LlamaApi } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
-import { isPricesApiChain, type Chain } from '@curvefi/prices-api'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { type Chain, isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { useMintMarket } from '../../hooks/useMintMarket'
+
+function useLegacyFetching({
+  market,
+  loanExists,
+  curve,
+}: {
+  curve: LlamaApi | null
+  market: MintMarketTemplate | undefined
+  loanExists: boolean | undefined
+}) {
+  const enabled = useLoanSlices()
+  const [loaded, setLoaded] = useState(!enabled)
+  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
+  useEffect(() => {
+    if (curve && market && enabled) {
+      void (async () => {
+        await fetchLoanDetails(curve, market)
+        setLoaded(true)
+      })()
+    }
+  }, [curve, market, fetchLoanDetails, enabled])
+
+  usePageVisibleInterval(async () => {
+    if (enabled && curve?.signerAddress && market && loanExists) {
+      await fetchLoanDetails(curve, market)
+    }
+  }, REFRESH_INTERVAL['1m'])
+  return loaded
+}
 
 export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
@@ -33,52 +63,31 @@ export const MintMarketPage = () => {
   const { llamaApi: curve = null, isHydrated, provider } = useCurve()
   const rChainId = useChainId(params)
   const { address } = useConnection()
-  const [loaded, setLoaded] = useState(false)
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
-  const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
-  const marketId = market?.id ?? ''
-
-  const userMarketParams = { chainId: rChainId, marketId, userAddress: address }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId: rChainId,
-    marketId,
-    userAddress: address,
-  })
-  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
+  const { data: market, isSuccess } = useMintMarket(rChainId, rCollateralId)
+  const userMarketParams = { chainId: rChainId, marketId: market?.id, userAddress: address }
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    {
+      chainId: rChainId,
+      marketId: market?.id,
+      userAddress: address,
+    },
+    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
+  )
 
   const network = networks[rChainId]
+  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: getControllerAddress(market),
     userAddress: curve?.signerAddress,
-    collateralToken: market
-      ? {
-          symbol: market.collateralSymbol,
-          address: market.collateral,
-          decimals: market.collateralDecimals,
-          name: market.collateralSymbol,
-        }
-      : undefined,
-    borrowToken: CRVUSD,
     network,
+    tokens,
   })
-  useEffect(() => {
-    if (isHydrated && curve && market) {
-      void (async () => {
-        await fetchLoanDetails(curve, market)
-        setLoaded(true)
-      })()
-    }
-  }, [isHydrated, curve, market, fetchLoanDetails])
-
-  usePageVisibleInterval(async () => {
-    if (curve?.signerAddress && market && loanExists) {
-      await fetchLoanDetails(curve, market)
-    }
-  }, REFRESH_INTERVAL['1m'])
+  const loaded = useLegacyFetching({ curve, market, loanExists })
 
   const pageProps = {
     curve,
@@ -89,8 +98,12 @@ export const MintMarketPage = () => {
     onPricesUpdated: setPreviewPrices,
   }
 
-  return isHydrated && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+  return isSuccess && !market ? (
+    <ErrorPage
+      title="404"
+      subtitle={`${t`Market`} ${rCollateralId} ${t`Not Found`}`}
+      continueUrl={getCollateralListPathname(params)}
+    />
   ) : provider ? (
     <DetailPageLayout
       formTabs={
@@ -105,7 +118,7 @@ export const MintMarketPage = () => {
       header={
         <PageHeader
           chainId={rChainId}
-          marketId={marketId}
+          marketId={market?.id ?? ''}
           isLoading={!isHydrated}
           market={market}
           blockchainId={network.id as Chain}
@@ -114,14 +127,14 @@ export const MintMarketPage = () => {
     >
       <MarketBanners chainId={rChainId} market={market} />
       <PositionDetailsComposite
-        market={market}
+        tokens={tokens}
         params={userMarketParams}
         hasPosition={loanExists}
         events={collateralEvents}
       />
       <MarketInformationComposite
         market={market ?? null}
-        marketId={marketId}
+        marketId={market?.id ?? ''}
         chainId={rChainId}
         previewPrices={previewPrices}
       />

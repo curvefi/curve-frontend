@@ -1,4 +1,4 @@
-import { BadDebtBanner } from '@/llamalend/widgets/banners/BadDebtBanner'
+import { LowSolvencyBanner } from '@/llamalend/widgets/banners/LowSolvencyBanner'
 import { oneFloat } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { formatPercent } from '@ui-kit/utils'
@@ -6,7 +6,7 @@ import { formatPercent } from '@ui-kit/utils'
 const mountBanner = ({ solvencyPercent }: { solvencyPercent: number }) =>
   cy.mount(
     <ComponentTestWrapper>
-      <BadDebtBanner solvencyPercent={solvencyPercent} />
+      <LowSolvencyBanner solvencyPercent={solvencyPercent} />
     </ComponentTestWrapper>,
   )
 
@@ -25,7 +25,7 @@ const visibleCases = [
 
 const BANNER_PREFIX_ID = 'bad-debt-banner-'
 
-describe('BadDebtBanner', () => {
+describe('LowSolvencyBanner', () => {
   it('does not render for solvent markets', () => {
     mountBanner({ solvencyPercent: oneFloat(99.9, 101) })
     cy.get(`[data-testid^=${BANNER_PREFIX_ID}]`).should('not.exist')

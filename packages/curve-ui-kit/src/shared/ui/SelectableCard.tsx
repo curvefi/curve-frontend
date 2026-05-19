@@ -5,10 +5,12 @@ import { applySxProps } from '@ui-kit/utils'
 
 export const SelectableCard = ({
   isSelected,
+  isError,
   sx,
   ...props
 }: Omit<ButtonBaseProps<typeof Card>, 'component'> & {
   isSelected: boolean
+  isError?: boolean
 }) => (
   <ButtonBase
     component={Card}
@@ -17,7 +19,11 @@ export const SelectableCard = ({
         backgroundColor: isSelected ? t.design.Layer.TypeAction.Selected : t.design.Layer[1].Fill,
         outlineStyle: 'solid',
         outlineWidth: Sizing[10],
-        outlineColor: isSelected ? t.design.Layer.Highlight.Outline : t.design.Layer[1].Outline,
+        outlineColor: isError
+          ? t.design.Layer.Feedback.Error
+          : isSelected
+            ? t.design.Layer.Highlight.Outline
+            : t.design.Layer[1].Outline,
         outlineOffset: `-${Sizing[10]}`,
         transition: `background-color ${TransitionFunction}, outline-color ${TransitionFunction}`,
         '&:hover, &.cypress-hover': {

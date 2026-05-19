@@ -21,18 +21,18 @@ type TxInfo = {
 export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
-    watch,
-    setValue,
-    getValues,
+    watchValue,
+    update: updateForm,
+    getValue,
     setError,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
 
-  const amount = watch('amount')
-  const rewardTokenId = watch('rewardTokenId')
-  const step = watch('step')
-  const userBalance = watch('userBalance')
+  const amount = watchValue('amount')
+  const rewardTokenId = watchValue('rewardTokenId')
+  const step = watchValue('step')
+  const userBalance = watchValue('userBalance')
 
   const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
     chainId,
@@ -45,7 +45,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
 
   const onSubmitApproval = useCallback(() => {
     const onApproveSuccess = (data: string[]) => {
-      setValue('step', DepositRewardStep.DEPOSIT, { shouldValidate: true })
+      updateForm({ step: DepositRewardStep.DEPOSIT }, { automated: true })
       setLatestTxInfo({
         description: t`Reward approved`,
         txHash: scanTxPath(network, data[0]),
@@ -58,25 +58,25 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
 
     depositRewardApprove(
       {
-        rewardTokenId: getValues('rewardTokenId'),
-        amount: getValues('amount'),
-        userBalance: getValues('userBalance'),
+        rewardTokenId: getValue('rewardTokenId'),
+        amount: getValue('amount'),
+        userBalance: getValue('userBalance'),
       },
       { onSuccess: onApproveSuccess, onError: onApproveError },
     )
-  }, [depositRewardApprove, getValues, setError, setValue, network])
+  }, [depositRewardApprove, getValue, network, setError, updateForm])
 
   const onSubmitDeposit = useCallback(() => {
     depositReward(
       {
-        rewardTokenId: getValues('rewardTokenId'),
-        amount: getValues('amount'),
-        epoch: getValues('epoch'),
-        userBalance: getValues('userBalance'),
+        rewardTokenId: getValue('rewardTokenId'),
+        amount: getValue('amount'),
+        epoch: getValue('epoch'),
+        userBalance: getValue('userBalance'),
       },
       {
         onSuccess: (data: string) => {
-          setValue('step', DepositRewardStep.CONFIRMATION)
+          updateForm({ step: DepositRewardStep.CONFIRMATION }, { automated: true })
           setLatestTxInfo({
             description: t`Reward deposited`,
             txHash: scanTxPath(network, data),
@@ -87,7 +87,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
         },
       },
     )
-  }, [depositReward, getValues, setError, setValue, network])
+  }, [depositReward, getValue, network, setError, updateForm])
 
   const { data: isDepositRewardApproved, isLoading: isLoadingDepositRewardApproved } = useGaugeDepositRewardIsApproved({
     chainId,
@@ -100,23 +100,23 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   useLayoutEffect(() => {
     if (step === DepositRewardStep.CONFIRMATION) {
       const timer = setTimeout(() => {
-        setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
+        updateForm({ step: DepositRewardStep.APPROVAL }, { automated: true })
       }, REFRESH_INTERVAL['2s'])
       return () => clearTimeout(timer)
     }
     if (isDepositRewardApproved) {
-      setValue('step', DepositRewardStep.DEPOSIT, { shouldValidate: true })
+      updateForm({ step: DepositRewardStep.DEPOSIT }, { automated: true })
       return
     }
     if (isLoadingDepositRewardApproved) {
-      setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
+      updateForm({ step: DepositRewardStep.APPROVAL }, { automated: true })
       return
     }
     if (isValid && !isLoadingDepositRewardApproved && !isDepositRewardApproved) {
-      setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
+      updateForm({ step: DepositRewardStep.APPROVAL }, { automated: true })
       return
     }
-  }, [isDepositRewardApproved, isLoadingDepositRewardApproved, setValue, isValid, isSubmitting, step])
+  }, [isDepositRewardApproved, isLoadingDepositRewardApproved, isValid, step, updateForm])
 
   const steps = useMemo<Step[]>(
     () => [

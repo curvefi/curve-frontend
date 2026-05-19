@@ -44,6 +44,7 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 const testCases = [oneOf(...SUPPLY_TEST_MARKETS)]
 
@@ -83,6 +84,7 @@ testCases.forEach(
           chainId={chainId}
           marketId={id}
           userAddress={address}
+          marketType={LlamaMarketType.Lend}
         />
       )
 

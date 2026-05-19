@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -17,8 +16,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
 
 const { Height } = SizesAndSpaces
-
-type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
 type OhlcChartStateProps = {
   chainId: ChainId
@@ -100,7 +97,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   const currentOraclePriceData = isLlamma ? llammaOraclePriceData : oraclePoolOraclePriceData
   const currentRefetchingCapped = isLlamma ? llammaRefetchingCapped : oraclePoolRefetchingCapped
   const currentLastFetchEndTime = isLlamma ? llammaLastFetchEndTime : oraclePoolLastFetchEndTime
-  const noDataAvailable = !isLoading && currentOraclePriceData.length === 0
+  const ohlcDataUnavailable = !isLoading && currentOraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (oraclePoolOraclePriceData.length > 0) return oraclePoolOraclePriceData
@@ -123,8 +120,6 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     currentPrices: userPrices,
     newPrices: newLiqPrices,
   })
-
-  const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
@@ -181,7 +176,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   )
 
   // Determine chart status: loading > error (no data) > ready
-  const chartStatus = isLoading || !market ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
+  const chartStatus = isLoading || !market ? 'LOADING' : ohlcDataUnavailable ? 'ERROR' : 'READY'
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
@@ -203,14 +198,5 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     latestOraclePrice: oraclePrice,
   }
 
-  return {
-    poolAddress,
-    coins,
-    ohlcDataUnavailable: noDataAvailable,
-    isLoading,
-    selectedChartKey,
-    setTimeOption,
-    legendSets,
-    ohlcChartProps,
-  }
+  return { ohlcDataUnavailable, isLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
 }

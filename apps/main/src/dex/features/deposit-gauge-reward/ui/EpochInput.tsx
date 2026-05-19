@@ -9,14 +9,14 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { setValue, formState, watch } = useFormContext<DepositRewardFormValues>()
-  const rewardTokenId = watch('rewardTokenId')
-  const amount = watch('amount')
-  const epoch = watch('epoch')
+  const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
+  const rewardTokenId = watchValue('rewardTokenId')
+  const amount = watchValue('amount')
+  const epoch = watchValue('epoch')
 
   const onEpochChange = useCallback(
-    (epoch: string) => setValue('epoch', parseInt(epoch) * TIME_FRAMES.WEEK, { shouldValidate: true }),
-    [setValue],
+    (epoch: string) => updateForm({ epoch: parseInt(epoch) * TIME_FRAMES.WEEK }),
+    [updateForm],
   )
 
   const isPendingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })

@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
-import { getTokens } from '@/llamalend/llama.utils'
+import { type MarketTokens } from '@/llamalend/llama.utils'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
+import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
-import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxRepayTokenValues(
   {
@@ -16,13 +16,13 @@ export function useMaxRepayTokenValues(
     borrowToken,
     params,
     form,
-  }: Partial<ReturnType<typeof getTokens>> & {
+  }: Partial<MarketTokens> & {
     params: RepayParams
     form: UseFormReturn<RepayFormData>
   },
   enabled?: boolean,
 ) {
-  const { getValues, setValue, trigger } = form
+  const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({
     chainId,
@@ -46,11 +46,8 @@ export function useMaxRepayTokenValues(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
-    () =>
-      isFull.data == null
-        ? undefined
-        : updateForm({ getValues, setValue, trigger }, { isFull: isFull.data }, { automated: true }),
-    [getValues, isFull.data, setValue, trigger],
+    () => (isFull.data == null ? undefined : updateForm({ isFull: isFull.data }, { automated: true })),
+    [isFull.data, updateForm],
   )
   useFormSync(form, { maxStateCollateral: userState.data?.collateral })
 

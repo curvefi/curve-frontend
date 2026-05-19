@@ -1,4 +1,5 @@
 import { FastifyBaseLogger } from 'fastify'
+import { ethAddress, zeroAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -9,6 +10,9 @@ import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.type
 
 const { ODOS_API_URL = 'https://prices.curve.finance/odos' } = process.env
 const protocol = 'odos' as const
+
+/** Odos expects the zero address for ETH */
+const getToken = (address: Address): Address => (address == ethAddress ? zeroAddress : address)
 
 async function getOdosQuote(
   {
@@ -30,8 +34,8 @@ async function getOdosQuote(
 ) {
   const params: Record<keyof CurveOdosQuoteRequest, string> = {
     chain_id: `${chainId}`,
-    from_address: tokenIn,
-    to_address: tokenOut,
+    from_address: getToken(tokenIn),
+    to_address: getToken(tokenOut),
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
@@ -46,7 +50,7 @@ async function getOdosQuote(
 
   const { ok, status, statusText } = quoteResponse
   if (!ok) {
-    log.error({ message: 'odos route request failed', status, statusText, params })
+    log.error({ message: 'odos route request failed', status, statusText, params, body: await quoteResponse.text() })
     throw new Error(`Odos quote error - ${status} ${statusText}`)
   }
 
@@ -64,7 +68,13 @@ async function assembleOdosQuote(
   })
   const { ok, status, statusText } = assembleResponse
   if (!ok) {
-    log.error({ message: 'odos assemble request failed', status, statusText, params })
+    log.error({
+      message: 'odos assemble request failed',
+      status,
+      statusText,
+      params,
+      body: await assembleResponse.text(),
+    })
     throw new Error(`Odos assemble error - ${status} ${statusText}`)
   }
   return (await assembleResponse.json()) as AssemblePathResponse
@@ -94,6 +104,7 @@ export const buildOdosRouteResponse = async (
   }
   const {
     outAmounts,
+    gasEstimate,
     pathId,
     pathVizImage,
     priceImpact = null,
@@ -108,6 +119,7 @@ export const buildOdosRouteResponse = async (
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
       priceImpact,
+      gas: `${gasEstimate}`,
       createdAt: Date.now(),
       warnings: [],
       isStableswapRoute: false,

@@ -6,8 +6,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { FlexItemDistributor, SubTitle } from './styled'
 
 export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
-  const { setValue, formState, trigger, watch } = useFormContext<AddRewardFormValues>()
-  const distributorId = watch('distributorId')
+  const { update: updateForm, formState, watchValue } = useFormContext<AddRewardFormValues>()
+  const distributorId = watchValue('distributorId')
 
   return (
     <FlexItemDistributor>
@@ -24,8 +24,7 @@ export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
           labelProps={false}
           id="inpDistributor"
           type="text"
-          onChange={value => setValue('distributorId', value as Address, { shouldValidate: true })}
-          onBlur={() => trigger('distributorId')}
+          onChange={value => updateForm({ distributorId: value as Address })}
           disabled={disabled}
         />
       </InputProvider>

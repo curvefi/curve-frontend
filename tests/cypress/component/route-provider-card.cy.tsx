@@ -1,7 +1,8 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
-import { constQ } from '@ui-kit/types/util'
+import { constQ, q } from '@ui-kit/types/util'
 import { RouteProviderIcons } from '@ui-kit/widgets/RouteProvider'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
@@ -15,33 +16,43 @@ const hexToRgb = (value: string) => {
 const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } = {}) => {
   const { curve: Curve } = RouteProviderIcons
   cy.mount(
-    <ComponentTestWrapper>
+    <ComponentTestWrapper config={mockedWagmiConfig}>
       <RouteProviderCard
-        route={{
-          id: 'curve',
-          router: 'curve',
-          amountIn: ['694241694241'],
-          amountOut: ['694241694241'],
-          priceImpact: 0.01,
-          createdAt: Date.now(),
-          warnings: [],
-          route: [
-            {
-              name: 'Curve',
-              tokenIn: ['0x0000000000000000000000000000000000000000'],
-              tokenOut: ['0x0000000000000000000000000000000000000000'],
-              protocol: 'curve',
-              action: 'swap',
-              chainId: 1,
+        query={{
+          isFetching: false,
+          ...q({
+            error: null,
+            isLoading: false,
+            data: {
+              id: 'curve',
+              router: 'curve',
+              amountIn: ['694241694241'],
+              amountOut: ['694241694241'],
+              priceImpact: 0.01,
+              gas: null,
+              createdAt: Date.now(),
+              warnings: [],
+              route: [
+                {
+                  name: 'Curve',
+                  tokenIn: ['0x0000000000000000000000000000000000000000'],
+                  tokenOut: ['0x0000000000000000000000000000000000000000'],
+                  protocol: 'curve',
+                  action: 'swap',
+                  chainId: 1,
+                },
+              ],
+              tx: {
+                to: '0x0000000000000000000000000000000000000000',
+                data: '0x',
+                from: '0x0000000000000000000000000000000000000000',
+                value: '0',
+              },
             },
-          ],
-          tx: {
-            to: '0x0000000000000000000000000000000000000000',
-            data: '0x',
-            from: '0x0000000000000000000000000000000000000000',
-            value: '0',
-          },
+          }),
         }}
+        networks={{}}
+        chainId={1}
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) }}
         isSelected={isSelected}
         bestOutputAmount="69.4241"

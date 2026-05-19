@@ -12,7 +12,7 @@ import { ExternalLink } from '@ui/Link/ExternalLink'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { t } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
-import { useLendMarket } from '../hooks/useLendMarket'
+import { useLendMarketData } from '../hooks/useLendMarket'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
@@ -45,7 +45,7 @@ export const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
-  const market = useLendMarket(rChainId, marketId).data
+  const market = useLendMarketData(rChainId, marketId).data
   const oraclePriceBand = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices?.oraclePriceBand)
   const {
     healthFull: healthFullCurrent,

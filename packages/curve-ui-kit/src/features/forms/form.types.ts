@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-imports */
 import { type FieldValues, type Path, type PathValue } from 'react-hook-form'
-import type { PartialRecord } from '@primitives/objects.utils'
+import { type PartialRecord } from '@primitives/objects.utils'
 
 export { type FieldValues, type FieldPathByValue } from 'react-hook-form'
 
@@ -13,6 +13,7 @@ export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, t
 export type FormState<T extends FieldValues> = {
   isSubmitting: boolean
   errors: FormErrors<T>
+  visibleErrors: [ErrorKey<T>, string][]
   touchedFields: PartialFields<T>
   isDirty: boolean
   isValid: boolean
@@ -23,34 +24,21 @@ export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
   onSubmit: (data: T) => Promise<void> | void,
 ) => () => Promise<void> | void
 
-/**
- * The value returned by the useForm hook.
- * In this current form, it's the subset of the react-hook-form useForm return type that we use in our components.
- * In the future, we might be able to get rid of it by inferring the type from the hook itself.
- * For now, it will help us refactor the format of the hook without depending on react-hook-form directly.
- */
+export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
+  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
+}>
+
+/** The value returned by the useForm hook. */
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
   handleSubmit: UseFormHandleSubmit<T>
-  trigger: (field?: FieldPath<T>) => Promise<boolean>
-  reset: (values?: T) => void
-  watch: {
-    (): T
-    <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
-  }
-  getValues: {
-    (): T
-    <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
-  }
-  setValue: (
-    field: FieldPath<T>,
-    value: T[keyof T],
-    options?: {
-      shouldValidate?: boolean
-      shouldDirty?: boolean
-      shouldTouch?: boolean
-    },
-  ) => void
+  reset: (userDefaultValues: FormUpdates<T>) => void
+  watchValues: () => T
+  watchValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
+  getValues: () => T
+  getValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
+  update(updates: FormUpdates<T>, options?: { automated?: true }): void
   setError: (field: ErrorKey<T>, error: Error | { type?: 'server' | 'manual'; message: string }) => void
   clearErrors: (field: ErrorKey<T>) => void
+  isTouched: (...fields: FieldPath<T>[]) => boolean
   formState: FormState<T>
 }

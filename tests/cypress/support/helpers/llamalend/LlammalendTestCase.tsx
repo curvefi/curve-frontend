@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { prefetchMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -26,6 +25,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
@@ -84,16 +84,12 @@ function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTest
   )
 }
 
-export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
+export type LlammalendTestCaseProps = LlammalendTestProps &
+  TenderlyWagmiConfigFromVNet & { marketType: LlamaMarketType }
 
-export const LlammalendTestCase = ({ vnet, privateKey, chainId, ...props }: LlammalendTestCaseProps) => (
+export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
-    <CurveProvider
-      app="llamalend"
-      network={llamaNetworks[chainId]}
-      onChainUnavailable={console.error}
-      hydrate={useMemo(() => ({ llamalend: () => prefetchMarkets({ chainId, enableLLv2: true }) }), [chainId])}
-    >
+    <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
         <LlammalendTest {...props} chainId={chainId} />
       </Box>
