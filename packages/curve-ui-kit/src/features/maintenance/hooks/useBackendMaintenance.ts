@@ -19,10 +19,12 @@ const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | '
   const warningStartsAt = new Date(dateISO)
 
   if (warnBefore === 'month') {
+    // a month before
     warningStartsAt.setUTCMonth(warningStartsAt.getUTCMonth() - 1)
     return warningStartsAt
   }
 
+  // a week before
   warningStartsAt.setUTCDate(warningStartsAt.getUTCDate() - 7)
   return warningStartsAt
 }
@@ -53,7 +55,7 @@ export const useBackendMaintenance = ({
     warningStartsAt.getTime() <= Date.now() &&
     !!dateISO &&
     new Date(dateISO).getTime() > Date.now()
-  const isModalDismissedYesterday =
+  const isModalDismissedAtLeastADayAgo =
     !!modalDismissedAt && new Date(modalDismissedAt).getTime() + TIME_FRAMES.DAY_MS <= Date.now()
 
   return {
@@ -61,7 +63,7 @@ export const useBackendMaintenance = ({
     formattedTime: dateISO && formatTime(new Date(dateISO), { second: undefined, hour12: true, timeZoneName: 'short' }),
     expectedDurationLabel,
     // We display the banner 24 hours after the the modal has been closed with a daily frequency
-    showBanner: shouldShowBanner && isWithinWarningWindow && isModalDismissedYesterday,
+    showBanner: shouldShowBanner && isWithinWarningWindow && isModalDismissedAtLeastADayAgo,
     // We display the modal once, during the warning window and only before the scheduled maintenance time.
     showModal: !modalDismissedAt && isWithinWarningWindow,
     dismissModal: () => setModalDismissedAt(new Date().toISOString()),
