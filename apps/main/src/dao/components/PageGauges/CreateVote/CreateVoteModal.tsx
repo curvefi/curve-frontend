@@ -55,7 +55,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
         <Button
           fullWidth
           color="primary"
-          onClick={onSubmit}
+          onClick={() => onSubmit()}
           disabled={isDisabled}
           loading={isPending}
           data-testid="create-gauge-vote-submit"

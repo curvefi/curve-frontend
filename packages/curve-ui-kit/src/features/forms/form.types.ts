@@ -1,4 +1,4 @@
-import type { SubmitEventHandler } from 'react'
+import type { SubmitEvent } from 'react'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { DeepKeys, DeepValue } from '@tanstack/react-form'
 
@@ -34,7 +34,8 @@ export type FormState<T extends FieldValues> = {
 
 export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
   onSubmit: (data: T) => Promise<void> | void,
-) => SubmitEventHandler<HTMLFormElement>
+) => // todo: make the event required, that requires changing old forms to use <form> instead of just a <button>
+(e?: SubmitEvent<HTMLFormElement>) => Promise<void> | void
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
@@ -45,7 +46,7 @@ export type FormUpdateEntry<TFieldValues extends FieldValues> = FieldEntry<TFiel
 /** The value returned by the useForm hook. */
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
   handleSubmit: UseFormHandleSubmit<T>
-  reset: (userDefaultValues: FormUpdates<T>) => void
+  reset: (userDefaultValues?: FormUpdates<T>) => void
   watchValues: () => T
   watchValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
   getValues: () => T
