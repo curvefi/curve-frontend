@@ -17,12 +17,12 @@ import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
   EChartsLineChart,
+  formatChartAxisNumber,
   type ChartLineDashPattern,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -119,9 +119,7 @@ export const CrvUsdPriceChart = () => {
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | number | string) => formatDate(value)}
-            yTickFormatter={value =>
-              formatNumber(+value, { unit: 'dollar', abbreviate: false, decimals: 4, minimumFractionDigits: 4 })
-            }
+            yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
             yPaddingRatio={0.25}
             renderTooltip={CrvUsdPriceTooltip}
           />
