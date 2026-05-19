@@ -55,8 +55,16 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
   resetFilters: () => void
 } & FilterProps<LlamaMarketColumnId>) => {
   const filtersState = table.getState().columnFilters as { id: LlamaMarketColumnId; value: string }[]
-  // sorting is needed to avoid making the filters jump to another position when filters are removed
-  const sortedFiltersState = useMemo(() => filtersState.sort((a, b) => a.id.localeCompare(b.id)), [filtersState])
+  // Keep networks first and sort the remaining filters alphabetically to avoid making the filters jump to another position when filters are removed
+  const sortedFiltersState = useMemo(
+    () =>
+      filtersState.sort((a, b) => {
+        if (a.id === LlamaMarketColumnId.Chain) return -1
+        if (b.id === LlamaMarketColumnId.Chain) return 1
+        return a.id.localeCompare(b.id)
+      }),
+    [filtersState],
+  )
 
   return (
     <Stack
