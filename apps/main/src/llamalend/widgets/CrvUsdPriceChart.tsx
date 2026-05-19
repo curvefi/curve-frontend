@@ -142,7 +142,7 @@ export const CrvUsdPriceChart = () => {
             label={t`Current price`}
             value={currentPrice}
             loading={currentPrice == null && isCurrentPriceLoading}
-            valueOptions={{ unit: 'dollar' }}
+            valueOptions={{ unit: 'dollar', maximumSignificantDigits: 5 }}
           />
           <Metric
             size="medium"
