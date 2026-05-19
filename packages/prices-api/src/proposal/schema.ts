@@ -1,15 +1,11 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 export const proposalType = z.enum(['ownership', 'parameter'])
 export type ProposalType = z.infer<typeof proposalType>
 
 export const proposalStatus = z.enum(['all', 'active', 'denied', 'passed', 'executed'])
 export type ProposalStatus = z.infer<typeof proposalStatus>
-
-const normalizeProposalType = (type: ProposalType): ProposalType =>
-  type.toLocaleLowerCase() === 'parameter' ? 'parameter' : 'ownership'
 
 const proposalShape = {
   vote_id: z.number(),
@@ -27,18 +23,19 @@ const proposalShape = {
   total_supply: z.string(),
   executed: z.boolean(),
   execution_tx: address.nullable(),
-  execution_date: timestampResponse.nullable(),
+  execution_date: timestamp.nullable(),
   transaction_hash: address,
-  dt: timestampResponse,
+  dt: timestamp,
 }
 
 const rawProposal = z.object(proposalShape).transform(camelizeKeys)
 type RawProposal = z.infer<typeof rawProposal>
 
+// Voting power in veCRV.
 const transformProposal = (data: RawProposal) => ({
-  timestamp: parseTimestamp(data.dt),
+  timestamp: data.dt,
   id: data.voteId,
-  type: normalizeProposalType(data.voteType),
+  type: data.voteType,
   metadata: data.metadata?.startsWith('"') // Remove weird starting quote, if present.
     ? data.metadata.substring(1)
     : (data.metadata ?? ''),
@@ -46,15 +43,15 @@ const transformProposal = (data: RawProposal) => ({
   block: data.snapshotBlock,
   start: data.startDate,
   end: data.startDate + 604800,
-  quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18, // Voting power in veCRV.
-  support: Number(BigInt(data.supportRequired)) / 10 ** 18, // Voting power in veCRV.
+  quorum: Number(BigInt(data.minAcceptQuorum)) / 10 ** 18,
+  support: Number(BigInt(data.supportRequired)) / 10 ** 18,
   voteCount: data.voteCount, // An actual vote *count*
-  votesFor: Number(BigInt(data.votesFor)) / 10 ** 18, // Voting power in veCRV.
-  votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18, // Voting power in veCRV.
+  votesFor: Number(BigInt(data.votesFor)) / 10 ** 18,
+  votesAgainst: Number(BigInt(data.votesAgainst)) / 10 ** 18,
   executionTx: data.executionTx,
-  executionDate: data.executionDate ? parseTimestamp(data.executionDate) : null,
+  executionDate: data.executionDate ?? null,
   executed: data.executed,
-  totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18, // Voting power in veCRV.
+  totalSupply: Number(BigInt(data.totalSupply)) / 10 ** 18,
   txCreation: data.transactionHash,
 })
 
@@ -74,9 +71,9 @@ export const getProposalsResponse = z
     proposals: z.array(proposal),
     count: z.number(),
   })
-  .transform(data => ({
-    proposals: data.proposals,
-    count: data.count,
+  .transform(({ proposals, count }) => ({
+    proposals,
+    count,
   }))
 
 export const getProposalDetailsResponse = z
@@ -86,11 +83,11 @@ export const getProposalDetailsResponse = z
     votes: z.array(vote),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    ...transformProposal(data),
-    txExecution: data.executionTx ? data.executionTx : undefined,
-    script: data.script ?? '',
-    votes: data.votes.map(item => ({
+  .transform(({ executionTx, script, votes, ...details }) => ({
+    ...transformProposal({ ...details, executionTx }),
+    txExecution: executionTx ? executionTx : undefined,
+    script: script ?? '',
+    votes: votes.map(item => ({
       voter: item.voter,
       supports: item.supports,
       votingPower: Number(BigInt(item.votingPower)) / 10 ** 18,
@@ -103,9 +100,9 @@ const userProposalVote = z
     proposal: rawProposal,
     votes: z.array(vote),
   })
-  .transform(data => ({
-    proposal: transformProposal(data.proposal),
-    votes: data.votes.map(item => ({
+  .transform(({ proposal, votes }) => ({
+    proposal: transformProposal(proposal),
+    votes: votes.map(item => ({
       voter: item.voter,
       supports: item.supports,
       weight: BigInt(Math.round(parseFloat(item.votingPower))),
@@ -119,7 +116,7 @@ export const getUserProposalVotesResponse = z
     count: z.number(),
     data: z.array(userProposalVote),
   })
-  .transform(data => data.data)
+  .transform(({ data }) => data)
 
 export const getUserProposalVoteResponse = userProposalVote
 

@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, hex, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, hex, timestamp } from '../schemas'
 
 const adjacentPool = z.object({
   address,
@@ -16,16 +15,12 @@ const transaction = z
   .object({
     tx_hash: hex,
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     volume: z.number(),
     adjacent_volume: z.number(),
     adjacent_pools: z.array(adjacentPool),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, ...transaction } = data
-    return { ...transaction, timestamp: parseTimestamp(timestamp) }
-  })
 
 const aggregatedStats = z
   .object({
@@ -68,18 +63,18 @@ const yieldBasisHistoryItem = z
     yb_total_amm_balance: z.string(),
     yb_total_amm_debt: z.string(),
     yb_max_debt: z.string(),
-    dt: timestampResponse,
+    dt: timestamp,
     block_number: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    ybFactoryBalance: parseFloat(data.ybFactoryBalance),
-    ybTotalAllocated: parseFloat(data.ybTotalAllocated),
-    ybTotalAmmBalance: parseFloat(data.ybTotalAmmBalance),
-    ybTotalAmmDebt: parseFloat(data.ybTotalAmmDebt),
-    ybMaxDebt: parseFloat(data.ybMaxDebt),
-    timestamp: parseTimestamp(data.dt),
-    blockNumber: data.blockNumber,
+  .transform(({ ybFactoryBalance, ybTotalAllocated, ybTotalAmmBalance, ybTotalAmmDebt, ybMaxDebt, dt, ...data }) => ({
+    ...data,
+    ybFactoryBalance: parseFloat(ybFactoryBalance),
+    ybTotalAllocated: parseFloat(ybTotalAllocated),
+    ybTotalAmmBalance: parseFloat(ybTotalAmmBalance),
+    ybTotalAmmDebt: parseFloat(ybTotalAmmDebt),
+    ybMaxDebt: parseFloat(ybMaxDebt),
+    timestamp: dt,
   }))
 
 export const ybPoolsResponse = z
@@ -87,7 +82,7 @@ export const ybPoolsResponse = z
     count: z.number(),
     data: z.array(yieldBasisPool),
   })
-  .transform(data => data.data)
+  .transform(({ data }) => data)
 
 export const ybPoolVolumeResponse = z
   .object({
@@ -104,20 +99,20 @@ export const ybAggregatedVolumeResponse = z.object({
 
 export const yieldBasisSupplyResponse = z
   .object({
-    cached_at: timestampResponse.nullable().optional(),
+    cached_at: timestamp.nullable().optional(),
     data: yieldBasisSupplyWithMint,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    cachedAt: data.cachedAt == null ? undefined : parseTimestamp(data.cachedAt),
-    ybFactoryBalance: parseFloat(data.data.ybFactoryBalance),
-    ybTotalAllocated: parseFloat(data.data.ybTotalAllocated),
-    ybTotalAmmBalance: parseFloat(data.data.ybTotalAmmBalance),
-    ybTotalAmmDebt: parseFloat(data.data.ybTotalAmmDebt),
-    ybMaxDebt: parseFloat(data.data.ybMaxDebt),
-    mintPegkeeperDebt: parseFloat(data.data.mintPegkeeperDebt),
-    mintMarketDebt: parseFloat(data.data.mintMarketDebt),
-    totalSupply: parseFloat(data.data.totalSupply),
+  .transform(({ cachedAt, data }) => ({
+    cachedAt: cachedAt ?? undefined,
+    ybFactoryBalance: parseFloat(data.ybFactoryBalance),
+    ybTotalAllocated: parseFloat(data.ybTotalAllocated),
+    ybTotalAmmBalance: parseFloat(data.ybTotalAmmBalance),
+    ybTotalAmmDebt: parseFloat(data.ybTotalAmmDebt),
+    ybMaxDebt: parseFloat(data.ybMaxDebt),
+    mintPegkeeperDebt: parseFloat(data.mintPegkeeperDebt),
+    mintMarketDebt: parseFloat(data.mintMarketDebt),
+    totalSupply: parseFloat(data.totalSupply),
   }))
 
 export const yieldBasisHistoryResponse = z.object({

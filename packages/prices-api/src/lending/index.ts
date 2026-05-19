@@ -14,9 +14,9 @@ export async function getLoanDistribution(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(`${host}/v1/${endpointParam}/markets/${chain}/${controller}/loans/distribution`)
+  const response = await fetch(`${host}/v1/${endpointParam}/markets/${chain}/${controller}/loans/distribution`)
 
-  return Schema.getLoanDistributionResponse.parse(resp)
+  return Schema.getLoanDistributionResponse.parse(response)
 }
 
 type GetOracleParams = {
@@ -45,9 +45,9 @@ export async function getOracle(
     end: range.end.toString(),
   })
 
-  const resp = await fetch(`${host}/v1/${endpointParam}/oracle_ohlc/${chain}/${controller}?${params.toString()}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/oracle_ohlc/${chain}/${controller}?${params}`)
 
-  return Schema.getOracleResponse.parse(resp)
+  return Schema.getOracleResponse.parse(response)
 }
 
 export async function getUserMarketCollateralEvents(
@@ -58,16 +58,16 @@ export async function getUserMarketCollateralEvents(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
   )
 
-  return Schema.getUserCollateralEventsResponse.parse(resp)
+  return Schema.getUserCollateralEventsResponse.parse(response)
 }
 
 export async function getRateCurve(chain: Chain, controller: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/markets/${chain}/${controller}/rate_curve`)
+  const response = await fetch(`${host}/v1/lending/markets/${chain}/${controller}/rate_curve`)
 
-  return Schema.getRateCurveResponse.parse(resp)
+  return Schema.getRateCurveResponse.parse(response)
 }

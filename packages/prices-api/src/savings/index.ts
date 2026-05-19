@@ -7,16 +7,16 @@ export type * from './schema'
 
 export async function getStatistics(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/savings/statistics`)
+  const response = await fetch(`${host}/v1/crvusd/savings/statistics`)
 
-  return Schema.getStatisticsResponse.parse(resp)
+  return Schema.getStatisticsResponse.parse(response)
 }
 
 export async function getEvents(page: number, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/savings/events?page=${page}&per_page=10`)
+  const response = await fetch(`${host}/v1/crvusd/savings/events?page=${page}&per_page=10`)
 
-  return Schema.getEventsResponse.parse(resp)
+  return Schema.getEventsResponse.parse(response)
 }
 
 export async function getYield(
@@ -30,23 +30,23 @@ export async function getYield(
 
   const { start, end } = getTimeRange({ daysRange: 10 })
 
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/crvusd/savings/yield?agg_number=${aggNumber}&agg_units=${aggUnit}&start=${startDate ?? start}&end=${endDate ?? end}`,
   )
 
-  return Schema.getYieldResponse.parse(resp)
+  return Schema.getYieldResponse.parse(response)
 }
 
 export async function getRevenue(page: number, perPage = 100, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/savings/revenue?page=${page}&per_page=${perPage}`)
+  const response = await fetch(`${host}/v1/crvusd/savings/revenue?page=${page}&per_page=${perPage}`)
 
-  return Schema.getRevenueResponse.parse(resp)
+  return Schema.getRevenueResponse.parse(response)
 }
 
 export async function getUserStats(userAddress: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/savings/${userAddress}/stats`)
+  const response = await fetch(`${host}/v1/crvusd/savings/${userAddress}/stats`)
 
-  return Schema.getUserStatsResponse.parse(resp)
+  return Schema.getUserStatsResponse.parse(response)
 }

@@ -1,27 +1,20 @@
 import type { FastifyRequest } from 'fastify'
 import lodash from 'lodash'
 import { handleTimeout } from '@primitives/objects.utils'
-import type { RouteResponse, RouterRouteResponse } from '@primitives/router.utils'
+import { type RouterRouteResponse } from '@primitives/router.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'
-import { decimalCompare, decimalMax, generateId } from '../router.utils'
+import { decimalCompare, decimalMax } from '../router.utils'
 import { type RoutesQuery } from './routes.schemas'
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
 const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse, odos: buildOdosRouteResponse }
 
-const sortRoutes = (a: RouteResponse, b: RouteResponse) =>
+const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
   decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
   (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
-
-const addRouteId =
-  (query: RoutesQuery) =>
-  async (response: RouterRouteResponse): Promise<RouteResponse> => ({
-    ...response,
-    id: await generateId(query, response),
-  })
 
 /**
  * Handles the routes request. Returns the best routes for the given parameters.
@@ -51,8 +44,7 @@ export const getRoutes = async (request: FastifyRequest<{ Querystring: RoutesQue
     throw new Error(`Failed to calculate route for ${router.join(', ')}: ${reasons.join('; ')}`)
   }
 
-  const items = await Promise.all(successes.flatMap(p => p.value).map(addRouteId(query)))
-  const result = items.sort(sortRoutes)
+  const result = successes.flatMap(p => p.value).sort(sortRoutes)
   request.log.info({ message: 'route calculated', query, result })
   return result
 }

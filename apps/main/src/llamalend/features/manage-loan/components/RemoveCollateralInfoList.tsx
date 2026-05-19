@@ -17,7 +17,6 @@ import { type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMax, decimalMinus, decimalNegate } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function RemoveCollateralInfoList<ChainId extends IChainId>({
   params,
@@ -36,7 +35,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   form: UseFormReturn<CollateralForm>
   market: LlamaMarketTemplate | undefined
 }) {
-  const isOpen = isFormTouched(form, 'userCollateral')
+  const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   return (

@@ -1,8 +1,9 @@
 import type { IQuote } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { RouteProvider } from '@primitives/router.utils'
+import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import type { FieldsOf } from '@ui-kit/lib'
+import type { QueryProp } from '@ui-kit/types/util'
 
 export type RoutesQuery = {
   chainId: number
@@ -30,3 +31,6 @@ export type RouteMeta = {
  * Route meta with minRecv for execution methods that require slippage protection
  */
 export type RouteMutationMeta = RouteMeta & { minRecv: string }
+export type RouteResponse = RouterRouteResponse & { id: string }
+export type RouteQuery = QueryProp<RouteResponse | null> & { isFetching: boolean }
+export type RouteQueries = Record<RouteProvider, RouteQuery>

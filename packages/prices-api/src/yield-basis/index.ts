@@ -7,30 +7,30 @@ export type * from './schema'
 
 export async function getYieldBasisPools(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/yield_basis/${chain}/pools`)
+  const response = await fetch(`${host}/v1/yield_basis/${chain}/pools`)
 
-  return Schema.ybPoolsResponse.parse(resp)
+  return Schema.ybPoolsResponse.parse(response)
 }
 
 export async function getYieldBasisPoolVolume(chain: Chain, poolAddress: Address, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/yield_basis/${chain}/${poolAddress}/volume`)
+  const response = await fetch(`${host}/v1/yield_basis/${chain}/${poolAddress}/volume`)
 
-  return Schema.ybPoolVolumeResponse.parse(resp)
+  return Schema.ybPoolVolumeResponse.parse(response)
 }
 
 export async function getYieldBasisVolume(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/yield_basis/${chain}/volume`)
+  const response = await fetch(`${host}/v1/yield_basis/${chain}/volume`)
 
-  return Schema.ybAggregatedVolumeResponse.parse(resp)
+  return Schema.ybAggregatedVolumeResponse.parse(response)
 }
 
 export async function getCrvUsdYieldBasisSupply(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/yield_basis/${chain}/supply`)
+  const response = await fetch(`${host}/v1/crvusd/yield_basis/${chain}/supply`)
 
-  return Schema.yieldBasisSupplyResponse.parse(resp)
+  return Schema.yieldBasisSupplyResponse.parse(response)
 }
 
 export async function getCrvUsdYieldBasisHistory(
@@ -42,7 +42,7 @@ export async function getCrvUsdYieldBasisHistory(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/yield_basis/${chain}/history${addQueryString(params)}`)
+  const response = await fetch(`${host}/v1/crvusd/yield_basis/${chain}/history${addQueryString(params)}`)
 
-  return Schema.yieldBasisHistoryResponse.parse(resp)
+  return Schema.yieldBasisHistoryResponse.parse(response)
 }

@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const numberLike = z.union([z.number(), z.string()]).transform(value => Number(value))
 
@@ -13,34 +12,31 @@ const event = z
     assets: z.string(),
     shares: z.string(),
     block_number: z.number(),
-    timestamp: timestampResponse,
+    timestamp,
     transaction_hash: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    type: data.actionType.toLowerCase(),
-    sender: data.sender,
-    owner: data.owner,
-    receiver: data.receiver ? data.receiver : undefined,
-    assets: BigInt(data.assets),
-    supply: BigInt(data.shares),
-    blockNumber: data.blockNumber,
-    timestamp: parseTimestamp(data.timestamp),
-    txHash: data.transactionHash,
+  .transform(({ actionType, receiver, assets, shares, transactionHash, ...data }) => ({
+    ...data,
+    type: actionType.toLowerCase(),
+    receiver: receiver ? receiver : undefined,
+    assets: BigInt(assets),
+    supply: BigInt(shares),
+    txHash: transactionHash,
   }))
 
 const yieldData = z
   .object({
-    timestamp: timestampResponse,
+    timestamp,
     assets: z.number(),
     supply: z.number(),
     proj_apy: numberLike,
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { timestamp, projApy, ...yieldData } = data
-    return { ...yieldData, timestamp: parseTimestamp(timestamp), apyProjected: projApy }
-  })
+  .transform(({ projApy, ...data }) => ({
+    ...data,
+    apyProjected: projApy,
+  }))
 
 const revenue = z
   .object({
@@ -52,19 +48,18 @@ const revenue = z
     total_fees: z.string(),
     protocol_fees: z.string(),
     tx_hash: address,
-    dt: timestampResponse,
+    dt: timestamp,
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    strategy: data.strategy,
-    gain: BigInt(data.gain),
-    loss: BigInt(data.loss),
-    currentDebt: BigInt(data.currentDebt),
-    totalRefunds: BigInt(data.totalRefunds),
-    feesTotal: BigInt(data.totalFees),
-    feesProtocol: BigInt(data.protocolFees),
-    txHash: data.txHash,
-    timestamp: parseTimestamp(data.dt),
+  .transform(({ gain, loss, currentDebt, totalRefunds, totalFees, protocolFees, dt, ...data }) => ({
+    ...data,
+    gain: BigInt(gain),
+    loss: BigInt(loss),
+    currentDebt: BigInt(currentDebt),
+    totalRefunds: BigInt(totalRefunds),
+    feesTotal: BigInt(totalFees),
+    feesProtocol: BigInt(protocolFees),
+    timestamp: dt,
   }))
 
 export const getEventsResponse = z.object({
@@ -72,11 +67,7 @@ export const getEventsResponse = z.object({
   events: z.array(event),
 })
 
-export const getYieldResponse = z
-  .object({
-    data: z.array(yieldData),
-  })
-  .transform(data => data.data)
+export const getYieldResponse = z.object({ data: z.array(yieldData) }).transform(({ data }) => data)
 
 export const getRevenueResponse = z
   .object({
@@ -85,24 +76,19 @@ export const getRevenueResponse = z
     history: z.array(revenue),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { count: _count, ...revenue } = data
-    return revenue
-  })
+  .transform(({ count: _count, ...data }) => data)
 
 export const getStatisticsResponse = z
   .object({
-    last_updated: timestampResponse,
+    last_updated: timestamp,
     last_updated_block: z.number(),
     proj_apy: z.number(),
     supply: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({
-    lastUpdated: parseTimestamp(data.lastUpdated),
-    lastUpdatedBlock: data.lastUpdatedBlock,
-    apyProjected: data.projApy,
-    supply: data.supply,
+  .transform(({ projApy, ...data }) => ({
+    ...data,
+    apyProjected: projApy,
   }))
 
 export const getUserStatsResponse = z

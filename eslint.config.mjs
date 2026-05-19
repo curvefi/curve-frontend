@@ -121,6 +121,11 @@ const config = [
                 .map(targetApp => `apps/main/src/${targetApp}`),
               from: `apps/main/src/${importedApp}`, // from ==> the app imported
             })),
+            // forbid importing from the router-api app in app source code
+            {
+              target: ['apps/main/src/**'],
+              from: 'apps/router-api',
+            },
             // forbid `wagmi` external dependency package imports, except from feature
             {
               target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'],
@@ -210,22 +215,6 @@ const config = [
         'error', // use console.log only for debugging
         {
           allow: ['warn', 'error', 'info', 'trace', 'assert'],
-        },
-      ],
-
-      'no-restricted-syntax': [
-        'error',
-        {
-          message:
-            'Do not call .setValue() directly on react-hook-form values. Use `updateForm` from @ui-kit/utils/react-form.utils.',
-          selector:
-            "Program:has(TSTypeReference[typeName.name='UseFormReturn']) CallExpression[callee.type='MemberExpression'][callee.property.name='setValue']",
-        },
-        {
-          message:
-            'Do not call .trigger() directly on react-hook-form values. Use `updateForm` from @ui-kit/utils/react-form.utils.',
-          selector:
-            "Program:has(TSTypeReference[typeName.name='UseFormReturn']) CallExpression[callee.type='MemberExpression'][callee.property.name='trigger']",
         },
       ],
     },

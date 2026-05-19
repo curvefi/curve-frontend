@@ -11,7 +11,7 @@ import * as pools from '../src/pools'
 import * as proposal from '../src/proposal'
 import * as savings from '../src/savings'
 import * as yieldBasis from '../src/yield-basis'
-import { endpointCatalogIsCurrent, formatEndpointCatalogStatus, getEndpointCatalogStatus } from './catalog'
+import { getEndpointCatalogSkipReason } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 
 type PoolSeed = {
@@ -53,7 +53,7 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
   let error: Error | undefined
 
   beforeAll(async () => {
-    if (getCatalogSkipReason()) {
+    if (getEndpointCatalogSkipReason()) {
       return
     }
 
@@ -62,9 +62,12 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
     try {
       value = await fetchTracker.run(load)
     } catch (seedError) {
-      error = formatSeedError(seedError, load.name || 'endpointSeed', fetchTracker.urls)
+      error = new Error(
+        `Failed to load live seed from ${load.name || 'endpointSeed'}\n\n${seedError instanceof Error ? seedError.message : String(seedError)}\n\nPRICES_API_TEST_SEED=${endpointTestSeed}\n\nSeed URL:\n${formatTrackedFetchUrls(fetchTracker.urls)}`,
+        { cause: error },
+      )
     }
-  }, 180_000)
+  })
 
   return () => {
     if (error) {
@@ -74,24 +77,6 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
     return requireSeed(value, load.name || 'endpointSeed')
   }
 }
-
-const getCatalogSkipReason = (() => {
-  let skipReason: string | undefined
-
-  return () => {
-    if (skipReason !== undefined) {
-      return skipReason
-    }
-
-    const status = getEndpointCatalogStatus()
-
-    skipReason = endpointCatalogIsCurrent(status)
-      ? ''
-      : `Endpoint catalog is out of date; skipping live endpoint call. ${formatEndpointCatalogStatus(status)}`
-
-    return skipReason
-  }
-})()
 
 const once = <T>(load: () => Promise<T>) => {
   let promise: Promise<T> | undefined
@@ -137,21 +122,6 @@ const shuffled = <T>(items: readonly T[]) =>
     .sort((a, b) => a.rank - b.rank || a.index - b.index)
     .map(({ item }) => item)
 
-const formatSeedError = (error: unknown, source: string, urls: string[]) => {
-  const message = `Failed to load live seed from ${source}\n\n${error instanceof Error ? error.message : String(error)}\n\nPRICES_API_TEST_SEED=${endpointTestSeed}\n\nSeed URL:\n${formatTrackedFetchUrls(urls)}`
-
-  if (error instanceof Error) {
-    try {
-      Object.defineProperty(error, 'message', { configurable: true, value: message })
-      return error
-    } catch {
-      return new Error(message)
-    }
-  }
-
-  return new Error(message)
-}
-
 const isAddress = (value: string): value is Address => /^0x[a-fA-F0-9]{40}$/.test(value)
 
 /** Builds a recent unix-second range for endpoints that require explicit start/end params. */
@@ -173,20 +143,14 @@ export const getPoolSeed = once(async (): Promise<PoolSeed> => {
 
   for (const chain of shuffled(supportedChains)) {
     const response = await pools.getPools(chain, requestOptions)
-    const candidates = response.pools.filter(item => item.coins.length >= 2)
-
-    if (candidates.length === 0) {
-      continue
-    }
-
-    const pool = randomItem(candidates, `pools.getPools(${chain}) pool with at least two coins`)
+    const pool = randomItem(response.pools, `pools.getPools(${chain})`)
     const mainToken = requireSeed(pool.coins[0]?.address, `pools.getPools(${chain}) main token`)
     const referenceToken = requireSeed(pool.coins[1]?.address, `pools.getPools(${chain}) reference token`)
 
     return { chain, mainToken, poolAddress: pool.address, referenceToken }
   }
 
-  throw new Error('Missing live seed from pools.getPools pool with at least two coins')
+  throw new Error('Missing live seed from pools.getPools pool')
 })
 
 const getGaugesSeed = once(async () => gauge.getGauges(requestOptions))

@@ -11,7 +11,6 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type StakeSupplyInfoListProps<ChainId extends IChainId> = {
@@ -28,7 +27,7 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
   form,
 }: StakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, stakeAmount } = params
-  const isOpen = isFormTouched(form, 'stakeAmount')
+  const isOpen = form.isTouched('stakeAmount')
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
 

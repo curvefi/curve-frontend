@@ -10,7 +10,6 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMinus } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
@@ -27,7 +26,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   form,
 }: UnstakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, unstakeAmount } = params
-  const isOpen = isFormTouched(form, 'unstakeAmount')
+  const isOpen = form.isTouched('unstakeAmount')
 
   const { prevRates, prevNetSupplyApy } = useSupplyRates({ params }, isOpen)
 

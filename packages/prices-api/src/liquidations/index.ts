@@ -12,9 +12,9 @@ export async function getSoftLiqRatios(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/soft_liquidation_ratio`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/soft_liquidation_ratio`)
 
-  return Schema.getSoftLiqRatiosResponse.parse(resp)
+  return Schema.getSoftLiqRatiosResponse.parse(response)
 }
 
 export async function getLiqsDetailed(
@@ -25,9 +25,9 @@ export async function getLiqsDetailed(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/history/detailed`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/history/detailed`)
 
-  return Schema.getLiqsDetailedResponse.parse(resp)
+  return Schema.getLiqsDetailedResponse.parse(response)
 }
 
 export async function getLiqsAggregate(
@@ -38,9 +38,9 @@ export async function getLiqsAggregate(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/history/aggregated`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/history/aggregated`)
 
-  return Schema.getLiqsAggregateResponse.parse(resp)
+  return Schema.getLiqsAggregateResponse.parse(response)
 }
 
 export async function getLiqOverview(
@@ -51,11 +51,11 @@ export async function getLiqOverview(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/overview?fetch_on_chain=true`,
   )
 
-  return Schema.getLiqOverviewResponse.parse(resp)
+  return Schema.getLiqOverviewResponse.parse(response)
 }
 
 export async function getLiqLosses(
@@ -66,9 +66,9 @@ export async function getLiqLosses(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/losses/history`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/losses/history`)
 
-  return Schema.getLiqLossesResponse.parse(resp)
+  return Schema.getLiqLossesResponse.parse(response)
 }
 
 export async function getLiqHealthDeciles(
@@ -79,9 +79,9 @@ export async function getLiqHealthDeciles(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/health/distribution`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${chain}/${marketAddr}/health/distribution`)
 
-  return Schema.getLiqHealthDecilesResponse.parse(resp)
+  return Schema.getLiqHealthDecilesResponse.parse(response)
 }
 
 export async function getTotalOverview(
@@ -98,9 +98,9 @@ export async function getTotalOverview(
   Schema.endpoint.parse(endpointParam)
 
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/total_overview${addQueryString(params)}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/total_overview${addQueryString(params)}`)
 
-  return Schema.getTotalOverviewResponse.parse(resp)
+  return Schema.getTotalOverviewResponse.parse(response)
 }
 
 export async function getBadDebt(
@@ -117,7 +117,7 @@ export async function getBadDebt(
   Schema.endpoint.parse(endpointParam)
 
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/${endpointParam}/liquidations/bad_debt${addQueryString(params)}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/bad_debt${addQueryString(params)}`)
 
-  return Schema.getBadDebtResponse.parse(resp)
+  return Schema.getBadDebtResponse.parse(response)
 }

@@ -16,7 +16,6 @@ import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
@@ -69,16 +68,16 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isHighLiquidationRisk,
   } = useCreateLoanForm({
     market,
-    network,
+    networks,
+    chainId,
     preset,
     onPricesUpdated,
   })
-  const { getValues, setValue, trigger } = form
 
+  const { update: updateForm } = form
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      updateForm({ getValues, setValue, trigger }, { leverageEnabled: event.target.checked, routeId: undefined }),
-    [getValues, setValue, trigger],
+    (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
+    [updateForm],
   )
 
   return (
@@ -95,7 +94,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           borrowToken={borrowToken}
           networks={networks}
           routes={routes}
-          onSlippageChange={value => updateForm(form, { slippage: value })}
+          onSlippageChange={value => updateForm({ slippage: value })}
         />
       }
       data-testid="create-loan-form"
@@ -129,10 +128,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={maxDebt.data}
               loading={maxDebt.isLoading}
-              onClick={useCallback(
-                () => updateForm({ getValues, setValue, trigger }, { debt: values.maxDebt }),
-                [getValues, setValue, trigger, values.maxDebt],
-              )}
+              onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
           }

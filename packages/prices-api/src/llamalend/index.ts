@@ -20,8 +20,9 @@ export async function getAllMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/markets${addQueryString(params)}`)
-  return Schema.getAllMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/markets${addQueryString(params)}`)
+
+  return Schema.getAllMarketsResponse.parse(response)
 }
 
 export async function getMarkets(
@@ -33,8 +34,9 @@ export async function getMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/markets/${chain}${addQueryString(params)}`)
-  return Schema.getMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/markets/${chain}${addQueryString(params)}`)
+
+  return Schema.getMarketsResponse.parse(response)
 }
 
 export async function getSnapshots(
@@ -48,8 +50,11 @@ export async function getSnapshots(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/markets/${chain}/${marketController}/snapshots${addQueryString(params)}`)
-  return Schema.getSnapshotsResponse.parse(resp)
+  const response = await fetch(
+    `${host}/v1/lending/markets/${chain}/${marketController}/snapshots${addQueryString(params)}`,
+  )
+
+  return Schema.getSnapshotsResponse.parse(response)
 }
 
 export async function getAllUserMarkets(
@@ -58,14 +63,16 @@ export async function getAllUserMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/users/all/${userAddr}${addQueryString(params)}`)
-  return Schema.getAllUserMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/users/all/${userAddr}${addQueryString(params)}`)
+
+  return Schema.getAllUserMarketsResponse.parse(response)
 }
 
 export async function getUserMarkets(userAddr: string, chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`)
-  return Schema.getUserMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`)
+
+  return Schema.getUserMarketsResponse.parse(response)
 }
 
 export async function getAllUserLendingPositions(
@@ -74,8 +81,9 @@ export async function getAllUserLendingPositions(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/users/lending_positions/all/${userAddr}${addQueryString(params)}`)
-  return Schema.getAllUserLendingPositionsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/users/lending_positions/all/${userAddr}${addQueryString(params)}`)
+
+  return Schema.getAllUserLendingPositionsResponse.parse(response)
 }
 
 export async function getUserLendingPositions(
@@ -85,27 +93,32 @@ export async function getUserLendingPositions(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString(params)}`)
-  return Schema.getUserLendingPositionsResponse.parse(resp)
+  const response = await fetch(
+    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString(params)}`,
+  )
+
+  return Schema.getUserLendingPositionsResponse.parse(response)
 }
 
 export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/stats`)
-  return Schema.getUserMarketStatsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/stats`)
+
+  return Schema.getUserMarketStatsResponse.parse(response)
 }
 
 export async function getMarketUsers(endpoint: Endpoint, chain: Chain, controller: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/${endpoint}/users/${chain}/${controller}/users`)
+  const response = await fetch(`${host}/v1/${endpoint}/users/${chain}/${controller}/users`)
 
-  return Schema.getMarketUsersResponse.parse(resp)
+  return Schema.getMarketUsersResponse.parse(response)
 }
 
 export async function getUserMarketEarnings(userAddr: string, chain: Chain, vaultAddress: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/earnings/${userAddr}`)
-  return Schema.getUserMarketEarningsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/earnings/${userAddr}`)
+
+  return Schema.getUserMarketEarningsResponse.parse(response)
 }
 
 export async function getUserMarketSnapshots(
@@ -115,11 +128,11 @@ export async function getUserMarketSnapshots(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/snapshots?page=1&per_page=100`,
   )
 
-  return Schema.getUserMarketSnapshotsResponse.parse(resp)
+  return Schema.getUserMarketSnapshotsResponse.parse(response)
 }
 
 export async function getUserMarketCollateralEvents(
@@ -129,7 +142,7 @@ export async function getUserMarketCollateralEvents(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}`)
+  const response = await fetch(`${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}`)
 
-  return Schema.getUserCollateralEventsResponse.parse(resp)
+  return Schema.getUserCollateralEventsResponse.parse(response)
 }

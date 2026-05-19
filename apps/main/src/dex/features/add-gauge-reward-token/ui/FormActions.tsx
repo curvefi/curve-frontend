@@ -7,10 +7,10 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormActions = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
-    watch,
+    watchValue,
   } = useAddRewardTokenFormContext()
-  const rewardTokenId = watch('rewardTokenId')
-  const distributorId = watch('distributorId')
+  const rewardTokenId = watchValue('rewardTokenId')
+  const distributorId = watchValue('distributorId')
 
   const { data: isDepositRewardAvailable, isFetching: isFetchingIsDepositRewardAvailable } =
     useIsDepositRewardAvailable({ chainId, poolId })

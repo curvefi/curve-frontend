@@ -6,7 +6,7 @@ export type * from './schema'
 
 export async function getOracles(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/oracles/all`)
+  const response = await fetch(`${host}/v1/oracles/all`)
 
-  return Schema.getOraclesResponse.parse(resp)
+  return Schema.getOraclesResponse.parse(response)
 }
