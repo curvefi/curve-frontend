@@ -6,7 +6,7 @@ import { calculateMarketSolvency, createGetBadDebtMarket, lowSolvencyDeprecatedM
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { recordValues } from '@primitives/objects.utils'
+import { assert, recordValues } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
@@ -87,6 +87,12 @@ export type LlamaMarketsResult = {
   hasFavorites: boolean
 }
 
+const toMarketVersion = (version: number): LlamaMarketVersion =>
+  assert(
+    { 1: LlamaMarketVersion.v1, 2: LlamaMarketVersion.v2 }[version],
+    `Unsupported LlamaLend market version: ${version}`,
+  )
+
 const convertLendingVault = (
   {
     controller,
@@ -137,7 +143,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
-    version: version as LlamaMarketVersion,
+    version: toMarketVersion(version),
     assets: {
       borrowed: {
         ...borrowedToken,

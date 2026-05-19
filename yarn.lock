@@ -410,8 +410,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
+    "@types/node": "npm:*"
     eslint: "npm:*"
     typescript: "npm:*"
+    vite: "npm:*"
+    vitest: "npm:*"
+    zod: "npm:4.4.3"
   peerDependencies:
     typescript: "*"
   languageName: unknown
@@ -15572,6 +15576,13 @@ __metadata:
   version: 3.22.4
   resolution: "zod@npm:3.22.4"
   checksum: 10c0/7578ab283dac0eee66a0ad0fc4a7f28c43e6745aadb3a529f59a4b851aa10872b3890398b3160f257f4b6817b4ce643debdda4fb21a2c040adda7862cab0a587
+  languageName: node
+  linkType: hard
+
+"zod@npm:4.4.3":
+  version: 4.4.3
+  resolution: "zod@npm:4.4.3"
+  checksum: 10c0/7ea31b558e88f9faf44f31dd185e2e1cbf51fed3081787fb96cc2534749b50c0acfc6da7f0922a7353ed092dd358c7d50c28ea96c94d04af64191bd33152eca3
   languageName: node
   linkType: hard
 
