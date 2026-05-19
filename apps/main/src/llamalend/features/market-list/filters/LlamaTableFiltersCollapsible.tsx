@@ -25,6 +25,12 @@ const { Spacing } = SizesAndSpaces
 const formatRangeValue = (value: number, unit?: 'percentage' | 'dollar') =>
   formatNumber(value, { abbreviate: true, ...(unit && { unit }) })
 
+// capitalize all labels except columns containing tokens symbols
+const formatLabel = (label: string, id: LlamaMarketColumnId) =>
+  [LlamaMarketColumnId.CollateralSymbol, LlamaMarketColumnId.BorrowedSymbol].includes(id)
+    ? label
+    : `${label.charAt(0).toUpperCase()}${label.slice(1)}`
+
 // Convert a serialized range filter (`min~max`) into a single chip label
 const getRangeLabel = (serializedRange: string | undefined, unit?: 'percentage' | 'dollar') => {
   const [min, max] = parseRangeFilter(serializedRange) ?? []
@@ -88,7 +94,7 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
                     {visibleLabels.map(label => (
                       <ActiveFilterChip
                         key={`${label}-${id}`}
-                        label={label}
+                        label={formatLabel(label, id)}
                         toggle={isRangeFilterFn ? () => setColumnFilter(id, null) : () => removeClickedValue(label)}
                       />
                     ))}
