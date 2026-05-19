@@ -68,7 +68,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       gap={Spacing.lg}
       gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
     >
-      {!showRateCurveMetrics && (
+      {!showRateCurveMetrics && marketType === LlamaMarketType.Lend && (
         <Metric
           size="medium"
           label={t`Utilization`}
