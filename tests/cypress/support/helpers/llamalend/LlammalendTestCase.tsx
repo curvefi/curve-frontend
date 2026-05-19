@@ -84,7 +84,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       {...props}
     />
   ) : market ? (
-    `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, isLoan, loanExists, marketType })}.`
+    `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`
   ) : error ? (
     `Error retrieving market: ${error.message}`
   ) : (
