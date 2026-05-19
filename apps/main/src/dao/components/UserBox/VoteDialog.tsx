@@ -5,7 +5,7 @@ import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/propo
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
-import { ProposalType } from '@curvefi/prices-api/proposal/models'
+import type { ProposalType } from '@curvefi/prices-api/proposal'
 import type { Address } from '@primitives/address.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'

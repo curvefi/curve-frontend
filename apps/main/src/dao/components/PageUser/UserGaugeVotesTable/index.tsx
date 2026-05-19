@@ -6,7 +6,7 @@ import { useUserGaugeVoteQuery, invalidateUserGaugeVoteQuery } from '@/dao/entit
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import type { UserGaugeVote } from '@curvefi/prices-api/gauge/models'
+import type { UserGaugeVote } from '@curvefi/prices-api/gauge'
 import Box from '@mui/material/Box'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
