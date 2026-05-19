@@ -15,6 +15,7 @@ import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
+import { useBackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -79,6 +80,7 @@ const NetworkAwareLayout = () => {
 
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
+  const backendMaintenance = useBackendMaintenance({})
   const devTools = !isCypress
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
@@ -87,7 +89,7 @@ export const RootLayout = () => {
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <NetworkAwareLayout />
-              <BackendMaintenanceModal />
+              <BackendMaintenanceModal {...backendMaintenance} />
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>
