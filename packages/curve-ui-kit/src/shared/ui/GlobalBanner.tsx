@@ -52,9 +52,9 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`${releaseChannel} Mode Enabled`}
         </Banner>
       )}
-      <PhishingWarningBanner />
-      {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
       <BackendMaintenanceBanner />
+      {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
+      <PhishingWarningBanner />
       {isFailure(connectState) ? (
         <Banner severity="alert">
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}

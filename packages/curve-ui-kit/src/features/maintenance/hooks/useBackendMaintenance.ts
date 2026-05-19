@@ -12,7 +12,7 @@ type BackendMaintenanceConfig = {
   expectedDurationLabel?: string
 }[]
 
-/** List of planned backend maintenance date. Maintenance with past dates are ignored */
+/** Planned backend maintenance dates sorted chronologically. Maintenance with past dates are ignored. */
 export const BACKEND_MAINTENANCES: BackendMaintenanceConfig = [
   {
     dateISO: '2026-05-25T07:00:00.000Z', // 25 May 2026, 09h00 CEST
@@ -20,6 +20,7 @@ export const BACKEND_MAINTENANCES: BackendMaintenanceConfig = [
     expectedDurationLabel: t`20 minutes to 1 hour`,
   },
 ]
+BACKEND_MAINTENANCES.sort((a, b) => new Date(a.dateISO).getTime() - new Date(b.dateISO).getTime())
 
 /** Returns the date when maintenance warnings should start for a scheduled event. */
 const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | 'week' | undefined) => {
@@ -34,7 +35,10 @@ const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | '
   warningStartsAt.setUTCDate(warningStartsAt.getUTCDate() - 7)
   return warningStartsAt
 }
-/** Exposes the next backend maintenance state and dismissal handlers for the warning modal and banner. */
+/**
+ * Uses the next scheduled maintenance date to drive warnings.
+ * The modal appears first when the warning window starts, then the banner can reappear daily 24h after the modal was dismissed.
+ */
 export const useBackendMaintenance = () => {
   const nextMaintenance = BACKEND_MAINTENANCES.find(m => new Date(m.dateISO).getTime() > Date.now())
   const { dateISO, warnBefore, expectedDurationLabel } = nextMaintenance ?? {}
