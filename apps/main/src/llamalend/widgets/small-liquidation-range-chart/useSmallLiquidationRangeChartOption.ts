@@ -43,7 +43,10 @@ const getChartColors = ({ design: { Chart, Color, Text } }: Theme): ChartColors 
   newRangeLine: Chart.LiquidationZone.FutureLine,
 })
 
-const getRenderableRanges = ({ currentRange, newRange }: SmallLiquidationRangeChartOptionProps['liquidationRanges']) => ({
+const getRenderableRanges = ({
+  currentRange,
+  newRange,
+}: SmallLiquidationRangeChartOptionProps['liquidationRanges']) => ({
   currentRange: toRenderableRange(currentRange),
   newRange: toRenderableRange(newRange),
 })
