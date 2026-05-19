@@ -1,5 +1,5 @@
 import { type SubmitEvent, useCallback, useMemo, useRef } from 'react'
-import { assert, fromEntries, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
+import { assert, fromEntries, notFalsy, notFalsyArray, objectKeys, recordEntries } from '@primitives/objects.utils'
 import { type AnyFieldMeta, getBy, useForm as useTanStackForm, useStore } from '@tanstack/react-form'
 import type { ValidationSuite } from '@ui-kit/lib/validation'
 import type {
@@ -18,11 +18,6 @@ import type {
 type FieldMetaSnapshot = Pick<AnyFieldMeta, 'isTouched' | 'isDirty' | 'errorMap'>
 /** A map of field meta data for some fields of the form */
 type FieldMetaMap<T extends FieldValues> = Partial<Record<FieldPath<T>, FieldMetaSnapshot>>
-
-/** A single entry in a form update, consisting of a field path and its new value */
-type FormUpdateEntry<TFieldValues extends FieldValues> = {
-  [K in FieldPath<TFieldValues>]: [K, FieldPathValue<TFieldValues, K>]
-}[FieldPath<TFieldValues>]
 
 /** Converts the given value to a form error if it is a string or an object with a message property */
 const toFormError = (value: unknown): FormError | undefined =>
@@ -77,28 +72,17 @@ const getVisibleErrors = <T extends FieldValues>(
   dirtyFields: FieldFlags<T>,
 ): [ErrorKey<T>, string][] => [
   ...recordEntries(fieldErrors)
-    .filter(([field]) => touchedFields[field] === true)
-    .map(([field, error]) => [field, error.message] as [ErrorKey<T>, string]),
-  ...(objectKeys(dirtyFields).length
-    ? notFalsy<[ErrorKey<T>, string]>(rootError ? ['root', rootError.message] : undefined)
-    : []),
+    .filter(([field]) => touchedFields[field])
+    .map(([field, error]): [ErrorKey<T>, string] => [field, error.message]),
+  ...notFalsyArray(
+    objectKeys(dirtyFields).length && notFalsy<['root', string]>(rootError ? ['root', rootError.message] : undefined),
+  ),
 ]
 
 const watchFieldValue = <T extends FieldValues, TField extends FieldPath<T>>(
   values: T,
   field: TField,
 ): FieldPathValue<T, TField> => getBy(values, field) as FieldPathValue<T, TField>
-
-const getChangedEntries = <T extends FieldValues>(
-  form: Pick<UseFormReturn<T>, 'getValue'>,
-  updates: Partial<Record<FieldPath<T>, FieldPathValue<T, FieldPath<T>>>>,
-): FormUpdateEntry<T>[] =>
-  objectKeys(updates)
-    .map((field): FormUpdateEntry<T> | undefined => {
-      const value = updates[field]
-      return form.getValue(field) !== value ? ([field, value] as FormUpdateEntry<T>) : undefined
-    })
-    .filter((entry): entry is FormUpdateEntry<T> => !!entry)
 
 /**
  * TanStack Form spike behind the existing wrapper API.
@@ -144,31 +128,24 @@ export const useForm = <T extends FieldValues = FieldValues>({
       [form],
     ),
     reset: useCallback(valuesToReset => form.reset({ ...form.state.values, ...valuesToReset }), [form]),
-    watchValue: useCallback(
-      <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField> => watchFieldValue(values, field),
-      [values],
-    ),
+    watchValue: useCallback(<TField extends FieldPath<T>>(field: TField) => watchFieldValue(values, field), [values]),
     watchValues: useCallback(() => values, [values]),
     getValues: useCallback(() => form.state.values, [form]),
-    getValue: useCallback(
-      <TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField> => form.getFieldValue(field),
-      [form],
-    ),
+    getValue: useCallback(<TField extends FieldPath<T>>(field: TField) => form.getFieldValue(field), [form]),
     update: useCallback(
       (updates, { automated: dontUpdateMeta = false } = {}) => {
-        const changedEntries = getChangedEntries({ getValue: form.getFieldValue }, updates)
-        changedEntries.forEach(([field, value]) =>
+        const changes = recordEntries(updates).filter(([field, value]) => form.getFieldValue(field) !== value)
+        changes.forEach(([field, value]) =>
           form.setFieldValue(field, value as never, { dontValidate: true, dontRunListeners: true, dontUpdateMeta }),
         )
-        if (changedEntries.length) {
+        if (changes.length) {
           Promise.resolve(form.validate('change')).catch(e => console.error('form update validation failed', e))
         }
       },
       [form],
     ),
     setError: useCallback(
-      (field, error) =>
-        form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev?.errorMap, onSubmit: error } })),
+      (field, onSubmit) => form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev.errorMap, onSubmit } })),
       [form],
     ),
     clearErrors: useCallback(
@@ -181,7 +158,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
     formState: {
       isSubmitting: useStore(form.store, state => state.isSubmitting),
       errors: useMemo<FormErrors<T>>(
-        () => (rootError ? { ...fieldErrors, root: rootError } : fieldErrors),
+        () => ({ ...fieldErrors, ...(rootError && { root: rootError }) }),
         [fieldErrors, rootError],
       ),
       visibleErrors: useMemo(

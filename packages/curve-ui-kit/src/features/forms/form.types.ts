@@ -42,9 +42,9 @@ export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
 ) => (event?: SubmitEvent<HTMLFormElement>) => Promise<void> | void
 
 /** A partial record with field updates. */
-export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
-  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
-}>
+export type FormUpdates<TFieldValues extends FieldValues> = {
+  [K in FieldPath<TFieldValues>]?: FieldPathValue<TFieldValues, K>
+}
 
 /** The value returned by the useForm hook. */
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
