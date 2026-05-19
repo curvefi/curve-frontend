@@ -14,6 +14,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -86,6 +87,7 @@ export const RootLayout = () => {
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <NetworkAwareLayout />
+              <BackendMaintenanceModal />
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

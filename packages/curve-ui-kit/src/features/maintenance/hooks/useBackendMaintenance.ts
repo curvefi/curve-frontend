@@ -1,9 +1,10 @@
+import { useMemo } from 'react'
 import { formatDate, formatTime } from '@ui/utils/utilsDate'
 import { useDismissBackendMaintenanceBanner, useDismissBackendMaintenanceModal } from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { BACKEND_MAINTENANCES } from '../backend-maintenances.constants'
 
-type BackendMaintenanceConfig = {
+export type BackendMaintenanceConfig = {
   // UTC ISO string date of the scheduled backend maintenance.
   dateISO: string
   // How long before the maintenance we start warning users.
@@ -11,16 +12,6 @@ type BackendMaintenanceConfig = {
   // Optional information to display in the modal and banner.
   expectedDurationLabel?: string
 }[]
-
-/** Planned backend maintenance dates sorted chronologically. Maintenance with past dates are ignored. */
-export const BACKEND_MAINTENANCES: BackendMaintenanceConfig = [
-  {
-    dateISO: '2026-05-25T07:00:00.000Z', // 25 May 2026, 09h00 CEST
-    warnBefore: 'week',
-    expectedDurationLabel: t`20 minutes to 1 hour`,
-  },
-]
-BACKEND_MAINTENANCES.sort((a, b) => new Date(a.dateISO).getTime() - new Date(b.dateISO).getTime())
 
 /** Returns the date when maintenance warnings should start for a scheduled event. */
 const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | 'week' | undefined) => {
@@ -35,12 +26,23 @@ const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | '
   warningStartsAt.setUTCDate(warningStartsAt.getUTCDate() - 7)
   return warningStartsAt
 }
+
 /**
  * Uses the next scheduled maintenance date to drive warnings.
  * The modal appears first when the warning window starts, then the banner can reappear daily 24h after the modal was dismissed.
  */
-export const useBackendMaintenance = () => {
-  const nextMaintenance = BACKEND_MAINTENANCES.find(m => new Date(m.dateISO).getTime() > Date.now())
+export const useBackendMaintenance = ({
+  maintenances = BACKEND_MAINTENANCES,
+}: {
+  maintenances?: BackendMaintenanceConfig
+}) => {
+  const nextMaintenance = useMemo(
+    () =>
+      maintenances
+        .sort((a, b) => new Date(a.dateISO).getTime() - new Date(b.dateISO).getTime())
+        .find(m => new Date(m.dateISO).getTime() > Date.now()),
+    [maintenances],
+  )
   const { dateISO, warnBefore, expectedDurationLabel } = nextMaintenance ?? {}
   const [modalDismissedAt, setModalDismissedAt] = useDismissBackendMaintenanceModal(dateISO)
   const [shouldShowBanner, dismissBanner] = useDismissBackendMaintenanceBanner(dateISO)

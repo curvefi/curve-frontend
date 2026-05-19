@@ -4,7 +4,7 @@ import { Banner } from '@ui-kit/shared/ui/Banner'
 import { useBackendMaintenance } from './hooks/useBackendMaintenance'
 
 export const BackendMaintenanceBanner = () => {
-  const { formattedDate, formattedTime, expectedDurationLabel, showBanner, dismissBanner } = useBackendMaintenance()
+  const { formattedDate, formattedTime, expectedDurationLabel, showBanner, dismissBanner } = useBackendMaintenance({})
 
   return (
     showBanner && (

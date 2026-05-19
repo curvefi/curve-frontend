@@ -9,7 +9,7 @@ import { useBackendMaintenance } from './hooks/useBackendMaintenance'
 const { Spacing } = SizesAndSpaces
 
 export const BackendMaintenanceModal = () => {
-  const { formattedDate, formattedTime, showModal, dismissModal, expectedDurationLabel } = useBackendMaintenance()
+  const { formattedDate, formattedTime, showModal, dismissModal, expectedDurationLabel } = useBackendMaintenance({})
 
   return (
     showModal && (
