@@ -4,23 +4,27 @@ import { type AnyFieldMeta, getBy, useForm as useTanStackForm, useStore } from '
 import type { ValidationSuite } from '@ui-kit/lib/validation'
 import type {
   ErrorKey,
+  FieldErrors,
+  FieldFlags,
   FieldPath,
   FieldPathValue,
-  FieldRecord,
-  FieldRecordEntry,
   FieldValues,
   FormError,
   FormErrors,
-  FormUpdateEntry,
-  PartialFields,
   UseFormReturn,
 } from './form.types'
 
-type FieldErrors<T extends FieldValues> = FieldRecord<T, FormError>
+/** Picked fields from tanstack meta used to retrieve form errors **/
 type FieldMetaSnapshot = Pick<AnyFieldMeta, 'isTouched' | 'isDirty' | 'errorMap'>
+/** A map of field meta data for some fields of the form */
 type FieldMetaMap<T extends FieldValues> = Partial<Record<FieldPath<T>, FieldMetaSnapshot>>
-type RootErrorMap = { onSubmit?: unknown }
 
+/** A single entry in a form update, consisting of a field path and its new value */
+type FormUpdateEntry<TFieldValues extends FieldValues> = {
+  [K in FieldPath<TFieldValues>]: [K, FieldPathValue<TFieldValues, K>]
+}[FieldPath<TFieldValues>]
+
+/** Converts the given value to a form error if it is a string or an object with a message property */
 const toFormError = (value: unknown): FormError | undefined =>
   typeof value === 'string'
     ? { message: value }
@@ -31,33 +35,37 @@ const toFormError = (value: unknown): FormError | undefined =>
         }
       : undefined
 
+/** Converts the given validation errors to a form error string */
 const getValidationFieldErrors = <T extends FieldValues>(validation: ValidationSuite, value: T) =>
   fromEntries(
     recordEntries(validation(value).getErrors()).map(([field, errors]) => [field as FieldPath<T>, errors.join('\n')]),
   )
 
+/** Collects field flags based on a predicate function applied to field metadata */
 const collectFieldFlags = <T extends FieldValues>(
   fieldMeta: FieldMetaMap<T>,
   predicate: (meta: FieldMetaSnapshot) => boolean,
-): PartialFields<T> =>
+): FieldFlags<T> =>
   fromEntries(
     recordEntries(fieldMeta)
       .filter(([, meta]) => !!meta && predicate(meta))
       .map(([field]) => [field, true]),
   )
 
-const toRootError = ({ onSubmit: submitError }: RootErrorMap): FormError | undefined =>
+/** Retrieves the 'root' error from the form error map */
+const toRootError = ({ onSubmit: submitError }: { onSubmit?: unknown }): FormError | undefined =>
   submitError && typeof submitError === 'object' && 'form' in submitError
     ? toFormError(submitError.form)
     : toFormError(submitError)
 
+/** Retrieves field errors from field metadata */
 const getFieldErrors = <T extends FieldValues>(fieldMeta: FieldMetaMap<T>): FieldErrors<T> =>
   fromEntries(
     notFalsy(
       ...recordEntries(fieldMeta).map(([field, { errorMap }]) => {
         const { onBlur, onChange, onMount, onSubmit } = errorMap
         const error = toFormError(onSubmit) ?? toFormError(onChange) ?? toFormError(onBlur) ?? toFormError(onMount)
-        return error && ([field, error] as FieldRecordEntry<T, FormError>)
+        return error && ([field, error] as [FieldPath<T>, FormError])
       }),
     ),
   )
@@ -65,8 +73,8 @@ const getFieldErrors = <T extends FieldValues>(fieldMeta: FieldMetaMap<T>): Fiel
 const getVisibleErrors = <T extends FieldValues>(
   fieldErrors: FieldErrors<T>,
   rootError: FormError | undefined,
-  touchedFields: PartialFields<T>,
-  dirtyFields: PartialFields<T>,
+  touchedFields: FieldFlags<T>,
+  dirtyFields: FieldFlags<T>,
 ): [ErrorKey<T>, string][] => [
   ...recordEntries(fieldErrors)
     .filter(([field]) => touchedFields[field] === true)
@@ -117,8 +125,8 @@ export const useForm = <T extends FieldValues = FieldValues>({
   })
 
   const values = useStore(form.store, state => state.values)
-  const fieldMeta = useStore(form.store, (state): FieldMetaMap<T> => state.fieldMeta)
-  const formErrorMap = useStore(form.store, (state): RootErrorMap => state.errorMap)
+  const fieldMeta = useStore(form.store, state => state.fieldMeta)
+  const formErrorMap = useStore(form.store, (state): { onSubmit?: unknown } => state.errorMap)
 
   const touchedFields = useMemo(() => collectFieldFlags(fieldMeta, meta => meta.isTouched), [fieldMeta])
   const dirtyFields = useMemo(() => collectFieldFlags(fieldMeta, meta => meta.isDirty), [fieldMeta])
