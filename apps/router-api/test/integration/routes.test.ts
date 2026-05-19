@@ -212,19 +212,13 @@ describe('GET routes integration', () => {
         payload.forEach(route => {
           expect(route.router).toBe(router)
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
-          if (router === 'curve-solver') {
-            expect(route.priceImpact).toBeNull()
-          } else {
-            expect(route.priceImpact).toBeTypeOf('number')
-          }
+          expect(route.priceImpact).toBeTypeOf('number')
           expect(route.createdAt).toBeTypeOf('number')
           expect(route.route).toBeDefined()
           expect(route.route!.length).toBeGreaterThan(0)
 
           route.route!.forEach(step => {
-            if (router === 'curve') {
-              expect(step.protocol).toBe('curve')
-            }
+            if (router.startsWith('curve')) expect(step.protocol).toBe(router)
             expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
             expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
           })
