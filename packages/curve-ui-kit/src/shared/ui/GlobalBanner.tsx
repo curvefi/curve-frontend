@@ -8,6 +8,7 @@ import {
   type WagmiChainId,
 } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
+import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -53,6 +54,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
       )}
       <PhishingWarningBanner />
       {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
+      <BackendMaintenanceBanner />
       {isFailure(connectState) ? (
         <Banner severity="alert">
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
