@@ -11,10 +11,10 @@ import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
-import { useFakeMarket } from '@ui-kit/lib/queries/useFakeMarket.test'
 import type { Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { BorrowPositionDetails } from './'
@@ -74,7 +74,10 @@ const BorrowPositionDetailsStory = ({
     ]}
   >
     <BorrowPositionDetails
-      market={useFakeMarket({ collateralAddress, collateralSymbol, borrowSymbol, borrowAddress })}
+      tokens={{
+        collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
+        borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
+      }}
       params={params}
     />
   </TestQueryProvider>

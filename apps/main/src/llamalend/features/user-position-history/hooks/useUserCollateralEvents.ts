@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import { type Chain } from '@curvefi/prices-api'
 import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/prices-api/crvusd'
 import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
@@ -46,14 +47,8 @@ export type UserCollateralEventType =
 
 const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp'] as const
 
-type CollateralEventToken = { symbol: string; address: string; decimals: number; name: string }
-
 export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> &
-  TableItem & {
-    type: UserCollateralEventType
-    borrowToken: CollateralEventToken | undefined
-    collateralToken: CollateralEventToken | undefined
-  }
+  TableItem & { type: UserCollateralEventType } & Partial<MarketTokens>
 
 export type UserCollateralEvents = {
   events: ParsedUserCollateralEvent[]
@@ -81,9 +76,8 @@ export type UserCollateralEventsProps = {
   userAddress: Address | undefined
   controllerAddress: Address | undefined
   chain: Chain | undefined
-  collateralToken: CollateralEventToken | undefined
-  borrowToken: CollateralEventToken | undefined
   network: BaseConfig
+  tokens: Partial<MarketTokens>
 }
 
 export const useUserCollateralEvents = ({
@@ -91,8 +85,7 @@ export const useUserCollateralEvents = ({
   userAddress,
   controllerAddress,
   chain,
-  collateralToken,
-  borrowToken,
+  tokens: { collateralToken, borrowToken },
   network,
 }: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
   const params = { blockchainId: chain, contractAddress: controllerAddress, userAddress }

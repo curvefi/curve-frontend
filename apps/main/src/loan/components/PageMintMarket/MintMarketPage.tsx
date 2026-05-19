@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
@@ -25,7 +25,6 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useMintMarket } from '../../hooks/useMintMarket'
 
@@ -42,16 +41,16 @@ function useLegacyFetching({
   const [loaded, setLoaded] = useState(!enabled)
   const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
   useEffect(() => {
-    if (curve && market) {
+    if (curve && market && enabled) {
       void (async () => {
         await fetchLoanDetails(curve, market)
         setLoaded(true)
       })()
     }
-  }, [curve, market, fetchLoanDetails])
+  }, [curve, market, fetchLoanDetails, enabled])
 
   usePageVisibleInterval(async () => {
-    if (curve?.signerAddress && market && loanExists) {
+    if (enabled && curve?.signerAddress && market && loanExists) {
       await fetchLoanDetails(curve, market)
     }
   }, REFRESH_INTERVAL['1m'])
@@ -66,31 +65,27 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
-  const { data: market, isSuccess } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const { data: market, isSuccess } = useMintMarket(rChainId, rCollateralId)
   const userMarketParams = { chainId: rChainId, marketId: market?.id, userAddress: address }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: address,
-  })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    {
+      chainId: rChainId,
+      marketId: market?.id,
+      userAddress: address,
+    },
+    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
+  )
 
   const network = networks[rChainId]
+  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress: getControllerAddress(market),
     userAddress: curve?.signerAddress,
-    collateralToken: market
-      ? {
-          symbol: market.collateralSymbol,
-          address: market.collateral,
-          decimals: market.collateralDecimals,
-          name: market.collateralSymbol,
-        }
-      : undefined,
-    borrowToken: CRVUSD,
     network,
+    tokens,
   })
   const loaded = useLegacyFetching({ curve, market, loanExists })
 
@@ -132,7 +127,7 @@ export const MintMarketPage = () => {
     >
       <MarketBanners chainId={rChainId} market={market} />
       <PositionDetailsComposite
-        market={market}
+        tokens={tokens}
         params={userMarketParams}
         hasPosition={loanExists}
         events={collateralEvents}

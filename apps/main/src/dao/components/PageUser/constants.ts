@@ -1,7 +1,7 @@
 import type { Column } from '@/dao/components/PaginatedTable'
 import type { UserLockFormatted } from '@/dao/entities/user-locks'
 import type { UserProposalVoteFormatted } from '@/dao/entities/user-proposal-votes'
-import type { UserGaugeVote } from '@curvefi/prices-api/gauge/models'
+import type { UserGaugeVote } from '@curvefi/prices-api/gauge'
 
 export const LOCKS_LABELS: Column<UserLockFormatted>[] = [
   { key: 'lockType', label: 'Lock Type', disabled: true },
