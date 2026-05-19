@@ -89,7 +89,7 @@ export const RootLayout = () => {
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <NetworkAwareLayout />
-              <BackendMaintenanceModal {...backendMaintenance} />
+              {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

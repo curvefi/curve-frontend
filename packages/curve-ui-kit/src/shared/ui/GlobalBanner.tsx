@@ -54,7 +54,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`${releaseChannel} Mode Enabled`}
         </Banner>
       )}
-      {backendMaintenance.showBanner && <BackendMaintenanceBanner {...backendMaintenance} />}
+      {backendMaintenance.showBanner && !isCypress && <BackendMaintenanceBanner {...backendMaintenance} />}
       {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
       <PhishingWarningBanner />
       {isFailure(connectState) ? (
