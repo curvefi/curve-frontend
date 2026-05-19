@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash'
+import { identity, isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
@@ -119,18 +119,21 @@ export function useFormDebounce<T>(givenValue: T, options?: DebouncedValueOption
  * @param callback - Function called when the debounced value changes
  * @param debounceMs - The debounce period in milliseconds (default: 166ms)
  * @param equals - Optional custom equality function to compare values
+ * @param clean - Optional custom cleaning function to transform values before comparison (default: identity)
  * @returns A tuple containing the current value and a setter function
  */
 export function useUniqueDebounce<T>({
   defaultValue,
   callback,
   debounceMs = Duration.FormDebounce,
-  equals,
+  equals = isEqual,
+  clean = identity,
 }: {
   defaultValue: T
   callback: ((value: T) => void) | undefined
   debounceMs?: number
   equals?: (a: T, b: T) => boolean
+  clean?: (value: T) => T
 }) {
   const lastValue = useRef(defaultValue)
 
@@ -148,14 +151,14 @@ export function useUniqueDebounce<T>({
   }, [defaultValue])
 
   const debounceCallback = useCallback(
-    (value: T) => {
-      const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
-      if (!isEqual) {
+    (givenValue: T) => {
+      const value = clean(givenValue)
+      if (!equals(value, lastValue.current)) {
         lastValue.current = value
         callback?.(value)
       }
     },
-    [callback, equals],
+    [callback, clean, equals],
   )
 
   return useDebounce({ initialValue: defaultValue, debounceMs, callback: debounceCallback })

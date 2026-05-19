@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react'
+import { ReactNode, useRef } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
@@ -54,9 +54,8 @@ export const LegacyTableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
-  const [searchValue, setSearchValue] = useState('')
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
+  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
 
   return (
@@ -76,8 +75,8 @@ export const LegacyTableFilters = <ColumnIds extends string>({
         >
           {hasSearchBar && (
             <LegacyTableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
+              value={searchText}
+              onChange={onSearch}
               testId={filterExpandedKey}
               {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
               isExpanded={isExpandedOrValue}
