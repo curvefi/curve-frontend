@@ -156,6 +156,7 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
       ),
       enso: useRouterQuery(params, 'enso', enabled),
       odos: useRouterQuery(params, 'odos', enabled),
+      '0x': useRouterQuery(params, '0x', enabled),
     } satisfies RouteQueries,
     onRefresh: useCallback(
       () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
