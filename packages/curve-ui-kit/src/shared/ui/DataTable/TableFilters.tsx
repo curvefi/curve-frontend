@@ -37,7 +37,7 @@ export const TableFilters = <ColumnIds extends string>({
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
   popoverFilters?: ReactNode // filters shown in the popover menu
-  // collabsible bar that displays the active filters
+  // collabsible bar that displays the active filters for desktop and tablet only
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   filterChip?: ReactNode // buttons responsible for filtering
