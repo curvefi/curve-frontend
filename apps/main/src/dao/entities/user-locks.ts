@@ -1,5 +1,4 @@
-import { getUserLocks } from '@curvefi/prices-api/dao/api'
-import { UserLock } from '@curvefi/prices-api/dao/models'
+import { getUserLocks, type UserLock } from '@curvefi/prices-api/dao'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 
