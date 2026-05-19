@@ -5,10 +5,10 @@ import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/l
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useMarketRates } from '@/llamalend/queries/market'
 import { formatNumber } from '@ui-kit/utils'
-import { useLendMarket } from '../hooks/useLendMarket'
+import { useLendMarketData } from '../hooks/useLendMarket'
 
 export function useSupplyTotalApr(rChainId: ChainId, marketId: string) {
-  const market = useLendMarket(rChainId, marketId).data
+  const market = useLendMarketData(rChainId, marketId).data
   const marketRewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[marketId])
   const marketRatesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[marketId])
   const {
