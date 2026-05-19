@@ -127,9 +127,9 @@ export const useForm = <T extends FieldValues = FieldValues>({
 
   return {
     handleSubmit: useCallback(
-      mutate => (event: SubmitEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        event.stopPropagation()
+      mutate => (event?: SubmitEvent<HTMLFormElement>) => {
+        event?.preventDefault()
+        event?.stopPropagation()
         mutateRef.current = mutate
         return form.handleSubmit()
       },
