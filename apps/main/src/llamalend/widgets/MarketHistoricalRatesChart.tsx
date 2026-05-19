@@ -167,17 +167,17 @@ export const MarketHistoricalRatesChart = ({
         <Stack
           display="grid"
           gap={Spacing.xl}
-          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}
+          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' }}
         >
           <Metric
-            size="small"
+            size="medium"
             label={rateMode === 'borrow' ? t`Current APR` : t`Current APY`}
             value={currentLiveRate}
             loading={currentLiveRate == null && (isMarketRatesLoading || !market)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
-            size="small"
+            size="medium"
             label={rateMode === 'borrow' ? t`1W Avg APR` : t`1W Avg APY`}
             value={oneWeekAverageRate}
             loading={oneWeekAverageRate == null && (isSnapshotsLoading || isMarketRatesLoading || !market)}

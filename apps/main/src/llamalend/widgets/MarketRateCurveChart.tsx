@@ -162,10 +162,10 @@ export const MarketRateCurveChart = ({
         <Stack
           display="grid"
           gap={Spacing.xl}
-          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}
+          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' }}
         >
           <Metric
-            size="small"
+            size="medium"
             label={t`Utilization`}
             value={currentUtilization}
             loading={currentUtilization == null && (isCapAndAvailableLoading || isLoading || !market)}
@@ -178,7 +178,7 @@ export const MarketRateCurveChart = ({
             }}
           />
           <Metric
-            size="small"
+            size="medium"
             label={t`Total borrowed`}
             value={totalBorrowed}
             loading={totalBorrowed == null && (isCapAndAvailableLoading || !market)}
@@ -189,7 +189,7 @@ export const MarketRateCurveChart = ({
             notional={totalBorrowedUsdValue == null ? undefined : formatUsd(totalBorrowedUsdValue)}
           />
           <Metric
-            size="small"
+            size="medium"
             label={t`Total collateral`}
             value={combinedCollateralUsdValue}
             loading={combinedCollateralUsdValue == null && isTotalCollateralMetricLoading}

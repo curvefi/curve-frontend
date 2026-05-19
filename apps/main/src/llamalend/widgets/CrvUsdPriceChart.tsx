@@ -135,24 +135,24 @@ export const CrvUsdPriceChart = () => {
         <Stack
           display="grid"
           gap={Spacing.xl}
-          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}
+          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' }}
         >
           <Metric
-            size="small"
+            size="medium"
             label={t`Current price`}
             value={currentPrice}
             loading={currentPrice == null && isCurrentPriceLoading}
             valueOptions={{ unit: 'dollar' }}
           />
           <Metric
-            size="small"
+            size="medium"
             label={t`1W deviation`}
             value={oneWeekDeviation}
             loading={oneWeekDeviation == null && (showLoading || isCurrentPriceLoading)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
-            size="small"
+            size="medium"
             label={t`Total supply`}
             value={totalSupply}
             loading={totalSupply == null && isTotalSupplyLoading}
