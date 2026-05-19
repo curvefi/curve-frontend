@@ -1,4 +1,4 @@
-import { getUserGaugeVotes } from '@curvefi/prices-api/gauge/api'
+import { getUserGaugeVotes } from '@curvefi/prices-api/gauge'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 

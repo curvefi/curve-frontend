@@ -12,7 +12,7 @@ export const AdvancedDetails = ({ network }: { network: BaseConfig | undefined }
       slotProps={{ title: { variant: 'small' }, root: { variant: 'small' } }}
     />
 
-    <CardContent sx={{ paddingInline: '0 !important' }} /** no data-inline support yet like in header */>
+    <CardContent sx={{ paddingInline: '0 !important' }} /** TODO: no data-inline support yet like in header */>
       <AddressActionInfo network={network} title={t`Vault Contract Address`} address={SCRVUSD_VAULT_ADDRESS} />
     </CardContent>
   </Card>
