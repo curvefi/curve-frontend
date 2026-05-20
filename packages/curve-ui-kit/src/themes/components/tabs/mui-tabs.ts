@@ -129,10 +129,7 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
         color: Text.TextColors.Tertiary,
       },
       [`&:hover .${TAB_SUFFIX_CLASS}`]: {
-        color: 'inherit',
-      },
-      [`&.Mui-selected .${TAB_SUFFIX_CLASS}`]: {
-        color: Text.TextColors.Secondary,
+        color: Text.TextColors.Highlight,
       },
     },
   },
@@ -153,6 +150,12 @@ const buildTabStateStylesByVariant = ({ Current, Default, Hover, Inset }: TabVar
   ...buildBaseStyles(Default, Inset),
   '&:hover': buildBaseStyles(Hover, Inset),
   '&.Mui-selected': buildBaseStyles(Current, Inset),
+})
+
+const buildContainedTabStateStyles = ({ Current, Default, Hover }: TabVariant) => ({
+  ...buildBaseStyles(Default),
+  '&:hover': buildBaseStyles(Hover),
+  '&.Mui-selected, &.Mui-selected:hover': buildBaseStyles(Current),
 })
 
 /** Build breakpoint-aware padding styles for a tab. */
@@ -220,7 +223,7 @@ export const defineMuiTabs = ({
       [`&.${contained}`]: {
         ...muiTabStyles({
           root: {
-            ...buildTabStateStylesByVariant(Contained),
+            ...buildContainedTabStateStyles(Contained),
           },
         }),
         ...muiTabStylesBySize({
