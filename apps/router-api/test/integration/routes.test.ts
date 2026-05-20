@@ -97,6 +97,39 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
       },
     },
   },
+  'curve-solver': {
+    'ethereum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ETHEREUM,
+        tokenIn: [ETHEREUM_USDC],
+        tokenOut: [ETHEREUM_USDT],
+        amountIn: [toWei('1000', USD_DECIMALS)],
+        router: ['curve-solver'],
+        userAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC',
+      },
+    },
+    'arbitrum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountIn: [toWei('100', USD_DECIMALS)],
+        router: ['curve-solver'],
+        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+      },
+    },
+    'arbitrum amountOut': {
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountOut: [toWei('1000', USD_DECIMALS)],
+        router: ['curve-solver'],
+        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+      },
+      expectedRoutes: 0,
+    },
+  },
 }
 
 const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
@@ -179,22 +212,21 @@ describe('GET routes integration', () => {
         payload.forEach(route => {
           expect(route.router).toBe(router)
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
-          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
+          expect(route.priceImpact).toBeTypeOf('number')
           expect(route.createdAt).toBeTypeOf('number')
-          expect(route.route.length).toBeGreaterThan(0)
+          expect(route.route).toBeDefined()
+          expect(route.route!.length).toBeGreaterThan(0)
 
-          route.route.forEach(step => {
-            if (router === 'curve') {
-              expect(step.protocol).toBe('curve')
-            }
+          route.route!.forEach(step => {
+            if (router.startsWith('curve')) expect(step.protocol).toBe(router)
             expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
             expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
           })
 
           const [expectedTokenIn] = query.tokenIn ?? []
           const [expectedTokenOut] = query.tokenOut ?? []
-          const [firstStep] = route.route
-          const lastStep = route.route[route.route.length - 1]
+          const [firstStep] = route.route!
+          const lastStep = route.route![route.route!.length - 1]
           expect(firstStep.tokenIn.join(',')?.toLowerCase()).toBe(expectedTokenIn.toLowerCase())
           expect(lastStep.tokenOut.join(',')?.toLowerCase()).toBe(expectedTokenOut.toLowerCase())
         })

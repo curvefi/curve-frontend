@@ -21,6 +21,7 @@ const { Spacing } = SizesAndSpaces
 
 const providerLabels = {
   curve: t`Curve`,
+  'curve-solver': t`Curve Solver`,
   enso: t`Enso`,
   odos: t`Odos`,
 }

@@ -75,7 +75,7 @@ const convertRoute = (
     ),
     isHighSlippage: warnings.includes('high-slippage'),
     isStableswapRoute,
-    routes: route.map(
+    routes: (route ?? []).map(
       ({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) =>
         ({
           inputCoinAddress,
