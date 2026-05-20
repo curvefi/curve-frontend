@@ -27,11 +27,7 @@ export const TokenBalanceCell = <TRow extends TokenBalanceCellData>({ row, getVa
         <TokenIcon blockchainId={networkId} address={token} tooltip={symbol} size="lg" showChainIcon />
         <Stack gap={Spacing.xxs} alignItems="flex-start">
           <Typography variant="tableCellL">{formatBalance(getValue())}</Typography>
-          <Typography
-            variant="tableCellSRegular"
-            className={TableSecondaryTextClass}
-            sx={t => ({ color: t.design.Table.Text.Default.Secondary })}
-          >
+          <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
             {symbol}
           </Typography>
         </Stack>

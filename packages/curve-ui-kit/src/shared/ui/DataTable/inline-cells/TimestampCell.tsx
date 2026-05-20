@@ -32,18 +32,11 @@ export const TimestampCell = ({ timestamp, txUrl }: TimestampCellProps) => {
     >
       <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
       <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
-        <Typography
-          variant="tableCellSRegular"
-          className={TableSecondaryTextClass}
-          sx={t => ({ color: t.design.Table.Text.Default.Secondary })}
-        >
+        <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
           {formatTime(timestamp)}
         </Typography>
         {clickable && (
-          <ArrowOutwardIcon
-            className={TableSecondaryTextClass}
-            sx={t => ({ fontSize: 20, color: t.design.Table.Text.Default.Secondary })}
-          />
+          <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />
         )}
       </Stack>
     </InlineTableCell>

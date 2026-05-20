@@ -67,6 +67,9 @@ export const DataRow = <T extends TableItem>({
                 opacity: { mobile: 1, desktop: 0 },
                 transition: `opacity ${TransitionFunction}`,
               },
+              [`& .${TableSecondaryTextClass}`]: {
+                color: t => t.design.Table.Text.Default.Secondary,
+              },
               '&:hover': {
                 [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {

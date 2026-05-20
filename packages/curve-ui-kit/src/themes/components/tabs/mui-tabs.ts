@@ -149,13 +149,7 @@ const buildBaseStyles = ({ Label, Fill, Outline }: TabStyle, inset?: string) => 
 const buildTabStateStylesByVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
   ...buildBaseStyles(Default, Inset),
   '&:hover': buildBaseStyles(Hover, Inset),
-  '&.Mui-selected': buildBaseStyles(Current, Inset),
-})
-
-const buildContainedTabStateStyles = ({ Current, Default, Hover }: TabVariant) => ({
-  ...buildBaseStyles(Default),
-  '&:hover': buildBaseStyles(Hover),
-  '&.Mui-selected, &.Mui-selected:hover': buildBaseStyles(Current),
+  '&.Mui-selected, &.Mui-selected:hover': buildBaseStyles(Current, Inset),
 })
 
 /** Build breakpoint-aware padding styles for a tab. */
@@ -223,7 +217,7 @@ export const defineMuiTabs = ({
       [`&.${contained}`]: {
         ...muiTabStyles({
           root: {
-            ...buildContainedTabStateStyles(Contained),
+            ...buildTabStateStylesByVariant(Contained),
           },
         }),
         ...muiTabStylesBySize({

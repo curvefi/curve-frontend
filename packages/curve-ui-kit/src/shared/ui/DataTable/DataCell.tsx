@@ -23,7 +23,8 @@ export const DataCell = <T extends TableItem>({
     <Typography
       variant={getCellVariant(column)}
       component="td"
-      sx={[{ color: t => t.design.Table.Text.Default.Primary }, sx]}
+      color="text.primary"
+      sx={sx}
       data-testid={`data-table-cell-${column.id}`}
     >
       {showCollapseIcon ? (
