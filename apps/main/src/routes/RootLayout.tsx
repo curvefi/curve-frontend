@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
-import { BACKEND_MAINTENANCE } from '@/backend-maintenance'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { useStore as useLendStore } from '@/lend/store/useStore'
 import { useStore as useLoanStore } from '@/loan/store/useStore'
+import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { GlobalLayout } from '@/routes/GlobalLayout'
 import isPropValid from '@emotion/is-prop-valid'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -16,8 +16,8 @@ import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
-import { useBackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
-import type { BackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
+import { useMaintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
+import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -52,7 +52,7 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
   )
 
 // Inner component that uses TanStack Query hooks
-const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: BackendMaintenance }) => {
+const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Maintenance }) => {
   const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
   const pathname = usePathname()
@@ -87,7 +87,7 @@ const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Backen
 
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
-  const backendMaintenance = useBackendMaintenance(BACKEND_MAINTENANCE)
+  const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
   const devTools = !isCypress
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
