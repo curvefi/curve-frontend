@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
+import { BACKEND_MAINTENANCE } from '@/backend-maintenance'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { useStore as useLendStore } from '@/lend/store/useStore'
@@ -14,6 +15,9 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
+import { useBackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
+import type { BackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -48,7 +52,7 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
   )
 
 // Inner component that uses TanStack Query hooks
-const NetworkAwareLayout = () => {
+const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: BackendMaintenance }) => {
   const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
   const pathname = usePathname()
@@ -65,7 +69,12 @@ const NetworkAwareLayout = () => {
       <WagmiProvider config={config}>
         <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
           {network && (
-            <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+            <GlobalLayout
+              backendMaintenance={backendMaintenance}
+              currentApp={currentApp}
+              network={network}
+              networks={networks}
+            >
               <HeadContent />
               <Outlet />
             </GlobalLayout>
@@ -78,6 +87,7 @@ const NetworkAwareLayout = () => {
 
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
+  const backendMaintenance = useBackendMaintenance(BACKEND_MAINTENANCE)
   const devTools = !isCypress
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
@@ -85,7 +95,8 @@ export const RootLayout = () => {
         <ErrorBoundary title={t`Layout error`}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <NetworkAwareLayout />
+              <NetworkAwareLayout backendMaintenance={backendMaintenance} />
+              {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

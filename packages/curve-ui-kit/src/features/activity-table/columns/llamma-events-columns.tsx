@@ -39,7 +39,8 @@ export const LLAMMA_EVENTS_COLUMNS = [
   columnHelper.accessor('timestamp', {
     id: LlammaEventsColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.txUrl} />,
-    meta: { type: 'numeric' },
+    cell: ({ row }) => (
+      <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.txUrl} align="end" />
+    ),
   }),
 ]
