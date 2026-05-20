@@ -37,7 +37,7 @@ export const formatDate = (date: Date | string | number, variant: 'short' | 'lon
           year: 'numeric',
         }
       : {
-          // long - example: 31 January, 12:00 AM adjusted for local timezone
+          // long - example: 31 January, 2026, 12:00 AM adjusted for local timezone
           month: 'short',
           day: 'numeric',
           year: 'numeric',
@@ -58,12 +58,13 @@ export const formatDate = (date: Date | string | number, variant: 'short' | 'lon
  * formatTime(new Date()) // "14:30:23" from Date object
  * formatTime('2025-09-08T04:13:47.000Z') // "04:13:47" from ISO string
  */
-export const formatTime = (timestamp: number | Date | string) =>
+export const formatTime = (timestamp: number | Date | string, options: Intl.DateTimeFormatOptions = {}) =>
   new Intl.DateTimeFormat(undefined, {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
+    ...options,
   }).format(convertDate(timestamp))
 
 /**
