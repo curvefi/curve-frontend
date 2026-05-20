@@ -16,6 +16,19 @@ function getFromLocalStorage<T>(storageKey: string): T | null {
   return item && JSON.parse(item)
 }
 
+function getLocalStorageKeyStartingWith(prefix: string) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  for (let index = 0; index < window.localStorage.length; index += 1) {
+    const key = window.localStorage.key(index)
+    if (key?.startsWith(prefix)) {
+      return key
+    }
+  }
+}
+
 const get = <T>(key: string, initialValue: T): T => {
   const existing = getFromLocalStorage<T>(key)
   return existing == null ? initialValue : existing
@@ -127,14 +140,14 @@ export const useDismissMaintenanceModal = (dateISO: string | undefined) =>
   useLocalStorage<string | null>(`maintenance-modal-${dateISO}`, null, {
     version: MAINTENANCE_STORAGE_VERSION,
     migrate: oldValue => oldValue,
-    oldKey: `backend-maintenance-modal-${dateISO}`,
+    oldKey: getLocalStorageKeyStartingWith('backend-maintenance-modal-'),
   })
 
 export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
   useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily', {
     version: MAINTENANCE_STORAGE_VERSION,
     migrate: oldValue => oldValue,
-    oldKey: `backend-maintenance-banner-${dateISO}`,
+    oldKey: getLocalStorageKeyStartingWith('backend-maintenance-banner-'),
   })
 
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)
