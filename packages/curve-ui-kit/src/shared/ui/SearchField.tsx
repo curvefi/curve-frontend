@@ -13,26 +13,22 @@ type SearchFieldProps = TextFieldProps & {
   disableAutoFocus?: boolean
 }
 
-/** Compares two strings, ignoring leading and trailing whitespace. */
-const searchFieldEquals = (a: string, b: string) => a.trim() === b.trim()
+/** remove leading and trailing spaces */
+const sanitize = (a: string) => a.trim()
 
 /**
  * Search field with debounced search. It is cleared and focused when clicking the close button.
  */
 export const SearchField = ({
-  value = '',
-  onSearch,
+  value: defaultValue = '',
+  onSearch: callback,
   placeholder = t`Search name or paste address`,
   name = 'search',
   inputRef,
   disableAutoFocus,
   ...props
 }: SearchFieldProps) => {
-  const [search, setSearch] = useUniqueDebounce<string>({
-    defaultValue: value,
-    callback: onSearch,
-    equals: searchFieldEquals,
-  })
+  const [search, setSearch] = useUniqueDebounce<string>({ defaultValue, callback, sanitize })
   const localInputRef = useRef<HTMLInputElement | null>(null)
   const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {

@@ -36,7 +36,7 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
   )
 }
 
-const Container = styled.div<{ highContrast?: boolean }>`
+const Container = styled.span<{ highContrast?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -50,7 +50,7 @@ const TokenIcon = styled.img`
   border-radius: 50%;
 `
 
-const Multiplier = styled.p<{ highContrast?: boolean }>`
+const Multiplier = styled.span<{ highContrast?: boolean }>`
   text-transform: uppercase;
   font-size: var(--font-size-3);
   color: ${({ highContrast }) => (highContrast ? 'var(--white)' : 'var(--page--text-color)')};

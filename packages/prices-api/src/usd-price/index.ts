@@ -10,9 +10,9 @@ export type * from './schema'
 export async function getUsdPrice(blockchainId: Chain, contractAddress: Address, options?: Options) {
   const host = getHost(options)
   const url = `${host}/v1/usd_price/${blockchainId}/${contractAddress}`
+  const response = await fetch(url)
 
-  const resp = await fetch(url)
-  return Schema.getUsdPriceResponse.parse(resp)
+  return Schema.getUsdPriceResponse.parse(response)
 }
 
 export async function getUsdPriceHistory(
@@ -24,7 +24,7 @@ export async function getUsdPriceHistory(
   const host = getHost(options)
   const params = { interval: 'day', ...getTimeRange({ daysRange: days }) }
   const url = `${host}/v1/usd_price/${blockchainId}/${contractAddress}/history${addQueryString(params)}`
+  const response = await fetch(url)
 
-  const resp = await fetch(url)
-  return Schema.getUsdPriceHistoryResponse.parse(resp)
+  return Schema.getUsdPriceHistoryResponse.parse(response)
 }

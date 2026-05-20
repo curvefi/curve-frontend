@@ -7,39 +7,39 @@ export type * from './schema'
 
 export async function getByChain(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/chains/fees`, undefined, options?.signal)
+  const response = await fetch(`${host}/v1/chains/fees`, undefined, options?.signal)
 
-  return Schema.getByChainResponse.parse(resp)
+  return Schema.getByChainResponse.parse(response)
 }
 
 export async function getTopPools(chain: string, numPools = 10, options?: Options) {
   const chainStr = chain === 'mainnet' ? 'ethereum' : chain
   const host = getHost(options)
 
-  const resp = await fetch(`${host}/v1/chains/${chainStr}`)
+  const response = await fetch(`${host}/v1/chains/${chainStr}`)
 
-  return Schema.getTopPoolsResponse.parse(resp).slice(0, numPools)
+  return Schema.getTopPoolsResponse.parse(response).slice(0, numPools)
 }
 
 export async function getCrvUsdWeekly(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/fees/crvusd/weekly`)
+  const response = await fetch(`${host}/v1/dao/fees/crvusd/weekly`)
 
-  return Schema.getCrvUsdWeeklyResponse.parse(resp)
+  return Schema.getCrvUsdWeeklyResponse.parse(response)
 }
 
 export async function getPoolsWeekly(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/fees/pools/weekly`)
+  const response = await fetch(`${host}/v1/dao/fees/pools/weekly`)
 
-  return Schema.getPoolsWeeklyResponse.parse(resp)
+  return Schema.getPoolsWeeklyResponse.parse(response)
 }
 
 export async function getCushions(chain: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/fees/${chain}/pending`)
+  const response = await fetch(`${host}/v1/dao/fees/${chain}/pending`)
 
-  return Schema.getCushionsResponse.parse(resp)
+  return Schema.getCushionsResponse.parse(response)
 }
 
 export async function getDistributions(options?: Options) {
@@ -54,21 +54,23 @@ export async function getDistributions(options?: Options) {
 
 export async function getCowSwapSettlements(timestamp?: number, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/fees/settlements${timestamp ? '?timestamp=' + timestamp.toString() : ''}`)
+  const response = await fetch(
+    `${host}/v1/dao/fees/settlements${timestamp ? '?timestamp=' + timestamp.toString() : ''}`,
+  )
 
-  return Schema.getCowSwapSettlementsResponse.parse(resp)
+  return Schema.getCowSwapSettlementsResponse.parse(response)
 }
 
 export async function getFeesCollected(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/fees/collected`)
+  const response = await fetch(`${host}/v1/dao/fees/collected`)
 
-  return Schema.getFeesCollectedResponse.parse(resp)
+  return Schema.getFeesCollectedResponse.parse(response)
 }
 
 export async function getFeesStaged(options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/dao/fees/staged`)
+  const response = await fetch(`${host}/v1/dao/fees/staged`)
 
-  return Schema.getFeesStagedResponse.parse(resp)
+  return Schema.getFeesStagedResponse.parse(response)
 }

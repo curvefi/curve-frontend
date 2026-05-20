@@ -16,8 +16,9 @@ export async function getMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
-  return Schema.getMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
+
+  return Schema.getMarketsResponse.parse(response)
 }
 
 /** Retrieve all markets across all chains, sorted by date of creation descending. */
@@ -29,8 +30,9 @@ export async function getAllMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/markets${addQueryString(params)}`)
-  return Schema.getAllMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/markets${addQueryString(params)}`)
+
+  return Schema.getAllMarketsResponse.parse(response)
 }
 
 export async function getSnapshots(
@@ -44,29 +46,31 @@ export async function getSnapshots(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots${addQueryString(params)}`)
-  return Schema.getSnapshotsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots${addQueryString(params)}`)
+
+  return Schema.getSnapshotsResponse.parse(response)
 }
 
 export async function getCrvUsdSupply(chain: Chain, days?: number, options?: Options) {
   const host = getHost(options)
   const range = getTimeRange({ daysRange: days })
-  const resp = await fetch(`${host}/v1/crvusd/markets/${chain}/supply${addQueryString(range)}`)
+  const response = await fetch(`${host}/v1/crvusd/markets/${chain}/supply${addQueryString(range)}`)
 
-  return Schema.getSupplyResponse.parse(resp)
+  return Schema.getSupplyResponse.parse(response)
 }
 
 export async function getKeepers(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/pegkeepers/${chain}`)
+  const response = await fetch(`${host}/v1/crvusd/pegkeepers/${chain}`)
 
-  return Schema.getKeepersResponse.parse(resp)
+  return Schema.getKeepersResponse.parse(response)
 }
 
 export async function getUserMarkets(userAddr: string, chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`)
-  return Schema.getUserMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`)
+
+  return Schema.getUserMarketsResponse.parse(response)
 }
 
 export async function getAllUserMarkets(
@@ -75,14 +79,16 @@ export async function getAllUserMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/users/all/${userAddr}${addQueryString(params)}`)
-  return Schema.getAllUserMarketsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/users/all/${userAddr}${addQueryString(params)}`)
+
+  return Schema.getAllUserMarketsResponse.parse(response)
 }
 
 export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/stats`)
-  return Schema.getUserMarketStatsResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/stats`)
+
+  return Schema.getUserMarketStatsResponse.parse(response)
 }
 
 export async function getUserMarketSnapshots(
@@ -92,11 +98,11 @@ export async function getUserMarketSnapshots(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/snapshots?page=1&per_page=100`,
   )
 
-  return Schema.getUserMarketSnapshotsResponse.parse(resp)
+  return Schema.getUserMarketSnapshotsResponse.parse(response)
 }
 
 export async function getUserMarketCollateralEvents(
@@ -107,15 +113,16 @@ export async function getUserMarketCollateralEvents(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch(
+  const response = await fetch(
     `${host}/v1/crvusd/collateral_events/${chain}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
   )
 
-  return Schema.getUserCollateralEventsResponse.parse(resp)
+  return Schema.getUserCollateralEventsResponse.parse(response)
 }
 
 export async function getCrvUsdTvl(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch(`${host}/v1/crvusd/markets/${chain}/tvl`)
-  return Schema.getCrvUsdTvlResponse.parse(resp)
+  const response = await fetch(`${host}/v1/crvusd/markets/${chain}/tvl`)
+
+  return Schema.getCrvUsdTvlResponse.parse(response)
 }

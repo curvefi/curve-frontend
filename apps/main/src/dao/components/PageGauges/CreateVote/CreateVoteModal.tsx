@@ -17,7 +17,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useCreateVoteForm } from './useCreateVoteForm'
 
@@ -71,7 +70,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
             <Typography variant="bodySBold">{t`Requirements:`}</Typography>
 
             <Typography variant="bodySRegular">
-              {t`1. New gauge votes must have a vote on the governance forum`}{' '}
+              {t`1. New gauge votes are encouraged to have a proposal on the governance forum`}{' '}
               <InlineLink to="https://gov.curve.finance/" hideIcon>{t`at this address`}</InlineLink>
             </Typography>
 
@@ -86,18 +85,14 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
               fullWidth
               placeholder={zeroAddress}
               value={gaugeAddress}
-              onChange={e => updateForm(form, { gaugeAddress: e.target.value })}
+              onChange={e => form.update({ gaugeAddress: e.target.value })}
             />
             <FormHelperText>{gaugeAddressError ?? t`Enter the gauge contract address`}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth error={!!descriptionError}>
             <FormLabel>{t`Vote Description`}</FormLabel>
-            <TextField
-              fullWidth
-              value={description}
-              onChange={e => updateForm(form, { description: e.target.value })}
-            />
+            <TextField fullWidth value={description} onChange={e => form.update({ description: e.target.value })} />
             <FormHelperText>{descriptionError ?? t`A few words describing what this gauge is for`}</FormHelperText>
           </FormControl>
 

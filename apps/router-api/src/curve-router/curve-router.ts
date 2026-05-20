@@ -5,7 +5,7 @@ import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS, notFalsy } from '@primitives/objects.utils'
-import type { RouteResponse, RouterRouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
+import type { RouterRouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
 import { fromWei, toWei } from '../router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
@@ -47,7 +47,7 @@ function getWarnings(
   toAmount: string,
   isStableswapRoute: boolean,
   toStoredRate: string | undefined,
-): RouteResponse['warnings'] {
+): RouterRouteResponse['warnings'] {
   const exchangeRate = Number(fromAmount) ? new BigNumber(toAmount).dividedBy(fromAmount).toNumber() : 0
   const isExchangeRateLow =
     isStableswapRoute &&
@@ -113,6 +113,7 @@ export async function buildCurveRouteResponse(
       createdAt: Date.now(),
       isStableswapRoute,
       warnings,
+      gas: null, // curve-js doesn't return gas estimates without a signer.
       tx: tx as TransactionData | undefined,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({

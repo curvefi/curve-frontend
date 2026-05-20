@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal } from '@ui-kit/utils'
-import { updateForm, useFormSync } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
@@ -17,14 +17,14 @@ import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
  *
  * @param collateralToken - The collateral token object containing its address.
  * @param params - The parameters required to fetch max borrowable amounts, including chainId, marketId, and userAddress.
- * @param form - The react-hook-form instance managing the create loan form state.
+ * @param form - The form instance managing the create loan form state.
  */
 export function useMaxTokenValues(
   collateralToken: Address | undefined,
   params: CreateLoanFormQueryParams & { userAddress?: Address },
   form: UseFormReturn<CreateLoanForm>,
 ) {
-  const { getValues, setValue, trigger } = form
+  const { update: updateForm, getValues } = form
   const {
     data: userBalance,
     error: balanceError,
@@ -50,12 +50,12 @@ export function useMaxTokenValues(
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
       const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      updateForm({ getValues, setValue, trigger }, { debt, maxDebt }, { automated: true })
+      updateForm({ debt, maxDebt }, { automated: true })
       pendingRatioRef.current = null
     } else {
-      updateForm({ getValues, setValue, trigger }, { maxDebt }, { automated: true })
+      updateForm({ maxDebt }, { automated: true })
     }
-  }, [getValues, maxDebt, setValue, trigger])
+  }, [updateForm, maxDebt])
 
   useFormSync(form, { maxCollateral })
 
@@ -63,11 +63,11 @@ export function useMaxTokenValues(
   const setRange = useCallback(
     (range: number) => {
       const { debt, maxDebt } = getValues()
-      updateForm({ getValues, setValue, trigger }, { maxDebt: undefined, range })
+      updateForm({ maxDebt: undefined, range })
       // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
       pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
     },
-    [getValues, setValue, trigger],
+    [getValues, updateForm],
   )
 
   return {

@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, timestamp } from '../schemas'
 
 const oracle = z
   .object({
@@ -12,21 +11,19 @@ const oracle = z
       parent_hash: address,
       state_root: address,
       block_number: z.number(),
-      timestamp: timestampResponse,
+      timestamp,
     }),
     last_updated: z.number(),
   })
   .transform(camelizeKeys)
   .transform(({ blockHeader, ...data }) => ({
-    chain: data.chain,
-    address: data.address,
-    lastConfirmedBlockNumber: data.lastConfirmedBlockNumber,
+    ...data,
     blockHeader: {
       hashBlock: blockHeader.blockHash,
       hashParent: blockHeader.parentHash,
       stateRoot: blockHeader.stateRoot,
       blockNumber: blockHeader.blockNumber,
-      timestamp: parseTimestamp(blockHeader.timestamp),
+      timestamp: blockHeader.timestamp,
     },
   }))
 

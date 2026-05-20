@@ -1,4 +1,4 @@
-import type { Hex, Address } from './address.utils'
+import type { Address, Hex } from './address.utils'
 import type { Decimal } from './decimal.utils'
 
 export const RouteProviders = ['curve', 'enso', 'odos'] as const
@@ -20,6 +20,7 @@ export type RouterRouteResponse = {
   router: RouteProvider
   amountIn: [Decimal]
   amountOut: [Decimal]
+  gas: Decimal | [Decimal, Decimal] | null
   priceImpact: number | null
   createdAt: number
   warnings: ('high-slippage' | 'low-exchange-rate')[]
@@ -27,4 +28,3 @@ export type RouterRouteResponse = {
   isStableswapRoute?: boolean
   tx?: TransactionData
 }
-export type RouteResponse = RouterRouteResponse & { id: string }

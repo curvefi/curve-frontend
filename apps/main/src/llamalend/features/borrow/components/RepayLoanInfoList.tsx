@@ -24,7 +24,6 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
-import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
   const remaining = new BigNumber(debt).minus(repayAmount)
@@ -106,7 +105,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
 }) {
-  const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
+  const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(

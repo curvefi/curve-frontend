@@ -6,11 +6,11 @@ import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { useFormSync } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   {

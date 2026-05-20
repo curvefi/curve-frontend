@@ -3,8 +3,9 @@ import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
+import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
@@ -17,18 +18,15 @@ import {
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { vestResolver } from '@hookform/resolvers/vest'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { isEmpty, notFalsy, pick } from '@primitives/objects.utils'
-import type { RouteResponse } from '@primitives/router.utils'
-import { useForm } from '@ui-kit/features/forms'
+import { notFalsy, pick } from '@primitives/objects.utils'
+import type { RouteResponse } from '@ui-kit/entities/router-api'
+import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { filterFormErrors, resetForm, updateForm, useCallbackSync } from '@ui-kit/utils/react-form.utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -97,7 +95,6 @@ const defaultValues = {
   slippage: SLIPPAGE_PRESETS.STABLE,
 }
 const formOptions = {
-  ...formDefaultOptions,
   defaultValues,
 } as const
 
@@ -108,27 +105,28 @@ const isRepayRouteRequired = (
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
-  network,
+  networks,
+  chainId,
   enabled,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: { id: LlamaNetworkId; chainId: ChainId; name: string }
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
   enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
-  const { chainId } = network
   const marketId = market?.id
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const form = useForm<RepayFormData>({
     ...formOptions,
-    resolver: vestResolver(useMemo(() => repayFormValidationSuite(market), [market])),
+    validation: useMemo(() => repayFormValidationSuite(market), [market]),
   })
 
-  const values = watchForm(form)
+  const values = form.watchValues()
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
@@ -136,9 +134,9 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isPending: isRepaying,
     error: repayError,
   } = useRepayMutation({
-    network,
+    network: networks[chainId],
     marketId,
-    onReset: () => resetForm(form, userDefaultValues),
+    onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
 
@@ -172,18 +170,19 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       tokenIn: collateralToken,
       tokenOut: borrowToken,
       amountIn: decimalSum(params.userCollateral, params.stateCollateral),
-      ...pick(params, 'slippage', 'routeId'),
+      ...pick(params, 'slippage'),
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
-        updateForm(form, { routeId: route?.id })
+        form.update({ routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
+      getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
+      networks,
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
-      () =>
-        isEmpty(formState.errors) ? notFalsy(isAvailable === false && NOT_AVAILABLE) : filterFormErrors(formState),
-      [formState, isAvailable],
+      () => (formState.isValid ? notFalsy(isAvailable === false && NOT_AVAILABLE) : formState.visibleErrors),
+      [formState.visibleErrors, formState.isValid, isAvailable],
     ),
     isFull,
     max,

@@ -1,6 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, decimal, timestampResponse } from '../schemas'
-import { parseTimestamp } from '../timestamp'
+import { address, camelizeKeys, chain, decimal, timestamp } from '../schemas'
 
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
@@ -17,10 +16,9 @@ export const getLoanDistributionResponse = z
     debt: z.array(bar),
     collateral: z.array(bar),
   })
-  .transform(data => ({
-    stablecoin: data.stablecoin ?? data.borrowed ?? [],
-    debt: data.debt,
-    collateral: data.collateral,
+  .transform(({ stablecoin, borrowed, ...data }) => ({
+    ...data,
+    stablecoin: stablecoin ?? borrowed ?? [],
   }))
 
 const oraclePool = z
@@ -34,11 +32,15 @@ const oraclePool = z
     collateral_address: address,
   })
   .transform(camelizeKeys)
-  .transform(data => ({ ...data, borrowedIndex: data.borrowedIx, collateralIndex: data.collateralIx }))
+  .transform(({ borrowedIx, collateralIx, ...data }) => ({
+    ...data,
+    borrowedIndex: borrowedIx,
+    collateralIndex: collateralIx,
+  }))
 
 const oracleOHLC = z
   .object({
-    time: timestampResponse,
+    time: timestamp,
     open: z.number().nullable().optional(),
     close: z.number().nullable().optional(),
     high: z.number().nullable().optional(),
@@ -47,7 +49,6 @@ const oracleOHLC = z
     oracle_price: z.number().nullable().optional(),
   })
   .transform(camelizeKeys)
-  .transform(data => ({ ...data, time: parseTimestamp(data.time) }))
 
 type RawOracleOHLC = z.infer<typeof oracleOHLC>
 type CompleteOracleOHLC = RawOracleOHLC & {
@@ -58,14 +59,7 @@ type CompleteOracleOHLC = RawOracleOHLC & {
 }
 
 const isCompleteOracleOHLC = (data: RawOracleOHLC): data is CompleteOracleOHLC =>
-  data.close !== null &&
-  data.close !== undefined &&
-  data.high !== null &&
-  data.high !== undefined &&
-  data.low !== null &&
-  data.low !== undefined &&
-  data.open !== null &&
-  data.open !== undefined
+  data.close != null && data.high != null && data.low != null && data.open != null
 
 export const getOracleResponse = z
   .object({
@@ -76,10 +70,9 @@ export const getOracleResponse = z
     data: z.array(oracleOHLC),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const ohlc = data.data.filter(isCompleteOracleOHLC)
-
-    return { ...data, data: ohlc, pools: data.priceSourcePools, ohlc }
+  .transform(({ data, priceSourcePools, ...oracle }) => {
+    const ohlc = data.filter(isCompleteOracleOHLC)
+    return { ...oracle, priceSourcePools, data: ohlc, pools: priceSourcePools, ohlc }
   })
 
 const liquidation = z
@@ -113,7 +106,7 @@ const leverage = z
 
 const userCollateralEvent = z
   .object({
-    dt: timestampResponse,
+    dt: timestamp,
     transaction_hash: address,
     type: z.enum(['Borrow', 'Liquidate', 'Repay', 'RemoveCollateral']),
     user: address,
@@ -132,16 +125,13 @@ const userCollateralEvent = z
     is_position_closed: z.boolean(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { dt, transactionHash, collateralChangeUsd, loanChangeUsd, ...event } = data
-    return {
-      timestamp: parseTimestamp(dt),
-      txHash: transactionHash,
-      collateralChangeUsd: collateralChangeUsd ?? undefined,
-      loanChangeUsd: loanChangeUsd ?? undefined,
-      ...event,
-    }
-  })
+  .transform(({ dt, transactionHash, collateralChangeUsd, loanChangeUsd, ...data }) => ({
+    ...data,
+    timestamp: dt,
+    txHash: transactionHash,
+    collateralChangeUsd: collateralChangeUsd ?? undefined,
+    loanChangeUsd: loanChangeUsd ?? undefined,
+  }))
 
 export const getUserCollateralEventsResponse = z
   .object({
@@ -162,19 +152,17 @@ export const getUserCollateralEventsResponse = z
     data: z.array(userCollateralEvent),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const {
+  .transform(
+    ({
       chain: _chain,
       count: _count,
       data: events,
       page: _page,
       pagination: _pagination,
       totalDepositFromUserUsdValue,
-      ...summary
-    } = data
-
-    return { ...summary, totalBorrowedUsdValue: totalDepositFromUserUsdValue, events }
-  })
+      ...data
+    }) => ({ ...data, totalBorrowedUsdValue: totalDepositFromUserUsdValue, events }),
+  )
 
 const rateCurvePoint = z
   .object({
@@ -197,10 +185,7 @@ export const getRateCurveResponse = z
     current_supply_apr: z.number().nullable(),
   })
   .transform(camelizeKeys)
-  .transform(data => {
-    const { chain: _chain, ...rateCurve } = data
-    return rateCurve
-  })
+  .transform(({ chain: _chain, ...data }) => data)
 
 export type LoanDistribution = z.infer<typeof getLoanDistributionResponse>
 export type Oracle = z.infer<typeof getOracleResponse>

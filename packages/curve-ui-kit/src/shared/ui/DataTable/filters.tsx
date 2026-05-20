@@ -1,7 +1,7 @@
 import type { FilterFn } from '@tanstack/react-table'
 import { Range } from '@ui-kit/types/util'
 
-export const RANGE_SEPARATOR = '~'
+const RANGE_SEPARATOR = '~'
 const LIST_SEPARATOR = ','
 
 export const serializeRangeFilter = <T extends string | number>(range: Range<T | null> | null) =>

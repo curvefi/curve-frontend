@@ -7,7 +7,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q, type Range } from '@ui-kit/types/util'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
@@ -78,7 +77,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
               symbol={collateralToken?.symbol}
               balance={maxRemovable.data}
               loading={maxRemovable.isLoading}
-              onClick={() => updateForm(form, { userCollateral: maxRemovable.data })}
+              onClick={() => form.update({ userCollateral: maxRemovable.data })}
             />
           }
         />
