@@ -59,7 +59,7 @@ function createLightSurfaces() {
       Danger: Oranges[500],
       Error: Reds[500],
     },
-    Highlight: Blues[500],
+    Highlight: Blues[100],
     TypeAction: {
       Selected: Blues[100],
       Hover: Grays[10],
