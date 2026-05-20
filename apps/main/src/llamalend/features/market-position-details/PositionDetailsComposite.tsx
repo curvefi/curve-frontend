@@ -1,5 +1,5 @@
 import { type UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import Stack from '@mui/material/Stack'
 import { findTab } from '@ui-kit/hooks/useTabs'
@@ -10,19 +10,19 @@ import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 
 export const PositionDetailsComposite = ({
   hasPosition,
-  tokens,
+  market,
   params,
   events,
 }: {
   hasPosition: boolean | undefined
-  tokens: Partial<MarketTokens>
+  market: LlamaMarketTemplate | undefined
   params: UserMarketParams
   events: QueryProp<UserCollateralEvents>
 }) => {
   const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({
     events: mapQuery(events, e => e.events),
     hasPosition,
-    tokens,
+    market,
     params,
   })
 
