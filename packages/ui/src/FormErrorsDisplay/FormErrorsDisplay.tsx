@@ -1,4 +1,5 @@
 import { FunctionComponent, useMemo } from 'react'
+import { notFalsyArray, recordEntries } from '@primitives/objects.utils'
 import type { ErrorKey, FieldPath } from '@ui-kit/features/forms'
 import { useFormContext } from '@ui-kit/features/forms'
 import { ErrorContainer } from '../styled-containers'
@@ -25,21 +26,16 @@ export const FormErrorsDisplay = <T extends Record<string, unknown>>({
   errorKeys,
   component: Component,
 }: FormErrorsDisplayProps<T>) => {
-  const {
-    formState: { errors },
-    clearErrors,
-    clearRootError,
-  } = useFormContext<T>()
+  const { formState, clearErrors, clearRootError } = useFormContext<T>()
+  const { errors } = formState
 
-  const filteredErrors = useMemo<DisplayErrorEntry<T>[]>(() => {
-    const shouldDisplayError = errorKeys ? (key: string) => errorKeys.includes(key as ErrorKey<T>) : () => true
-    return [
-      ...Object.entries(errors)
-        .filter(([key, error]) => key !== 'root' && !!error && shouldDisplayError(key))
-        .map(([key, error]) => [key as FieldPath<T>, error] as DisplayErrorEntry<T>),
-      ...(errors.root && shouldDisplayError('root') ? ([['root', errors.root]] as DisplayErrorEntry<T>[]) : []),
-    ]
-  }, [errorKeys, errors])
+  const filteredErrors = useMemo(
+    () =>
+      notFalsyArray(
+        recordEntries(errors).filter(([key, error]) => error && (errorKeys?.includes(key) ?? true)),
+      ) as DisplayErrorEntry<T>[],
+    [errorKeys, errors],
+  )
 
   return (
     filteredErrors.length > 0 && (
