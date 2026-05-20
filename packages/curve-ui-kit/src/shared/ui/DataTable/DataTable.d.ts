@@ -2,6 +2,7 @@
 import '@tanstack/table-core'
 import type { RowData } from '@tanstack/table-core'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { Unit } from '@ui-kit/utils/units'
 import type { TooltipProps } from '../Tooltip'
 
 /**
@@ -10,6 +11,7 @@ import type { TooltipProps } from '../Tooltip'
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     type?: 'numeric' // aligns cell content to the right
+    unit?: Unit // used when displaying the filter's serialized value
     hidden?: boolean // todo: get rid of this property, use column visibility, it breaks e.g. column.getIsLastColumn()
     variant?: TypographyVariantKey
     tooltip?: Omit<TooltipProps, 'children'>
