@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { formatDate, formatTime } from '@ui/utils/utilsDate'
 import { useDismissBackendMaintenanceBanner, useDismissBackendMaintenanceModal } from '@ui-kit/hooks/useLocalStorage'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
@@ -10,7 +9,7 @@ export type BackendMaintenanceConfig = {
   warnBefore: 'month' | 'week'
   // Optional information to display in the modal and banner.
   expectedDurationLabel?: string
-}[]
+} | null
 
 export type BackendMaintenance = {
   formattedDate: string | undefined
@@ -42,19 +41,8 @@ const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | '
  * Uses the next scheduled maintenance date to drive warnings.
  * The modal appears first when the warning window starts, then the banner can reappear daily 24h after the modal was dismissed.
  */
-export const useBackendMaintenance = ({
-  maintenances,
-}: {
-  maintenances: BackendMaintenanceConfig
-}): BackendMaintenance => {
-  const nextMaintenance = useMemo(
-    () =>
-      maintenances
-        .sort((a, b) => new Date(a.dateISO).getTime() - new Date(b.dateISO).getTime())
-        .find(m => new Date(m.dateISO).getTime() > Date.now()),
-    [maintenances],
-  )
-  const { dateISO, warnBefore, expectedDurationLabel } = nextMaintenance ?? {}
+export const useBackendMaintenance = (maintenance: BackendMaintenanceConfig): BackendMaintenance => {
+  const { dateISO, warnBefore, expectedDurationLabel } = maintenance ?? {}
   const [modalDismissedAt, setModalDismissedAt] = useDismissBackendMaintenanceModal(dateISO)
   const [shouldShowBanner, dismissBanner] = useDismissBackendMaintenanceBanner(dateISO)
 

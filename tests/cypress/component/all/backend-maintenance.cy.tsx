@@ -1,4 +1,4 @@
-import { BACKEND_MAINTENANCES } from '@/backend-maintenances.constants'
+import { BACKEND_MAINTENANCE } from '@/backend-maintenance'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
@@ -23,18 +23,16 @@ const createMaintenance = ({
   expectedDurationLabel = '20 minutes to 1 hour',
 }: {
   offsetMs: number
-  warnBefore?: BackendMaintenanceConfig[number]['warnBefore']
+  warnBefore?: NonNullable<BackendMaintenanceConfig>['warnBefore']
   expectedDurationLabel?: string
-}): BackendMaintenanceConfig => [
-  {
-    dateISO: new Date(Date.now() + offsetMs).toISOString(),
-    warnBefore,
-    expectedDurationLabel,
-  },
-]
+}) => ({
+  dateISO: new Date(Date.now() + offsetMs).toISOString(),
+  warnBefore,
+  expectedDurationLabel,
+})
 
-function BackendMaintenanceTest({ maintenances }: { maintenances: BackendMaintenanceConfig }) {
-  const backendMaintenance = useBackendMaintenance({ maintenances })
+function BackendMaintenanceTest({ maintenance }: { maintenance: BackendMaintenanceConfig }) {
+  const backendMaintenance = useBackendMaintenance(maintenance)
 
   return (
     <>
@@ -44,18 +42,18 @@ function BackendMaintenanceTest({ maintenances }: { maintenances: BackendMainten
   )
 }
 
-const mountBackendMaintenance = (maintenances: BackendMaintenanceConfig) =>
+const mountBackendMaintenance = (maintenance: BackendMaintenanceConfig) =>
   cy.mount(
     <ComponentTestWrapper>
-      <BackendMaintenanceTest maintenances={maintenances} />
+      <BackendMaintenanceTest maintenance={maintenance} />
     </ComponentTestWrapper>,
   )
 
-describe('backend maintenance constants', () => {
-  it('keeps every configured dateISO as a valid UTC ISO string', () => {
-    for (const { dateISO } of BACKEND_MAINTENANCES) {
-      expect(new Date(dateISO).toISOString()).to.eq(dateISO)
-    }
+describe('backend maintenance constant', () => {
+  it('keeps the configured dateISO as a valid UTC ISO string', () => {
+    if (!BACKEND_MAINTENANCE) return
+
+    expect(new Date(BACKEND_MAINTENANCE.dateISO).toISOString()).to.eq(BACKEND_MAINTENANCE.dateISO)
   })
 })
 
@@ -64,8 +62,8 @@ describe('BackendMaintenance', () => {
     clearMaintenanceStorage()
   })
 
-  it('renders nothing when the maintenance list is empty', () => {
-    mountBackendMaintenance([])
+  it('renders nothing when no maintenance is configured', () => {
+    mountBackendMaintenance(null)
 
     cy.get(`[data-testid="${MODAL_TEST_ID}"]`).should('not.exist')
     cy.get(`[data-testid="${BANNER_TEST_ID}"]`).should('not.exist')
@@ -88,26 +86,26 @@ describe('BackendMaintenance', () => {
   })
 
   it('renders the banner 24 hours after the modal was dismissed', () => {
-    const maintenances = createMaintenance({ offsetMs: 3 * TIME_FRAMES.DAY_MS })
+    const maintenance = createMaintenance({ offsetMs: 3 * TIME_FRAMES.DAY_MS })
 
     seedDismissedModal({
-      dateISO: maintenances[0].dateISO,
+      dateISO: maintenance.dateISO,
       dismissedAtISO: new Date(Date.now() - TIME_FRAMES.DAY_MS - 1).toISOString(),
     })
-    mountBackendMaintenance(maintenances)
+    mountBackendMaintenance(maintenance)
 
     cy.get(`[data-testid="${MODAL_TEST_ID}"]`).should('not.exist')
     cy.get(`[data-testid="${BANNER_TEST_ID}"]`).should('be.visible')
   })
 
   it('dismisses the banner when clicked', () => {
-    const maintenances = createMaintenance({ offsetMs: 3 * TIME_FRAMES.DAY_MS })
+    const maintenance = createMaintenance({ offsetMs: 3 * TIME_FRAMES.DAY_MS })
 
     seedDismissedModal({
-      dateISO: maintenances[0].dateISO,
+      dateISO: maintenance.dateISO,
       dismissedAtISO: new Date(Date.now() - TIME_FRAMES.DAY_MS - 1).toISOString(),
     })
-    mountBackendMaintenance(maintenances)
+    mountBackendMaintenance(maintenance)
 
     cy.get(`[data-testid="${BANNER_TEST_ID}"]`).find('button').click()
     cy.get(`[data-testid="${BANNER_TEST_ID}"]`).should('not.exist')

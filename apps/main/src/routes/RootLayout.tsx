@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
-import { BACKEND_MAINTENANCES } from '@/backend-maintenances.constants'
+import { BACKEND_MAINTENANCE } from '@/backend-maintenance'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { useStore as useLendStore } from '@/lend/store/useStore'
@@ -87,7 +87,7 @@ const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Backen
 
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
-  const backendMaintenance = useBackendMaintenance({ maintenances: BACKEND_MAINTENANCES })
+  const backendMaintenance = useBackendMaintenance(BACKEND_MAINTENANCE)
   const devTools = !isCypress
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
