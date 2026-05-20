@@ -509,4 +509,43 @@ describe('useUniqueDebounce', () => {
     cy.get('@callback').should('have.been.calledTwice')
     cy.get('@callback').should('have.been.calledWith', 10)
   })
+
+  it('does not overwrite newer local value on delayed self-echo', () => {
+    function DelayedEchoWrapper() {
+      const [defaultValue, setDefaultValue] = useState('')
+      const [value, setValue] = useUniqueDebounce({
+        defaultValue,
+        debounceMs: 200,
+        callback: next => {
+          // Simulate URL/state write followed by delayed external echo
+          setTimeout(() => setDefaultValue(next), 100)
+        },
+        sanitize: value => value.trim(),
+      })
+
+      return (
+        <div>
+          <input data-testid="input" value={value} onChange={e => setValue(e.target.value)} />
+          <div data-testid="current-value">{value}</div>
+          <div data-testid="default-value">{defaultValue}</div>
+        </div>
+      )
+    }
+
+    cy.mount(<DelayedEchoWrapper />)
+
+    cy.get('[data-testid="input"]').type('a')
+    cy.tick(200) // emit "a", schedule delayed defaultValue echo
+
+    cy.get('[data-testid="input"]').type('b  ') // local value is now "ab  "
+
+    cy.tick(100) // delayed echo for "a" arrives
+    cy.get('[data-testid="default-value"]').should('have.text', 'a')
+    cy.get('[data-testid="current-value"]').should('have.text', 'ab  ') // should not be clobbered back to "a" or "ab"
+
+    cy.tick(200) // emit "ab"
+    cy.tick(100) // delayed echo for "ab" arrives
+    cy.get('[data-testid="default-value"]').should('have.text', 'ab') // defaultValue updates to "ab" (sanitized)
+    cy.get('[data-testid="current-value"]').should('have.text', 'ab  ') // current value remains the same (not sanitized)
+  })
 })
