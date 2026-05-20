@@ -51,7 +51,7 @@ const buildHiddenYAxis = (gridIndex?: number): YAXisComponentOption => ({
   min: 0,
   max: 1,
   show: false,
-  ...(gridIndex === undefined ? {} : { gridIndex }),
+  ...(gridIndex != null && { gridIndex }),
 })
 
 // The visible chart is markArea + marker. This invisible line series gives ECharts
@@ -352,27 +352,21 @@ export const buildSplitOption = ({
       }),
     ],
     yAxis: [buildHiddenYAxis(0), buildHiddenYAxis(1)],
-    series: [
+    series: notFalsyArray<SeriesOption>(
       // Ranges stay on the real price axis.
-      {
-        ...rangeSeries,
-        xAxisIndex: 0,
-        yAxisIndex: 0,
-      },
-      ...(oraclePrice === undefined
-        ? []
-        : [
-            buildOracleMarkerSeries({
-              colors,
-              formattedOraclePrice,
-              htmlFontSize,
-              // The marker uses the synthetic rail coordinate; its label still shows the real oracle price.
-              markerXValue: getSplitOracleMarkerPosition(chartLayout),
-              textStyle: chartTextStyle,
-              xAxisIndex: 1,
-              yAxisIndex: 1,
-            }),
-          ]),
-    ],
+      [{ ...rangeSeries, xAxisIndex: 0, yAxisIndex: 0 }],
+      oraclePrice != null && [
+        buildOracleMarkerSeries({
+          colors,
+          formattedOraclePrice,
+          htmlFontSize,
+          // The marker uses the synthetic rail coordinate; its label still shows the real oracle price.
+          markerXValue: getSplitOracleMarkerPosition(chartLayout),
+          textStyle: chartTextStyle,
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+        }),
+      ],
+    ),
   }
 }
