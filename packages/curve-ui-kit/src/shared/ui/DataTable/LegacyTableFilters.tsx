@@ -4,7 +4,6 @@ import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -55,9 +54,8 @@ export const LegacyTableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
-  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
+  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
 
   return (
@@ -77,8 +75,8 @@ export const LegacyTableFilters = <ColumnIds extends string>({
         >
           {hasSearchBar && (
             <LegacyTableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
+              value={searchText}
+              onChange={onSearch}
               testId={filterExpandedKey}
               {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
               isExpanded={isExpandedOrValue}
