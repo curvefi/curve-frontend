@@ -8,6 +8,7 @@ import {
   expandFirstRowOnMobile,
   openDrawer,
   openFilters,
+  withFiltersPopover,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
@@ -21,7 +22,8 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
-import { range, recordValues, repeat } from '@primitives/objects.utils'
+import { objectKeys, range, recordValues, repeat } from '@primitives/objects.utils'
+import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
@@ -163,7 +165,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         if (breakpoint === 'mobile') {
           cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
         }
-        openFilters(breakpoint)
+        openFilters()
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
         cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
 
@@ -192,7 +194,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        openFilters(breakpoint)
+        openFilters()
 
         // open the chosen filter
         cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
@@ -211,10 +213,21 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.url().should('include', `${columnId}=`)
       })
     })
-    // todo: filter by chain
+
+    it('should allow filtering by chain', () => {
+      const chains = objectKeys(vaultData)
+      const chain = oneOf(...chains)
+      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
+      checkChainSelection(chain)
+
+      // filter by multiple chains at the same time
+      const otherChain = oneOf(...chains.filter(c => c !== chain))
+      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
+      checkChainSelection(chain, otherChain)
+    })
 
     it(`should allow filtering by token`, () => {
-      openFilters(breakpoint)
+      openFilters()
       checkCoinSelection('collateral')
       checkCoinSelection('borrowed')
     })
@@ -316,6 +329,13 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
       cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
       cy.url().should('not.include', `assets_${type}_symbol`)
+    }
+
+    function checkChainSelection(...chains: Chain[]) {
+      cy.url().should('include', serializeListFilter(chains))
+      chains.forEach(chain =>
+        cy.get(`[data-testid="data-table-cell-assets"] [data-testid="chain-icon-${chain}"]`).should('be.visible'),
+      )
     }
   })
 })

@@ -57,7 +57,7 @@ export const LlamaTableFiltersPopover = ({
           <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
             {t`Filter markets`}
           </Typography>
-          <IconButton size="extraSmall" onClick={onClose}>
+          <IconButton size="extraSmall" onClick={onClose} data-testid="llamalend-filters-close-button">
             <Cross2Icon />
           </IconButton>
         </Stack>

@@ -37,12 +37,16 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
-export function openFilters(breakpoint: Breakpoint) {
-  if (breakpoint == 'mobile') {
-    openDrawer(breakpoint, 'filter')
-  } else {
-    cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
-  }
+export function openFilters() {
+  cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
+}
+
+export function withFiltersPopover<T>(callback: () => Cypress.Chainable<T>) {
+  openFilters()
+  return callback().then(result => {
+    cy.get('[data-testid="llamalend-filters-close-button"]').click({ waitForAnimations: true })
+    return cy.wrap(result)
+  })
 }
 
 export function closeSlider(breakpoint: Breakpoint) {
