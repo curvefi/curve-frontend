@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { capitalize } from '@mui/material'
+import { capitalize, Skeleton, Typography, TypographyProps } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { notFalsy } from '@primitives/objects.utils'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'
@@ -9,10 +9,20 @@ import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.utils'
 import { type SelectableChipProps } from '@ui-kit/shared/ui/SelectableChip'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { chipSizeClickable } from '@ui-kit/themes/components/chip/mui-chip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
+
+type ChainFilterChipsProps = {
+  chainsQuery: QueryProp<string[]>
+  selectedChains: string[] | undefined
+  toggleChain: (chain: string) => void
+}
+
+const SKELETON_CHAIN_NUMBER = 5
 
 const ethereum = NETWORK_BASE_CONFIG[Chain.Ethereum].id
 const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
@@ -22,27 +32,32 @@ const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>
   large: 'lg',
   extraLarge: 'xl',
 }
-
-type ChainFilterChipsProps = {
-  chains: string[]
-  selectedChains: string[] | undefined
-  toggleChain: (chain: string) => void
+const TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE: Record<
+  NonNullable<SelectableChipProps['size']>,
+  TypographyProps['variant']
+> = {
+  extraSmall: 'bodyXsRegular',
+  small: 'bodySRegular',
+  medium: 'bodyMRegular',
+  large: 'bodyMRegular',
+  extraLarge: 'bodyMRegular',
 }
 
 /**
  * Returns the chains sorted with Ethereum first, then the rest alphabetically,
  * along with their labels, click handlers, and selection states.
  */
-const useSortedChains = ({ chains, selectedChains = [], toggleChain }: ChainFilterChipsProps) =>
+const useSortedChains = ({ chainsQuery: { data }, selectedChains = [], toggleChain }: ChainFilterChipsProps) =>
   useMemo(
     () =>
-      [...notFalsy(chains.find(c => c === ethereum)), ...chains.filter(c => c !== ethereum)].map(chain => ({
+      data &&
+      [...notFalsy(data.find(c => c === ethereum)), ...data.filter(c => c !== ethereum)].map(chain => ({
         chain,
         label: capitalize(chain),
         onClick: () => toggleChain(chain),
         isSelected: selectedChains.includes(chain),
       })),
-    [chains, selectedChains, toggleChain],
+    [data, selectedChains, toggleChain],
   )
 
 /**
@@ -53,8 +68,12 @@ const useSortedChains = ({ chains, selectedChains = [], toggleChain }: ChainFilt
  * Ethereum is always displayed first, followed by other chains in alphabetical order.
  */
 export const ChainFilterChips = (props: ChainFilterChipsProps) => {
+  const {
+    chainsQuery: { isLoading },
+  } = props
   const isMobile = useIsMobile()
-  const selectableChipSize = getDefaultSelectableChipSize(isMobile)
+  const chipSize = getDefaultSelectableChipSize(isMobile)
+  const sortedChains = useSortedChains(props)
   return (
     <Grid
       container
@@ -65,19 +84,34 @@ export const ChainFilterChips = (props: ChainFilterChipsProps) => {
         overflowX: { mobile: 'auto', tablet: 'visible' },
       }}
     >
-      {useSortedChains(props).map(({ chain, label, onClick, isSelected }) => (
-        <Tooltip key={chain} title={label} arrow>
-          <GridChip
-            size="auto"
-            selectableChipSize={selectableChipSize}
-            selected={isSelected}
-            toggle={onClick}
-            icon={<ChainIcon blockchainId={chain} size={CHAIN_ICON_FROM_CHIP_SIZE[selectableChipSize]} />}
-            aria-label={label}
-            data-testid={`chip-chain-${chain}`}
+      {isLoading ? (
+        Array.from({ length: SKELETON_CHAIN_NUMBER }).map((_, i) => (
+          <Skeleton
+            key={`skeleton-chain-chip-${i}`}
+            variant="rectangular"
+            sx={{
+              height: chipSizeClickable[chipSize].height,
+              width: chipSizeClickable[chipSize].height,
+            }}
           />
-        </Tooltip>
-      ))}
+        ))
+      ) : sortedChains ? (
+        sortedChains.map(({ chain, label, onClick, isSelected }) => (
+          <Tooltip key={chain} title={label} arrow>
+            <GridChip
+              size="auto"
+              selectableChipSize={chipSize}
+              selected={isSelected}
+              toggle={onClick}
+              icon={<ChainIcon blockchainId={chain} size={CHAIN_ICON_FROM_CHIP_SIZE[chipSize]} />}
+              aria-label={label}
+              data-testid={`chip-chain-${chain}`}
+            />
+          </Tooltip>
+        ))
+      ) : (
+        <Typography variant={TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE[chipSize]}>No networks found</Typography>
+      )}
     </Grid>
   )
 }
