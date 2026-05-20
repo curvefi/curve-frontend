@@ -1,4 +1,5 @@
 import type { NetworkMapping } from '@ui/utils'
+import type { BackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
 export type AppPage = {
@@ -31,6 +32,7 @@ export type HeaderBaseProps = {
   isLite: boolean | undefined
   networkId: string // ID of the network as displayed in the URL
   chainId: number
+  backendMaintenance: BackendMaintenance
   supportedNetworks: NetworkMapping
   appStats?: { label: string; value: string }[]
 }

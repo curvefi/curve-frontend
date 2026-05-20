@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
@@ -15,6 +16,7 @@ import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTabl
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
 const { Spacing } = SizesAndSpaces
@@ -49,7 +51,7 @@ const HiddenSelectedOptions = ({
 export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
-  data,
+  query,
   defaultText = t`All`,
   defaultTextMobile,
   renderItem,
@@ -57,7 +59,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   field,
   id,
 }: FilterProps<TColumnId> & {
-  data: TKeys[]
+  query: QueryProp<TKeys[]>
   defaultText?: string
   defaultTextMobile: string
   field: DeepKeys<TKeys>
@@ -70,7 +72,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
+  const options = useMemo(() => getUniqueSortedStrings(notFalsyArray(query.data), field), [query.data, field])
   const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {

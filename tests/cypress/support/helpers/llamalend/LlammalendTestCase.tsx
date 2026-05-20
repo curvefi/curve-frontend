@@ -1,4 +1,6 @@
-import { useLendMarket } from '@/lend/hooks/useLendMarket'
+import { prefetchMintMarkets } from 'main/src/loan/entities/mint-market-names.query'
+import { useMemo } from 'react'
+import { prefetchLendMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -11,9 +13,8 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { useMintMarket } from '@/loan/hooks/useMintMarket'
-import { ChainId as MintChain } from '@/loan/types/loan.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -23,6 +24,7 @@ import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/v
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -49,31 +51,29 @@ const SupplyComponents = {
 type LoanTab = keyof typeof LoanComponents
 type SupplyTab = keyof typeof SupplyComponents
 
-type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
+type LlammalendTestProps = {
   type: 'loan' | 'supply'
   tab?: LoanTab | SupplyTab
   onSuccess?: ReturnType<typeof cy.stub>
   onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
-  marketType: LlamaMarketType
-}
+} & UserMarketQuery<LlamaChainId>
 
-function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: LlammalendTestProps) {
+function LlammalendTest({ tab, onPricesUpdated, type, ...props }: LlammalendTestProps) {
+  const { isHydrated } = useCurve()
   const isLoan = type === 'loan'
-  const { marketId, chainId } = props
-  const mintChain = chainId as MintChain
-  const { data: lendMarket, error: lendError } = useLendMarket(chainId, marketId, marketType === LlamaMarketType.Lend)
-  const { data: mintMarket, error: mintError } = useMintMarket(mintChain, marketId, marketType === LlamaMarketType.Mint)
-  const market = lendMarket ?? mintMarket
-  const error = lendError ?? mintError
-  const { data: loanExists } = useLoanExists(props, isLoan && !!market)
+  const { data: loanExists } = useLoanExists(props, isHydrated && isLoan)
+  const marketId = isHydrated && props.marketId
+  const market = useMemo(() => marketId && getLlamaMarket(marketId), [marketId])
+
+  if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
   const Component = isLoan
     ? loanExists
-      ? tab && LoanComponents[tab as LoanTab]
+      ? LoanComponents[tab as LoanTab]
       : CreateLoanForm
-    : tab && SupplyComponents[tab as SupplyTab]
+    : SupplyComponents[(tab ?? 'deposit') as SupplyTab]
 
-  return market && Component ? (
+  return (
     <Component
       market={market}
       networks={llamaNetworks}
@@ -83,22 +83,30 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       collateralEvents={constQ(fakeCollateralEvents)}
       {...props}
     />
-  ) : market ? (
-    `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`
-  ) : error ? (
-    `Error retrieving market: ${error.message}`
-  ) : (
-    <Skeleton width="100%" height={400} />
   )
 }
 
-export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
+export type LlammalendTestCaseProps = LlammalendTestProps &
+  TenderlyWagmiConfigFromVNet & { marketType: LlamaMarketType }
 
 export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
-    <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
+    <CurveProvider
+      app="llamalend"
+      network={llamaNetworks[chainId]}
+      onChainUnavailable={console.error}
+      hydrate={useMemo(
+        () => ({
+          llamalend: {
+            [LlamaMarketType.Lend]: () => prefetchLendMarkets({ chainId, enableLLv2: true }),
+            [LlamaMarketType.Mint]: () => prefetchMintMarkets({ chainId }),
+          }[marketType],
+        }),
+        [chainId, marketType],
+      )}
+    >
       <Box sx={{ maxWidth: 520 }}>
-        <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        <LlammalendTest {...props} chainId={chainId} />
       </Box>
     </CurveProvider>
   </ComponentTestWrapper>

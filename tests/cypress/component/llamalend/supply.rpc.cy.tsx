@@ -99,7 +99,7 @@ testCases.forEach(
       })
 
       it('deposits into the vault', () => {
-        cy.mount(<SupplyTestWrapper tab="deposit" />)
+        cy.mount(<SupplyTestWrapper />)
         writeDepositForm({ amount: deposit })
         checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
         submitDepositForm({})
@@ -133,7 +133,7 @@ testCases.forEach(
       })
 
       it('deposits into the vault again', () => {
-        cy.mount(<SupplyTestWrapper tab="deposit" />)
+        cy.mount(<SupplyTestWrapper />)
         writeDepositForm({ amount: deposit })
         checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
         submitDepositForm({})
