@@ -42,7 +42,7 @@ type RangeSliderFilterProps<TKey, TColumnId extends string> = FilterProps<TColum
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const RangeSliderFilter = <TKey, TColumnId extends string>({
+export const LegacyRangeSliderFilter = <TKey, TColumnId extends string>({
   data,
   title,
   format,
@@ -56,7 +56,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
 }: RangeSliderFilterProps<TKey, TColumnId>) => {
   const isMobile = useIsMobile()
   const { maxValue, step } = useMaxValue<TKey>({ max, data, field })
-  const sliderValueTransform = useSliderValueTransform({ min, max: maxValue, isPowerScale: scale === 'power' })
+  const sliderValueTransform = useSliderValueTransform({ min, max: maxValue ?? 0, isPowerScale: scale === 'power' })
   const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
   return (
     // this is not a real select, but we reuse the component so the design is correct
@@ -69,7 +69,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
         <Typography variant="bodySRegular">
           {isMobile && `${title}: `}
           <Typography component="span" variant="bodySBold">
-            {range.map(format).join(' - ')}
+            {range.map(val => format(val ?? 0)).join(' - ')}
           </Typography>
         </Typography>
       )}

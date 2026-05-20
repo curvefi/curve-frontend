@@ -3,13 +3,13 @@ import { type DeepKeys } from '@tanstack/table-core'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput } from '@ui-kit/shared/ui/SliderInput'
-import { Range } from '@ui-kit/types/util'
+import { QueryProp, Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 type RangeSliderRowFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  data: TKey[]
+  query: QueryProp<TKey[]>
   field: DeepKeys<TKey>
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
@@ -18,7 +18,7 @@ type RangeSliderRowFilterProps<TKey, TColumnId extends string> = FilterProps<TCo
 }
 
 export const RangeSliderRowFilter = <TKey, TColumnId extends string>({
-  data,
+  query: { data = [] },
   field,
   id,
   adornment,

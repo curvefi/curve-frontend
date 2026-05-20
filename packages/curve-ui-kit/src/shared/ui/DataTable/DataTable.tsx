@@ -72,7 +72,7 @@ const { Sizing } = SizesAndSpaces
 export const DataTable = <T extends TableItem>({
   emptyState,
   children,
-  loading,
+  isLoading,
   maxHeight,
   rowLimit,
   viewAllLabel,
@@ -85,7 +85,7 @@ export const DataTable = <T extends TableItem>({
   table: TanstackTable<T>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
-  loading: boolean
+  isLoading: boolean
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
@@ -126,7 +126,7 @@ export const DataTable = <T extends TableItem>({
         sx={{
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
         }}
-        data-testid={!loading && 'data-table'}
+        data-testid={!isLoading && 'data-table'}
       >
         {!hideHeader && (
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
@@ -147,7 +147,7 @@ export const DataTable = <T extends TableItem>({
           </TableHead>
         )}
         <TableBody>
-          {loading ? (
+          {isLoading ? (
             <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
           ) : rows.length === 0 ? (
             emptyState

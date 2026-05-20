@@ -12,6 +12,7 @@ import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { constQ } from '@ui-kit/types/util'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
@@ -96,7 +97,7 @@ export const LegacyLlamaMarketsTable = ({
         collapsible={<LegacyLendingMarketsFilters data={data} {...filterProps} />}
         chips={
           <>
-            <LlamaChainFilterChips data={data} {...filterProps} />
+            <LlamaChainFilterChips marketsQuery={constQ(data)} {...filterProps} />
             <LegacyLlamaListChips
               hiddenCount={getHiddenCount(table)}
               resetFilters={resetFilters}
