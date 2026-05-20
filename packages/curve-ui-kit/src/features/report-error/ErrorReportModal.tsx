@@ -34,8 +34,8 @@ const useTryConnection = () => {
   } catch (error) {
     // Error boundaries can render before the WagmiProvider mounts. In that case, wagmi throws WagmiProviderNotFoundError,
     // which we swallow so the modal can still render and users can submit reports without a prefilled address.
-    if (!(error instanceof WagmiProviderNotFoundError)) throw error
-    return undefined
+    if (error instanceof WagmiProviderNotFoundError) return
+    throw error
   }
 }
 

@@ -75,7 +75,7 @@ describe('Error Boundary', () => {
   })
 
   const is500 = oneBool() // test either 404 or 500 error page
-  it('should submit error report for ' + (is500 ? 500 : 404), () => {
+  it(`should submit ${is500 ? 500 : 404} error reports`, () => {
     const url = is500 ? visitErrorBoundary() : visitNotFoundPage()
     const address = '0xabc123'
     const description = 'Got an error'
@@ -112,7 +112,7 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="submit-error-report-button"]', LOAD_TIMEOUT).click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]')
-      .its('value')
+      .invoke('val')
       .should('match', /^0x[a-fA-F0-9]{40}$/)
     cy.get('[data-testid="submit-error-report-address"]').clear()
     cy.get('[data-testid="submit-error-report-address"]').type(address)
