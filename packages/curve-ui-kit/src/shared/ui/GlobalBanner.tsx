@@ -25,9 +25,6 @@ type GlobalBannerProps = {
   chainId: number
 }
 
-// Update `PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
-const maintenanceMessage = process.env.PUBLIC_MAINTENANCE_MESSAGE
-
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
@@ -55,7 +52,6 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
         </Banner>
       )}
       {backendMaintenance.showBanner && !isCypress && <BackendMaintenanceBanner {...backendMaintenance} />}
-      {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
       <PhishingWarningBanner />
       {isFailure(connectState) ? (
         <Banner severity="alert">
