@@ -11,7 +11,6 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { useMarketInterestRatesAndUtilizationChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -37,7 +36,6 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
       {isBorrow && (
         <ChartAndActivityComp rChainId={rChainId} marketId={marketId} api={api} previewPrices={previewPrices} />
       )}
-
       {isBorrow && (
         <MarketHistoricalRatesChart
           market={market}
@@ -54,11 +52,7 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
         marketId={marketId}
         rateMode="supply"
       />
-
-      {useMarketInterestRatesAndUtilizationChart() && (
-        <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={marketId} />
-      )}
-
+      <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={marketId} />
       <Card size="small">
         <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
