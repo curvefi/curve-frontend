@@ -31,7 +31,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       marketId,
       marketType,
     })
-  const showRateCurveMetrics = marketType === LlamaMarketType.Lend
+  const isLendMarket = marketType === LlamaMarketType.Lend
 
   return (
     <Box
@@ -62,7 +62,8 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         loading={averageHealth?.loading}
         valueOptions={{ decimals: 1 }}
       />
-      {!showRateCurveMetrics && (
+      {/* we show total collateral in the rate curve card for lend markets */}
+      {!isLendMarket && (
         <Metric
           size="medium"
           label={t`Total collateral`}
