@@ -9,7 +9,7 @@ import {
 } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
-import { useBackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
+import type { BackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,9 +23,10 @@ import { StackBanners } from './StackBanners'
 type GlobalBannerProps = {
   networkId: string
   chainId: number
+  backendMaintenance: BackendMaintenance
 }
 
-export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
+export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
   const { connectState, network } = useCurve()
@@ -38,7 +39,6 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
 
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
-  const backendMaintenance = useBackendMaintenance({})
 
   return (
     <StackBanners>

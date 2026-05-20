@@ -1,5 +1,5 @@
+import { BACKEND_MAINTENANCES } from '@/backend-maintenances.constants'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { BACKEND_MAINTENANCES } from '@ui-kit/features/maintenance/backend-maintenances.constants'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
 import {

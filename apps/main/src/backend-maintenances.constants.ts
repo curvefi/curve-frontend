@@ -1,5 +1,5 @@
+import type { BackendMaintenanceConfig } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
 import { t } from '@ui-kit/lib/i18n'
-import { BackendMaintenanceConfig } from './hooks/useBackendMaintenance'
 
 /** Planned backend maintenance dates. Past dates are ignored by the hook. */
 export const BACKEND_MAINTENANCES: BackendMaintenanceConfig = [
