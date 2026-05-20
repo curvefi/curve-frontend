@@ -15,7 +15,7 @@ import type {
 import { useSmallLiquidationRangeChartOption } from './useSmallLiquidationRangeChartOption'
 
 type SmallLiquidationRangeChartData = SmallLiquidationRangeChartOptionProps & {
-  loading: boolean
+  isLoading: boolean
 }
 
 const useSmallLiquidationRangeChartData = ({
@@ -27,7 +27,7 @@ const useSmallLiquidationRangeChartData = ({
   const currentRange = prevPrices?.data
   const newRange = isFullRepay ? undefined : (prices?.data ?? undefined)
   const chartOraclePrice = oraclePrice.data ?? undefined
-  const { error, isLoading } = combineQueryState(prices, prevPrices, oraclePrice)
+  const { isLoading } = combineQueryState(prices, prevPrices, oraclePrice)
 
   return useMemo(
     () => ({
@@ -36,14 +36,14 @@ const useSmallLiquidationRangeChartData = ({
         ...(newRange && { newRange }),
       },
       oraclePrice: chartOraclePrice,
-      loading: !error && isLoading,
+      isLoading,
     }),
-    [chartOraclePrice, currentRange, error, isLoading, newRange],
+    [chartOraclePrice, currentRange, isLoading, newRange],
   )
 }
 
 export const SmallLiquidationRangeChart = (props: SmallLiquidationRangeChartProps) => {
-  const { liquidationRanges, oraclePrice, loading } = useSmallLiquidationRangeChartData(props)
+  const { liquidationRanges, oraclePrice, isLoading } = useSmallLiquidationRangeChartData(props)
   const option = useSmallLiquidationRangeChartOption({ liquidationRanges, oraclePrice })
 
   return (
@@ -53,7 +53,7 @@ export const SmallLiquidationRangeChart = (props: SmallLiquidationRangeChartProp
           alignSelf: 'stretch',
           height: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
           minHeight: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
-          ...(loading && {
+          ...(isLoading && {
             display: 'flex',
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -61,7 +61,7 @@ export const SmallLiquidationRangeChart = (props: SmallLiquidationRangeChartProp
           }),
         }}
       >
-        {loading ? (
+        {isLoading ? (
           <Skeleton variant="rectangular" width="100%" height={SMALL_LIQUIDATION_RANGE_CHART_LOADER.height} />
         ) : (
           <ReactECharts
