@@ -1,46 +1,31 @@
-import { ReactNode, RefObject } from 'react'
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { RefObject } from 'react'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMarketColumnId } from '../columns'
-import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 
 type Props = {
   filterChipRef: RefObject<HTMLDivElement | null>
   filterPopoverOpen: boolean
   toggleFilterPopover: () => void
-  hiddenCount: number
-  resetFilters: () => void
-  children?: ReactNode
-  hasFavorites?: boolean
-  data: LlamaMarket[]
-  userPositionsTab?: MarketRateType
-} & FilterProps<LlamaMarketColumnId>
+  testId?: string
+}
 
 export const FilterChip = ({
   filterChipRef,
   filterPopoverOpen,
   toggleFilterPopover,
-  hiddenCount,
-  resetFilters,
-  hasFavorites,
-  data,
-  userPositionsTab,
-  ...filterProps
-}: Props) => {
-  const isMobile = useIsMobile()
-  return isMobile ? (
-    <MarketListFilterDrawer
-      hasFavorites={hasFavorites}
-      data={data}
-      hiddenCount={hiddenCount}
-      resetFilters={resetFilters}
-      userPositionsTab={userPositionsTab}
-      {...filterProps}
+  testId = 'btn-open-filters',
+}: Props) =>
+  useIsMobile() ? (
+    <SelectableChip
+      ref={filterChipRef}
+      size="medium"
+      selected={filterPopoverOpen}
+      icon={<FilterIcon />}
+      toggle={toggleFilterPopover}
+      data-testid={testId}
     />
   ) : (
     <GridChip
@@ -50,7 +35,6 @@ export const FilterChip = ({
       selected={filterPopoverOpen}
       icon={<FilterIcon />}
       toggle={toggleFilterPopover}
-      data-testid="btn-open-filters"
+      data-testid={testId}
     />
   )
-}

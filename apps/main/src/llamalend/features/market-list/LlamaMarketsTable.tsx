@@ -7,7 +7,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
-import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
@@ -123,11 +123,6 @@ export const LlamaMarketsTable = ({
             filterChipRef={filterChipRef}
             filterPopoverOpen={filterPopoverOpen}
             toggleFilterPopover={toggleFilterPopover}
-            hiddenCount={getHiddenCount(table)}
-            resetFilters={resetFilters}
-            hasFavorites={hasFavorites}
-            data={data}
-            {...filterProps}
           />
         }
         sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
