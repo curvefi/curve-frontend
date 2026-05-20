@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ChartCrvUsdPrice } from './components/ChartCrvUsdPrice'
-import { ChartCrvUsdSupplyBreakdown } from './components/ChartCrvUsdSupplyBreakdown'
+import { ChartCrvUsdPrice } from '../charts/ChartCrvUsdPrice'
+import { ChartCrvUsdSupplyBreakdown } from '../charts/ChartCrvUsdSupplyBreakdown'
 import { ComingSoon } from './components/ComingSoon'
 
 const { Spacing } = SizesAndSpaces

@@ -5,6 +5,7 @@ import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
 
 const PageHome = lazyRouteComponent(() => import('@/analytics/components/PageHome'), 'PageHome')
+const PageCrvUsd = lazyRouteComponent(() => import('@/analytics/components/PageCrvUsd'), 'PageCrvUsd')
 
 const analyticsLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -23,6 +24,11 @@ export const analyticsRoutes = analyticsLayoutRoute.addChildren([
   createRoute({
     path: '$network/home',
     component: PageHome,
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/crvusd',
+    component: PageCrvUsd,
     ...layoutProps,
   }),
 ])

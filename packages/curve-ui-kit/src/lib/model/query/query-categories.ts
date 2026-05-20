@@ -60,6 +60,7 @@ export const QUERY_CATEGORIES = {
 
   // Analytics
   'analytics.chart': chart,
+  'analytics.table': table,
 } as const
 
 export type QueryCategory = keyof typeof QUERY_CATEGORIES
