@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -46,7 +45,6 @@ export const TableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
-  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
@@ -64,8 +62,8 @@ export const TableFilters = <ColumnIds extends string>({
           {filterChip && <Box className="tableControl">{filterChip}</Box>}
           <Box className="tableControl" sx={{ flex: 1, minWidth: 0 }}>
             <TableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
+              value={searchText}
+              onChange={onSearch}
               testId={testIdPrefix}
               disableAutoFocus={disableSearchAutoFocus}
             />
