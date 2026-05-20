@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 9
+  version: 10
   cacheKey: 10c0
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -394,15 +394,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:2.0.24":
-  version: 2.0.24
-  resolution: "@curvefi/llamalend-api@npm:2.0.24"
+"@curvefi/llamalend-api@npm:2.0.27":
+  version: 2.0.27
+  resolution: "@curvefi/llamalend-api@npm:2.0.27"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/5524cb65c72f9b51ee11af1ff6e4511d12f6cc2212a734bfb4e5d6418bbe45bddb772d8b1820e8152447feee1481ed6f0187f181d487ce6763f00f72d5e209fe
+  checksum: 10c0/3d6356b536784db8e7868d939684ae481a162813d8e4868e398168bc5ced3019c8d5aa119e20545b554867683fabe9181fd250f71bff9c601d297a8788782fd3
   languageName: node
   linkType: hard
 
@@ -11835,7 +11835,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:2.0.24"
+    "@curvefi/llamalend-api": "npm:2.0.27"
     "@sentry/vite-plugin": "npm:5.2.1"
     "@supercharge/promise-pool": "npm:3.3.0"
     "@tanstack/react-router": "npm:1.169.1"
