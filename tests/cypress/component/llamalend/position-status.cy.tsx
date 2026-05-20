@@ -16,9 +16,9 @@ import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
+import { useFakeMarket } from '@ui-kit/lib/queries/useFakeMarket.test'
 import type { Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
@@ -80,10 +80,7 @@ const PositionDetailsTest = ({
       ]}
     >
       <BorrowPositionDetails
-        tokens={{
-          collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
-          borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
-        }}
+        market={useFakeMarket({ collateralAddress, collateralSymbol, borrowSymbol, borrowAddress })}
         params={params}
       />
     </TestQueryProvider>

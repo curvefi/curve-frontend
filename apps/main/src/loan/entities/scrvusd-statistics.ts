@@ -1,7 +1,6 @@
 import { Contract } from 'ethers'
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
-import { getStatistics } from '@curvefi/prices-api/savings'
-import type { Statistics } from '@curvefi/prices-api/savings/models'
+import { getStatistics, type Statistics } from '@curvefi/prices-api/savings'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'

@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { useTabs } from '@ui-kit/hooks/useTabs'
@@ -21,12 +21,12 @@ export const usePositionDetailsTabs = ({
   events: { data: events, isLoading: activityIsLoading, error: activityError },
   hasPosition,
   params: { chainId, marketId, userAddress },
-  tokens,
+  market,
 }: {
   events: QueryProp<ParsedUserCollateralEvent[]>
   hasPosition: boolean | undefined
   params: UserMarketParams
-  tokens: Partial<MarketTokens>
+  market: LlamaMarketTemplate | undefined
 }) => {
   const tabOptions = useMemo<PositionDetailsTabOption[]>(
     () =>
@@ -36,7 +36,7 @@ export const usePositionDetailsTabs = ({
           label: t`Borrow Details`,
           render: () =>
             hasPosition ? (
-              <BorrowPositionDetails tokens={tokens} params={{ chainId, marketId, userAddress }} />
+              <BorrowPositionDetails market={market} params={{ chainId, marketId, userAddress }} />
             ) : (
               <NoPosition type="borrow" />
             ),
@@ -56,7 +56,7 @@ export const usePositionDetailsTabs = ({
           ),
         },
       ),
-    [events, hasPosition, tokens, chainId, marketId, userAddress, activityIsLoading, activityError],
+    [events, hasPosition, market, chainId, marketId, userAddress, activityIsLoading, activityError],
   )
 
   const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)

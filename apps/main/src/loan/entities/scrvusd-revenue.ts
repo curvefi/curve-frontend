@@ -1,5 +1,4 @@
-import { getRevenue } from '@curvefi/prices-api/savings'
-import type { Revenue } from '@curvefi/prices-api/savings/models'
+import { getRevenue, type Revenue } from '@curvefi/prices-api/savings'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { weiToEther } from '@ui-kit/utils'

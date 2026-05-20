@@ -35,7 +35,7 @@ export const CurveProvider = <App extends AppName>({
   /** Callback when the wallet is connected to an unsupported chain. */
   onChainUnavailable: (walletChainId?: number) => void
   app: App
-  hydrate?: HydratorMap
+  hydrate: HydratorMap
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
@@ -71,7 +71,7 @@ export const CurveProvider = <App extends AppName>({
 
     /** Initialize the app by hydrating the library if needed. */
     const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
-      if (globalLibs.hydrated[app] != lib && hydrate?.[app]) {
+      if (globalLibs.hydrated[app] != lib && hydrate[app]) {
         setConnectState(HYDRATING)
         await hydrate[app](config, lib, prevLib, wallet, releaseChannel) // if thrown, it will be caught in initLib
       }

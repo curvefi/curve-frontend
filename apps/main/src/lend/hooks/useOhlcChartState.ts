@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { getTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -15,9 +16,11 @@ import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
-import { useLendMarketData } from '../hooks/useLendMarket'
+import { useLendMarket } from '../hooks/useLendMarket'
 
 const { Height } = SizesAndSpaces
+
+type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
@@ -60,7 +63,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     marketId,
     userAddress,
   })
-  const market = useLendMarketData(rChainId, marketId).data
+  const market = useLendMarket(rChainId, marketId).data
   const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
   const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
   const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
@@ -101,7 +104,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   const currentOraclePriceData = isLlamma ? llammaOraclePriceData : oraclePoolOraclePriceData
   const currentRefetchingCapped = isLlamma ? llammaRefetchingCapped : oraclePoolRefetchingCapped
   const currentLastFetchEndTime = isLlamma ? llammaLastFetchEndTime : oraclePoolLastFetchEndTime
-  const ohlcDataUnavailable = !isLoading && currentOraclePriceData.length === 0
+  const noDataAvailable = !isLoading && currentOraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (oraclePoolOraclePriceData.length > 0) return oraclePoolOraclePriceData
@@ -124,6 +127,8 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     currentPrices: userPrices,
     newPrices: newLiqPrices,
   })
+
+  const coins: LendingMarketTokens = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
@@ -192,7 +197,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   )
 
   // Determine chart status: loading > error (no data) > ready
-  const chartStatus: FetchingStatus = isLoading ? 'LOADING' : ohlcDataUnavailable ? 'ERROR' : 'READY'
+  const chartStatus: FetchingStatus = isLoading ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
@@ -214,5 +219,13 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     latestOraclePrice: oraclePrice,
   }
 
-  return { ohlcDataUnavailable, isLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
+  return {
+    coins,
+    ohlcDataUnavailable: noDataAvailable,
+    isLoading,
+    selectedChartKey,
+    setTimeOption,
+    legendSets,
+    ohlcChartProps,
+  }
 }

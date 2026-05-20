@@ -9,7 +9,7 @@ import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/en
 import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { ProposalType } from '@curvefi/prices-api/proposal/models'
+import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'

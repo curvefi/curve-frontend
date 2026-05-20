@@ -1,33 +1,38 @@
 import { oneBool } from '@cy/support/generators'
+import { createLendingVaultChainsResponse } from '@cy/support/helpers/lending-mocks'
+import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
+const invalidIconAddress = '0x0000000000000000000000000000000000000001' as const
+
 const visitErrorBoundary = () => {
-  cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
-  cy.intercept(`https://prices.curve.finance/v1/lending/markets`, {
-    body: {
-      chains: {
-        ethereum: {
-          data: [
-            // make an error occur on purpose by returning nonsense data (`address` should be string)
-            // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
-            {
-              collateral_token: { symbol: 'ETH', address: 1 },
-              borrowed_token: { symbol: 'crvUSD', address: 1 },
-              extra_reward_apr: [],
-              vault: '',
-              controller: '',
-              version: 1,
-              created_at: '2023-01-01T00:00:00Z',
-            },
-          ],
-        },
-      },
+  const { ethereum, ...otherChains } = createLendingVaultChainsResponse()
+  setupLlamalendListMocks({
+    ethereum: {
+      ...ethereum,
+      data: ethereum.data.map(market => ({
+        ...market,
+        // Keep the API response valid, then trigger the render error from the icon path below.
+        collateral_token: { ...market.collateral_token, address: invalidIconAddress },
+      })),
     },
-  }).as('error')
+    ...otherChains,
+  }).lendingVaults.as('error')
   const url = '/llamalend/ethereum/markets'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
+  cy.visit(url, {
+    timeout: API_LOAD_TIMEOUT.timeout,
+    onBeforeLoad: ({ String, TypeError }) => {
+      const originalToLowerCase = String.prototype.toLowerCase
+      String.prototype.toLowerCase = function (this: string) {
+        if (this.toString() === invalidIconAddress) {
+          throw new TypeError('toLowerCase is not a function')
+        }
+        return originalToLowerCase.call(this)
+      }
+    },
+  })
   cy.wait('@error', LOAD_TIMEOUT)
   return e2eBaseUrl() + url
 }
