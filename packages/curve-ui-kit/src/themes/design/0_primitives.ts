@@ -154,6 +154,7 @@ export const Duration = {
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
   LoadingAnimation: 1000,
+  LoadingTimeout: 5000,
   Banner: {
     Daily: TIME_FRAMES.DAY_MS,
     Monthly: TIME_FRAMES.MONTH_MS,

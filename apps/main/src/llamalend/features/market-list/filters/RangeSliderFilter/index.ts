@@ -1,1 +1,1 @@
-export * from './RangeSliderFilter'
+export * from './LegacyRangeSliderFilter'
