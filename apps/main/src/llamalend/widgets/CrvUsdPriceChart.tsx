@@ -6,6 +6,7 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
 import { t } from '@ui-kit/lib/i18n'
@@ -83,14 +84,10 @@ export const CrvUsdPriceChart = () => {
 
   const oneWeekDeviation = useMemo(() => {
     const now = Date.now()
-    const points = priceHistory.map(item => ({
-      timestamp: new Date(item.timestamp).getTime(),
-      price: Number(item.price),
-    }))
 
     return (
       calculateAverageRates(
-        [...points, ...(currentPrice == null ? [] : [{ timestamp: now, price: currentPrice }])],
+        notFalsyArray(priceHistory, currentPrice != null && [{ timestamp: now, price: currentPrice }]),
         7,
         { deviation: ({ price }) => Math.abs(price - 1) * 100 },
       )?.deviation ?? null
