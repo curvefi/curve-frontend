@@ -47,11 +47,15 @@ export const useBandsData = ({
     userBandsBalances,
   })
 
+  // Guards against prematurely showing a ChartStateWrapper empty state
+  const isMarketBandsDataPending = enabled && !marketBandsBalancesError && marketBandsBalances === undefined
+
   const isLoading =
     !isHydrated ||
     !api ||
     isLiquidationBandLoading ||
     isMarketBandsBalancesLoading ||
+    isMarketBandsDataPending ||
     isMarketOraclePriceLoading ||
     isLoanExistsLoading ||
     isUserBandsBalancesLoading
