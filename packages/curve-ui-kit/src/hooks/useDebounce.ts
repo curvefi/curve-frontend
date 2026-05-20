@@ -135,7 +135,7 @@ export function useUniqueDebounce<T>({
   equals?: (a: T, b: T) => boolean
   sanitize?: (value: T) => T
 }) {
-  const [initialValue, setInitialValue] = useState<T>(defaultValue)
+  const [value, setValue] = useState<T>(defaultValue)
   const lastCallbackValue = useRef(defaultValue)
 
   useEffect(() => {
@@ -143,7 +143,7 @@ export function useUniqueDebounce<T>({
     // update the initial value to reflect the change. This will override the input contents and the debounced value.
     if (!equals(lastCallbackValue.current, defaultValue)) {
       lastCallbackValue.current = defaultValue
-      setInitialValue(defaultValue)
+      setValue(defaultValue)
     }
   }, [defaultValue, equals])
 
@@ -158,5 +158,5 @@ export function useUniqueDebounce<T>({
     [onChange, sanitize, equals],
   )
 
-  return useDebounce({ initialValue, debounceMs, callback })
+  return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }
