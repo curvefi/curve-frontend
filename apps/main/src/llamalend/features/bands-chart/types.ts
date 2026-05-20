@@ -29,8 +29,24 @@ export type BandsChartPalette = {
   userRangeBackgroundColor: string
   userRangeTopLineColor: string
   userRangeBottomLineColor: string
+  newRangeBackgroundColor: string
+  newRangeLineColor: string
   oraclePriceLineColor: string
   liquidationBandOutlineColor: string
+}
+
+export type BandsPriceRange = {
+  lowerPrice: number
+  upperPrice: number
+} | null
+
+export type BandsRangeOverlay = {
+  variant: 'current' | 'new'
+  lowerPrice: number
+  upperPrice: number
+  backgroundColor: string
+  topLineColor: string
+  bottomLineColor: string
 }
 
 export type UserBandsPriceRange = {

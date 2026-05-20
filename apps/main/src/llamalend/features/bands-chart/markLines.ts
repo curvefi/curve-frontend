@@ -3,14 +3,14 @@ import {
   CHART_LINE_WIDTHS,
   type ChartLineDashPattern,
 } from '@ui-kit/shared/ui/Chart/chart.utils'
-import { BandsChartPalette, UserBandsPriceRange } from './types'
+import type { BandsChartPalette, BandsRangeOverlay } from './types'
 
 /**
  * MarkLine data structure for ECharts coord format
  * Each markLine is an array of two coordinate points: [startPoint, endPoint]
  * Includes lineStyle metadata for label styling
  */
-type MarkLine = [{ coord: [number, number] }, { coord: [number, number] }] & {
+export type MarkLine = [{ coord: [number, number] }, { coord: [number, number] }] & {
   lineStyle: { color: string; type: ChartLineDashPattern; width: number }
 }
 
@@ -35,25 +35,34 @@ const createMarkLine = (
   xEnd: number,
   yValue: number,
   color: string,
-  style: Omit<MarkLineStyle, 'color'> = DEFAULT_MARK_LINE_STYLE,
+  style?: Partial<Omit<MarkLineStyle, 'color'>>,
 ): MarkLine => {
   const line: MarkLine = [{ coord: [xStart, yValue] }, { coord: [xEnd, yValue] }] as MarkLine
-  line.lineStyle = { color, ...style }
+  line.lineStyle = { color, ...DEFAULT_MARK_LINE_STYLE, ...style }
   return line
 }
 
-const createUserRangeMarkLines = (
-  userBandsPriceRange: UserBandsPriceRange,
+const isPriceInsideRange = (price: number, rangeOverlay: BandsRangeOverlay) =>
+  price >= rangeOverlay.lowerPrice && price <= rangeOverlay.upperPrice
+
+// When a preview range is shown, it should visually own any overlapping boundary.
+// Dropping current lines inside that range avoids lower-priority colors bleeding through
+// ECharts markLine dashes at the same or nearby y values.
+const createRangeOverlayMarkLines = (
+  rangeOverlay: BandsRangeOverlay,
   xStart: number,
   xEnd: number,
-  palette: BandsChartPalette,
+  hiddenRanges: BandsRangeOverlay[] = [],
 ): MarkLine[] => {
-  if (!userBandsPriceRange) return []
+  const createVisibleLine = (price: number, color: string) =>
+    hiddenRanges.some(hiddenRange => isPriceInsideRange(price, hiddenRange))
+      ? null
+      : createMarkLine(xStart, xEnd, price, color)
 
   return [
-    createMarkLine(xStart, xEnd, userBandsPriceRange.lowerBandPriceDown, palette.userRangeTopLineColor),
-    createMarkLine(xStart, xEnd, userBandsPriceRange.upperBandPriceUp, palette.userRangeBottomLineColor),
-  ]
+    createVisibleLine(rangeOverlay.upperPrice, rangeOverlay.topLineColor),
+    createVisibleLine(rangeOverlay.lowerPrice, rangeOverlay.bottomLineColor),
+  ].filter((line): line is MarkLine => !!line)
 }
 
 const createOraclePriceMarkLine = (
@@ -69,13 +78,16 @@ const createOraclePriceMarkLine = (
   return [createMarkLine(xStart, xEnd, price, palette.oraclePriceLineColor, DEFAULT_ORACLE_PRICE_LINE_STYLE)]
 }
 
-export const generateMarkLines = (
-  userBandsPriceRange: UserBandsPriceRange,
+export const generateRangeMarkLines = (
+  rangeOverlay: BandsRangeOverlay,
+  xStart: number,
+  xEnd: number,
+  hiddenRanges?: BandsRangeOverlay[],
+): MarkLine[] => createRangeOverlayMarkLines(rangeOverlay, xStart, xEnd, hiddenRanges)
+
+export const generateOracleMarkLines = (
   oraclePrice: string | undefined,
   xStart: number,
   xEnd: number,
   palette: BandsChartPalette,
-): MarkLine[] => [
-  ...createUserRangeMarkLines(userBandsPriceRange, xStart, xEnd, palette),
-  ...createOraclePriceMarkLine(oraclePrice, xStart, xEnd, palette),
-]
+): MarkLine[] => createOraclePriceMarkLine(oraclePrice, xStart, xEnd, palette)
