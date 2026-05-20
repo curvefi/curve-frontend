@@ -1,11 +1,16 @@
+import { ReactNode } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import MuiTypography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
+
+const Typography = ({ children }: { children: ReactNode }) => (
+  <MuiTypography color="textSecondary">{children}</MuiTypography>
+)
 
 export const BackendMaintenanceModal = ({
   formattedDate,
@@ -33,20 +38,17 @@ export const BackendMaintenanceModal = ({
     compact
   >
     <Stack spacing={Spacing.md}>
-      <Typography variant="bodyMRegular" color="textSecondary">
-        {t`Curve's backend will undergo scheduled maintenance on ${formattedDate} at ${formattedTime} as part of a production database upgrade.`}
+      <Typography>
+        {t`Curve’s app is scheduled for routine maintenance on ${formattedDate} at ${formattedTime} as part of a production database upgrade.`}
       </Typography>
-      <Typography variant="bodyMRegular" color="textSecondary">
-        {t`During this period, the app may have limited functionality and the price API may be unavailable. This will affect all users, including LPs, borrowers, and lenders.`}
+      <Typography>
+        {t`During this window, some app features and price data may be temporarily unavailable or slower to update than usual. `}
       </Typography>
-      {expectedDurationLabel && (
-        <Typography variant="bodyMRegular" color="textSecondary">
-          {t`Expected duration: ${expectedDurationLabel}.`}
-        </Typography>
-      )}
-      <Typography variant="bodyMRegular" color="textSecondary">
-        {t`This is planned maintenance, not a security incident. Please plan accordingly.`}
+      {expectedDurationLabel && <Typography>{t`Expected duration: ${expectedDurationLabel}.`}</Typography>}
+      <Typography>
+        {t`Underlying smart contracts will continue to operate normally. This maintenance only affects parts of the app experience.`}
       </Typography>
+      <Typography>{t`Thank you for your patience.`}</Typography>
     </Stack>
   </ModalDialog>
 )

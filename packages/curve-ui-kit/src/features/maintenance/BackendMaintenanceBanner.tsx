@@ -18,8 +18,7 @@ export const BackendMaintenanceBanner = ({
     onClick={dismissBanner}
     subtitle={notFalsy(
       t`Scheduled maintenance on ${formattedDate} at ${formattedTime}. Curve's app functionality may be limited`,
-      expectedDurationLabel && t`, and the price API may be unavailable for ${expectedDurationLabel}`,
-      t`. This affects all users.`,
+      expectedDurationLabel && t`, and the price API may be unavailable for ${expectedDurationLabel}.`,
     ).join('')}
     testId={`backend-maintenance-banner`}
   >
