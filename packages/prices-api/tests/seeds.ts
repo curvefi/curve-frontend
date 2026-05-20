@@ -9,6 +9,7 @@ import * as gauge from '../src/gauge'
 import * as llamalend from '../src/llamalend'
 import * as pools from '../src/pools'
 import * as proposal from '../src/proposal'
+import * as refuel from '../src/refuel'
 import * as savings from '../src/savings'
 import * as yieldBasis from '../src/yield-basis'
 import { getEndpointCatalogSkipReason } from './catalog'
@@ -37,6 +38,11 @@ type MarketUserSeed = MarketSeed & {
 
 type LlamalendUserSeed = LlamalendMarketSeed & {
   user: Address
+}
+
+type RefuelPoolSeed = {
+  chain: Chain
+  poolAddress: Address
 }
 
 const preferredChain: Chain = 'ethereum'
@@ -277,6 +283,15 @@ export const getYieldBasisPoolSeed = once(async () => {
   const chain = await getSupportedChainSeed()
   const poolsResponse = await yieldBasis.getYieldBasisPools(chain, requestOptions)
   const pool = randomItem(poolsResponse, `yieldBasis.getYieldBasisPools(${chain})`)
+
+  return { chain, poolAddress: pool.address }
+})
+
+export const getRefuelPoolSeed = once(async (): Promise<RefuelPoolSeed> => {
+  const supportedChains = await refuel.getRefuelChains(requestOptions)
+  const chain = supportedChains.find(chain => chain === preferredChain) ?? randomItem(supportedChains, 'refuel.getRefuelChains')
+  const poolsResponse = await refuel.getRefuelPools(chain, requestOptions)
+  const pool = randomItem(poolsResponse.pools, `refuel.getRefuelPools(${chain})`)
 
   return { chain, poolAddress: pool.address }
 })
