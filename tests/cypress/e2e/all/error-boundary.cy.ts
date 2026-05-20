@@ -111,6 +111,9 @@ describe('Error Boundary', () => {
 
     cy.get('[data-testid="submit-error-report-button"]', LOAD_TIMEOUT).click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
+    cy.get('[data-testid="submit-error-report-address"]')
+      .its('value')
+      .should('match', /^0x[a-fA-F0-9]{40}$/)
     cy.get('[data-testid="submit-error-report-address"]').clear()
     cy.get('[data-testid="submit-error-report-address"]').type(address)
     cy.get('[data-testid="submit-error-report-contact"]').type(contact)
@@ -144,5 +147,23 @@ describe('Error Boundary', () => {
     })
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
+  })
+
+  it('should open error report when app crashes before WagmiProvider', () => {
+    cy.visit('/dex/bad-chain', {
+      onLoad: win => {
+        const warn = win.console.warn
+        win.console.warn = (...args) => {
+          // throw when `useOnChainUnavailable` tries to redirect the user due to the bad chain name in the URL
+          if (args[0].includes('Redirecting from')) throw new Error('Simulating error')
+          return warn(...args)
+        }
+      },
+    })
+
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Layout error')
+    cy.get('[data-testid="submit-error-report-button"]').click()
+    cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
+    cy.get('[data-testid="submit-error-report-address"]').should('have.value', '')
   })
 })
