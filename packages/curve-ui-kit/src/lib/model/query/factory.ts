@@ -15,7 +15,6 @@ import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logError, logQuery, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
 import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
-import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
@@ -95,10 +94,9 @@ async function runQuery<TKey extends QueryKey, TData, TQuery>(
   disableLog: true | undefined,
 ) {
   try {
-    const start = new Date()
     if (!disableLog) logQuery(queryKey)
     const data = await queryFn(getParamsFromQueryKey(queryKey))
-    if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), ...[data ? [data] : []])
+    if (!disableLog) logSuccess(queryKey, ...[data ? [data] : []])
     return data
   } catch (error) {
     logError(queryKey, error, error.message)

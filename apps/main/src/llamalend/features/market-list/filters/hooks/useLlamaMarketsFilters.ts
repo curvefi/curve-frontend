@@ -1,10 +1,11 @@
 import { keyBy, type Dictionary } from 'lodash'
-import { type MouseEvent, useMemo } from 'react'
-import { recordEntries } from '@primitives/objects.utils'
+import { type MouseEvent, useCallback, useMemo } from 'react'
+import { notFalsyArray, recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
+import { type QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import { type AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from '../../columns'
 
@@ -36,10 +37,10 @@ const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
 }
 
 export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
-  data: LlamaMarket[]
+  marketsQuery: QueryProp<LlamaMarket[]>
 }
 
-export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFiltersProps) => {
+export const useLlamaMarketsFilters = ({ marketsQuery, ...filterProps }: LlamaMarketsFiltersProps) => {
   const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Type])
   const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Version])
   // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
@@ -51,18 +52,21 @@ export const useLlamaMarketsFilters = ({ data, ...filterProps }: LlamaMarketsFil
   const tokens = useMemo<Dictionary<AssetDetails>>(
     () =>
       keyBy(
-        data.flatMap(market => [market.assets.collateral, market.assets.borrowed]),
+        notFalsyArray(marketsQuery.data).flatMap(market => [market.assets.collateral, market.assets.borrowed]),
         asset => asset.symbol,
       ),
-    [data],
+    [marketsQuery.data],
   )
 
   return {
     filterProps,
     tokens,
-    markets: useMemo(
-      () => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
-      [data, selectedChains],
+    marketsQuery: useMappedQuery(
+      marketsQuery,
+      useCallback(
+        data => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
+        [selectedChains],
+      ),
     ),
     marketTypeValue: useMemo<MarketTypeFilterValue>(
       () => getSelectFilterValue<LlamaMarketType>(selectedMarketTypes),

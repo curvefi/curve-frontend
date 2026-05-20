@@ -34,6 +34,7 @@ export const MobileHeader = ({
   appStats,
   sections,
   chainId,
+  backendMaintenance,
   supportedNetworks,
   networkId,
 }: HeaderImplementationProps) => {
@@ -69,7 +70,7 @@ export const MobileHeader = ({
       }}
       data-testid="mobile-main-bar"
     >
-      <GlobalBanner networkId={networkId} chainId={chainId} />
+      <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
       <Toolbar sx={t => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar networks={supportedNetworks} isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 

@@ -1,4 +1,3 @@
-import { SubTabsSwitcher } from 'curve-ui-kit/src/shared/ui/Tabs/SubTabsSwitcher'
 import { useState } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
@@ -9,7 +8,7 @@ import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useOhlcChartState } from './hooks/useOhlcChartState'
 import { usePoolActivityEventsConfig } from './hooks/usePoolActivityEventsConfig'
@@ -48,46 +47,48 @@ export const OhlcAndActivityComp = ({
   const [tab, setTab] = useState<Tab>('chart')
 
   return (
-    <Stack gap={Spacing.md}>
-      <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
-      {tab === 'events' && (
-        <ActivityTable
-          table={liquidityTable.table}
-          isLoading={liquidityTable.isLoading}
-          isError={liquidityTable.isError}
-          emptyMessage={liquidityTable.emptyMessage}
-          expandedPanel={PoolLiquidityExpandedPanel}
-        />
-      )}
-      {tab === 'trades' && (
-        <ActivityTable
-          table={tradesTable.table}
-          isLoading={tradesTable.isLoading}
-          isError={tradesTable.isError}
-          emptyMessage={tradesTable.emptyMessage}
-          expandedPanel={PoolTradesExpandedPanel}
-        />
-      )}
-      {tab === 'chart' && (
-        <Stack sx={{ gap: Spacing.md }}>
-          <ChartHeader
-            flipChart={flipChart}
-            chartOptionVariant="select"
-            chartSelections={{
-              selections: ohlcChartProps.selectChartList,
-              activeSelection: ohlcChartProps.selectedChartKey,
-              setActiveSelection: setSelectedChart,
-            }}
-            timeOption={{
-              options: TIME_OPTIONS,
-              activeOption: ohlcChartProps.timeOption,
-              setActiveOption: setTimeOption,
-            }}
-            isLoading={isLoading}
+    <Stack>
+      <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        {tab === 'events' && (
+          <ActivityTable
+            table={liquidityTable.table}
+            isLoading={liquidityTable.isLoading}
+            isError={liquidityTable.isError}
+            emptyMessage={liquidityTable.emptyMessage}
+            expandedPanel={PoolLiquidityExpandedPanel}
           />
-          <ChartWrapper {...ohlcChartProps} />
-        </Stack>
-      )}
+        )}
+        {tab === 'trades' && (
+          <ActivityTable
+            table={tradesTable.table}
+            isLoading={tradesTable.isLoading}
+            isError={tradesTable.isError}
+            emptyMessage={tradesTable.emptyMessage}
+            expandedPanel={PoolTradesExpandedPanel}
+          />
+        )}
+        {tab === 'chart' && (
+          <Stack sx={{ gap: Spacing.md, padding: Spacing.sm }}>
+            <ChartHeader
+              flipChart={flipChart}
+              chartOptionVariant="select"
+              chartSelections={{
+                selections: ohlcChartProps.selectChartList,
+                activeSelection: ohlcChartProps.selectedChartKey,
+                setActiveSelection: setSelectedChart,
+              }}
+              timeOption={{
+                options: TIME_OPTIONS,
+                activeOption: ohlcChartProps.timeOption,
+                setActiveOption: setTimeOption,
+              }}
+              isLoading={isLoading}
+            />
+            <ChartWrapper {...ohlcChartProps} />
+          </Stack>
+        )}
+      </Stack>
     </Stack>
   )
 }

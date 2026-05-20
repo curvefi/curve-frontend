@@ -70,7 +70,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
             <Typography variant="bodySBold">{t`Requirements:`}</Typography>
 
             <Typography variant="bodySRegular">
-              {t`1. New gauge votes must have a vote on the governance forum`}{' '}
+              {t`1. New gauge votes are encouraged to have a proposal on the governance forum`}{' '}
               <InlineLink to="https://gov.curve.finance/" hideIcon>{t`at this address`}</InlineLink>
             </Typography>
 
