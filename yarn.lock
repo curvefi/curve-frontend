@@ -1437,17 +1437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:5.2.2":
-  version: 5.2.2
-  resolution: "@hookform/resolvers@npm:5.2.2"
-  dependencies:
-    "@standard-schema/utils": "npm:^0.3.0"
-  peerDependencies:
-    react-hook-form: ^7.55.0
-  checksum: 10c0/0692cd61dcc2a70cbb27b88a37f733c39e97f555c036ba04a81bd42b0467461cfb6bafacb46c16f173672f9c8a216bd7928a2330d4e49c700d130622bf1defaf
-  languageName: node
-  linkType: hard
-
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -1781,8 +1770,8 @@ __metadata:
   linkType: hard
 
 "@metamask/controller-utils@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/controller-utils@npm:12.0.0"
+  version: 12.1.0
+  resolution: "@metamask/controller-utils@npm:12.1.0"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
@@ -1797,7 +1786,7 @@ __metadata:
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10c0/fa2df08ef387ad187bb7186ab9739e1bc7e644ddbc7a321dced1d4426d0ae424aa0a79ca560d39adbf1c1ee2dc0b426562fea4baa043ea8619ea77d40c99b25b
+  checksum: 10c0/5d7746d877bc69724b60b62b44cd07bf20a3f911e317cf8556071b97cc06894e968d0f6d75508f849f19f10cd32511317019c650d2ed89a793bde175b5cc3a4f
   languageName: node
   linkType: hard
 
@@ -5448,13 +5437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@standard-schema/utils@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@standard-schema/utils@npm:0.3.0"
-  checksum: 10c0/6eb74cd13e52d5fc74054df51e37d947ef53f3ab9e02c085665dcca3c38c60ece8d735cebbdf18fbb13c775fbcb9becb3f53109b0e092a63f0f7389ce0993fd0
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-a11y@npm:10.3.6":
   version: 10.3.6
   resolution: "@storybook/addon-a11y@npm:10.3.6"
@@ -5745,6 +5727,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/devtools-event-client@npm:^0.4.1":
+  version: 0.4.3
+  resolution: "@tanstack/devtools-event-client@npm:0.4.3"
+  bin:
+    intent: bin/intent.js
+  checksum: 10c0/e49eb4b884e20de655a7cf463898bf6eba7e7470ed65b32f4079c886d700500078a9d6deac47dbf799f83500c7e14ae140e304eb840fe11ae7f255932c4f600b
+  languageName: node
+  linkType: hard
+
 "@tanstack/eslint-plugin-query@npm:5.100.7":
   version: 5.100.7
   resolution: "@tanstack/eslint-plugin-query@npm:5.100.7"
@@ -5760,10 +5751,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/form-core@npm:1.32.0":
+  version: 1.32.0
+  resolution: "@tanstack/form-core@npm:1.32.0"
+  dependencies:
+    "@tanstack/devtools-event-client": "npm:^0.4.1"
+    "@tanstack/pacer-lite": "npm:^0.1.1"
+    "@tanstack/store": "npm:^0.9.1"
+  checksum: 10c0/7bd371ab43ed09c5cd3684e277253bf2d381e3e3462886f51ed3e64927e40a1e715d3d53cacec1fcbc926401b010e0c9ec2294f5ace7a2b4d5671945ef77bc2b
+  languageName: node
+  linkType: hard
+
 "@tanstack/history@npm:1.161.6":
   version: 1.161.6
   resolution: "@tanstack/history@npm:1.161.6"
   checksum: 10c0/38be1af2ebb3511874f2ac922527b84fc01c568e24833a9fa85d483bcc88311e0daae38a97a80eee22581bf07350875a04f33a5c2d9d4edf421bed2f5f5da4a5
+  languageName: node
+  linkType: hard
+
+"@tanstack/pacer-lite@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@tanstack/pacer-lite@npm:0.1.1"
+  checksum: 10c0/c74c2e67dba3a14cd14134c27cff4856977c9019cf4dbe6a545a06960f4c9c8edad846e526595206aa01c42cc5cd5ee217761547ab6d2a3edec6fb3d69864686
   languageName: node
   linkType: hard
 
@@ -5797,6 +5806,21 @@ __metadata:
   dependencies:
     "@tanstack/query-core": "npm:5.100.7"
   checksum: 10c0/89ba4d1a6472ec50d311ee341b5a0a327bc02419bef30282faab2b7680abbaa75629fee1a373757bf23f7505efbcde30718f5ddcba982d99d60fa17d86b4869f
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-form@npm:1.32.0":
+  version: 1.32.0
+  resolution: "@tanstack/react-form@npm:1.32.0"
+  dependencies:
+    "@tanstack/form-core": "npm:1.32.0"
+    "@tanstack/react-store": "npm:^0.9.1"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@tanstack/react-start":
+      optional: true
+  checksum: 10c0/3a11354fb721acdd1c6b39b5c908523f67b426aa35efd56e51309ff27d8cb7d880cd1d3771be430ad23865d5b1eb8805be4cca6ca5e890d3f6428ca34411a0ce
   languageName: node
   linkType: hard
 
@@ -5867,7 +5891,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-store@npm:^0.9.3":
+"@tanstack/react-store@npm:^0.9.1, @tanstack/react-store@npm:^0.9.3":
   version: 0.9.3
   resolution: "@tanstack/react-store@npm:0.9.3"
   dependencies:
@@ -5922,7 +5946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/store@npm:0.9.3":
+"@tanstack/store@npm:0.9.3, @tanstack/store@npm:^0.9.1":
   version: 0.9.3
   resolution: "@tanstack/store@npm:0.9.3"
   checksum: 10c0/ec022c792c298be0717d7a2d06d6db4459077db775a27d86a2a248f446257e133c5d7c77a74bf6a4fa6993cfaef09b6f58a68a601c3becca834ed0b457ebe824
@@ -8778,7 +8802,6 @@ __metadata:
     "@coinbase/wallet-sdk": "npm:4.3.7"
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
-    "@hookform/resolvers": "npm:5.2.2"
     "@metamask/connect-evm": "npm:1.2.0"
     "@mui/icons-material": "npm:7.3.10"
     "@mui/material": "npm:7.3.10"
@@ -8790,6 +8813,7 @@ __metadata:
     "@storybook/addon-themes": "npm:10.3.6"
     "@storybook/react-vite": "npm:10.3.6"
     "@tanstack/query-async-storage-persister": "npm:5.100.7"
+    "@tanstack/react-form": "npm:1.32.0"
     "@tanstack/react-query": "npm:5.100.7"
     "@tanstack/react-query-devtools": "npm:5.100.7"
     "@tanstack/react-query-persist-client": "npm:5.100.7"
@@ -8802,7 +8826,6 @@ __metadata:
     dayjs: "npm:1.11.20"
     eslint: "npm:*"
     lodash: "npm:*"
-    react-hook-form: "npm:7.74.0"
     storybook: "npm:10.3.6"
     typescript: "npm:*"
     viem: "npm:2.48.7"
@@ -12734,9 +12757,9 @@ __metadata:
   linkType: hard
 
 "picomatch@npm:^4.0.2, picomatch@npm:^4.0.3":
-  version: 4.0.4
-  resolution: "picomatch@npm:4.0.4"
-  checksum: 10c0/e2c6023372cc7b5764719a5ffb9da0f8e781212fa7ca4bd0562db929df8e117460f00dff3cb7509dacfc06b86de924b247f504d0ce1806a37fac4633081466b0
+  version: 4.0.3
+  resolution: "picomatch@npm:4.0.3"
+  checksum: 10c0/9582c951e95eebee5434f59e426cddd228a7b97a0161a375aed4be244bd3fe8e3a31b846808ea14ef2c8a2527a6eeab7b3946a67d5979e81694654f939473ae2
   languageName: node
   linkType: hard
 
@@ -12939,8 +12962,8 @@ __metadata:
   linkType: hard
 
 "protobufjs@npm:^7.2.5":
-  version: 7.5.7
-  resolution: "protobufjs@npm:7.5.7"
+  version: 7.5.8
+  resolution: "protobufjs@npm:7.5.8"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -12954,7 +12977,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.1"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
-  checksum: 10c0/432b30edf06c689ca591372812b57a7cda3d5325311b69369e3bb15afef80ccc5dd021cc7e92d72e55e8e0f5665abf87c32e26601319ab9576707f846777842e
+  checksum: 10c0/25968259084a634e035f865febd5a31f75bdaee4fda6fba4e14c57019024e7cada859b470eb69350f430fbd0d509c805249b9fe8a6c44a57a0b484a1ef685751
   languageName: node
   linkType: hard
 
@@ -13158,15 +13181,6 @@ __metadata:
   peerDependencies:
     react: ^19.2.5
   checksum: 10c0/8067606e9f58e4c2e8cb5f09570217dbc71c4843ebcaa20ae2085912d3e3a351f17d8f7c1713313cdda7f272840c8c34ff6c860fcb840862071bceea218e0c63
-  languageName: node
-  linkType: hard
-
-"react-hook-form@npm:7.74.0":
-  version: 7.74.0
-  resolution: "react-hook-form@npm:7.74.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/54d18c584aedea6db266a4981fb9de3df6bdf238996d2009a4dbf2e28b1fdd53b0644faba72fb55b087db7f93c6ea50753bc1a1691f43d1ba5f92861dc3fd096
   languageName: node
   linkType: hard
 
@@ -15435,7 +15449,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.5.0":
+"ws@npm:^8.18.0, ws@npm:^8.19.0, ws@npm:^8.5.0":
+  version: 8.19.0
+  resolution: "ws@npm:8.19.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/4741d9b9bc3f9c791880882414f96e36b8b254e34d4b503279d6400d9a4b87a033834856dbdd94ee4b637944df17ea8afc4bce0ff4a1560d2166be8855da5b04
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.3":
   version: 8.20.1
   resolution: "ws@npm:8.20.1"
   peerDependencies:

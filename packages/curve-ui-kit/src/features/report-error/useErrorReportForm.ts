@@ -49,7 +49,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
         onClose()
       } catch (e) {
         console.warn(e)
-        form.setError('root', { type: 'server', message: e.message })
+        form.setRootError(e)
       }
     }),
   }

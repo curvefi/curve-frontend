@@ -5,7 +5,15 @@ import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
-import { type FormUpdates, FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui-kit/features/forms'
+import {
+  type FormError,
+  type FormUpdates,
+  FieldPath,
+  FieldPathValue,
+  FieldPathByValue,
+  FieldValues,
+  UseFormReturn,
+} from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -19,8 +27,8 @@ type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
 export type LoanFormTokenInputProps<
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TFieldName extends FieldPath<TFieldValues>,
+  TMaxFieldName extends FieldPath<TFieldValues>,
 > = {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -60,7 +68,7 @@ export type LoanFormTokenInputProps<
 export const LoanFormTokenInput = <
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TMaxFieldName extends FieldPath<TFieldValues>,
 >({
   label,
   token,
@@ -109,11 +117,11 @@ export const LoanFormTokenInput = <
     [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],
   )
 
-  const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, Error>
+  const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, FormError>
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = (name in touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
-  const value = getValue(name)
+  const value = getValue(name) as FieldPathValue<TFieldValues, TFieldName> & (Decimal | undefined)
   const errorMessage = error?.message
 
   const onBalance = useCallback(

@@ -50,7 +50,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
       footer={
         <Button
           fullWidth
-          onClick={onSubmit}
+          onClick={() => onSubmit()}
           data-testid="submit-error-report-submit"
           variant="contained"
           disabled={!form.formState.isValid}
