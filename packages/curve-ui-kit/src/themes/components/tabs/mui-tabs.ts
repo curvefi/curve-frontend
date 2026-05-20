@@ -129,7 +129,7 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
         color: Text.TextColors.Tertiary,
       },
       [`&:hover .${TAB_SUFFIX_CLASS}`]: {
-        color: Text.TextColors.Highlight,
+        color: 'inherit',
       },
     },
   },

@@ -173,7 +173,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Text.TextColors.Disabled,
+        Fill: Transparent,
       },
     },
     Success: {
@@ -207,14 +207,19 @@ export const createLightDesign = (
     Navigation: {
       Default: {
         Label: Text.TextColors.Secondary,
+        Fill: Transparent,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
+        Fill: Transparent,
       },
       Current: {
         Label: Grays[10],
         Fill: Blues[600],
+      },
+      Disabled: {
+        Label: Text.TextColors.Disabled,
+        Fill: Transparent,
       },
     },
     Transition: 'Transition',
@@ -657,7 +662,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Label: Blues[700],
-        Fill: Grays[850],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -691,14 +696,19 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Navigation: {
       Default: {
         Label: Text.TextColors.Tertiary,
+        Fill: Transparent,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
+        Fill: Transparent,
       },
       Current: {
         Label: Grays[975],
         Fill: Grays[10],
+      },
+      Disabled: {
+        Label: Text.TextColors.Disabled,
+        Fill: Transparent,
       },
     },
     Transition: 'Transition',
@@ -1102,7 +1112,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Text.TextColors.Disabled,
+        Fill: Transparent,
       },
     },
     Success: {
@@ -1136,14 +1146,19 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Navigation: {
       Default: {
         Label: Text.TextColors.Tertiary,
+        Fill: Transparent,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
+        Fill: Transparent,
       },
       Current: {
         Label: Grays[10],
         Fill: Violets[500],
+      },
+      Disabled: {
+        Label: Text.TextColors.Disabled,
+        Fill: Transparent,
       },
     },
     Transition: 'Transition',
