@@ -1,23 +1,17 @@
-import BigNumber from 'bignumber.js'
-import { MarketTypeSuffix } from '@/llamalend/constants'
-import { formatCollateralNotional, getUtilizationPercent } from '@/llamalend/llama.utils'
+import { formatCollateralNotional } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   MaxLeverageTooltip,
   SolvencyTooltip,
   TotalCollateralTooltip,
-  UtilizationTooltip,
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
-import type { Decimal } from '@primitives/decimal.utils'
-import { useMarketInterestRatesAndUtilizationChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { decimal, formatNumber } from '@ui-kit/utils'
-import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
+import { decimal } from '@ui-kit/utils'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
@@ -29,27 +23,6 @@ type AdvancedDetailsProps = {
   marketType: LlamaMarketType
 }
 
-const formatLiquidity = (value: number) =>
-  `${formatNumber(abbreviateNumber(value), { unit: 'dollar', abbreviate: false })}${scaleSuffix(value).toUpperCase()}`
-
-type AvailableLiquidityValues = {
-  available?: Decimal
-  totalAssets?: Decimal
-}
-
-const getUtilizationMetrics = ({ available, totalAssets }: AvailableLiquidityValues) => {
-  const utilization = getUtilizationPercent(available, totalAssets)
-  if (utilization == null || available == null || totalAssets == null) return {}
-
-  const availableBN = new BigNumber(available)
-  const capBN = new BigNumber(totalAssets)
-
-  return {
-    utilization,
-    utilizationBreakdown: `${formatLiquidity(capBN.minus(availableBN).toNumber())}/${formatLiquidity(capBN.toNumber())}`,
-  }
-}
-
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
   const { collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
     useAdvancedDetailsData({
@@ -58,9 +31,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       marketId,
       marketType,
     })
-  const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
-  const hasRateCurveMetrics = useMarketInterestRatesAndUtilizationChart()
-  const showRateCurveMetrics = marketType === LlamaMarketType.Lend && hasRateCurveMetrics
+  const showRateCurveMetrics = marketType === LlamaMarketType.Lend
 
   return (
     <Box
@@ -68,21 +39,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       gap={Spacing.lg}
       gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
     >
-      {!showRateCurveMetrics && marketType === LlamaMarketType.Lend && (
-        <Metric
-          size="medium"
-          label={t`Utilization`}
-          value={utilization}
-          loading={availableLiquidity?.loading}
-          valueOptions={{ unit: 'percentage' }}
-          notional={utilization == null ? undefined : utilizationBreakdown}
-          valueTooltip={{
-            title: t`Utilization ${MarketTypeSuffix[marketType]}`,
-            body: <UtilizationTooltip marketType={marketType} />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
       {availableLiquidity.borrowCap && (
         <Metric
           size="medium"
