@@ -21,6 +21,7 @@ const { Spacing } = SizesAndSpaces
 export const DesktopHeader = ({
   currentMenu,
   chainId,
+  backendMaintenance,
   supportedNetworks,
   pages,
   appStats,
@@ -37,7 +38,7 @@ export const DesktopHeader = ({
       borderBottom: getHeaderBorder,
     }}
   >
-    <GlobalBanner networkId={networkId} chainId={chainId} />
+    <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
 
     <Toolbar
       sx={{

@@ -8,6 +8,8 @@ import {
   type WagmiChainId,
 } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
+import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
+import type { BackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,12 +23,10 @@ import { StackBanners } from './StackBanners'
 type GlobalBannerProps = {
   networkId: string
   chainId: number
+  backendMaintenance: BackendMaintenance
 }
 
-// Update `PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
-const maintenanceMessage = process.env.PUBLIC_MAINTENANCE_MESSAGE
-
-export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
+export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
   const { connectState, network } = useCurve()
@@ -51,8 +51,8 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`${releaseChannel} Mode Enabled`}
         </Banner>
       )}
+      {backendMaintenance.showBanner && !isCypress && <BackendMaintenanceBanner {...backendMaintenance} />}
       <PhishingWarningBanner />
-      {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
       {isFailure(connectState) ? (
         <Banner severity="alert">
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
