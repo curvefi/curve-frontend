@@ -42,20 +42,16 @@ export const useBandsData = ({
     enabled,
   )
 
-  const chartData = useProcessedBandsData({
+  const processedChartData = useProcessedBandsData({
     marketBandsBalances,
     userBandsBalances,
   })
-
-  // Guards against prematurely showing a ChartStateWrapper empty state
-  const isMarketBandsDataPending = enabled && !marketBandsBalancesError && marketBandsBalances === undefined
 
   const isLoading =
     !isHydrated ||
     !api ||
     isLiquidationBandLoading ||
     isMarketBandsBalancesLoading ||
-    isMarketBandsDataPending ||
     isMarketOraclePriceLoading ||
     isLoanExistsLoading ||
     isUserBandsBalancesLoading
@@ -63,7 +59,7 @@ export const useBandsData = ({
   return {
     isLoading,
     error: marketBandsBalancesError,
-    chartData,
+    chartData: processedChartData,
     userBandsBalances,
     oraclePrice,
   }
