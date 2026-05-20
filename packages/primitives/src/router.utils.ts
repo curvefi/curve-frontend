@@ -1,7 +1,7 @@
 import type { Address, Hex } from './address.utils'
 import type { Decimal } from './decimal.utils'
 
-export const RouteProviders = ['curve', 'enso', 'odos'] as const
+export const RouteProviders = ['curve', 'enso', 'odos', '0x'] as const
 export type RouteProvider = (typeof RouteProviders)[number]
 
 export type RouteStep = {
