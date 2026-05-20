@@ -1,11 +1,12 @@
+import { capitalize } from 'lodash'
 import { useMemo } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { toArray } from '@primitives/array.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
-import type { FilterProps, TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { ColumnMeta, FilterProps, TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import {
   parseListFilter,
   parseRangeFilter,
@@ -15,24 +16,25 @@ import {
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../columns/columns.enum'
+import { Unit } from '@ui-kit/utils/units'
+import { LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from '../columns'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { SelectedFilterChips } from './SelectedFilterChips'
 import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-const formatRangeValue = (value: number, unit?: 'percentage' | 'dollar') =>
+const LLAMA_MARKET_COLUMN_ORDER = new Map(LLAMA_MARKET_COLUMNS.map((column, index) => [column.id, index]))
+
+const formatRangeValue = (value: number, unit?: Unit) =>
   formatNumber(value, { abbreviate: true, ...(unit && { unit }) })
 
 // capitalize all labels except columns containing tokens symbols
 const formatLabel = (label: string, id: LlamaMarketColumnId) =>
-  [LlamaMarketColumnId.CollateralSymbol, LlamaMarketColumnId.BorrowedSymbol].includes(id)
-    ? label
-    : `${label.charAt(0).toUpperCase()}${label.slice(1)}`
+  [LlamaMarketColumnId.CollateralSymbol, LlamaMarketColumnId.BorrowedSymbol].includes(id) ? label : capitalize(label)
 
 // Convert a serialized range filter (`min~max`) into a single chip label
-const getRangeLabel = (serializedRange: string | undefined, unit?: 'percentage' | 'dollar') => {
+const getRangeLabel = (serializedRange: string | undefined, unit?: ColumnMeta['unit']) => {
   const [min, max] = parseRangeFilter(serializedRange) ?? []
 
   if ((min == null || min === 0) && max != null) return `<${formatRangeValue(max, unit)}`
@@ -55,13 +57,13 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
   resetFilters: () => void
 } & FilterProps<LlamaMarketColumnId>) => {
   const filtersState = table.getState().columnFilters as { id: LlamaMarketColumnId; value: string }[]
-  // Keep networks first and sort the remaining filters alphabetically to avoid making the filters jump to another position when filters are removed
+  // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = useMemo(
     () =>
-      filtersState.sort((a, b) => {
+      [...filtersState].sort((a, b) => {
         if (a.id === LlamaMarketColumnId.Chain) return -1
         if (b.id === LlamaMarketColumnId.Chain) return 1
-        return a.id.localeCompare(b.id)
+        return LLAMA_MARKET_COLUMN_ORDER.get(a.id)! - LLAMA_MARKET_COLUMN_ORDER.get(b.id)!
       }),
     [filtersState],
   )
@@ -78,22 +80,26 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
     >
       <Stack direction="row" gap={Spacing.sm} flexWrap="wrap">
         {sortedFiltersState.map(({ id, value }) => {
-          const column = table.getColumn(id)
-          const isRangeFilterFn = column?.getFilterFn() === rangeFilterFn
+          const column = assert(table.getColumn(id), `no column with id ${id}`)
+          const isRangeFilterFn = column.getFilterFn() === rangeFilterFn
           const labels = isRangeFilterFn
-            ? notFalsy(getRangeLabel(value, column?.columnDef.meta?.unit))
+            ? notFalsy(getRangeLabel(value, column.columnDef.meta?.unit))
             : parseListFilter(value)
           const [visibleLabels, hiddenLabels] = getInlinedItemsVisibility(labels)
 
           const removeClickedValue = (clickedValue: string | string[]) => {
             const activeValues = parseListFilter(value)
-            const remainingValues = activeValues?.filter(v => !toArray(clickedValue).includes(v))
+            const removedValues = new Set(toArray(clickedValue))
+            const remainingValues = activeValues?.filter(v => !removedValues.has(v))
             setColumnFilter(id, serializeListFilter(remainingValues))
           }
 
           return (
             !!labels?.length && (
-              <SelectedFilterChips key={`selected-chip-${id}`} title={column?.columnDef.header as string}>
+              <SelectedFilterChips
+                key={`selected-chip-${id}`}
+                title={typeof column.columnDef.header === 'string' ? column.columnDef.header : id}
+              >
                 {/* Special chip for the chains filter */}
                 {id === LlamaMarketColumnId.Chain ? (
                   <ChainFilterChips chains={labels} selectedChains={labels} toggleChain={removeClickedValue} />

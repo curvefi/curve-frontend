@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const SelectedFilterChips = ({ title, children }: { title: string; children: ReactNode }) => (
+export const SelectedFilterChips = ({ title, children }: { title: ReactNode; children: ReactNode }) => (
   <Stack gap={Spacing.xs}>
     <Typography variant="bodyXsRegular" color="textTertiary">
       {title}
