@@ -17,7 +17,7 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { Unit } from '@ui-kit/utils/units'
-import { LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from '../columns'
+import { LLAMA_MARKET_COLUMNS, LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { SelectedFilterChips } from './SelectedFilterChips'
 import { getInlinedItemsVisibility } from './utils'
@@ -96,10 +96,7 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
 
           return (
             !!labels?.length && (
-              <SelectedFilterChips
-                key={`selected-chip-${id}`}
-                title={typeof column.columnDef.header === 'string' ? column.columnDef.header : id}
-              >
+              <SelectedFilterChips key={`selected-chip-${id}`} title={LLAMA_MARKET_TITLES[id]}>
                 {/* Special chip for the chains filter */}
                 {id === LlamaMarketColumnId.Chain ? (
                   <ChainFilterChips chains={labels} selectedChains={labels} toggleChain={removeClickedValue} />
