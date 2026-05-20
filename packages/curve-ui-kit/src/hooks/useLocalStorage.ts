@@ -94,8 +94,12 @@ export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-
  * Returns a tuple containing a boolean indicating whether the banner should be shown, and a function to dismiss the banner.
  * Do NOT export this hook, as it directly exposes local storage keys!
  */
-const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Banner = 'Monthly') => {
-  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
+const useDismissBanner = (
+  bannerKey: string,
+  frequency: keyof typeof Duration.Banner = 'Monthly',
+  migration?: MigrationOptions<number | null>,
+) => {
+  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null, migration)
   const expirationTime = Duration.Banner[frequency]
 
   const shouldShowBanner = useMemo(
@@ -117,10 +121,20 @@ export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-d
 export const useDismissPoolBanner = (network: string, poolId: string) =>
   useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
 
-export const useDismissBackendMaintenanceModal = (dateISO: string | undefined) =>
-  useLocalStorage<string | null>(`backend-maintenance-modal-${dateISO}`, null)
+const MAINTENANCE_STORAGE_VERSION = 1
 
-export const useDismissBackendMaintenanceBanner = (dateISO: string | undefined) =>
-  useDismissBanner(`backend-maintenance-banner-${dateISO}`, 'Daily')
+export const useDismissMaintenanceModal = (dateISO: string | undefined) =>
+  useLocalStorage<string | null>(`maintenance-modal-${dateISO}`, null, {
+    version: MAINTENANCE_STORAGE_VERSION,
+    migrate: oldValue => oldValue,
+    oldKey: `backend-maintenance-modal-${dateISO}`,
+  })
+
+export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
+  useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily', {
+    version: MAINTENANCE_STORAGE_VERSION,
+    migrate: oldValue => oldValue,
+    oldKey: `backend-maintenance-banner-${dateISO}`,
+  })
 
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)
