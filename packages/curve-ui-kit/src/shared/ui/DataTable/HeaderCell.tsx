@@ -29,7 +29,8 @@ function useHeaderSx<T extends TableItem>({
       verticalAlign: 'bottom',
       padding: Spacing.sm,
       paddingBlockStart: 0,
-      color: t => (isSorted ? t.design.Table.Header['Label_&_icon'].Active : t.design.Table.Header['Label_&_icon'].Default),
+      color: t =>
+        isSorted ? t.design.Table.Header['Label_&_icon'].Active : t.design.Table.Header['Label_&_icon'].Default,
       paddingInlineStart,
       paddingInlineEnd,
       ...(canSort && {
