@@ -1,6 +1,5 @@
 import { paginate } from '@curvefi/prices-api/paginate'
-import { getUserProposalVotes } from '@curvefi/prices-api/proposal/api'
-import { ProposalType, UserProposalVote } from '@curvefi/prices-api/proposal/models'
+import { getUserProposalVotes, type ProposalType, type UserProposalVote } from '@curvefi/prices-api/proposal'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { queryFactory } from '@ui-kit/lib/model/query'

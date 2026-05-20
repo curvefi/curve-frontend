@@ -5,9 +5,11 @@ import { StoreApi } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
 import { recordEntries } from '@primitives/objects.utils'
+import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { log } from '@ui-kit/lib/logging'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { formatTimeDiff } from '@ui-kit/utils/time.utils'
+import { prefetchLendMarkets } from '../queries/lend-market-names.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -24,18 +26,17 @@ export interface AppSlice {
 }
 
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (_config, api, prevApi, _wallet) => {
+  hydrate: async (_config, api, prevApi, _wallet, releaseChannel) => {
     if (!api) return
 
-    const { lendMarkets, signerAddress, chainId } = api
-    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== chainId
-    const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== signerAddress
+    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
+    const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== api.signerAddress
     const state = get()
 
     const start = new Date()
-    log('Hydrating Lend', chainId, {
-      chainId: [prevApi?.chainId, chainId],
-      signerAddress: [prevApi?.signerAddress, signerAddress],
+    log('Hydrating Lend', api.chainId, {
+      chainId: [prevApi?.chainId, api.chainId],
+      signerAddress: [prevApi?.signerAddress, api.signerAddress],
     })
 
     // reset store
@@ -46,10 +47,12 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
         .forEach(([, state]) => (state as { resetState: () => void }).resetState())
     }
 
-    if (isUserSwitched || !signerAddress) {
+    if (isUserSwitched || !api.signerAddress) {
       state.user.resetState()
     }
-    await lendMarkets.fetchMarkets({ useApi: false })
+
+    // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
+    await prefetchLendMarkets({ chainId: api.chainId, enableLLv2: isLLv2Enabled(releaseChannel) })
 
     log(`Hydrated Lend - Complete in ${formatTimeDiff(start)}`)
   },

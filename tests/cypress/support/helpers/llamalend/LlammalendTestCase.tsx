@@ -1,4 +1,6 @@
+import { prefetchMintMarkets } from 'main/src/loan/entities/mint-market-names.query'
 import { useMemo } from 'react'
+import { prefetchLendMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -89,7 +91,20 @@ export type LlammalendTestCaseProps = LlammalendTestProps &
 
 export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
-    <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
+    <CurveProvider
+      app="llamalend"
+      network={llamaNetworks[chainId]}
+      onChainUnavailable={console.error}
+      hydrate={useMemo(
+        () => ({
+          llamalend: {
+            [LlamaMarketType.Lend]: () => prefetchLendMarkets({ chainId, enableLLv2: true }),
+            [LlamaMarketType.Mint]: () => prefetchMintMarkets({ chainId }),
+          }[marketType],
+        }),
+        [chainId, marketType],
+      )}
+    >
       <Box sx={{ maxWidth: 520 }}>
         <LlammalendTest {...props} chainId={chainId} />
       </Box>

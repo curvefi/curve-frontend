@@ -12,12 +12,13 @@ const { Spacing } = SizesAndSpaces
 type TimestampCellProps = {
   timestamp: Date
   txUrl?: string | null
+  align?: 'start' | 'end'
 }
 
 /**
  * Cell component for displaying timestamps with optional transaction link.
  */
-export const TimestampCell = ({ timestamp, txUrl }: TimestampCellProps) => {
+export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCellProps) => {
   const isMobile = useIsMobile()
   const clickable = !isMobile && txUrl // on mobile we use row expansion
 
@@ -30,14 +31,15 @@ export const TimestampCell = ({ timestamp, txUrl }: TimestampCellProps) => {
       })}
       sx={{ gap: Spacing.xxs }}
     >
-      <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
-      <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
+      <Typography variant="tableCellMBold" textAlign={align}>
+        {formatDate(timestamp, 'short')}
+      </Typography>
+
+      <Stack direction="row" alignItems="center" justifyContent={align} gap={Spacing.xs}>
         <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
           {formatTime(timestamp)}
         </Typography>
-        {clickable && (
-          <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />
-        )}
+        {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />}
       </Stack>
     </InlineTableCell>
   )
