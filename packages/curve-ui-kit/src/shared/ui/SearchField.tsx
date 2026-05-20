@@ -14,7 +14,7 @@ type SearchFieldProps = TextFieldProps & {
 }
 
 /** remove leading and trailing spaces */
-const clean = (a: string) => a.trim()
+const sanitize = (a: string) => a.trim()
 
 /**
  * Search field with debounced search. It is cleared and focused when clicking the close button.
@@ -28,7 +28,7 @@ export const SearchField = ({
   disableAutoFocus,
   ...props
 }: SearchFieldProps) => {
-  const [search, setSearch] = useUniqueDebounce<string>({ defaultValue, callback, clean })
+  const [search, setSearch] = useUniqueDebounce<string>({ defaultValue, callback, sanitize })
   const localInputRef = useRef<HTMLInputElement | null>(null)
   const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {
