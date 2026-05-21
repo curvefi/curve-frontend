@@ -16,6 +16,8 @@ import { TableFilterButtonGroup } from './filters/TableFilterButtonGroup'
 
 const { Spacing } = SizesAndSpaces
 
+const LLAMALEND_TEST_ID_PREFIX = 'llamalend'
+
 /**
  * Displays a token with its icon and symbol.
  * This is used in the lending markets filters to display collateral and debt tokens.
@@ -130,6 +132,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         onChange={onMarketTypeChange}
         ariaLabel={t`Market type filter`}
         options={marketTypeOptions}
+        testIdPrefix={LLAMALEND_TEST_ID_PREFIX}
       />
       <TableFilterButtonGroup
         title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Version]}
@@ -137,6 +140,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         onChange={onMarketVersionChange}
         ariaLabel={t`Market version filter`}
         options={marketVersionOptions}
+        testIdPrefix={LLAMALEND_TEST_ID_PREFIX}
       />
     </Stack>
   )

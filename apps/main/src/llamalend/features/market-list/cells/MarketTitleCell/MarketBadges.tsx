@@ -40,15 +40,13 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
     <Stack direction="row" gap={Spacing.xs} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
       <ChainIcon blockchainId={chain} />
 
-      {useLLv2() && (
-        <MarketBadge label={marketVersionLabel[version]} data-testid={`market-version-${type.toLowerCase()}`} />
-      )}
+      {useLLv2() && <MarketBadge label={marketVersionLabel[version]} data-testid={`market-version-${version}`} />}
 
       <Tooltip title={marketTypeDetails[type].description}>
-        <MarketBadge label={marketTypeDetails[type].label} data-testid={`market-type-${type.toLowerCase()}`} />
+        <MarketBadge label={marketTypeDetails[type].label} data-testid={`market-type-${type}`} />
       </Tooltip>
 
-      {leverage && isMobile && <Typography variant="bodyXsBold">🔥</Typography>}
+      {!!leverage && isMobile && <Typography variant="bodyXsBold">🔥</Typography>}
 
       {deprecatedMessage && (
         <Tooltip title={deprecatedMessage}>

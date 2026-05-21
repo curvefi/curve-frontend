@@ -1,7 +1,7 @@
 import { max, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, type TokenType } from '@cy/support/generators'
+import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   closeDrawer,
   closeSlider,
@@ -10,6 +10,7 @@ import {
   openFilters,
   withFiltersPopover,
   withFilterChips,
+  getTableCellAssets,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
@@ -24,7 +25,7 @@ import {
 } from '@cy/support/ui'
 import { objectKeys, range, recordValues, repeat } from '@primitives/objects.utils'
 import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const sfrxEthMarket = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
@@ -150,7 +151,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
       cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
-      cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
+      getTableCellAssets().first().contains('wstETH')
     })
 
     itMobileOnly('should allow filtering by using a slider', () => {
@@ -246,6 +247,24 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
+    it(`should allow filtering by market type`, () => {
+      const marketTypes = shuffle(...recordValues(LlamaMarketType))
+      marketTypes.forEach(type =>
+        checkTableFilterButtonGroupSelection(type, () => {
+          getTableCellAssets().find(`[data-testid="market-type-${type}"]`).should('be.visible')
+        }),
+      )
+    })
+
+    it(`should allow filtering by market version`, () => {
+      const marketVersions = shuffle(...recordValues(LlamaMarketVersion))
+      marketVersions.forEach(version =>
+        checkTableFilterButtonGroupSelection(version, () => {
+          getTableCellAssets().find(`[data-testid="market-version-${version}"]`).should('be.visible')
+        }),
+      )
+    })
+
     // todo: test reset fiter button yet to be implemented
 
     it(`should copy the market address`, RETRY_IN_CI, () => {
@@ -323,7 +342,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
       cy.get('body').click(0, 0) // close popover
 
-      cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
+      getTableCellAssets().find(`[data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
       cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
 
       cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
@@ -331,11 +350,17 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.url().should('not.include', `assets_${type}_symbol`)
     }
 
+    /** Check if one or mor chains have been selected by checking url and table cell */
     function checkChainSelection(...chains: Chain[]) {
       cy.url().should('include', serializeListFilter(chains))
-      chains.forEach(chain =>
-        cy.get(`[data-testid="data-table-cell-assets"] [data-testid="chain-icon-${chain}"]`).should('be.visible'),
-      )
+      chains.forEach(chain => getTableCellAssets().find(`[data-testid="chain-icon-${chain}"]`).should('be.visible'))
+    }
+
+    /** Check the correct selection of the filter's grouped buttons by checking the url and a callback function */
+    function checkTableFilterButtonGroupSelection<T extends string>(value: T, checkCallback: (value?: T) => void) {
+      withFiltersPopover(() => cy.get(`[data-testid="llamalend-table-filter-button-${value}"]`).click())
+      cy.url().should('include', value)
+      checkCallback(value)
     }
   })
 })

@@ -54,3 +54,5 @@ export function closeSlider(breakpoint: Breakpoint) {
   cy.get(`[data-testid^="slider-"]`).should('not.exist')
   closeDrawer(breakpoint)
 }
+
+export const getTableCellAssets = () => cy.get('[data-testid="data-table-cell-assets"]')
