@@ -57,13 +57,19 @@ export const LlamaTableFiltersPopover = ({
           <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
             {t`Filter markets`}
           </Typography>
-          <IconButton size="extraSmall" onClick={onClose} data-testid="llamalend-filters-close-button">
+          <IconButton size="extraSmall" onClick={onClose} data-testid="btn-close-filters">
             <Cross2Icon />
           </IconButton>
         </Stack>
         <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
         <Stack direction="row" padding={Spacing.sm} justifyContent="space-between">
-          <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hasActiveFilters}>
+          <Button
+            color="ghost"
+            size="extraSmall"
+            onClick={resetFilters}
+            disabled={!hasActiveFilters}
+            data-testid="btn-reset-filters"
+          >
             {t`Reset filters`}
           </Button>
           {isMobile && (

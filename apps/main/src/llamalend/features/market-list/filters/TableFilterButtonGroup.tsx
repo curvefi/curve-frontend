@@ -16,7 +16,7 @@ type TableFilterButtonGroupProps<T extends string> = {
   onChange: (_: MouseEvent<HTMLElement>, value: T | null) => void
   ariaLabel: string
   options: readonly TableFilterButtonOption<T>[]
-  testIdPrefix?: string
+  testIdSuffix?: string
 }
 
 export const TableFilterButtonGroup = <T extends string>({
@@ -25,7 +25,7 @@ export const TableFilterButtonGroup = <T extends string>({
   onChange,
   ariaLabel,
   options,
-  testIdPrefix,
+  testIdSuffix,
 }: TableFilterButtonGroupProps<T>) => {
   const isMobile = useIsMobile()
   return (
@@ -37,9 +37,7 @@ export const TableFilterButtonGroup = <T extends string>({
             value={optionValue}
             size={isMobile ? 'small' : 'extraSmall'}
             sx={{ flex: 1, whiteSpace: 'nowrap' }}
-            data-testid={notFalsy<string>(testIdPrefix && `${testIdPrefix}-`, 'table-filter-button-', optionValue).join(
-              '',
-            )}
+            data-testid={notFalsy<string>('table-filter-btn', testIdSuffix, optionValue).join('-')}
           >
             {label}
           </ToggleButton>

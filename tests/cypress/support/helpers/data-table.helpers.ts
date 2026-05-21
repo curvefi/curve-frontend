@@ -44,7 +44,7 @@ export function openFilters() {
 export function withFiltersPopover<T>(callback: () => Cypress.Chainable<T>) {
   openFilters()
   return callback().then(result => {
-    cy.get('[data-testid="llamalend-filters-close-button"]').click({ waitForAnimations: true })
+    cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
     return cy.wrap(result)
   })
 }

@@ -19,7 +19,6 @@ import {
   assertNotInViewport,
   LOAD_TIMEOUT,
   oneDesktopViewport,
-  oneMobileViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
@@ -42,27 +41,11 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height])
     })
 
-    it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
-      if (breakpoint !== 'mobile') cy.viewport(oneMobileViewport()[0], height)
-      const mobile = 'mobile' // todo: filter by rewards currently only visible on mobile
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      withFilterChips(mobile, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      })
-      expandFirstRowOnMobile(mobile)
-      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-      withFilterChips(mobile, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-      })
-    })
-
     it('should have sticky headers', () => {
       cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
       cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
       cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
-      cy.get(`[data-testid^="market-type-"]`).should('be.visible') // wait for the table to render
+      cy.get(`[data-testid^="badge-market-type-"]`).should('be.visible') // wait for the table to render
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
@@ -81,9 +64,9 @@ testCases.forEach(([width, height, breakpoint]) => {
         .find(`[data-testid="market-link-${HighTVLAddress}"]`)
         .should('exist')
       if (breakpoint == 'mobile') {
-        withFilterChips(breakpoint, () => {
-          cy.get(`[data-testid="chip-lend"]`).click()
-          return cy.get(`[data-testid="market-type-mint"]`).should('not.exist')
+        withFiltersPopover(() => {
+          cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
+          return cy.get(`[data-testid="badge-market-type-${LlamaMarketType.Mint}"]`).should('not.exist')
         })
         cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
         openDrawer(breakpoint, 'sort')
@@ -250,8 +233,8 @@ testCases.forEach(([width, height, breakpoint]) => {
     it(`should allow filtering by market type`, () => {
       const marketTypes = shuffle(...recordValues(LlamaMarketType))
       marketTypes.forEach(type =>
-        checkTableFilterButtonGroupSelection(type, () => {
-          getTableCellAssets().find(`[data-testid="market-type-${type}"]`).should('be.visible')
+        checkTableFilterButtonGroupSelection(type, 'type', () => {
+          getTableCellAssets().find(`[data-testid="badge-market-type-${type}"]`).should('be.visible')
         }),
       )
     })
@@ -259,13 +242,21 @@ testCases.forEach(([width, height, breakpoint]) => {
     it(`should allow filtering by market version`, () => {
       const marketVersions = shuffle(...recordValues(LlamaMarketVersion))
       marketVersions.forEach(version =>
-        checkTableFilterButtonGroupSelection(version, () => {
-          getTableCellAssets().find(`[data-testid="market-version-${version}"]`).should('be.visible')
+        checkTableFilterButtonGroupSelection(version, 'version', () => {
+          getTableCellAssets().find(`[data-testid="badge-market-version-${version}"]`).should('be.visible')
         }),
       )
     })
 
-    // todo: test reset fiter button yet to be implemented
+    it(`should reset all filters when pressing the reset button`, () => {
+      withFiltersPopover(() => {
+        cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
+        cy.url().should('include', `type=${LlamaMarketType.Lend}`)
+        cy.get(`[data-testid="btn-reset-filters"]`).should('not.be.disabled').click()
+        cy.url().should('not.include', 'type=')
+        return cy.get(`[data-testid="btn-reset-filters"]`).should('be.disabled')
+      })
+    })
 
     it(`should copy the market address`, RETRY_IN_CI, () => {
       expandFirstRowOnMobile(breakpoint)
@@ -357,8 +348,12 @@ testCases.forEach(([width, height, breakpoint]) => {
     }
 
     /** Check the correct selection of the filter's grouped buttons by checking the url and a callback function */
-    function checkTableFilterButtonGroupSelection<T extends string>(value: T, checkCallback: (value?: T) => void) {
-      withFiltersPopover(() => cy.get(`[data-testid="llamalend-table-filter-button-${value}"]`).click())
+    function checkTableFilterButtonGroupSelection<T extends string>(
+      value: T,
+      type: string,
+      checkCallback: (value?: T) => void,
+    ) {
+      withFiltersPopover(() => cy.get(`[data-testid="table-filter-btn-market-${type}-${value}"]`).click())
       cy.url().should('include', value)
       checkCallback(value)
     }
@@ -400,11 +395,9 @@ const getMaxTvl = (vaultData: Record<Chain, GetMarketsResponse>) =>
     ),
   ) ?? 0
 
-// no more chips to filter by market type for the new table
 const filterByMarketType = (size: [number, number], marketType: LlamaMarketType = LlamaMarketType.Lend) => {
+  const otherMarketType = oneOf(...recordValues(LlamaMarketType).filter(m => m !== marketType))
   visitAndWait(size, `/llamalend/ethereum/markets?type=${marketType}`)
   cy.url().should('include', `type=${marketType}`)
-  cy.get(
-    `[data-testid="market-type-${(marketType === LlamaMarketType.Lend ? LlamaMarketType.Mint : LlamaMarketType.Lend).toLowerCase()}"]`,
-  ).should('not.exist')
+  cy.get(`[data-testid="badge-market-type-${otherMarketType}"]`).should('not.exist')
 }
