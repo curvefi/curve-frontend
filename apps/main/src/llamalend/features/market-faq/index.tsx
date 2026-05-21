@@ -123,7 +123,7 @@ const FAQ_GROUPS: FaqGroup[] = [
 export const MarketFaq = () => (
   <Stack component="section" gap={0} data-testid="llamalend-market-faq">
     <Stack minHeight="3.5rem" justifyContent="end" paddingBlockEnd={Spacing.xs}>
-      <Typography variant="headingSBold" color="textSecondary">
+      <Typography color="textSecondary" sx={{ typography: 'headingSBold' }}>
         {t`FAQs`}
       </Typography>
     </Stack>
@@ -137,7 +137,7 @@ export const MarketFaq = () => (
             paddingBlockEnd={Spacing.xs}
             sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
           >
-            <Typography variant="headingXsBold" color="textSecondary">
+            <Typography color="textSecondary" sx={{ typography: 'headingXsBold' }}>
               {t(group.title)}
             </Typography>
           </Stack>
@@ -151,7 +151,7 @@ export const MarketFaq = () => (
                 indicator="plusMinus"
                 sx={{ paddingBlock: Spacing.md }}
               >
-                <Typography variant="bodyMRegular" color="textPrimary">
+                <Typography color="textPrimary" sx={{ typography: 'bodyMRegular' }}>
                   {t(item.answer)}
                 </Typography>
               </Accordion>
@@ -162,7 +162,7 @@ export const MarketFaq = () => (
     </Stack>
 
     <Stack alignItems="center" gap={Spacing.sm} paddingBlock={Spacing.md}>
-      <Typography variant="bodyMRegular" color="textPrimary" textAlign="center">
+      <Typography color="textPrimary" textAlign="center" sx={{ typography: 'bodyMRegular' }}>
         {t`Want to know even more?`}
       </Typography>
       <ExternalLink
