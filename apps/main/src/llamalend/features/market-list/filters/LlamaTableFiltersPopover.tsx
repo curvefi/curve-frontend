@@ -5,7 +5,6 @@ import IconButton from '@mui/material/IconButton'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -31,54 +30,46 @@ export const LlamaTableFiltersPopover = ({
   marketsQuery: QueryProp<LlamaMarket[]>
   resetFilters: () => void
   hasActiveFilters: boolean
-} & FilterProps<LlamaMarketColumnId>) => {
-  const isMobile = useIsMobile()
-  return (
-    <Popover
-      open={open}
-      onClose={onClose}
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      slotProps={{
-        paper: {
-          sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
-        },
-      }}
-    >
-      <Stack sx={{ '& > * + *': { borderTop: t => `1px solid ${t.design.Layer[1].Outline}` } }}>
-        <Stack
-          direction="row"
-          alignItems="flex-end"
-          gap={Spacing.sm}
-          justifyContent="space-between"
-          minHeight={MinHeight.popoverHeader}
-          paddingInlineStart={Spacing.sm}
-        >
-          <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
-            {t`Filter markets`}
-          </Typography>
-          <IconButton size="extraSmall" onClick={onClose} data-testid="btn-close-filters">
-            <Cross2Icon />
-          </IconButton>
-        </Stack>
-        <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
-        <Stack direction="row" padding={Spacing.sm} justifyContent="space-between">
-          <Button
-            color="ghost"
-            size="extraSmall"
-            onClick={resetFilters}
-            disabled={!hasActiveFilters}
-            data-testid="btn-reset-filters"
-          >
-            {t`Reset filters`}
-          </Button>
-          {isMobile && (
-            <Button color="outlined" size="extraSmall" onClick={onClose}>
-              {t`Apply filters`}
-            </Button>
-          )}
-        </Stack>
+} & FilterProps<LlamaMarketColumnId>) => (
+  <Popover
+    open={open}
+    onClose={onClose}
+    anchorEl={anchorEl}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+    slotProps={{
+      paper: {
+        sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
+      },
+    }}
+  >
+    <Stack sx={{ '& > * + *': { borderTop: t => `1px solid ${t.design.Layer[1].Outline}` } }}>
+      <Stack
+        direction="row"
+        alignItems="flex-end"
+        gap={Spacing.sm}
+        justifyContent="space-between"
+        minHeight={MinHeight.popoverHeader}
+        paddingInlineStart={Spacing.sm}
+      >
+        <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
+          {t`Filter markets`}
+        </Typography>
+        <IconButton size="extraSmall" onClick={onClose} data-testid="btn-close-filters">
+          <Cross2Icon />
+        </IconButton>
       </Stack>
-    </Popover>
-  )
-}
+      <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
+      <Stack direction="row" padding={Spacing.sm}>
+        <Button
+          color="ghost"
+          size="extraSmall"
+          onClick={resetFilters}
+          disabled={!hasActiveFilters}
+          data-testid="btn-reset-filters"
+        >
+          {t`Reset filters`}
+        </Button>
+      </Stack>
+    </Stack>
+  </Popover>
+)
