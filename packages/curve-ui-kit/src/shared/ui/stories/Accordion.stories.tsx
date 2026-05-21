@@ -114,6 +114,59 @@ export const PlusMinusOpen: Story = {
   parameters: { docs: { description: { story: 'FAQ-style accordion with a minus indicator when open' } } },
 }
 
+export const MotionStressFaq: Story = {
+  render: () => (
+    <Stack maxWidth="48rem" gap={1}>
+      <Accordion title="What is LlamaLend?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
+        <Typography variant="bodyMRegular">
+          LlamaLend is Curve's non-custodial lending infrastructure with isolated one-way markets.
+        </Typography>
+      </Accordion>
+      <Accordion title="When does liquidation happen?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
+        <Typography variant="bodyMRegular">
+          Full liquidation happens when health reaches zero. Before that, liquidation protection can gradually convert
+          collateral.
+        </Typography>
+      </Accordion>
+      <Accordion title="What is Supply APR?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
+        <Typography variant="bodyMRegular">
+          Supply APR is the annualized rate earned by suppliers and changes as market utilization changes.
+        </Typography>
+      </Accordion>
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'FAQ-like accordions for checking rapid toggles, independent open states, and plus/minus crossfades.',
+      },
+    },
+  },
+}
+
+export const ReducedMotionReference: Story = {
+  render: () => (
+    <Stack maxWidth="48rem" gap={1}>
+      <Typography variant="bodySRegular" color="textSecondary">
+        Enable reduced motion in the browser or OS to confirm the content and indicator state changes become instant.
+      </Typography>
+      <Accordion title="Reduced motion accordion" ghost indicator="plusMinus" defaultExpanded sx={{ paddingBlock: 2 }}>
+        <Typography variant="bodyMRegular">
+          The accordion should preserve layout and accessibility while disabling decorative transform and opacity
+          motion.
+        </Typography>
+      </Accordion>
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Reference story for validating `prefers-reduced-motion` behavior.',
+      },
+    },
+  },
+}
+
 export const WithInfo: Story = {
   args: {
     info: (

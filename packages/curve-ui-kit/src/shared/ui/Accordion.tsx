@@ -5,7 +5,7 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import type { Responsive } from '@ui-kit/themes/basic-theme'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Duration, Transition, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps, type SxProps } from '@ui-kit/utils'
@@ -43,6 +43,9 @@ const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
+const reducedMotion = '@media (prefers-reduced-motion: reduce)'
+const hoverFinePointer = '@media (hover: hover) and (pointer: fine)'
+const indicatorIconSize = '0.9375rem'
 
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
@@ -137,6 +140,7 @@ export const Accordion = ({
           minHeight: size === 'extraSmall' ? IconSize.sm.mobile : IconSize.md.mobile,
           ...(isOpen && !ghost && { backgroundColor: activeFill }),
           transition: `background-color ${TransitionFunction}`,
+          touchAction: 'manipulation',
 
           // Render border inside without layout shift on hover using a pseudo-element overlay
           position: 'relative',
@@ -152,9 +156,10 @@ export const Accordion = ({
               : isOpen
                 ? { border: borderStyle, borderBottom: borderStyle }
                 : { border: borderStyle }),
+            transition: `border-color ${TransitionFunction}, border-width ${TransitionFunction}`,
           },
 
-          '&:hover, &.Mui-focusVisible': {
+          '&.Mui-focusVisible': {
             '&::after': {
               borderColor: t => t.design.Button.Focus_Outline,
               ...(ghost
@@ -162,6 +167,25 @@ export const Accordion = ({
                 : { borderWidth: '2px' }),
             },
             ...(!ghost && { backgroundColor: layer1Fill }),
+          },
+
+          [hoverFinePointer]: {
+            '&:hover': {
+              '&::after': {
+                borderColor: t => t.design.Button.Focus_Outline,
+                ...(ghost
+                  ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
+                  : { borderWidth: '2px' }),
+              },
+              ...(!ghost && { backgroundColor: layer1Fill }),
+            },
+          },
+
+          [reducedMotion]: {
+            transition: 'none',
+            '&::after': {
+              transition: 'none',
+            },
           },
         }}
       >
@@ -207,12 +231,10 @@ export const Accordion = ({
               width: headerIconSize[size],
               height: headerIconSize[size],
               transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              // Create a transition that mimics the collapse transition
-              transition: t =>
-                t.transitions.create('transform', {
-                  duration: t.transitions.duration.standard,
-                  easing: t.transitions.easing.easeInOut,
-                }),
+              transition: `transform ${TransitionFunction}`,
+              [reducedMotion]: {
+                transition: 'none',
+              },
             }}
           />
           <Box
@@ -223,13 +245,37 @@ export const Accordion = ({
               justifyContent: 'center',
               width: headerIconSize[size],
               height: headerIconSize[size],
+              position: 'relative',
             }}
           >
-            {isOpen ? (
-              <RemoveIcon sx={{ width: '0.9375rem', height: '0.9375rem' }} />
-            ) : (
-              <AddIcon sx={{ width: '0.9375rem', height: '0.9375rem' }} />
-            )}
+            <AddIcon
+              sx={{
+                position: 'absolute',
+                width: indicatorIconSize,
+                height: indicatorIconSize,
+                opacity: isOpen ? 0 : 1,
+                transform: isOpen ? 'scale(0.85)' : 'scale(1)',
+                transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
+                [reducedMotion]: {
+                  transition: 'none',
+                  transform: 'none',
+                },
+              }}
+            />
+            <RemoveIcon
+              sx={{
+                position: 'absolute',
+                width: indicatorIconSize,
+                height: indicatorIconSize,
+                opacity: isOpen ? 1 : 0,
+                transform: isOpen ? 'scale(1)' : 'scale(0.85)',
+                transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
+                [reducedMotion]: {
+                  transition: 'none',
+                  transform: 'none',
+                },
+              }}
+            />
           </Box>
         </Stack>
       </ButtonBase>
@@ -237,8 +283,23 @@ export const Accordion = ({
       <Collapse
         in={isOpen}
         id={id}
+        easing={Transition}
+        timeout={Duration.Transition}
         sx={{
           ...(!ghost && { backgroundColor: layer1Fill }),
+          '& .MuiCollapse-wrapperInner': {
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? 'translateY(0)' : 'translateY(-0.125rem)',
+            transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
+          },
+          [reducedMotion]: {
+            transitionDuration: '0ms',
+            '& .MuiCollapse-wrapperInner': {
+              opacity: 1,
+              transform: 'none',
+              transition: 'none',
+            },
+          },
         }}
       >
         {/*
