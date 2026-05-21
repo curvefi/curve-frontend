@@ -19,7 +19,7 @@ import {
   checkTableFilterButtonGroupSelection,
   enableGraphColumn,
   filterByMarketType,
-  getOneColumnMiddleRangeValue,
+  getOneColumnMedianValue,
   typeFilterInput,
   visitAndWait,
 } from '@cy/support/helpers/llamalend/llamalend-markets'
@@ -43,6 +43,7 @@ const testCases = [oneViewport()] as const
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
+    const itNotMobile = breakpoint !== 'mobile' ? it : it.skip
 
     beforeEach(() => {
       ;({ vaultData } = setupLlamalendListMocks())
@@ -204,7 +205,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       getTableCellAssets().first().contains('wstETH')
     })
 
-    it('should allow filtering favorites', { scrollBehavior: false }, () => {
+    itNotMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
       openDrawer(breakpoint, 'filter')
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -237,7 +238,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should allow filtering by using a range inputs', () => {
-      const [columnId, middleValue] = getOneColumnMiddleRangeValue(vaultData, [
+      const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [
         LlamaMarketColumnId.BorrowRate,
         LlamaMarketColumnId.Tvl,
         LlamaMarketColumnId.LiquidityUsd,
@@ -245,24 +246,44 @@ testCases.forEach(([width, height, breakpoint]) => {
       ])
       const bound = oneOf('min', 'max')
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        withFiltersPopover(() => typeFilterInput(`range-filter-${columnId}-${bound}`, middleValue).blur())
+        withFiltersPopover(() => typeFilterInput(`range-filter-${columnId}-${bound}`, medianValue).blur())
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
       })
     })
 
-    it(`should allow filtering by using a slider input`, () => {
+    it(`should allow filtering by using a slider and input`, () => {
       // Keep the viewport stable for slider width.
       cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
-      const [columnId, middleValue] = getOneColumnMiddleRangeValue(vaultData, [LlamaMarketColumnId.MaxLtv])
+      const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [LlamaMarketColumnId.MaxLtv])
       const bound = oneOf('min', 'max')
 
+      // test the slider's input
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        withFiltersPopover(() => typeFilterInput(`slider-input-${columnId}-${bound}`, middleValue).blur())
+        withFiltersPopover(() => typeFilterInput(`slider-input-${columnId}-${bound}`, medianValue).blur())
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
 
-        cy.get(`[data-testid="slider-${columnId}"]`).as('slider')
+        // reset the filters
+        withFiltersPopover(() => cy.get(`[data-testid="btn-reset-filters"]`).click())
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
+
+        // test the slider
+        withFiltersPopover(() =>
+          cy
+            .get(`[data-testid="slider-${columnId}"]`)
+            .as('slider')
+            .then(
+              (
+                $el, // With log slider a click from the left is not enough to filter
+              ) =>
+                // Click 20px from the right edge and vertically centered
+                [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
+            )
+            .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true })),
+        )
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+        cy.url().should('include', `${columnId}=`)
       })
     })
 

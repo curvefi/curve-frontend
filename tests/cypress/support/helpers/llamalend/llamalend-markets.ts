@@ -1,11 +1,11 @@
-import { maxBy, mean, minBy } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, type TokenType } from '@cy/support/generators'
 import { getTableCellAssets, withFiltersPopover } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import { fromEntries, recordEntries, recordValues } from '@primitives/objects.utils'
+import { median } from '@primitives/array.utils'
+import { fromEntries, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
 import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
@@ -30,12 +30,12 @@ export function enableGraphColumn() {
 export const typeFilterInput = (testId: string, value: number) =>
   cy.get(`[data-testid="${testId}"]`).find('input[type="text"]').click().type('{selectAll}').type(`${value}`)
 
-/** Returns the midpoint between the min and max values for a column. */
-const getMiddleRange = <T extends Partial<Record<string, number>>>(data: T[], key: string) =>
-  mean([minBy(data, key)?.[key] ?? 0, maxBy(data, key)?.[key] ?? 0])
+/** Returns the median value for a column. */
+const getMedianValue = <T extends Partial<Record<string, number>>>(data: T[], key: string) =>
+  median(notFalsy(...data.map(item => item[key])))
 
-/** Returns one random column paired with its middle range value. */
-export const getOneColumnMiddleRangeValue = (
+/** Returns one random column paired with its median value. */
+export const getOneColumnMedianValue = (
   vaultData: Record<Chain, GetMarketsResponse>,
   columns: readonly LlamaMarketColumnId[],
 ) => {
@@ -50,8 +50,8 @@ export const getOneColumnMiddleRangeValue = (
       }),
     ),
   )
-  const middleValues = fromEntries(columns.map(columnId => [columnId, getMiddleRange(data, columnId)] as const))
-  return oneOf(...recordEntries(middleValues))
+  const medianValues = fromEntries(columns.map(columnId => [columnId, getMedianValue(data, columnId)] as const))
+  return oneOf(...recordEntries(medianValues))
 }
 
 export const filterByMarketType = (size: [number, number], marketType: LlamaMarketType = LlamaMarketType.Lend) => {
