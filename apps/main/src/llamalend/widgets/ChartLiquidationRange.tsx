@@ -121,6 +121,7 @@ const LegendContent = ({ payload }: LegendContentProps) => (
   </Stack>
 )
 
+/** @deprecated in favour of SmallLiquidationRangeChart */
 export const ChartLiquidationRange = ({
   data,
   healthColorKey,

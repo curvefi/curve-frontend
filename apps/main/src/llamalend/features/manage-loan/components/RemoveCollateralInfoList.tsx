@@ -1,6 +1,7 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
@@ -63,6 +64,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         stateCollateral => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
       )}
       prices={q(useRemoveCollateralPrices(params, isOpen))}
+      oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       {...useLeverageInfoFields({
         leverageEnabled: false,
         leverageValue: useRemoveCollateralFutureLeverage(params, isOpen),
