@@ -9,7 +9,7 @@ import {
 } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
-import type { BackendMaintenance } from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
+import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +23,7 @@ import { StackBanners } from './StackBanners'
 type GlobalBannerProps = {
   networkId: string
   chainId: number
-  backendMaintenance: BackendMaintenance
+  backendMaintenance: Maintenance
 }
 
 export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalBannerProps) => {

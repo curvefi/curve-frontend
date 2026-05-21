@@ -31,7 +31,7 @@ export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRe
 export const notFalsy = <T>(...items: (T | Falsy)[]): T[] => items.filter(Boolean) as T[]
 
 /** Creates an array of all the flattened values in the given arrays. */
-export const notFalsyArray = <T>(...items: (T[] | Falsy)[]): T[] => notFalsy(...items).flat()
+export const notFalsyArray = <T>(...items: (readonly T[] | Falsy)[]): T[] => notFalsy(...items).flat()
 
 export function assert<T>(value: T | Falsy, message: string) {
   if (!value) {

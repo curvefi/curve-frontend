@@ -18,13 +18,50 @@ const { Height } = SizesAndSpaces
 type BandsChartProps = {
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken
-  chartData: ChartDataPoint[]
+  chartData: ChartDataPoint[] | undefined
   error: Error | null
   isLoading: boolean
   userBandsBalances: FetchedBandsBalances[]
   oraclePrice?: string
   height?: number
   priceRange?: { min: number; max: number }
+}
+
+type BandsChartContentProps = Omit<BandsChartProps, 'chartData' | 'error' | 'isLoading' | 'height'> & {
+  chartData: ChartDataPoint[]
+}
+
+const BandsChartContent = ({
+  collateralToken,
+  borrowToken,
+  chartData,
+  userBandsBalances,
+  oraclePrice,
+  priceRange,
+}: BandsChartContentProps) => {
+  const palette = useBandsChartPalette()
+  const derived = useDerivedChartData(chartData)
+  const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
+  const theme = useTheme()
+  const tooltipFormatter = useEChartsTooltip(chartData, theme, data => (
+    <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
+  ))
+  const option: EChartsOption = useMemo(
+    () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
+    [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
+  )
+  const finalOption = useBandsChartZoom({ option, priceRange, chartData, derived })
+
+  return (
+    <ReactECharts
+      option={finalOption}
+      style={{ width: '100%', height: '100%' }}
+      opts={{ renderer: 'canvas' }}
+      notMerge={true}
+      lazyUpdate={true}
+      autoResize={true}
+    />
+  )
 }
 
 /**
@@ -47,18 +84,7 @@ const BandsChartComponent = ({
   height = Height.chart,
   priceRange,
 }: BandsChartProps) => {
-  const palette = useBandsChartPalette()
-  const derived = useDerivedChartData(chartData)
-  const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
-  const theme = useTheme()
-  const tooltipFormatter = useEChartsTooltip(chartData, theme, data => (
-    <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
-  ))
-  const option: EChartsOption = useMemo(
-    () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
-    [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
-  )
-  const finalOption = useBandsChartZoom({ option, priceRange, chartData, derived })
+  const isChartDataPending = !error && chartData === undefined
 
   return (
     <Box
@@ -73,18 +99,22 @@ const BandsChartComponent = ({
     >
       <ChartStateWrapper
         height={height}
-        isLoading={isLoading || !chartData?.length}
+        isLoading={isLoading || isChartDataPending}
+        isEmpty={chartData?.length === 0}
+        emptyMessage={t`No active bands for this market`}
         error={error}
         errorMessage={t`Failed to load bands chart data`}
       >
-        <ReactECharts
-          option={finalOption}
-          style={{ width: '100%', height: '100%' }}
-          opts={{ renderer: 'canvas' }}
-          notMerge={true}
-          lazyUpdate={true}
-          autoResize={true}
-        />
+        {chartData != null && (
+          <BandsChartContent
+            collateralToken={collateralToken}
+            borrowToken={borrowToken}
+            chartData={chartData}
+            userBandsBalances={userBandsBalances}
+            oraclePrice={oraclePrice}
+            priceRange={priceRange}
+          />
+        )}
       </ChartStateWrapper>
     </Box>
   )

@@ -5,6 +5,7 @@ import type { PartialRecord } from '@primitives/objects.utils'
 import {
   type Column,
   type ColumnDef,
+  type ColumnMeta as TanstackColumnMeta,
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
@@ -37,6 +38,8 @@ export type ColumnDefinition<T> = ColumnDef<T, any>
 export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
+
+export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
 
 /**
  * Wrapper around useReactTable to create a table instance.

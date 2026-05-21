@@ -42,7 +42,7 @@ export const useBandsData = ({
     enabled,
   )
 
-  const chartData = useProcessedBandsData({
+  const processedChartData = useProcessedBandsData({
     marketBandsBalances,
     userBandsBalances,
   })
@@ -59,7 +59,7 @@ export const useBandsData = ({
   return {
     isLoading,
     error: marketBandsBalancesError,
-    chartData,
+    chartData: processedChartData,
     userBandsBalances,
     oraclePrice,
   }
