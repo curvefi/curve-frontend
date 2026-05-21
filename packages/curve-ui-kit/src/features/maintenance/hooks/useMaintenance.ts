@@ -9,6 +9,7 @@ export type MaintenanceConfig = {
   warnBefore: 'month' | 'week'
   // Optional information to display in the modal and banner.
   expectedDurationLabel?: string
+  learnMoreLink?: string
 } | null
 
 export type Maintenance = {
@@ -19,6 +20,7 @@ export type Maintenance = {
   showModal: boolean
   dismissModal: () => void
   dismissBanner: () => void
+  learnMoreLink?: string
 }
 
 /** Returns the date when maintenance warnings should start for a scheduled event. */
@@ -42,7 +44,7 @@ const getWarningStartsAt = (dateISO: string | undefined, warnBefore: 'month' | '
  * The modal appears first when the warning window starts, then the banner can reappear daily 24h after the modal was dismissed.
  */
 export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
-  const { dateISO, warnBefore, expectedDurationLabel } = maintenance ?? {}
+  const { dateISO, warnBefore, expectedDurationLabel, learnMoreLink } = maintenance ?? {}
   const [modalDismissedAt, setModalDismissedAt] = useDismissMaintenanceModal(dateISO)
   const [shouldShowBanner, dismissBanner] = useDismissMaintenanceBanner(dateISO)
 
@@ -66,5 +68,6 @@ export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
     showModal: !modalDismissedAt && isWithinWarningWindow,
     dismissModal: () => setModalDismissedAt(new Date().toISOString()),
     dismissBanner,
+    learnMoreLink,
   }
 }
