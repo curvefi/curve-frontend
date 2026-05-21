@@ -41,6 +41,31 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height])
     })
 
+    it(`should copy the market address`, RETRY_IN_CI, () => {
+      expandFirstRowOnMobile(breakpoint)
+      // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
+      range(2).forEach(() =>
+        breakpoint === 'desktop'
+          ? // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
+            cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
+          : cy.get(`[data-testid^="copy-market-address"]:visible`).first().click(),
+      )
+      cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
+    })
+
+    it(`should navigate to the market details`, () => {
+      const [type, urlRegex] = oneOf(
+        [LlamaMarketType.Mint, /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
+        [LlamaMarketType.Lend, /\/lend\/\w+\/markets\/.+\/?$/],
+      )
+      filterByMarketType([width, height], type)
+      cy.get(`[data-testid^="market-link-"]`).first().click()
+      if (breakpoint === 'mobile') {
+        cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
+      }
+      cy.url(LOAD_TIMEOUT).should('match', urlRegex)
+    })
+
     it('should have sticky headers', () => {
       cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
       cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
@@ -55,6 +80,40 @@ testCases.forEach(([width, height, breakpoint]) => {
       }[breakpoint]
       cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
       cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
+    })
+
+    it('should hide columns', () => {
+      if (breakpoint == 'mobile') {
+        // mobile viewports do not have this feature
+        const [width, height] = oneDesktopViewport()
+        cy.viewport(width, height)
+      }
+      const { toggle, element } = oneOf(
+        { toggle: 'tvl', element: 'data-table-header-tvl' },
+        { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
+        { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
+      )
+      cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
+      cy.get(`[data-testid="${element}"]`).should('be.visible')
+      cy.get(`[data-testid="btn-visibility-settings"]`).click()
+      cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
+      cy.get(`[data-testid="${element}"]`).should('not.exist')
+    })
+
+    it('should display Borrow APR by default', () => {
+      const borrowColumnId = LlamaMarketColumnId.BorrowRate
+
+      if (breakpoint === 'mobile') {
+        // On mobile, expand the first row and check the metric is visible in the expanded panel
+        expandFirstRowOnMobile(breakpoint)
+        cy.get('[data-testid="data-table-expansion-row"]').contains('Borrow APR').should('be.visible')
+        cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
+      } else {
+        // On tablet/desktop, the column header and cell should be visible by default
+        cy.get(`[data-testid="data-table-header-${borrowColumnId}"]`).should('be.visible')
+        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().should('be.visible')
+        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().contains('%')
+      }
     })
 
     it('should sort', () => {
@@ -130,11 +189,43 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
     })
 
-    it('persists search filter across reload', () => {
+    it('should persists search filter across reload', () => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
       cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
       getTableCellAssets().first().contains('wstETH')
+    })
+
+    it('should allow filtering favorites', { scrollBehavior: false }, () => {
+      openDrawer(breakpoint, 'filter')
+      // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
+      cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
+
+      closeDrawer(breakpoint)
+      withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
+      cy.url().should('include', 'isFavorite=yes')
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
+      cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
+      cy.get(`[data-testid="table-empty-row"]`).should('exist')
+    })
+
+    it('should allow filtering by chain', () => {
+      const chains = objectKeys(vaultData)
+      const chain = oneOf(...chains)
+      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
+      checkChainSelection(chain)
+
+      // filter by multiple chains at the same time
+      const otherChain = oneOf(...chains.filter(c => c !== chain))
+      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
+      checkChainSelection(chain, otherChain)
+    })
+
+    it(`should allow filtering by token`, () => {
+      openFilters()
+      checkCoinSelection('collateral')
+      checkCoinSelection('borrowed')
     })
 
     itMobileOnly('should allow filtering by using a slider', () => {
@@ -198,38 +289,6 @@ testCases.forEach(([width, height, breakpoint]) => {
       })
     })
 
-    it('should allow filtering by chain', () => {
-      const chains = objectKeys(vaultData)
-      const chain = oneOf(...chains)
-      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
-      checkChainSelection(chain)
-
-      // filter by multiple chains at the same time
-      const otherChain = oneOf(...chains.filter(c => c !== chain))
-      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
-      checkChainSelection(chain, otherChain)
-    })
-
-    it(`should allow filtering by token`, () => {
-      openFilters()
-      checkCoinSelection('collateral')
-      checkCoinSelection('borrowed')
-    })
-
-    it('should allow filtering favorites', { scrollBehavior: false }, () => {
-      openDrawer(breakpoint, 'filter')
-      // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
-      cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
-
-      closeDrawer(breakpoint)
-      withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
-      cy.url().should('include', 'isFavorite=yes')
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
-      cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
-      cy.get(`[data-testid="table-empty-row"]`).should('exist')
-    })
-
     it(`should allow filtering by market type`, () => {
       const marketTypes = shuffle(...recordValues(LlamaMarketType))
       marketTypes.forEach(type =>
@@ -248,73 +307,13 @@ testCases.forEach(([width, height, breakpoint]) => {
       )
     })
 
-    it(`should reset all filters when pressing the reset button`, () => {
-      withFiltersPopover(() => {
-        cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
-        cy.url().should('include', `type=${LlamaMarketType.Lend}`)
-        cy.get(`[data-testid="btn-reset-filters"]`).should('not.be.disabled').click()
-        cy.url().should('not.include', 'type=')
-        return cy.get(`[data-testid="btn-reset-filters"]`).should('be.disabled')
-      })
-    })
-
-    it(`should copy the market address`, RETRY_IN_CI, () => {
-      expandFirstRowOnMobile(breakpoint)
-      // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
-      range(2).forEach(() =>
-        breakpoint === 'desktop'
-          ? // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
-            cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
-          : cy.get(`[data-testid^="copy-market-address"]:visible`).first().click(),
-      )
-      cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
-    })
-
-    it(`should navigate to market details`, () => {
-      const [type, urlRegex] = oneOf(
-        [LlamaMarketType.Mint, /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
-        [LlamaMarketType.Lend, /\/lend\/\w+\/markets\/.+\/?$/],
-      )
-      filterByMarketType([width, height], type)
-      cy.get(`[data-testid^="market-link-"]`).first().click()
-      if (breakpoint === 'mobile') {
-        cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
-      }
-      cy.url(LOAD_TIMEOUT).should('match', urlRegex)
-    })
-
-    it('should hide columns', () => {
-      if (breakpoint == 'mobile') {
-        // mobile viewports do not have this feature
-        const [width, height] = oneDesktopViewport()
-        cy.viewport(width, height)
-      }
-      const { toggle, element } = oneOf(
-        { toggle: 'tvl', element: 'data-table-header-tvl' },
-        { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
-        { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
-      )
-      cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
-      cy.get(`[data-testid="${element}"]`).should('be.visible')
-      cy.get(`[data-testid="btn-visibility-settings"]`).click()
-      cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
-      cy.get(`[data-testid="${element}"]`).should('not.exist')
-    })
-
-    it('should display Borrow APR by default', () => {
-      const borrowColumnId = LlamaMarketColumnId.BorrowRate
-
-      if (breakpoint === 'mobile') {
-        // On mobile, expand the first row and check the metric is visible in the expanded panel
-        expandFirstRowOnMobile(breakpoint)
-        cy.get('[data-testid="data-table-expansion-row"]').contains('Borrow APR').should('be.visible')
-        cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
-      } else {
-        // On tablet/desktop, the column header and cell should be visible by default
-        cy.get(`[data-testid="data-table-header-${borrowColumnId}"]`).should('be.visible')
-        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().should('be.visible')
-        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().contains('%')
-      }
+    it(`should reset filters when pressing the reset button`, () => {
+      withFiltersPopover(() => cy.get(`[data-testid="btn-reset-filters"]`).should('be.disabled'))
+      visitAndWait([width, height], `/llamalend/ethereum/markets?isFavorite=yes`)
+      cy.get(`[data-testid="table-empty-row"]`).should('exist')
+      withFiltersPopover(() => cy.get(`[data-testid="btn-reset-filters"]`).click())
+      cy.url().should('not.include', 'isFavorite=')
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
 
     function checkLineGraphColor(type: MarketRateType, color: string) {
