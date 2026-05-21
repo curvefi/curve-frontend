@@ -25,6 +25,7 @@ import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
+const TEST_ID = 'table-filters-collapsible'
 const LLAMA_MARKET_COLUMN_ORDER = new Map(LLAMA_MARKET_COLUMNS.map((column, index) => [column.id, index]))
 
 const formatRangeValue = (value: number, unit?: Unit) =>
@@ -78,6 +79,7 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
       gap={Spacing.sm}
       justifyContent="space-between"
       sx={{ borderTop: t => `1px solid ${t.design.Layer[1].Outline}` }}
+      data-testid={TEST_ID}
     >
       <Stack direction="row" gap={Spacing.sm} flexWrap="wrap">
         {sortedFiltersState.map(({ id, value }) => {
@@ -128,7 +130,13 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
         })}
       </Stack>
 
-      <Button color="ghost" size="extraSmall" onClick={resetFilters} sx={{ flexShrink: 0 }}>
+      <Button
+        color="ghost"
+        size="extraSmall"
+        onClick={resetFilters}
+        sx={{ flexShrink: 0 }}
+        data-testid={`${TEST_ID}-reset-btn`}
+      >
         {t`Reset filters`}
       </Button>
     </Stack>

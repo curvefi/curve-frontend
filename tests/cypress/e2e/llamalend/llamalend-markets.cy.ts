@@ -313,5 +313,20 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.url().should('not.include', 'isFavorite=')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
+
+    itNotMobile('should show active filters in the collapsible', () => {
+      withFiltersPopover(() => {
+        cy.get(`[data-testid="table-filter-btn-market-version-${LlamaMarketVersion.v1}"]`).click()
+        cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
+        return cy.get(`[data-testid="chip-chain-ethereum"]`).click()
+      })
+
+      cy.get(`[data-testid="table-filters-collapsible"]`).should('be.visible').as('collapsible')
+      cy.get('@collapsible').children().first().first().children().should('have.length', 3)
+
+      cy.get(`[data-testid="table-filters-collapsible-reset-btn"]`).click()
+      cy.get('@collapsible').should('not.be.visible')
+      cy.url().should('not.include', `?`)
+    })
   })
 })
