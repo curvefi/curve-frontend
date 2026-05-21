@@ -31,6 +31,11 @@ const meta: Meta<typeof Accordion> = {
       options: ['extraSmall', 'small', 'medium'],
       description: 'The size of the accordion header',
     },
+    indicator: {
+      control: 'select',
+      options: ['chevron', 'plusMinus'],
+      description: 'The visual indicator displayed at the end of the header',
+    },
     info: {
       control: { disable: true },
       description: 'Optional information to display in the header (ReactNode)',
@@ -48,6 +53,7 @@ const meta: Meta<typeof Accordion> = {
     title: 'Accordion title',
     ghost: false,
     size: 'small',
+    indicator: 'chevron',
     defaultExpanded: false,
     children: 'This is the content of the accordion that appears when expanded.',
   },
@@ -85,6 +91,27 @@ export const WithIcon: Story = {
 export const Ghost: Story = {
   args: { ghost: true },
   parameters: { docs: { description: { story: 'Accordion without a border (ghost mode)' } } },
+}
+
+export const PlusMinusClosed: Story = {
+  args: {
+    ghost: true,
+    indicator: 'plusMinus',
+    title: 'What is LlamaLend?',
+  },
+  parameters: { docs: { description: { story: 'FAQ-style accordion with a plus indicator' } } },
+}
+
+export const PlusMinusOpen: Story = {
+  args: {
+    defaultExpanded: true,
+    ghost: true,
+    indicator: 'plusMinus',
+    title: 'What is LlamaLend?',
+    children:
+      "LlamaLend is Curve's non-custodial lending infrastructure. All markets are one-way isolated: each market has one collateral and one borrowable asset.",
+  },
+  parameters: { docs: { description: { story: 'FAQ-style accordion with a minus indicator when open' } } },
 }
 
 export const WithInfo: Story = {
@@ -196,6 +223,47 @@ export const Controlled: Story = {
           'Accordion with controlled state. The expanded state is managed externally using the `expanded` and `toggle` props.',
       },
     },
+  },
+}
+
+export const FaqSection: Story = {
+  render: () => (
+    <Stack maxWidth="80rem">
+      <Stack minHeight="3.5rem" justifyContent="end" paddingBlockEnd={1}>
+        <Typography variant="headingSBold" color="textSecondary">
+          FAQs
+        </Typography>
+      </Stack>
+      <Stack gap={1}>
+        <Stack
+          minHeight="2.5rem"
+          justifyContent="end"
+          paddingBlockEnd={1}
+          sx={{ borderBottom: t => `1px solid ${t.design.Layer[1].Outline}` }}
+        >
+          <Typography variant="headingXsBold" color="textSecondary">
+            Core Understanding
+          </Typography>
+        </Stack>
+        <Stack gap={1} paddingInlineStart={2}>
+          <Accordion title="What is LlamaLend?" ghost indicator="plusMinus" defaultExpanded sx={{ paddingBlock: 2 }}>
+            <Typography variant="bodyMRegular">
+              LlamaLend is Curve's non-custodial lending infrastructure. All markets are one-way isolated: each market
+              has one collateral and one borrowable asset.
+            </Typography>
+          </Accordion>
+          <Accordion title="How does LlamaLend work?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
+            <Typography variant="bodyMRegular">
+              You deposit collateral and borrow against it. You pay a dynamic borrow rate; there are no opening or
+              closing fees.
+            </Typography>
+          </Accordion>
+        </Stack>
+      </Stack>
+    </Stack>
+  ),
+  parameters: {
+    docs: { description: { story: 'FAQ section composition using ghost accordions and plus/minus indicators' } },
   },
 }
 

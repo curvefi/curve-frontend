@@ -1,16 +1,19 @@
 import { type ReactNode, useId } from 'react'
+import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { applySxProps, SxProps } from '@ui-kit/utils'
+import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
 type Size = 'extraSmall' | 'small' | 'medium'
+type Indicator = 'chevron' | 'plusMinus'
 
 const titleVariants = {
   extraSmall: 'bodyXsRegular',
@@ -18,20 +21,28 @@ const titleVariants = {
   medium: 'headingSBold',
 } as const satisfies Record<Size, TypographyVariantKey>
 
+const ghostTitleVariants = {
+  extraSmall: 'bodyXsRegular',
+  small: 'bodyMBold',
+  medium: 'headingSBold',
+} as const satisfies Record<Size, TypographyVariantKey>
+
 const headerPaddingBlock = {
   extraSmall: 0,
-  small: Spacing.sm,
-  medium: Spacing.sm,
+  small: Spacing.xs,
+  medium: Spacing.xs,
 } as const satisfies Record<Size, number | Responsive>
 
 const headerIconSize = {
-  extraSmall: IconSize.sm.mobile,
+  extraSmall: IconSize.xs.mobile,
   small: IconSize.md.mobile,
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
 
 const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
+const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
+const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
 
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
@@ -44,6 +55,8 @@ type AccordionBaseProps = {
   size?: Size
   /** Optional information to display in the header */
   info?: ReactNode
+  /** The visual indicator displayed at the end of the header */
+  indicator?: Indicator
   /** Content to display when the accordion is expanded */
   children?: ReactNode
   /** Optional test id for the accordion root */
@@ -102,6 +115,7 @@ export const Accordion = ({
   ghost = false,
   size = 'small',
   info,
+  indicator = 'chevron',
   children,
   testId,
   sx,
@@ -117,9 +131,11 @@ export const Accordion = ({
         aria-expanded={isOpen}
         aria-controls={id}
         sx={{
+          width: '100%',
           paddingBlock: headerPaddingBlock[size],
           paddingInline: ghost ? 0 : Spacing.sm,
-          ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
+          minHeight: size === 'extraSmall' ? IconSize.sm.mobile : IconSize.md.mobile,
+          ...(isOpen && !ghost && { backgroundColor: activeFill }),
           transition: `background-color ${TransitionFunction}`,
 
           // Render border inside without layout shift on hover using a pseudo-element overlay
@@ -129,13 +145,21 @@ export const Accordion = ({
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none', // Prevents the overlay from intercepting mouse events (e.g., tooltip hover on the `info` slot)
-            ...(ghost ? { borderBottom: borderStyle } : { border: borderStyle }),
+            ...(ghost
+              ? isOpen
+                ? { borderBottom: ghostBorderStyle }
+                : {}
+              : isOpen
+                ? { border: borderStyle, borderBottom: borderStyle }
+                : { border: borderStyle }),
           },
 
           '&:hover, &.Mui-focusVisible': {
             '&::after': {
               borderColor: t => t.design.Button.Focus_Outline,
-              borderWidth: '2px',
+              ...(ghost
+                ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
+                : { borderWidth: '2px' }),
             },
             ...(!ghost && { backgroundColor: layer1Fill }),
           },
@@ -159,12 +183,12 @@ export const Accordion = ({
           {typeof title === 'string' ? (
             <Typography
               flexGrow={1}
-              variant={titleVariants[size]}
+              variant={(ghost ? ghostTitleVariants : titleVariants)[size]}
               color="textSecondary"
               sx={{
                 textAlign: 'start',
                 // Specifically unset to override the variant's uppercase styling; we want full control here
-                textTransform: ghost ? 'unset' : 'uppercase',
+                textTransform: ghost && size === 'small' ? 'unset' : undefined,
               }}
             >
               {title}
@@ -179,6 +203,7 @@ export const Accordion = ({
 
           <ExpandMoreIcon
             sx={{
+              display: indicator === 'chevron' ? 'block' : 'none',
               width: headerIconSize[size],
               height: headerIconSize[size],
               transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -190,6 +215,22 @@ export const Accordion = ({
                 }),
             }}
           />
+          <Box
+            aria-hidden
+            sx={{
+              display: indicator === 'plusMinus' ? 'flex' : 'none',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: headerIconSize[size],
+              height: headerIconSize[size],
+            }}
+          >
+            {isOpen ? (
+              <RemoveIcon sx={{ width: '0.9375rem', height: '0.9375rem' }} />
+            ) : (
+              <AddIcon sx={{ width: '0.9375rem', height: '0.9375rem' }} />
+            )}
+          </Box>
         </Stack>
       </ButtonBase>
 

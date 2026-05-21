@@ -2,6 +2,7 @@ import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketFaq } from '@/llamalend/features/market-faq'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import type { Chain } from '@curvefi/prices-api'
@@ -71,6 +72,8 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
           />
         </CardContent>
       </Card>
+
+      <MarketFaq />
     </Stack>
   )
 }
