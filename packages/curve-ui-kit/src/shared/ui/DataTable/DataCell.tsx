@@ -22,8 +22,8 @@ export const DataCell = <T extends TableItem>({
   return (
     <Typography
       variant={getCellVariant(column)}
-      color="text.primary"
       component="td"
+      color="text.primary"
       sx={sx}
       data-testid={`data-table-cell-${column.id}`}
     >

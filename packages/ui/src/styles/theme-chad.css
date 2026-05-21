@@ -21,7 +21,7 @@ body.theme-chad {
 
   /* ------ Global ------ */
   --page--text-color: var(--text-600);
-  --page--background-color: #bdbbec;
+  --page--background-color: #c6c4f2;
   --page--header--background-color: var(--page--background-color);
 
   --layout--home--background-color: var(--white);
