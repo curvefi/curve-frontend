@@ -123,10 +123,7 @@ const FAQ_GROUPS: FaqGroup[] = [
 export const MarketFaq = () => (
   <Stack component="section" gap={0} data-testid="llamalend-market-faq">
     <Stack minHeight="3.5rem" justifyContent="end" paddingBlockEnd={Spacing.xs}>
-      <Typography
-        color="textSecondary"
-        sx={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: '1.5rem', textTransform: 'uppercase' }}
-      >
+      <Typography variant="headingSBold" color="textSecondary">
         {t`FAQs`}
       </Typography>
     </Stack>
@@ -140,10 +137,7 @@ export const MarketFaq = () => (
             paddingBlockEnd={Spacing.xs}
             sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
           >
-            <Typography
-              color="textSecondary"
-              sx={{ fontSize: '0.875rem', fontWeight: 700, lineHeight: '1rem', textTransform: 'uppercase' }}
-            >
+            <Typography variant="headingXsBold" color="textSecondary">
               {t(group.title)}
             </Typography>
           </Stack>
@@ -157,7 +151,7 @@ export const MarketFaq = () => (
                 indicator="plusMinus"
                 sx={{ paddingBlock: Spacing.md }}
               >
-                <Typography color="textPrimary" sx={{ fontSize: '1rem', fontWeight: 400, lineHeight: '1.25rem' }}>
+                <Typography variant="bodyMRegular" color="textPrimary">
                   {t(item.answer)}
                 </Typography>
               </Accordion>
@@ -168,11 +162,7 @@ export const MarketFaq = () => (
     </Stack>
 
     <Stack alignItems="center" gap={Spacing.sm} paddingBlock={Spacing.md}>
-      <Typography
-        color="textPrimary"
-        textAlign="center"
-        sx={{ fontSize: '1rem', fontWeight: 400, lineHeight: '1.25rem' }}
-      >
+      <Typography variant="bodyMRegular" color="textPrimary" textAlign="center">
         {t`Want to know even more?`}
       </Typography>
       <ExternalLink
