@@ -442,6 +442,23 @@ export const createLightDesign = (
       SliderThumbImage: '/mui/slider-thumb-white.svg',
       SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
     },
+    SliderHandle: {
+      Default: {
+        Fill: Layer.Feedback.Info,
+        Border: Color.Neutral[50],
+        Dots: Text.TextColors.FilledFeedback.Highlight.Primary,
+      },
+      Hover: {
+        Fill: Color.Neutral[50],
+        Border: Color.Primary[500],
+        Dots: Color.Neutral[950],
+      },
+      Disabled: {
+        Fill: Color.Neutral[600],
+        Border: Transparent,
+        Dots: Color.Neutral[300],
+      },
+    },
     SliderBackground: { ...SliderBackground, Filled: { 100: Color.Primary[200] } },
   } as const
 
@@ -931,6 +948,23 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       SliderThumbImage: '/mui/slider-thumb-white.svg',
       SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
     },
+    SliderHandle: {
+      Default: {
+        Fill: Layer.Feedback.Info,
+        Border: Color.Neutral[50],
+        Dots: Text.TextColors.FilledFeedback.Highlight.Primary,
+      },
+      Hover: {
+        Fill: Color.Neutral[50],
+        Border: Color.Primary[500],
+        Dots: Color.Neutral[950],
+      },
+      Disabled: {
+        Fill: Color.Neutral[600],
+        Border: Transparent,
+        Dots: Color.Neutral[300],
+      },
+    },
     SliderBackground: { ...SliderBackground, Filled: { 100: Color.Primary[200] } },
   } as const
 
@@ -1380,6 +1414,23 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     hover: {
       SliderThumbImage: '/mui/slider-thumb-white.svg',
       SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
+    },
+    SliderHandle: {
+      Default: {
+        Fill: Color.Primary[800],
+        Border: Color.Neutral[50],
+        Dots: Text.TextColors.FilledFeedback.Highlight.Primary,
+      },
+      Hover: {
+        Fill: Color.Primary[500],
+        Border: Color.Neutral[50],
+        Dots: Color.Neutral[50],
+      },
+      Disabled: {
+        Fill: Color.Neutral[600],
+        Border: Transparent,
+        Dots: Color.Neutral[300],
+      },
     },
     SliderBackground: { ...SliderBackground, Filled: { 100: Color.Primary[200] } },
   } as const
