@@ -89,7 +89,8 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
           sx={{
             ...cardContentSmallStyles,
             backgroundColor: t => t.design.Layer[2].Fill,
-            border: t => `1px solid ${t.design.Layer[2].Outline}`,
+            border: t => (t.design.theme === 'light' ? `1px solid ${t.design.Layer[2].Outline}` : 'none'),
+            borderLeft: 0,
           }}
         >
           <PoolParameters poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} routerParams={routerParams} />
