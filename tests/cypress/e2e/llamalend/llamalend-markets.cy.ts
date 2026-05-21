@@ -1,10 +1,9 @@
-import { max, sum } from 'lodash'
+import { maxBy, mean, minBy, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   closeDrawer,
-  closeSlider,
   expandFirstRowOnMobile,
   openDrawer,
   openFilters,
@@ -22,7 +21,7 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
-import { objectKeys, range, recordValues, repeat } from '@primitives/objects.utils'
+import { fromEntries, objectKeys, range, recordEntries, recordValues, repeat } from '@primitives/objects.utils'
 import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
@@ -34,7 +33,6 @@ const testCases = [oneViewport()] as const
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
-    const itMobileOnly = breakpoint === 'mobile' ? it : it.skip
 
     beforeEach(() => {
       ;({ vaultData } = setupLlamalendListMocks())
@@ -228,64 +226,33 @@ testCases.forEach(([width, height, breakpoint]) => {
       checkCoinSelection('borrowed')
     })
 
-    itMobileOnly('should allow filtering by using a slider', () => {
-      const [columnId, initialFilterText] = oneOf(
-        [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
-        [LlamaMarketColumnId.Tvl, '$0 -'],
-        [LlamaMarketColumnId.UtilizationPercent, '0% -'],
-      )
-      // Keep the viewport stable for slider width.
-      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
+    it('should allow filtering by using a range inputs', () => {
+      const [columnId, middleValue] = getOneColumnMiddleRangeValue(vaultData, [
+        LlamaMarketColumnId.BorrowRate,
+        LlamaMarketColumnId.Tvl,
+        LlamaMarketColumnId.LiquidityUsd,
+        LlamaMarketColumnId.UtilizationPercent,
+      ])
+      const bound = oneOf('min', 'max')
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        if (breakpoint === 'mobile') {
-          cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        }
-        openFilters()
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
-        cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
-
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-        cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
-        cy.get(`@slider`)
-          .then(
-            (
-              $el, // With log slider a click from the left is not enough to filter
-            ) =>
-              // Click 20px from the right edge and vertically centered
-              [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
-          )
-          .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
-        closeSlider(breakpoint)
-        cy.get(`[data-testid^="data-table-row"]`, LOAD_TIMEOUT).should('have.length.below', length)
+        withFiltersPopover(() => typeFilterInput(`range-filter-${columnId}-${bound}`, middleValue).blur())
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+        cy.url().should('include', `${columnId}=`)
       })
     })
 
-    itMobileOnly(`should allow filtering by using a slider input`, () => {
-      const [columnId, getFilterValue] = oneOf(
-        ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
-        ['tvl', () => getMaxTvl(vaultData) / 10],
-        ['utilizationPercent', () => 90],
-      )
+    it(`should allow filtering by using a slider input`, () => {
+      // Keep the viewport stable for slider width.
+      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
+      const [columnId, middleValue] = getOneColumnMiddleRangeValue(vaultData, [LlamaMarketColumnId.MaxLtv])
+      const bound = oneOf('min', 'max')
 
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        openFilters()
-
-        // open the chosen filter
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-        cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
-
-        // Always type into the right input when the slider has a range.
-        cy.get(`@slider`).closest('[role="presentation"]').find('input[type="text"]').last().as('inputs')
-
-        cy.get('@inputs').click()
-        cy.get('@inputs').type('{selectAll}')
-        cy.get('@inputs').type(`${getFilterValue()}`)
-        cy.get('@inputs').blur()
-
-        closeSlider(breakpoint)
+        withFiltersPopover(() => typeFilterInput(`slider-input-${columnId}-${bound}`, middleValue).blur())
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
+
+        cy.get(`[data-testid="slider-${columnId}"]`).as('slider')
       })
     })
 
@@ -377,22 +344,32 @@ function enableGraphColumn() {
   cy.get('body').click(0, 0) // close popover
 }
 
-const getMaxLiquidity = (vaultData: Record<Chain, GetMarketsResponse>) =>
-  max(
-    recordValues(vaultData).flatMap(({ data }) =>
-      data.map(({ total_assets_usd, total_debt_usd }) => total_assets_usd - total_debt_usd),
-    ),
-  ) ?? 0
+const typeFilterInput = (testId: string, value: number) =>
+  cy.get(`[data-testid="${testId}"]`).find('input[type="text"]').click().type('{selectAll}').type(`${value}`)
 
-const getMaxTvl = (vaultData: Record<Chain, GetMarketsResponse>) =>
-  max(
-    recordValues(vaultData).flatMap(({ data }) =>
-      data.map(
-        ({ borrowed_balance_usd, collateral_balance_usd, total_assets_usd, total_debt_usd }) =>
-          borrowed_balance_usd + collateral_balance_usd + total_assets_usd - total_debt_usd,
-      ),
+/** Returns the midpoint between the min and max values for a column. */
+const getMiddleRange = <T extends Partial<Record<string, number>>>(data: T[], key: string) =>
+  mean([minBy(data, key)?.[key] ?? 0, maxBy(data, key)?.[key] ?? 0])
+
+/** Returns one random column paired with its middle range value. */
+const getOneColumnMiddleRangeValue = (
+  vaultData: Record<Chain, GetMarketsResponse>,
+  columns: readonly LlamaMarketColumnId[],
+) => {
+  const data = recordValues(vaultData).flatMap(({ data }) =>
+    data.map(
+      ({ borrowed_balance_usd, collateral_balance_usd, total_assets_usd, total_debt_usd, borrow_apr, max_ltv }) => ({
+        [LlamaMarketColumnId.LiquidityUsd]: total_assets_usd - total_debt_usd,
+        [LlamaMarketColumnId.Tvl]: borrowed_balance_usd + collateral_balance_usd + total_assets_usd - total_debt_usd,
+        [LlamaMarketColumnId.BorrowRate]: borrow_apr,
+        [LlamaMarketColumnId.UtilizationPercent]: total_assets_usd ? (100 * total_debt_usd) / total_assets_usd : 0,
+        [LlamaMarketColumnId.MaxLtv]: max_ltv,
+      }),
     ),
-  ) ?? 0
+  )
+  const middleValues = fromEntries(columns.map(columnId => [columnId, getMiddleRange(data, columnId)] as const))
+  return oneOf(...recordEntries(middleValues))
+}
 
 const filterByMarketType = (size: [number, number], marketType: LlamaMarketType = LlamaMarketType.Lend) => {
   const otherMarketType = oneOf(...recordValues(LlamaMarketType).filter(m => m !== marketType))
