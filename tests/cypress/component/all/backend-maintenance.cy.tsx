@@ -1,7 +1,7 @@
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
-import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
+import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
 import { useMaintenance, type MaintenanceConfig } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
