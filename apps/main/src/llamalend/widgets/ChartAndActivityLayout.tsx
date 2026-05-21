@@ -50,7 +50,7 @@ type ChartAndActivityLayoutProps = {
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
   bands?: {
-    chartData: ChartDataPoint[]
+    chartData: ChartDataPoint[] | undefined
     userBandsBalances: FetchedBandsBalances[]
     oraclePrice: string | undefined
     isLoading: boolean
