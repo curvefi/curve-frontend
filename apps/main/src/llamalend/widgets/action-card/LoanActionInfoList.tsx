@@ -1,6 +1,7 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
+import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -30,6 +31,7 @@ export type LoanActionInfoListProps = {
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
   exchangeRate?: QueryProp<Decimal | null>
+  oraclePrice: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
   prevNetBorrowApr?: QueryProp<Decimal | null>
@@ -72,6 +74,7 @@ export const LoanActionInfoList = ({
   prevRates,
   rates,
   exchangeRate,
+  oraclePrice,
   loanToValue,
   prevLoanToValue,
   netBorrowApr,
@@ -125,6 +128,7 @@ export const LoanActionInfoList = ({
       {returnToWallet && <ReturnToWalletActionInfo returnToWallet={returnToWallet} />}
     </>
   )
+
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
@@ -181,6 +185,12 @@ export const LoanActionInfoList = ({
               testId="borrow-ltv"
             />
           )}
+          <SmallLiquidationRangeChart
+            prices={prices}
+            prevPrices={prevPrices}
+            oraclePrice={oraclePrice}
+            isFullRepay={isFullRepay}
+          />
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}

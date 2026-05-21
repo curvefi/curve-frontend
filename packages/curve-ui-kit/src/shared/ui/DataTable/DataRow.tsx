@@ -7,7 +7,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
-import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
+import { ClickableInRowClass, DesktopOnlyHoverClass, TableSecondaryTextClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { type ExpandedPanel, ExpansionRow } from './ExpansionRow'
 
@@ -67,10 +67,17 @@ export const DataRow = <T extends TableItem>({
                 opacity: { mobile: 1, desktop: 0 },
                 transition: `opacity ${TransitionFunction}`,
               },
+              [`& .${TableSecondaryTextClass}`]: {
+                color: t => t.design.Table.Text.Default.Secondary,
+              },
               '&:hover': {
                 [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {
                   backgroundColor: t => t.design.Table.Row.Hover,
+                  color: t => t.design.Table.Text.Hover.Primary,
+                },
+                [`& .${TableSecondaryTextClass}`]: {
+                  color: t => t.design.Table.Text.Hover.Secondary,
                 },
               },
               ...(shouldApplyStickyLastRow && {

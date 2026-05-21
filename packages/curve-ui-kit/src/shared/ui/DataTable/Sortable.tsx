@@ -28,7 +28,7 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
           e.stopPropagation()
         },
       })}
-      {...(isEnabled && { sx: { cursor: 'pointer', '&:hover': { color: `text.highlight` } } })}
+      {...(isEnabled && { sx: { cursor: 'pointer' } })}
     >
       {children}
       <RotatableIcon
