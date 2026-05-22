@@ -11,25 +11,24 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { useMarketInterestRatesAndUtilizationChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 
 type MarketInformationCompProps = {
   pageProps: PageContentProps
-  type: 'borrow' | 'supply'
+  rateType: MarketRateType
   previewPrices?: Range<Decimal> | undefined
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComposite = ({ pageProps, type, previewPrices }: MarketInformationCompProps) => {
+export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
   const { rChainId, marketId, market } = pageProps
   const api = getLib('llamaApi')
-  const isBorrow = type === 'borrow'
+  const isBorrow = rateType === MarketRateType.Borrow
   const blockchainId = networks[rChainId].id as Chain
 
   return (
@@ -37,14 +36,13 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
       {isBorrow && (
         <ChartAndActivityComp rChainId={rChainId} marketId={marketId} api={api} previewPrices={previewPrices} />
       )}
-
       {isBorrow && (
         <MarketHistoricalRatesChart
           market={market}
           blockchainId={blockchainId}
           chainId={rChainId}
           marketId={marketId}
-          rateMode="borrow"
+          rateMode={MarketRateType.Borrow}
         />
       )}
       <MarketHistoricalRatesChart
@@ -52,13 +50,9 @@ export const MarketInformationComposite = ({ pageProps, type, previewPrices }: M
         blockchainId={blockchainId}
         chainId={rChainId}
         marketId={marketId}
-        rateMode="supply"
+        rateMode={MarketRateType.Supply}
       />
-
-      {useMarketInterestRatesAndUtilizationChart() && (
-        <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={marketId} />
-      )}
-
+      <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={marketId} />
       <Card size="small">
         <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>

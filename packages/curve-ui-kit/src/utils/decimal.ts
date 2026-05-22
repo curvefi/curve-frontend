@@ -28,6 +28,8 @@ export const decimalMin = (...data: Decimal[]): Decimal | undefined =>
     undefined,
   )
 
+export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedTo(b) ?? 0
+
 /**
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
  */

@@ -51,7 +51,6 @@ export const POOL_TRADES_COLUMNS = [
   columnHelper.accessor('time', {
     id: PoolTradesColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} />,
-    meta: { type: 'numeric' },
+    cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} align="end" />,
   }),
 ]

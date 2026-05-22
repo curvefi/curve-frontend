@@ -63,7 +63,7 @@ export type PoolsSlice = {
       poolIds: string[],
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
+    fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[], useApi?: boolean): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
@@ -254,19 +254,20 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
     },
-    fetchPoolsRewardsApy: async (chainId, poolIds) => {
+    fetchPoolsRewardsApy: async (chainId, poolIds, useApi = true) => {
+      log('fetchPoolsRewardsApy', chainId, poolIds.length)
       const state = get()
       const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[sliceKey]
       const networks = await fetchNetworks()
       const network = networks[chainId]
-      const { poolAllRewardsApy } = curvejsApi.pool
 
-      log('fetchPoolsRewardsApy', chainId, poolIds.length)
       let rewardsApyMapper: RewardsApyMapper = { ...allRewardsApyMapper[chainId] }
 
       // retrieve data in chunks so that the data can already be displayed in the UI
       for (const part of chunk(poolIds, 200)) {
-        const { results } = await PromisePool.for(part).process(poolData => poolAllRewardsApy(network, poolData.pool))
+        const { results } = await PromisePool.for(part).process(({ pool }) =>
+          curvejsApi.pool.poolAllRewardsApy(network, pool, useApi),
+        )
         rewardsApyMapper = {
           ...rewardsApyMapper,
           ...Object.fromEntries(results.map(rewardsApy => [rewardsApy.poolId, rewardsApy])),
@@ -300,14 +301,15 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     fetchPoolStats: async (curve, poolData) => {
       const { pools } = get()
-      const { chainId } = curve
+      const { chainId, signerAddress } = curve
       const { pool } = poolData
       log('fetchPoolStats', chainId, pool.id)
+      const useApi = !signerAddress // prefer on-chain data when the wallet is connected
 
       try {
         await Promise.all([
           pools.fetchPoolCurrenciesReserves(curve, poolData),
-          pools.fetchPoolsRewardsApy(chainId, [poolData]),
+          pools.fetchPoolsRewardsApy(chainId, [poolData], useApi),
         ])
       } catch (error) {
         console.error(error)

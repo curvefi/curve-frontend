@@ -48,7 +48,11 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
     dependencies: params => [createLoanMaxReceiveKey(params)],
   })
 
-const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoanEstimateGasQuery } = queryFactory({
+const {
+  useQuery: useCreateLoanEstimateGasQuery,
+  invalidate: invalidateCreateLoanEstimateGasQuery,
+  getQueryOptions: getCreateLoanEstimateGasOptions,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -117,3 +121,5 @@ export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
 
 export const invalidateCreateLoanEstimateGasQueries = async (params: GasEstimateParams) =>
   await Promise.all([invalidateCreateLoanApproveEstimateGasQuery(params), invalidateCreateLoanEstimateGasQuery(params)])
+
+export { getCreateLoanEstimateGasOptions }

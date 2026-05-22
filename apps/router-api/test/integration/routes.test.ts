@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { PartialRecord } from '@primitives/objects.utils'
-import type { RouteProvider, RouteResponse } from '@primitives/router.utils'
+import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
 import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
@@ -174,11 +174,9 @@ describe('GET routes integration', () => {
         })
         expect(statusCode).toBe(200)
 
-        const payload = json() as RouteResponse[]
+        const payload = json() as RouterRouteResponse[]
         expect(payload).toHaveLength(expectedRoutes)
         payload.forEach(route => {
-          expect(route.id).toBeTypeOf('string')
-          expect(route.id.length).toBeGreaterThan(0)
           expect(route.router).toBe(router)
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
           expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')

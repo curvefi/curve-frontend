@@ -1,8 +1,11 @@
 import { noop } from 'lodash'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
-import { notFalsy } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 
@@ -12,11 +15,20 @@ const getHeight = (testId: string, subelement?: string) =>
     .should('be.visible')
     .then($element => $element[0].getBoundingClientRect().height)
 
-const routes = {
-  data: mockRoutes,
-  isLoading: false,
-  error: null,
+const routes: MarketRoutes = {
+  queries: fromEntries(
+    RouteProviders.map(router => [
+      router,
+      {
+        ...q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+        isFetching: false,
+      },
+    ]),
+  ),
+  networks: {},
+  chainId: 1,
   selectedRoute: mockRoutes[0],
+  enabled: true,
   onChange: async () => undefined,
   onRefresh: () => undefined,
   tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: q({ data: 1, error: null, isLoading: false }) },
@@ -41,11 +53,12 @@ allViewports().forEach(([width, height, viewport]) => {
     testCases.forEach(({ label, isLoading = false, error = null, ...state }) => {
       it(`has consistent heights ${label}`, () => {
         cy.mount(
-          <ComponentTestWrapper>
+          <ComponentTestWrapper config={mockedWagmiConfig}>
             <LoanActionInfoList
               isOpen
               prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
               health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+              oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
               exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
               gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
               rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}

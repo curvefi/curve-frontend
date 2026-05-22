@@ -2,20 +2,21 @@ import { sortBy } from 'lodash'
 import { useCallback } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Range } from '@ui-kit/types/util'
-import { decimal, formatNumber } from '@ui-kit/utils'
+import type { QueryProp, Range } from '@ui-kit/types/util'
+import { amount, decimal, formatNumber } from '@ui-kit/utils'
 import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 const { Spacing } = SizesAndSpaces
 
 type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  data: TKey[]
+  query: QueryProp<TKey[]>
   field: DeepKeys<TKey>
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
@@ -26,7 +27,7 @@ type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> &
 type InputIndex = 0 | 1
 
 export const RangeFilter = <TKey, TColumnId extends string>({
-  data,
+  query,
   field,
   id,
   adornment,
@@ -34,16 +35,18 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   min = 0,
   ...filterProps
 }: RangeFilterProps<TKey, TColumnId>) => {
+  const data = notFalsyArray(query.data)
+  const isLoading = query.isLoading
   const { maxValue } = useMaxValue<TKey>({ max, data, field })
-  const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
+  const [range, setRange] = useRangeFilter({ isLoading, id, maxValue, ...filterProps })
 
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
-      const nextFirst = index === 0 ? Number(newValue) : range[0]
-      const nextSecond = index === 1 ? Number(newValue) : range[1]
+      const nextFirst = index === 0 ? (amount(newValue) as number) : range[0]
+      const nextSecond = index === 1 ? (amount(newValue) as number) : range[1]
 
-      const nextRange: Range<number> | null =
-        nextFirst > nextSecond
+      const nextRange: Range<number | null> | null =
+        nextFirst != null && nextSecond != null && nextFirst > nextSecond
           ? // Keep the left bound from moving past the right one while typing.
             index === 0
             ? [nextFirst, nextFirst]
@@ -59,12 +62,8 @@ export const RangeFilter = <TKey, TColumnId extends string>({
     (index: InputIndex) => (blurValue: Decimal | undefined) => {
       if (blurValue == null) return
 
-      setRange(
-        sortBy([
-          Number(index === 0 ? blurValue : range[0]),
-          Number(index === 1 ? blurValue : range[1]),
-        ]) as Range<number>,
-      )
+      const nextRange = range.map((value, i) => (i === index ? blurValue : value)) as Range<number | null>
+      setRange(nextRange[0] != null && nextRange[1] != null ? (sortBy(nextRange) as Range<number>) : nextRange)
     },
     [range, setRange],
   )
@@ -80,12 +79,14 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   }) => (
     <NumericTextField
       size="small"
+      variant="outlined"
       fullWidth
       value={decimal(range[index])}
       min={decimal(min)}
       max={decimal(maxValue)}
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
+      disabled={isLoading}
       adornment={adornment}
       format={value => (value == null ? '' : formatNumber(value, { abbreviate: true }))}
       placeholder={placeholder}

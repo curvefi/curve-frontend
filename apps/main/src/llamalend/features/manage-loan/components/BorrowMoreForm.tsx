@@ -62,7 +62,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     solvencyModal: { onConfirm, onClose, isOpen },
   } = useBorrowMoreForm({
     market,
-    network,
+    networks,
+    chainId,
     enabled,
     onPricesUpdated,
     collateralEvents,

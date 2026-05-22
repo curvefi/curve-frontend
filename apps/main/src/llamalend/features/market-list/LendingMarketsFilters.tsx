@@ -7,7 +7,7 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type AssetDetails } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
-import { LlamaMarketColumnId } from './columns'
+import { LLAMA_MARKET_TITLES, LlamaMarketColumnId } from './columns'
 import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './filters/hooks/useLlamaMarketsFilters'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeFilter } from './filters/RangeFilter'
@@ -40,7 +40,7 @@ const SelectedToken = ({ symbol }: { symbol: string }) => (
 export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   const {
     filterProps,
-    markets,
+    marketsQuery,
     tokens,
     marketTypeValue,
     marketVersionValue,
@@ -52,87 +52,87 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
 
   return (
     <Stack padding={Spacing.sm} spacing={Spacing.sm}>
-      <TableFilterItem title={t`Network`}>
-        <LlamaChainFilterChips data={props.data} {...filterProps} />
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Chain]}>
+        <LlamaChainFilterChips marketsQuery={props.marketsQuery} {...filterProps} />
       </TableFilterItem>
-      <TableFilterItem title={t`Collateral Tokens`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.CollateralSymbol]}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
           field="assets.collateral.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Collateral Tokens`}
-          data={markets}
+          query={marketsQuery}
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`Debt Tokens`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowedSymbol]}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
           field="assets.borrowed.symbol"
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Debt Tokens`}
-          data={markets}
+          query={marketsQuery}
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`Borrow APR`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowRate]}>
         <RangeFilter
           id={LlamaMarketColumnId.BorrowRate}
           field="rates.borrowApr"
-          data={markets}
+          query={marketsQuery}
           adornment="percentage"
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`TVL`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Tvl]}>
         <RangeFilter
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
-          data={markets}
+          query={marketsQuery}
           adornment="dollar"
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`Liquidity`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.LiquidityUsd]}>
         <RangeFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
-          data={markets}
+          query={marketsQuery}
           adornment="dollar"
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`Utilization`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.UtilizationPercent]}>
         <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
-          data={markets}
+          query={marketsQuery}
           adornment="percentage"
           max={100}
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={t`LTV`}>
+      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.MaxLtv]}>
         <RangeSliderRowFilter
           id={LlamaMarketColumnId.MaxLtv}
           field={LlamaMarketColumnId.MaxLtv}
-          data={markets}
+          query={marketsQuery}
           adornment="percentage"
           max={100}
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterButtonGroup
-        title={t`Market type`}
+        title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Type]}
         value={marketTypeValue}
         onChange={onMarketTypeChange}
         ariaLabel={t`Market type filter`}
         options={marketTypeOptions}
       />
       <TableFilterButtonGroup
-        title={t`Market version`}
+        title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Version]}
         value={marketVersionValue}
         onChange={onMarketVersionChange}
         ariaLabel={t`Market version filter`}

@@ -1,4 +1,4 @@
-import { type Key, useEffect, useMemo, useRef, useState } from 'react'
+import { type Key, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
@@ -136,6 +136,14 @@ export const SelectTokenButton = ({
     }
   }
 
+  const onSearch = useCallback(
+    (val: string) => {
+      setFilterValue(val)
+      setError(undefined)
+    },
+    [setFilterValue],
+  )
+
   return chainId || basePoolsLoading ? (
     <>
       <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
@@ -173,10 +181,7 @@ export const SelectTokenButton = ({
               setFilterBasepools(false)
               handleClose()
             }}
-            onSearch={val => {
-              setFilterValue(val)
-              setError(undefined)
-            }}
+            onSearch={onSearch}
           >
             {swapType === STABLESWAP && (
               <Checkbox
