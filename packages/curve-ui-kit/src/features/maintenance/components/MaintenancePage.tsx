@@ -34,8 +34,17 @@ export const MaintenancePage = () => (
           {t`swap · earn · deploy`}
         </Typography>
       </Stack>
-      <Image alt={t`Curve Logo`} src={CURVE_LOGO_URL} width="80%" />
-      <Stack alignItems="center" gap={Spacing.sm}>
+
+      <Image
+        alt={t`Curve Logo`}
+        src={CURVE_LOGO_URL}
+        width="50%" //image to big vertically on 14" screens
+      />
+
+      <Stack
+        alignItems="center"
+        gap={Spacing.sm.desktop} // gap is fixed at 10px on Figma
+      >
         <Badge label={t`Upgrade in progress`} color="highlight" size="extraLarge" />
 
         <Typography>
