@@ -10,6 +10,7 @@ import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AVERAGE_CATEGORIES, defaultNumberFormatter } from '@ui-kit/utils'
 import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
+import { maybe } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -135,14 +136,10 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
             value={sharesValue}
             loading={sharesLoading}
             valueOptions={{}}
-            notional={
-              sharesStaked != null && sharesValue != null
-                ? {
-                    value: (sharesStaked / sharesValue) * 100,
-                    unit: { symbol: t`% staked`, position: 'suffix' },
-                  }
-                : undefined
-            }
+            notional={maybe([sharesStaked, sharesValue], ([sharesStaked, sharesValue]) => ({
+              value: (sharesStaked / sharesValue) * 100,
+              unit: { symbol: t`% staked`, position: 'suffix' },
+            }))}
             valueTooltip={{
               title: t`Vault Shares`,
               body: <VaultSharesTooltipContent />,

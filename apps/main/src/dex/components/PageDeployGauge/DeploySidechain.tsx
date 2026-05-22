@@ -15,6 +15,7 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import { maybe } from '@primitives/objects.utils'
 
 type Props = {
   chainId: ChainId
@@ -97,7 +98,9 @@ export const DeploySidechain = ({ chainId }: Props) => {
                   {chainId === 1 ? (
                     <DialogSelect
                       label={t`Select Network`}
-                      currentData={currentSidechain === null ? null : curveNetworks[currentSidechain].name}
+                      currentData={
+                        maybe(currentSidechain, currentSidechain => curveNetworks[currentSidechain].name) ?? null
+                      }
                       data={networksList}
                       setCurrentData={setCurrentSidechain}
                       isDisabled={false}

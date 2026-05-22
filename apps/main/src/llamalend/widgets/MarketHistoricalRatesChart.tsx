@@ -10,7 +10,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy, maybe } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
@@ -66,7 +66,7 @@ type RateModeConfig = {
   getSnapshotRate: (snapshot: RateSnapshot) => RateValue
 }
 
-const toRateNumber = (rate: RateValue) => (rate == null ? null : Number(rate))
+const toRateNumber = (rate: RateValue) => maybe(rate, rate => Number(rate)) ?? null
 
 const toSnapshotRatePoints = (
   snapshots: RateSnapshot[] | undefined,
@@ -76,7 +76,7 @@ const toSnapshotRatePoints = (
     ...(snapshots ?? []).map(snapshot => {
       const rate = toRateNumber(getSnapshotRate(snapshot))
 
-      return rate == null ? null : { timestamp: snapshot.timestamp, rate }
+      return maybe(rate, rate => ({ timestamp: snapshot.timestamp, rate })) ?? null
     }),
   )
 

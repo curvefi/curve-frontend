@@ -12,6 +12,7 @@ import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalEqual } from '@ui-kit/utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
+import { maybe } from '@primitives/objects.utils'
 
 const getIsWithdrawFull = ({
   withdrawAmount,
@@ -60,7 +61,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
   useFormSync(form, { userVaultShares: userBalances.data.depositedShares })
   useEffect(
-    () => (isFull.data == null ? undefined : updateForm({ isFull: isFull.data }, { automated: true })),
+    () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],
   )
 

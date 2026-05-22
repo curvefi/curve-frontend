@@ -13,6 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { decimal } from '@ui-kit/utils'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
+import { maybe } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -106,7 +107,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Max leverage`}
-          value={maxLeverage?.value == null ? undefined : maxLeverage.value}
+          value={maybe(maxLeverage?.value, data => maxLeverage.value)}
           loading={maxLeverage?.loading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{

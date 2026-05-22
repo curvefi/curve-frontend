@@ -11,7 +11,7 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy, maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import {
@@ -94,24 +94,35 @@ export const MarketRateCurveChart = ({
     return +borrowed < 0 ? decimal(0)! : borrowed
   }, [capAndAvailable])
   const totalBorrowedUsdValue =
-    totalBorrowed == null || borrowedUsdRate == null ? null : Number(totalBorrowed) * borrowedUsdRate
-  const utilizationBreakdown =
-    currentUtilization == null || totalBorrowed == null || capAndAvailable?.totalAssets == null
-      ? undefined
-      : `${formatNumber(totalBorrowed, { abbreviate: true })}/${formatNumber(capAndAvailable.totalAssets, {
-          abbreviate: true,
-        })} ${borrowToken?.symbol ?? ''}`
+    maybe(
+      [totalBorrowed, borrowedUsdRate],
+      ([totalBorrowed, borrowedUsdRate]) => Number(totalBorrowed) * borrowedUsdRate,
+    ) ?? null
+  const utilizationBreakdown = maybe(
+    [currentUtilization, totalBorrowed, capAndAvailable?.totalAssets],
+    ([currentUtilization, totalBorrowed, data]) =>
+      `${formatNumber(totalBorrowed, { abbreviate: true })}/${formatNumber(data, {
+        abbreviate: true,
+      })} ${borrowToken?.symbol ?? ''}`,
+  )
 
-  const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
-  const borrowedCollateralTotal = totalCollateral == null ? null : Number(totalCollateral.borrowed)
+  const collateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.collateral)) ?? null
+  const borrowedCollateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.borrowed)) ?? null
   const collateralUsdValue =
-    collateralTotal == null || collateralUsdRate == null ? null : collateralTotal * collateralUsdRate
+    maybe(
+      [collateralTotal, collateralUsdRate],
+      ([collateralTotal, collateralUsdRate]) => collateralTotal * collateralUsdRate,
+    ) ?? null
   const borrowedCollateralUsdValue =
-    borrowedCollateralTotal == null || borrowedUsdRate == null ? null : borrowedCollateralTotal * borrowedUsdRate
+    maybe(
+      [borrowedCollateralTotal, borrowedUsdRate],
+      ([borrowedCollateralTotal, borrowedUsdRate]) => borrowedCollateralTotal * borrowedUsdRate,
+    ) ?? null
   const combinedCollateralUsdValue =
-    collateralUsdValue == null || borrowedCollateralUsdValue == null
-      ? null
-      : collateralUsdValue + borrowedCollateralUsdValue
+    maybe(
+      [collateralUsdValue, borrowedCollateralUsdValue],
+      ([collateralUsdValue, borrowedCollateralUsdValue]) => collateralUsdValue + borrowedCollateralUsdValue,
+    ) ?? null
   const isTotalCollateralMetricLoading =
     !market || isTotalCollateralLoading || isCollateralUsdRateLoading || isBorrowedUsdRateLoading
 
@@ -186,7 +197,7 @@ export const MarketRateCurveChart = ({
               unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
               abbreviate: true,
             }}
-            notional={totalBorrowedUsdValue == null ? undefined : formatUsd(totalBorrowedUsdValue)}
+            notional={maybe(totalBorrowedUsdValue, totalBorrowedUsdValue => formatUsd(totalBorrowedUsdValue))}
           />
           <Metric
             size="medium"

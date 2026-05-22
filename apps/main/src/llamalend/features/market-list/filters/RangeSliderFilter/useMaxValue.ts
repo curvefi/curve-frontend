@@ -1,6 +1,7 @@
 import { get } from 'lodash'
 import { useMemo } from 'react'
 import type { DeepKeys } from '@tanstack/table-core'
+import { maybe } from '@primitives/objects.utils'
 
 export const useMaxValue = <TKey>({
   max,
@@ -19,6 +20,6 @@ export const useMaxValue = <TKey>({
     () => max ?? (data.length ? Math.ceil(Math.max(...data.map(item => get(item, field)))) : undefined),
     [max, data, field],
   )
-  const step = useMemo(() => (maxValue == null ? undefined : Math.ceil(+maxValue.toPrecision(2) / 100)), [maxValue])
+  const step = useMemo(() => maybe(maxValue, maxValue => Math.ceil(+maxValue.toPrecision(2) / 100)), [maxValue])
   return { maxValue, step }
 }

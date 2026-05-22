@@ -10,6 +10,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateMarketSolvency, createGetBadDebtMarket } from '../llama.utils'
 import { getBadDebtLendMarketsOptions } from '../queries/market/market-bad-debt.query'
 import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
+import { maybe } from '@primitives/objects.utils'
 
 type SolvencyMarketParams = {
   blockchainId: Chain | undefined
@@ -62,13 +63,10 @@ export const useSolvencyMarket = (
 
         return {
           ...combineQueriesMeta(results),
-          data:
-            solvencyPercent != null && badDebtUsd != null
-              ? {
-                  solvencyPercent,
-                  badDebtUsd,
-                }
-              : undefined,
+          data: maybe([solvencyPercent, badDebtUsd], ([solvencyPercent, badDebtUsd]) => ({
+            solvencyPercent,
+            badDebtUsd,
+          })),
         }
       },
       [isEnabled, blockchainId, controllerAddress],

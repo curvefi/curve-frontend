@@ -6,6 +6,7 @@ import type { LlamaMarketType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
+import { maybe } from '@primitives/objects.utils'
 
 type BorrowRateMetric = {
   rate: number | null | undefined
@@ -40,14 +41,10 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
       value={borrowRate?.rate}
       loading={borrowRate?.rate == null && borrowRate?.loading}
       valueOptions={{ unit: 'percentage' }}
-      notional={
-        borrowRate?.averageRate == null
-          ? undefined
-          : {
-              value: borrowRate.averageRate,
-              unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' },
-            }
-      }
+      notional={maybe(borrowRate?.averageRate, data => ({
+        value: data,
+        unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' },
+      }))}
       valueTooltip={{
         title,
         body: (

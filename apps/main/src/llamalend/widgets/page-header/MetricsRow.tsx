@@ -10,6 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import type { AvailableLiquidity } from './hooks/usePageHeader'
+import { maybe } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -52,14 +53,10 @@ export const MetricsRow = ({
           value={supplyRate.totalMinBoost}
           loading={supplyRate.loading}
           valueOptions={{ unit: 'percentage' }}
-          notional={
-            supplyRate.totalAverageMinBoost != null
-              ? {
-                  value: supplyRate.totalAverageMinBoost,
-                  unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
-                }
-              : undefined
-          }
+          notional={maybe(supplyRate.totalAverageMinBoost, data => ({
+            value: data,
+            unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
+          }))}
           valueTooltip={{
             title: NET_SUPPLY_RATE_TITLE,
             body: (

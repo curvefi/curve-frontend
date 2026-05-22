@@ -29,6 +29,7 @@ import { Script } from './components/Script'
 import { ProposalHeader } from './ProposalHeader'
 import { ProposalInformation } from './ProposalInformation'
 import { Voters } from './Voters'
+import { maybe } from '@primitives/objects.utils'
 
 export const Proposal = () => {
   const { proposalId: rProposalId } = useParams<ProposalUrlParams>()
@@ -77,12 +78,10 @@ export const Proposal = () => {
 
   const snapshotVeCrv = useMemo(
     () =>
-      proposal != null && votingPower != null
-        ? {
-            value: votingPower,
-            blockNumber: proposal.block,
-          }
-        : undefined,
+      maybe([proposal, votingPower], ([proposal, votingPower]) => ({
+        value: votingPower,
+        blockNumber: proposal.block,
+      })),
     [proposal, votingPower],
   )
 

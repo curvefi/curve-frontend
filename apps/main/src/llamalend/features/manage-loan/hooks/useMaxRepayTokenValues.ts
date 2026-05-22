@@ -9,6 +9,7 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
+import { maybe } from '@primitives/objects.utils'
 
 export function useMaxRepayTokenValues(
   {
@@ -46,7 +47,7 @@ export function useMaxRepayTokenValues(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
-    () => (isFull.data == null ? undefined : updateForm({ isFull: isFull.data }, { automated: true })),
+    () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],
   )
   useFormSync(form, { maxStateCollateral: userState.data?.collateral })
