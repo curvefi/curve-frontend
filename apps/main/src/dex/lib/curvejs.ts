@@ -92,7 +92,7 @@ const pool = {
       return { error: getErrorMessage(error, 'error-stats-balances') }
     }
   },
-  poolAllRewardsApy: async (network: NetworkConfig, p: Pool) => {
+  poolAllRewardsApy: async (network: NetworkConfig, p: Pool, useApi: boolean) => {
     const resp: RewardsApy = {
       poolId: p.id,
       base: { day: '0', week: '0' },
@@ -120,7 +120,7 @@ const pool = {
 
     // both crv and incentives (others) are in one call
     if (p.rewardsOnly()) {
-      const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy()])
+      const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy(useApi)])
       const rewards = fulfilledValue(rewardsResult)
 
       if (rewardsResult.status === 'rejected') {
@@ -141,7 +141,7 @@ const pool = {
       return resp
     }
 
-    const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(), p.stats.tokenApy()])
+    const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(useApi), p.stats.tokenApy(useApi)])
 
     // others rewards
     const others = fulfilledValue(otherResult) ?? []
