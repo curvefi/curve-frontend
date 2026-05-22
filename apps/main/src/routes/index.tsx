@@ -1,9 +1,8 @@
 import '@/global-extensions'
-import { MaintenanceApp } from '@/maintenance/MaintenanceApp'
 import { rootRoute } from '@/routes/root.routes'
 import { redirectTo } from '@/routes/util'
 import Skeleton from '@mui/material/Skeleton'
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
+import { createRoute, createRouter } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -32,7 +31,7 @@ const integrationsRedirectRoute = createRoute({
   loader: () => redirectTo('/dex/ethereum/integrations/'),
 })
 
-const appRouter = createRouter({
+export const router = createRouter({
   scrollRestoration: true,
   defaultPendingComponent: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
   defaultPendingMs: Duration.Transition,
@@ -70,20 +69,10 @@ const appRouter = createRouter({
     </>
   ),
 })
-/** Under maintenance all routes render the maintenance page while deep links are persisted */
-const maintenanceRouter = createRouter({
-  routeTree: createRootRoute({
-    component: MaintenanceApp,
-    head: () => ({ meta: [{ title: 'Curve.finance' }] }),
-  }),
-  defaultNotFoundComponent: MaintenanceApp,
-})
-
-export const router = process.env.IS_MAINTENANCE ? maintenanceRouter : appRouter
 
 // Register router for type safety
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof appRouter
+    router: typeof router
   }
 }

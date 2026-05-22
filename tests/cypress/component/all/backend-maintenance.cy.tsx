@@ -3,7 +3,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
 import { useMaintenance, type MaintenanceConfig } from '@ui-kit/features/maintenance/hooks/useMaintenance'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 
 const MODAL_TEST_ID = 'backend-maintenance-modal'
 const BANNER_TEST_ID = 'backend-maintenance-banner'
@@ -16,15 +16,15 @@ const BANNER_TEST_ID = 'backend-maintenance-banner'
  */
 const createMaintenance = ({
   offsetMs,
-  warnBefore = 'week',
+  warnBeforeMs = TIME_OPTION_MS['7d'],
   expectedDurationLabel = '20 minutes to 1 hour',
 }: {
   offsetMs: number
-  warnBefore?: NonNullable<MaintenanceConfig>['warnBefore']
+  warnBeforeMs?: NonNullable<MaintenanceConfig>['warnBeforeMs']
   expectedDurationLabel?: string
 }) => ({
   dateISO: new Date(Date.now() + offsetMs).toISOString(),
-  warnBefore,
+  warnBeforeMs,
   expectedDurationLabel,
 })
 
