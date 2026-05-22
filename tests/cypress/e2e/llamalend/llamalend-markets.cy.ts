@@ -31,7 +31,7 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
-import { objectKeys, range, recordValues, repeat } from '@primitives/objects.utils'
+import { assert, objectKeys, range, recordValues, repeat } from '@primitives/objects.utils'
 import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
@@ -273,14 +273,12 @@ testCases.forEach(([width, height, breakpoint]) => {
           cy
             .get(`[data-testid="slider-${columnId}"]`)
             .as('slider')
-            .then(
-              (
-                $el, // With log slider a click from the left is not enough to filter
-              ) =>
-                // Click 20px from the right edge and vertically centered
-                [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
-            )
-            .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true })),
+            .then($el => {
+              const sliderWidth = assert($el.width(), "The slider's width was not found")
+              const sliderHeight = assert($el.height(), "The slider's height was not found")
+              // we click ~75% percent of the slider range (from the left) and vertically centered
+              return cy.get(`@slider`).click(sliderWidth * (3 / 4), sliderHeight / 2, { waitForAnimations: true })
+            }),
         )
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
