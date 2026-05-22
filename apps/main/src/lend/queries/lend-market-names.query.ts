@@ -10,7 +10,11 @@ const V2 = 'v2' as const
 
 const v2chains = [Chain.Optimism]
 
-export const { useQuery: useLendMarketNames, reset: resetLendMarkets } = queryFactory({
+export const {
+  useQuery: useLendMarketNames,
+  reset: resetLendMarkets,
+  prefetchQuery: prefetchLendMarkets,
+} = queryFactory({
   queryKey: ({ chainId, enableLLv2 }: ChainParams & { enableLLv2: boolean }) =>
     [...rootKeys.chain({ chainId }), 'lendMarkets.getMarketList', { enableLLv2 }] as const,
   queryFn: async ({ chainId, enableLLv2 }: ChainQuery & { enableLLv2: boolean }): Promise<string[]> => {
