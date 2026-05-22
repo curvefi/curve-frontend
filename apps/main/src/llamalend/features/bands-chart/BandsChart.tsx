@@ -11,6 +11,7 @@ import type {
 } from '@/llamalend/features/bands-chart/types'
 import { Box, useTheme } from '@mui/material'
 import { notFalsy } from '@primitives/objects.utils'
+import type { LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart/ChartStateWrapper'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
@@ -31,6 +32,9 @@ type BandsChartProps = {
   error: Error | null
   isLoading: boolean
   userBandsBalances: FetchedBandsBalances[]
+  newLiquidationRange?: LlammaLiquididationRange | null
+  liqRangeCurrentVisible?: boolean
+  liqRangeNewVisible?: boolean
   oraclePrice?: string
   height?: number
   priceRange?: { min: number; max: number }
@@ -53,11 +57,29 @@ const toUserBandsPriceRange = (userBandsPriceRange: UserBandsPriceRange): BandsP
   }
 }
 
+// Candle chart builds LlammaLiquididationRange from [low, high] as:
+// price1 = upper line, price2 = lower line. Bands chart consumes the same object for the
+// preview range, so preserve that contract instead of sorting the values here.
+const toBandsPriceRange = (liquidationRange: LlammaLiquididationRange | null | undefined): BandsPriceRange | null => {
+  const upperPrice = liquidationRange?.price1.at(-1)?.value ?? liquidationRange?.price1[0]?.value
+  const lowerPrice = liquidationRange?.price2.at(-1)?.value ?? liquidationRange?.price2[0]?.value
+
+  if (lowerPrice === undefined || upperPrice === undefined) return null
+
+  return {
+    lowerPrice,
+    upperPrice,
+  }
+}
+
 const BandsChartContent = ({
   collateralToken,
   borrowToken,
   chartData,
   userBandsBalances,
+  newLiquidationRange,
+  liqRangeCurrentVisible = true,
+  liqRangeNewVisible = true,
   oraclePrice,
   priceRange,
 }: BandsChartContentProps) => {
@@ -65,7 +87,8 @@ const BandsChartContent = ({
   const derived = useDerivedChartData(chartData)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const rangeOverlays: BandsRangeOverlay[] = useMemo(() => {
-    const currentRange = toUserBandsPriceRange(userBandsPriceRange)
+    const currentRange = liqRangeCurrentVisible ? toUserBandsPriceRange(userBandsPriceRange) : null
+    const newRange = liqRangeNewVisible ? toBandsPriceRange(newLiquidationRange) : null
 
     return notFalsy<BandsRangeOverlay>(
       currentRange && {
@@ -75,8 +98,20 @@ const BandsChartContent = ({
         topLineColor: palette.userRangeTopLineColor,
         bottomLineColor: palette.userRangeBottomLineColor,
       },
+      newRange && {
+        variant: 'new',
+        ...newRange,
+        backgroundColor: palette.newRangeBackgroundColor,
+        topLineColor: palette.newRangeLineColor,
+        bottomLineColor: palette.newRangeLineColor,
+      },
     )
   }, [
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    newLiquidationRange,
+    palette.newRangeBackgroundColor,
+    palette.newRangeLineColor,
     palette.userRangeBackgroundColor,
     palette.userRangeBottomLineColor,
     palette.userRangeTopLineColor,
@@ -110,6 +145,7 @@ const BandsChartContent = ({
  * Shows stacked bar chart with:
  * - Market collateral distribution across price bands
  * - User position liquidation range
+ * - New liquidation range preview
  * - User price line markers for start and end of liquidation range
  * - Oracle price line marker
  */
@@ -120,6 +156,9 @@ const BandsChartComponent = ({
   error,
   isLoading,
   userBandsBalances,
+  newLiquidationRange,
+  liqRangeCurrentVisible = true,
+  liqRangeNewVisible = true,
   oraclePrice,
   height = Height.chart,
   priceRange,
@@ -151,6 +190,9 @@ const BandsChartComponent = ({
             borrowToken={borrowToken}
             chartData={chartData}
             userBandsBalances={userBandsBalances}
+            newLiquidationRange={newLiquidationRange}
+            liqRangeCurrentVisible={liqRangeCurrentVisible}
+            liqRangeNewVisible={liqRangeNewVisible}
             oraclePrice={oraclePrice}
             priceRange={priceRange}
           />
