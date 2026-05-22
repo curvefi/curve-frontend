@@ -25,7 +25,7 @@ import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
@@ -158,7 +158,11 @@ export const LendMarketPage = () => {
         tokens={tokens}
         params={{ chainId, marketId, userAddress }}
       />
-      <MarketInformationComposite pageProps={pageProps} type="borrow" previewPrices={previewPrices} />
+      <MarketInformationComposite
+        pageProps={pageProps}
+        rateType={MarketRateType.Borrow}
+        previewPrices={previewPrices}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

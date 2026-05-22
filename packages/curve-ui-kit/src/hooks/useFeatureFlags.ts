@@ -36,9 +36,6 @@ export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 export const useLLv2 = useBetaChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
-/** New market historical interest rate and utilization chart */
-export const useMarketInterestRatesAndUtilizationChart = useStableChannel
-
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel
 
