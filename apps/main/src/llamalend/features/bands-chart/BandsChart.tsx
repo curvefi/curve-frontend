@@ -1,7 +1,16 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo, memo } from 'react'
-import { BandsChartToken, ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type {
+  BandsChartOption,
+  BandsChartToken,
+  BandsPriceRange,
+  BandsRangeOverlay,
+  ChartDataPoint,
+  FetchedBandsBalances,
+  UserBandsPriceRange,
+} from '@/llamalend/features/bands-chart/types'
 import { Box, useTheme } from '@mui/material'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart/ChartStateWrapper'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
@@ -31,6 +40,19 @@ type BandsChartContentProps = Omit<BandsChartProps, 'chartData' | 'error' | 'isL
   chartData: ChartDataPoint[]
 }
 
+// These fields are named from the LLAMMA band orientation, not from screen position:
+// lowerBandPriceDown is the visual upper/current-top boundary, and upperBandPriceUp
+// is the visual lower/current-bottom boundary. Keep that mapping so the current
+// range line colors match candle-chart's red top line and yellow bottom line.
+const toUserBandsPriceRange = (userBandsPriceRange: UserBandsPriceRange): BandsPriceRange | null => {
+  if (!userBandsPriceRange) return null
+
+  return {
+    lowerPrice: userBandsPriceRange.upperBandPriceUp,
+    upperPrice: userBandsPriceRange.lowerBandPriceDown,
+  }
+}
+
 const BandsChartContent = ({
   collateralToken,
   borrowToken,
@@ -42,19 +64,37 @@ const BandsChartContent = ({
   const palette = useBandsChartPalette()
   const derived = useDerivedChartData(chartData)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
+  const rangeOverlays: BandsRangeOverlay[] = useMemo(() => {
+    const currentRange = toUserBandsPriceRange(userBandsPriceRange)
+
+    return notFalsy<BandsRangeOverlay>(
+      currentRange && {
+        variant: 'current',
+        ...currentRange,
+        backgroundColor: palette.userRangeBackgroundColor,
+        topLineColor: palette.userRangeTopLineColor,
+        bottomLineColor: palette.userRangeBottomLineColor,
+      },
+    )
+  }, [
+    palette.userRangeBackgroundColor,
+    palette.userRangeBottomLineColor,
+    palette.userRangeTopLineColor,
+    userBandsPriceRange,
+  ])
   const theme = useTheme()
   const tooltipFormatter = useEChartsTooltip(chartData, theme, data => (
     <TooltipContent data={data} collateralToken={collateralToken} borrowToken={borrowToken} />
   ))
-  const option: EChartsOption = useMemo(
-    () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
-    [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
+  const option: BandsChartOption = useMemo(
+    () => getChartOptions(chartData, derived, rangeOverlays, oraclePrice, palette, tooltipFormatter),
+    [chartData, derived, rangeOverlays, oraclePrice, palette, tooltipFormatter],
   )
   const finalOption = useBandsChartZoom({ option, priceRange, chartData, derived })
 
   return (
     <ReactECharts
-      option={finalOption}
+      option={finalOption as EChartsOption}
       style={{ width: '100%', height: '100%' }}
       opts={{ renderer: 'canvas' }}
       notMerge={true}
