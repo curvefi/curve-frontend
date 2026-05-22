@@ -1,11 +1,7 @@
 import { sum, zip } from 'lodash'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import {
-  generateOracleReferenceLines,
-  generateRangeBoundaryLines,
-  type HorizontalLine,
-} from './horizontalLines'
+import { generateOracleReferenceLines, generateRangeBoundaryLines, type HorizontalLine } from './horizontalLines'
 import type {
   BandsChartOption,
   BandsChartPalette,
@@ -158,7 +154,7 @@ const createCustomRectSeries = (
 
 const createNativeOracleMarkLineOption = (lines: HorizontalLine[], z2: number) =>
   lines.length
-    ? {
+    ? ({
         animation: false,
         animationDuration: 0,
         animationDurationUpdate: 0,
@@ -169,7 +165,7 @@ const createNativeOracleMarkLineOption = (lines: HorizontalLine[], z2: number) =
           const { startPoint, endPoint } = line
           return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
         }),
-      } satisfies NativeMarkLineOption
+      } satisfies NativeMarkLineOption)
     : undefined
 
 const createNativeOracleLineSeries = (
@@ -198,7 +194,10 @@ const createHorizontalLineSeriesData = (lines: HorizontalLine[]): HorizontalLine
 // Current range boundaries should remain visible over bands, but not cut across
 // a proposed/new range. Inclusive bounds make exact boundary matches defer to
 // the new range line.
-const excludeLinesInsideRangeOverlays = (lines: HorizontalLine[], rangeOverlays: BandsRangeOverlay[]): HorizontalLine[] =>
+const excludeLinesInsideRangeOverlays = (
+  lines: HorizontalLine[],
+  rangeOverlays: BandsRangeOverlay[],
+): HorizontalLine[] =>
   lines.filter(({ startPoint }) => {
     const price = startPoint.coord[1]
     return !rangeOverlays.some(({ lowerPrice, upperPrice }) => price >= lowerPrice && price <= upperPrice)

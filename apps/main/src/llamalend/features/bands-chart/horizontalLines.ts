@@ -43,11 +43,7 @@ const createHorizontalLine = (
   lineStyle: { color, ...DEFAULT_HORIZONTAL_LINE_STYLE, ...style },
 })
 
-const createRangeBoundaryLines = (
-  rangeOverlay: BandsRangeOverlay,
-  xStart: number,
-  xEnd: number,
-): HorizontalLine[] => [
+const createRangeBoundaryLines = (rangeOverlay: BandsRangeOverlay, xStart: number, xEnd: number): HorizontalLine[] => [
   // Build both range boundaries here; chartOptions owns z-order and overlap
   // filtering because those rules depend on the full set of visible overlays.
   createHorizontalLine(xStart, xEnd, rangeOverlay.upperPrice, rangeOverlay.topLineColor),
