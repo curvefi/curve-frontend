@@ -68,3 +68,22 @@ export const isEmpty = (obj: object) => Object.keys(obj).length === 0
 
 export const pick = <T, K extends keyof T>(obj: T, ...keys: K[]) =>
   Object.fromEntries(keys.map(key => [key, obj[key]])) as { [P in K]: T[P] }
+
+export function maybe<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined
+export function maybe<T1, T2, R1, R2>(
+  value: [T1 | null | undefined, T2 | null | undefined] | null | undefined,
+  mapper: (value: [T1, T2]) => [R1, R2],
+): [R1, R2] | undefined
+export function maybe<T1, T2, T3, R1, R2, R3>(
+  value: [T1 | null | undefined, T2 | null | undefined, T3 | null | undefined] | null | undefined,
+  mapper: (value: [T1, T2, T3]) => [R1, R2, R3],
+): [R1, R2, R3] | undefined
+export function maybe<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined {
+  return Array.isArray(value)
+    ? value.some(x => x == null)
+      ? undefined
+      : (value.map(mapper) as unknown as R)
+    : value === null || value === undefined
+      ? undefined
+      : mapper(value)
+}
