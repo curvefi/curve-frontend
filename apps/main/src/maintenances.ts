@@ -6,6 +6,7 @@ import { TIME_OPTION_MS } from '@ui-kit/lib/model'
 export const BACKEND_MAINTENANCE: MaintenanceConfig = {
   dateISO: '2026-05-25T07:00:00.000Z', // 25 May 2026, 09h00 CEST
   warnBeforeMs: TIME_OPTION_MS['7d'],
+  durationMs: TIME_OPTION_MS['1h'],
   expectedDurationLabel: t`20 minutes to 1 hour`,
   learnMoreLink: 'https://x.com/CurveFinance/status/2057435934526702083',
 }

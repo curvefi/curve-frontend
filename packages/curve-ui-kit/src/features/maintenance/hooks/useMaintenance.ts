@@ -10,6 +10,8 @@ export type MaintenanceConfig = {
   dateISO: string
   // How long before the maintenance we start warning users in milliseconds.
   warnBeforeMs: number
+  // How long the maintenance mode should stay active after the scheduled start time in milliseconds.
+  durationMs: number
   // Optional information to display in the modal and banner.
   expectedDurationLabel?: string
   learnMoreLink?: string
@@ -32,15 +34,22 @@ export type Maintenance = {
 const getWarningStartsTime = (dateISO: string | undefined, warnBeforeMs: number | undefined) =>
   !dateISO || !warnBeforeMs ? undefined : new Date(dateISO).getTime() - warnBeforeMs
 
-const isWithinInterval = (currentTime: number, startTime: number | Falsy, duration: number = TIME_OPTION_MS['1h']) =>
-  !!startTime && startTime <= currentTime && currentTime <= startTime + duration
+const isWithinInterval = ({
+  currentTime,
+  startTime,
+  duration,
+}: {
+  currentTime: number
+  startTime: number | Falsy
+  duration: number | undefined
+}) => !!startTime && !!duration && startTime <= currentTime && currentTime <= startTime + duration
 
 /**
  * Uses the next scheduled maintenance date to drive warnings.
  * The modal appears first when the warning window starts, then the banner can reappear daily 24h after the modal was dismissed.
  */
 export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
-  const { dateISO, warnBeforeMs, expectedDurationLabel, learnMoreLink } = maintenance ?? {}
+  const { dateISO, warnBeforeMs, durationMs, expectedDurationLabel, learnMoreLink } = maintenance ?? {}
   const [modalDismissedAt, setModalDismissedAt] = useDismissMaintenanceModal(dateISO)
   const [shouldShowBanner, dismissBanner] = useDismissMaintenanceBanner(dateISO)
   const [currentTime, setCurrentTime] = useState(Date.now)
@@ -49,7 +58,11 @@ export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
 
   const warningStartsTime = getWarningStartsTime(dateISO, warnBeforeMs)
   const maintenanceDate = dateISO && new Date(dateISO)
-  const isWithinWarningWindow = isWithinInterval(currentTime, warningStartsTime, warnBeforeMs)
+  const isWithinWarningWindow = isWithinInterval({
+    currentTime,
+    startTime: warningStartsTime,
+    duration: warnBeforeMs,
+  })
   const isModalDismissedAtLeastADayAgo =
     !!modalDismissedAt && new Date(modalDismissedAt).getTime() + TIME_OPTION_MS['1d'] <= currentTime
 
@@ -61,7 +74,11 @@ export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
     showBanner: shouldShowBanner && isWithinWarningWindow && isModalDismissedAtLeastADayAgo,
     // We display the modal once, during the warning window and only before the scheduled maintenance time.
     showModal: !modalDismissedAt && isWithinWarningWindow,
-    isMaintenanceMode: isWithinInterval(currentTime, maintenanceDate && maintenanceDate.getTime()),
+    isMaintenanceMode: isWithinInterval({
+      currentTime,
+      startTime: maintenanceDate && maintenanceDate.getTime(),
+      duration: durationMs,
+    }),
     dismissModal: () => setModalDismissedAt(new Date().toISOString()),
     dismissBanner,
     learnMoreLink,

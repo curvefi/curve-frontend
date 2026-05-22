@@ -17,14 +17,17 @@ const BANNER_TEST_ID = 'backend-maintenance-banner'
 const createMaintenance = ({
   offsetMs,
   warnBeforeMs = TIME_OPTION_MS['7d'],
+  durationMs = TIME_OPTION_MS['1h'],
   expectedDurationLabel = '20 minutes to 1 hour',
 }: {
   offsetMs: number
   warnBeforeMs?: NonNullable<MaintenanceConfig>['warnBeforeMs']
+  durationMs?: NonNullable<MaintenanceConfig>['durationMs']
   expectedDurationLabel?: string
 }) => ({
   dateISO: new Date(Date.now() + offsetMs).toISOString(),
   warnBeforeMs,
+  durationMs,
   expectedDurationLabel,
 })
 
