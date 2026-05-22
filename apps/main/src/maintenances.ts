@@ -6,5 +6,5 @@ export const BACKEND_MAINTENANCE: MaintenanceConfig = {
   dateISO: '2026-05-25T07:00:00.000Z', // 25 May 2026, 09h00 CEST
   warnBefore: 'week',
   expectedDurationLabel: t`20 minutes to 1 hour`,
-  learnMoreLink: 'https://x.com/CurveFinance/status/2057435934526702083?s=20',
+  learnMoreLink: 'https://x.com/CurveFinance/status/2057435934526702083',
 }
