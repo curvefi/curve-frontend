@@ -22,7 +22,7 @@ import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './colum
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
-import { LlamaTableFiltersPopover } from './filters/LlamaTableFiltersPopover'
+import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -107,8 +107,8 @@ export const LlamaMarketsTable = ({
           collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
           hasActiveFilters,
         }}
-        popoverFilters={
-          <LlamaTableFiltersPopover
+        filtersOverlay={
+          <LlamaTableFiltersOverlay
             hasActiveFilters={hasActiveFilters}
             open={filterPopoverOpen}
             onClose={closeFilterPopover}

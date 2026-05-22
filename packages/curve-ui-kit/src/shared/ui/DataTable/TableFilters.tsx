@@ -22,7 +22,7 @@ export const TableFilters = <ColumnIds extends string>({
   testIdPrefix,
   visibilityGroups,
   toggleVisibility,
-  popoverFilters,
+  filtersOverlay,
   collapsibleFilters,
   chips,
   filterChip,
@@ -35,7 +35,7 @@ export const TableFilters = <ColumnIds extends string>({
   testIdPrefix: string
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
-  popoverFilters?: ReactNode // filters shown in the popover menu
+  filtersOverlay?: ReactNode // filters shown in the filter overlay (popover or modal for mobile)
   // collabsible bar that displays the active filters for desktop and tablet only
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
@@ -100,7 +100,7 @@ export const TableFilters = <ColumnIds extends string>({
           onClose={closeVisibilitySettings}
         />
       )}
-      {popoverFilters}
+      {filtersOverlay}
     </Stack>
   )
 }
