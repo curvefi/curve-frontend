@@ -70,18 +70,19 @@ export function checkLineGraphColor(type: MarketRateType, color: string) {
 export function checkCoinSelection(vaultData: Record<Chain, GetMarketsResponse>, type: TokenType) {
   const symbol = oneOf(...vaultData.ethereum.data.map(d => d[`${type}_token`].symbol))
   const columnId = `assets_${type}_symbol`
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-  cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
-  cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
-  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
-  cy.get('body').click(0, 0) // close popover
+  withFiltersPopover(() => {
+    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
+    cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+    cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
+    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
+    cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
+    cy.get('body').click(0, 0) // close multi select token popover
 
-  getTableCellAssets().find(`[data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
-  cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
-
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-  cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+    getTableCellAssets().find(`[data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
+    cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
+    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
+    return cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+  })
   cy.url().should('not.include', `assets_${type}_symbol`)
 }
 

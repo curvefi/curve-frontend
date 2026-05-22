@@ -7,7 +7,6 @@ import {
   expandFirstRowOnMobile,
   getTableCellAssets,
   openDrawer,
-  openFilters,
   withFilterChips,
   withFiltersPopover,
 } from '@cy/support/helpers/data-table.helpers'
@@ -43,7 +42,7 @@ const testCases = [oneViewport()] as const
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
-    const itNotMobile = breakpoint !== 'mobile' ? it : it.skip
+    const itSkipOnMobile = breakpoint === 'mobile' ? it.skip : it
 
     beforeEach(() => {
       ;({ vaultData } = setupLlamalendListMocks())
@@ -54,10 +53,11 @@ testCases.forEach(([width, height, breakpoint]) => {
       expandFirstRowOnMobile(breakpoint)
       // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
       range(2).forEach(() =>
-        breakpoint === 'desktop'
-          ? // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
-            cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
-          : cy.get(`[data-testid^="copy-market-address"]:visible`).first().click(),
+        cy
+          .get(`[data-testid^="copy-market-address"]`)
+          .first()
+          // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
+          .click({ force: breakpoint === 'desktop' }),
       )
       cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
     })
@@ -70,7 +70,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       filterByMarketType([width, height], type)
       cy.get(`[data-testid^="market-link-"]`).first().click()
       if (breakpoint === 'mobile') {
-        cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
+        cy.get(`[data-testid^="llama-market-go-to-market"]`).click()
       }
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
@@ -205,7 +205,8 @@ testCases.forEach(([width, height, breakpoint]) => {
       getTableCellAssets().first().contains('wstETH')
     })
 
-    itNotMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
+    /** Filter chip not yet available on mobile */
+    itSkipOnMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
       openDrawer(breakpoint, 'filter')
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -232,7 +233,6 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it(`should allow filtering by token`, () => {
-      openFilters()
       checkCoinSelection(vaultData, 'collateral')
       checkCoinSelection(vaultData, 'borrowed')
     })
@@ -314,15 +314,16 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
 
-    itNotMobile('should show active filters in the collapsible', () => {
+    /** Filters collapsible is not shown on mobile */
+    itSkipOnMobile('should show active filters in the collapsible', () => {
       withFiltersPopover(() => {
         cy.get(`[data-testid="table-filter-btn-market-version-${LlamaMarketVersion.v1}"]`).click()
         cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
         return cy.get(`[data-testid="chip-chain-ethereum"]`).click()
       })
 
-      cy.get(`[data-testid="table-filters-collapsible"]`).should('be.visible').as('collapsible')
-      cy.get('@collapsible').children().first().first().children().should('have.length', 3)
+      cy.get(`[data-testid="table-filters-collapsible"]`).as('collapsible')
+      cy.get('@collapsible').find('[data-testid^="table-filters-collapsible-active-filter-"]').should('have.length', 3)
 
       cy.get(`[data-testid="table-filters-collapsible-reset-btn"]`).click()
       cy.get('@collapsible').should('not.be.visible')

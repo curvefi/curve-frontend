@@ -37,12 +37,8 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
-export function openFilters() {
-  cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
-}
-
 export function withFiltersPopover<T>(callback: () => Cypress.Chainable<T>) {
-  openFilters()
+  cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
   return callback().then(result => {
     cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
     return cy.wrap(result)

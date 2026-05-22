@@ -99,7 +99,11 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
 
           return (
             !!labels?.length && (
-              <SelectedFilterChips key={`selected-chip-${id}`} title={LLAMA_MARKET_TITLES[id]}>
+              <SelectedFilterChips
+                key={`selected-chip-${id}`}
+                title={LLAMA_MARKET_TITLES[id]}
+                testId={`${TEST_ID}-active-filter-${id}`}
+              >
                 {/* Special chip for the chains filter */}
                 {id === LlamaMarketColumnId.Chain ? (
                   <ChainFilterChips
