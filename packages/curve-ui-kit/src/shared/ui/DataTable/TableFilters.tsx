@@ -1,5 +1,6 @@
 import { ReactNode, useRef } from 'react'
 import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -22,6 +23,7 @@ export const TableFilters = <ColumnIds extends string>({
   visibilityGroups,
   toggleVisibility,
   popoverFilters,
+  collapsibleFilters,
   chips,
   filterChip,
   sortChip,
@@ -34,6 +36,8 @@ export const TableFilters = <ColumnIds extends string>({
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
   popoverFilters?: ReactNode // filters shown in the popover menu
+  // collabsible bar that displays the active filters for desktop and tablet only
+  collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   filterChip?: ReactNode // buttons responsible for filtering
   sortChip?: ReactNode // buttons responsible for sorting
@@ -45,6 +49,7 @@ export const TableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
+  const { collapsible, hasActiveFilters } = collapsibleFilters ?? {}
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
@@ -83,6 +88,8 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         )}
       </Grid>
+
+      {collapsible && !isMobile && <Collapse in={hasActiveFilters}>{collapsible}</Collapse>}
 
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>

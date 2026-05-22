@@ -1,11 +1,8 @@
-import { BACKEND_MAINTENANCE } from '@/backend-maintenance'
+import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
-import {
-  useBackendMaintenance,
-  type BackendMaintenanceConfig,
-} from '@ui-kit/features/maintenance/hooks/useBackendMaintenance'
+import { useMaintenance, type MaintenanceConfig } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 const MODAL_TEST_ID = 'backend-maintenance-modal'
@@ -23,7 +20,7 @@ const createMaintenance = ({
   expectedDurationLabel = '20 minutes to 1 hour',
 }: {
   offsetMs: number
-  warnBefore?: NonNullable<BackendMaintenanceConfig>['warnBefore']
+  warnBefore?: NonNullable<MaintenanceConfig>['warnBefore']
   expectedDurationLabel?: string
 }) => ({
   dateISO: new Date(Date.now() + offsetMs).toISOString(),
@@ -31,8 +28,8 @@ const createMaintenance = ({
   expectedDurationLabel,
 })
 
-function BackendMaintenanceTest({ maintenance }: { maintenance: BackendMaintenanceConfig }) {
-  const backendMaintenance = useBackendMaintenance(maintenance)
+function BackendMaintenanceTest({ maintenance }: { maintenance: MaintenanceConfig }) {
+  const backendMaintenance = useMaintenance(maintenance)
 
   return (
     <>
@@ -42,7 +39,7 @@ function BackendMaintenanceTest({ maintenance }: { maintenance: BackendMaintenan
   )
 }
 
-const mountBackendMaintenance = (maintenance: BackendMaintenanceConfig) =>
+const mountBackendMaintenance = (maintenance: MaintenanceConfig) =>
   cy.mount(
     <ComponentTestWrapper>
       <BackendMaintenanceTest maintenance={maintenance} />

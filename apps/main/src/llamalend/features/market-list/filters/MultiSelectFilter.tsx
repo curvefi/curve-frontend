@@ -18,32 +18,10 @@ import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
+import { HiddenInlinedItems } from './HiddenInlinedItems'
+import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
-
-/**  Show only the first few selected values inline so the closed select stays compact.
- * Any remaining selections are collapsed into a single "+N" item, if more than 1 item is hidden */
-const getVisibleSelectedOptionsCount = (selectedOptionsLength: number) => {
-  const maxVisibleSelectedOptions = 4
-  return selectedOptionsLength === maxVisibleSelectedOptions ? maxVisibleSelectedOptions : maxVisibleSelectedOptions - 1
-}
-
-/** Renders the overflow indicator for selected options hidden behind max selected options limit.  */
-const HiddenSelectedOptions = ({
-  selectedOptionsLength,
-  renderItem,
-  selectedItemRender,
-}: {
-  selectedOptionsLength: number
-  renderItem?: (value: string) => ReactNode
-  selectedItemRender?: (value: string) => ReactNode
-}) => {
-  const visibleSelectedOptionsCount = getVisibleSelectedOptionsCount(selectedOptionsLength)
-  const label = `+${selectedOptionsLength - visibleSelectedOptionsCount}`
-  return (
-    selectedOptionsLength > visibleSelectedOptionsCount && (selectedItemRender?.(label) ?? renderItem?.(label) ?? label)
-  )
-}
 
 /**
  * A filter for tanstack tables that allows multi-select of string values.
@@ -95,6 +73,8 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
     [setColumnFilter, id, selectedOptions],
   )
 
+  const [visibleSelectedOptions, hiddenSelectedOptions] = getInlinedItemsVisibility(selectedOptions)
+
   // the select component does a lot of stuff with its children, so we cannot add a wrapper for the theme inverter.
   // therefore, I was forced to reimplement the menu separate from the select component.
   return (
@@ -114,7 +94,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             <>
-              {selectedOptions.slice(0, getVisibleSelectedOptionsCount(selectedOptions.length)).map(optionId => (
+              {visibleSelectedOptions.map(optionId => (
                 <MenuItem
                   key={optionId}
                   sx={{
@@ -125,10 +105,9 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
                   {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
                 </MenuItem>
               ))}
-              <HiddenSelectedOptions
-                selectedOptionsLength={selectedOptions.length}
-                selectedItemRender={selectedItemRender}
-                renderItem={renderItem}
+              <HiddenInlinedItems
+                hiddenSelectedItemsLength={hiddenSelectedOptions.length}
+                renderItem={label => selectedItemRender?.(label) ?? renderItem?.(label)}
               />
             </>
           ) : (

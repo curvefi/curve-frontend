@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatDate, formatTime } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { TableSecondaryTextClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -35,10 +36,10 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
       </Typography>
 
       <Stack direction="row" alignItems="center" justifyContent={align} gap={Spacing.xs}>
-        <Typography variant="tableCellSRegular" color="textSecondary">
+        <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
           {formatTime(timestamp)}
         </Typography>
-        {clickable && <ArrowOutwardIcon sx={{ fontSize: 20, color: t => t.design.Text.TextColors.Secondary }} />}
+        {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />}
       </Stack>
     </InlineTableCell>
   )

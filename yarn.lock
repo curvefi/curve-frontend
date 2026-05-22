@@ -394,15 +394,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:2.0.24":
-  version: 2.0.24
-  resolution: "@curvefi/llamalend-api@npm:2.0.24"
+"@curvefi/llamalend-api@npm:2.0.28":
+  version: 2.0.28
+  resolution: "@curvefi/llamalend-api@npm:2.0.28"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/5524cb65c72f9b51ee11af1ff6e4511d12f6cc2212a734bfb4e5d6418bbe45bddb772d8b1820e8152447feee1481ed6f0187f181d487ce6763f00f72d5e209fe
+  checksum: 10c0/326af54fd09600c63971352bbba1456adca2a8760b4001d20a908ff0bfde1e1c06e984a8cb2c21cda78523c530f6ceb97868903f4fc105bdc151aec6a7dd235d
   languageName: node
   linkType: hard
 
@@ -11858,7 +11858,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:2.0.24"
+    "@curvefi/llamalend-api": "npm:2.0.28"
     "@sentry/vite-plugin": "npm:5.2.1"
     "@supercharge/promise-pool": "npm:3.3.0"
     "@tanstack/react-router": "npm:1.169.1"
