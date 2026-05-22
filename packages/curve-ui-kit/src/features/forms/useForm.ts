@@ -1,6 +1,13 @@
 import { type SubmitEvent, useCallback, useMemo, useRef } from 'react'
 import { assert, fromEntries, notFalsy, notFalsyArray, objectKeys, recordEntries } from '@primitives/objects.utils'
-import { type AnyFieldMeta, getBy, useForm as useTanStackForm, useStore } from '@tanstack/react-form'
+import {
+  type AnyFieldMeta,
+  FormValidateFn,
+  getBy,
+  RejectPromiseValidator,
+  useForm as useTanStackForm,
+  useStore,
+} from '@tanstack/react-form'
 import type { ValidationSuite } from '@ui-kit/lib/validation'
 import type {
   ErrorKey,
@@ -30,11 +37,13 @@ const toFormError = (value: unknown): FormError | undefined =>
         }
       : undefined
 
-/** Converts the given validation errors to a form error string */
-const getValidationFieldErrors = <T extends FieldValues>(validation: ValidationSuite, value: T) =>
-  fromEntries(
-    recordEntries(validation(value).getErrors()).map(([field, errors]) => [field as FieldPath<T>, errors.join('\n')]),
-  )
+const createValidator =
+  <T extends FieldValues>(validation: ValidationSuite): RejectPromiseValidator<FormValidateFn<T>> =>
+  ({ value }: { value: T }) => ({
+    fields: fromEntries(
+      recordEntries(validation(value).getErrors()).map(([field, errors]) => [field as FieldPath<T>, errors.join('\n')]),
+    ),
+  })
 
 /** Collects field flags based on a predicate function applied to field metadata */
 const collectFieldFlags = <T extends FieldValues>(
@@ -101,9 +110,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
   const form = useTanStackForm({
     defaultValues,
     ...(validation && {
-      validators: {
-        onChange: ({ value }: { value: T }) => ({ fields: getValidationFieldErrors(validation, value) }),
-      },
+      validators: { onChange: createValidator<T>(validation), onMount: createValidator<T>(validation) },
     }),
     onSubmit: ({ value }: { value: T }) => assert(mutateRef.current, `No submit handler provided`)(value),
   })
