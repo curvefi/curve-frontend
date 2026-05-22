@@ -21,10 +21,6 @@ export interface SmallLiquidationRangeChartOptionProps {
   oraclePrice: Amount | undefined
 }
 
-export type SmallLiquidationRangeChartData = SmallLiquidationRangeChartOptionProps & {
-  loading: boolean
-}
-
 export type OracleRailLayout = {
   // Synthetic x-value on the rail axis where the oracle marker is rendered.
   markerPosition: number
