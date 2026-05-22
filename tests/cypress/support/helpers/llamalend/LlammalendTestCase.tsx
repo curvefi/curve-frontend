@@ -1,6 +1,6 @@
-import { resetMintMarkets } from 'main/src/loan/entities/mint-market-names.query'
+import { prefetchMintMarkets } from 'main/src/loan/entities/mint-market-names.query'
 import { useMemo } from 'react'
-import { resetLendMarkets } from '@/lend/queries/lend-market-names.query'
+import { prefetchLendMarkets } from '@/lend/queries/lend-market-names.query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -98,8 +98,8 @@ export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...p
       hydrate={useMemo(
         () => ({
           llamalend: {
-            [LlamaMarketType.Lend]: () => resetLendMarkets({ chainId, enableLLv2: true }),
-            [LlamaMarketType.Mint]: () => resetMintMarkets({ chainId }),
+            [LlamaMarketType.Lend]: () => prefetchLendMarkets({ chainId, enableLLv2: true }),
+            [LlamaMarketType.Mint]: () => prefetchMintMarkets({ chainId }),
           }[marketType],
         }),
         [chainId, marketType],
