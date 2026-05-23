@@ -158,7 +158,7 @@ export const MarketRateCurveChart = ({
   return (
     <Card size="small">
       <CardHeader title={t`Interest Rate & Utilization`} />
-      <CardContent component={Stack} gap={Spacing.md}>
+      <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
           sx={{
             display: 'grid',

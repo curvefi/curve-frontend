@@ -15,9 +15,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing, MaxWidth, IconSize } = SizesAndSpaces
 
 export const ComingSoon = () => (
-  <Card component={Stack} size="small" height="100%">
+  <Card component={Stack} size="small" sx={{ height: '100%' }}>
     <CardHeader title={t`Coming soon`} />
-    <CardContent component={Stack} flexGrow={1}>
+    <CardContent component={Stack} sx={{ flexGrow: 1 }}>
       <Stack
         sx={{
           flexGrow: 1,

@@ -199,7 +199,7 @@ export const MarketHistoricalRatesChart = ({
           />
         }
       />
-      <CardContent component={Stack} gap={Spacing.md}>
+      <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
           sx={{
             display: 'grid',

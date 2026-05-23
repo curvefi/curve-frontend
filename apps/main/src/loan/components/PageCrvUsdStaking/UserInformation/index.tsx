@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
 
 export const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => (
   <Card>
-    <CardContent component={Stack} gap={Spacing.md} direction="column">
+    <CardContent component={Stack} sx={{ gap: Spacing.md }} direction="column">
       <Typography variant="headingSBold" sx={{ alignSelf: 'center' }}>
         {t`How to get yield with Savings crvUSD?`}
       </Typography>
