@@ -14,21 +14,11 @@ const BANNER_TEST_ID = 'backend-maintenance-banner'
  * Instead of hardcoding a maintenance date and changing the clock in each test, we move the maintenance date backward
  * or forward from now depending on the scenario.
  */
-const createMaintenance = ({
-  offsetMs,
-  warnBeforeMs = TIME_OPTION_MS['7d'],
-  durationMs = TIME_OPTION_MS['1h'],
-  expectedDurationLabel = '20 minutes to 1 hour',
-}: {
-  offsetMs: number
-  warnBeforeMs?: NonNullable<MaintenanceConfig>['warnBeforeMs']
-  durationMs?: NonNullable<MaintenanceConfig>['durationMs']
-  expectedDurationLabel?: string
-}) => ({
+const createMaintenance = ({ offsetMs }: { offsetMs: number }) => ({
   dateISO: new Date(Date.now() + offsetMs).toISOString(),
-  warnBeforeMs,
-  durationMs,
-  expectedDurationLabel,
+  warnBeforeMs: TIME_OPTION_MS['7d'],
+  durationMs: TIME_OPTION_MS['1h'],
+  expectedDurationLabel: '20 minutes to 1 hour',
 })
 
 function BackendMaintenanceTest({ maintenance }: { maintenance: MaintenanceConfig }) {
