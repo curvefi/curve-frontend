@@ -6,11 +6,7 @@ import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 
 export const AdvancedDetails = ({ network }: { network: BaseConfig | undefined }) => (
   <Card size="small">
-    <CardHeader
-      data-inline
-      title={t`Advanced Details`}
-      slotProps={{ title: { variant: 'small' }, root: { variant: 'small' } }}
-    />
+    <CardHeader data-inline title={t`Advanced Details`} />
 
     <CardContent sx={{ paddingInline: '0 !important' }} /** TODO: no data-inline support yet like in header */>
       <AddressActionInfo network={network} title={t`Vault Contract Address`} address={SCRVUSD_VAULT_ADDRESS} />
