@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
@@ -61,7 +61,7 @@ export type ActionInfoProps = {
   /** Additional styles */
   sx?: StackProps['sx']
   /** CSS align-items property */
-  alignItems?: StackProps['alignItems']
+  alignItems?: CSSProperties['alignItems']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
