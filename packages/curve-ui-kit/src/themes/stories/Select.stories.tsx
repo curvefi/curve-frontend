@@ -138,12 +138,7 @@ const MultiSelect = <T extends string>({
           </Box>
           {options.map(option => (
             <InvertOnHover hoverRef={menuRef} key={option}>
-              <MenuItem
-                ref={menuRef}
-                value={option}
-                className={selected.includes(option) ? 'Mui-selected' : ''}
-                onClick={handleItemClick}
-              >
+              <MenuItem ref={menuRef} value={option} selected={selected.includes(option)} onClick={handleItemClick}>
                 {renderItem?.(option) || option}
               </MenuItem>
             </InvertOnHover>

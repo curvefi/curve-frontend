@@ -141,7 +141,7 @@ export const LegacyMultiSelectFilter = <TKeys, TColumnId extends string>({
                 <MenuItem
                   ref={menuRef}
                   value={optionId}
-                  className={isSelected ? 'Mui-selected' : ''}
+                  selected={isSelected}
                   onClick={onItemClicked}
                   sx={{ justifyContent: 'space-between' }}
                 >

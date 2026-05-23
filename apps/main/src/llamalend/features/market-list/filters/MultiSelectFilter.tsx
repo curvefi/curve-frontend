@@ -95,11 +95,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           selectedOptions?.length && selectedOptions.length < options.length ? (
             <>
               {visibleSelectedOptions.map(optionId => (
-                <Box
-                  component="span"
-                  key={optionId}
-                  sx={{ display: 'inline-flex', alignItems: 'center' }}
-                >
+                <Box component="span" key={optionId} sx={{ display: 'inline-flex', alignItems: 'center' }}>
                   {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
                 </Box>
               ))}
@@ -149,7 +145,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
                 <MenuItem
                   ref={menuRef}
                   value={optionId}
-                  className={isSelected ? 'Mui-selected' : ''}
+                  selected={isSelected}
                   onClick={onItemClicked}
                   sx={{ justifyContent: 'space-between' }}
                 >
