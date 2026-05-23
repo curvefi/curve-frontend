@@ -1,5 +1,5 @@
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
-import { Stack } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -87,17 +87,18 @@ export const LegacyMultiSelectFilter = <TKeys, TColumnId extends string>({
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             selectedOptions.map((optionId, index) => (
-              <MenuItem
+              <Box
+                component="span"
                 key={optionId}
                 sx={{
                   display: 'inline-flex', // display inline to avoid wrapping
-                  '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                  alignItems: 'center',
                   gap: Spacing.xs, // default spacing is too large inline
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
                 {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
-              </MenuItem>
+              </Box>
             ))
           ) : (
             <Typography variant="bodySBold">{isMobile ? defaultTextMobile : defaultText}</Typography>

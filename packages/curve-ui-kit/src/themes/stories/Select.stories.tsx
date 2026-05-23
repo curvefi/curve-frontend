@@ -92,17 +92,18 @@ const MultiSelect = <T extends string>({
         renderValue={() =>
           selected.length ? (
             selected.map((optionId, index) => (
-              <MenuItem
+              <Box
+                component="span"
                 key={optionId}
                 sx={{
                   display: 'inline-flex', // display inline to avoid wrapping
-                  '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                  alignItems: 'center',
                   gap: Spacing.xs, // default spacing is too large inline
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
                 {renderItem?.(optionId as T) ?? optionId}
-              </MenuItem>
+              </Box>
             ))
           ) : (
             <Typography>{placeholder || 'Select options'}</Typography>
