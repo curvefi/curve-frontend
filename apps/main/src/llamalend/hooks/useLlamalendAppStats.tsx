@@ -1,7 +1,6 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useCrvUsdTotalSupply } from '@/llamalend/queries/crvusd-total-supply.query'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@primitives/fetch.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -53,7 +52,6 @@ export function useLlamalendAppStats(
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
   const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)
-  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, enabled)
 
   return enabled
     ? [
@@ -64,10 +62,6 @@ export function useLlamalendAppStats(
         {
           label: t`Daily volume`,
           value: (dailyVolume && formatUsd(dailyVolume)) || '-',
-        },
-        {
-          label: t`Total crvUSD Supply`,
-          value: (crvusdTotalSupply && formatUsd(crvusdTotalSupply)) || '-',
         },
         {
           label: 'crvUSD',
