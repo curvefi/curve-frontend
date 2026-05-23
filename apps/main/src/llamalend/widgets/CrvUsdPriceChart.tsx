@@ -5,13 +5,10 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { Decimal } from '@primitives/decimal.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
-import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { queryFactory } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
@@ -31,6 +28,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -49,19 +47,6 @@ const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashP
   { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
-/**
- * Gets the full crvUSD supply from the Curve Finance API, including non-standard mint sources.
- */
-const { useQuery: useCrvUsdTotalSupply } = queryFactory({
-  queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
-  queryFn: async () => {
-    const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
-    return (await resp.text()) as Decimal
-  },
-  category: 'llamalend.appStats',
-  validationSuite: EmptyValidationSuite,
-})
-
 export const CrvUsdPriceChart = () => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<PriceSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
@@ -76,7 +61,7 @@ export const CrvUsdPriceChart = () => {
     chainId: Chain.Ethereum,
     tokenAddress: CRVUSD_ADDRESS,
   })
-  const { data: totalSupply, isLoading: isTotalSupplyLoading } = useCrvUsdTotalSupply({})
+  const { data: totalSupply, isLoading: isTotalSupplyLoading } = useCrvUsdSupplyTotal({})
   // keepPreviousData is enabled on this query for analytics, so isLoading stays false when switching time options.
   // Check isPlaceholderData to show the loader while fresh data is being fetched.
   const showLoading = isLoading || isPlaceholderData
