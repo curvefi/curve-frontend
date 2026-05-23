@@ -17,11 +17,11 @@ export const RewardsOtherHeader = ({ table }: HeaderContext<PoolListItem, Reward
     <Stack direction="row" gap={Spacing.xs} alignItems="end">
       {useNetworkFromUrl()?.isCrvRewardsEnabled && (
         <>
-          <Sortable column={table.getColumn(PoolColumnId.RewardsCrv)}>{`CRV`}</Sortable>
+          <Sortable column={table.getColumn(PoolColumnId.RewardsCrv)} size="large">{`CRV`}</Sortable>
           <Box component="span">{'+'}</Box>
         </>
       )}
-      <Sortable column={table.getColumn(PoolColumnId.RewardsIncentives)}>{`Incentives`}</Sortable>
+      <Sortable column={table.getColumn(PoolColumnId.RewardsIncentives)} size="large">{`Incentives`}</Sortable>
     </Stack>
   </Stack>
 )
