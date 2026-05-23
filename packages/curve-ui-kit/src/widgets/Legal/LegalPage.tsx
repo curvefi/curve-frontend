@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Grid, Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { getSearchString, useSearchParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
@@ -68,14 +68,10 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
       }}
     >
       <Stack sx={{ maxWidth: MaxWidth.disclaimer, width: '100%' }} data-testid={useAfterHydration('legal-page')}>
-        <Grid container direction="column" spacing={Spacing.md}>
-          <Grid size={12} sx={{ justifyContent: 'flex-start' }}>
-            <LastUpdated />
-          </Grid>
-          <Grid size={12}>
-            <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
-          </Grid>
-        </Grid>
+        <Stack sx={{ gap: Spacing.md }}>
+          <LastUpdated />
+          <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
+        </Stack>
 
         {tab === 'disclaimers' ? (
           <>
