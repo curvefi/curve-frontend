@@ -20,7 +20,6 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
       ref={ref}
       {...props}
       direction="row"
-      alignItems="end"
       {...(column && {
         justifyContent: getFlexAlignment(column),
         onClick: (e: MouseEvent) => {
@@ -29,6 +28,7 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
         },
       })}
       {...(isEnabled && { sx: { cursor: 'pointer' } })}
+      sx={{ alignItems: 'end' }}
     >
       {children}
       <RotatableIcon

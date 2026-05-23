@@ -23,13 +23,24 @@ export const DataCell = <T extends TableItem>({
     <Typography
       variant={getCellVariant(column)}
       component="td"
-      color="text.primary"
-      sx={sx}
       data-testid={`data-table-cell-${column.id}`}
+      sx={[
+        {
+          color: 'text.primary',
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       {showCollapseIcon ? (
-        <Stack direction="row" alignItems="center" width="100%">
-          <Box sx={wrapperSx} flexGrow={1}>
+        <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>
+          <Box
+            sx={[
+              {
+                flexGrow: 1,
+              },
+              ...(Array.isArray(wrapperSx) ? wrapperSx : [wrapperSx]),
+            ]}
+          >
             {children}
           </Box>
           <RotatableIcon

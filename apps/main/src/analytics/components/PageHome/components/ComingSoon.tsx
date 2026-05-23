@@ -19,21 +19,23 @@ export const ComingSoon = () => (
     <CardHeader title={t`Coming soon`} />
     <CardContent component={Stack} flexGrow={1}>
       <Stack
-        flexGrow={1}
-        gap={Spacing.sm}
-        alignItems="center"
-        justifyContent="center"
-        minHeight={MIN_HEIGHT}
-        marginInline="auto"
-        sx={{ maxWidth: MaxWidth.emptyStateCard }}
+        sx={{
+          flexGrow: 1,
+          gap: Spacing.sm,
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: MIN_HEIGHT,
+          marginInline: 'auto',
+          maxWidth: MaxWidth.emptyStateCard,
+        }}
       >
-        <Stack gap={Spacing.xs} alignItems="center">
+        <Stack sx={{ gap: Spacing.xs, alignItems: 'center' }}>
           <LlamaIcon color="primary" sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
 
-          <Stack alignItems="center" textAlign="center" sx={{ textWrap: 'pretty' }}>
+          <Stack sx={{ alignItems: 'center', textAlign: 'center', textWrap: 'pretty' }}>
             <Typography variant="headingXsBold">{t`Analytics v2 in progress`}</Typography>
 
-            <Stack gap={Spacing.md}>
+            <Stack sx={{ gap: Spacing.md }}>
               <Typography variant="bodySRegular" color="textSecondary">
                 {t`We are currently integrating deeper liquidity metrics, volume analysis, and historical yield projections.`}
               </Typography>
@@ -46,7 +48,7 @@ export const ComingSoon = () => (
         </Stack>
 
         {/** Using grid here for equal sized buttons */}
-        <Box display="grid" gap={Spacing.xs} gridTemplateColumns={{ tablet: '1fr 1fr' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { tablet: '1fr 1fr' }, gap: Spacing.xs }}>
           <ExternalLink
             wide
             variant="contained"

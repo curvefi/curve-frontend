@@ -59,9 +59,8 @@ export const PoolListFilterDrawer = ({
       </DrawerHeader>
       <Stack
         direction="column"
-        sx={{ paddingInline: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
-        gap={Spacing.sm}
         data-testid="drawer-filter-menu-dex-pools"
+        sx={{ gap: Spacing.sm, paddingInline: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
       >
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>

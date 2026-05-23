@@ -66,13 +66,18 @@ export const TooltipItem = ({
   imageId?: string
   sx?: SxProps
 }) => (
-  <Stack direction="row" gap={Spacing.sm} justifyContent="space-between" sx={sx}>
-    <Stack direction="row" gap={Spacing.xxs} alignItems="center">
-      {titleAdornment && (
-        <Stack alignItems="center" sx={{ marginLeft: Spacing.md }}>
-          {titleAdornment}
-        </Stack>
-      )}
+  <Stack
+    direction="row"
+    sx={[
+      {
+        gap: Spacing.sm,
+        justifyContent: 'space-between',
+      },
+      ...(Array.isArray(sx) ? sx : [sx]),
+    ]}
+  >
+    <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
+      {titleAdornment && <Stack sx={{ alignItems: 'center', marginLeft: Spacing.md }}>{titleAdornment}</Stack>}
       {titleIcon && (
         <TokenIcon
           blockchainId={titleIcon.blockchainId}
@@ -99,7 +104,7 @@ export const TooltipItem = ({
       </Typography>
     </Stack>
     <WithSkeleton loading={loading}>
-      <Stack direction="row" spacing={1} alignItems="baseline">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
         {Children.map(children, (child, index) => {
           const isFirstChild = index === 0
           const typographyVariant = isFirstChild ? valueTypographyVariant[variant] : 'bodyXsRegular'
@@ -133,20 +138,20 @@ export const TooltipItems = ({
   extraMargin?: boolean
 }) => (
   <Stack
-    padding={Spacing.sm}
-    gap={Spacing.xs}
-    marginTop={extraMargin ? Spacing.sm : 0}
-    {...(borderTop && { borderTop: t => `1px solid ${t.design.Layer[3].Outline}` })}
-    {...(secondary && { bgcolor: t => t.design.Layer[2].Fill })}
+    sx={{
+      ...(borderTop && { borderTop: t => `1px solid ${t.design.Layer[3].Outline}` }),
+      ...(secondary && { backgroundColor: t => t.design.Layer[2].Fill }),
+      padding: Spacing.sm,
+      gap: Spacing.xs,
+      marginTop: extraMargin ? Spacing.sm : 0,
+    }}
   >
     {children}
   </Stack>
 )
 
 export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
-  <Stack gap={Spacing.sm} sx={{ maxWidth: '20rem' }}>
-    {children}
-  </Stack>
+  <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
 )
 
 export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
@@ -156,7 +161,7 @@ export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
 )
 
 export const TooltipFooter = ({ children }: { children: ReactNode }) => (
-  <Typography variant="bodyXsRegular" component="span" fontStyle="italic">
+  <Typography variant="bodyXsRegular" component="span" sx={{ fontStyle: 'italic' }}>
     {children}
   </Typography>
 )

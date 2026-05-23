@@ -37,7 +37,7 @@ const CardStory = (props: CardProps) => (
     </CardContent>
 
     <CardActions disableSpacing>
-      <Stack direction="row" gap={Spacing.xs} flexGrow={1}>
+      <Stack direction="row" sx={{ gap: Spacing.xs, flexGrow: 1 }}>
         <Button fullWidth>Share</Button>
         <Button fullWidth color="secondary">
           Learn More
@@ -68,7 +68,7 @@ const CardStoryHeaderOnly = (props: CardProps) => (
     <CardHeader title="Header Only Card" subheader="With subtitle" />
 
     <CardContent>
-      <Typography variant="bodySRegular" color="text.secondary">
+      <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
         This card focuses on the header section with a clean content area below.
       </Typography>
     </CardContent>

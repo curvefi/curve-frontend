@@ -47,7 +47,12 @@ export const PoolListChips = ({
           </Grid>
         </Grid>
       ) : (
-        <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+        <Grid
+          container
+          columnSpacing={Spacing.xs}
+          size={{ mobile: 12, tablet: 'auto' }}
+          sx={{ justifyContent: 'flex-end' }}
+        >
           <PoolListFilterChips {...filterProps} />
         </Grid>
       )}

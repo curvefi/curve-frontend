@@ -33,7 +33,7 @@ type MarketContractsProps = {
 }
 
 const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: string }) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center">
+  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     <TokenIcon blockchainId={blockchainId} address={address} size="mui-md" />
     <Typography variant="bodyMRegular">{label}</Typography>
   </Stack>
@@ -101,8 +101,8 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
     : []
 
   return (
-    <Stack gap={Spacing.md}>
-      <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.md }}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <CardHeader title={t`Contracts`} size="small" data-inline />
         <WithSkeleton loading={loading} variant="rectangular" height={'4lh'} width="100%">
           <Stack>
@@ -112,7 +112,6 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
           </Stack>
         </WithSkeleton>
       </Stack>
-
       <Stack>
         {infraItems.map(({ key, label, address, fallbackValue }) =>
           fallbackValue ? (

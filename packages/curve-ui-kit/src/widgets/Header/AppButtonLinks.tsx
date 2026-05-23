@@ -10,7 +10,7 @@ type AppNavAppsProps = { currentMenu: AppMenuOption; networkId: string }
 const { Spacing } = SizesAndSpaces
 
 export const AppButtonLinks = ({ currentMenu, networkId }: AppNavAppsProps) => (
-  <Box display="flex" alignItems="center" sx={{ marginInline: Spacing.md }} gap={2}>
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginInline: Spacing.md }}>
     {recordEntries(APP_LINK).map(([menu, { label, routes }]) => (
       <Button
         key={menu}

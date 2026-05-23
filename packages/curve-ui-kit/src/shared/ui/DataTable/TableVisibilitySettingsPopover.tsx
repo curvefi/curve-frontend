@@ -37,11 +37,11 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
         },
       }}
     >
-      <Stack gap={Spacing.md}>
+      <Stack sx={{ gap: Spacing.md }}>
         {visibilityGroups
           .filter(({ options }) => options.some(o => o.enabled))
           .map(({ options, label }) => (
-            <Stack key={label} gap={Spacing.sm}>
+            <Stack key={label} sx={{ gap: Spacing.sm }}>
               <Typography
                 variant="headingXsBold"
                 sx={{ paddingBottom: Spacing.xs, borderBottom: t => `1px solid ${t.design.Layer[1].Outline}` }}

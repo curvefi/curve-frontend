@@ -56,12 +56,12 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
         sx={{ padding: '0 !important' /** The default padding interferes with background colors of the inner grids */ }}
       >
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
-          <Stack gap={Spacing.md}>
+          <Stack sx={{ gap: Spacing.md }}>
             <CurrencyReserves chainId={chainId} poolId={poolId ?? ''} tokensMapper={tokensMapper} />
 
             {poolData && <RewardsComp chainId={chainId} poolData={poolData} rewardsApy={rewardsApy} />}
 
-            <Stack gap={Spacing.sm}>
+            <Stack sx={{ gap: Spacing.sm }}>
               {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
                 <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
               )}

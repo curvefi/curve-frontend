@@ -82,8 +82,9 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
 
   return (
     <Stack
-      width="100%"
       sx={{
+        width: '100%',
+
         maxWidth: isChartExpanded
           ? `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`
           : MaxWidth.section,
@@ -105,7 +106,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
           />
 
           {selectedStatisticsChart === 'savingsRate' && (
-            <Stack gap={Spacing.md}>
+            <Stack sx={{ gap: Spacing.md }}>
               <ChartStateWrapper
                 height={Height.chart}
                 isLoading={isScrvUsdYieldLoading}

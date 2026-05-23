@@ -10,8 +10,8 @@ export const ChainSettings = ({
   showTestnets: boolean
   setShowTestnets: (showTestnets: boolean) => void
 }) => (
-  <Box display="flex" alignItems="center" justifyContent="space-between">
-    <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 4, marginRight: 2 }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Typography variant="headingXsBold" sx={{ display: 'inline-block', marginLeft: 4, marginRight: 2 }}>
       {t`Show testnets`}
     </Typography>
 

@@ -59,23 +59,17 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
 
   return (
     <Stack
-      alignItems="center"
-      gap={Spacing.xl}
       sx={{
+        alignItems: 'center',
+        gap: Spacing.xl,
         marginInline: 'auto',
         marginBlockStart: Spacing.xl,
         marginBlockEnd: Spacing.xxl,
       }}
     >
-      <Stack
-        sx={{
-          maxWidth: MaxWidth.disclaimer,
-          width: '100%',
-        }}
-        data-testid={useAfterHydration('legal-page')}
-      >
+      <Stack sx={{ maxWidth: MaxWidth.disclaimer, width: '100%' }} data-testid={useAfterHydration('legal-page')}>
         <Grid container direction="column" spacing={Spacing.md}>
-          <Grid size={12} justifyContent="flex-start">
+          <Grid size={12} sx={{ justifyContent: 'flex-start' }}>
             <LastUpdated />
           </Grid>
           <Grid size={12}>
@@ -87,8 +81,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
           <>
             <Stack
               direction={'row'}
-              justifyContent="space-between"
-              sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
+              sx={{ justifyContent: 'space-between', backgroundColor: t => t.design.Layer[1].Fill }}
             >
               <TabsSwitcher
                 variant="underlined"

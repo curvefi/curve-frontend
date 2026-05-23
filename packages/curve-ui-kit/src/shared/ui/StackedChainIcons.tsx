@@ -32,12 +32,16 @@ export const StackedChainIcons = ({
 }: StackedChainIconsProps) => (
   <Stack
     direction="row"
-    alignItems="center"
-    flexWrap="wrap"
-    rowGap={Spacing.xxs}
     {...stackProps}
-    // margin to counter the marginLeft of the ChainIcon at the beginning of each row
-    sx={applySxProps({ marginLeft: handleBreakpoints({ marginLeft: overlapBySize('right', overlap)[size] }) }, sx)}
+    sx={[
+      {
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        rowGap: Spacing.xxs,
+      },
+      applySxProps({ marginLeft: handleBreakpoints({ marginLeft: overlapBySize('right', overlap)[size] }) }, sx),
+      stackProps.sx,
+    ]}
   >
     {blockchainIds.map(blockchainId => (
       <ChainIcon

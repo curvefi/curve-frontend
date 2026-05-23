@@ -44,13 +44,9 @@ export const DetailInfoTradeRoutes = ({
                   output &&
                   `receive ${formatNumber(amount(output), { abbreviate: false, fallback: '-' })} ${outputSymbol}`
                 return (
-                  <Stack key={route} direction="row" justifyContent="space-between" title={route}>
+                  <Stack key={route} direction="row" title={route} sx={{ justifyContent: 'space-between' }}>
                     <Typography
-                      sx={{
-                        maxWidth: 120,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
+                      sx={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}
                       variant="bodySBold"
                     >
                       {route}

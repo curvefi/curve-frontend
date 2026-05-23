@@ -32,7 +32,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
   const blockchainId = networks[rChainId].id as Chain
 
   return (
-    <Stack gap={PAGE_SPACING}>
+    <Stack sx={{ gap: PAGE_SPACING }}>
       {isBorrow && (
         <ChartAndActivityComp rChainId={rChainId} marketId={marketId} api={api} previewPrices={previewPrices} />
       )}

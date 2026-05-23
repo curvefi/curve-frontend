@@ -27,8 +27,7 @@ export const SCrvUsd = () => (
         mobile: 'column',
         tablet: 'row',
       }}
-      gap={Spacing.md}
-      sx={{ marginInline: Spacing.md }}
+      sx={{ gap: Spacing.md, marginInline: Spacing.md }}
     >
       <ExternalLink href="https://docs.curve.finance/scrvusd/overview/" label={t`scrvUSD protocol docs`} />
       <ExternalLink

@@ -20,7 +20,7 @@ const GridItem = ({ children, title, icon: Icon }: { children: ReactNode; title:
     <Typography variant="headingXsBold" sx={{ marginBlock: Spacing.sm }}>
       {title}
     </Typography>
-    <Typography variant="bodyMRegular" color="text.secondary">
+    <Typography variant="bodyMRegular" sx={{ color: 'text.secondary' }}>
       {children}
     </Typography>
   </Grid>
@@ -32,11 +32,13 @@ export const Footer = () => (
       <Grid
         container
         spacing={Spacing.lg}
-        rowGap={Spacing.sm}
-        sx={{ padding: Spacing.sm, '&': { paddingBlockEnd: 0 } }}
+        sx={{ rowGap: Spacing.sm, padding: Spacing.sm, '&': { paddingBlockEnd: 0 } }}
       >
         <Grid size={12}>
-          <Typography variant="headingSBold" textAlign="center">{t`What are the Peg Stability reserves?`}</Typography>
+          <Typography
+            variant="headingSBold"
+            sx={{ textAlign: 'center' }}
+          >{t`What are the Peg Stability reserves?`}</Typography>
         </Grid>
 
         <GridItem title={t`Autonomous peg stabilization`} icon={RebalancingIcon}>
@@ -60,7 +62,7 @@ export const Footer = () => (
         </GridItem>
 
         <Grid size={12}>
-          <Box display="flex" justifyContent="center">
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <ExternalLink href="https://docs.curve.finance/user/curve-tokens/crvusd" label={t`Learn More`} />
           </Box>
         </Grid>

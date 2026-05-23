@@ -142,31 +142,32 @@ export const ActionInfo = ({
   return (
     <Stack
       direction="row"
-      alignItems={alignItems}
-      columnGap={Spacing.sm}
       data-testid={testId}
-      sx={applySxProps(sx, { minHeight: rowHeight[size] })}
+      sx={[
+        {
+          alignItems: alignItems,
+          columnGap: Spacing.sm,
+        },
+        applySxProps(sx, { minHeight: rowHeight[size] }),
+      ]}
     >
       <Typography
-        flexGrow={1}
         variant={labelSize[size]}
         color={labelColor ?? 'textSecondary'}
-        textAlign="start"
         component="div"
-        whiteSpace="nowrap"
+        sx={{ flexGrow: 1, textAlign: 'start', whiteSpace: 'nowrap' }}
       >
         {label}
       </Typography>
-
-      <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
-        <Stack direction="row" gap={Spacing.xs} flexWrap="wrap" justifyContent="end">
-          <Stack direction="row" gap={Spacing.xs}>
+      <Stack direction="row" className="ActionInfo-valueGroup" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+        <Stack direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
+          <Stack direction="row" sx={{ gap: Spacing.xs }}>
             <Typography
               variant={prevValueSize[size]}
               color={prevValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
               data-value={`${givenPrevValue}`}
-              whiteSpace="nowrap"
+              sx={{ whiteSpace: 'nowrap' }}
             >
               {prevValue}
             </Typography>
@@ -180,10 +181,8 @@ export const ActionInfo = ({
               {/** Additional stack to add some space between left (icon), value and right (icon) */}
               <Stack
                 direction="row"
-                alignItems={alignItems}
-                gap={Spacing.xxs}
                 className="ActionInfo-value"
-                whiteSpace="nowrap"
+                sx={{ alignItems, gap: Spacing.xxs, whiteSpace: 'nowrap' }}
               >
                 <ValueDecorator
                   value={valueLeft}

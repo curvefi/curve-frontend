@@ -45,7 +45,7 @@ export type Partner = {
 export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl, twitterUrl }: Partner) => (
   <Card sx={{ display: 'flex', height: '100%' }}>
     <CardContent component={Stack} flexGrow={1} gap={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[2].Fill }}>
-      <Stack direction="row" gap={Spacing.md}>
+      <Stack direction="row" sx={{ gap: Spacing.md }}>
         {imageId && (
           <Box
             component="img"
@@ -53,7 +53,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
             sx={{ height: IconSize.xxl, width: IconSize.xxl }}
           />
         )}
-        <Stack justifyContent="center">
+        <Stack sx={{ justifyContent: 'center' }}>
           <Typography variant="headingSBold">{name}</Typography>
 
           {networks && Object.values(networks).some(x => x) && (
@@ -67,14 +67,14 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
       </Stack>
 
       {description && (
-        <Typography flexGrow={1} variant="bodyMRegular">
+        <Typography variant="bodyMRegular" sx={{ flexGrow: 1 }}>
           {description}
         </Typography>
       )}
 
       {/** Could be replaced with icon buttons if somebody's feeling cute */}
-      <Stack direction="row" gap={Spacing.sm} justifyContent="space-between">
-        <Stack direction="row" gap={Spacing.sm} alignItems="center">
+      <Stack direction="row" sx={{ gap: Spacing.sm, justifyContent: 'space-between' }}>
+        <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
           {appUrl && (
             <IconButton {...LinkProps} href={appUrl}>
               <GlobeIcon />
@@ -88,7 +88,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
         </Stack>
 
         {tags?.length && (
-          <Stack direction="row" gap={Spacing.sm} alignItems="center">
+          <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
             {tags.map(tag => (
               <Badge key={tag} label={tag} color="highlight" />
             ))}

@@ -102,9 +102,11 @@ export const TabsSwitcher = <T extends string | number>({
     <Stack
       data-testid={`${testIdPrefix}-container`}
       direction="row"
-      justifyContent="space-between"
-      gap={Spacing.xs}
-      width={isKebabMode || overflow === 'fullWidth' ? '100%' : undefined}
+      sx={{
+        justifyContent: 'space-between',
+        gap: Spacing.xs,
+        width: isKebabMode || overflow === 'fullWidth' ? '100%' : undefined,
+      }}
     >
       <Stack ref={visibleTabsRef} sx={{ flex: 1, minWidth: 0 }}>
         <Tabs
@@ -163,7 +165,6 @@ export const TabsSwitcher = <T extends string | number>({
           {children}
         </Tabs>
       </Stack>
-
       {/* Kebab tab button */}
       {hasHiddenTabs && (
         <KebabTab
@@ -175,7 +176,6 @@ export const TabsSwitcher = <T extends string | number>({
           size={size}
         />
       )}
-
       {/* Kebab menu content */}
       {isKebabMode && hasHiddenTabs && kebabMenuOpen != null && (
         <KebabMenu

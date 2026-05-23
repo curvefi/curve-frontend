@@ -22,8 +22,8 @@ const CircleIcon = createSvgIcon(
 const createIconWrapper = (icon: ReactNode) => (
   <Box
     className="icon-wrapper"
-    display="flex"
     sx={{
+      display: 'flex',
       outline: '1px solid currentColor',
       borderRadius: '50%',
 
@@ -31,6 +31,7 @@ const createIconWrapper = (icon: ReactNode) => (
       '& svg': {
         animation: 'circle-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
       },
+
       '@keyframes circle-appear': {
         from: {
           transform: 'scale(0)',

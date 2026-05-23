@@ -6,8 +6,16 @@ const { Spacing } = SizesAndSpaces
 export const DrawerItems = (props: StackProps) => (
   <Stack
     direction="column"
-    sx={{ paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md, overflow: 'auto', flex: 1 }}
-    gap={Spacing.sm}
     {...props}
+    sx={[
+      {
+        gap: Spacing.sm,
+        paddingInline: Spacing.sm,
+        paddingBlockEnd: Spacing.md,
+        overflow: 'auto',
+        flex: 1,
+      },
+      ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+    ]}
   />
 )

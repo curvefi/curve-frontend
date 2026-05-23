@@ -54,7 +54,11 @@ export const TableFilters = <ColumnIds extends string>({
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       {header}
-      <Grid container spacing={Spacing.lg} padding={Spacing.sm} justifyContent="space-between" alignItems="center">
+      <Grid
+        container
+        spacing={Spacing.lg}
+        sx={{ padding: Spacing.sm, justifyContent: 'space-between', alignItems: 'center' }}
+      >
         <Grid
           size={{ mobile: 12, tablet: 7 }}
           sx={{
@@ -76,7 +80,7 @@ export const TableFilters = <ColumnIds extends string>({
           {sortChip && <Box className="tableControl">{sortChip}</Box>}
         </Grid>
         {!isMobile && (
-          <Grid container size="grow" spacing="none" justifyContent="flex-end">
+          <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
             <TableButton
               ref={settingsRef}
@@ -88,9 +92,7 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         )}
       </Grid>
-
       {collapsible && !isMobile && <Collapse in={hasActiveFilters}>{collapsible}</Collapse>}
-
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorRef={settingsRef}

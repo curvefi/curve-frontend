@@ -35,9 +35,11 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
 
   return (
     <Box
-      display="grid"
-      gap={Spacing.lg}
-      gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' }}
+      sx={{
+        display: 'grid',
+        gap: Spacing.lg,
+        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' },
+      }}
     >
       {availableLiquidity.borrowCap && (
         <Metric

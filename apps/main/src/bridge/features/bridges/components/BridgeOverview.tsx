@@ -40,12 +40,14 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
     <Stack>
       <Stack
         direction="row"
-        alignItems="end"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        gap={Spacing.md}
-        minHeight={Sizing.xxl}
-        paddingBlockEnd={Spacing.sm}
+        sx={{
+          alignItems: 'end',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: Spacing.md,
+          minHeight: Sizing.xxl,
+          paddingBlockEnd: Spacing.sm,
+        }}
       >
         {!hideTitle && <Typography variant="headingSBold">{title}</Typography>}
         <LegacyTableSearchField
@@ -56,7 +58,6 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
           isExpanded={isExpandedOrValue}
         />
       </Stack>
-
       <BridgeGrid bridges={filteredBridges} sx={{ paddingBlock: Spacing.md }} />
     </Stack>
   )

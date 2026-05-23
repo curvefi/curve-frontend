@@ -51,11 +51,7 @@ export const PegKeeperAdvancedDetails = ({
       valueRight={
         <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
           <InfoOutlinedIcon
-            sx={{
-              width: IconSize.md,
-              height: IconSize.md,
-              color: t => t.design.Text.TextColors.Primary,
-            }}
+            sx={{ width: IconSize.md, height: IconSize.md, color: t => t.design.Text.TextColors.Primary }}
           />
         </Tooltip>
       }

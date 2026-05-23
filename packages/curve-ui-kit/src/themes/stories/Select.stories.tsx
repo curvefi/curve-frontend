@@ -118,7 +118,13 @@ const MultiSelect = <T extends string>({
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
+          <Box
+            component="li"
+            sx={{
+              borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
+              padding: Spacing.sm,
+            }}
+          >
             <Button
               color="ghost"
               size="extraSmall"

@@ -105,7 +105,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
   const fontVariantUnit = MetricUnitSize[size]
 
   return (
-    <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
+    <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
       <Tooltip
         arrow
         placement="bottom"
@@ -116,7 +116,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         data-testid={`${testId}-value`}
         data-value={value}
       >
-        <Stack direction="row" alignItems="baseline">
+        <Stack direction="row" sx={{ alignItems: 'baseline' }}>
           {prefix && (
             <Typography variant={fontVariantUnit} color="textSecondary">
               {prefix}
@@ -128,7 +128,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
           </Typography>
 
           {scaleSuffix && (
-            <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
+            <Typography variant={fontVariant} color="textPrimary" sx={{ textTransform: 'capitalize' }}>
               {scaleSuffix}
             </Typography>
           )}
@@ -140,7 +140,6 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
           )}
         </Stack>
       </Tooltip>
-
       {(change || change === 0) && (
         <Typography
           variant={MetricChangeSize[size]}
@@ -221,7 +220,15 @@ export const Metric = ({
   }, [value, copyText])
 
   return (
-    <Stack alignItems={alignment} data-testid={testId} sx={sx}>
+    <Stack
+      data-testid={testId}
+      sx={[
+        {
+          alignItems: alignment,
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+    >
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (
@@ -233,9 +240,8 @@ export const Metric = ({
           </Tooltip>
         )}
       </Typography>
-
       <WithSkeleton loading={loading}>
-        <Stack direction="row" alignItems="baseline">
+        <Stack direction="row" sx={{ alignItems: 'baseline' }}>
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
           {error ? (
             <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
@@ -259,7 +265,6 @@ export const Metric = ({
           )}
         </Stack>
       </WithSkeleton>
-
       {notionals && (
         <Typography variant="highlightXsNotional" color="textTertiary">
           {notionals}

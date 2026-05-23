@@ -48,7 +48,7 @@ export const EChartsCard = ({
       <CardHeader
         title={title}
         action={
-          <Stack direction="row" gap={Spacing.xs}>
+          <Stack direction="row" sx={{ gap: Spacing.xs }}>
             {action}
           </Stack>
         }
@@ -56,7 +56,7 @@ export const EChartsCard = ({
       />
 
       <CardContent component={Stack} gap={Spacing.md} flexGrow={1}>
-        <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
+        <Box {...(fullscreen && { flexGrow: 1 })} sx={{ position: 'relative' }}>
           {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
           <ReactECharts
             notMerge

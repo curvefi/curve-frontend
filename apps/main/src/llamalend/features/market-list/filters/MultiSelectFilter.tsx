@@ -129,10 +129,12 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         >
           <Stack
             direction="row"
-            justifyContent="space-between"
-            borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`}
-            padding={Spacing.sm}
             component="li"
+            sx={{
+              justifyContent: 'space-between',
+              borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
+              padding: Spacing.sm,
+            }}
           >
             <Button
               color="ghost"

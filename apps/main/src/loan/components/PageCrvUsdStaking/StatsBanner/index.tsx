@@ -22,20 +22,29 @@ export const StatsBanner = () => {
   return (
     <Stack
       direction="column"
-      gap={Spacing.md}
-      padding={Spacing.lg}
       sx={{
+        gap: Spacing.md,
+        padding: Spacing.lg,
         backgroundColor: Color.Secondary[100],
         border: `1px solid ${Color.Secondary[500]}`,
         width: '100%',
-        maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`, // action card + gap + section
+
+        // action card + gap + section
+        maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
       }}
     >
       <Stack direction="column">
         <Typography variant="headingSBold">{t`Your stablecoins could do more`}</Typography>
         <Typography variant="bodyMRegular">{t`With $100k of scrvUSD held you could get`}</Typography>
       </Stack>
-      <Stack direction="row" gap={Sizing[200]} justifyContent="space-between" flexWrap="wrap">
+      <Stack
+        direction="row"
+        sx={{
+          gap: Sizing[200],
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+        }}
+      >
         <Metric
           label={t`30 Days Projection`}
           value={scrvUsdApy ? oneMonthProjectionYield(scrvUsdApy, exampleBalance) : undefined}

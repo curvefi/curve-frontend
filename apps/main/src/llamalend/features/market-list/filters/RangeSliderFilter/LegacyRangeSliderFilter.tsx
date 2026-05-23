@@ -83,7 +83,7 @@ export const LegacyRangeSliderFilter = <TKey, TColumnId extends string>({
         },
       }}
     >
-      <Stack paddingBlock={3} paddingInline={4}>
+      <Stack sx={{ paddingBlock: 3, paddingInline: 4 }}>
         <SliderInput<DecimalRangeValue>
           layoutDirection="column"
           size="medium"

@@ -18,7 +18,7 @@ export const TableViewAllCell = (
   } & TableCellProps, // constant padding block accross all breakpoints
 ) => (
   <TableCell {...tableCellProps} sx={{ paddingBlock: Spacing[200] }}>
-    <Stack alignSelf="center" alignItems="center">
+    <Stack sx={{ alignSelf: 'center', alignItems: 'center' }}>
       <Button
         color="ghost"
         size="extraSmall"

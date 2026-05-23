@@ -18,12 +18,16 @@ type InlineTableCellProps = {
  */
 export const InlineTableCell = ({ children, onClick, sx, className }: InlineTableCellProps) => (
   <Stack
-    height={Sizing.xl}
-    paddingY={Spacing.xxs}
     onClick={onClick}
-    sx={onClick ? { cursor: 'pointer', ...sx } : sx}
     className={className}
-    justifyContent="center"
+    sx={[
+      {
+        height: Sizing.xl,
+        paddingY: Spacing.xxs,
+        justifyContent: 'center',
+      },
+      onClick ? { cursor: 'pointer', ...sx } : sx,
+    ]}
   >
     {children}
   </Stack>

@@ -14,18 +14,26 @@ export function PoolTokens({
 }) {
   const searchedTerms = filterValue?.split(/[\s,]+/)?.map(x => x.toLowerCase())
   return (
-    <Stack direction="row" gap={2} sx={responsiveTitleEllipsisSx}>
+    <Stack
+      direction="row"
+      sx={[
+        {
+          gap: 2,
+        },
+        ...(Array.isArray(responsiveTitleEllipsisSx) ? responsiveTitleEllipsisSx : [responsiveTitleEllipsisSx]),
+      ]}
+    >
       {tokenList.map(({ symbol, address }, index) => (
         <Typography
-          fontWeight={isHighlighted(symbol, address, searchedTerms) ? 'bold' : 'normal'}
+          // note: there are pools with duplicated tokens, so we need to use index as key
+          key={index}
           sx={{
+            fontWeight: isHighlighted(symbol, address, searchedTerms) ? 'bold' : 'normal',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             maxWidth: '10ch',
           }}
-          // note: there are pools with duplicated tokens, so we need to use index as key
-          key={index}
         >
           {symbol}
         </Typography>

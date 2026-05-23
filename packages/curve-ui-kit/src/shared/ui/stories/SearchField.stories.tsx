@@ -58,12 +58,12 @@ export const WithInputRef = () => {
   return (
     <Box sx={{ width: '300px' }}>
       <SearchField inputRef={inputRef} onSearch={setSearchValue} />
-      <Box mt={2}>
+      <Box sx={{ mt: 2 }}>
         <Button variant="contained" onClick={() => inputRef.current?.focus()}>
           Focus input
         </Button>
       </Box>
-      <Box mt={1}>Current search value: {searchValue}</Box>
+      <Box sx={{ mt: 1 }}>Current search value: {searchValue}</Box>
     </Box>
   )
 }
