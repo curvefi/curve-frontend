@@ -22,7 +22,7 @@ export const FormContent = ({
   footer?: ReactNode
   header?: ReactNode
 }) => (
-  <WithWrapper shouldWrap={footer} Wrapper={Stack} gap={Spacing.sm}>
+  <WithWrapper shouldWrap={footer} Wrapper={Stack} sx={{ gap: Spacing.sm }}>
     <WithWrapper shouldWrap={header} Wrapper={Stack} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       {header}
       <Card size="small">
