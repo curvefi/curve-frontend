@@ -289,7 +289,8 @@ export const getYieldBasisPoolSeed = once(async () => {
 
 export const getRefuelPoolSeed = once(async (): Promise<RefuelPoolSeed> => {
   const supportedChains = await refuel.getRefuelChains(requestOptions)
-  const chain = supportedChains.find(chain => chain === preferredChain) ?? randomItem(supportedChains, 'refuel.getRefuelChains')
+  const chain =
+    supportedChains.find(chain => chain === preferredChain) ?? randomItem(supportedChains, 'refuel.getRefuelChains')
   const poolsResponse = await refuel.getRefuelPools(chain, requestOptions)
   const pool = randomItem(poolsResponse.pools, `refuel.getRefuelPools(${chain})`)
 
