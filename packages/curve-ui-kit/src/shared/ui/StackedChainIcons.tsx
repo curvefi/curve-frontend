@@ -33,15 +33,11 @@ export const StackedChainIcons = ({
   <Stack
     direction="row"
     {...stackProps}
-    sx={[
-      {
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        rowGap: Spacing.xxs,
-      },
-      applySxProps({ marginLeft: handleBreakpoints({ marginLeft: overlapBySize('right', overlap)[size] }) }, sx),
-      stackProps.sx,
-    ]}
+    sx={applySxProps(
+      { alignItems: 'center', flexWrap: 'wrap', rowGap: Spacing.xxs },
+      handleBreakpoints({ marginLeft: overlapBySize('right', overlap)[size] }),
+      sx,
+    )}
   >
     {blockchainIds.map(blockchainId => (
       <ChainIcon

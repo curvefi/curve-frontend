@@ -143,13 +143,7 @@ export const ActionInfo = ({
     <Stack
       direction="row"
       data-testid={testId}
-      sx={[
-        {
-          alignItems: alignItems,
-          columnGap: Spacing.sm,
-        },
-        applySxProps(sx, { minHeight: rowHeight[size] }),
-      ]}
+      sx={applySxProps({ alignItems, columnGap: Spacing.sm }, sx, { minHeight: rowHeight[size] })}
     >
       <Typography
         variant={labelSize[size]}

@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
@@ -29,15 +30,15 @@ export const ErrorMessage = ({
 
   return (
     <Stack
-      sx={[
+      sx={applySxProps(
         {
           flexDirection: 'column',
           alignItems: 'center',
           gap: Spacing.sm,
           padding: Spacing.md,
         },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+        sx,
+      )}
     >
       <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
       <Stack sx={{ alignItems: 'center' }}>

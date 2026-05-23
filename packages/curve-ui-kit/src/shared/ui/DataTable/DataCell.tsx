@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { type Cell, flexRender } from '@tanstack/react-table'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { applySxProps } from '@ui-kit/utils'
 import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
@@ -24,25 +25,11 @@ export const DataCell = <T extends TableItem>({
       variant={getCellVariant(column)}
       component="td"
       data-testid={`data-table-cell-${column.id}`}
-      sx={[
-        {
-          color: 'text.primary',
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+      sx={applySxProps({ color: 'text.primary' }, sx)}
     >
       {showCollapseIcon ? (
         <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>
-          <Box
-            sx={[
-              {
-                flexGrow: 1,
-              },
-              ...(Array.isArray(wrapperSx) ? wrapperSx : [wrapperSx]),
-            ]}
-          >
-            {children}
-          </Box>
+          <Box sx={applySxProps({ flexGrow: 1 }, wrapperSx)}>{children}</Box>
           <RotatableIcon
             icon={ChevronDownIcon}
             rotated={row.getIsExpanded()}

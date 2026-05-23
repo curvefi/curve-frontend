@@ -7,6 +7,7 @@ import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -66,16 +67,7 @@ export const TooltipItem = ({
   imageId?: string
   sx?: SxProps
 }) => (
-  <Stack
-    direction="row"
-    sx={[
-      {
-        gap: Spacing.sm,
-        justifyContent: 'space-between',
-      },
-      ...(Array.isArray(sx) ? sx : [sx]),
-    ]}
-  >
+  <Stack direction="row" sx={applySxProps({ gap: Spacing.sm, justifyContent: 'space-between' }, sx)}>
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
       {titleAdornment && <Stack sx={{ alignItems: 'center', marginLeft: Spacing.md }}>{titleAdornment}</Stack>}
       {titleIcon && (

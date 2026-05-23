@@ -65,14 +65,16 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   return (
     <Stack
       direction="row"
-      sx={[
+      sx={applySxProps(
         {
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
+          rowGap: Spacing.md,
+          columnGap: Spacing.sm,
         },
-        applySxProps({ rowGap: Spacing.md, columnGap: Spacing.sm }, sx),
-      ]}
+        sx,
+      )}
     >
       {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
       {chartOptionVariant === 'buttons-group' || hasSingleOption ? (

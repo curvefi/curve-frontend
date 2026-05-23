@@ -16,6 +16,7 @@ import {
   decomposeNumber,
   type NumberFormatOptions,
   type SxProps,
+  applySxProps,
 } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { WithSkeleton } from './WithSkeleton'
@@ -220,15 +221,7 @@ export const Metric = ({
   }, [value, copyText])
 
   return (
-    <Stack
-      data-testid={testId}
-      sx={[
-        {
-          alignItems: alignment,
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-    >
+    <Stack data-testid={testId} sx={applySxProps({ alignItems: alignment }, sx)}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (

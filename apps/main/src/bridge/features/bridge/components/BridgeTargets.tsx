@@ -15,7 +15,7 @@ import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Chain, requireBlockchainId, type SxProps } from '@ui-kit/utils'
+import { applySxProps, Chain, requireBlockchainId, type SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -41,16 +41,7 @@ const SelectNetworkLabel = ({ label, sx }: { label: string; sx?: SxProps }) => (
 
 /** Displays a chain icon and its human-readable name for the given {@link blockchainId}. */
 const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: SxProps }) => (
-  <Stack
-    direction="row"
-    sx={[
-      {
-        alignItems: 'center',
-        gap: Spacing.sm,
-      },
-      ...(Array.isArray(sx) ? sx : [sx]),
-    ]}
-  >
+  <Stack direction="row" sx={applySxProps({ alignItems: 'center', gap: Spacing.sm }, sx)}>
     <ChainSwitcherIcon networkId={blockchainId} size={20} />
     <Typography variant="bodyMBold" sx={{ textTransform: 'capitalize' }}>
       {blockchainId}

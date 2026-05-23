@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import type { SxProps, Theme } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils'
 
 const { Sizing, Spacing } = SizesAndSpaces
 
@@ -20,14 +21,11 @@ export const InlineTableCell = ({ children, onClick, sx, className }: InlineTabl
   <Stack
     onClick={onClick}
     className={className}
-    sx={[
-      {
-        height: Sizing.xl,
-        paddingY: Spacing.xxs,
-        justifyContent: 'center',
-      },
-      onClick ? { cursor: 'pointer', ...sx } : sx,
-    ]}
+    sx={applySxProps(
+      { height: Sizing.xl, paddingY: Spacing.xxs, justifyContent: 'center' },
+      onClick && { cursor: 'pointer' },
+      sx,
+    )}
   >
     {children}
   </Stack>

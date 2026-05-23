@@ -29,17 +29,13 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
     <Box
       component="footer"
       data-testid="footer"
-      sx={[
-        {
-          display: 'flex',
-          justifyContent: 'center',
-        },
-        t => ({
-          backgroundColor: t.design.Layer[3].Fill,
-          paddingInline: SizesAndSpaces.Spacing.lg,
-          paddingBlock: SizesAndSpaces.Spacing.xl,
-        }),
-      ]}
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: t => t.design.Layer[3].Fill,
+        paddingInline: SizesAndSpaces.Spacing.lg,
+        paddingBlock: SizesAndSpaces.Spacing.xl,
+      }}
     >
       <Grid
         container
