@@ -1,15 +1,17 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
-import { useCrvUsdTotalSupply } from '@/llamalend/queries/crvusd-total-supply.query'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
+import { Decimal } from '@primitives/decimal.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
+import { queryFactory } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
@@ -46,6 +48,19 @@ const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashP
   { key: 'movingAverage', label: t`7-day MA Price`, dash: CHART_LINE_DASH_PATTERNS.tight },
   { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
+
+/**
+ * Gets the full crvUSD supply from the Curve Finance API, including non-standard mint sources.
+ */
+const { useQuery: useCrvUsdTotalSupply } = queryFactory({
+  queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
+  queryFn: async () => {
+    const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
+    return (await resp.text()) as Decimal
+  },
+  category: 'llamalend.appStats',
+  validationSuite: EmptyValidationSuite,
+})
 
 export const CrvUsdPriceChart = () => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
