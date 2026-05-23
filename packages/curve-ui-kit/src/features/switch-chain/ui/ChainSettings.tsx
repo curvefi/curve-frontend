@@ -19,7 +19,7 @@ export const ChainSettings = ({
       checked={showTestnets}
       onChange={() => setShowTestnets(!showTestnets)}
       color="primary"
-      inputProps={{ 'aria-label': t`Show testnets` }}
+      slotProps={{ input: { 'aria-label': t`Show testnets` } }}
       size="small"
     />
   </Box>
