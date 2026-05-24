@@ -32,7 +32,7 @@ export type Maintenance = {
 
 /** Returns the time when maintenance warnings should start for a scheduled event. */
 const getWarningStartsTime = (dateISO: string | undefined, warnBeforeMs: number | undefined) =>
-  !dateISO || !warnBeforeMs ? undefined : new Date(dateISO).getTime() - warnBeforeMs
+  dateISO && warnBeforeMs ? new Date(dateISO).getTime() - warnBeforeMs : undefined
 
 const isWithinInterval = ({
   currentTime,
