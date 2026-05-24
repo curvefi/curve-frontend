@@ -160,6 +160,7 @@ export const SizesAndSpaces = {
       md: '6.25rem', // 100px
       bands: '6.8rem', // 108.8px
     },
+    maintenanceContent: '40rem', // 640px
   },
   Height: {
     modal: MappedModalHeight,
