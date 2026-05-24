@@ -8,7 +8,7 @@ import {
   type WagmiChainId,
 } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
-import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
+import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
