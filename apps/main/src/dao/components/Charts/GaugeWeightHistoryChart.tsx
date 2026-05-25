@@ -1,8 +1,5 @@
 import { useMemo } from 'react'
-import {
-  useGaugeWeightHistoryQuery,
-  type GaugeWeightHistoryData,
-} from '@/dao/entities/gauge-weight-history'
+import { useGaugeWeightHistoryQuery, type GaugeWeightHistoryData } from '@/dao/entities/gauge-weight-history'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
@@ -37,7 +34,13 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
     design: { Chart },
   } = useTheme()
   const lineColor = Chart.Lines[1]
-  const { data = EMPTY_GAUGE_WEIGHT_HISTORY_DATA, isLoading, isSuccess, error, refetch } = useGaugeWeightHistoryQuery({
+  const {
+    data = EMPTY_GAUGE_WEIGHT_HISTORY_DATA,
+    isLoading,
+    isSuccess,
+    error,
+    refetch,
+  } = useGaugeWeightHistoryQuery({
     gaugeAddress,
   })
 
