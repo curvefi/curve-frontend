@@ -22,7 +22,6 @@ export const TableFilters = <ColumnIds extends string>({
   testIdPrefix,
   visibilityGroups,
   toggleVisibility,
-  filtersOverlay,
   collapsibleFilters,
   chips,
   filterChip,
@@ -100,7 +99,6 @@ export const TableFilters = <ColumnIds extends string>({
           onClose={closeVisibilitySettings}
         />
       )}
-      {filtersOverlay}
     </Stack>
   )
 }

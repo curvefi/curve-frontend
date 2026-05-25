@@ -16,13 +16,12 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
-import { FilterChip } from './chips/FilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { LlamaTableFilters } from './filters/LlamaTableFilters'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
-import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -40,7 +39,7 @@ export const LlamaMarketsTable = ({
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
   const isError = !!error
-  const [filtersOpen, , , toggleFilters, setFiltersOpen] = useSwitch(false)
+  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
@@ -107,8 +106,9 @@ export const LlamaMarketsTable = ({
           collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
           hasActiveFilters,
         }}
-        filtersOverlay={
-          <LlamaTableFiltersOverlay
+        filterChip={
+          <LlamaTableFilters
+            popoverFilterChipRef={filterChipRef}
             hasActiveFilters={hasActiveFilters}
             open={filtersOpen}
             setOpen={setFiltersOpen}
@@ -117,9 +117,6 @@ export const LlamaMarketsTable = ({
             resetFilters={resetFilters}
             {...filterProps}
           />
-        }
-        filterChip={
-          <FilterChip filterChipRef={filterChipRef} filtersOpen={filtersOpen} toggleFilters={toggleFilters} />
         }
         sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
         chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
