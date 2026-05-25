@@ -9,7 +9,9 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
+import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
+import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
+import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
 import { LlamaMarketColumnId } from '../columns'
@@ -19,7 +21,7 @@ const { Spacing, Width, MinHeight } = SizesAndSpaces
 
 type LlamaTableFiltersProps = {
   open: boolean
-  onClose: () => void
+  setOpen: (open: boolean) => void
   anchorRef: RefObject<HTMLDivElement | null>
   marketsQuery: QueryProp<LlamaMarket[]>
   resetFilters: () => void
@@ -28,7 +30,7 @@ type LlamaTableFiltersProps = {
 
 export const LlamaTableFiltersOverlay = ({
   open,
-  onClose,
+  setOpen,
   anchorRef: { current: anchorEl },
   marketsQuery,
   resetFilters,
@@ -44,14 +46,16 @@ export const LlamaTableFiltersOverlay = ({
   )
 
   return isMobile ? (
-    <ModalDialog open={open} onClose={onClose} title={t`Filter markets`} footer={resetButton}>
-      {/* Content of modal is not scrollable vertically by default */}
-      <Stack sx={{ overflowY: 'auto' }}>{content}</Stack>
-    </ModalDialog>
+    <SwipeableDrawer paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }} open={open} setOpen={setOpen}>
+      <DrawerHeader title={t`Filter markets`}>
+        <Stack>{resetButton}</Stack>
+      </DrawerHeader>
+      <DrawerItems data-testid="drawer-filter-menu-lamalend-markets">{content}</DrawerItems>
+    </SwipeableDrawer>
   ) : (
     <Popover
       open={open}
-      onClose={onClose}
+      onClose={() => setOpen(false)}
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       slotProps={{
@@ -72,7 +76,7 @@ export const LlamaTableFiltersOverlay = ({
           <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
             {t`Filter markets`}
           </Typography>
-          <IconButton size="extraSmall" onClick={onClose}>
+          <IconButton size="extraSmall" onClick={() => setOpen(false)}>
             <Cross2Icon />
           </IconButton>
         </Stack>

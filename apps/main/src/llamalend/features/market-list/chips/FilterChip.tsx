@@ -7,24 +7,19 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 
 type Props = {
   filterChipRef: RefObject<HTMLDivElement | null>
-  filterPopoverOpen: boolean
-  toggleFilterPopover: () => void
+  filtersOpen: boolean
+  toggleFilters: () => void
   testId?: string
 }
 
-export const FilterChip = ({
-  filterChipRef,
-  filterPopoverOpen,
-  toggleFilterPopover,
-  testId = 'btn-open-filters',
-}: Props) =>
+export const FilterChip = ({ filterChipRef, filtersOpen, toggleFilters, testId = 'btn-open-filters' }: Props) =>
   useIsMobile() ? (
     <SelectableChip
       ref={filterChipRef}
       size="medium"
-      selected={filterPopoverOpen}
+      selected={filtersOpen}
       icon={<FilterIcon />}
-      toggle={toggleFilterPopover}
+      toggle={toggleFilters}
       data-testid={testId}
     />
   ) : (
@@ -32,9 +27,9 @@ export const FilterChip = ({
       ref={filterChipRef}
       label={t`Filters`}
       selectableChipSize="medium"
-      selected={filterPopoverOpen}
+      selected={filtersOpen}
       icon={<FilterIcon />}
-      toggle={toggleFilterPopover}
+      toggle={toggleFilters}
       data-testid={testId}
     />
   )

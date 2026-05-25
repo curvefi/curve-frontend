@@ -40,7 +40,7 @@ export const LlamaMarketsTable = ({
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
   const isError = !!error
-  const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
+  const [filtersOpen, , , toggleFilters, setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
@@ -110,8 +110,8 @@ export const LlamaMarketsTable = ({
         filtersOverlay={
           <LlamaTableFiltersOverlay
             hasActiveFilters={hasActiveFilters}
-            open={filterPopoverOpen}
-            onClose={closeFilterPopover}
+            open={filtersOpen}
+            setOpen={setFiltersOpen}
             anchorRef={filterChipRef}
             marketsQuery={mapQuery(tableQuery, d => d.markets)}
             resetFilters={resetFilters}
@@ -119,11 +119,7 @@ export const LlamaMarketsTable = ({
           />
         }
         filterChip={
-          <FilterChip
-            filterChipRef={filterChipRef}
-            filterPopoverOpen={filterPopoverOpen}
-            toggleFilterPopover={toggleFilterPopover}
-          />
+          <FilterChip filterChipRef={filterChipRef} filtersOpen={filtersOpen} toggleFilters={toggleFilters} />
         }
         sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
         chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
