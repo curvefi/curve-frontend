@@ -217,6 +217,20 @@ export const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert 
           </div>
         ),
       },
+      '0x7b43e3875440b44613dc3bc08e7763e6da63c8f8': {
+        alertType: 'danger',
+        address: '0x7b43e3875440b44613dc3bc08e7763e6da63c8f8',
+        message: (
+          <div>
+            <Trans>
+              The StablR has suffered an exploit.{' '}
+              <StyledExternalLink href="https://x.com/StablREuro/status/2058520949075386683?s=20">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find(tokenAddress => !!alerts[tokenAddress])

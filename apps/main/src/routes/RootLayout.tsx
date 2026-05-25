@@ -15,7 +15,8 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
-import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
+import { MaintenancePage } from '@ui-kit/features/maintenance/components/MaintenancePage'
 import { useMaintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
@@ -95,7 +96,11 @@ export const RootLayout = () => {
         <ErrorBoundary title={t`Layout error`}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <NetworkAwareLayout backendMaintenance={backendMaintenance} />
+              {backendMaintenance.isMaintenanceMode ? (
+                <MaintenancePage />
+              ) : (
+                <NetworkAwareLayout backendMaintenance={backendMaintenance} />
+              )}
               {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>

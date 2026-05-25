@@ -9,7 +9,7 @@ import { isLLv2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { log } from '@ui-kit/lib/logging'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { formatTimeDiff } from '@ui-kit/utils/time.utils'
-import { prefetchLendMarkets } from '../queries/lend-market-names.query'
+import { resetLendMarkets } from '../queries/lend-market-names.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -52,7 +52,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     }
 
     // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
-    await prefetchLendMarkets({ chainId: api.chainId, enableLLv2: isLLv2Enabled(releaseChannel) })
+    await resetLendMarkets({ chainId: api.chainId, enableLLv2: isLLv2Enabled(releaseChannel) })
 
     log(`Hydrated Lend - Complete in ${formatTimeDiff(start)}`)
   },
