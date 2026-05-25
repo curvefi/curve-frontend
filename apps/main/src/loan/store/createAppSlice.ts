@@ -8,7 +8,7 @@ import { log } from '@/loan/utils/helpers'
 import { isLoanSlicesEnabled } from '@ui-kit/hooks/useFeatureFlags'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { formatTimeDiff } from '@ui-kit/utils/time.utils'
-import { prefetchMintMarkets } from '../entities/mint-market-names.query'
+import { resetMintMarkets } from '../entities/mint-market-names.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -58,7 +58,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    await prefetchMintMarkets({ chainId })
+    await resetMintMarkets({ chainId })
     if (isLoanSlicesEnabled(releaseChannel)) {
       await loans.fetchLoansDetails(
         llamalend,
