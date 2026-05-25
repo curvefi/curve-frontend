@@ -60,7 +60,13 @@ export const MaintenancePage = () => (
             {t`We'll be back online shortly.`}
           </Typography>
 
-          <Button href={CURVE_SOCIALS.twitter} target="_blank" rel="noreferrer" variant="contained" startIcon={<XIcon />}>
+          <Button
+            href={CURVE_SOCIALS.twitter}
+            target="_blank"
+            rel="noreferrer"
+            variant="contained"
+            startIcon={<XIcon />}
+          >
             {t`Get updates`}
           </Button>
         </Stack>
