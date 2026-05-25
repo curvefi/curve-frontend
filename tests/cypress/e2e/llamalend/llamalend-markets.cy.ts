@@ -23,15 +23,8 @@ import {
   visitAndWait,
 } from '@cy/support/helpers/llamalend/llamalend-markets'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
-import {
-  assertInViewport,
-  assertNotInViewport,
-  LOAD_TIMEOUT,
-  oneDesktopViewport,
-  oneViewport,
-  RETRY_IN_CI,
-} from '@cy/support/ui'
-import { assert, objectKeys, range, recordValues, repeat } from '@primitives/objects.utils'
+import { assertInViewport, assertNotInViewport, LOAD_TIMEOUT, oneDesktopViewport, oneViewport } from '@cy/support/ui'
+import { assert, notFalsy, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
 import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
@@ -49,16 +42,23 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height])
     })
 
-    it(`should copy the market address`, RETRY_IN_CI, () => {
+    it(`should copy the market address`, () => {
       expandFirstRowOnMobile(breakpoint)
-      // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
-      range(2).forEach(() =>
-        cy
-          .get(`[data-testid^="copy-market-address"]`)
-          .first()
-          // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
-          .click({ force: breakpoint === 'desktop' }),
+      cy.window().then(win => {
+        // with cypress some browsers deny clipboard permissions so we use a stub
+        cy.stub(win.navigator.clipboard, 'writeText').as('writeClipboard').resolves()
+      })
+
+      cy.get(
+        notFalsy(
+          breakpoint === 'mobile' && `[data-testid="data-table-expansion-row"]`,
+          `[data-testid^="copy-market-address"]`,
+        ).join(' '),
       )
+        .first()
+        // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
+        .click({ force: breakpoint === 'desktop' })
+      cy.get('@writeClipboard').should('have.been.called')
       cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
     })
 
