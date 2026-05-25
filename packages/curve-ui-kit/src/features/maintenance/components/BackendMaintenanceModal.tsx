@@ -3,8 +3,10 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import MuiTypography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Maintenance } from '../hooks/useMaintenance'
 
 const { Spacing } = SizesAndSpaces
 
@@ -18,13 +20,8 @@ export const BackendMaintenanceModal = ({
   expectedDurationLabel,
   showModal,
   dismissModal,
-}: {
-  formattedDate: string | undefined
-  formattedTime: string | undefined
-  dismissModal: () => void
-  showModal: boolean
-  expectedDurationLabel?: string
-}) => (
+  learnMoreLink,
+}: Maintenance) => (
   <ModalDialog
     open={showModal}
     onClose={dismissModal}
@@ -49,6 +46,11 @@ export const BackendMaintenanceModal = ({
         {t`Underlying smart contracts will continue to operate normally. This maintenance only affects parts of the app experience.`}
       </Typography>
       <Typography>{t`Thank you for your patience.`}</Typography>
+      {learnMoreLink && (
+        <Stack direction="row" justifyContent="end">
+          <ExternalLink href={learnMoreLink} label={t`Learn more`} size="small" />
+        </Stack>
+      )}
     </Stack>
   </ModalDialog>
 )

@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid'
 import { notFalsy } from '@primitives/objects.utils'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useIncreasingLength } from '@ui-kit/hooks/useIncreasingLength'
 import { ChainIcon, type ChainIconProps } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.utils'
@@ -22,8 +23,6 @@ type ChainFilterChipsProps = {
   toggleChain: (chain: string) => void
 }
 
-const SKELETON_CHAIN_NUMBER = 5
-
 const ethereum = NETWORK_BASE_CONFIG[Chain.Ethereum].id
 const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
   extraSmall: 'xs',
@@ -41,6 +40,20 @@ const TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE: Record<
   medium: 'bodyMRegular',
   large: 'bodyMRegular',
   extraLarge: 'bodyMRegular',
+}
+
+const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps['size']> }) => {
+  const length = useIncreasingLength({ maxLength: 5 })
+  return Array.from({ length }).map((_, i) => (
+    <Skeleton
+      key={`skeleton-chain-chip-${i}`}
+      variant="rectangular"
+      sx={{
+        height: chipSizeClickable[chipSize].height,
+        width: chipSizeClickable[chipSize].height,
+      }}
+    />
+  ))
 }
 
 /**
@@ -85,16 +98,7 @@ export const ChainFilterChips = (props: ChainFilterChipsProps) => {
       }}
     >
       {isLoading ? (
-        Array.from({ length: SKELETON_CHAIN_NUMBER }).map((_, i) => (
-          <Skeleton
-            key={`skeleton-chain-chip-${i}`}
-            variant="rectangular"
-            sx={{
-              height: chipSizeClickable[chipSize].height,
-              width: chipSizeClickable[chipSize].height,
-            }}
-          />
-        ))
+        <SkeletonChips chipSize={chipSize} />
       ) : sortedChains ? (
         sortedChains.map(({ chain, label, onClick, isSelected }) => (
           <Tooltip key={chain} title={label} arrow>
