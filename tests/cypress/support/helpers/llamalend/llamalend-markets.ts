@@ -1,9 +1,9 @@
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, type TokenType } from '@cy/support/generators'
-import { getTableCellAssets, withFiltersPopover } from '@cy/support/helpers/data-table.helpers'
+import { getTableCellAssets, withFilters } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
 import { median } from '@primitives/array.utils'
 import { fromEntries, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
 import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
@@ -67,10 +67,14 @@ export function checkLineGraphColor(type: MarketRateType, color: string) {
   cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
 }
 
-export function checkCoinSelection(vaultData: Record<Chain, GetMarketsResponse>, type: TokenType) {
+export function checkCoinSelection(
+  breakpoint: Breakpoint,
+  vaultData: Record<Chain, GetMarketsResponse>,
+  type: TokenType,
+) {
   const symbol = oneOf(...vaultData.ethereum.data.map(d => d[`${type}_token`].symbol))
   const columnId = `assets_${type}_symbol`
-  withFiltersPopover(() => {
+  withFilters(breakpoint, () => {
     cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
     cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
     cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
@@ -94,11 +98,12 @@ export function checkChainSelection(...chains: Chain[]) {
 
 /** Check the correct selection of the filter's grouped buttons by checking the url and a callback function */
 export function checkTableFilterButtonGroupSelection<T extends string>(
+  breakpoint: Breakpoint,
   value: T,
   type: string,
   checkCallback: (value?: T) => void,
 ) {
-  withFiltersPopover(() => cy.get(`[data-testid="table-filter-btn-market-${type}-${value}"]`).click())
+  withFilters(breakpoint, () => cy.get(`[data-testid="table-filter-btn-market-${type}-${value}"]`).click())
   cy.url().should('include', value)
   checkCallback(value)
 }

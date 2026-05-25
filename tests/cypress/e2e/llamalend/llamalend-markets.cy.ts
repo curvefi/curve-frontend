@@ -8,7 +8,7 @@ import {
   getTableCellAssets,
   openDrawer,
   withFilterChips,
-  withFiltersPopover,
+  withFilters,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
 import {
@@ -132,7 +132,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         .find(`[data-testid="market-link-${HighTVLAddress}"]`)
         .should('exist')
       if (breakpoint == 'mobile') {
-        withFiltersPopover(() => {
+        withFilters(breakpoint, () => {
           cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
           return cy.get(`[data-testid="badge-market-type-${LlamaMarketType.Mint}"]`).should('not.exist')
         })
@@ -223,18 +223,18 @@ testCases.forEach(([width, height, breakpoint]) => {
     it('should allow filtering by chain', () => {
       const chains = objectKeys(vaultData)
       const chain = oneOf(...chains)
-      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
+      withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
       checkChainSelection(chain)
 
       // filter by multiple chains at the same time
       const otherChain = oneOf(...chains.filter(c => c !== chain))
-      withFiltersPopover(() => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
+      withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
       checkChainSelection(chain, otherChain)
     })
 
     it(`should allow filtering by token`, () => {
-      checkCoinSelection(vaultData, 'collateral')
-      checkCoinSelection(vaultData, 'borrowed')
+      checkCoinSelection(breakpoint, vaultData, 'collateral')
+      checkCoinSelection(breakpoint, vaultData, 'borrowed')
     })
 
     it('should allow filtering by using a range inputs', () => {
@@ -246,7 +246,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       ])
       const bound = oneOf('min', 'max')
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        withFiltersPopover(() => typeFilterInput(`range-filter-${columnId}-${bound}`, medianValue).blur())
+        withFilters(breakpoint, () => typeFilterInput(`range-filter-${columnId}-${bound}`, medianValue).blur())
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
       })
@@ -260,16 +260,16 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       // test the slider's input
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        withFiltersPopover(() => typeFilterInput(`slider-input-${columnId}-${bound}`, medianValue).blur())
+        withFilters(breakpoint, () => typeFilterInput(`slider-input-${columnId}-${bound}`, medianValue).blur())
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
 
         // reset the filters
-        withFiltersPopover(() => cy.get(`[data-testid="btn-reset-filters"]`).click())
+        withFilters(breakpoint, () => cy.get(`[data-testid="btn-reset-filters"]`).click())
         cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
 
         // test the slider
-        withFiltersPopover(() =>
+        withFilters(breakpoint, () =>
           cy
             .get(`[data-testid="slider-${columnId}"]`)
             .as('slider')
@@ -288,7 +288,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     it(`should allow filtering by market type`, () => {
       const marketTypes = shuffle(...recordValues(LlamaMarketType))
       marketTypes.forEach(type =>
-        checkTableFilterButtonGroupSelection(type, 'type', () => {
+        checkTableFilterButtonGroupSelection(breakpoint, type, 'type', () => {
           getTableCellAssets().find(`[data-testid="badge-market-type-${type}"]`).should('be.visible')
         }),
       )
@@ -297,24 +297,24 @@ testCases.forEach(([width, height, breakpoint]) => {
     it(`should allow filtering by market version`, () => {
       const marketVersions = shuffle(...recordValues(LlamaMarketVersion))
       marketVersions.forEach(version =>
-        checkTableFilterButtonGroupSelection(version, 'version', () => {
+        checkTableFilterButtonGroupSelection(breakpoint, version, 'version', () => {
           getTableCellAssets().find(`[data-testid="badge-market-version-${version}"]`).should('be.visible')
         }),
       )
     })
 
     it(`should reset filters when pressing the reset button`, () => {
-      withFiltersPopover(() => cy.get(`[data-testid="btn-reset-filters"]`).should('be.disabled'))
+      withFilters(breakpoint, () => cy.get(`[data-testid="btn-reset-filters"]`).should('be.disabled'))
       visitAndWait([width, height], `/llamalend/ethereum/markets?isFavorite=yes`)
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
-      withFiltersPopover(() => cy.get(`[data-testid="btn-reset-filters"]`).click())
+      withFilters(breakpoint, () => cy.get(`[data-testid="btn-reset-filters"]`).click())
       cy.url().should('not.include', 'isFavorite=')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
 
     /** Filters collapsible is not shown on mobile */
     itSkipOnMobile('should show active filters in the collapsible', () => {
-      withFiltersPopover(() => {
+      withFilters(breakpoint, () => {
         cy.get(`[data-testid="table-filter-btn-market-version-${LlamaMarketVersion.v1}"]`).click()
         cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
         return cy.get(`[data-testid="chip-chain-ethereum"]`).click()

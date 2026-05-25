@@ -37,10 +37,14 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
-export function withFiltersPopover<T>(callback: () => Cypress.Chainable<T>) {
+export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
   return callback().then(result => {
-    cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
+    if (breakpoint === 'mobile') {
+      closeDrawer(breakpoint)
+    } else {
+      cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
+    }
     return cy.wrap(result)
   })
 }
