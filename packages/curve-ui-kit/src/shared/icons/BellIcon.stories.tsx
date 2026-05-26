@@ -40,16 +40,16 @@ export const Default: Story = {
 
 export const Comparison: Story = {
   render: () => (
-    <Stack direction="row" gap={4} alignItems="center">
-      <Box textAlign="center">
+    <Stack direction="row" sx={{ gap: 4, alignItems: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
         <BellIcon fontSize="large" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Regular Bell (no animation)
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Ringing Bell (hover me!)
         </Typography>
       </Box>
@@ -66,22 +66,22 @@ export const Comparison: Story = {
 
 export const DifferentSizes: Story = {
   render: () => (
-    <Stack direction="row" gap={3} alignItems="center">
-      <Box textAlign="center">
+    <Stack direction="row" sx={{ gap: 3, alignItems: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="small" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Small
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="medium" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Medium
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Large
         </Typography>
       </Box>
@@ -98,34 +98,34 @@ export const DifferentSizes: Story = {
 
 export const DifferentColors: Story = {
   render: () => (
-    <Stack direction="row" gap={3} alignItems="center">
-      <Box textAlign="center">
+    <Stack direction="row" sx={{ gap: 3, alignItems: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" color="primary" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Primary
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" color="secondary" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Secondary
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" color="error" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Error
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" color="warning" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Warning
         </Typography>
       </Box>
-      <Box textAlign="center">
+      <Box sx={{ textAlign: 'center' }}>
         <BellRingingIcon fontSize="large" color="success" />
-        <Typography variant="bodySRegular" display="block" mt={1}>
+        <Typography variant="bodySRegular" sx={{ display: 'block', marginTop: 1 }}>
           Success
         </Typography>
       </Box>
@@ -143,15 +143,15 @@ export const DifferentColors: Story = {
 export const AnimationDetails: Story = {
   render: () => (
     <Box>
-      <BellRingingIcon fontSize="large" sx={{ display: 'block', mx: 'auto', mb: 2 }} />
-      <Typography variant="bodySRegular" textAlign="center">
+      <BellRingingIcon fontSize="large" sx={{ display: 'block', marginX: 'auto', marginBottom: 2 }} />
+      <Typography variant="bodySRegular" sx={{ textAlign: 'center' }}>
         Hover over the bell to see the ringing animation
       </Typography>
-      <Box mt={3} p={2} bgcolor="background.paper" borderRadius={1}>
+      <Box sx={{ marginTop: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
         <Typography variant="headingXsBold" gutterBottom>
           Animation Details
         </Typography>
-        <Stack gap={1}>
+        <Stack sx={{ gap: 1 }}>
           <Typography variant="bodySRegular">• Duration: 0.6 seconds</Typography>
           <Typography variant="bodySRegular">• Easing: ease-in-out</Typography>
           <Typography variant="bodySRegular">• Transform origin: top center</Typography>

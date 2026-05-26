@@ -91,14 +91,12 @@ export const ClosePositionForm = ({
           )
         }
       />
-
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (
         <AlertClosePosition badDebt={collateralToRecoverUsd <= 0} />
       )}
-
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
           {isPending
             ? t`Processing...`
@@ -108,7 +106,6 @@ export const ClosePositionForm = ({
               )}
         </Button>
       </Stack>
-
       <FormAlerts error={error ?? closeError ?? null} formErrors={formErrors} handledErrors={[]} />
     </Form>
   )

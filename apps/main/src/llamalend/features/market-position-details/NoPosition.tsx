@@ -21,9 +21,16 @@ const description: Record<AppType, string> = {
 }
 
 export const NoPosition = ({ type }: NoPositionProps) => (
-  <Stack flexDirection="column" alignItems="center" gap={Spacing.sm} padding={Spacing.md}>
+  <Stack
+    sx={{
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: Spacing.sm,
+      padding: Spacing.md,
+    }}
+  >
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
-    <Stack alignItems="center">
+    <Stack sx={{ alignItems: 'center' }}>
       <Typography variant="headingXsBold" sx={{ maxWidth: MaxWidth.emptyStateCard, textAlign: 'center' }}>
         {title[type]}
       </Typography>

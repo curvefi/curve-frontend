@@ -141,13 +141,13 @@ export const Accordion = ({
           },
         }}
       >
-        <Stack flexGrow={1} direction="row" alignItems="center" gap={Spacing.sm}>
+        <Stack direction="row" sx={{ flexGrow: 1, alignItems: 'center', gap: Spacing.sm }}>
           {icon && (
             <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
               sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 width: headerIconSize[size],
                 height: headerIconSize[size],
               }}
@@ -158,11 +158,12 @@ export const Accordion = ({
 
           {typeof title === 'string' ? (
             <Typography
-              flexGrow={1}
               variant={titleVariants[size]}
               color="textSecondary"
               sx={{
+                flexGrow: 1,
                 textAlign: 'start',
+
                 // Specifically unset to override the variant's uppercase styling; we want full control here
                 textTransform: ghost ? 'unset' : 'uppercase',
               }}
@@ -170,9 +171,7 @@ export const Accordion = ({
               {title}
             </Typography>
           ) : (
-            <Box display="flex" flexGrow={1}>
-              {title}
-            </Box>
+            <Box sx={{ display: 'flex', flexGrow: 1 }}>{title}</Box>
           )}
 
           {info}
@@ -192,14 +191,7 @@ export const Accordion = ({
           />
         </Stack>
       </ButtonBase>
-
-      <Collapse
-        in={isOpen}
-        id={id}
-        sx={{
-          ...(!ghost && { backgroundColor: layer1Fill }),
-        }}
-      >
+      <Collapse in={isOpen} id={id} sx={{ ...(!ghost && { backgroundColor: layer1Fill }) }}>
         {/*
           This Box wrapper serves two purposes:
           1. Padding is applied here instead of on Collapse because Collapse would never

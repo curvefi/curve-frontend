@@ -16,7 +16,7 @@ type DemoParams = {
 }
 
 const Panel = ({ title, body }: { title: string; body: string }) => (
-  <Stack gap={1} sx={{ padding: 3, borderRadius: 2, border: t => `1px solid ${t.palette.divider}` }}>
+  <Stack sx={{ gap: 1, padding: 3, borderRadius: 2, border: t => `1px solid ${t.palette.divider}` }}>
     <Typography variant="headingSBold">{title}</Typography>
     <Typography variant="bodyMRegular">{body}</Typography>
   </Stack>
@@ -110,7 +110,7 @@ type StoryArgs = DemoParams & {
 }
 
 const FormTabsStory = ({ shouldWrap, overflow, menu, ...params }: StoryArgs) => (
-  <Grid maxWidth={{ desktop: MaxWidth.actionCard }}>
+  <Grid sx={{ maxWidth: { desktop: MaxWidth.actionCard } }}>
     <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
   </Grid>
 )
@@ -226,9 +226,9 @@ export const KebabMenuAutoOverflow: Story = {
     menu: numberedTabs(10),
   },
   render: ({ shouldWrap, overflow, menu, ...params }) => (
-    <Stack gap={4}>
+    <Stack sx={{ gap: 4 }}>
       {['40rem', '30rem', '20rem'].map(width => (
-        <Grid key={width} width={width}>
+        <Grid key={width} sx={{ width }}>
           <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
         </Grid>
       ))}

@@ -14,10 +14,9 @@ export function MarketTitle({ address, title, url }: { address: Address; title: 
   return (
     <Typography
       component={Stack}
-      alignItems="center"
       variant={isMobile ? 'tableCellMBold' : 'tableCellL'}
       direction="row"
-      gap={2}
+      sx={{ alignItems: 'center', gap: 2 }}
     >
       <RouterLink
         color="inherit"

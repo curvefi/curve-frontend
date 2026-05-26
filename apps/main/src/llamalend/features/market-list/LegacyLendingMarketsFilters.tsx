@@ -1,7 +1,6 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
 import Grid from '@mui/material/Grid'
-import { useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -68,9 +67,10 @@ export const LegacyLendingMarketsFilters = ({
     <Grid
       container
       spacing={Spacing.sm}
-      paddingBlockStart={Spacing.sm}
-      {...(useNewMarketListLayout() && { paddingBlockEnd: Spacing.sm })}
-      paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
+      sx={{
+        paddingBlockStart: Spacing.sm,
+        paddingInline: { mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop },
+      }}
     >
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
         <LegacyMultiSelectFilter
@@ -83,7 +83,6 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
         <LegacyMultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
@@ -95,7 +94,6 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
         <LegacyRangeSliderFilter
           id={LlamaMarketColumnId.Tvl}
@@ -108,7 +106,6 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Available liquidity`}>
         <LegacyRangeSliderFilter
           id={LlamaMarketColumnId.LiquidityUsd}
@@ -121,7 +118,6 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Utilization`}>
         <LegacyRangeSliderFilter
           id={LlamaMarketColumnId.UtilizationPercent}

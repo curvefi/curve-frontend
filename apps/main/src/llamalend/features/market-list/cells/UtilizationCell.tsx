@@ -28,7 +28,16 @@ const Currency = ({
   balance: number | null
   chain: Chain
 }) => (
-  <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={1} component="span" display="inline-flex">
+  <Stack
+    direction="row"
+    component="span"
+    sx={{
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      gap: 1,
+      display: 'inline-flex',
+    }}
+  >
     <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
     <span>
       {formatNumber(balance, { unit: isUsd(symbol) ? 'dollar' : undefined, abbreviate: true, fallback: '-' })}
@@ -38,7 +47,7 @@ const Currency = ({
 )
 
 const Primary = ({ children }: { children: string }) => (
-  <Typography color="primary" component="span" display="inline">
+  <Typography color="primary" component="span" sx={{ display: 'inline' }}>
     {children}
   </Typography>
 )
@@ -53,7 +62,7 @@ const UtilizationTooltipContent = ({
 }: {
   market: LlamaMarket
 }) => (
-  <Stack gap={Spacing.sm}>
+  <Stack sx={{ gap: Spacing.sm }}>
     <Typography color="textSecondary">
       <Trans>
         LlamaLend offers 2 types of markets: <Primary>Mint</Primary> and <Primary>Lend</Primary> Markets. Mint markets
@@ -98,7 +107,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
 
 export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarket, number>) => (
   <UtilizationTooltip market={row.original}>
-    <Stack gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xs }}>
       {formatPercent(getValue())}
       <LinearProgress percent={getValue()} size="medium" />
     </Stack>

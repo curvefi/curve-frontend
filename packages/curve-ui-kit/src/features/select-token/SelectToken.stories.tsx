@@ -341,7 +341,7 @@ export const CompactMode: Story = {
 export const WithCustomOptions: Story = {
   args: {
     listChildren: (
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <Typography variant="headingXsBold">Custom Options</Typography>
         <Button variant="outlined" fullWidth onClick={() => console.info('Custom option clicked')}>
           Add Custom Token

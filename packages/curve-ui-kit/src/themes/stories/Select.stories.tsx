@@ -92,17 +92,18 @@ const MultiSelect = <T extends string>({
         renderValue={() =>
           selected.length ? (
             selected.map((optionId, index) => (
-              <MenuItem
+              <Box
+                component="span"
                 key={optionId}
                 sx={{
                   display: 'inline-flex', // display inline to avoid wrapping
-                  '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                  alignItems: 'center',
                   gap: Spacing.xs, // default spacing is too large inline
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
                 {renderItem?.(optionId as T) ?? optionId}
-              </MenuItem>
+              </Box>
             ))
           ) : (
             <Typography>{placeholder || 'Select options'}</Typography>
@@ -118,7 +119,13 @@ const MultiSelect = <T extends string>({
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
+          <Box
+            component="li"
+            sx={{
+              borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
+              padding: Spacing.sm,
+            }}
+          >
             <Button
               color="ghost"
               size="extraSmall"
@@ -131,12 +138,7 @@ const MultiSelect = <T extends string>({
           </Box>
           {options.map(option => (
             <InvertOnHover hoverRef={menuRef} key={option}>
-              <MenuItem
-                ref={menuRef}
-                value={option}
-                className={selected.includes(option) ? 'Mui-selected' : ''}
-                onClick={handleItemClick}
-              >
+              <MenuItem ref={menuRef} value={option} selected={selected.includes(option)} onClick={handleItemClick}>
                 {renderItem?.(option) || option}
               </MenuItem>
             </InvertOnHover>

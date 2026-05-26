@@ -191,10 +191,8 @@ export const RepayForm = <ChainId extends IChainId>({
         }
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} />
-
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
-
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
           {isPending
             ? t`Processing...`
@@ -209,7 +207,6 @@ export const RepayForm = <ChainId extends IChainId>({
           <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
         )}
       </Stack>
-
       <FormAlerts
         error={repayError}
         formErrors={formErrors}

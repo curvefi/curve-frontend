@@ -36,7 +36,7 @@ export const UserPosition = () => {
   return (
     <Card size="small">
       <CardHeader title={t`Position Details`} />
-      <CardContent component={Stack} gap={Spacing.md}>
+      <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
           <Grid size={6}>
             <Metric

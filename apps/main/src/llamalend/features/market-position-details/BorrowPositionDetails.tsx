@@ -20,7 +20,7 @@ export const BorrowPositionDetails = ({ params, market }: BorrowPositionDetailsP
     liquidationStatus.data &&
     getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
   return (
-    <Stack padding={Spacing.sm} gap={Spacing.xs}>
+    <Stack sx={{ padding: Spacing.sm, gap: Spacing.xs }}>
       {statusContent?.hasMarketAlert && (
         <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
           <AlertTitle>{statusContent.title}</AlertTitle>
@@ -29,7 +29,7 @@ export const BorrowPositionDetails = ({ params, market }: BorrowPositionDetailsP
           </Stack>
         </Alert>
       )}
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <HealthDetails
           params={params}
           softLiquidation={mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')}

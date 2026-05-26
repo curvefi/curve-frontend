@@ -17,11 +17,7 @@ export const Section = ({ title, links, networkId, appName, isTiny }: SectionPro
     <Grid size={12}>
       <Typography
         variant="headingXsBold"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          height: SizesAndSpaces.ButtonSize.sm,
-        }}
+        sx={{ display: 'flex', alignItems: 'center', height: SizesAndSpaces.ButtonSize.sm }}
       >
         {title}
       </Typography>
