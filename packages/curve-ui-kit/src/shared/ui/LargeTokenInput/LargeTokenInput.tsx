@@ -296,12 +296,9 @@ export const LargeTokenInput = ({
                   gap: Spacing.xxs,
                   flexGrow: 1,
                   justifyContent: 'end',
-
                   // Hide by default, show on parent hover
                   opacity: { desktop: 0 },
-
                   transition: `opacity ${TransitionFunction}`,
-
                   // Show when parent stack is hovered
                   [`#${componentId}:hover &`]: { opacity: 1 },
                 }}

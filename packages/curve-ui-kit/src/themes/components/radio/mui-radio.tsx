@@ -26,12 +26,10 @@ const createIconWrapper = (icon: ReactNode) => (
       display: 'flex',
       outline: '1px solid currentColor',
       borderRadius: '50%',
-
       // Animate the checkbox as it appears. It's not possible to animate it when unchecking.
       '& svg': {
         animation: 'circle-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
       },
-
       '@keyframes circle-appear': {
         from: {
           transform: 'scale(0)',
