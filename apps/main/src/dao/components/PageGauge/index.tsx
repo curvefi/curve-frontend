@@ -31,7 +31,7 @@ export const Gauge = () => {
       <Stack sx={{ gap: PAGE_SPACING, backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
-        <Stack padding={Spacing.md}>
+        <Stack sx={{ padding: Spacing.md }}>
           {gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />}
         </Stack>
         {gaugeData && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}

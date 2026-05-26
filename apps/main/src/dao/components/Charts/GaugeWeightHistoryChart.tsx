@@ -46,7 +46,7 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
   const legendSets: LegendItem[] = [{ label: SERIES_LABEL, line: { lineStroke: lineColor } }]
 
   return (
-    <Stack flexGrow={1} gap={Spacing.md}>
+    <Stack sx={{ flexGrow: 1, gap: Spacing.md }}>
       <ChartStateWrapper
         height={height}
         isLoading={isLoading}

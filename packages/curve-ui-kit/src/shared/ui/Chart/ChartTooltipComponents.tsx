@@ -53,7 +53,7 @@ export const ChartTooltipSeriesRow = ({
 )
 
 export const ChartTooltipDataRow = ({ label, value }: { label: ReactNode; value: ReactNode }) => (
-  <Stack direction="row" justifyContent="space-between" alignItems="center">
+  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
     <Typography variant="bodySRegular">{label}</Typography>
     <Typography variant="bodySBold">{value}</Typography>
   </Stack>
