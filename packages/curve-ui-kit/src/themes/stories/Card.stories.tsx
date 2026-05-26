@@ -75,6 +75,23 @@ const CardStoryHeaderOnly = (props: CardProps) => (
   </Card>
 )
 
+const CardStoryInline = (props: CardProps) => (
+  <Card sx={{ maxWidth: '20rem' }} {...props} size="inline">
+    <CardHeader title="Inline card" />
+
+    <CardContent>
+      <Stack gap={Spacing.sm}>
+        <Typography variant="bodySRegular" color="textSecondary">
+          Inline content starts flush with the card edge.
+        </Typography>
+        <Button fullWidth color="secondary">
+          Inline Action
+        </Button>
+      </Stack>
+    </CardContent>
+  </Card>
+)
+
 const CardStoryTokenPairAvatar = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
     <CardHeader
@@ -120,6 +137,7 @@ type Story = StoryObj<typeof CardStory>
 export const Default: Story = { render: args => <CardStory {...args} /> }
 export const Simple: Story = { render: args => <CardStorySimple {...args} /> }
 export const HeaderOnly: Story = { render: args => <CardStoryHeaderOnly {...args} /> }
+export const Inline: Story = { render: args => <CardStoryInline {...args} /> }
 export const TokenPairAvatar: Story = { render: args => <CardStoryTokenPairAvatar {...args} /> }
 
 export default meta
