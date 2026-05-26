@@ -21,8 +21,15 @@ export const HiddenCountResetButton = ({
       hiddenCount ? filterTooltip : t`All the available data is being displayed`
     }
   >
-    <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
-      <Stack direction="row" gap={Spacing.xxs} alignItems="center">
+    <Stack
+      direction="row"
+      sx={{
+        gap: { mobile: 2, tablet: 1 },
+        alignItems: 'center',
+        marginLeft: 'auto',
+      }}
+    >
+      <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
         <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
         <Typography variant="highlightS" data-testid="hidden-market-count">
           {hiddenCount}

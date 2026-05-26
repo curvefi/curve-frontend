@@ -21,10 +21,7 @@ export const LinearProgress = ({
   useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
   return (
     <MuiLinearProgress
-      sx={{
-        height: SIZE_MAPPING[size],
-        '& .MuiLinearProgress-bar': { backgroundColor: barColor },
-      }}
+      sx={{ height: SIZE_MAPPING[size], '& .MuiLinearProgress-bar': { backgroundColor: barColor } }}
       value={value}
       variant="determinate"
     />

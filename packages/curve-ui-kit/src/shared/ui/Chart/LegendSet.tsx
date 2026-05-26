@@ -46,7 +46,7 @@ export type LegendItem = {
 
 export const LegendSet = ({ label, line, box, toggled = true, onToggle }: LegendItem) => (
   <WithWrapper shouldWrap={onToggle} Wrapper={ButtonBase} onClick={() => onToggle?.(label)}>
-    <Stack direction="row" spacing={Spacing.xs} alignItems="center">
+    <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
       {line && <LegendLine color={line.lineStroke} dash={line.dash} opacity={toggled ? 1 : 0.7} />}
       {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} opacity={toggled ? 1 : 0.7} />}
       <Typography

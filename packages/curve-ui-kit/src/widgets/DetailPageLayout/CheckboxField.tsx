@@ -28,7 +28,15 @@ export const CheckboxField = ({
   collapsible?: ReactNode
 }) => (
   <Stack>
-    <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
+    <Stack
+      direction="row"
+      sx={{
+        justifyContent: 'space-between',
+        gap: Spacing.sm,
+        alignItems: 'start',
+        flexWrap: 'wrap',
+      }}
+    >
       <FormControlLabel
         sx={{ margin: 0 }} // with default margin, the checkbox overflows
         label={

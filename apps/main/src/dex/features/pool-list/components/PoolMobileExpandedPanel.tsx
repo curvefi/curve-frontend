@@ -117,8 +117,8 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
               ></ListInfoItem>
             )}
             {campaigns.length > 0 && (
-              <Stack direction="column" alignItems="center">
-                <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
+              <Stack direction="column" sx={{ alignItems: 'center' }}>
+                <Typography variant="bodyXsRegular" color="textTertiary" sx={{ alignSelf: 'start' }}>
                   {t`Additional external rewards`}
                 </Typography>
 
@@ -128,8 +128,7 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
           </>
         )}
       </Grid>
-
-      <Stack display="grid" gridTemplateColumns="1fr 1fr 1fr" gap={3} marginBlock={3}>
+      <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>
         <Button
           data-testid="pool-link-deposit"
           component={RouterLink}

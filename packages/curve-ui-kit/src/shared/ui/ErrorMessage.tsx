@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
@@ -28,9 +29,19 @@ export const ErrorMessage = ({
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
   return (
-    <Stack flexDirection="column" alignItems="center" gap={Spacing.sm} padding={Spacing.md} sx={sx}>
+    <Stack
+      sx={applySxProps(
+        {
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: Spacing.sm,
+          padding: Spacing.md,
+        },
+        sx,
+      )}
+    >
       <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
-      <Stack alignItems="center">
+      <Stack sx={{ alignItems: 'center' }}>
         <Typography variant="headingXsBold" sx={{ maxWidth: MaxWidth.emptyStateCard, textAlign: 'center' }}>
           {title}
         </Typography>
@@ -47,7 +58,7 @@ export const ErrorMessage = ({
           </Typography>
         )}
       </Stack>
-      <Stack direction="row" flexWrap="wrap" gap={Spacing.sm} alignItems="center">
+      <Stack direction="row" sx={{ flexWrap: 'wrap', gap: Spacing.sm, alignItems: 'center' }}>
         <Button onClick={openReportModal} color="secondary" data-testid="submit-error-report-button">
           {t`Submit error report`}
         </Button>

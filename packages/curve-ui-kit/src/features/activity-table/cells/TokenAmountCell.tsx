@@ -40,12 +40,10 @@ export const TokenAmountCell = ({ amount, amountUsd, align = 'left', tokenAddres
     <InlineTableCell>
       <Stack
         direction="row"
-        justifyContent={isRightAligned ? 'flex-end' : 'flex-start'}
-        alignItems="center"
-        gap={Spacing.xs}
+        sx={{ justifyContent: isRightAligned ? 'flex-end' : 'flex-start', alignItems: 'center', gap: Spacing.xs }}
       >
         {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="lg" />}
-        <Stack alignItems={isRightAligned ? 'flex-end' : 'flex-start'}>
+        <Stack sx={{ alignItems: isRightAligned ? 'flex-end' : 'flex-start' }}>
           <Typography variant="tableCellMBold">{formatAmount(amount)}</Typography>
           {amountUsd != null && amountUsd !== 0 && (
             <Typography variant="tableCellSRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>

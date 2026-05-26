@@ -206,10 +206,9 @@ export const UserPositionsTable = ({
         <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
         <Stack
           direction="row"
-          justifyContent="space-between"
-          // needed for the bottom border to be the same height as the tabs
-          alignItems="stretch"
           sx={{
+            justifyContent: 'space-between',
+            alignItems: 'stretch',
             backgroundColor: t => t.design.Layer[1].Fill,
             flexGrow: 1,
             borderBottom: t => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,

@@ -94,7 +94,7 @@ export const MobileHeader = ({
           data-testid="mobile-drawer"
         >
           <Stack sx={{ overflowY: 'auto', ...HIDE_SCROLLBAR }}>
-            <Stack padding={4}>
+            <Stack sx={{ padding: 4 }}>
               <HeaderStats appStats={appStats} />
             </Stack>
 

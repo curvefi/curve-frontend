@@ -46,8 +46,8 @@ export const PoolListFilterChips = ({
       columnSpacing={Spacing.xs}
       rowSpacing={Spacing.md}
       direction="row"
-      justifyContent="flex-end"
       size={{ mobile: 12, desktop: 'auto' }}
+      sx={{ justifyContent: 'flex-end' }}
     >
       {getFilterGroups({ isConnected }).map(group => (
         <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
