@@ -42,6 +42,9 @@ const { Spacing } = SizesAndSpaces
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
+/** Prices API tells us which pools methods are available, of which the following one is a requisite for refuels */
+const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donation_shares')
+
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
@@ -93,7 +96,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
-  const hasRefuel = pricesApiPoolData?.poolMethods.includes('donation_shares')
 
   type DetailInfoTab = 'user' | 'pool' | 'advanced'
   const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
@@ -251,7 +253,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               options={poolInfoTabs}
               testIdPrefix="pool-info-tab"
             />
-            {hasRefuel && (
+            {hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
               <Button
                 component={TanstackLink}
                 to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
