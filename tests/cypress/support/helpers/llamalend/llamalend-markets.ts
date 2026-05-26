@@ -1,7 +1,7 @@
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, type TokenType } from '@cy/support/generators'
-import { getTableCellAssets, withFilters } from '@cy/support/helpers/data-table.helpers'
+import { getTableCellAssets, withFilters, withMultiSelectFilter } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
 import { LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
 import { median } from '@primitives/array.utils'
@@ -75,17 +75,15 @@ export function checkCoinSelection(
   const symbol = oneOf(...vaultData.ethereum.data.map(d => d[`${type}_token`].symbol))
   const columnId = `assets_${type}_symbol`
   withFilters(breakpoint, () => {
-    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-    cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
-    cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
-    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
-    cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
-    cy.get('body').click(0, 0) // close multi select token popover
+    withMultiSelectFilter(
+      { id: columnId },
+      () => cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click(), // select the token
+    )
 
     getTableCellAssets().find(`[data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
     cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
-    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-    return cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+
+    return withMultiSelectFilter({ id: columnId, clearOnClose: true })
   })
   cy.url().should('not.include', `assets_${type}_symbol`)
 }

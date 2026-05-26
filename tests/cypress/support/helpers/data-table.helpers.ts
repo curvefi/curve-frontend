@@ -49,6 +49,23 @@ export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.C
   })
 }
 
+export const withMultiSelectFilter = <T>(
+  { id, clearOnClose = false }: { id: string; clearOnClose?: boolean },
+  callback?: () => Cypress.Chainable<T>,
+) => {
+  cy.get(`[data-testid="multi-select-filter-${id}"]`).click() // open the menu
+  return (callback ? callback() : cy.wrap(undefined as T)).then(result => {
+    // clearing the filters automatically close the menu
+    if (clearOnClose) {
+      cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens and close
+    } else {
+      cy.get('body').click(0, 0) // close multi select token popover
+    }
+    cy.get(`[data-testid="menu-${id}"]`).should('not.exist') // wait for the menu to close
+    return cy.wrap(result)
+  })
+}
+
 export function closeSlider(breakpoint: Breakpoint) {
   cy.get('body').click(0, 0, { waitForAnimations: true })
   cy.get(`[data-testid^="slider-"]`).should('not.exist')
