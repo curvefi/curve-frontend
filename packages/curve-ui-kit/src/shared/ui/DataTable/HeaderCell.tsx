@@ -15,7 +15,7 @@ import {
   type TableItem,
 } from './data-table.utils'
 
-const { Sizing } = SizesAndSpaces
+const { Spacing, Sizing } = SizesAndSpaces
 
 function useHeaderSx<T extends TableItem>({
   isSticky,
@@ -39,6 +39,7 @@ function useHeaderSx<T extends TableItem>({
       color: t => t.design.Table.Header['Label_&_icon'][isSorted ? 'Active' : 'Default'],
       paddingBlockStart: 0,
       paddingBlockEnd: DataTableHeaderCellPaddingBlockEnd[size],
+      paddingInline: Spacing.xs,
       paddingInlineStart,
       paddingInlineEnd,
       ...(canSort && {
