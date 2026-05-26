@@ -104,13 +104,15 @@ export const LlamaTableFilters = ({
         <Stack sx={{ '& > * + *': { borderTop: t => `1px solid ${t.design.Layer[1].Outline}` } }}>
           <Stack
             direction="row"
-            alignItems="flex-end"
-            gap={Spacing.sm}
-            justifyContent="space-between"
-            minHeight={MinHeight.popoverHeader}
-            paddingInlineStart={Spacing.sm}
+            sx={{
+              gap: Spacing.sm,
+              paddingInlineStart: Spacing.sm,
+              minHeight: MinHeight.popoverHeader,
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
           >
-            <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
+            <Typography variant="headingXsBold" color="textSecondary" sx={{ paddingBlockEnd: Spacing.xs }}>
               {t`Filter markets`}
             </Typography>
             <IconButton size="extraSmall" onClick={() => setOpen(false)} data-testid="btn-close-filters">
@@ -118,7 +120,7 @@ export const LlamaTableFilters = ({
             </IconButton>
           </Stack>
           {content}
-          <Stack direction="row" padding={Spacing.sm}>
+          <Stack direction="row" sx={{ padding: Spacing.sm }}>
             {resetButton}
           </Stack>
         </Stack>
