@@ -132,6 +132,7 @@ export const getHiddenCount = <T>(table: Table<T>): number =>
   table.getPreFilteredRowModel().rows.length - table.getFilteredRowModel().rows.length
 
 // The following datatable size code lives in the util file, because at the moment of writing we have both DataTable and LegacyDataTable.
+// TODO: move to the final DataTable.tsx component once we remove the LegacyDataTable and make sure there are no circular dependencies with the other files in the DataTable folder.
 export type DataTableSize = 'extraSmall' | 'small' | 'medium' | 'large'
 
 export const DataTableHeaderHeight = {
