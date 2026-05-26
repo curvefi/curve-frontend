@@ -69,6 +69,6 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
   dependencies: params => [repayExpectedBorrowedQueryKey(params)],
 })

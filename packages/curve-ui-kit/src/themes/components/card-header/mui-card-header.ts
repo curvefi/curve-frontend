@@ -11,6 +11,14 @@ export const cardHeaderSmallStyles = (typography: TypographyVariantsOptions) => 
   ...handleBreakpoints({ minHeight: ButtonSize.sm }),
 })
 
+export const cardHeaderInlineStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
+  ...cardHeaderSmallStyles(typography),
+  borderBottom: `1px solid ${design.Layer[3].Outline}`,
+  ...handleBreakpoints({
+    paddingInline: 0,
+  }),
+})
+
 export const defineMuiCardHeader = (
   design: DesignSystem,
   typography: TypographyVariantsOptions,
@@ -36,13 +44,8 @@ export const defineMuiCardHeader = (
       style: cardHeaderSmallStyles(typography),
     },
     {
-      props: { 'data-inline': true },
-      style: {
-        borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        ...handleBreakpoints({
-          paddingInline: 0,
-        }),
-      },
+      props: { size: 'inline' },
+      style: cardHeaderInlineStyles(design, typography),
     },
   ],
 })
