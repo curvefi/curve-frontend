@@ -24,8 +24,8 @@ type ChartCardProps = {
   loading: boolean
   /** EChart options */
   option: EChartsOption
-  /** Content for above the chart, like metrics */
-  topContent?: ReactNode
+  /** Content for above the chart, usually metrics */
+  metrics?: ReactNode
   /** Whether the card should be shown as a fullscreen modal or not */
   fullscreen?: boolean
   /** When the fullscreen modal is being closed */
@@ -41,7 +41,7 @@ export const EChartsCard = ({
   action,
   loading,
   option,
-  topContent,
+  metrics,
   fullscreen = false,
   onCloseFullscreen,
   children,
@@ -61,7 +61,7 @@ export const EChartsCard = ({
       />
 
       <CardContent component={Stack} sx={{ gap: Spacing.md, flexGrow: 1 }}>
-        {topContent}
+        {metrics}
         <Box sx={{ position: 'relative', ...(fullscreen && { flexGrow: 1 }) }}>
           {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
           <ReactECharts

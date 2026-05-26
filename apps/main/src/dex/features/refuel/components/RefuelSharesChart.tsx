@@ -154,7 +154,7 @@ export const RefuelSharesChart = ({
       fullscreen={fullscreen}
       onCloseFullscreen={closeFullscreen}
       testId="refuel-budget-chart"
-      topContent={
+      metrics={
         <Grid container columnSpacing={Spacing.md} rowSpacing={Spacing.sm}>
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric

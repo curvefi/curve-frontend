@@ -150,7 +150,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
       fullscreen={fullscreen}
       onCloseFullscreen={closeFullscreen}
       testId="refuel-prices-chart"
-      topContent={
+      metrics={
         <Grid container columnSpacing={Spacing.md} rowSpacing={Spacing.sm}>
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
