@@ -14,7 +14,7 @@ export const AmountCell = ({ amount, usdAmount }: AmountCellProps) => {
   const formattedUsd = formatNumber(usdAmount, { unit: 'dollar', abbreviate: false })
 
   return (
-    <Stack alignItems="end" gap={Spacing.xxs}>
+    <Stack sx={{ gap: Spacing.xxs, alignItems: 'end' }}>
       <Typography variant="tableCellMRegular">{formatNumber(amount, { abbreviate: false, fallback: '-' })}</Typography>
       {formattedUsd && (
         <Typography variant="tableCellSRegular" color="textSecondary">

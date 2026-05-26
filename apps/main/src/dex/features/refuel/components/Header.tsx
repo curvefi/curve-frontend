@@ -20,7 +20,7 @@ export const Header = ({ blockchainId, poolAddress }: { blockchainId: Chain; poo
   const { data: pool, isLoading } = useRefuelPool({ blockchainId, poolAddress })
 
   return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center" paddingBlock={Spacing.sm}>
+    <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center', paddingBlock: Spacing.sm }}>
       <IconButton
         size="small"
         aria-label={t`Back to pool`}

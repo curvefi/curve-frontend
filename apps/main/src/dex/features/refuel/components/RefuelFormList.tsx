@@ -53,7 +53,7 @@ export const RefuelFormList = ({ values, tokenA, tokenB, poolTvl: pool }: Refuel
   const isLoading = tokenA.isLoading || tokenB.isLoading || pool.isLoading
 
   return (
-    <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.sm }}>
       <ActionInfo
         size="small"
         label={t`Percentage of pool TVL`}

@@ -40,7 +40,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
       onSubmit={onSubmit}
       footer={<RefuelFormList values={values} tokenA={tokenA} tokenB={tokenB} poolTvl={poolTvl} />}
     >
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <LargeTokenInput
           name="tokenAAmount"
           balance={values.tokenAAmount}
