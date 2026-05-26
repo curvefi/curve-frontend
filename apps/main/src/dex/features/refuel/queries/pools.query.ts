@@ -16,6 +16,6 @@ type RefuelPoolParams = ChainNameParams & { poolAddress: Address | null | undefi
 
 export const useRefuelPool = ({ blockchainId, poolAddress }: RefuelPoolParams) =>
   mapQuery(
-    useRefuelPools({ blockchainId }, !!poolAddress),
+    useRefuelPools({ blockchainId }),
     data => poolAddress && data.pools.find(pool => isAddressEqual(poolAddress, pool.address)),
   )
