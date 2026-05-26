@@ -37,12 +37,16 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
-export function openFilters(breakpoint: Breakpoint) {
-  if (breakpoint == 'mobile') {
-    openDrawer(breakpoint, 'filter')
-  } else {
-    cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
-  }
+export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
+  cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
+  return callback().then(result => {
+    if (breakpoint === 'mobile') {
+      closeDrawer(breakpoint)
+    } else {
+      cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
+    }
+    return cy.wrap(result)
+  })
 }
 
 export function closeSlider(breakpoint: Breakpoint) {
@@ -50,3 +54,5 @@ export function closeSlider(breakpoint: Breakpoint) {
   cy.get(`[data-testid^="slider-"]`).should('not.exist')
   closeDrawer(breakpoint)
 }
+
+export const getTableCellAssets = () => cy.get('[data-testid="data-table-cell-assets"]')

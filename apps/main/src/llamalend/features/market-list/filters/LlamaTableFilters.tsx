@@ -22,7 +22,7 @@ import { LendingMarketsFilters } from '../LendingMarketsFilters'
 
 const { Spacing, Width, MinHeight } = SizesAndSpaces
 
-const BUTTON_FILTERS_TEST_ID = 'btn-open-filters'
+const OPEN_FILTERS_TEST_ID = 'btn-open-filters'
 
 type LlamaTableFiltersProps = {
   open: boolean
@@ -48,7 +48,13 @@ export const LlamaTableFilters = ({
   const isMobile = useIsMobile()
   const content = <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
   const resetButton = (
-    <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hasActiveFilters}>
+    <Button
+      color="ghost"
+      size="extraSmall"
+      onClick={resetFilters}
+      disabled={!hasActiveFilters}
+      data-testid="btn-reset-filters"
+    >
       {t`Reset filters`}
     </Button>
   )
@@ -64,7 +70,7 @@ export const LlamaTableFilters = ({
           selected={open}
           icon={<FilterIcon />}
           toggle={() => setOpen(true)}
-          data-testid={BUTTON_FILTERS_TEST_ID}
+          data-testid={OPEN_FILTERS_TEST_ID}
         />
       }
     >
@@ -82,7 +88,7 @@ export const LlamaTableFilters = ({
         selected={open}
         icon={<FilterIcon />}
         toggle={() => setOpen(true)}
-        data-testid={BUTTON_FILTERS_TEST_ID}
+        data-testid={OPEN_FILTERS_TEST_ID}
       />
       <Popover
         open={open}
@@ -107,7 +113,7 @@ export const LlamaTableFilters = ({
             <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
               {t`Filter markets`}
             </Typography>
-            <IconButton size="extraSmall" onClick={() => setOpen(false)}>
+            <IconButton size="extraSmall" onClick={() => setOpen(false)} data-testid="btn-close-filters">
               <Cross2Icon />
             </IconButton>
           </Stack>
