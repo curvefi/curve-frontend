@@ -46,12 +46,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
           balance={values.tokenAAmount}
           onBalance={tokenAAmount => form.update({ tokenAAmount })}
           isError={!!tokenA.amountError}
-          walletBalance={{
-            balance: tokenA.balance,
-            symbol: tokenA.symbol,
-            usdRate: tokenA.usdRate,
-            loading: tokenA.isLoading,
-          }}
+          walletBalance={tokenA}
           inputBalanceUsd={decimal(values.tokenAAmount && tokenA.usdRate && tokenA.usdRate * +values.tokenAAmount)}
           tokenSelector={
             <TokenLabel
@@ -76,12 +71,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
           balance={values.tokenBAmount}
           onBalance={tokenBAmount => form.update({ tokenBAmount })}
           isError={!!tokenB.amountError}
-          walletBalance={{
-            balance: tokenB.balance,
-            symbol: tokenB.symbol,
-            usdRate: tokenB.usdRate,
-            loading: tokenB.isLoading,
-          }}
+          walletBalance={tokenB}
           inputBalanceUsd={decimal(values.tokenBAmount && tokenB.usdRate && tokenB.usdRate * +values.tokenBAmount)}
           tokenSelector={
             <TokenLabel
