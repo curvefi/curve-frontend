@@ -44,7 +44,7 @@ export const createComponents = (
       disableRipple: true,
     },
   },
-  MuiCard: defineMuiCard(typography),
+  MuiCard: defineMuiCard(design, typography),
   MuiCardContent: defineMuiCardContent(design),
   MuiCardHeader: defineMuiCardHeader(design, typography),
   MuiCardActions: {

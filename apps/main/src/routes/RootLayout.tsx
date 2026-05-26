@@ -22,6 +22,7 @@ import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintena
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useBodyThemeClass } from '@ui-kit/hooks/useBodyThemeClass'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
@@ -90,6 +91,8 @@ export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
   const devTools = !isCypress
+  useBodyThemeClass()
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>

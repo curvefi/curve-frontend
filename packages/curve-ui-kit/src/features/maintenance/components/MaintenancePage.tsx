@@ -15,18 +15,18 @@ const Image = styled('img')({})
 export const MaintenancePage = () => (
   <Stack
     component="main"
-    alignItems="center"
-    justifyContent="center"
-    padding={Spacing.md}
-    minHeight={MinHeight.pageContent}
-    textAlign={'center'}
     sx={{
       backgroundColor: theme => theme.design.Layer.App.Background,
+      padding: Spacing.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      minHeight: MinHeight.maintenancePage,
     }}
     data-testid="maintenance-page"
   >
-    <Stack gap={Spacing.xxl} alignItems="center" maxWidth={MaxWidth.maintenanceContent}>
-      <Stack component="header" alignItems="center" gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xxl, aligItems: 'center', maxWidth: MaxWidth.maintenanceContent }}>
+      <Stack component="header" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
         <Typography component="h1" variant="headingSBold">
           {t`Curve.finance`}
         </Typography>
@@ -41,10 +41,7 @@ export const MaintenancePage = () => (
         width="50%" //image to big vertically on 14" screens
       />
 
-      <Stack
-        alignItems="center"
-        gap={Spacing.sm.desktop} // gap is fixed at 10px on Figma
-      >
+      <Stack sx={{ gap: Spacing.sm.desktop /** gap is fixed at 10px on Figma */, alignItems: 'center' }}>
         <Badge label={t`Upgrade in progress`} color="highlight" size="extraLarge" />
 
         <Typography>

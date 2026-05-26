@@ -54,10 +54,10 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
   return (
     <Grid
       container
-      paddingBlock={Spacing.sm}
-      paddingInline={Spacing.md}
       spacing={Spacing.md}
       sx={{
+        paddingBlock: Spacing.sm,
+        paddingInline: Spacing.md,
         backgroundColor: t => t.design.Layer[1].Fill,
         borderBlock: t => `1px solid ${t.design.Layer[1].Outline}`,
       }}

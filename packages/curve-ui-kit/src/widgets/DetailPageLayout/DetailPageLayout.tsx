@@ -88,8 +88,10 @@ export const DetailPageLayout = ({
       {formTabs !== null && (
         <Grid
           size={{ mobile: 12, tablet: 5, desktop: 4 }}
-          maxWidth={{ desktop: MaxWidth.actionCard }}
-          sx={{ ...stickyFormTabsSx(navHeight, pageHeaderHeight) }}
+          sx={{
+            maxWidth: { desktop: MaxWidth.actionCard },
+            ...stickyFormTabsSx(navHeight, pageHeaderHeight),
+          }}
         >
           {formTabs || <FormSkeleton />}
         </Grid>
@@ -98,12 +100,9 @@ export const DetailPageLayout = ({
         {/* Additional Stack because no gap between the page header and the children */}
         <Stack>
           {!isMobile && headerStack}
-          <Stack flexGrow={1} gap={PAGE_SPACING}>
-            {children}
-          </Stack>
+          <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
         </Stack>
       </Grid>
-
       {footer && <Grid size={12}>{footer}</Grid>}
     </Grid>
   )

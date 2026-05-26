@@ -20,7 +20,7 @@ const GridItem = ({ children, title, icon: Icon }: { children: ReactNode; title:
     <Typography variant="headingXsBold" sx={{ marginBlock: Spacing.sm }}>
       {title}
     </Typography>
-    <Typography variant="bodyMRegular" color="text.secondary">
+    <Typography variant="bodyMRegular" sx={{ color: 'text.secondary' }}>
       {children}
     </Typography>
   </Grid>
@@ -29,9 +29,9 @@ const GridItem = ({ children, title, icon: Icon }: { children: ReactNode; title:
 export const LendTableFooter = () => (
   <Card>
     <CardContent>
-      <Grid container spacing={Spacing.lg} rowGap={Spacing.md}>
+      <Grid container spacing={Spacing.lg} sx={{ rowGap: Spacing.md }}>
         <Grid size={12}>
-          <Typography variant="headingSBold" textAlign="center">{t`Why Use Llamalend?`}</Typography>
+          <Typography variant="headingSBold" sx={{ textAlign: 'center' }}>{t`Why Use Llamalend?`}</Typography>
         </Grid>
         <GridItem title={t`Efficient collateral`} icon={SoftLiquidationIcon}>
           {t`Llamalend is powered by the cutting edge LLAMMA liquidation engine.`}{' '}
@@ -46,7 +46,7 @@ export const LendTableFooter = () => (
           {t`Put your idle assets to work in Llama powered markets to earn yield, or use the Llama Savings Vault to earn your share of Llamalend’s revenue.`}
         </GridItem>
         <Grid size={12}>
-          <Box display="flex" justifyContent="center">
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <ExternalLink href="https://docs.curve.finance/lending/overview/" label={t`Learn More`} />
           </Box>
         </Grid>

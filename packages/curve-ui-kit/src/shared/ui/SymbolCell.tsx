@@ -25,7 +25,7 @@ export const SymbolCell = ({
   blockchainId,
   valueTooltip,
 }: SymbolCellProps) => (
-  <Stack alignItems={'start'}>
+  <Stack sx={{ alignItems: 'start' }}>
     <Typography variant="bodyXsRegular" color="textTertiary">
       {label}
     </Typography>
@@ -36,7 +36,7 @@ export const SymbolCell = ({
         {...valueTooltip}
         title={valueTooltip?.title ?? (symbol == null ? t`N/A` : symbol)}
       >
-        <Stack direction="row" alignItems="baseline" gap={1}>
+        <Stack direction="row" sx={{ alignItems: 'baseline', gap: 1 }}>
           <Typography variant={MetricSize[size]}>{symbol == null ? t`N/A` : symbol}</Typography>
           <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={'mui-sm'} />
         </Stack>

@@ -171,8 +171,8 @@ export const Controlled: Story = {
     // eslint-disable-next-line @eslint-react/rules-of-hooks
     const [expanded, , , toggle] = useSwitch(true)
     return (
-      <Stack gap={4}>
-        <Stack direction="row" gap={2} alignItems="center">
+      <Stack sx={{ gap: 4 }}>
+        <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
           <Button variant="outlined" onClick={toggle} sx={{ marginRight: 1 }}>
             Toggle from outside
           </Button>

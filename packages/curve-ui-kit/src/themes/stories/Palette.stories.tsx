@@ -20,19 +20,35 @@ const PaletteStory = () => {
                 <Typography variant="headingMLight">
                   {palette}.{type}
                 </Typography>
-                <Box display="flex" flexDirection="row" maxWidth="100%" flexWrap="wrap">
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    maxWidth: '100%',
+                    flexWrap: 'wrap',
+                  }}
+                >
                   {Object.entries(options)
                     .filter(([, color]) => typeof color == 'string')
                     .map(([key, color]) => (
                       <Box title={`${type}.${key}`} key={`${type}.${key}`}>
-                        <Box maxWidth={100} textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
+                        <Box
+                          sx={{
+                            maxWidth: 100,
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {key}
                         </Box>
                         <Box
-                          width={100}
-                          height={100}
-                          border={1}
-                          bgcolor={color as StandardCSSProperties['backgroundColor']}
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            border: 1,
+                            bgcolor: color as StandardCSSProperties['backgroundColor'],
+                          }}
                         />
                       </Box>
                     ))}

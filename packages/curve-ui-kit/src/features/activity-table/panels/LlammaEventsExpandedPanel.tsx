@@ -17,11 +17,11 @@ export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({
   },
 }) => (
   <Stack>
-    <Stack paddingTop={Spacing.md} gap={Spacing.xs}>
+    <Stack sx={{ paddingTop: Spacing.md, gap: Spacing.xs }}>
       {deposit && (
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="bodyMRegular" color="textSecondary">{t`Amount`}</Typography>
-          <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <Typography variant="tableCellMBold" color="success">
               {formatNumber(deposit.amount, { abbreviate: false })} {collateralToken?.symbol}
             </Typography>
@@ -32,9 +32,9 @@ export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({
       {withdrawal && (
         <>
           {withdrawal.amountCollateral !== 0 && (
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="bodyMRegular" color="textSecondary">{t`Collateral`}</Typography>
-              <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+              <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
                 <Typography variant="tableCellMBold" color="error">
                   {formatNumber(withdrawal.amountCollateral, { abbreviate: false })} {collateralToken?.symbol}
                 </Typography>
@@ -45,9 +45,9 @@ export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({
             </Stack>
           )}
           {withdrawal.amountBorrowed !== 0 && (
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="bodyMRegular" color="textSecondary">{t`Borrowed`}</Typography>
-              <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+              <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
                 <Typography variant="tableCellMBold" color="error">
                   {formatNumber(withdrawal.amountBorrowed, { abbreviate: false })} {borrowToken?.symbol}
                 </Typography>
@@ -57,7 +57,7 @@ export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({
           )}
         </>
       )}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
         <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
       </Stack>

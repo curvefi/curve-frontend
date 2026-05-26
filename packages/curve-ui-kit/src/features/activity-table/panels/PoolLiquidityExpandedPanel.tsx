@@ -25,13 +25,17 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
 
   return (
     <Stack>
-      <Stack paddingTop={Spacing.md} gap={Spacing.xs}>
+      <Stack sx={{ paddingTop: Spacing.md, gap: Spacing.xs }}>
         {nonZeroAmounts.map(({ amount, token }, index) => (
-          <Stack key={token?.address ?? index} direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            key={token?.address ?? index}
+            direction="row"
+            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+          >
             <Typography variant="bodyMRegular" color="textSecondary">
               {token?.symbol ?? `Token ${index}`}
             </Typography>
-            <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
               <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
                 {formatNumber(amount, { abbreviate: false })}
               </Typography>
@@ -39,12 +43,11 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
             </Stack>
           </Stack>
         ))}
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
           <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
         </Stack>
       </Stack>
-
       {txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
     </Stack>
   )

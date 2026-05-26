@@ -55,7 +55,12 @@ export type QueryProp<T> = Query<T> & { readonly __brand: 'QueryProp' }
  * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
  * react trying to serialize the react-query proxy object.
  */
-export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
+export const q = <T>({ data, isLoading, error }: Query<T>) =>
+  ({
+    data,
+    isLoading,
+    error,
+  }) as QueryProp<T>
 
 /**
  * Maps a Query type to extract partial data from it.

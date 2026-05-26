@@ -14,8 +14,8 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
 
   return (
     <Stack>
-      <Stack paddingTop={Spacing.md}>
-        <Stack direction="row" justifyContent="space-between">
+      <Stack sx={{ paddingTop: Spacing.md }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
           <Typography variant="bodyMRegular" color="textSecondary">{t`Collateral`}</Typography>
           <Typography
             variant="tableCellMBold"
@@ -32,7 +32,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
             {collateralChange != null && collateralChange !== 0 && collateralChangeUsd !== 0 && collateralToken?.symbol}
           </Typography>
         </Stack>
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
           <Typography variant="bodyMRegular" color="textSecondary">{t`Debt`}</Typography>
           <Typography
             variant="tableCellMBold"
@@ -44,7 +44,6 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
           </Typography>
         </Stack>
       </Stack>
-
       {url && <ExternalLink href={url} label={t`View Transaction`} size="extraSmall" />}
     </Stack>
   )

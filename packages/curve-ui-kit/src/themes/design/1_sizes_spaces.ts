@@ -172,6 +172,7 @@ export const SizesAndSpaces = {
     tableNoResults: { sm: '15vh', lg: '35vh' },
     pageContent: '80vh',
     popoverHeader: '2rem', // 32px
+    maintenancePage: '100vh',
   },
   MaxHeight: {
     popover: '17rem', // 272px

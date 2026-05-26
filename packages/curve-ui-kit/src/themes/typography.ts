@@ -114,10 +114,12 @@ export const createTypography = ({ Text }: DesignSystem) =>
     fontWeightMedium: FontWeight.Medium,
     fontWeightRegular: FontWeight.Normal,
     fontWeightLight: FontWeight.Light,
+
     ...disabledTypographyKeys.reduce(
       (acc, variant) => ({ ...acc, [variant]: undefined }),
       {} as TypographyVariantsOptions,
     ),
+
     ...Object.fromEntries(
       Object.entries(TYPOGRAPHY_VARIANTS).map(([key, def]) => {
         const { fontFamily, ...value } = variant(def)

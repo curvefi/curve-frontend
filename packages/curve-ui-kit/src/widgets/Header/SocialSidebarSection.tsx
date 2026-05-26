@@ -30,7 +30,7 @@ type SocialSidebarSectionProps = { title: string }
 
 export const SocialSidebarSection = ({ title }: SocialSidebarSectionProps) => (
   <SidebarSection title={title}>
-    <Box display="flex" justifyContent="space-around" data-testid="social-buttons">
+    <Box data-testid="social-buttons" sx={{ display: 'flex', justifyContent: 'space-around' }}>
       <SocialButton label="Discord" href={CURVE_SOCIALS.discord} icon={DiscordIcon} />
       <SocialButton
         label="Telegram"

@@ -47,7 +47,7 @@ export const SmallLiquidationRangeChart = (props: SmallLiquidationRangeChartProp
   const option = useSmallLiquidationRangeChartOption({ liquidationRanges, oraclePrice })
 
   return (
-    <Stack flexGrow={1}>
+    <Stack sx={{ flexGrow: 1 }}>
       <Box
         sx={{
           alignSelf: 'stretch',
