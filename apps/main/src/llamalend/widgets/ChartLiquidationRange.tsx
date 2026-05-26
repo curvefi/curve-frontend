@@ -94,9 +94,9 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
 }
 
 const LegendContent = ({ payload }: LegendContentProps) => (
-  <Stack gap={Spacing.xs}>
+  <Stack sx={{ gap: Spacing.xs }}>
     {payload?.map(({ color, type, value }, index) => (
-      <Stack direction="row" key={index} gap={Spacing.xs}>
+      <Stack direction="row" key={index} sx={{ gap: Spacing.xs }}>
         <Stack
           sx={{
             width: Sizing.xs,
@@ -113,7 +113,7 @@ const LegendContent = ({ payload }: LegendContentProps) => (
             </svg>
           )}
         </Stack>
-        <Typography variant="bodySRegular" color="text.secondary">
+        <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
           {value}
         </Typography>
       </Stack>
@@ -121,6 +121,7 @@ const LegendContent = ({ payload }: LegendContentProps) => (
   </Stack>
 )
 
+/** @deprecated in favour of SmallLiquidationRangeChart */
 export const ChartLiquidationRange = ({
   data,
   healthColorKey,

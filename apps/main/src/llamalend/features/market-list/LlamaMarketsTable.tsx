@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
@@ -15,11 +15,13 @@ import { TableButton } from '@ui-kit/shared/ui/DataTable/TableButton'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { FilterChip } from './chips/FilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
 import { LlamaTableFiltersPopover } from './filters/LlamaTableFiltersPopover'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
@@ -30,17 +32,14 @@ const pagination = { pageIndex: 0, pageSize: 200 }
 
 export const LlamaMarketsTable = ({
   onReload,
-  result,
-  isError,
-  loading,
+  tableQuery,
+  tableQuery: { data: queryData, isLoading, error },
 }: {
   onReload: () => void
-  result: LlamaMarketsResult | undefined
-  isError: boolean
-  loading: boolean
+  tableQuery: QueryProp<LlamaMarketsResult>
 }) => {
-  const { markets, userHasPositions, hasFavorites } = result ?? {}
-  const data = useMemo(() => markets ?? [], [markets])
+  const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
+  const isError = !!error
   const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
@@ -66,8 +65,10 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(result),
+    ...getTableOptions(queryData),
   })
+
+  const hasActiveFilters = !!table.getState().columnFilters.length
 
   return (
     <DataTable
@@ -87,7 +88,7 @@ export const LlamaMarketsTable = ({
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={loading}
+      isLoading={isLoading}
     >
       <TableFilters<LlamaMarketColumnId>
         testIdPrefix={LOCAL_STORAGE_KEY}
@@ -99,16 +100,20 @@ export const LlamaMarketsTable = ({
         header={
           <TableFiltersHeader
             title={t`Markets`}
-            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
+            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />}
           />
         }
+        collapsibleFilters={{
+          collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
+          hasActiveFilters,
+        }}
         popoverFilters={
           <LlamaTableFiltersPopover
-            hiddenCount={getHiddenCount(table)}
+            hasActiveFilters={hasActiveFilters}
             open={filterPopoverOpen}
             onClose={closeFilterPopover}
             anchorRef={filterChipRef}
-            markets={data}
+            marketsQuery={mapQuery(tableQuery, d => d.markets)}
             resetFilters={resetFilters}
             {...filterProps}
           />

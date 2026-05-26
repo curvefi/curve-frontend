@@ -40,7 +40,7 @@ export const RevenueLineChart = ({ data, height, visibleSeries }: Props) => {
   ]
 
   return (
-    <Box paddingInline={Spacing.md}>
+    <Box sx={{ paddingInline: Spacing.md }}>
       <EChartsLineChart<ScrvUsdYieldWithAverages, YieldKeys, 'timestamp'>
         data={data}
         height={height}

@@ -32,17 +32,16 @@ export const PoolTitleCell = ({
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
       {poolData.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
-      <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
         <Stack direction="column">
-          <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
             <MarketTitle url={url} address={pool.address as Address} title={pool.name} />
           </Stack>
           <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
         </Stack>
       </Stack>
-
       {poolAlert && <PoolAlertBadge alert={poolAlert} />}
     </Stack>
   )

@@ -33,7 +33,7 @@ export const ActivityTable = <TData extends TableItem>({
   const errorMessage = isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)
 
   return (
-    <Box minHeight={height}>
+    <Box sx={{ minHeight: height }}>
       <LegacyDataTable
         table={table}
         emptyState={

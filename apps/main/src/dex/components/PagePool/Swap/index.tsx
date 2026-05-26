@@ -375,7 +375,7 @@ export const Swap = ({
 
   return (
     <FormContent>
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <LargeTokenInput
           label={t`Sell`}
           name="fromAmount"
@@ -529,7 +529,6 @@ export const Swap = ({
           </div>
         )}
       </Stack>
-
       <Stack>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
 
@@ -549,11 +548,9 @@ export const Swap = ({
         )}
         <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </Stack>
-
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
-
       <AlertSlippage
         maxSlippage={maxSlippage}
         usdAmount={
@@ -569,11 +566,9 @@ export const Swap = ({
           updateFormValues({}, null, null)
         }}
       />
-
       {formValues.toError ? (
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
-
       {/* actions*/}
       <TransferActions
         poolData={poolData}

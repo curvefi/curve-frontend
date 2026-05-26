@@ -20,7 +20,7 @@ export const LlammaEventActionCell = ({ event }: LlammaEventActionCellProps) => 
 
   return (
     <InlineTableCell>
-      <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <Icon />
         <Typography variant="tableCellMBold" color={isDeposit ? 'success' : 'error'}>
           {label}

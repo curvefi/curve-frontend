@@ -31,7 +31,7 @@ export const LiquidationRangeSlider = ({
       sliderProps={{ 'data-rail-background': 'safe' }}
       inputProps={{ adornment: 'bands' }}
       sliderLabel={
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
           {[t`Max LTV`, t`Conservative`].map(l => (
             <Typography key={l} variant="bodyXsRegular" color="textSecondary">
               {l}

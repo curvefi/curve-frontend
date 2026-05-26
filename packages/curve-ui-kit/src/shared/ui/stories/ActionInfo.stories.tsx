@@ -106,7 +106,7 @@ export const AllSizes: Story = {
     size: 'small',
   },
   render: args => (
-    <Stack gap={4} alignItems="center" width="25rem" sx={{ alignItems: 'stretch' }}>
+    <Stack sx={{ gap: 4, width: '25rem', alignItems: 'stretch' }}>
       {SIZES.map(size => (
         <ActionInfo
           key={size}

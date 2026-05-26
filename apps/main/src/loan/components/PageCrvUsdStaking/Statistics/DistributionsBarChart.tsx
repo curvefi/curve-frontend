@@ -22,7 +22,7 @@ export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributi
   return (
     <Stack sx={{ position: 'relative' }}>
       {/* Position relative and width 99% required to make ResponsiveContainer scale properly */}
-      <Box width="100%" sx={{ top: 0, left: 0 }}>
+      <Box sx={{ width: '100%', top: 0, left: 0 }}>
         <ResponsiveContainer width="99%" height={height}>
           <BarChart
             width={500}

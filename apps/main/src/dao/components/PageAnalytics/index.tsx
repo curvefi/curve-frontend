@@ -36,7 +36,7 @@ export const Analytics = () => {
         <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
         {tab === 'fees' && <VeCrvFees />}
         {tab === 'holders' && (
-          <Stack gap={PAGE_SPACING}>
+          <Stack sx={{ gap: PAGE_SPACING }}>
             <TopHolders />
             <HoldersTable />
           </Stack>

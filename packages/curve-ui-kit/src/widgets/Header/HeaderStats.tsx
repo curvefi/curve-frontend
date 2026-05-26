@@ -7,13 +7,13 @@ type HeaderStatsProps = {
 
 export const HeaderStats = ({ appStats }: HeaderStatsProps) =>
   appStats?.map(({ label, value }) => (
-    <Box key={label} display="inline-flex" alignItems="baseline">
+    <Box key={label} sx={{ display: 'inline-flex', alignItems: 'baseline' }}>
       {/* add ellipsis*/}
-      <Typography variant="bodyMRegular" color="grey.600" sx={{ whiteSpace: 'nowrap' }}>
+      <Typography variant="bodyMRegular" sx={{ color: 'grey.600', whiteSpace: 'nowrap' }}>
         {label}:
       </Typography>
       &nbsp;
-      <Typography variant="highlightM" color="text.primary">
+      <Typography variant="highlightM" sx={{ color: 'text.primary' }}>
         {value || '-'}
       </Typography>
     </Box>

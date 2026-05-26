@@ -17,25 +17,18 @@ type Props = {
 
 /** Gap deviates from Figma as personally 'xs' is too narrow. */
 export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (
-  <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+  <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
     {walletAddress && (
       <>
-        <Box
-          component="img"
-          src={LlamaImg}
-          sx={{
-            height: SizesAndSpaces.IconSize.xl,
-          }}
-          alt="Llama Icon"
-        />
+        <Box component="img" src={LlamaImg} sx={{ height: SizesAndSpaces.IconSize.xl }} alt="Llama Icon" />
 
-        <Typography variant="headingMLight" flexGrow={1}>
+        <Typography variant="headingMLight" sx={{ flexGrow: 1 }}>
           {shortenAddress(walletAddress)}
         </Typography>
       </>
     )}
 
-    <Stack direction="row" flexGrow={!walletAddress ? 1 : undefined} justifyContent="end">
+    <Stack direction="row" sx={{ flexGrow: !walletAddress ? 1 : undefined, justifyContent: 'end' }}>
       <IconButton size="small" onClick={onClose}>
         <CloseIcon />
       </IconButton>

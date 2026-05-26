@@ -74,7 +74,7 @@ export const RouteProvidersAccordion = ({
           ) : (
             !isExpanded &&
             (selectedRoute || allLoading ? (
-              <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+              <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
                 {Icon && <Icon />}
                 <WithSkeleton loading={allLoading}>
                   <Typography variant="bodyXsRegular" color="textPrimary">
@@ -93,9 +93,9 @@ export const RouteProvidersAccordion = ({
         expanded={isExpanded}
         toggle={onToggle}
       >
-        <Stack paddingBlock={Spacing.sm} gap={Spacing.sm}>
+        <Stack sx={{ paddingBlock: Spacing.sm, gap: Spacing.sm }}>
           <Stack>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="headingXsBold" color="textSecondary">
                 {anyData
                   ? t`Select a route`
@@ -122,7 +122,7 @@ export const RouteProvidersAccordion = ({
                   : t`Please fill in the form to get routes.`}
             </Typography>
           </Stack>
-          <Stack gap={Spacing.xs}>
+          <Stack sx={{ gap: Spacing.xs }}>
             {recordEntries(queries).map(([key, query]) => (
               <RouteProviderCard
                 key={key}
