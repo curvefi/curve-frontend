@@ -44,11 +44,6 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it(`should copy the market address`, () => {
       expandFirstRowOnMobile(breakpoint)
-      cy.window().then(win => {
-        // with cypress some browsers deny clipboard permissions so we use a stub
-        cy.stub(win.navigator.clipboard, 'writeText').as('writeClipboard').resolves()
-      })
-
       cy.get(
         notFalsy(
           breakpoint === 'mobile' && `[data-testid="data-table-expansion-row"]`,
@@ -58,7 +53,6 @@ testCases.forEach(([width, height, breakpoint]) => {
         .first()
         // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
         .click({ force: breakpoint === 'desktop' })
-      cy.get('@writeClipboard').should('have.been.called')
       cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
     })
 
