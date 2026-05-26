@@ -15,7 +15,7 @@ export function getErrorMessage(error: CustomError | null, defaultErrorMessage?:
   if (error?.message) {
     if (error.message.toLocaleLowerCase().includes('user rejected') || error?.code === 'ACTION_REJECTED') {
       errorMessage = t`User rejected transaction`
-    } else if (error.message.toLocaleLowerCase().includes('Bad swap type')) {
+    } else if (error.message.toLocaleLowerCase().includes('bad swap type')) {
       errorMessage = t`Swap route is not available on Curve. Try an aggregator.`
     } else if ('data' in error && typeof error.data?.message === 'string') {
       errorMessage = error.data.message
