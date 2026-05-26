@@ -6,8 +6,8 @@ import { formatNumber } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 type AmountCellProps = {
-  amount?: number | null
-  usdAmount?: number | null
+  amount: number | null | undefined
+  usdAmount: number | null | undefined
 }
 
 export const AmountCell = ({ amount, usdAmount }: AmountCellProps) => {

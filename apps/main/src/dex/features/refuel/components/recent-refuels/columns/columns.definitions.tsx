@@ -57,7 +57,7 @@ export const createRecentRefuelsColumns = (tokens: RecentRefuelsToken[]) => [
     columnHelper.display({
       id: getTokenAmountColumnId(index),
       header: getTokenAmountHeader(token),
-      cell: ({ row }) => <AmountCell amount={row.original.tokenAmounts?.[index]} />,
+      cell: ({ row }) => <AmountCell amount={row.original.tokenAmounts?.[index]} usdAmount={undefined} />,
       enableSorting: false,
       meta: { type: 'numeric' },
     }),
