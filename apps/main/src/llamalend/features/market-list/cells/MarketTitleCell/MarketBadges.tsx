@@ -39,8 +39,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
   return (
     <Stack
       direction="row"
-      {...(isMobile && { height: Sizing.md.mobile })}
-      sx={{ gap: Spacing.xs, alignItems: 'center' }}
+      sx={{ gap: Spacing.xs, alignItems: 'center', ...(isMobile && { height: Sizing.md.mobile }) }}
     >
       <ChainIcon blockchainId={chain} />
       {useLLv2() && (
