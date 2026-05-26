@@ -64,7 +64,7 @@ export const TableFilters = <ColumnIds extends string>({
           sx={{
             display: 'flex',
             // overlap adjacent component to avoid duplicate border width
-            '& > .tableControl + .tableControl': { ml: '-1px' },
+            '& > .tableControl + .tableControl': { marginLeft: '-1px' },
           }}
         >
           {/* Box wrapper needed for applying style */}
