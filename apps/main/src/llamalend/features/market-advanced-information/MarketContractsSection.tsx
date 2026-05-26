@@ -103,7 +103,7 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
   return (
     <Stack gap={Spacing.md}>
       <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Contracts`} size="small" data-inline />
+        <CardHeader title={t`Contracts`} size="inline" />
         <WithSkeleton loading={loading} variant="rectangular" height={'4lh'} width="100%">
           <Stack>
             {tokenItems.map(({ key, label, address }) => (

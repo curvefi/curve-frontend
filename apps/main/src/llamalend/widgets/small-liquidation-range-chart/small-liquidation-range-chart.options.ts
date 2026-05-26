@@ -5,7 +5,7 @@ import type {
   XAXisComponentOption,
   YAXisComponentOption,
 } from 'echarts'
-import { notFalsyArray } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -51,7 +51,7 @@ const buildHiddenYAxis = (gridIndex?: number): YAXisComponentOption => ({
   min: 0,
   max: 1,
   show: false,
-  ...(gridIndex === undefined ? {} : { gridIndex }),
+  ...(gridIndex != null && { gridIndex }),
 })
 
 // The visible chart is markArea + marker. This invisible line series gives ECharts
@@ -219,47 +219,43 @@ export const buildRangeMarkAreas = ({
     lineHeight: textStyle.lineHeight,
   }
 
-  return notFalsyArray(
+  return notFalsy<RangeMarkArea>(
     currentRange && [
-      [
-        {
-          xAxis: currentRange[0],
-          yAxis: FULL_RANGE_Y_AXIS[0],
-          z2: 1,
-          itemStyle: { color: colors.currentRange },
-          label: {
-            ...rangeLabelStyle,
-            show: !hasNewRange,
-            position: 'inside',
-            formatter: RANGE_LABEL,
-            color: colors.rangeLabel,
-          },
+      {
+        xAxis: currentRange[0],
+        yAxis: FULL_RANGE_Y_AXIS[0],
+        z2: 1,
+        itemStyle: { color: colors.currentRange },
+        label: {
+          ...rangeLabelStyle,
+          show: !hasNewRange,
+          position: 'inside',
+          formatter: RANGE_LABEL,
+          color: colors.rangeLabel,
         },
-        { xAxis: currentRange[1], yAxis: FULL_RANGE_Y_AXIS[1] },
-      ] as RangeMarkArea,
+      },
+      { xAxis: currentRange[1], yAxis: FULL_RANGE_Y_AXIS[1] },
     ],
     newRange && [
-      [
-        {
-          xAxis: newRange[0],
-          yAxis: INSET_RANGE_Y_AXIS[0],
-          z2: 2,
-          itemStyle: {
-            color: 'transparent',
-            borderColor: colors.newRangeLine,
-            borderType: NEW_RANGE_BORDER_DASH,
-            borderWidth: CHART_LINE_WIDTHS.referenceLine,
-          },
-          label: {
-            ...rangeLabelStyle,
-            show: true,
-            position: 'inside',
-            formatter: RANGE_LABEL,
-            color: colors.newRangeLine,
-          },
+      {
+        xAxis: newRange[0],
+        yAxis: INSET_RANGE_Y_AXIS[0],
+        z2: 2,
+        itemStyle: {
+          color: 'transparent',
+          borderColor: colors.newRangeLine,
+          borderType: NEW_RANGE_BORDER_DASH,
+          borderWidth: CHART_LINE_WIDTHS.referenceLine,
         },
-        { xAxis: newRange[1], yAxis: INSET_RANGE_Y_AXIS[1] },
-      ] as RangeMarkArea,
+        label: {
+          ...rangeLabelStyle,
+          show: true,
+          position: 'inside',
+          formatter: RANGE_LABEL,
+          color: colors.newRangeLine,
+        },
+      },
+      { xAxis: newRange[1], yAxis: INSET_RANGE_Y_AXIS[1] },
     ],
   )
 }
@@ -287,9 +283,9 @@ export const buildContinuousOption = ({
     textStyle: chartTextStyle,
   }),
   yAxis: buildHiddenYAxis(),
-  series: notFalsyArray<SeriesOption>(
-    [buildRangeSeries({ rangeMarkAreas, seriesData })],
-    oraclePrice !== undefined && [
+  series: notFalsy<SeriesOption>(
+    buildRangeSeries({ rangeMarkAreas, seriesData }),
+    oraclePrice !== undefined &&
       buildOracleMarkerSeries({
         colors,
         formattedOraclePrice,
@@ -297,7 +293,6 @@ export const buildContinuousOption = ({
         markerXValue: oraclePrice,
         textStyle: chartTextStyle,
       }),
-    ],
   ),
 })
 
@@ -352,27 +347,20 @@ export const buildSplitOption = ({
       }),
     ],
     yAxis: [buildHiddenYAxis(0), buildHiddenYAxis(1)],
-    series: [
+    series: notFalsy<SeriesOption>(
       // Ranges stay on the real price axis.
-      {
-        ...rangeSeries,
-        xAxisIndex: 0,
-        yAxisIndex: 0,
-      },
-      ...(oraclePrice === undefined
-        ? []
-        : [
-            buildOracleMarkerSeries({
-              colors,
-              formattedOraclePrice,
-              htmlFontSize,
-              // The marker uses the synthetic rail coordinate; its label still shows the real oracle price.
-              markerXValue: getSplitOracleMarkerPosition(chartLayout),
-              textStyle: chartTextStyle,
-              xAxisIndex: 1,
-              yAxisIndex: 1,
-            }),
-          ]),
-    ],
+      { ...rangeSeries, xAxisIndex: 0, yAxisIndex: 0 },
+      oraclePrice != null &&
+        buildOracleMarkerSeries({
+          colors,
+          formattedOraclePrice,
+          htmlFontSize,
+          // The marker uses the synthetic rail coordinate; its label still shows the real oracle price.
+          markerXValue: getSplitOracleMarkerPosition(chartLayout),
+          textStyle: chartTextStyle,
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+        }),
+    ),
   }
 }

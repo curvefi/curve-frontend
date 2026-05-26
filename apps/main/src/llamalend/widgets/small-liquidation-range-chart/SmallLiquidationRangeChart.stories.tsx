@@ -3,10 +3,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q, type Range } from '@ui-kit/types/util'
-import {
-  SmallLiquidationRangeChart as SmallLiquidationRangeChartComponent,
-  type SmallLiquidationRangeChartProps as SmallLiquidationRangeChartComponentProps,
-} from './SmallLiquidationRangeChart'
+import type { SmallLiquidationRangeChartProps as SmallLiquidationRangeChartComponentProps } from './small-liquidation-range-chart.types'
+import { SmallLiquidationRangeChart as SmallLiquidationRangeChartComponent } from './SmallLiquidationRangeChart'
 
 const { Spacing } = SizesAndSpaces
 

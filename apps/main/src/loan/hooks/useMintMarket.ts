@@ -7,13 +7,12 @@ import { ChainParams } from '@ui-kit/lib/model/query'
 import { useMintMarketNames } from '../entities/mint-market-names.query'
 
 const useMintMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
-  const { data: marketNames, error, isLoading } = useMintMarketNames({ chainId })
   const { llamaApi: api, isHydrated } = useCurve()
-  const apiChainId = api?.chainId
+  const { data: marketNames, error, isLoading } = useMintMarketNames({ chainId }, isHydrated)
   const data: Record<string, MintMarketTemplate> | undefined = useMemo(
     () =>
       // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
-      marketNames && api && chainId == apiChainId && isHydrated
+      marketNames && api
         ? Object.fromEntries(
             marketNames
               .map(name => [name, api.getMintMarket(name)] as const)
@@ -23,7 +22,7 @@ const useMintMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
               ]),
           )
         : undefined,
-    [api, apiChainId, chainId, isHydrated, marketNames],
+    [api, marketNames],
   )
   return { data, isSuccess: !!data, error, isLoading }
 }
