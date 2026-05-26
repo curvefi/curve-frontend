@@ -51,7 +51,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   } = useLlamaMarketsFilters(props)
 
   return (
-    <Stack padding={Spacing.sm} spacing={Spacing.sm}>
+    <Stack spacing={Spacing.sm} sx={{ padding: Spacing.sm }}>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Chain]}>
         <LlamaChainFilterChips marketsQuery={props.marketsQuery} {...filterProps} />
       </TableFilterItem>

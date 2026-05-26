@@ -1,7 +1,7 @@
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
-import { Maintenance } from './hooks/useMaintenance'
+import { Maintenance } from '../hooks/useMaintenance'
 
 export const BackendMaintenanceBanner = ({
   formattedDate,

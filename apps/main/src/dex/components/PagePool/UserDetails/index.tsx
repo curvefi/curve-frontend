@@ -113,8 +113,8 @@ export const MySharesStats = ({
   return (
     <Card size="small">
       <CardContent>
-        <Stack gap={Spacing.md}>
-          <Stack gap={Spacing.xs}>
+        <Stack sx={{ gap: Spacing.md }}>
+          <Stack sx={{ gap: Spacing.xs }}>
             <Typography variant="headingSBold">{t`Your position`}</Typography>
             <Typography variant="bodySRegular">
               <span>

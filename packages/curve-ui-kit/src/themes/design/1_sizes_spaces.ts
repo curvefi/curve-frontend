@@ -160,6 +160,7 @@ export const SizesAndSpaces = {
       md: '6.25rem', // 100px
       bands: '6.8rem', // 108.8px
     },
+    maintenanceContent: '40rem', // 640px
   },
   Height: {
     modal: MappedModalHeight,
@@ -171,6 +172,7 @@ export const SizesAndSpaces = {
     tableNoResults: { sm: '15vh', lg: '35vh' },
     pageContent: '80vh',
     popoverHeader: '2rem', // 32px
+    maintenancePage: '100vh',
   },
   MaxHeight: {
     popover: '17rem', // 272px

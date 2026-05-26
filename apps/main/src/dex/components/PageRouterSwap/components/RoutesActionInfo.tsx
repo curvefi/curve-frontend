@@ -44,7 +44,7 @@ export const RoutesActionInfo = ({
     {routes && routes.length > 1 && (
       // the action info isn't able to wrap properly to take the whole line without changing it a lot.
       // here we follow the design and use multiple action infos
-      <Stack direction="row" width="100%">
+      <Stack direction="row" sx={{ width: '100%' }}>
         <Stack direction="row">
           <Box
             sx={{
@@ -61,7 +61,7 @@ export const RoutesActionInfo = ({
             ))}
           </Stack>
         </Stack>
-        <Stack direction="column" width="100%">
+        <Stack direction="column" sx={{ width: '100%' }}>
           {routes.map(route => (
             <DetailInfoTradeRouteRoute
               key={`${route.poolId}-${route.outputCoinAddress}`}

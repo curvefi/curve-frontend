@@ -12,22 +12,17 @@ const {
 } = SizesAndSpaces
 
 export const Page = () => (
-  <Stack
-    sx={{
-      paddingBlock: Spacing.xl,
-      paddingInline: Spacing.md,
-      gap: Spacing.lg,
-    }}
-    data-testid="pegkeepers"
-  >
-    <Stack gap={Spacing.md}>
+  <Stack sx={{ paddingBlock: Spacing.xl, paddingInline: Spacing.md, gap: Spacing.lg }} data-testid="pegkeepers">
+    <Stack sx={{ gap: Spacing.md }}>
       <Statistics />
 
       <Box
-        display="grid"
-        columnGap={Column_Spacing}
-        rowGap={Spacing.sm}
-        gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))"
+        sx={{
+          display: 'grid',
+          columnGap: Column_Spacing,
+          rowGap: Spacing.sm,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(20rem, 1fr))',
+        }}
       >
         {PEG_KEEPERS.map(pegkeeper => (
           <PegKeeper

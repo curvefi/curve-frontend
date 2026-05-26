@@ -67,7 +67,7 @@ export const LowSolvencyActionModal = ({
       onClose={onClose}
       title={title}
       footer={
-        <Stack flexGrow={1}>
+        <Stack sx={{ flexGrow: 1 }}>
           <Button disabled={!accepted} onClick={onConfirm} data-testid="low-solvency-action-submit-button">
             {buttonText}
           </Button>

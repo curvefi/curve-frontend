@@ -45,7 +45,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
           {t`Active price range where collateral and debt rebalance.`}
         </Typography>
         {hasUserData && (
-          <Stack gap={Spacing.sm} marginBottom={Spacing.sm}>
+          <Stack sx={{ gap: Spacing.sm, marginBottom: Spacing.sm }}>
             <TooltipItems secondary>
               <TooltipItem title={t`Your share of band`} sx={{ marginBottom: Spacing.sm }}>
                 {calculateBandShare(data.userBandTotalCollateralValueUsd, data.bandTotalCollateralValueUsd)}

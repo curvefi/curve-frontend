@@ -6,7 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Maintenance } from './hooks/useMaintenance'
+import { Maintenance } from '../hooks/useMaintenance'
 
 const { Spacing } = SizesAndSpaces
 
@@ -47,7 +47,7 @@ export const BackendMaintenanceModal = ({
       </Typography>
       <Typography>{t`Thank you for your patience.`}</Typography>
       {learnMoreLink && (
-        <Stack direction="row" justifyContent="end">
+        <Stack direction="row" sx={{ justifyContent: 'end' }}>
           <ExternalLink href={learnMoreLink} label={t`Learn more`} size="small" />
         </Stack>
       )}
