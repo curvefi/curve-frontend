@@ -74,7 +74,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             )
           }
         />
-        <Stack flexDirection={'column'} gap={Spacing.xs}>
+        <Stack sx={{ flexDirection: 'column', gap: Spacing.xs }}>
           <Button
             fullWidth
             type="button"

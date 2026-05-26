@@ -17,7 +17,6 @@ export const Statistics = () => {
   return (
     <Card size="small">
       <CardHeader title={t`Statistics`} />
-
       <CardContent>
         {isErrorDebt && (
           <Typography color="error" variant="bodyXsBold">{t`Unable to fetch required data for total debt`}</Typography>
@@ -29,7 +28,7 @@ export const Statistics = () => {
           >{t`Unable to fetch required data for total ceiling`}</Typography>
         )}
 
-        <Stack direction="row" gap={Spacing.md}>
+        <Stack direction="row" sx={{ gap: Spacing.md }}>
           <Metric
             loading={isFetchingDebt}
             label={t`Peg stabilisation reserve`}

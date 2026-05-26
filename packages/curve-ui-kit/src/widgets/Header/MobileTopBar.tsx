@@ -11,10 +11,10 @@ type MobileTopBarProps = {
 }
 
 export const MobileTopBar = ({ networks, isSidebarOpen, toggleSidebar }: MobileTopBarProps) => (
-  <Stack direction="row" width="100%" paddingX={2}>
+  <Stack direction="row" sx={{ width: '100%', paddingX: 2 }}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo />
-    <Stack flexGrow={1} />
+    <Stack sx={{ flexGrow: 1 }} />
     <ChainSwitcher networks={networks} />
   </Stack>
 )

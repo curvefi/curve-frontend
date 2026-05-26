@@ -32,10 +32,10 @@ export const MetricsRow = ({
 
   return (
     <Stack
-      display={{ mobile: 'grid', tablet: 'flex' }}
-      gridTemplateColumns="1fr 1fr"
       direction="row"
       sx={{
+        display: { mobile: 'grid', tablet: 'flex' },
+        gridTemplateColumns: '1fr 1fr',
         gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
       }}
     >

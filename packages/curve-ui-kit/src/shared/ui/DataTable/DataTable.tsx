@@ -123,9 +123,7 @@ export const DataTable = <T extends TableItem>({
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
-        sx={{
-          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-        }}
+        sx={{ borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */ }}
         data-testid={!isLoading && 'data-table'}
       >
         {!hideHeader && (

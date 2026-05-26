@@ -61,12 +61,22 @@ export const LegacyLlamaListChips = ({
       ) : (
         <>
           {hasPopularFilters && (
-            <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+            <Grid
+              container
+              columnSpacing={Spacing.xs}
+              size={{ mobile: 12, tablet: 'auto' }}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <LlamaListMarketChips {...filterProps} />
             </Grid>
           )}
           {!userPositionsTab && (
-            <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+            <Grid
+              container
+              columnSpacing={Spacing.xs}
+              size={{ mobile: 12, tablet: 'auto' }}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <LlamaListUserChips hasFavorites={hasFavorites} {...filterProps} />
             </Grid>
           )}

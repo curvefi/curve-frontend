@@ -14,11 +14,11 @@ export const SelectedFilterChips = ({
   children: ReactNode
   testId?: string
 }) => (
-  <Stack gap={Spacing.xs} data-testid={testId}>
+  <Stack sx={{ gap: Spacing.xs }} data-testid={testId}>
     <Typography variant="bodyXsRegular" color="textTertiary">
       {title}
     </Typography>
-    <Stack direction="row" gap={Spacing.xs}>
+    <Stack direction="row" sx={{ gap: Spacing.xs }}>
       {children}
     </Stack>
   </Stack>

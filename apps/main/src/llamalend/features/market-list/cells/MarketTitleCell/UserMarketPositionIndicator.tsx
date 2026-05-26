@@ -55,7 +55,7 @@ export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarket })
       colorState={colorState}
       tooltipTitle={title}
       tooltipBody={
-        <Typography variant="bodySRegular" fontWeight={FontWeight.Medium}>
+        <Typography variant="bodySRegular" sx={{ fontWeight: FontWeight.Medium }}>
           {description}
         </Typography>
       }

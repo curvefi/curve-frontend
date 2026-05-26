@@ -23,8 +23,7 @@ export const CrvUsd = () => (
         mobile: 'column',
         tablet: 'row',
       }}
-      gap={Spacing.md}
-      sx={{ marginInline: Spacing.md }}
+      sx={{ gap: Spacing.md, marginInline: Spacing.md }}
     >
       <ExternalLink
         href="https://docs.curve.finance/assets/pdf/whitepaper_curve_stablecoin.pdf"

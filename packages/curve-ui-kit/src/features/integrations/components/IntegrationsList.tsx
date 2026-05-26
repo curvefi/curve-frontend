@@ -104,20 +104,20 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
 
   return (
     <WithSkeleton loading={isLoading} sx={{ height: Sizing.xxl }}>
-      <Stack direction="column" gap={Spacing.sm}>
+      <Stack direction="column" sx={{ gap: Spacing.sm }}>
         <ChainFilterChips
           chainsQuery={networksQuery}
           selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
           toggleChain={useCallback(network => updateFilters({ network }), [updateFilters])}
         />
 
-        <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">
+        <Stack direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap' }}>
           {Object.values(tags).map(tag => (
             <SelectableChip
               size={getDefaultSelectableChipSize(isMobile)}
               key={tag.id}
               label={
-                <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+                <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
                   {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
                   {tag.displayName}
                 </Stack>

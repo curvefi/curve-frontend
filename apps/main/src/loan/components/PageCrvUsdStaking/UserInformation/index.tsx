@@ -17,14 +17,15 @@ const { Spacing } = SizesAndSpaces
 
 export const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => (
   <Card>
-    <CardContent component={Stack} gap={Spacing.md} direction="column">
-      <Typography alignSelf="center" variant="headingSBold">
+    <CardContent component={Stack} sx={{ gap: Spacing.md }} direction="column">
+      <Typography variant="headingSBold" sx={{ alignSelf: 'center' }}>
         {t`How to get yield with Savings crvUSD?`}
       </Typography>
       <Stack
         direction="row"
-        gap={Spacing.lg}
         sx={{
+          gap: Spacing.lg,
+
           flexWrap: {
             mobile: 'wrap',
             tablet: 'wrap',
@@ -32,7 +33,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           },
         }}
       >
-        <Stack gap={Spacing.sm}>
+        <Stack sx={{ gap: Spacing.sm }}>
           <img src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Get crvUSD`}</Typography>
           <Typography variant="bodyMRegular">
@@ -47,7 +48,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           </Typography>
         </Stack>
 
-        <Stack gap={Spacing.sm}>
+        <Stack sx={{ gap: Spacing.sm }}>
           <img src={RCScrvUSDLogoSM} alt="scrvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Deposit crvUSD and get scrvUSD`}</Typography>
           <Typography variant="bodyMRegular">
@@ -60,7 +61,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           </Typography>
         </Stack>
 
-        <Stack gap={Spacing.sm}>
+        <Stack sx={{ gap: Spacing.sm }}>
           <YieldGrowth color="inherit" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Watch your yield grow`}</Typography>
           <Typography variant="bodyMRegular">
@@ -76,7 +77,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
         </Stack>
       </Stack>
 
-      <Box display="flex" justifyContent="center">
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <ExternalLink href="https://docs.curve.finance/user/curve-tokens/scrvusd" label={t`Learn More`} />
       </Box>
     </CardContent>

@@ -111,7 +111,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
     <Card size="inline">
       <CardContent component={Grid} container columnSpacing={Spacing.md}>
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
-          <Stack gap={Spacing.lg}>
+          <Stack sx={{ gap: Spacing.lg }}>
             <Stack>
               <SectionTitle>{t`Pool Info:`}</SectionTitle>
               <PoolParameter>
@@ -252,7 +252,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                 <RampUpContainer>
                   <Stack direction="row">
                     <Numeral>├─</Numeral>
-                    <Stack margin={'0 0 0 var(--spacing-2)'} justifyContent="space-between">
+                    <Stack sx={{ margin: '0 0 0 var(--spacing-2)', justifyContent: 'space-between' }}>
                       <PoolParameterTitle>{t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A:`}</PoolParameterTitle>
                       <PoolParameterValue>
                         <StyledChip
@@ -271,7 +271,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                   </Stack>
                   <Stack direction="row">
                     <Numeral>└─</Numeral>
-                    <Stack margin={'0 0 0 var(--spacing-2)'} justifyContent="space-between">
+                    <Stack sx={{ margin: '0 0 0 var(--spacing-2)', justifyContent: 'space-between' }}>
                       <PoolParameterTitle>{t`Ramp ${
                         rampADetails.isRampUp ? 'up' : 'down'
                       } A ends on: `}</PoolParameterTitle>
@@ -324,12 +324,9 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
 
         <Grid
           size={{ mobile: 12, desktop: 4 }}
-          sx={{
-            ...cardContentSmallStyles,
-            backgroundColor: t => t.design.Layer[2].Fill,
-          }}
+          sx={{ ...cardContentSmallStyles, backgroundColor: t => t.design.Layer[2].Fill }}
         >
-          <Stack gap={Spacing.md}>
+          <Stack sx={{ gap: Spacing.md }}>
             {!!poolData && haveWrappedCoins && priceOracle && (
               <Stack>
                 <StatsTitle>{t`Price Oracle:`}</StatsTitle>

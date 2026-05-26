@@ -37,17 +37,16 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
   const { favoriteKey, type, leverage, deprecatedMessage, chain, version } = market
   const isSmall = useMediaQuery('(max-width:1250px)')
   return (
-    <Stack direction="row" gap={Spacing.xs} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
+    <Stack
+      direction="row"
+      sx={{ gap: Spacing.xs, alignItems: 'center', ...(isMobile && { height: Sizing.md.mobile }) }}
+    >
       <ChainIcon blockchainId={chain} />
-
       {useLLv2() && <MarketBadge label={marketVersionLabel[version]} data-testid={`badge-market-version-${version}`} />}
-
       <Tooltip title={marketTypeDetails[type].description}>
         <MarketBadge label={marketTypeDetails[type].label} data-testid={`badge-market-type-${type}`} />
       </Tooltip>
-
       {!!leverage && isMobile && <Typography variant="bodyXsBold">🔥</Typography>}
-
       {deprecatedMessage && (
         <Tooltip title={deprecatedMessage}>
           <Typography variant="bodyXsRegular" color="warning" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -56,7 +55,6 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
           </Typography>
         </Tooltip>
       )}
-
       <FavoriteMarketButton address={favoriteKey} desktopOnly />
     </Stack>
   )

@@ -51,7 +51,7 @@ export const GaugesList = () => {
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <Header>
         <h3>{t`CURVE GAUGES`}</h3>
-        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
           <CreateVote />
           <SortingWrapper>
             <StyledSearchInput

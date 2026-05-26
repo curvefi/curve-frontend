@@ -20,15 +20,17 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
       ref={ref}
       {...props}
       direction="row"
-      alignItems="end"
       {...(column && {
-        justifyContent: getFlexAlignment(column),
         onClick: (e: MouseEvent) => {
           column.getToggleSortingHandler()?.(e)
           e.stopPropagation()
         },
       })}
-      {...(isEnabled && { sx: { cursor: 'pointer' } })}
+      sx={{
+        alignItems: 'end',
+        ...(isEnabled && { sx: { cursor: 'pointer' } }),
+        ...(column && { justifyContent: getFlexAlignment(column) }),
+      }}
     >
       {children}
       <RotatableIcon

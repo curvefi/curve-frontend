@@ -29,23 +29,19 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
     <Box
       component="footer"
       data-testid="footer"
-      display="flex"
-      justifyContent="center"
-      sx={t => ({
-        backgroundColor: t.design.Layer[3].Fill,
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: t => t.design.Layer[3].Fill,
         paddingInline: SizesAndSpaces.Spacing.lg,
         paddingBlock: SizesAndSpaces.Spacing.xl,
-      })}
+      }}
     >
       <Grid
         container
         spacing={SizesAndSpaces.Grid.Column_Spacing}
-        rowGap={SizesAndSpaces.Grid.Row_Spacing}
-        sx={{
-          position: 'relative',
-          maxWidth: SizesAndSpaces.MaxWidth.footer,
-        }}
         data-testid="footer-content"
+        sx={{ rowGap: SizesAndSpaces.Grid.Row_Spacing, position: 'relative', maxWidth: SizesAndSpaces.MaxWidth.footer }}
       >
         <Grid
           size={{
@@ -71,11 +67,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
 
         <Llama
           src={LlamaImg}
-          sx={{
-            height: SizesAndSpaces.IconSize.xxl,
-            right: SizesAndSpaces.Spacing.lg,
-            cursor: 'pointer',
-          }}
+          sx={{ height: SizesAndSpaces.IconSize.xxl, right: SizesAndSpaces.Spacing.lg, cursor: 'pointer' }}
           onClick={openBetaModal}
         />
         {isBetaModalOpen != null && (
