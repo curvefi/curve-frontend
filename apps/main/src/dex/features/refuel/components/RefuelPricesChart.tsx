@@ -17,6 +17,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -165,7 +166,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={t`Virtual price`}
-              value={virtualPrice && virtualPrice / 10 ** 18}
+              value={virtualPrice && virtualPrice / 10 ** DEFAULT_DECIMALS}
               valueOptions={{ abbreviate: false, decimals: 6 }}
               loading={loading}
               testId="refuel-virtual-price"
