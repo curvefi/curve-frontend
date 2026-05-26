@@ -1,7 +1,6 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
 import Grid from '@mui/material/Grid'
-import { useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -68,7 +67,6 @@ export const LegacyLendingMarketsFilters = ({
     <Grid
       container
       spacing={Spacing.sm}
-      {...(useNewMarketListLayout() && { paddingBlockEnd: Spacing.sm })}
       sx={{
         paddingBlockStart: Spacing.sm,
         paddingInline: { mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop },
