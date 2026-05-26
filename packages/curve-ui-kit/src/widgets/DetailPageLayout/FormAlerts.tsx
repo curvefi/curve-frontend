@@ -45,7 +45,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
           data-testid={'loan-alert-error'}
         >
           <AlertTitle>{t`An error occurred`}</AlertTitle>
-          <Stack gap={Spacing.xs} width="100%">
+          <Stack sx={{ gap: Spacing.xs, width: '100%' }}>
             <span>{getErrorMessage(error)}</span>
             <Button color="ghost" size="extraSmall" sx={{ alignSelf: 'flex-end' }} onClick={openReportModal}>
               {t`Submit error report`}

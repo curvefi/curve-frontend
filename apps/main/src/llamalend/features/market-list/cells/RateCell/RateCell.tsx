@@ -46,9 +46,9 @@ export const RateCell = ({
   const rate = getValue()
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
-    <Box display="flex" justifyContent="end">
+    <Box sx={{ display: 'flex', justifyContent: 'end' }}>
       <Tooltip market={market}>
-        <Stack gap={Spacing.xs} alignItems="end">
+        <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellMBold" color="textPrimary">
             {rate == null ? '—' : formatPercent(rate)}
           </Typography>

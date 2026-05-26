@@ -26,15 +26,17 @@ export const ChartFooter = <T extends string>({
   const hasToggle = !!toggleOptions?.length
 
   return (
-    <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.sm }}>
       <Stack
         direction="row"
-        alignItems="center"
-        gap={Spacing.sm}
-        flexWrap="wrap"
-        justifyContent={hasToggle ? 'space-between' : undefined}
+        sx={{
+          alignItems: 'center',
+          gap: Spacing.sm,
+          flexWrap: 'wrap',
+          justifyContent: hasToggle ? 'space-between' : undefined,
+        }}
       >
-        <Stack direction="row" alignItems="center" gap={Spacing.sm} flexWrap="wrap">
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm, flexWrap: 'wrap' }}>
           {legendSets.map(legendSet => (
             <LegendSet
               key={`chart-footer-${legendSet.label}`}

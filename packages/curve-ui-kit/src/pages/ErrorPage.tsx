@@ -46,8 +46,12 @@ export const ErrorPage = ({
 
   return (
     <Stack
+      spacing={Spacing.md}
       sx={{
+        alignItems: 'center',
+        justifyContent: 'center',
         minHeight: MinHeight.pageContent,
+
         '& img': {
           objectFit: 'cover',
           opacity: 0.8,
@@ -58,9 +62,6 @@ export const ErrorPage = ({
           zIndex: -1,
         },
       }}
-      alignItems="center"
-      justifyContent="center"
-      spacing={Spacing.md}
     >
       <Typography component="h1" variant="headingXxl" data-testid="error-title">
         {title}
@@ -68,7 +69,7 @@ export const ErrorPage = ({
       <Typography component="h2" variant="headingXsMedium" data-testid="error-subtitle" sx={{ textTransform: 'none' }}>
         {getBoundaryErrorSubtitle(error, subtitle)}
       </Typography>
-      <Stack direction="row" spacing={Spacing.sm} margin={2}>
+      <Stack direction="row" spacing={Spacing.sm} sx={{ margin: 2 }}>
         {continueUrl ? (
           <Button
             component={RouterLink}

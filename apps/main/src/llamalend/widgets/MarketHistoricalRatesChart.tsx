@@ -199,11 +199,13 @@ export const MarketHistoricalRatesChart = ({
           />
         }
       />
-      <CardContent component={Stack} gap={Spacing.md}>
+      <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
-          display="grid"
-          gap={Spacing.xl}
-          gridTemplateColumns={{ mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' }}
+          sx={{
+            display: 'grid',
+            gap: Spacing.xl,
+            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
+          }}
         >
           <Metric
             size="medium"

@@ -36,7 +36,7 @@ export const AdvancedCreateLoanOptions = ({
   )
 
   return (
-    <Stack gap={Spacing.sm} marginBlock={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.sm, marginBlock: Spacing.sm }}>
       <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
       {leverageEnabled && (
         <RouteDetails

@@ -23,7 +23,7 @@ const ErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boolean }
 
   return (
     <WagmiProvider config={wagmiConfig}>
-      <Stack gap={2} alignItems="flex-start">
+      <Stack sx={{ gap: 2, alignItems: 'flex-start' }}>
         <Button variant="contained" onClick={() => setOpen(true)}>
           {t`Open modal`}
         </Button>

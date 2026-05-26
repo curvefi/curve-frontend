@@ -47,9 +47,9 @@ export const Default: Story = {}
 
 export const OverlapPercentages: Story = {
   render: args => (
-    <Stack gap={2}>
+    <Stack sx={{ gap: 2 }}>
       {OVERLAPS.map(overlap => (
-        <Stack key={overlap} gap={4} direction="row">
+        <Stack key={overlap} direction="row" sx={{ gap: 4 }}>
           <Typography variant="bodySRegular">{(overlap * 100).toFixed(0).toString()}%</Typography>
           <StackedChainIcons {...args} overlap={overlap} />
         </Stack>

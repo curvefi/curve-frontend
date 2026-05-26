@@ -70,15 +70,17 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
 
   return (
     <Stack
-      paddingBlock={Spacing.xs}
-      paddingInline={Spacing.sm}
       direction="row"
-      alignItems="end"
-      gap={Spacing.sm}
-      justifyContent="space-between"
-      sx={{ borderTop: t => `1px solid ${t.design.Layer[1].Outline}` }}
+      sx={{
+        paddingBlock: Spacing.xs,
+        paddingInline: Spacing.sm,
+        alignItems: 'end',
+        gap: Spacing.sm,
+        justifyContent: 'space-between',
+        borderTop: t => `1px solid ${t.design.Layer[1].Outline}`,
+      }}
     >
-      <Stack direction="row" gap={Spacing.sm} flexWrap="wrap">
+      <Stack direction="row" sx={{ gap: Spacing.sm, flexWrap: 'wrap' }}>
         {sortedFiltersState.map(({ id, value }) => {
           const column = assert(table.getColumn(id), `no column with id ${id}`)
           const isRangeFilterFn = column.getFilterFn() === rangeFilterFn
@@ -122,7 +124,6 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
           )
         })}
       </Stack>
-
       <Button color="ghost" size="extraSmall" onClick={resetFilters} sx={{ flexShrink: 0 }}>
         {t`Reset filters`}
       </Button>

@@ -87,7 +87,7 @@ export const Contained: Story = {
     variant: 'contained',
   },
   render: args => (
-    <Stack gap={4}>
+    <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
@@ -107,7 +107,7 @@ export const Underlined: Story = {
     variant: 'underlined',
   },
   render: args => (
-    <Stack gap={4}>
+    <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
@@ -127,7 +127,7 @@ export const Overlined: Story = {
     variant: 'overlined',
   },
   render: args => (
-    <Stack gap={4}>
+    <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
@@ -148,7 +148,7 @@ export const VerticalContained: Story = {
     orientation: 'vertical',
   },
   render: args => (
-    <Stack gap={4} direction="row">
+    <Stack direction="row" sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
@@ -169,7 +169,7 @@ export const VerticalUnderlined: Story = {
     orientation: 'vertical',
   },
   render: args => (
-    <Stack gap={4} direction="row">
+    <Stack direction="row" sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
@@ -190,7 +190,7 @@ export const VerticalOverlined: Story = {
     orientation: 'vertical',
   },
   render: args => (
-    <Stack gap={4} direction="row">
+    <Stack direction="row" sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
@@ -222,9 +222,9 @@ export const NoInactiveBorders: Story = {
 
 export const IconsOnly: Story = {
   render: () => (
-    <Stack gap={4}>
+    <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
-        <Stack key={size} gap={4} direction="row" alignItems="center">
+        <Stack key={size} direction="row" sx={{ gap: 4, alignItems: 'center' }}>
           {VARIANTS.map(variant => (
             <TabsSwitcherWrapper
               key={`${variant}-${size}`}
@@ -253,7 +253,7 @@ export const OverflowFullWidth: Story = {
     overflow: 'fullWidth',
   },
   render: args => (
-    <Stack gap={4} width="40rem">
+    <Stack sx={{ gap: 4, width: '40rem' }}>
       {VARIANTS.map(variant => (
         <TabsSwitcherWrapper key={variant} {...args} variant={variant} options={getOptionsWithAdornments(3)} />
       ))}
@@ -274,7 +274,7 @@ export const OverflowKebab: Story = {
     overflow: 'kebab',
   },
   render: args => (
-    <Stack gap={4} width="30rem">
+    <Stack sx={{ gap: 4, width: '30rem' }}>
       {TAB_SIZE_KEYS.map(size => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(8, size)} />
       ))}
