@@ -80,7 +80,7 @@ const CardStoryInline = (props: CardProps) => (
     <CardHeader title="Inline card" />
 
     <CardContent>
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <Typography variant="bodySRegular" color="textSecondary">
           Inline content starts flush with the card edge.
         </Typography>
