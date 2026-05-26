@@ -73,7 +73,7 @@ export const DataTable = <T extends TableItem>({
   emptyState,
   children,
   isLoading,
-  size = 'large',
+  size = 'small',
   maxHeight,
   rowLimit,
   viewAllLabel,
