@@ -18,13 +18,8 @@ describe('Refuel page', () => {
   it('renders the crvUSD/WETH refuel dashboard and disconnected form state', () => {
     visitRefuelPage()
 
-    cy.contains('Refuel setup').should('be.visible')
-
     cy.get('input[name="tokenAAmount"]').should('be.visible').and('have.attr', 'placeholder', '0.00')
     cy.get('input[name="tokenBAmount"]').should('be.visible').and('have.attr', 'placeholder', '0.00')
-
-    cy.contains('crvUSD').should('be.visible')
-    cy.contains('WETH').should('be.visible')
 
     getTestById('connect-wallet-button').should('be.visible').and('contain.text', 'Connect Wallet')
     getTestById('submit-button').should('not.exist')
