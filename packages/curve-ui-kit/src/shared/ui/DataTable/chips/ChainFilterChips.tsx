@@ -5,6 +5,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useIncreasingLength } from '@ui-kit/hooks/useIncreasingLength'
+import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon, type ChainIconProps } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.utils'
@@ -114,7 +115,7 @@ export const ChainFilterChips = (props: ChainFilterChipsProps) => {
           </Tooltip>
         ))
       ) : (
-        <Typography variant={TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE[chipSize]}>No networks found</Typography>
+        <Typography variant={TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE[chipSize]}>{t`No networks found`}</Typography>
       )}
     </Grid>
   )
