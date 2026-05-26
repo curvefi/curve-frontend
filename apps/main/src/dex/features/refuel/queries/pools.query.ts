@@ -12,7 +12,7 @@ export const { useQuery: useRefuelPools, fetchQuery: fetchRefuelPools } = queryF
   category: 'dex.pools',
 })
 
-type RefuelPoolParams = ChainNameParams & { poolAddress?: Address | null }
+type RefuelPoolParams = ChainNameParams & { poolAddress: Address | null | undefined }
 
 export const useRefuelPool = ({ blockchainId, poolAddress }: RefuelPoolParams) =>
   mapQuery(
