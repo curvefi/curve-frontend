@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { CellContext } from '@tanstack/react-table'
-import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { TableSecondaryTextClass, type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -23,11 +23,11 @@ export const TokenBalanceCell = <TRow extends TokenBalanceCellData>({ row, getVa
   const { symbol, token, networkId } = row.original
   return (
     <InlineTableCell>
-      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+      <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
         <TokenIcon blockchainId={networkId} address={token} tooltip={symbol} size="lg" showChainIcon />
-        <Stack gap={Spacing.xxs} alignItems="flex-start">
+        <Stack sx={{ gap: Spacing.xxs, alignItems: 'flex-start' }}>
           <Typography variant="tableCellL">{formatBalance(getValue())}</Typography>
-          <Typography variant="tableCellSRegular" color="textSecondary">
+          <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
             {symbol}
           </Typography>
         </Stack>

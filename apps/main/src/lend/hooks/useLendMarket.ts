@@ -1,18 +1,34 @@
+import { useCurve } from 'curve-ui-kit/src/features/connect-wallet'
 import { useLLv2 } from 'curve-ui-kit/src/hooks/useFeatureFlags'
+import { ChainParams } from 'curve-ui-kit/src/lib/model/query'
 import { useMemo } from 'react'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useLendMarkets } from '../queries/lend-markets.query'
-import { ChainId } from '../types/lend.types'
+import { networks } from '../networks'
+import { useLendMarketNames } from '../queries/lend-market-names.query'
+import { ChainId, LendMarketTemplate } from '../types/lend.types'
 
-export function useLendMarketData(chainId: ChainId, rMarket: string, enabled?: boolean) {
-  const { data, error, isSuccess } = useLendMarkets({ chainId, enableLLv2: useLLv2() }, enabled)
-  const marketData = useMemo(() => data?.[rMarket], [data, rMarket])
-  return { error, isSuccess, data: marketData }
+const useLendMarketMapping = ({ chainId }: ChainParams<ChainId>) => {
+  const { llamaApi: api, isHydrated } = useCurve()
+  const { data: marketNames, error, isLoading } = useLendMarketNames({ chainId, enableLLv2: useLLv2() }, isHydrated)
+  const data: Record<string, LendMarketTemplate> | undefined = useMemo(
+    () =>
+      // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
+      marketNames && api
+        ? Object.fromEntries(
+            marketNames
+              .filter(marketName => !networks[chainId!].hideMarketsInUI[marketName])
+              .map(name => [name, api.getLendMarket(name)] as const)
+              .flatMap(([name, market]) => [
+                [name, market],
+                [market.addresses.controller, market],
+              ]),
+          )
+        : undefined,
+    [api, chainId, marketNames],
+  )
+  return { data, isSuccess: !!data, error, isLoading }
 }
 
-export const useLendMarket = (chainId: ChainId, rMarket: string, enabled?: boolean) => {
-  const { llamaApi: api } = useCurve()
-  const { data, error, isSuccess } = useLendMarketData(chainId, rMarket, enabled)
-  const market = useMemo(() => api && data && api.getLendMarketByData(data.id, data), [api, data])
-  return { data: market, error, isSuccess: isSuccess && !!api }
+export const useLendMarket = (chainId: ChainId, marketName: string) => {
+  const { data: markets, ...rest } = useLendMarketMapping({ chainId })
+  return { data: markets?.[marketName], ...rest }
 }

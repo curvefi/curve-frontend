@@ -22,8 +22,7 @@ export const EmptyStateRow = <T extends TableItem>({
       variant="tableCellL"
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
       component="td"
-      padding={7}
-      textAlign="center"
+      sx={{ padding: 7, textAlign: 'center' }}
     >
       {children}
     </Typography>

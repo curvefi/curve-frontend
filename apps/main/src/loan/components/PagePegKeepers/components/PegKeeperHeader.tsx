@@ -28,7 +28,7 @@ export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate
       />
     }
     title={
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         {underlyingCoins[0]}
         <PegChip status={pegStatus(rate)} />
       </Stack>

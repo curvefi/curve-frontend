@@ -60,7 +60,7 @@ export const ReleaseChannelDialog = ({
         </Button>
       }
     >
-      <Stack gap={Spacing.md}>
+      <Stack sx={{ gap: Spacing.md }}>
         {Text[channel]?.map((p, i) => (
           <Typography color="textSecondary" key={i}>
             {p}

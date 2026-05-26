@@ -6,9 +6,10 @@ const { Spacing } = SizesAndSpaces
 
 export const PoolAlertMessage = ({ children }: { children: ReactNode }) => (
   <Stack
-    alignItems="flex-start"
     spacing={Spacing.sm}
     sx={{
+      alignItems: 'flex-start',
+
       '& a': {
         wordBreak: 'break-word',
       },

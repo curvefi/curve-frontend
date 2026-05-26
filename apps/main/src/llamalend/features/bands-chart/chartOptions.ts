@@ -1,34 +1,77 @@
-import type { EChartsOption } from 'echarts-for-react'
 import { sum, zip } from 'lodash'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { generateMarkLines } from './markLines'
-import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
+import { generateOracleReferenceLines, generateRangeBoundaryLines, type HorizontalLine } from './horizontalLines'
+import type {
+  BandsChartOption,
+  BandsChartPalette,
+  BandsChartSeriesType,
+  BandsRangeOverlay,
+  ChartDataPoint,
+  DerivedChartData,
+  HorizontalLineSeriesData,
+  RangeSeriesData,
+  RectSeriesData,
+} from './types'
+import { BANDS_CHART_SERIES_TYPE } from './types'
 
-const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
-  const min = Math.min(...chartData.map(d => d.p_down))
+const getOverlayPrices = (rangeOverlays: BandsRangeOverlay[]) =>
+  rangeOverlays.flatMap(({ lowerPrice, upperPrice }) => [lowerPrice, upperPrice])
+
+const getPriceMin = (
+  chartData: ChartDataPoint[],
+  oraclePrice: string | undefined,
+  rangeOverlays: BandsRangeOverlay[],
+) => {
+  const rangePrices = getOverlayPrices(rangeOverlays)
+  const oraclePriceValues = oraclePrice ? [Number(oraclePrice)] : []
+  const min = Math.min(...chartData.map(d => d.p_down), ...rangePrices, ...oraclePriceValues)
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
-  // if oraclePrice is outside of range of bands, set min to oraclePrice - bandDelta to make sure it's visible
-  if (min > Number(oraclePrice)) {
-    return Number(oraclePrice) - bandDelta * 2
-  }
+  // if oraclePrice is outside of range of bands, include it so it stays visible
   return min - bandDelta * 2
 }
 
-const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
-  const max = Math.max(...chartData.map(d => d.p_up))
+const getPriceMax = (
+  chartData: ChartDataPoint[],
+  oraclePrice: string | undefined,
+  rangeOverlays: BandsRangeOverlay[],
+) => {
+  const rangePrices = getOverlayPrices(rangeOverlays)
+  const oraclePriceValues = oraclePrice ? [Number(oraclePrice)] : []
+  const max = Math.max(...chartData.map(d => d.p_up), ...rangePrices, ...oraclePriceValues)
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
-  // if oraclePrice is outside of range of bands, set max to oraclePrice + bandDelta to make sure it's visible
-  if (max < Number(oraclePrice)) {
-    return Number(oraclePrice) + bandDelta * 2
-  }
+  // if oraclePrice is outside of range of bands, include it so it stays visible
   return max + bandDelta * 2
 }
 
 const LINE_WIDTH = 0.5
 const [ENABLE_OUTLINE, DISABLE_OUTLINE] = [true, false]
+
+// ECharts renders larger z values above smaller ones. The current range lines
+// need to sit above bands for readability, but lines inside the new range are
+// filtered below so the new range still owns overlap cases.
+const CHART_LAYER = {
+  currentRangeArea: 0,
+  newRangeArea: 2,
+  marketBands: 3,
+  userBands: 4,
+  softLiquidationOutline: 5,
+  currentRangeLine: 6,
+  newRangeLine: 7,
+  oracleLine: 8,
+} as const
+
+type NativeMarkLineOption = {
+  animation: false
+  animationDuration: 0
+  animationDurationUpdate: 0
+  symbol: 'none'
+  label: { show: false }
+  z2: number
+  data: [{ coord: [number, number] }, { coord: [number, number]; lineStyle: HorizontalLine['lineStyle'] }][]
+}
 
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
@@ -38,13 +81,12 @@ const createCustomRectSeries = (
   name: string,
   color: string,
   softLiquidationBandOutlineColor: string,
-  data: [number, number, number, number, number, number, number][],
+  data: RectSeriesData,
   enableSoftLiquidationOutline: boolean,
-  markArea?: Record<string, unknown> | null,
-  markLine?: Record<string, unknown> | null,
 ) => ({
   name,
   type: 'custom' as const,
+  bandsChartSeriesType: BANDS_CHART_SERIES_TYPE.band satisfies BandsChartSeriesType,
   animationDuration: Duration.Transition,
   animationDurationUpdate: Duration.Transition,
   animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
@@ -108,8 +150,151 @@ const createCustomRectSeries = (
       },
     }
   },
-  ...(markArea && { markArea }),
+})
+
+const createNativeOracleMarkLineOption = (lines: HorizontalLine[], z2: number) =>
+  lines.length
+    ? ({
+        animation: false,
+        animationDuration: 0,
+        animationDurationUpdate: 0,
+        symbol: 'none',
+        label: { show: false },
+        z2,
+        data: lines.map(line => {
+          const { startPoint, endPoint } = line
+          return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
+        }),
+      } satisfies NativeMarkLineOption)
+    : undefined
+
+const createNativeOracleLineSeries = (
+  name: string,
+  data: RectSeriesData,
+  z: number,
+  markLine?: NativeMarkLineOption,
+) => ({
+  name,
+  type: 'custom' as const,
+  bandsChartSeriesType: BANDS_CHART_SERIES_TYPE.oracleLine satisfies BandsChartSeriesType,
+  animationDuration: Duration.Transition,
+  animationDurationUpdate: Duration.Transition,
+  encode: { y: 0, x: [1, 2, 6] },
+  data,
+  silent: true,
+  tooltip: { show: false },
+  z,
+  renderItem: () => null,
   ...(markLine && { markLine }),
+})
+
+const createHorizontalLineSeriesData = (lines: HorizontalLine[]): HorizontalLineSeriesData =>
+  lines.map(({ startPoint, endPoint }) => [startPoint.coord[0], endPoint.coord[0], startPoint.coord[1]])
+
+// Current range boundaries should remain visible over bands, but not cut across
+// a proposed/new range. Inclusive bounds make exact boundary matches defer to
+// the new range line.
+const excludeLinesInsideRangeOverlays = (
+  lines: HorizontalLine[],
+  rangeOverlays: BandsRangeOverlay[],
+): HorizontalLine[] =>
+  lines.filter(({ startPoint }) => {
+    const price = startPoint.coord[1]
+    return !rangeOverlays.some(({ lowerPrice, upperPrice }) => price >= lowerPrice && price <= upperPrice)
+  })
+
+// Range boundaries are custom series instead of ECharts markLine because markLine
+// can escape the custom-series z-order when current/new ranges overlap.
+const createRangeBoundaryLineSeries = (name: string, lines: HorizontalLine[], z: number) => ({
+  name,
+  type: 'custom' as const,
+  bandsChartSeriesType: BANDS_CHART_SERIES_TYPE.rangeLine satisfies BandsChartSeriesType,
+  animationDuration: Duration.Transition,
+  animationDurationUpdate: Duration.Transition,
+  encode: { x: [0, 1], y: 2 },
+  data: createHorizontalLineSeriesData(lines),
+  silent: true,
+  tooltip: { show: false },
+  clip: true,
+  z,
+  renderItem: (
+    params: { dataIndex: number },
+    api: {
+      value: (index: number) => number
+      coord: (point: number[]) => number[]
+    },
+  ) => {
+    const xStartValue = api.value(0)
+    const xEndValue = api.value(1)
+    const price = api.value(2)
+    const start = api.coord([xStartValue, price])
+    const end = api.coord([xEndValue, price])
+    const lineStyle = lines[params.dataIndex].lineStyle
+
+    return {
+      type: 'line',
+      shape: { x1: start[0], y1: start[1], x2: end[0], y2: end[1] },
+      style: {
+        stroke: lineStyle.color,
+        lineWidth: lineStyle.width,
+        lineDash: lineStyle.type,
+      },
+    }
+  },
+})
+
+const createRangeSeriesData = (
+  { lowerPrice, upperPrice }: BandsRangeOverlay,
+  xStart: number,
+  xEnd: number,
+): RangeSeriesData => [[xStart, xEnd, lowerPrice, upperPrice]]
+
+const createRangeAreaSeries = (
+  name: string,
+  rangeOverlay: BandsRangeOverlay,
+  xStart: number,
+  xEnd: number,
+  z: number,
+) => ({
+  name,
+  type: 'custom' as const,
+  bandsChartSeriesType: BANDS_CHART_SERIES_TYPE.rangeArea satisfies BandsChartSeriesType,
+  animationDuration: Duration.Transition,
+  animationDurationUpdate: Duration.Transition,
+  encode: { x: [0, 1], y: [2, 3] },
+  data: createRangeSeriesData(rangeOverlay, xStart, xEnd),
+  silent: true,
+  tooltip: { show: false },
+  clip: true,
+  z,
+  renderItem: (
+    _params: unknown,
+    api: {
+      value: (index: number) => number
+      coord: (point: number[]) => number[]
+    },
+  ) => {
+    const xStartValue = api.value(0)
+    const xEndValue = api.value(1)
+    const lowerPrice = api.value(2)
+    const upperPrice = api.value(3)
+    const topLeft = api.coord([xStartValue, upperPrice])
+    const topRight = api.coord([xEndValue, upperPrice])
+    const bottomLeft = api.coord([xStartValue, lowerPrice])
+
+    return {
+      type: 'rect',
+      shape: {
+        x: Math.min(topLeft[0], topRight[0]),
+        y: Math.min(topLeft[1], bottomLeft[1]),
+        width: Math.abs(topRight[0] - topLeft[0]),
+        height: Math.abs(bottomLeft[1] - topLeft[1]),
+      },
+      style: {
+        fill: rangeOverlay.backgroundColor,
+      },
+    }
+  },
 })
 
 /**
@@ -118,32 +303,24 @@ const createCustomRectSeries = (
 export const getChartOptions = (
   chartData: ChartDataPoint[],
   derived: DerivedChartData,
-  userBandsPriceRange: UserBandsPriceRange,
+  rangeOverlays: BandsRangeOverlay[],
   oraclePrice: string | undefined,
   palette: BandsChartPalette,
   tooltipFormatter: (params: unknown) => HTMLElement | string,
-): EChartsOption => {
+): BandsChartOption => {
   if (!chartData.length) return {}
 
   // bottom padding matches the lightweight-charts time scale spacing used by the adjacent candle chart
   const gridPadding = { left: 0, top: 0, right: 4, bottom: 7 }
 
-  const priceMin = getPriceMin(chartData, oraclePrice)
-  const priceMax = getPriceMax(chartData, oraclePrice)
+  const priceMin = getPriceMin(chartData, oraclePrice, rangeOverlays)
+  const priceMax = getPriceMax(chartData, oraclePrice, rangeOverlays)
 
-  // Calculate x-axis extent for markLines (max endX value across all series)
+  // Calculate x-axis extent for horizontal lines (max endX value across all series)
   // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
   // endX is at index 6, and for the full extent we need marketWidth + userWidth
   const xEnd = Math.max(...zip(derived.marketData, derived.userCollateralData, derived.userBorrowedData).map(sum))
   const xStart = 0
-
-  // Generate mark areas using exact price edges
-  const markAreas = userBandsPriceRange
-    ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
-    : []
-
-  // Generate all mark lines (user range + oracle price) using coord format
-  const markLines = generateMarkLines(userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
     animationDuration: Duration.Transition,
@@ -222,10 +399,10 @@ export const getChartOptions = (
       max: priceMax,
     },
     series: (() => {
-      const marketSeriesData: [number, number, number, number, number, number, number][] = []
-      const userCollateralSeriesData: [number, number, number, number, number, number, number][] = []
-      const userBorrowedSeriesData: [number, number, number, number, number, number, number][] = []
-      const outlineSeriesData: [number, number, number, number, number, number, number][] = []
+      const marketSeriesData: RectSeriesData = []
+      const userCollateralSeriesData: RectSeriesData = []
+      const userBorrowedSeriesData: RectSeriesData = []
+      const outlineSeriesData: RectSeriesData = []
       for (let i = 0; i < chartData.length; i++) {
         const d = chartData[i]
         const median = d.pUpDownMedian
@@ -250,45 +427,74 @@ export const getChartOptions = (
         outlineSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
       }
 
-      const marketSeries = createCustomRectSeries(
-        'Market Collateral',
-        palette.marketBandColor,
-        palette.liquidationBandOutlineColor,
-        marketSeriesData,
-        DISABLE_OUTLINE,
-        markAreas.length
-          ? { silent: true, itemStyle: { color: palette.userRangeBackgroundColor }, data: markAreas }
-          : undefined,
-        markLines.length
-          ? {
-              animation: false,
-              animationDuration: 0,
-              animationDurationUpdate: 0,
-              symbol: 'none',
-              label: { show: false },
-              data: markLines.map(line => {
-                const [startPoint, endPoint] = line
-                return [{ ...startPoint }, { ...endPoint, lineStyle: line.lineStyle }]
-              }),
-            }
-          : undefined,
+      const currentRangeOverlays = rangeOverlays.filter(({ variant }) => variant === 'current')
+      const newRangeOverlays = rangeOverlays.filter(({ variant }) => variant === 'new')
+
+      // Areas are custom series instead of markArea so their z-order can sit precisely
+      // between other custom band layers. ECharts markArea would otherwise fight the
+      // band/line stacking rules used by this chart.
+      const currentRangeAreaSeries = currentRangeOverlays.map((rangeOverlay, index) =>
+        createRangeAreaSeries(
+          `Current Liquidation Range Area ${index + 1}`,
+          rangeOverlay,
+          xStart,
+          xEnd,
+          CHART_LAYER.currentRangeArea,
+        ),
       )
 
-      const userCollateralSeries = createCustomRectSeries(
-        'User Collateral',
-        palette.userCollateralShareColor,
-        palette.liquidationBandOutlineColor,
-        userCollateralSeriesData,
-        DISABLE_OUTLINE,
+      const currentRangeLineSeries = currentRangeOverlays.map((rangeOverlay, index) =>
+        createRangeBoundaryLineSeries(
+          `Current Liquidation Range Line ${index + 1}`,
+          excludeLinesInsideRangeOverlays(generateRangeBoundaryLines(rangeOverlay, xStart, xEnd), newRangeOverlays),
+          CHART_LAYER.currentRangeLine,
+        ),
       )
 
-      const userBorrowedSeries = createCustomRectSeries(
-        'User Borrowed',
-        palette.userBorrowedShareColor,
-        palette.liquidationBandOutlineColor,
-        userBorrowedSeriesData,
-        DISABLE_OUTLINE,
+      // New range area is intentionally below the bands; the lines for the same range are
+      // added later above the band layers so the preview bounds remain fully visible.
+      const newRangeAreaSeries = newRangeOverlays.map((rangeOverlay, index) =>
+        createRangeAreaSeries(
+          `New Liquidation Range Area ${index + 1}`,
+          rangeOverlay,
+          xStart,
+          xEnd,
+          CHART_LAYER.newRangeArea,
+        ),
       )
+
+      const marketSeries = {
+        ...createCustomRectSeries(
+          'Market Collateral',
+          palette.marketBandColor,
+          palette.liquidationBandOutlineColor,
+          marketSeriesData,
+          DISABLE_OUTLINE,
+        ),
+        z: CHART_LAYER.marketBands,
+      }
+
+      const userCollateralSeries = {
+        ...createCustomRectSeries(
+          'User Collateral',
+          palette.userCollateralShareColor,
+          palette.liquidationBandOutlineColor,
+          userCollateralSeriesData,
+          DISABLE_OUTLINE,
+        ),
+        z: CHART_LAYER.userBands,
+      }
+
+      const userBorrowedSeries = {
+        ...createCustomRectSeries(
+          'User Borrowed',
+          palette.userBorrowedShareColor,
+          palette.liquidationBandOutlineColor,
+          userBorrowedSeriesData,
+          DISABLE_OUTLINE,
+        ),
+        z: CHART_LAYER.userBands,
+      }
 
       const outlineSeries = {
         ...createCustomRectSeries(
@@ -299,11 +505,46 @@ export const getChartOptions = (
           ENABLE_OUTLINE,
         ),
         silent: true,
-        z: 2,
+        z: CHART_LAYER.softLiquidationOutline,
         emphasis: { disabled: true },
       }
 
-      return [marketSeries, userCollateralSeries, userBorrowedSeries, outlineSeries]
+      // These line-only series are rendered after the bands with a higher z value. That keeps
+      // the new liquidation range visible even when the proposed range overlaps user bands.
+      const newRangeLineSeries = newRangeOverlays.map((rangeOverlay, index) =>
+        createRangeBoundaryLineSeries(
+          `New Liquidation Range Line ${index + 1}`,
+          generateRangeBoundaryLines(rangeOverlay, xStart, xEnd),
+          CHART_LAYER.newRangeLine,
+        ),
+      )
+
+      const nativeOracleMarkLine = createNativeOracleMarkLineOption(
+        generateOracleReferenceLines(oraclePrice, xStart, xEnd, palette),
+        CHART_LAYER.oracleLine,
+      )
+      const oracleLineSeries = nativeOracleMarkLine
+        ? [
+            createNativeOracleLineSeries(
+              'Oracle Price Line',
+              outlineSeriesData,
+              CHART_LAYER.oracleLine,
+              nativeOracleMarkLine,
+            ),
+          ]
+        : []
+
+      return [
+        ...currentRangeAreaSeries,
+        ...currentRangeLineSeries,
+        ...newRangeAreaSeries,
+        marketSeries,
+        userCollateralSeries,
+        userBorrowedSeries,
+        outlineSeries,
+        ...newRangeLineSeries,
+        ...oracleLineSeries,
+      ]
     })(),
   }
 }

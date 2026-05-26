@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTheme } from '@mui/material'
-import { BandsChartPalette } from '../types'
+import type { BandsChartPalette } from '../types'
 
 /**
  * Hook to get the bands chart palette
@@ -19,6 +19,8 @@ export const useBandsChartPalette = (): BandsChartPalette => {
       userRangeBackgroundColor: theme.design.Chart.LiquidationZone.Current,
       userRangeTopLineColor: theme.design.Chart.LiquidationZone.CurrentTopLine,
       userRangeBottomLineColor: theme.design.Chart.LiquidationZone.CurrentBottomLine,
+      newRangeBackgroundColor: theme.design.Chart.LiquidationZone.Future,
+      newRangeLineColor: theme.design.Chart.LiquidationZone.FutureLine,
       oraclePriceLineColor: theme.design.Color.Primary[500],
       liquidationBandOutlineColor: theme.design.Chart.Candles.Negative,
     }),

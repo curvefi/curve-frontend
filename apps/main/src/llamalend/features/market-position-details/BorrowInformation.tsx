@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { formatCollateralNotional, isPositionLeveraged, type MarketTokens } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, getTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
 import { type UserState, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
@@ -25,7 +25,7 @@ const dollarUnitOptions = {
 
 type BorrowInformationProps = {
   params: UserMarketParams
-  tokens: Partial<MarketTokens>
+  tokens: Partial<ReturnType<typeof getTokens>>
 }
 
 const useCollateralValue = ({
@@ -60,10 +60,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   return (
     <Stack>
       <Stack
-        display="grid"
-        gap={3}
         sx={{
-          gridTemplateColumns: { mobile: '1fr 1fr', desktop: 'repeat(4, 1fr)' },
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
         }}
       >
         <Metric

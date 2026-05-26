@@ -56,7 +56,7 @@ export const Default: Story = {
 
 export const AllSizes: Story = {
   render: () => (
-    <Stack direction="row" gap={2} alignItems="center">
+    <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
       {sizes.map(size => (
         <IconButton key={size} size={size}>
           <LlamaIcon />
@@ -75,7 +75,7 @@ export const AllSizes: Story = {
 
 export const AllColors: Story = {
   render: () => (
-    <Stack direction="row" gap={2} alignItems="center">
+    <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
       {colors.map(color => (
         <IconButton key={color} color={color} size="small">
           <LlamaIcon />
@@ -101,7 +101,7 @@ export const Disabled: Story = {
 
 export const RotatedIcon: Story = {
   render: () => (
-    <Stack direction="row" gap={2} alignItems="center">
+    <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
       <IconButton>
         <ChevronLeftIcon />
       </IconButton>
@@ -115,7 +115,7 @@ export const RotatedIcon: Story = {
 export const WithHeartIcon: Story = {
   args: {
     children: (
-      <Stack direction="row" gap={1}>
+      <Stack direction="row" sx={{ gap: 1 }}>
         <FavoriteHeartIcon isFavorite={false} />
         <FavoriteHeartIcon isFavorite={true} />
       </Stack>

@@ -25,8 +25,8 @@ type AmountRowProps = {
 }
 
 const AmountRow = ({ amount, amountUsd, token, chain }: AmountRowProps) => (
-  <Stack direction="row" alignItems="center" justifyContent="right" gap={Spacing.xs}>
-    <Stack gap={Spacing.sm}>
+  <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'right', gap: Spacing.xs }}>
+    <Stack sx={{ gap: Spacing.sm }}>
       <Typography variant="tableCellMBold">{formatNumber(amount, { abbreviate: false })}</Typography>
       {amountUsd != null && (
         <Typography variant="bodySRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>
@@ -45,7 +45,7 @@ export const LlammaEventChangeCell = ({
   chain,
 }: LlammaEventChangeCellProps) => (
   <InlineTableCell>
-    <Stack gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xs }}>
       {deposit && <AmountRow amount={deposit.amount} token={collateralToken} chain={chain} />}
       {!!withdrawal?.amountCollateral && (
         <AmountRow amount={-withdrawal.amountCollateral} token={collateralToken} chain={chain} />

@@ -57,7 +57,15 @@ export const Toast = () => {
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       sx={{ top, left: 'unset' }} // unset left, otherwise it takes the whole width blocking clicks
     >
-      <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="column">
+      <Stack
+        sx={{
+          justifyContent: 'end',
+          marginTop: Spacing.md,
+          gap: Spacing.sm,
+          flexWrap: 'wrap',
+          flexDirection: 'column',
+        }}
+      >
         {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => (
           <Alert
             key={id}

@@ -6,26 +6,12 @@ import {
   closeDrawer,
   closeSlider,
   expandFirstRowOnMobile,
-  openFilters,
   openDrawer,
+  openFilters,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
-import {
-  Chain,
-  createLendingVaultChainsResponse,
-  HighTVLAddress,
-  HighUtilizationAddress,
-  mockLendingSnapshots,
-  mockLendingVaults,
-  mockMerklCampaigns,
-} from '@cy/support/helpers/lending-mocks'
-import {
-  blockUnmockedLlamaMarketApis,
-  mockEmptyLlamaMarketUserData,
-  mockEmptyLlamaMarketBadDebt,
-} from '@cy/support/helpers/llamalend/market-list-mocks'
-import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
-import { mockTokenPrices } from '@cy/support/helpers/tokens'
+import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
+import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import {
   assertInViewport,
   assertNotInViewport,
@@ -49,7 +35,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     const itMobileOnly = breakpoint === 'mobile' ? it : it.skip
 
     beforeEach(() => {
-      vaultData = setupMocks()
+      ;({ vaultData } = setupLlamalendListMocks())
       visitAndWait([width, height])
     })
 
@@ -350,20 +336,6 @@ function enableGraphColumn() {
   cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
   cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('exist')
   cy.get('body').click(0, 0) // close popover
-}
-
-function setupMocks() {
-  const generatedData = createLendingVaultChainsResponse()
-  blockUnmockedLlamaMarketApis()
-  mockEmptyLlamaMarketUserData()
-  mockEmptyLlamaMarketBadDebt()
-  mockTokenPrices()
-  mockLendingVaults(generatedData)
-  mockLendingSnapshots().as('lend-snapshots')
-  mockMintMarkets()
-  mockMintSnapshots()
-  mockMerklCampaigns()
-  return generatedData
 }
 
 const getMaxLiquidity = (vaultData: Record<Chain, GetMarketsResponse>) =>

@@ -99,7 +99,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       }
       data-testid="create-loan-form"
     >
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <LoanFormTokenInput
           label={t`Collateral`}
           token={collateralToken}
@@ -155,10 +155,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
-
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (

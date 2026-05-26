@@ -63,6 +63,9 @@ type ModalDialogProps = {
 
   /** Predefined width for the modal dialog */
   width?: keyof typeof modalWidth
+
+  /** Optional test id for the dialog root */
+  testId?: string
 }
 
 export const ModalDialog = ({
@@ -77,12 +80,14 @@ export const ModalDialog = ({
   maxHeight = { mobile: modalHeight.sm, desktop: modalHeight.md },
   width = 'md',
   sx,
+  testId,
 }: ModalDialogProps) => (
   <Dialog
     open={open}
     onClose={onClose}
     onTransitionExited={onTransitionExited}
     disableRestoreFocus
+    data-testid={testId}
     sx={{
       '& .MuiDialog-paper': {
         maxWidth: '100dvw',

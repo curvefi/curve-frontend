@@ -1,5 +1,4 @@
-import { getSnapshots } from '@curvefi/prices-api/crvusd'
-import type { Snapshot } from '@curvefi/prices-api/crvusd/models'
+import { getSnapshots, type Snapshot } from '@curvefi/prices-api/crvusd'
 import { type FieldsOf } from '@ui-kit/lib'
 import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'

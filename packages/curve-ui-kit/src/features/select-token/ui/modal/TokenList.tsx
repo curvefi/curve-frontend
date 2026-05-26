@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
@@ -52,6 +52,13 @@ export const TokenList = ({
   onSearch,
 }: TokenListProps) => {
   const [search, setSearch] = useState('')
+  const onSearchCallback = useCallback(
+    (val: string) => {
+      setSearch(val)
+      onSearch?.(val)
+    },
+    [setSearch, onSearch],
+  )
   const [showPreviewMy, , closeShowPreviewMy] = useSwitch(true)
   const [showPreviewAll, , closeShowPreviewAll] = useSwitch(true)
 
@@ -148,21 +155,11 @@ export const TokenList = ({
   const previewAll = useMemo(() => (showPreviewAll ? allTokens.slice(0, 300) : []), [allTokens, showPreviewAll])
 
   return (
-    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
-      {!disableSearch && (
-        <SearchField
-          name="tokenName"
-          onSearch={val => {
-            setSearch(val)
-            onSearch?.(val)
-          }}
-        />
-      )}
-
+    <Stack sx={{ gap: Spacing.sm, overflowY: 'auto' }}>
+      {!disableSearch && <SearchField name="tokenName" onSearch={onSearchCallback} />}
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}
       {children}
-
       {error ? (
         <ErrorAlert error={error} />
       ) : myTokens.length + allTokens.length === 0 ? (

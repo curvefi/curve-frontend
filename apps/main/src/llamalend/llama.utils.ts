@@ -4,7 +4,7 @@ import { zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
-import type { INetworkName as LlamaNetworkId, IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
@@ -124,7 +124,7 @@ export const formatTokenAmounts = (
       `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
   ).join(', ')
 
-export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
+export const getTokens = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate
     ? {
         collateralToken: {
@@ -146,8 +146,6 @@ export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
           decimals: market.borrowed_token.decimals,
         },
       }
-
-export type MarketTokens = ReturnType<typeof getTokens>
 
 export function getControllerAddress(market: LlamaMarketTemplate): Address
 export function getControllerAddress(market: null | undefined): undefined

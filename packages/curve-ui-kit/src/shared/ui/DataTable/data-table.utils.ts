@@ -5,6 +5,7 @@ import type { PartialRecord } from '@primitives/objects.utils'
 import {
   type Column,
   type ColumnDef,
+  type ColumnMeta as TanstackColumnMeta,
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
@@ -23,6 +24,9 @@ export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 /** css class to make elements clickable in a row and ignore the row click */
 export const ClickableInRowClass = 'clickable-in-row'
 
+/** css class for secondary text inside data table rows */
+export const TableSecondaryTextClass = 'table-secondary-text'
+
 /**
  * We use `satisfies` when declaring columns, but when we want to receive that definition using ColumnDef<T, unknown>,
  * the type does not get widened, so we need to explicitly define the ColumnDefinition type as ColumnDef<T, any>.
@@ -34,6 +38,8 @@ export type ColumnDefinition<T> = ColumnDef<T, any>
 export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
+
+export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
 
 /**
  * Wrapper around useReactTable to create a table instance.

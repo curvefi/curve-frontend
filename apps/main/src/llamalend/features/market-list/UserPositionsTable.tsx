@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import Stack from '@mui/material/Stack'
-import { fromEntries } from '@primitives/objects.utils'
+import { fromEntries, notFalsyArray } from '@primitives/objects.utils'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -14,6 +14,7 @@ import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilte
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
+import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
@@ -103,29 +104,36 @@ const buildVaultUrl = (market: LlamaMarket) =>
 
 type UserPositionsTableProps = {
   onReload: () => void
-  result: LlamaMarketsResult | undefined
-  isError: boolean
-  loading: boolean
+  tableQuery: QueryProp<LlamaMarketsResult>
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({ onReload, result, loading, isError }: UserPositionsTableProps) => {
-  const { markets = [], userHasPositions } = result ?? {}
-  const [tab, setTab, tabs] = useTabs(result)
+export const UserPositionsTable = ({
+  onReload,
+  tableQuery,
+  tableQuery: { data: queryData, isLoading, error },
+}: UserPositionsTableProps) => {
+  const { markets = [], userHasPositions } = queryData ?? {}
+  const [tab, setTab, tabs] = useTabs(queryData)
 
-  const userData = useMemo(
-    () =>
-      markets
-        .filter(market => market.userHasPositions?.[tab])
-        .map(
-          (
-            market, // For supply positions, navigate to vault page instead of borrow page
-          ) => (tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market),
-        ),
-    [markets, tab],
+  const userQuery = useMappedQuery(
+    tableQuery,
+    useCallback(
+      ({ markets }) =>
+        markets
+          .filter(market => market.userHasPositions?.[tab])
+          .map(
+            (
+              market, // For supply positions, navigate to vault page instead of borrow page
+            ) => (tab === MarketRateType.Supply ? { ...market, url: buildVaultUrl(market) } : market),
+          ),
+      [tab],
+    ),
   )
+
+  const userData = notFalsyArray(userQuery.data)
 
   const title = LOCAL_STORAGE_KEYS[tab]
 
@@ -147,7 +155,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(result),
+    ...getTableOptions(queryData),
   })
   return (
     <LegacyDataTable
@@ -156,7 +164,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
       viewAllLabel="View all positions"
       emptyState={
         <UserPositionsEmptyState
-          state={getEmptyState(isError, userData.length > 0)}
+          state={getEmptyState(!!error, userData?.length > 0)}
           table={table}
           tab={tab}
           onReload={onReload}
@@ -165,12 +173,12 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={loading}
+      loading={isLoading}
     >
       <Stack>
         <LegacyTableFilters<LlamaMarketColumnId>
           filterExpandedKey={title}
-          loading={loading}
+          loading={isLoading}
           onReload={onReload}
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
@@ -182,7 +190,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
           collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
-              <LlamaChainFilterChips data={userData} {...filterProps} />
+              <LlamaChainFilterChips marketsQuery={{ ...tableQuery, data: userData }} {...filterProps} />
               <LegacyLlamaListChips
                 hiddenCount={getHiddenCount(table)}
                 resetFilters={resetFilters}
@@ -198,10 +206,9 @@ export const UserPositionsTable = ({ onReload, result, loading, isError }: UserP
         <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
         <Stack
           direction="row"
-          justifyContent="space-between"
-          // needed for the bottom border to be the same height as the tabs
-          alignItems="stretch"
           sx={{
+            justifyContent: 'space-between',
+            alignItems: 'stretch',
             backgroundColor: t => t.design.Layer[1].Fill,
             flexGrow: 1,
             borderBottom: t => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,

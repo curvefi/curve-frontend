@@ -61,8 +61,8 @@ export const TokenOption = ({
             sx={{ ...(disabled && { filter: 'saturate(0)' }) }}
           />
 
-          <Stack flexGrow={1} overflow="hidden">
-            <Typography variant="bodyMBold" color={primary} overflow="hidden" textOverflow="ellipsis">
+          <Stack sx={{ flexGrow: 1, overflow: 'hidden' }}>
+            <Typography variant="bodyMBold" color={primary} sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {symbol}
             </Typography>
 
@@ -73,7 +73,7 @@ export const TokenOption = ({
             )}
           </Stack>
 
-          <Stack direction="column" alignItems="end">
+          <Stack direction="column" sx={{ alignItems: 'end' }}>
             {hasBalance && (
               <Typography variant="bodyMBold" color={primary}>
                 {formatNumber(amount(balance), { decimals: 5, abbreviate: false, fallback: '-' })}
