@@ -13,6 +13,7 @@ import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
@@ -91,7 +92,7 @@ export const GaugeListItem = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />
+            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
           </ChartWrapper>
           <GaugeDetails gaugeData={gaugeData} />
           <Box

@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
 import { useGaugeWeightHistoryQuery, type GaugeWeightHistoryData } from '@/dao/entities/gauge-weight-history'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import type { Address } from '@primitives/address.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import {
@@ -20,22 +20,18 @@ import { formatNumber } from '@ui-kit/utils'
 const { Height, Spacing } = SizesAndSpaces
 const SERIES_LABEL = t`Relative Gauge Weight`
 const ERROR_MESSAGE = t`Unable to fetch historical gauge weights data.`
-const EMPTY_GAUGE_WEIGHT_HISTORY_DATA: GaugeWeightHistoryData[] = []
 
 type GaugeWeightSeriesKey = 'weightRelative'
 
 interface GaugeWeightHistoryChartProps {
-  gaugeAddress: string
+  gaugeAddress: Address
   height?: number
 }
 
 export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }: GaugeWeightHistoryChartProps) => {
+  const lineColor = useTheme().design.Chart.Lines[1]
   const {
-    design: { Chart },
-  } = useTheme()
-  const lineColor = Chart.Lines[1]
-  const {
-    data = EMPTY_GAUGE_WEIGHT_HISTORY_DATA,
+    data = [],
     isLoading,
     isSuccess,
     error,
@@ -44,14 +40,10 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
     gaugeAddress,
   })
 
-  const series = useMemo<LineSeriesConfig<GaugeWeightSeriesKey>[]>(
-    () => [{ key: 'weightRelative', label: SERIES_LABEL, color: lineColor }],
-    [lineColor],
-  )
-  const legendSets = useMemo<LegendItem[]>(
-    () => [{ label: SERIES_LABEL, line: { lineStroke: lineColor } }],
-    [lineColor],
-  )
+  const series: LineSeriesConfig<GaugeWeightSeriesKey>[] = [
+    { key: 'weightRelative', label: SERIES_LABEL, color: lineColor },
+  ]
+  const legendSets: LegendItem[] = [{ label: SERIES_LABEL, line: { lineStroke: lineColor } }]
 
   return (
     <Stack flexGrow={1} gap={Spacing.md}>

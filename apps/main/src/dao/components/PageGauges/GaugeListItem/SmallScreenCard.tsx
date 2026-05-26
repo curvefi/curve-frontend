@@ -6,6 +6,7 @@ import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -96,7 +97,7 @@ export const SmallScreenCard = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />
+            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>

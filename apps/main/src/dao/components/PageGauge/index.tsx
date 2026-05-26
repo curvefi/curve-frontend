@@ -3,6 +3,7 @@ import { useGauges } from '@/dao/queries/gauges.query'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -30,7 +31,9 @@ export const Gauge = () => {
       <Stack gap={PAGE_SPACING} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
-        <Stack padding={Spacing.md}>{gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />}</Stack>
+        <Stack padding={Spacing.md}>
+          {gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />}
+        </Stack>
         {gaugeData && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
       </Stack>
     </DetailPageLayout>
