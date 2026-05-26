@@ -149,8 +149,8 @@ export const DataTableHeaderCellPaddingBlockEnd = {
 }
 
 export const DataTableHeaderCellVerticalAlign = {
-  extraSmall: 'center',
-  small: 'center',
+  extraSmall: 'middle',
+  small: 'middle',
   medium: 'bottom',
   large: 'bottom',
 }
