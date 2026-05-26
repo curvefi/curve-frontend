@@ -25,6 +25,7 @@ export const BorrowInformationContainer = ({
       <CardHeader title={t`Pool Information`} />
       <CardContent>
         <Grid container columnSpacing={Spacing.md}>
+          {/** Sizes might sum up to something else than 12 just for sizing and spacing consistency with other cards */}
           <Grid size={2}>
             <Metric
               label={t`TVL`}
