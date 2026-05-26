@@ -72,11 +72,9 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
     }
   }
 
+  // sidechain / mirror gauge logic, on Mirror gauge step but not connected to Ethereum
   return sidechainGauge ? (
-    // sidechain / mirror gauge logic
-
-    // on Mirror gauge step but not connected to Ethereum
-    sidechainNav === 1 && chainId !== 1 ? ( // no signer
+    sidechainNav === 1 && chainId !== 1 ? (
       !isLoadingApi ? (
         <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
           {t`Connect to Ethereum`}
