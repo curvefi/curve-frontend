@@ -231,7 +231,7 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
       health: [borrow, false] as const,
-      prices: [borrow] as const,
+      prices: [borrow, TEST_ADDRESS] as const,
       isApproved: [borrow] as const,
       estimateGas: [borrow] as const,
       estimateGasApprove: [borrow] as const,
@@ -312,7 +312,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     expected: {
       improveHealth: {
         health: [borrow, false] as const,
-        prices: [borrow] as const,
+        prices: [borrow, TEST_ADDRESS] as const,
         isApproved: [borrow] as const,
         estimateGas: [borrow] as const,
         estimateGasApprove: [borrow] as const,

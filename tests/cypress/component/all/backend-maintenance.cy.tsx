@@ -1,9 +1,9 @@
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/BackendMaintenanceBanner'
-import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
+import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
 import { useMaintenance, type MaintenanceConfig } from '@ui-kit/features/maintenance/hooks/useMaintenance'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 
 const MODAL_TEST_ID = 'backend-maintenance-modal'
 const BANNER_TEST_ID = 'backend-maintenance-banner'
@@ -14,18 +14,11 @@ const BANNER_TEST_ID = 'backend-maintenance-banner'
  * Instead of hardcoding a maintenance date and changing the clock in each test, we move the maintenance date backward
  * or forward from now depending on the scenario.
  */
-const createMaintenance = ({
-  offsetMs,
-  warnBefore = 'week',
-  expectedDurationLabel = '20 minutes to 1 hour',
-}: {
-  offsetMs: number
-  warnBefore?: NonNullable<MaintenanceConfig>['warnBefore']
-  expectedDurationLabel?: string
-}) => ({
+const createMaintenance = ({ offsetMs }: { offsetMs: number }) => ({
   dateISO: new Date(Date.now() + offsetMs).toISOString(),
-  warnBefore,
-  expectedDurationLabel,
+  warnBeforeMs: TIME_OPTION_MS['7d'],
+  durationMs: TIME_OPTION_MS['1h'],
+  expectedDurationLabel: '20 minutes to 1 hour',
 })
 
 function BackendMaintenanceTest({ maintenance }: { maintenance: MaintenanceConfig }) {

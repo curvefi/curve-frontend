@@ -1,14 +1,19 @@
-import type { EChartsOption } from 'echarts-for-react'
 import { sum, zip } from 'lodash'
 import { useMemo } from 'react'
 import { PRICE_SCALE_MARGINS } from '@ui-kit/features/candle-chart'
-import { ChartDataPoint, DerivedChartData } from '../types'
-
-type MarklinePoint = Record<string, unknown> & { coord: [number, number] }
-type MarklineData = [MarklinePoint, MarklinePoint][]
+import { BANDS_CHART_SERIES_TYPE } from '../types'
+import type {
+  BandsChartNativeMarkLineData,
+  BandsChartOption,
+  BandsChartSeries,
+  ChartDataPoint,
+  DerivedChartData,
+  HorizontalLineSeriesData,
+  RangeSeriesData,
+} from '../types'
 
 type Params = {
-  option: EChartsOption
+  option: BandsChartOption
   priceRange?: { min: number; max: number }
   chartData: ChartDataPoint[]
   derived: DerivedChartData
@@ -16,7 +21,43 @@ type Params = {
 
 const CHART_PADDING_MULTIPLIER = 1.1
 
-export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Params): EChartsOption =>
+// Range areas and custom range lines store their horizontal span inside series data.
+// When synced candle-chart zoom narrows the x-axis, patch those spans so overlays
+// still reach the chart edge. Oracle remains an ECharts markLine and is patched separately.
+const patchRangeOverlayData = (data: RangeSeriesData, xMax: number): RangeSeriesData =>
+  data.map(([xStart, _xEnd, lowerPrice, upperPrice]) => [xStart, xMax, lowerPrice, upperPrice])
+
+const patchHorizontalLineData = (data: HorizontalLineSeriesData, xMax: number): HorizontalLineSeriesData =>
+  data.map(([xStart, _xEnd, price]) => [xStart, xMax, price])
+
+const patchNativeMarkLineData = (
+  data: BandsChartNativeMarkLineData | undefined,
+  xMax: number,
+): BandsChartNativeMarkLineData | undefined =>
+  data?.map(([start, end]) => [start, { ...end, coord: [xMax, end.coord[1]] }])
+
+const patchSeries = (series: BandsChartSeries, xMax: number): BandsChartSeries => {
+  switch (series.bandsChartSeriesType) {
+    case BANDS_CHART_SERIES_TYPE.rangeArea:
+      return { ...series, data: patchRangeOverlayData(series.data, xMax) }
+    case BANDS_CHART_SERIES_TYPE.rangeLine:
+      return { ...series, data: patchHorizontalLineData(series.data, xMax) }
+    case BANDS_CHART_SERIES_TYPE.oracleLine:
+      return {
+        ...series,
+        ...(series.markLine && {
+          markLine: {
+            ...series.markLine,
+            data: patchNativeMarkLineData(series.markLine.data, xMax),
+          },
+        }),
+      }
+    case BANDS_CHART_SERIES_TYPE.band:
+      return series
+  }
+}
+
+export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Params): BandsChartOption =>
   useMemo(() => {
     if (!priceRange) return option
 
@@ -36,18 +77,7 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
 
     // ECharts won't render a mark line whose endpoint coord falls outside the axis domain.
     // Clamp the end coord x to xMax so lines remain visible after the axis is narrowed.
-    const patchedSeries =
-      xMax === undefined
-        ? option.series
-        : (option.series as { markLine?: { data?: MarklineData } }[]).map(series => ({
-            ...series,
-            ...(series.markLine && {
-              markLine: {
-                ...series.markLine,
-                data: series.markLine.data?.map(([start, end]) => [start, { ...end, coord: [xMax, end.coord[1]] }]),
-              },
-            }),
-          }))
+    const patchedSeries = xMax === undefined ? option.series : option.series?.map(series => patchSeries(series, xMax))
 
     return {
       ...option,
