@@ -110,7 +110,7 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({
+export const LegacyUserPositionsTable = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading, error },

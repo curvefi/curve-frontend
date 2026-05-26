@@ -20,9 +20,9 @@ import {
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
+import { LegacyUserPositionsTable } from './LegacyUserPositionsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { UserPositionsTable } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -92,7 +92,7 @@ export const LlamaMarketsList = () => {
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
-        data?.userHasPositions && <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+        data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box paddingBlock={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
