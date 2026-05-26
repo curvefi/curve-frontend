@@ -116,8 +116,6 @@ export const DailyRefuelsChart = ({ blockchainId, poolAddress }: { blockchainId:
             data: chartData.map(point => point.count),
             type: 'bar',
             yAxisIndex: 1,
-            barWidth: '55%',
-            z: 1,
           },
         ],
       },
