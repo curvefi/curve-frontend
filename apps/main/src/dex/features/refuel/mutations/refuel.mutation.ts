@@ -25,8 +25,6 @@ export const useRefuelMutation = ({ chainId, poolAddress, tokens, userAddress, o
   const { mutate, error, isPending } = useTransactionMutation<RefuelFormValues>({
     mutationKey: [...rootKeys.chain({ chainId }), 'refuel'] as const,
     mutationFn: async (form: RefuelFormValues) => {
-      // Not sure what to do here, this shouldn't be happening but i cant make the type not undefined
-      // TODO: handle this with validation or something?
       if (!userAddress) throw new Error('Wallet not connected')
       if (!tokens) throw new Error('Token data not available')
       if (tokens.tokenA.decimals == null || tokens.tokenB.decimals == null) throw new Error('Token decimals not loaded')
