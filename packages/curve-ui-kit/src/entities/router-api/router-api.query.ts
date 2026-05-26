@@ -115,14 +115,8 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
 
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
-  const route = maybe(data, data => data[0] ?? null)
-  return useMemo(
-    () => ({
-      ...q({ isLoading, data: route, error }),
-      isFetching,
-    }),
-    [isLoading, route, error, isFetching],
-  )
+  const route = maybe(data, ([route = null]) => route)
+  return useMemo(() => ({ ...q({ isLoading, data: route, error }), isFetching }), [isLoading, route, error, isFetching])
 }
 
 export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryKey = QueryKey> = (

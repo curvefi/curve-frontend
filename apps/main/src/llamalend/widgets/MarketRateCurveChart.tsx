@@ -99,30 +99,19 @@ export const MarketRateCurveChart = ({
       ([totalBorrowed, borrowedUsdRate]) => Number(totalBorrowed) * borrowedUsdRate,
     ) ?? null
   const utilizationBreakdown = maybe(
-    [currentUtilization, totalBorrowed, capAndAvailable?.totalAssets],
-    ([currentUtilization, totalBorrowed, data]) =>
-      `${formatNumber(totalBorrowed, { abbreviate: true })}/${formatNumber(data, {
+    [totalBorrowed, capAndAvailable?.totalAssets],
+    ([borrow, available]) =>
+      `${formatNumber(borrow, { abbreviate: true })}/${formatNumber(available, {
         abbreviate: true,
       })} ${borrowToken?.symbol ?? ''}`,
   )
 
   const collateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.collateral)) ?? null
   const borrowedCollateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.borrowed)) ?? null
-  const collateralUsdValue =
-    maybe(
-      [collateralTotal, collateralUsdRate],
-      ([collateralTotal, collateralUsdRate]) => collateralTotal * collateralUsdRate,
-    ) ?? null
+  const collateralUsdValue = maybe([collateralTotal, collateralUsdRate], ([total, usdRate]) => total * usdRate) ?? null
   const borrowedCollateralUsdValue =
-    maybe(
-      [borrowedCollateralTotal, borrowedUsdRate],
-      ([borrowedCollateralTotal, borrowedUsdRate]) => borrowedCollateralTotal * borrowedUsdRate,
-    ) ?? null
-  const combinedCollateralUsdValue =
-    maybe(
-      [collateralUsdValue, borrowedCollateralUsdValue],
-      ([collateralUsdValue, borrowedCollateralUsdValue]) => collateralUsdValue + borrowedCollateralUsdValue,
-    ) ?? null
+    maybe([borrowedCollateralTotal, borrowedUsdRate], ([total, usdRate]) => total * usdRate) ?? null
+  const combinedCollateralUsdValue = maybe([collateralUsdValue, borrowedCollateralUsdValue], ([c, b]) => c + b) ?? null
   const isTotalCollateralMetricLoading =
     !market || isTotalCollateralLoading || isCollateralUsdRateLoading || isBorrowedUsdRateLoading
 

@@ -3,8 +3,8 @@ import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { maybe } from '@primitives/objects.utils'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type Params<ChainId extends IChainId> = {
   chainId: ChainId | null | undefined
@@ -54,8 +54,7 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
   const baseCollateral = userState?.collateral
 
   const debt = maybe(expectedBorrowed, expectedBorrowed => new BigNumber(expectedBorrowed)) ?? null
-  const collateral =
-    maybe(baseCollateral, baseCollateral => new BigNumber(baseCollateral).plus(collateralDelta ?? '0')) ?? null
+  const collateral = maybe(baseCollateral, c => new BigNumber(c).plus(collateralDelta ?? '0')) ?? null
 
   return {
     data:

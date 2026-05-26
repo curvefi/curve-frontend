@@ -209,8 +209,7 @@ export const LargeTokenInput = ({
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
-      if (maxBalanceValue != null)
-        setBalance(maybe(newPercentage, newPercentage => calculateNewBalance(maxBalanceValue, newPercentage)))
+      if (maxBalanceValue != null) setBalance(maybe(newPercentage, p => calculateNewBalance(maxBalanceValue, p)))
     },
     [maxBalanceValue, setBalance],
   )
