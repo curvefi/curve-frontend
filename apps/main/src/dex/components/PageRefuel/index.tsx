@@ -38,7 +38,11 @@ export const Refuel = () => {
           {reserves?.lowReserves && (
             <Grid size={12}>
               <Banner
-                subtitle={t`Current reserve ratio: ${formatNumber(reserves.reserveRatio, { unit: 'percentage', decimals: 6, abbreviate: false })}. Refuel the pool to maintain balance`}
+                subtitle={
+                  t`Current reserve ratio: ` +
+                  formatNumber(reserves.reserveRatio, { unit: 'percentage', decimals: 6, abbreviate: false }) +
+                  t`. Refuel the pool to maintain balance`
+                }
                 severity="warning"
               >
                 {t`Reserves low`}
