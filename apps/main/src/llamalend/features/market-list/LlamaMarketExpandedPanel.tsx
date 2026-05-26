@@ -60,7 +60,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
     rateValue != null && (
       <Grid size={6}>
         <Tooltip market={market}>
-          <Stack direction="row" alignItems="center" gap={2}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: 2 }}>
             {/* todo: omit metric component tooltip */}
             <Metric
               label={title}
@@ -107,7 +107,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <CardHeader
             title={t`Market Details`}
             action={
-              <Stack direction="row" gap={Spacing.sm}>
+              <Stack direction="row" sx={{ gap: Spacing.sm }}>
                 <CopyIconButton
                   label={t`Copy market address`}
                   copyText={controllerAddress}
@@ -147,8 +147,8 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric label={t`TVL`} value={tvl} valueOptions={{ unit: 'dollar' }} />
         </Grid>
         <Grid size={12} data-testid="llama-market-graph">
-          <Stack direction="column" alignItems="center">
-            <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
+          <Stack direction="column" sx={{ alignItems: 'center' }}>
+            <Typography variant="bodyXsRegular" color="textTertiary" sx={{ alignSelf: 'start' }}>
               {t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Rate Chart`}
             </Typography>
 

@@ -11,7 +11,7 @@ type ChainIconProps = {
  * This is different from icons/ChainIcon because it requires a fixed size, some padding and no responsive design.
  */
 export const ChainSwitcherIcon = ({ networkId, size = 28 }: ChainIconProps) => (
-  <Box component="span" alignItems="center" display="flex" data-testid={`chain-icon-${networkId}`}>
+  <Box component="span" data-testid={`chain-icon-${networkId}`} sx={{ alignItems: 'center', display: 'flex' }}>
     <img
       alt={`${networkId} logo`}
       // onError={(evt) => (evt.target as HTMLImageElement).src = src}

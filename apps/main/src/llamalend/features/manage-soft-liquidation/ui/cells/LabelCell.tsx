@@ -16,7 +16,7 @@ export const LabelCellDisplay = ({
   <Typography
     variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
     color={isFooter ? 'textPrimary' : 'textSecondary'}
-    whiteSpace="nowrap" // Aesthetics; it looks ugly if this column wraps
+    sx={{ whiteSpace: 'nowrap' }}
   >
     {label}
   </Typography>
@@ -26,7 +26,7 @@ export const LabelCell = ({ getValue }: CellContext<ClosePositionRow, ClosePosit
   const value = getValue()
   return (
     value != null && (
-      <Box paddingBlock={Spacing.md}>
+      <Box sx={{ paddingBlock: Spacing.md }}>
         <LabelCellDisplay label={value} />
       </Box>
     )

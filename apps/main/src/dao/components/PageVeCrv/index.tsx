@@ -38,7 +38,7 @@ export const VeCrv = () => {
 
   return (
     <DetailPageLayout formTabs={null} testId="vecrv-page">
-      <Stack margin="auto" maxWidth={MAX_WIDTH} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Stack sx={{ margin: 'auto', maxWidth: MAX_WIDTH, backgroundColor: t => t.design.Layer[1].Fill }}>
         <BoxHeader className="title-text">
           <IconButton hidden />
           {t`CRV Locker`}

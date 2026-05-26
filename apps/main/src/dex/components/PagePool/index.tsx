@@ -178,7 +178,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
       <DetailPageLayout
         header={
-          <Typography variant="headingSBold" paddingBlock={Spacing.sm}>
+          <Typography variant="headingSBold" sx={{ paddingBlock: Spacing.sm }}>
             {pool.name || ''}
           </Typography>
         }

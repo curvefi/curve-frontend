@@ -17,7 +17,7 @@ export const ActionInfoCollapse = ({
   testId?: string
 }) => (
   <Collapse in={isOpen} data-testid={testId}>
-    <Stack gap={ACTION_INFO_GROUP_SX.gap} divider={<Divider sx={{ marginInline: Spacing.md }} />}>
+    <Stack divider={<Divider sx={{ marginInline: Spacing.md }} />} sx={{ gap: ACTION_INFO_GROUP_SX.gap }}>
       {children}
     </Stack>
   </Collapse>

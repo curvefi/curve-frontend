@@ -47,7 +47,7 @@ export const BackendMaintenanceModal = ({
       </Typography>
       <Typography>{t`Thank you for your patience.`}</Typography>
       {learnMoreLink && (
-        <Stack direction="row" justifyContent="end">
+        <Stack direction="row" sx={{ justifyContent: 'end' }}>
           <ExternalLink href={learnMoreLink} label={t`Learn more`} size="small" />
         </Stack>
       )}

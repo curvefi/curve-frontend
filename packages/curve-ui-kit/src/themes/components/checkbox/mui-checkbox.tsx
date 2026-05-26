@@ -15,14 +15,15 @@ const EmptyIcon = createSvgIcon(<svg viewBox="0 0 24 24" />, 'Empty')
 const createIconWrapper = (icon: ReactNode) => (
   <Box
     className="icon-wrapper"
-    display="flex"
     sx={{
+      display: 'flex',
       outline: '1px solid currentColor',
 
       // Animate the checkbox as it appears. It's not possible to animate it when unchecking.
       '& svg': {
         animation: 'checkmark-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
       },
+
       '@keyframes checkmark-appear': {
         from: {
           transform: 'scale(0)',
