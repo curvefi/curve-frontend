@@ -18,7 +18,7 @@ export const MaintenancePage = () => (
     alignItems="center"
     justifyContent="center"
     padding={Spacing.md}
-    minHeight={MinHeight.pageContent}
+    minHeight={MinHeight.maintenancePage}
     textAlign={'center'}
     sx={{
       backgroundColor: theme => theme.design.Layer.App.Background,
