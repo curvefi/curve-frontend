@@ -60,12 +60,12 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
       }
       width="xl"
     >
-      <Stack data-testid="submit-error-report-modal" gap={Spacing.md} sx={{ overflowY: 'auto', height: '100%' }}>
+      <Stack data-testid="submit-error-report-modal" sx={{ gap: Spacing.md, overflowY: 'auto', height: '100%' }}>
         <Stack>
-          <Typography variant="bodyMBold" color="text.primary">
+          <Typography variant="bodyMBold" sx={{ color: 'text.primary' }}>
             {t`Seems like there's been an error T_T.`}
           </Typography>
-          <Typography variant="bodySRegular" color="text.secondary">
+          <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
             {t`We're on it. Want to speed things up? Share what happened below.`}
           </Typography>
         </Stack>
@@ -128,7 +128,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
           />
         </FormControl>
 
-        <Typography variant="bodySRegular" color="text.tertiary">
+        <Typography variant="bodySRegular" sx={{ color: 'text.tertiary' }}>
           {t`Error reports help us improve the product for everyone.`}
         </Typography>
       </Stack>

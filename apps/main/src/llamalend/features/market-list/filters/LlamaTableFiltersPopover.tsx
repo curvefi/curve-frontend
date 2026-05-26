@@ -45,13 +45,15 @@ export const LlamaTableFiltersPopover = ({
     <Stack sx={{ '& > * + *': { borderTop: t => `1px solid ${t.design.Layer[1].Outline}` } }}>
       <Stack
         direction="row"
-        alignItems="flex-end"
-        gap={Spacing.sm}
-        justifyContent="space-between"
-        minHeight={MinHeight.popoverHeader}
-        paddingInlineStart={Spacing.sm}
+        sx={{
+          alignItems: 'flex-end',
+          gap: Spacing.sm,
+          justifyContent: 'space-between',
+          minHeight: MinHeight.popoverHeader,
+          paddingInlineStart: Spacing.sm,
+        }}
       >
-        <Typography variant="headingXsBold" color="textSecondary" paddingBlockEnd={Spacing.xs}>
+        <Typography variant="headingXsBold" color="textSecondary" sx={{ paddingBlockEnd: Spacing.xs }}>
           {t`Filter markets`}
         </Typography>
         <IconButton size="extraSmall" onClick={onClose}>
@@ -59,7 +61,7 @@ export const LlamaTableFiltersPopover = ({
         </IconButton>
       </Stack>
       <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
-      <Stack direction="row" padding={Spacing.sm}>
+      <Stack direction="row" sx={{ padding: Spacing.sm }}>
         <Button color="ghost" size="extraSmall" onClick={resetFilters} disabled={!hasActiveFilters}>
           {t`Reset filters`}
         </Button>

@@ -14,9 +14,9 @@ type Props = {
 // in more places and we have a better idea what to generalize.
 export const TabPanel = ({ sx, children }: Props) => (
   <Stack
-    gap={Spacing.md}
     role="tabpanel"
     sx={{
+      gap: Spacing.md,
       backgroundColor: t => t.design.Layer[1].Fill,
       paddingBlockStart: Spacing.md,
       paddingBlockEnd: Spacing.lg,

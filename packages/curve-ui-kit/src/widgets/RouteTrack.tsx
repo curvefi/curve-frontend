@@ -9,9 +9,12 @@ const Circle = () => <CircleIcon sx={{ width: '0.5rem', height: '0.5rem', fill: 
 export const RouteTrack = () => (
   <Stack
     direction="column"
-    justifyContent="center"
-    alignItems="center"
-    sx={{ marginBlock: '6px 14px', opacity: '0.7' }} // aligns with the 1st and last items
+    sx={{
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBlock: '6px 14px',
+      opacity: '0.7',
+    }}
   >
     <Circle />
     <Stack sx={{ borderLeft: '2px dotted', height: '100%', opacity: '0.5' }} />

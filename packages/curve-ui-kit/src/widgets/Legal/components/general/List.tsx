@@ -12,8 +12,9 @@ type Props = {
 export const List = ({ children, type = 'numeric' }: Props) => (
   <Stack
     component="ol"
-    gap={Spacing.xs}
     sx={{
+      gap: Spacing.xs,
+
       '> li': {
         listStyle: type === 'disc' ? 'none' : `${type} inside`,
         ...(type === 'disc' && {
@@ -29,6 +30,7 @@ export const List = ({ children, type = 'numeric' }: Props) => (
           },
         }),
       },
+
       ol: {
         marginInlineStart: Spacing.lg,
       },

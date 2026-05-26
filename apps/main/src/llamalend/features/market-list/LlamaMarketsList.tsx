@@ -94,7 +94,7 @@ export const LlamaMarketsList = () => {
       {address ? (
         data?.userHasPositions && <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
-        <Box paddingBlock={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
             action={
               <ConnectWalletButton
@@ -106,7 +106,6 @@ export const LlamaMarketsList = () => {
           />
         </Box>
       )}
-
       {useNewMarketListLayout() ? (
         <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (

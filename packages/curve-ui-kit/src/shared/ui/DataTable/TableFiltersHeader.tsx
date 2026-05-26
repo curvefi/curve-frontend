@@ -8,12 +8,12 @@ const { Spacing } = SizesAndSpaces
 export const TableFiltersHeader = ({ title, rightChildren }: { title: string; rightChildren?: ReactNode }) => (
   <Stack
     direction="row"
-    justifyContent="space-between"
-    alignItems="end"
-    // background needed because table head has a dfault color, and transparent is not possible because table head is sticky
-    sx={{ backgroundColor: t => t.design.Layer.App.Background }}
-    // cannot use Stack + gap because the background color need to be this one and not the default
-    paddingBlockEnd={Spacing.xs}
+    sx={{
+      justifyContent: 'space-between',
+      alignItems: 'end',
+      paddingBlockEnd: Spacing.xs,
+      backgroundColor: t => t.design.Layer.App.Background,
+    }}
   >
     <Typography variant="headingSBold" color="textSecondary" sx={{ paddingInlineStart: Spacing.sm }}>
       {title}

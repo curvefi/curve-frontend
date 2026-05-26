@@ -59,8 +59,13 @@ export const LegacyTableFilters = <ColumnIds extends string>({
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
 
   return (
-    <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
-      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
+    <Stack
+      sx={{
+        paddingBlockEnd: { mobile: Spacing.sm.tablet },
+        paddingBlockStart: { mobile: Spacing.md.tablet },
+      }}
+    >
+      <Grid container spacing={Spacing.sm} sx={{ paddingInline: Spacing.md, justifyContent: 'space-between' }}>
         <Fade in={!hideTitle} timeout={Duration.Transition} mountOnEnter unmountOnExit>
           <Grid size={{ mobile: 'grow', tablet: 6 }} sx={{ position: hideTitle ? 'absolute' : 'relative' }}>
             {leftChildren}
@@ -68,10 +73,12 @@ export const LegacyTableFilters = <ColumnIds extends string>({
         </Fade>
         <Grid
           size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
-          display="flex"
-          justifyContent="flex-end"
-          gap={Spacing.xs}
-          flexWrap="wrap"
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: Spacing.xs,
+            flexWrap: 'wrap',
+          }}
         >
           {hasSearchBar && (
             <LegacyTableSearchField
@@ -102,12 +109,11 @@ export const LegacyTableFilters = <ColumnIds extends string>({
           )}
           {onReload && !isMobile && <LegacyTableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
         </Grid>
-        <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
+        <Grid container size={12} spacing={Spacing.sm} sx={{ justifyContent: 'space-between' }}>
           {chips}
         </Grid>
       </Grid>
       {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
-
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorRef={settingsRef}

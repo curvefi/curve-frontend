@@ -23,9 +23,9 @@ export const TokenBalanceCell = <TRow extends TokenBalanceCellData>({ row, getVa
   const { symbol, token, networkId } = row.original
   return (
     <InlineTableCell>
-      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+      <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
         <TokenIcon blockchainId={networkId} address={token} tooltip={symbol} size="lg" showChainIcon />
-        <Stack gap={Spacing.xxs} alignItems="flex-start">
+        <Stack sx={{ gap: Spacing.xxs, alignItems: 'flex-start' }}>
           <Typography variant="tableCellL">{formatBalance(getValue())}</Typography>
           <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
             {symbol}

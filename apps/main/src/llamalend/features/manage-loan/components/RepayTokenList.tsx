@@ -49,7 +49,7 @@ export function RepayTokenList<ChainId extends IChainId>({
   )
 
   return (
-    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto', height: '100%' }}>
+    <Stack sx={{ gap: Spacing.sm, overflowY: 'auto', height: '100%' }}>
       {tokens.length ? (
         <>
           <TokenSection

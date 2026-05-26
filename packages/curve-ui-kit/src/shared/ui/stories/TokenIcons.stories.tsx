@@ -34,7 +34,7 @@ const TokenIconsStory = (props: Omit<TokenIconsProps, 'variant'>) => {
     return () => clearInterval(interval)
   }, [])
   return (
-    <Stack gap={5} ref={ref} width={300}>
+    <Stack ref={ref} sx={{ gap: 5, width: 300 }}>
       <Box>
         <Typography variant="headingXsMedium">
           Default Variant

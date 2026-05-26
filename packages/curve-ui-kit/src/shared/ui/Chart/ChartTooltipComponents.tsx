@@ -26,11 +26,7 @@ export const ChartTooltipShell = ({ title, children }: { title: ReactNode; child
 export const ChartTooltipSeriesGroup = ({ children }: { children: ReactNode }) => (
   <Stack
     direction="column"
-    sx={{
-      padding: Spacing.sm,
-      gap: Spacing.xs,
-      backgroundColor: theme => theme.design.Layer[2].Fill,
-    }}
+    sx={{ padding: Spacing.sm, gap: Spacing.xs, backgroundColor: theme => theme.design.Layer[2].Fill }}
   >
     {children}
   </Stack>
@@ -47,8 +43,8 @@ export const ChartTooltipSeriesRow = ({
   lineColor: string
   dash?: ChartLineDashPattern
 }) => (
-  <Stack direction="row" justifyContent="space-between" alignItems="center">
-    <Stack direction="row" spacing={Spacing.xs} alignItems="center">
+  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+    <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
       <LegendLine color={lineColor} dash={dash} />
       <Typography variant="bodySRegular">{label}</Typography>
     </Stack>

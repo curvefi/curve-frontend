@@ -17,21 +17,23 @@ export const EmptyStateCard = ({
 }) => (
   <Stack
     direction="column"
-    gap={Spacing.sm}
-    alignItems="center"
-    justifySelf="center"
-    sx={{ maxWidth: MaxWidth.emptyStateCard }}
+    sx={{
+      gap: Spacing.sm,
+      alignItems: 'center',
+      justifySelf: 'center',
+      maxWidth: MaxWidth.emptyStateCard,
+    }}
   >
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
     {/* Needed because no gap between the title and subtitle */}
     <Stack direction="column">
       {title && (
-        <Typography component="span" variant="headingSBold" textAlign="center">
+        <Typography component="span" variant="headingSBold" sx={{ textAlign: 'center' }}>
           {title}
         </Typography>
       )}
       {subtitle && (
-        <Typography component="span" variant="bodyMRegular" color="text.secondary" textAlign="center">
+        <Typography component="span" variant="bodyMRegular" sx={{ color: 'text.secondary', textAlign: 'center' }}>
           {subtitle}
         </Typography>
       )}

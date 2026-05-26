@@ -25,7 +25,7 @@ export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps
         />
       ))}
     </ChartTooltipSeriesGroup>
-    <Typography variant="bodyXsRegular" fontStyle="italic" sx={{ whiteSpace: 'normal' }}>
+    <Typography variant="bodyXsRegular" sx={{ fontStyle: 'italic', whiteSpace: 'normal' }}>
       {t`Higher utilization can reduce immediately withdrawable liquidity.`}
     </Typography>
   </ChartTooltipShell>

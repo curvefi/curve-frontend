@@ -28,7 +28,7 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
       body={<TooltipDescription text={content?.description ?? t`You have an active position in this market.`} />}
       placement="top"
     >
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         {formatNumber(health, { unit: 'percentage', abbreviate: false })}
         <HealthBar small health={health} softLiquidation={softLiquidation} />
       </Stack>

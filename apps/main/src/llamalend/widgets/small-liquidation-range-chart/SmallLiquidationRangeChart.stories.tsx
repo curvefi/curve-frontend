@@ -38,13 +38,7 @@ const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
   component: SmallLiquidationRangeChartComponent,
   decorators: [
     Story => (
-      <Box
-        padding={Spacing.sm}
-        sx={{
-          width: '100%',
-          backgroundColor: t => t.design.Layer[1].Fill,
-        }}
-      >
+      <Box sx={{ padding: Spacing.sm, width: '100%', backgroundColor: t => t.design.Layer[1].Fill }}>
         <Story />
       </Box>
     ),

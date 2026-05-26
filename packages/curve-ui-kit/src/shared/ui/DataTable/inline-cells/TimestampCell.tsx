@@ -31,11 +31,17 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
       })}
       sx={{ gap: Spacing.xxs }}
     >
-      <Typography variant="tableCellMBold" textAlign={align}>
+      <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
         {formatDate(timestamp, 'short')}
       </Typography>
-
-      <Stack direction="row" alignItems="center" justifyContent={align} gap={Spacing.xs}>
+      <Stack
+        direction="row"
+        sx={{
+          alignItems: 'center',
+          justifyContent: align,
+          gap: Spacing.xs,
+        }}
+      >
         <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
           {formatTime(timestamp)}
         </Typography>

@@ -28,7 +28,7 @@ export const Gauge = () => {
   return (
     <DetailPageLayout formTabs={null}>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label={t`Back to gauges`} />
-      <Stack gap={PAGE_SPACING} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Stack sx={{ gap: PAGE_SPACING, backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <Stack padding={Spacing.md}>

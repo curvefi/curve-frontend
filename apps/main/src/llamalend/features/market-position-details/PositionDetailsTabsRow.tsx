@@ -10,7 +10,7 @@ type PositionDetailsTabsRowProps = {
 }
 
 export const PositionDetailsTabsRow = ({ tab, onChange, options }: PositionDetailsTabsRowProps) => (
-  <Stack alignItems="end" direction="row" justifyContent="space-between" width="100%">
+  <Stack direction="row" sx={{ alignItems: 'end', justifyContent: 'space-between', width: '100%' }}>
     <TabsSwitcher variant="contained" value={tab} onChange={onChange} options={options} />
     <LlamaMonitorBotButton />
   </Stack>

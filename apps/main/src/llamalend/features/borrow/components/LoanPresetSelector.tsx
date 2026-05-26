@@ -32,7 +32,7 @@ export const LoanPresetSelector = ({
   children: ReactNode
 }) => (
   <Stack>
-    <Stack gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xs }}>
       <Typography variant="bodyXsRegular" color="textSecondary">{t`Liquidation protection setup`}</Typography>
       <ToggleButtonGroup
         exclusive

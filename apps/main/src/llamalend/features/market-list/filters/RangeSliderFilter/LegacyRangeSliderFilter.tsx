@@ -76,14 +76,16 @@ export const LegacyRangeSliderFilter = <TKey, TColumnId extends string>({
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
       MenuProps={{
         elevation: 3,
-        MenuListProps: {
-          disableListWrap: true,
-          // needed to prevent the menu from collapsing after a value is selected
-          variant: 'menu',
+        slotProps: {
+          list: {
+            disableListWrap: true,
+            // needed to prevent the menu from collapsing after a value is selected
+            variant: 'menu',
+          },
         },
       }}
     >
-      <Stack paddingBlock={3} paddingInline={4}>
+      <Stack sx={{ paddingBlock: 3, paddingInline: 4 }}>
         <SliderInput<DecimalRangeValue>
           layoutDirection="column"
           size="medium"
