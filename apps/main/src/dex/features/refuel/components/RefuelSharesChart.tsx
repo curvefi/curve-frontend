@@ -19,6 +19,7 @@ import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
@@ -85,8 +86,8 @@ export const RefuelSharesChart = ({
       llama(data?.data)
         .map(point => ({
           time: new Date(point.timestamp).getTime(),
-          donationShares: point.donationShares != null ? point.donationShares / 10 ** 18 : 0,
-          unlockedShares: point.unlockedShares != null ? point.unlockedShares / 10 ** 18 : 0,
+          donationShares: point.donationShares == null ? 0 : point.donationShares / 10 ** DEFAULT_DECIMALS,
+          unlockedShares: point.unlockedShares == null ? 0 : point.unlockedShares / 10 ** DEFAULT_DECIMALS,
         }))
         .uniqWith((x, y) => x.time === y.time)
         .orderBy(point => point.time, 'asc')
