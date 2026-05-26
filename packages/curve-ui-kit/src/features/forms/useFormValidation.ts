@@ -6,11 +6,13 @@ import type { ValidationSuite } from '@ui-kit/lib'
 
 const createValidator =
   <T extends FieldValues>(validation: ValidationSuite): RejectPromiseValidator<FormValidateFn<T>> =>
-  ({ value }: { value: T }) => ({
-    fields: fromEntries(
-      recordEntries(validation(value).getErrors()).map(([field, errors]) => [field as FieldPath<T>, errors.join('\n')]),
-    ),
-  })
+  ({ value }: { value: T }) => {
+    const { root, ...errors } = validation(value).getErrors()
+    return {
+      fields: fromEntries(recordEntries(errors).map(([field, errors]) => [field as FieldPath<T>, errors.join('\n')])),
+      form: root?.join('\n'),
+    }
+  }
 
 export const useFormValidation = <T extends FieldValues>(validation: ValidationSuite | undefined) =>
   useMemo(() => {
