@@ -108,13 +108,8 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   if (!poolMetadata || !snapshotData) return null
 
   return (
-    <Card size="small">
-      <CardContent
-        component={Grid}
-        container
-        columnSpacing={Spacing.md}
-        sx={{ padding: '0 !important' /** The default padding interferes with background colors of the inner grids */ }}
-      >
+    <Card size="inline">
+      <CardContent component={Grid} container columnSpacing={Spacing.md}>
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
           <Stack gap={Spacing.lg}>
             <Stack>
