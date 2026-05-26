@@ -39,10 +39,7 @@ const TokenSelector = ({
       size="small"
       displayEmpty
       renderValue={() => <Typography>{value || 'Select token'}</Typography>}
-      sx={{
-        width: '10rem',
-        backgroundColor: t => t.design.Layer[1].Fill,
-      }}
+      sx={{ width: '10rem', backgroundColor: t => t.design.Layer[1].Fill }}
     >
       {TOKEN_OPTIONS.map(option => (
         <MenuItem key={option.name} value={option.name}>
@@ -240,13 +237,7 @@ export const WithReactNodeMessage: Story = {
 export const WithChildren: Story = {
   args: {
     children: (
-      <Stack
-        spacing={1}
-        sx={{
-          padding: 2,
-          backgroundColor: t => t.design.Layer[2].Fill,
-        }}
-      >
+      <Stack spacing={1} sx={{ padding: 2, backgroundColor: t => t.design.Layer[2].Fill }}>
         <Typography variant="bodyMBold">Additional Content</Typography>
         <Typography variant="bodySRegular" color="textSecondary">
           The children prop allows you to render custom content below the input. This can be useful for displaying

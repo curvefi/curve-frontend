@@ -37,7 +37,7 @@ const CardStory = (props: CardProps) => (
     </CardContent>
 
     <CardActions disableSpacing>
-      <Stack direction="row" gap={Spacing.xs} flexGrow={1}>
+      <Stack direction="row" sx={{ gap: Spacing.xs, flexGrow: 1 }}>
         <Button fullWidth>Share</Button>
         <Button fullWidth color="secondary">
           Learn More
@@ -68,9 +68,26 @@ const CardStoryHeaderOnly = (props: CardProps) => (
     <CardHeader title="Header Only Card" subheader="With subtitle" />
 
     <CardContent>
-      <Typography variant="bodySRegular" color="text.secondary">
+      <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
         This card focuses on the header section with a clean content area below.
       </Typography>
+    </CardContent>
+  </Card>
+)
+
+const CardStoryInline = (props: CardProps) => (
+  <Card sx={{ maxWidth: '20rem' }} {...props} size="inline">
+    <CardHeader title="Inline card" />
+
+    <CardContent>
+      <Stack sx={{ gap: Spacing.sm }}>
+        <Typography variant="bodySRegular" color="textSecondary">
+          Inline content starts flush with the card edge.
+        </Typography>
+        <Button fullWidth color="secondary">
+          Inline Action
+        </Button>
+      </Stack>
     </CardContent>
   </Card>
 )
@@ -120,6 +137,7 @@ type Story = StoryObj<typeof CardStory>
 export const Default: Story = { render: args => <CardStory {...args} /> }
 export const Simple: Story = { render: args => <CardStorySimple {...args} /> }
 export const HeaderOnly: Story = { render: args => <CardStoryHeaderOnly {...args} /> }
+export const Inline: Story = { render: args => <CardStoryInline {...args} /> }
 export const TokenPairAvatar: Story = { render: args => <CardStoryTokenPairAvatar {...args} /> }
 
 export default meta

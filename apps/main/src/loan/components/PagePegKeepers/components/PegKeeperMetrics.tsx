@@ -13,7 +13,7 @@ type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & {
 }
 
 export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = 'pegkeeper' }: Props) => (
-  <Stack gap={Spacing.sm}>
+  <Stack sx={{ gap: Spacing.sm }}>
     <Metric
       label={`${poolName} rate`}
       loading={rate == null}
@@ -22,7 +22,7 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = '
       testId={`${testId}-metric-rate`}
     />
 
-    <Stack direction="row" gap={Spacing.md}>
+    <Stack direction="row" sx={{ gap: Spacing.md }}>
       <Metric
         label={t`Debt`}
         size="small"

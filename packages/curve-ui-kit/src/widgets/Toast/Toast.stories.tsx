@@ -20,7 +20,11 @@ type Story = StoryObj<typeof meta>
 
 export const AllSeverities: Story = {
   render: ({ title }) => (
-    <Stack spacing={Spacing.sm} direction="row" minHeight={300} minWidth={500} alignContent="end" flexWrap="wrap">
+    <Stack
+      spacing={Spacing.sm}
+      direction="row"
+      sx={{ minHeight: 300, minWidth: 500, alignContent: 'end', flexWrap: 'wrap' }}
+    >
       <Button
         variant="contained"
         color="success"

@@ -24,9 +24,16 @@ export const ChartEmpty = ({ height, title, message = t`No chart data found` }: 
       minHeight: height,
     }}
   >
-    <Stack flexDirection="column" alignItems="center" gap={Spacing.md} padding={Spacing.md}>
+    <Stack
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: Spacing.md,
+        padding: Spacing.md,
+      }}
+    >
       <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
-      <Stack alignItems="center">
+      <Stack sx={{ alignItems: 'center' }}>
         {title && (
           <Typography variant="headingXsBold" sx={{ maxWidth: MaxWidth.emptyStateCard, textAlign: 'center' }}>
             {title}

@@ -19,10 +19,10 @@ type FavoriteTokenProps<T extends TokenOption> = {
 type Props<T extends TokenOption> = FavoriteTokenCallbacks<T> & FavoriteTokenProps<T>
 
 export const FavoriteTokens = <T extends TokenOption>({ tokens, onToken }: Props<T>) => (
-  <Stack gap={Spacing.xs} sx={{ paddingBlock: Spacing.xs }}>
+  <Stack sx={{ gap: Spacing.xs, paddingBlock: Spacing.xs }}>
     <Typography variant="headingXsBold">{t`Favorite tokens`}</Typography>
 
-    <Stack direction="row" gap={Spacing.xs} flexWrap="wrap">
+    <Stack direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap' }}>
       {tokens.map(
         (
           token, // todo: handle the selected token case

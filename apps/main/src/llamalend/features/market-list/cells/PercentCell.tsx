@@ -4,7 +4,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { formatPercent } from '@ui-kit/utils'
 
 export const PercentCell = ({ getValue }: CellContext<LlamaMarket, number>) => (
-  <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
+  <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
     {formatPercent(getValue())}
   </Typography>
 )

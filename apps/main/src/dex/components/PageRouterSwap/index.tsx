@@ -457,7 +457,7 @@ export const QuickSwap = ({
   )
 
   return (
-    <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
       <LargeTokenInput
         label={t`Sell`}
@@ -506,7 +506,6 @@ export const QuickSwap = ({
           t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
         }
       />
-
       {/* SWAP ICON */}
       <IconButton
         disabled={isDisable}
@@ -516,9 +515,7 @@ export const QuickSwap = ({
       >
         <Icon name="ArrowsVertical" size={24} />
       </IconButton>
-
       {/* SWAP TO */}
-
       <LargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
@@ -556,9 +553,8 @@ export const QuickSwap = ({
           </TokenSelector>
         }
       />
-
       {/* detail info */}
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <Stack>
           <SlippageToleranceActionInfo
             maxSlippage={storeMaxSlippage}
@@ -591,7 +587,6 @@ export const QuickSwap = ({
         </Stack>
         {userAddress && <ActionInfoGasEstimate gas={q(gas)} isApproved={formStatus.isApproved} />}
       </Stack>
-
       {/* alerts */}
       <RouterSwapAlerts
         formStatus={formStatus}
@@ -604,7 +599,6 @@ export const QuickSwap = ({
         searchedParams={searchedParams}
         updateFormValues={updateFormValues}
       />
-
       {/* actions */}
       <FormConnectWallet loading={!!userAddress && !steps.length}>
         {txInfoBar}

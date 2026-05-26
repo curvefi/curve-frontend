@@ -35,7 +35,7 @@ export const EventTypeCell = ({
   },
 }: CellContext<ParsedUserCollateralEvent, unknown>) => (
   <InlineTableCell>
-    <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+    <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
       {icons[type]}
       <Typography variant="tableCellMBold">{type}</Typography>
     </Stack>

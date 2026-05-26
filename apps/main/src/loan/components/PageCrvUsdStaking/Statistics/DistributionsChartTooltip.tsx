@@ -17,7 +17,7 @@ export const DistributionsChartTooltip = ({ active, payload }: TooltipProps<Valu
   return (
     <ChartTooltipShell title={formatDate(endDate, 'long')}>
       <ChartTooltipSeriesGroup>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="bodySRegular">{t`Weekly Revenue`}</Typography>
           <Typography variant="bodySBold">{formatUsd(weeklyRevenue)}</Typography>
         </Stack>

@@ -25,8 +25,8 @@ export const Integrations = () => {
   return (
     <Stack
       data-testid="integrations-page"
-      gap={Spacing.sm}
       sx={{
+        gap: Spacing.sm,
         backgroundColor: t => t.design.Layer[1].Fill,
         marginInline: 'auto',
         marginBlockStart: Spacing.xl,
@@ -36,12 +36,14 @@ export const Integrations = () => {
     >
       <Stack
         direction="row"
-        alignItems="end"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        gap={Spacing.md}
-        minHeight={Sizing.xxl}
-        paddingBlockEnd={Spacing.sm}
+        sx={{
+          alignItems: 'end',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: Spacing.md,
+          minHeight: Sizing.xxl,
+          paddingBlockEnd: Spacing.sm,
+        }}
       >
         {!hideTitle && <Typography variant="headingSBold">{t`Curve Integrations`}</Typography>}
         <LegacyTableSearchField
@@ -52,7 +54,6 @@ export const Integrations = () => {
           isExpanded={isExpandedOrValue}
         />
       </Stack>
-
       <Typography variant="bodySRegular">
         <Trans>
           The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee
@@ -66,7 +67,6 @@ export const Integrations = () => {
           </InlineLink>
         </Trans>
       </Typography>
-
       <IntegrationsList networkId={network} searchText={searchText} />
     </Stack>
   )

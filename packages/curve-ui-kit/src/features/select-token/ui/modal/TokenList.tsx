@@ -155,13 +155,11 @@ export const TokenList = ({
   const previewAll = useMemo(() => (showPreviewAll ? allTokens.slice(0, 300) : []), [allTokens, showPreviewAll])
 
   return (
-    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
+    <Stack sx={{ gap: Spacing.sm, overflowY: 'auto' }}>
       {!disableSearch && <SearchField name="tokenName" onSearch={onSearchCallback} />}
-
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}
       {children}
-
       {error ? (
         <ErrorAlert error={error} />
       ) : myTokens.length + allTokens.length === 0 ? (

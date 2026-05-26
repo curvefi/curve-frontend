@@ -18,7 +18,6 @@ export const UserProfile = () => {
       <IconButton size="small" onClick={open} data-testid="user-profile-button">
         <LlamaIcon />
       </IconButton>
-
       <Drawer
         open={isOpen}
         anchor="right"
@@ -34,7 +33,7 @@ export const UserProfile = () => {
           },
         }}
       >
-        <Stack gap={Spacing.md}>
+        <Stack sx={{ gap: Spacing.md }}>
           <UserProfileHeader walletAddress={walletAddress} onClose={close} />
           <Settings />
         </Stack>
