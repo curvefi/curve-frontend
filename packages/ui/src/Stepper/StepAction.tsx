@@ -14,7 +14,7 @@ export const StepAction = ({ step }: { step: Step }) => {
   const overlayTriggerState = useOverlayTriggerState({})
 
   const content = (
-    <Stack direction="row" gap={Spacing.md} alignItems="center">
+    <Stack direction="row" sx={{ gap: Spacing.md, alignItems: 'center' }}>
       {step.content}
       {isInProgress(step) ? <Spinner isDisabled size={18} /> : null}
     </Stack>

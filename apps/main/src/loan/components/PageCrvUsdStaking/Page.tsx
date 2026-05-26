@@ -15,21 +15,25 @@ export const Page = () => (
   <Stack
     data-testid="scrvusd-page"
     direction="column"
-    margin={'0 auto'}
-    marginBottom={PrimitiveSpacing[600]}
-    gap={PrimitiveSpacing[600]}
-    alignItems="center"
     sx={{
-      maxWidth: `calc(${MaxWidth.legacyActionCard} + ${PrimitiveSpacing[200]} + ${MaxWidth.section})`, // action card + gap + section
+      margin: '0 auto',
+      marginBottom: PrimitiveSpacing[600],
+      gap: PrimitiveSpacing[600],
+      alignItems: 'center',
+
+      // action card + gap + section
+      maxWidth: `calc(${MaxWidth.legacyActionCard} + ${PrimitiveSpacing[200]} + ${MaxWidth.section})`,
     }}
   >
     <Stack
       direction="row"
-      alignItems="center"
-      alignSelf="flex-start"
-      gap={Spacing.sm}
-      paddingInline={Spacing.sm}
-      paddingBlock={Spacing.md}
+      sx={{
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        gap: Spacing.sm,
+        paddingInline: Spacing.sm,
+        paddingBlock: Spacing.md,
+      }}
     >
       <img height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
       <Box flex flexColumn>

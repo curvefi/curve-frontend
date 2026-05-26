@@ -2,12 +2,7 @@ import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 
 import Stack from '@mui/material/Stack'
 import type { Column } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import {
-  DataTableHeaderCellSortableAlign,
-  getFlexAlignment,
-  type DataTableSize,
-  type TableItem,
-} from './data-table.utils'
+import { getFlexAlignment, type DataTableSize, type TableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
 type SortableProps<T extends TableItem> = {
@@ -26,15 +21,17 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
       ref={ref}
       {...props}
       direction="row"
-      alignItems={DataTableHeaderCellSortableAlign[size]}
       {...(column && {
-        justifyContent: getFlexAlignment(column),
         onClick: (e: MouseEvent) => {
           column.getToggleSortingHandler()?.(e)
           e.stopPropagation()
         },
       })}
-      {...(isEnabled && { sx: { cursor: 'pointer' } })}
+      sx={{
+        alignItems: 'end',
+        ...(isEnabled && { sx: { cursor: 'pointer' } }),
+        ...(column && { justifyContent: getFlexAlignment(column) }),
+      }}
     >
       {children}
       <RotatableIcon

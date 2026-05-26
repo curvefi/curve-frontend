@@ -208,7 +208,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
       footer={footer}
       compact
     >
-      <Stack gap={Spacing.md}>
+      <Stack sx={{ gap: Spacing.md }}>
         <FormControl fullWidth>
           {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
           <FormLabel sx={{ '&.Mui-focused': { color: 'text.secondary' } }}>
@@ -217,23 +217,22 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
             </Typography>
           </FormLabel>
 
-          <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.sm}>
+          <Stack
+            direction={{ mobile: 'column', tablet: 'row' }}
+            sx={{ justifyContent: 'space-between', gap: Spacing.sm }}
+          >
             <RadioGroup
               row
               value={formValues.selected}
               onChange={e => setFormValues({ ...formValues, selected: e.target.value as Decimal })}
-              sx={{
-                flexGrow: 1,
-                justifyContent: { mobile: 'space-between', tablet: 'start' },
-                gap: Spacing.xs,
-              }}
+              sx={{ flexGrow: 1, justifyContent: { mobile: 'space-between', tablet: 'start' }, gap: Spacing.xs }}
               data-testid="slippage-radio-group"
             >
               <FormControlLabel value={SLIPPAGE_PRESETS.STABLE} label={FORMATTED_STABLE} control={<Radio />} />
               <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO} label={FORMATTED_CRYPTO} control={<Radio />} />
             </RadioGroup>
 
-            <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
+            <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: { mobile: 'start', tablet: 'end' } }}>
               {customTextField}
             </Box>
           </Stack>

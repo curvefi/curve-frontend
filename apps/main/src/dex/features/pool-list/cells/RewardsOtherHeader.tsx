@@ -14,7 +14,7 @@ const { Spacing } = SizesAndSpaces
 export const RewardsOtherHeader = ({ table }: HeaderContext<PoolListItem, RewardsApy | undefined>) => (
   <Stack>
     <Box>{t`Rewards tAPR`}</Box>
-    <Stack direction="row" gap={Spacing.xs} alignItems="end">
+    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'end' }}>
       {useNetworkFromUrl()?.isCrvRewardsEnabled && (
         <>
           <Sortable column={table.getColumn(PoolColumnId.RewardsCrv)} size="large">{`CRV`}</Sortable>

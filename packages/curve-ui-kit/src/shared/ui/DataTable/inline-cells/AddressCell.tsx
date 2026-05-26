@@ -27,7 +27,7 @@ export const AddressCell = ({ address, label, justifyContent = 'flex-start' }: A
         {label}
       </Typography>
     )}
-    <Stack direction="row" alignItems="center" justifyContent={justifyContent} gap={Spacing.xs}>
+    <Stack direction="row" sx={{ alignItems: 'center', justifyContent, gap: Spacing.xs }}>
       <Typography variant="tableCellMBold">{shortenString(address)}</Typography>
     </Stack>
   </InlineTableCell>

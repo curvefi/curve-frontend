@@ -55,14 +55,8 @@ export const TransactionDetails = () => {
   )
 
   const info = (
-    <Stack direction="row" alignItems="center">
-      <LocalFireDepartmentIcon
-        sx={{
-          width: IconSize.sm,
-          height: IconSize.sm,
-          color: t => t.palette.text.secondary,
-        }}
-      />
+    <Stack direction="row" sx={{ alignItems: 'center' }}>
+      <LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm, color: t => t.palette.text.secondary }} />
       <WithSkeleton loading={gasLoading}>
         <Typography variant="bodyMRegular" color="textSecondary">
           {hasWallet && isReady(preview.fetchStatus) ? valueGas : gasLoading ? '0.0000' : '-'}

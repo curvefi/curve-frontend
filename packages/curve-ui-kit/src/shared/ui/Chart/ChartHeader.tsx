@@ -65,10 +65,16 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   return (
     <Stack
       direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      flexWrap="wrap"
-      sx={applySxProps({ rowGap: Spacing.md, columnGap: Spacing.sm }, sx)}
+      sx={applySxProps(
+        {
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          rowGap: Spacing.md,
+          columnGap: Spacing.sm,
+        },
+        sx,
+      )}
     >
       {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
       {chartOptionVariant === 'buttons-group' || hasSingleOption ? (
@@ -80,7 +86,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
           </MenuItem>
         </Select>
       ) : (
-        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
           <Select
             value={chartSelections.activeSelection ?? ''}
             onChange={event => {
@@ -107,7 +113,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
           )}
         </Stack>
       )}
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" sx={{ alignItems: 'center' }}>
         <ToggleButtonGroup exclusive value={chartSelections.activeSelection} onChange={handleChartOptionToggle}>
           {chartOptionVariant === 'buttons-group' &&
             !hasSingleOption &&

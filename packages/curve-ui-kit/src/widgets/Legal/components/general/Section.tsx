@@ -7,8 +7,8 @@ const { Spacing } = SizesAndSpaces
 
 export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
-    justifyContent="end"
     sx={{
+      justifyContent: 'end',
       borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`,
       paddingBlockStart: Spacing.lg,
       paddingInline: Spacing.md,
@@ -49,20 +49,21 @@ export const Section = ({ children }: { children?: ReactNode }) => {
 
   return (
     <Stack
-      gap={Spacing.md}
       sx={{
+        gap: Spacing.md,
+
         // Adds extra margin between consecutive Sections.
         // Not defined in parent since it can host other elements like headers,
         // where this extra spacing should not apply.
         '& + &': {
           marginBlockStart: Spacing.md,
         },
+
         marginInline: Spacing.md,
       }}
     >
       {title}
-
-      <Stack gap={Spacing.md}>{content}</Stack>
+      <Stack sx={{ gap: Spacing.md }}>{content}</Stack>
     </Stack>
   )
 }

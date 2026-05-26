@@ -24,8 +24,8 @@ export const HealthDetails = ({
 
   return (
     <Stack>
-      <Stack gap={Spacing.xs}>
-        <Stack direction="row" alignItems="flex-end" gap={Spacing.md.mobile}>
+      <Stack sx={{ gap: Spacing.xs }}>
+        <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md.mobile }}>
           <Metric
             label={title}
             value={value}

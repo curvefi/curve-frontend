@@ -15,8 +15,8 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="end">
-        <Typography variant="tableCellMBold" textAlign="right">
+      <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+        <Typography variant="tableCellMBold" sx={{ textAlign: 'right' }}>
           <Skeleton variant="text" width={40} />
         </Typography>
       </Box>
@@ -25,7 +25,7 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
 
   if (!data?.ltv || error) {
     return (
-      <Typography variant="tableCellMBold" color="textSecondary" textAlign="right">
+      <Typography variant="tableCellMBold" color="textSecondary" sx={{ textAlign: 'right' }}>
         -
       </Typography>
     )
@@ -38,7 +38,7 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
       body={<CurrentLTVTooltipContent debtDenomination={'Borrowed amount'} />}
       placement="top"
     >
-      <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
+      <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
         {formatPercent(data.ltv)}
       </Typography>
     </Tooltip>
