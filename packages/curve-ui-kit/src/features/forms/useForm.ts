@@ -45,15 +45,18 @@ const collectFieldFlags = <T extends FieldValues>(
       .map(([field]) => [field, true]),
   )
 
-const getFormError = ({ onBlur, onChange, onMount, onSubmit }: ValidationErrorMap) =>
-  toFormError(onSubmit) || toFormError(onChange) || toFormError(onBlur) || toFormError(onMount) || undefined
+/** Resolves the effective error from an errorMap, skipping stale onMount once the field is dirty */
+const getFormError = ({ onBlur, onChange, onMount, onSubmit }: ValidationErrorMap, isDirty = false) => {
+  const error = toFormError(onSubmit) || toFormError(onChange) || toFormError(onBlur)
+  return isDirty ? error || undefined : error || toFormError(onMount) || undefined
+}
 
 /** Retrieves field errors from field metadata */
 const getFieldErrors = <T extends FieldValues>(fieldMeta: FieldMetaMap<T>): FieldErrors<T> =>
   fromEntries(
     notFalsy(
-      ...recordEntries(fieldMeta).map(([field, { errorMap }]) => {
-        const error = getFormError(errorMap)
+      ...recordEntries(fieldMeta).map(([field, { errorMap, isDirty }]) => {
+        const error = getFormError(errorMap, isDirty)
         return error && ([field, error] as [FieldPath<T>, FormError])
       }),
     ),
@@ -155,7 +158,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
       ),
       touchedFields,
       isDirty: useStore(form.store, state => state.isDirty),
-      isValid: useStore(form.store, state => state.isValid),
+      isValid: !Object.keys(fieldErrors).length && !rootError,
       dirtyFields,
     },
   }
