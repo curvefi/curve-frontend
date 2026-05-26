@@ -31,7 +31,7 @@ export const fetchAllowance = async (
 
 /** Helper function for @see {@link fetchAllowance} that checks if the allowance is sufficient for a given amount. */
 export const fetchHasEnoughAllowance = async (config: Config, params: AllowanceQuery & { amount: bigint }) =>
-  params.amount <= 0n ? true : (await fetchAllowance(config, params)) >= params.amount
+  params.amount <= 0n || (await fetchAllowance(config, params)) >= params.amount
 
 /** Approve `spenderAddress` to spend an ERC-20 token. Defaults to an unlimited approval (not recommended) */
 export const approve = async (
