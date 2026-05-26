@@ -67,7 +67,7 @@ export const SelectFilter = <T extends string>({
               <MenuItem
                 ref={menuRef}
                 value={id}
-                className={selectedOption?.id === id ? 'Mui-selected' : ''}
+                selected={selectedOption?.id === id}
                 onClick={() => {
                   onSelected({ id, label })
                   close()

@@ -65,7 +65,6 @@ export default defineConfig(({ command }) => ({
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
-    'process.env.PUBLIC_MAINTENANCE_MESSAGE': JSON.stringify(process.env.PUBLIC_MAINTENANCE_MESSAGE),
   },
   vercel: {
     buildCommand: 'yarn build',

@@ -53,12 +53,12 @@ export const TabLabel = <T extends string | number>({
 }: TabLabelProps<T>) => {
   const hasText = label || suffix
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+    <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
       <WithTypography size={size} shouldWrap={!hasText && !!startAdornment}>
         {startAdornment}
       </WithTypography>
       {hasText && (
-        <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+        <Stack direction="row" sx={{ alignItems: 'baseline', gap: Spacing.xxs }}>
           {label && <Typography variant={TAB_TEXT_VARIANTS[size]}>{label}</Typography>}
           {suffix && (
             <Typography variant="highlightXs" className={TAB_SUFFIX_CLASS}>

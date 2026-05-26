@@ -92,12 +92,10 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         thumb: { size, getImages },
       } = getOrientationConfig(orientation)
       const { default: sliderThumbImage, hover: sliderThumbImageHover } = getImages(design)
+      const { SliderHandle } = design.Sliders
       const activeThumbStyles = {
-        backdropFilter: 'invert(1)', // This won't work for background images
-        // Instead, explicitly set an inverted background
-        background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
-        backgroundBlendMode: 'difference', // This inverts colors in the background
-        border: `1px solid ${design.Button.Primary.Default.Fill}`,
+        background: `${SliderHandle.Hover.Fill} url(${sliderThumbImageHover}) center no-repeat`,
+        border: `1px solid ${SliderHandle.Hover.Border}`,
         boxShadow: 'none' as const,
       }
 
@@ -105,9 +103,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         // Add 2px to the thumb width and height to compensate the border
         width: size.width,
         height: size.height,
-        background: `${design.Layer.Highlight.Fill} url(${sliderThumbImage}) center no-repeat`,
+        background: `${SliderHandle.Default.Fill} url(${sliderThumbImage}) center no-repeat`,
         transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
-        border: `1px solid ${design.Color.Neutral[25]}`,
+        border: `1px solid ${SliderHandle.Default.Border}`,
         borderRadius: 0,
         zIndex: 1,
         '&.Mui-active': activeThumbStyles,
@@ -119,7 +117,8 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
           '&:hover': activeThumbStyles,
         },
         '&.Mui-disabled': {
-          background: `${design.Color.Neutral[600]} url(${sliderThumbImage}) center no-repeat`,
+          background: `${SliderHandle.Disabled.Fill} url(${sliderThumbImage}) center no-repeat`,
+          borderColor: SliderHandle.Disabled.Border,
         },
         '&::after': {
           width: size.width,

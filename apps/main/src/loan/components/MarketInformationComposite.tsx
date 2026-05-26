@@ -9,7 +9,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { BlockchainIds, Chain } from '@ui-kit/utils/network'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
@@ -28,14 +28,14 @@ export const MarketInformationComposite = ({
   chainId,
   previewPrices,
 }: MarketInformationCompProps) => (
-  <Stack gap={PAGE_SPACING}>
+  <Stack sx={{ gap: PAGE_SPACING }}>
     <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
     <MarketHistoricalRatesChart
       market={market}
       blockchainId={BlockchainIds[Chain.Ethereum]}
       chainId={chainId}
       marketId={marketId}
-      rateMode="borrow"
+      rateMode={MarketRateType.Borrow}
     />
     <CrvUsdPriceChart />
 

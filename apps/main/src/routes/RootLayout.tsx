@@ -5,6 +5,7 @@ import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { useStore as useLendStore } from '@/lend/store/useStore'
 import { useStore as useLoanStore } from '@/loan/store/useStore'
+import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { GlobalLayout } from '@/routes/GlobalLayout'
 import isPropValid from '@emotion/is-prop-valid'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -14,9 +15,14 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
+import { MaintenancePage } from '@ui-kit/features/maintenance/components/MaintenancePage'
+import { useMaintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
+import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useBodyThemeClass } from '@ui-kit/hooks/useBodyThemeClass'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
@@ -48,7 +54,7 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
   )
 
 // Inner component that uses TanStack Query hooks
-const NetworkAwareLayout = () => {
+const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Maintenance }) => {
   const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
   const pathname = usePathname()
@@ -65,7 +71,12 @@ const NetworkAwareLayout = () => {
       <WagmiProvider config={config}>
         <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
           {network && (
-            <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+            <GlobalLayout
+              backendMaintenance={backendMaintenance}
+              currentApp={currentApp}
+              network={network}
+              networks={networks}
+            >
               <HeadContent />
               <Outlet />
             </GlobalLayout>
@@ -78,14 +89,22 @@ const NetworkAwareLayout = () => {
 
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
+  const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
   const devTools = !isCypress
+  useBodyThemeClass()
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary title={t`Layout error`}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <NetworkAwareLayout />
+              {backendMaintenance.isMaintenanceMode ? (
+                <MaintenancePage />
+              ) : (
+                <NetworkAwareLayout backendMaintenance={backendMaintenance} />
+              )}
+              {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

@@ -16,9 +16,9 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
       {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
-      <Stack direction="row" gap={Spacing.sm} alignItems="center">
+      <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
         <TokenPair chain={market.chain} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
-        <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
+        <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <MarketTitle
             title={[collateral.symbol, borrowed.symbol].join(' • ')}
             address={market.controllerAddress}

@@ -4,6 +4,7 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -36,6 +37,7 @@ export function ClosePositionInfoList({
       debt={constQ('0')}
       collateral={constQ('0')}
       isApproved={q(useCloseLoanIsApproved(params))}
+      oraclePrice={q(useMarketOraclePrice(params))}
       {...usePrevLoanState({ params, collateralToken, borrowToken })}
     />
   )

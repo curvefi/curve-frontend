@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react'
-import { Button, MenuItem } from '@mui/material'
+import { Button, MenuItem, MenuList } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -55,22 +55,24 @@ export const LegacyMarketSortDrawer = ({ onSortingChange, sortField }: Props) =>
     >
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid="drawer-sort-menu-lamalend-markets">
-        {sortOptions.map(({ id, label }) => (
-          <InvertOnHover hoverRef={menuRef} key={id}>
-            <MenuItem
-              ref={menuRef}
-              value={id}
-              className={selectedOption?.id === id ? 'Mui-selected' : ''}
-              onClick={() => handleSort(id)}
-              sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
-            >
-              <Typography component="span" variant="bodyMBold">
-                {label}
-              </Typography>
-              {selectedOption?.id === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
-            </MenuItem>
-          </InvertOnHover>
-        ))}
+        <MenuList disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: Spacing.sm }}>
+          {sortOptions.map(({ id, label }) => (
+            <InvertOnHover hoverRef={menuRef} key={id}>
+              <MenuItem
+                ref={menuRef}
+                value={id}
+                selected={selectedOption?.id === id}
+                onClick={() => handleSort(id)}
+                sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
+              >
+                <Typography component="span" variant="bodyMBold">
+                  {label}
+                </Typography>
+                {selectedOption?.id === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+              </MenuItem>
+            </InvertOnHover>
+          ))}
+        </MenuList>
       </DrawerItems>
     </SwipeableDrawer>
   )

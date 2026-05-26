@@ -3,14 +3,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
 type AppType = 'borrow' | 'supply'
 type NoPositionProps = {
   type: AppType
 }
-
-const TYPOGRAPHY_MAX_WIDTH = '27.5rem' // 440px
 
 const title: Record<AppType, string> = {
   borrow: t`No active position`,
@@ -23,15 +21,22 @@ const description: Record<AppType, string> = {
 }
 
 export const NoPosition = ({ type }: NoPositionProps) => (
-  <Stack flexDirection="column" alignItems="center" gap={Spacing.sm} padding={Spacing.md}>
+  <Stack
+    sx={{
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: Spacing.sm,
+      padding: Spacing.md,
+    }}
+  >
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
-    <Stack alignItems="center">
-      <Typography variant="headingXsBold" sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center' }}>
+    <Stack sx={{ alignItems: 'center' }}>
+      <Typography variant="headingXsBold" sx={{ maxWidth: MaxWidth.emptyStateCard, textAlign: 'center' }}>
         {title[type]}
       </Typography>
       <Typography
         variant="bodySRegular"
-        sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center', color: t => t.design.Text.TextColors.Secondary }}
+        sx={{ maxWidth: MaxWidth.emptyStateCard, textAlign: 'center', color: t => t.design.Text.TextColors.Secondary }}
       >
         {description[type]}
       </Typography>

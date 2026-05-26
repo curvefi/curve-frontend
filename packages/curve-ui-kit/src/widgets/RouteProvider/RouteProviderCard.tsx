@@ -58,9 +58,9 @@ export const RouteProviderCard = ({
       data-testid="route-provider-card"
       sx={{ padding: Spacing.sm.desktop }}
     >
-      <Stack sx={{ width: '100%' }} gap={Spacing.xxs} data-testid="route-provider-rows">
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="baseline" gap={Spacing.xxs}>
+      <Stack data-testid="route-provider-rows" sx={{ gap: Spacing.xxs, width: '100%' }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: Spacing.xxs }}>
             <WithSkeleton loading={isLoading}>
               <Typography
                 variant="tableCellMBold"
@@ -83,8 +83,8 @@ export const RouteProviderCard = ({
             route && <RouteComparisonChip maxAmountOut={bestOutputAmount} amountOut={route.amountOut} />
           )}
         </Stack>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Stack direction="row" gap={Spacing.xxs} alignItems="center">
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
             <WithSkeleton loading={isLoading}>
               <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
                 {amountOut == null || usdRate == null ? '-' : `~${formatUsd(parseFloat(amountOut) * usdRate)}`}
@@ -98,7 +98,7 @@ export const RouteProviderCard = ({
             )}
             {isFetching && <ReloadIcon sx={{ ...LoadingAnimation, width: IconSize.xxs, height: IconSize.xxs }} />}
           </Stack>
-          <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
             {Icon}
             <Typography variant="bodyXsRegular" color="textSecondary">
               {providerLabel}

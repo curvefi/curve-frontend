@@ -10,12 +10,12 @@ export const ListPageWrapper = ({ footer, children }: { children: ReactNode; foo
   <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
     <Stack
       sx={{
+        gap: Spacing.xxl,
         marginBlockStart: Spacing.xl,
         marginBlockEnd: Spacing.xxl,
         maxWidth: MaxWidth.table,
         minHeight: MinHeight.pageContent,
       }}
-      gap={Spacing.xxl}
     >
       {children}
     </Stack>

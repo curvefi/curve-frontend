@@ -79,6 +79,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   }) => (
     <NumericTextField
       size="small"
+      variant="outlined"
       fullWidth
       value={decimal(range[index])}
       min={decimal(min)}
@@ -95,7 +96,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   )
 
   return (
-    <Stack direction="row" gap={Spacing.sm}>
+    <Stack direction="row" sx={{ gap: Spacing.sm }}>
       {renderInputField({
         index: 0,
         placeholder: t`Min`,

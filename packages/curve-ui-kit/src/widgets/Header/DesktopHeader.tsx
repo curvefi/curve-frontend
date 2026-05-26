@@ -21,6 +21,7 @@ const { Spacing } = SizesAndSpaces
 export const DesktopHeader = ({
   currentMenu,
   chainId,
+  backendMaintenance,
   supportedNetworks,
   pages,
   appStats,
@@ -30,21 +31,12 @@ export const DesktopHeader = ({
     color="transparent"
     ref={useMainNavRef()}
     data-testid="desktop-main-nav"
-    sx={{
-      position: 'sticky',
-      top: 0,
-      boxShadow: 'none',
-      borderBottom: getHeaderBorder,
-    }}
+    sx={{ position: 'sticky', top: 0, boxShadow: 'none', borderBottom: getHeaderBorder }}
   >
-    <GlobalBanner networkId={networkId} chainId={chainId} />
+    <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
 
     <Toolbar
-      sx={{
-        backgroundColor: t => t.design.Layer[2].Fill,
-        justifyContent: 'space-around',
-        paddingY: 0,
-      }}
+      sx={{ backgroundColor: t => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
       data-testid="main-nav"
     >
       <Container sx={{ paddingInline: Spacing.md }}>
@@ -53,7 +45,7 @@ export const DesktopHeader = ({
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
+        <Box sx={{ display: 'flex', marginLeft: 2, justifyContent: 'flex-end', gap: 3, alignItems: 'center' }}>
           <UserProfile />
           <ChainSwitcher networks={supportedNetworks} />
           <ConnectWalletIndicator />
@@ -64,8 +56,8 @@ export const DesktopHeader = ({
     {pages.length > 0 && (
       <SubNav testId="subnav">
         <PageTabsSwitcher pages={pages} />
-        <Box flexGrow={1} />
-        <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: 'flex', gap: 3, alignItems: 'baseline', textOverflow: 'ellipsis', overflow: 'hidden' }}>
           <HeaderStats appStats={appStats} />
         </Box>
       </SubNav>

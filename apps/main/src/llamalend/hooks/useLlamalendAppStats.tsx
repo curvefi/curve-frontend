@@ -1,6 +1,7 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { useCrvUsdTotalSupply } from '@/llamalend/queries/crvusd-total-supply.query'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@primitives/fetch.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -12,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { type AppName, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
-import { Chain, CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
+import { Chain, CRVUSD_ADDRESS, formatNumber, formatUsd } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
@@ -22,20 +23,6 @@ const { useQuery: useAppStatsDailyVolume } = queryFactory({
       'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',
     )
     return resp.data.totalVolume
-  },
-  category: 'llamalend.appStats',
-  validationSuite: EmptyValidationSuite,
-})
-
-/**
- * Gets the total supply of crvUSD from the Curve Finance API.
- * It includes the full supply, including YB mints, and is more reliable than on-chain data.
- */
-const { useQuery: useCrvUsdTotalSupply } = queryFactory({
-  queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
-  queryFn: async () => {
-    const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
-    return decimal(await resp.text()) ?? null
   },
   category: 'llamalend.appStats',
   validationSuite: EmptyValidationSuite,

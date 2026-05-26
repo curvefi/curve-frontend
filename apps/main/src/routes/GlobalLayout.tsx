@@ -8,6 +8,7 @@ import { networks as crvusdNetworks } from '@/loan/networks'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
+import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, AppMenuOption, type AppName, LlamalendApps } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -55,11 +56,13 @@ const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
 
 export const GlobalLayout = <TId extends string, TChainId extends number>({
   children,
+  backendMaintenance,
   currentApp,
   network,
   networks,
 }: {
   children: ReactNode
+  backendMaintenance: Maintenance
   currentApp: AppName
   network: NetworkDef<TId, TChainId>
   networks: NetworkMapping<TId, TChainId>
@@ -67,6 +70,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   <Stack>
     <Header
       currentApp={currentApp}
+      backendMaintenance={backendMaintenance}
       chainId={network.chainId}
       networkId={network.id}
       currentMenu={useAppMenu(currentApp)}
