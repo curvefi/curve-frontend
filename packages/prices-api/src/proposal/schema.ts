@@ -85,7 +85,7 @@ export const getProposalDetailsResponse = z
   .transform(camelizeKeys)
   .transform(({ executionTx, script, votes, ...details }) => ({
     ...transformProposal({ ...details, executionTx }),
-    txExecution: executionTx ? executionTx : undefined,
+    txExecution: executionTx || undefined,
     script: script ?? '',
     votes: votes.map(item => ({
       voter: item.voter,

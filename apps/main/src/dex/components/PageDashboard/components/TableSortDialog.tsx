@@ -34,8 +34,7 @@ export const TableSortDialog = ({ className = '', tableLabel }: Props) => {
   }
 
   const value = `${sortBy}-${sortByOrder}`
-  const btnLabel = tableLabel[sortBy].mobile ? tableLabel[sortBy].mobile : tableLabel[sortBy].name
-
+  const btnLabel = tableLabel[sortBy].mobile || tableLabel[sortBy].name
   return (
     <Box className={className}>
       <OpenDialogButton overlayTriggerState={overlayTriggerState} showCaret variant="icon-outlined">
