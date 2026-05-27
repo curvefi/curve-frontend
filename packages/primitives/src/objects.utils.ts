@@ -68,18 +68,17 @@ export const isEmpty = (obj: object) => Object.keys(obj).length === 0
 
 export const pick = <T, K extends keyof T>(obj: T, ...keys: K[]) =>
   Object.fromEntries(keys.map(key => [key, obj[key]])) as { [P in K]: T[P] }
+type NonNullishTuple<T extends readonly unknown[]> = {
+  [K in keyof T]: NonNullable<T[K]>
+}
 
-export function maybe<T1, T2, R>(
-  value: [T1 | null | undefined, T2 | null | undefined] | null | undefined,
-  mapper: (value: [T1, T2]) => R,
+export function maybe<const T extends readonly unknown[], R>(
+  value: readonly [...T] | null | undefined,
+  mapper: (value: NonNullishTuple<T>) => R,
 ): R | undefined
-export function maybe<T1, T2, T3, R>(
-  value: [T1 | null | undefined, T2 | null | undefined, T3 | null | undefined] | null | undefined,
-  mapper: (value: [T1, T2, T3]) => R,
-): R | undefined
-export function maybe<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined
+export function maybe<T, R>(value: T | null | undefined, mapper: (value: NonNullable<T>) => R): R | undefined
 export function maybe<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined {
-  if (value === null || value === undefined) return undefined
+  if (value == null) return undefined
   if (Array.isArray(value) && value.some(x => x == null)) return undefined
   return mapper(value)
 }
