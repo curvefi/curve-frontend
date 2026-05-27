@@ -8,7 +8,6 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
@@ -17,7 +16,6 @@ import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from '
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
-import { UserPositionSummary } from './UserPositionsSummary'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -91,12 +89,6 @@ export const UserPositionsMarketRateTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && data.length)}
       isLoading={isLoading}
     >
-      {marketRateType === MarketRateType.Borrow && (
-        <>
-          <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
-          <UserPositionSummary markets={data} selectedChains={undefined} />
-        </>
-      )}
       <Stack
         sx={{
           backgroundColor: t => t.design.Layer[1].Fill,
