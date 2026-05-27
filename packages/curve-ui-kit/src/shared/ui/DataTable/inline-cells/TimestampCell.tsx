@@ -32,7 +32,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
       sx={{ gap: Spacing.xxs }}
     >
       <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
-        {formatDate(timestamp, 'short')}
+        {formatDate(timestamp, 'short', { omitYear: isMobile })}
       </Typography>
       <Stack
         direction="row"
