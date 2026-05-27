@@ -5,6 +5,7 @@ import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.ty
 import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
+import { resetUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   addCollateralFormValidationSuite,
@@ -12,7 +13,7 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCallbackSync, useFormSync, useForm } from '@ui-kit/features/forms'
+import { useCallbackSync, useForm, useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { Range } from '@ui-kit/types/util'
@@ -75,6 +76,9 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useAddCollateralPrices(params, enabled), onPricesUpdated)
 
   useFormSync(form, { maxCollateral: maxCollateral.data })
+
+  // `addCollateralFutureLeverage` depends on LL internal cache for currentLeverage, reset when new market data arrives
+  useOnChangeCallback(market, () => resetUserCurrentLeverage(params))
 
   const isPending = formState.isSubmitting || action.isPending
   return {
