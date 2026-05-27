@@ -14,12 +14,9 @@ import { mockTokenPrices } from '../tokens'
  */
 export const blockUnmockedLlamaMarketApis = () =>
   ['prices.curve.finance', 'api.curve.finance', 'api.merkl.xyz'].forEach(hostname =>
-    cy.intercept({ hostname }, req => {
-      req.reply({
-        statusCode: 503,
-        body: { error: `Unexpected external API request in Cypress test: ${req.url}` },
-      })
-    }),
+    cy.intercept({ hostname }, req =>
+      req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
+    ),
   )
 
 /** The cypress-wagmi-test-connector generates a fresh address at runtime, so we have to mock by pattern. */
