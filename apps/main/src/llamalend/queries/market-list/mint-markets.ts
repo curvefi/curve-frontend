@@ -8,13 +8,13 @@ import {
 import type { Address } from '@primitives/address.utils'
 import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
+import { evmAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
 import {
   UserContractParams,
   UserContractQuery,
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
-import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 
 export type MintMarket = MintMarketFromApi & {
   chain: Chain
@@ -28,10 +28,6 @@ export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMint
   validationSuite: EmptyValidationSuite,
 })
 
-const userEvmAddressValidationSuite = createValidationSuite(({ userAddress }: UserParams) => {
-  evmAddressValidationGroup({ evmAddress: userAddress })
-})
-
 const {
   getQueryOptions: getUserMintMarketsQueryOptions,
   getQueryData: getCurrentUserMintMarkets,
@@ -41,7 +37,7 @@ const {
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
     mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map(market => market.controller)),
   category: 'llamalend.user',
-  validationSuite: userEvmAddressValidationSuite,
+  validationSuite: evmAddressValidationSuite,
 })
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions

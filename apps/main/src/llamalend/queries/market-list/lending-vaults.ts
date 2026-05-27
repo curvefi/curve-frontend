@@ -11,13 +11,13 @@ import {
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
+import { evmAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
 import {
   type UserContractParams,
   type UserContractQuery,
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
-import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 
 export type LendingVault = Market & { chain: ChainName }
 
@@ -29,10 +29,6 @@ export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateL
     ),
   category: 'llamalend.marketList',
   validationSuite: EmptyValidationSuite,
-})
-
-const userEvmAddressValidationSuite = createValidationSuite(({ userAddress }: UserParams) => {
-  evmAddressValidationGroup({ evmAddress: userAddress })
 })
 
 const {
@@ -49,7 +45,7 @@ const {
       ]),
     ) as Record<ChainName, Address[]>,
   category: 'llamalend.user',
-  validationSuite: userEvmAddressValidationSuite,
+  validationSuite: evmAddressValidationSuite,
 })
 
 const {
@@ -113,7 +109,7 @@ const {
       ]),
     )
   },
-  validationSuite: userEvmAddressValidationSuite,
+  validationSuite: evmAddressValidationSuite,
 })
 
 export async function invalidateAllUserLendingSupplies(userAddress: Address | null | undefined) {
