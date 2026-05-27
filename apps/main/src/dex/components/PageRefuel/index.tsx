@@ -58,7 +58,7 @@ export const Refuel = () => {
               <Banner
                 subtitle={
                   t`Current reserve ratio: ` +
-                  formatNumber(reserveRatio, { unit: 'percentage', decimals: 6, abbreviate: false }) +
+                  formatNumber(reserveRatio * 100, { unit: 'percentage', decimals: 6, abbreviate: false }) +
                   t`. Refuel the pool to maintain balance`
                 }
                 severity="warning"
