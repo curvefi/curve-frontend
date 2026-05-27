@@ -43,6 +43,7 @@ export const {
   useQuery: useCreateLoanExpectedCollateral,
   queryKey: createLoanExpectedCollateralQueryKey,
   invalidate: invalidateCreateLoanExpectedCollateral,
+  reset: resetCreateLoanExpectedCollateral,
 } = queryFactory({
   queryKey: ({
     chainId,

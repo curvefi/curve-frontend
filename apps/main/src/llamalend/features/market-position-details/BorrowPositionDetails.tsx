@@ -1,6 +1,5 @@
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { type MarketTokens } from '@/llamalend/llama.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import type { UserMarketParams } from '@ui-kit/lib/model'
@@ -11,10 +10,12 @@ import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-export type BorrowPositionDetailsProps = { params: UserMarketParams; market: LlamaMarketTemplate | undefined }
+export type BorrowPositionDetailsProps = { params: UserMarketParams; tokens: Partial<MarketTokens> }
 
-export const BorrowPositionDetails = ({ params, market }: BorrowPositionDetailsProps) => {
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+export const BorrowPositionDetails = ({
+  params,
+  tokens: { collateralToken, borrowToken },
+}: BorrowPositionDetailsProps) => {
   const liquidationStatus = useLiquidationStatus(params)
   const statusContent =
     liquidationStatus.data &&

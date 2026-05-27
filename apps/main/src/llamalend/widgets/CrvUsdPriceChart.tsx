@@ -1,6 +1,5 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
-import { useCrvUsdTotalSupply } from '@/llamalend/queries/crvusd-total-supply.query'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -29,6 +28,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -61,7 +61,7 @@ export const CrvUsdPriceChart = () => {
     chainId: Chain.Ethereum,
     tokenAddress: CRVUSD_ADDRESS,
   })
-  const { data: totalSupply, isLoading: isTotalSupplyLoading } = useCrvUsdTotalSupply({})
+  const { data: totalSupply, isLoading: isTotalSupplyLoading } = useCrvUsdSupplyTotal({})
   // keepPreviousData is enabled on this query for analytics, so isLoading stays false when switching time options.
   // Check isPlaceholderData to show the loader while fresh data is being fetched.
   const showLoading = isLoading || isPlaceholderData

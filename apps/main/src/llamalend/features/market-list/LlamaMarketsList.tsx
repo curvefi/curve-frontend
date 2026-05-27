@@ -76,9 +76,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
   }
 }
 
-/**
- * Page for displaying the lending markets table.
- */
+/** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()

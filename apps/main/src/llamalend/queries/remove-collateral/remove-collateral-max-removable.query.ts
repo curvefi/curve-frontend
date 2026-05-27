@@ -9,7 +9,11 @@ import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-valid
 type MaxRemovableQuery<T = IChainId> = UserMarketQuery<T> & UserQuery
 type MaxRemovableParams<T = IChainId> = FieldsOf<MaxRemovableQuery<T>>
 
-export const { useQuery: useMaxRemovableCollateral, queryKey: maxRemovableCollateralKey } = queryFactory({
+export const {
+  useQuery: useMaxRemovableCollateral,
+  queryKey: maxRemovableCollateralKey,
+  reset: invalidateMaxRemovableCollateral,
+} = queryFactory({
   queryKey: (params: MaxRemovableParams) => [...rootKeys.userMarket(params), 'maxRemovable'] as const,
   queryFn: async ({ marketId }: MaxRemovableQuery) => (await getLoanImplementation(marketId).maxRemovable()) as Decimal,
   category: 'llamalend.removeCollateral',

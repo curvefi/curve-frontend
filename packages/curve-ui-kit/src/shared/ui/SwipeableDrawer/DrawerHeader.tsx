@@ -9,7 +9,7 @@ export const DrawerHeader = ({ title, children }: { title: string; children?: Re
     direction="row"
     sx={{
       alignItems: 'flex-end',
-      justifyContent: 'flex-start',
+      justifyContent: 'space-between',
       borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
       minHeight: LineHeight.xxl,
       p: Spacing.md,

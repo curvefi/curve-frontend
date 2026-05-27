@@ -91,6 +91,7 @@ export async function getPools(
         'tokensLowercase',
         'tokenAddresses',
         'tokenAddressesAll',
+        'tokenDecimalsAll',
         'pool.id',
         'pool.name',
         'pool.address',

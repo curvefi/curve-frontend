@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { constQ } from '@ui-kit/types/util'
 import { ChainFilterChips } from '../DataTable/chips/ChainFilterChips'
 
 const meta: Meta<typeof ChainFilterChips> = {
   title: 'UI Kit/DataTable/ChainFilterChips',
   component: ChainFilterChips,
   argTypes: {
-    chains: {
+    chainsQuery: {
       control: 'object',
       description: 'Array of blockchain network IDs to display',
     },
@@ -19,44 +20,71 @@ const meta: Meta<typeof ChainFilterChips> = {
       description: 'Callback fired when a chain chip is toggled',
     },
   },
+  args: {
+    selectedChains: [],
+  },
 }
 
 export default meta
 type Story = StoryObj<typeof ChainFilterChips>
 
-const SAMPLE_CHAINS = ['ethereum', 'arbitrum', 'optimism', 'polygon', 'base', 'gnosis', 'avalanche', 'fantom']
+const SAMPLE_CHAINS_QUERY = constQ([
+  'ethereum',
+  'arbitrum',
+  'optimism',
+  'polygon',
+  'base',
+  'gnosis',
+  'avalanche',
+  'fantom',
+])
 
 export const Default: Story = {
   args: {
-    chains: SAMPLE_CHAINS,
+    chainsQuery: SAMPLE_CHAINS_QUERY,
     selectedChains: ['ethereum'],
   },
 }
 
 export const MultipleSelected: Story = {
   args: {
-    chains: SAMPLE_CHAINS,
+    chainsQuery: SAMPLE_CHAINS_QUERY,
     selectedChains: ['ethereum', 'arbitrum', 'optimism'],
   },
 }
 
 export const NoneSelected: Story = {
   args: {
-    chains: SAMPLE_CHAINS,
-    selectedChains: [],
+    chainsQuery: SAMPLE_CHAINS_QUERY,
+  },
+}
+
+export const NoNetworksFound: Story = {
+  args: {
+    chainsQuery: constQ(undefined),
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    chainsQuery: { ...constQ(undefined), isLoading: true },
   },
 }
 
 /** Interactive example demonstrating single-select behavior like in IntegrationsList */
 export const InteractiveSingleSelect: Story = {
   args: {
-    chains: SAMPLE_CHAINS,
+    chainsQuery: SAMPLE_CHAINS_QUERY,
     selectedChains: ['ethereum'],
   },
   render: function Render(args) {
     const [selected, setSelected] = useState<string>('ethereum')
     return (
-      <ChainFilterChips chains={args.chains} selectedChains={[selected]} toggleChain={chain => setSelected(chain)} />
+      <ChainFilterChips
+        chainsQuery={args.chainsQuery}
+        selectedChains={[selected]}
+        toggleChain={chain => setSelected(chain)}
+      />
     )
   },
 }
@@ -64,7 +92,7 @@ export const InteractiveSingleSelect: Story = {
 /** Interactive example demonstrating multi-select behavior */
 export const InteractiveMultiSelect: Story = {
   args: {
-    chains: SAMPLE_CHAINS,
+    chainsQuery: SAMPLE_CHAINS_QUERY,
     selectedChains: ['ethereum'],
   },
   render: function Render(args) {
@@ -72,6 +100,6 @@ export const InteractiveMultiSelect: Story = {
     const toggleChain = (chain: string) => {
       setSelected(prev => (prev.includes(chain) ? prev.filter(c => c !== chain) : [...prev, chain]))
     }
-    return <ChainFilterChips chains={args.chains} selectedChains={selected} toggleChain={toggleChain} />
+    return <ChainFilterChips chainsQuery={args.chainsQuery} selectedChains={selected} toggleChain={toggleChain} />
   },
 }
