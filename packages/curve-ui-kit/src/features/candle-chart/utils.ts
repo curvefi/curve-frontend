@@ -1,18 +1,4 @@
-import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import { formatNumber } from '@ui-kit/utils'
-import type { TimeOption } from './types'
-
-const toSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
-
-export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - toSeconds(timeOption)
-
-export const getThreeHundredResultsAgo = (timeOption: TimeOption, timestamp: number) =>
-  Math.floor(timestamp - 299 * toSeconds(timeOption))
-
-export const convertToLocaleTimestamp = (unixTimestamp: number) => {
-  const offsetInSeconds = new Date().getTimezoneOffset() * 60
-  return unixTimestamp - offsetInSeconds
-}
 
 /**
  * Calculates robust price range for chart auto-scaling by filtering outliers

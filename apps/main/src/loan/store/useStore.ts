@@ -16,7 +16,6 @@ import { LoanDeleverageSlice, createLoanDeleverageSlice } from '@/loan/store/cre
 import { LoanIncreaseSlice, createLoanIncrease } from '@/loan/store/createLoanIncreaseSlice'
 import { LoanLiquidateSlice, createLoanLiquidate } from '@/loan/store/createLoanLiquidate'
 import { LoansSlice, createLoansSlice } from '@/loan/store/createLoansSlice'
-import { OhlcChartSlice, createOhlcChart as createOhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
 import { ScrvUsdSlice, createScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
 
 export type State = AppSlice &
@@ -28,7 +27,6 @@ export type State = AppSlice &
   LoanDeleverageSlice &
   LoanIncreaseSlice &
   LoanLiquidateSlice &
-  OhlcChartSlice &
   ScrvUsdSlice
 
 const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
@@ -41,7 +39,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createLoanDeleverageSlice(set, get),
   ...createLoanIncrease(set, get),
   ...createLoanLiquidate(set, get),
-  ...createOhlcChartSlice(set, get),
   ...createScrvUsdSlice(set, get),
 })
 
