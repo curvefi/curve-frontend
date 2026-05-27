@@ -1,5 +1,5 @@
 import type { AppRoute } from '@cy/support/routes'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 const REFUEL_POOL_ADDRESS = '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2'
 const REFUEL_ROUTE = `dex/ethereum/pools/${REFUEL_POOL_ADDRESS}/refuel` satisfies AppRoute
@@ -35,7 +35,7 @@ describe('Refuel page', () => {
     getTestById('monthly-action-info-value').should('have.attr', 'data-value', '-')
 
     getTestById('pool-information').should('be.visible')
-    getTestById('pool-tvl-value').invoke('attr', 'data-value').should('match', /\d/)
+    getTestById('pool-tvl-value', API_LOAD_TIMEOUT).invoke('attr', 'data-value').should('match', /\d/)
     getTestById('pool-volume-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('pool-fees-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('pool-apr-value').invoke('attr', 'data-value').should('match', /\d/)
