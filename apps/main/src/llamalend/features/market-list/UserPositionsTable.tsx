@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import Stack from '@mui/material/Stack'
-import { fromEntries, notFalsyArray } from '@primitives/objects.utils'
+import Typography from '@mui/material/Typography'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
@@ -25,6 +26,8 @@ import { LegacyLendingMarketsFilters } from './LegacyLendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
 import { UserPositionSummary } from './UserPositionsSummary'
+
+const { Spacing } = SizesAndSpaces
 
 const searchKey = 'search-user' as const
 
@@ -44,54 +47,6 @@ const SORT_QUERY_FIELD = {
   [MarketRateType.Supply]: 'userSortSupply',
 }
 
-/** This hook for tabs inside the datatable is temporary, we want to get rid of the tabs altogether */
-const useTabs = (results: LlamaMarketsResult | undefined) => {
-  const { markets = [], userHasPositions } = results ?? {}
-
-  // Calculate total positions number across all markets (independent of filters)
-  const openPositionsCount = useMemo(
-    (): Record<MarketRateType, string | undefined> =>
-      fromEntries(
-        Object.values(MarketRateType).map(type => [
-          type,
-          markets && `${markets.filter(market => market.userHasPositions?.[type]).length}`,
-        ]),
-      ),
-    [markets],
-  )
-
-  // Define tabs with position counts
-  const tabs: TabOption<MarketRateType>[] = useMemo(
-    () => [
-      {
-        value: MarketRateType.Borrow,
-        label: t`Borrowing`,
-        suffix: openPositionsCount[MarketRateType.Borrow],
-      },
-      {
-        value: MarketRateType.Supply,
-        label: t`Lending`,
-        suffix: openPositionsCount[MarketRateType.Supply],
-      },
-    ],
-    [openPositionsCount],
-  )
-
-  // Show the first tab that has user positions by default, or the first tab if none are found
-  const defaultTab = useMemo(
-    () => tabs.find(({ value }) => userHasPositions?.Lend[value] || userHasPositions?.Mint[value]) ?? tabs[0],
-    [userHasPositions, tabs],
-  )
-  const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
-
-  // Update tab when defaultTab changes (e.g., when user positions data loads)
-  useEffect(() => {
-    setTab(defaultTab.value)
-  }, [defaultTab.value])
-
-  return [tab, setTab, tabs] as const
-}
-
 const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
 
@@ -108,7 +63,7 @@ type UserPositionsTableProps = {
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
-const DEFAULT_VISIBLE_ROWS = 3
+// const DEFAULT_VISIBLE_ROWS = 3
 
 export const UserPositionsTable = ({
   onReload,
@@ -116,7 +71,7 @@ export const UserPositionsTable = ({
   tableQuery: { data: queryData, isLoading, error },
 }: UserPositionsTableProps) => {
   const { markets = [], userHasPositions } = queryData ?? {}
-  const [tab, setTab, tabs] = useTabs(queryData)
+  const tab: MarketRateType = MarketRateType.Supply
 
   const userQuery = useMappedQuery(
     tableQuery,
@@ -158,10 +113,10 @@ export const UserPositionsTable = ({
     ...getTableOptions(queryData),
   })
   return (
-    <LegacyDataTable
+    <DataTable
       table={table}
-      rowLimit={DEFAULT_VISIBLE_ROWS}
-      viewAllLabel="View all positions"
+      // rowLimit={DEFAULT_VISIBLE_ROWS}
+      // viewAllLabel="View all positions"
       emptyState={
         <UserPositionsEmptyState
           state={getEmptyState(!!error, userData?.length > 0)}
@@ -173,7 +128,7 @@ export const UserPositionsTable = ({
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={isLoading}
+      isLoading={isLoading}
     >
       <Stack>
         <LegacyTableFilters<LlamaMarketColumnId>
@@ -205,18 +160,16 @@ export const UserPositionsTable = ({
         />
         <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
         <Stack
-          direction="row"
           sx={{
-            justifyContent: 'space-between',
-            alignItems: 'stretch',
             backgroundColor: t => t.design.Layer[1].Fill,
-            flexGrow: 1,
-            borderBottom: t => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
+            paddingBlockEnd: Spacing.xs,
           }}
         >
-          <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} overflow="standard" />
+          <Typography variant="headingXsBold" color="textSecondary">
+            {tab}
+          </Typography>
         </Stack>
       </Stack>
-    </LegacyDataTable>
+    </DataTable>
   )
 }

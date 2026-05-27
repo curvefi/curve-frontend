@@ -90,11 +90,13 @@ export const LlamaMarketsList = () => {
     onReload,
   } = useTableLlamaMarkets(address)
 
+  const isNewLayout = useNewMarketListLayout()
+
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
         data?.userHasPositions &&
-        (useNewMarketListLayout() ? (
+        (isNewLayout ? (
           <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
         ) : (
           <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
@@ -112,7 +114,7 @@ export const LlamaMarketsList = () => {
           />
         </Box>
       )}
-      {useNewMarketListLayout() ? (
+      {isNewLayout ? (
         <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={!!error} loading={isLoading} />
