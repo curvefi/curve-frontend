@@ -23,6 +23,7 @@ import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
 import { LegacyUserPositionsTable } from './LegacyUserPositionsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
+import { UserPositionsTable } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -92,7 +93,12 @@ export const LlamaMarketsList = () => {
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
-        data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+        data?.userHasPositions &&
+        (useNewMarketListLayout() ? (
+          <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+        ) : (
+          <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+        ))
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard

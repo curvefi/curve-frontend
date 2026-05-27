@@ -37,13 +37,34 @@ type Tooltip = ColumnMeta<never, never>['tooltip']
 type LlamaColumn = ColumnDefinition<LlamaMarket>
 type LlamaColumnOptions = Omit<LlamaColumn, 'id' | 'header'>
 
-const columnHelper = createColumnHelper<LlamaMarket>()
-
 const createTooltip = (id: keyof typeof LLAMA_MARKET_TITLES, body: ReactNode): Tooltip => ({
   title: LLAMA_MARKET_TITLES[id],
   body,
 })
 
+/** Define a display column using its id as the title lookup key. */
+const display = (id: LlamaMarketColumnId, column: LlamaColumnOptions): LlamaColumn => ({
+  ...column,
+  id,
+  header: LLAMA_MARKET_TITLES[id],
+})
+
+/** Define an accessor column using separate data and table identifiers. */
+const accessor = (id: LlamaMarketColumnId, field: DeepKeys<LlamaMarket>, column: LlamaColumnOptions): LlamaColumn =>
+  createColumnHelper<LlamaMarket>().accessor(field, {
+    ...column,
+    id,
+    header: LLAMA_MARKET_TITLES[id],
+  })
+
+/** Define a hidden column. */
+const hidden = (id: LlamaMarketColumnId, field: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
+  accessor(id, field, {
+    filterFn,
+    meta: { hidden: true },
+  })
+
+/** Titles for the lending markets table. */
 export const LLAMA_MARKET_TITLES: Record<LlamaMarketColumnId, string> = {
   [LlamaMarketColumnId.BorrowedSymbol]: t`Debt`,
   [LlamaMarketColumnId.CollateralSymbol]: t`Collateral`,
@@ -74,44 +95,12 @@ export const LLAMA_MARKET_TITLES: Record<LlamaMarketColumnId, string> = {
   [LlamaMarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
 } as const
 
-/** Define a display column using its id as the title lookup key. */
-const display = (id: LlamaMarketColumnId, column: LlamaColumnOptions): LlamaColumn => ({
-  ...column,
-  id,
-  header: LLAMA_MARKET_TITLES[id],
+const assetsColumn = accessor(LlamaMarketColumnId.Assets, LlamaMarketColumnId.Assets, {
+  cell: MarketTitleCell,
+  meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
 })
 
-/** Define an accessor column using separate data and table identifiers. */
-const accessor = (id: LlamaMarketColumnId, field: DeepKeys<LlamaMarket>, column: LlamaColumnOptions): LlamaColumn =>
-  columnHelper.accessor(field, {
-    ...column,
-    id,
-    header: LLAMA_MARKET_TITLES[id],
-  })
-
-/** Define a hidden column. */
-const hidden = (id: LlamaMarketColumnId, field: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
-  accessor(id, field, {
-    filterFn,
-    meta: { hidden: true },
-  })
-
-/** Columns for the lending markets table. */
-export const LLAMA_MARKET_COLUMNS = [
-  accessor(LlamaMarketColumnId.Assets, LlamaMarketColumnId.Assets, {
-    cell: MarketTitleCell,
-    meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
-  }),
-  display(LlamaMarketColumnId.UserBorrowed, {
-    cell: PriceCell,
-    meta: { type: 'numeric' },
-    sortUndefined: 'last',
-  }),
-  display(LlamaMarketColumnId.UserCollateral, {
-    cell: PriceCell,
-    meta: { type: 'numeric' },
-    sortUndefined: 'last',
-  }),
+const userSupplyColumns = [
   display(LlamaMarketColumnId.UserEarnings, {
     cell: PriceCell,
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
@@ -128,6 +117,22 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
+]
+
+const userBorrowColumns = [
+  display(LlamaMarketColumnId.UserBorrowed, {
+    cell: PriceCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  display(LlamaMarketColumnId.UserCollateral, {
+    cell: PriceCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+]
+
+const borrowRateColumns = [
   accessor(LlamaMarketColumnId.BorrowRate, 'rates.borrowApr', {
     cell: RateCell,
     meta: {
@@ -145,6 +150,15 @@ export const LLAMA_MARKET_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
+]
+
+const supplyRateColumn = accessor(LlamaMarketColumnId.LendRate, 'rates.lendTotalApyMinBoosted', {
+  cell: RateCell,
+  meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
+  sortUndefined: 'last',
+})
+
+const userBorrowAdditionalColumns = [
   display(LlamaMarketColumnId.UserLtv, {
     cell: LtvCell,
     meta: { type: 'numeric' },
@@ -155,11 +169,16 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.LendRate, 'rates.lendTotalApyMinBoosted', {
-    cell: RateCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
-    sortUndefined: 'last',
-  }),
+]
+
+/** Columns for the lending markets table. */
+export const LLAMA_MARKET_COLUMNS = [
+  assetsColumn,
+  ...userBorrowColumns,
+  ...userSupplyColumns,
+  ...borrowRateColumns,
+  ...userBorrowAdditionalColumns,
+  supplyRateColumn,
   accessor(LlamaMarketColumnId.BorrowChart, 'rates.borrowApr', {
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
@@ -220,4 +239,19 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
   hidden(LlamaMarketColumnId.Version, LlamaMarketColumnId.Version, multiFilterFn),
+] satisfies LlamaColumn[]
+
+/** Columns for the user borrow position table. */
+export const USER_BORROW_POSITION_COLUMNS = [
+  assetsColumn,
+  ...userBorrowColumns,
+  ...borrowRateColumns,
+  ...userBorrowAdditionalColumns,
+] satisfies LlamaColumn[]
+
+/** Columns for the user supply position table. */
+export const USER_SUPPLY_POSITION_COLUMNS = [
+  assetsColumn,
+  ...userSupplyColumns,
+  supplyRateColumn,
 ] satisfies LlamaColumn[]
