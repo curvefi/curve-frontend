@@ -1,9 +1,9 @@
+import { sortBy } from 'lodash'
 import { TIME_OPTION_MS } from '../../lib/model/time'
 import { formatNumber } from '../../utils/number'
 import type { TimeOption } from './types'
 
 const toSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
-const isValidPrice = (value: number) => Number.isFinite(value) && value >= 0
 const clampPercentile = (value: number, fallback: number) =>
   Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback
 const getPercentileIndex = (length: number, percentile: number) =>
@@ -22,10 +22,10 @@ export const convertToLocaleTimestamp = (unixTimestamp: number) => {
 /**
  * Calculates a robust non-negative price range for chart auto-scaling.
  *
- * Invalid prices are ignored, and percentile clipping keeps old anomalous candles from flattening the chart.
+ * Percentile clipping keeps old anomalous candles from flattening the chart.
  * Recent prices bypass the percentile window so current price action remains visible.
  *
- * @returns Object with minValue and maxValue, or null if no valid price data is available.
+ * @returns Object with minValue and maxValue, or null if no price data is available.
  * @example
  * const prices = [100, 101, 102, 1000, 103]
  * const recentPrices = [103]
@@ -38,7 +38,7 @@ export function calculateRobustPriceRange(
   upperPercentile = 0.98,
   padding = 0.05,
 ): { minValue: number; maxValue: number } | null {
-  const sortedPrices = prices.filter(isValidPrice).sort((a, b) => a - b)
+  const sortedPrices = sortBy(prices, price => price)
 
   if (sortedPrices.length === 0) {
     // Let the chart fall back to its native autoscale rather than guessing a default price.
@@ -53,10 +53,9 @@ export function calculateRobustPriceRange(
   let minValue = sortedPrices[lowerIndex]
   let maxValue = sortedPrices[upperIndex]
 
-  const validRecentPrices = recentPrices.filter(isValidPrice)
-  if (validRecentPrices.length > 0) {
-    const recentMin = Math.min(...validRecentPrices)
-    const recentMax = Math.max(...validRecentPrices)
+  if (recentPrices.length > 0) {
+    const recentMin = Math.min(...recentPrices)
+    const recentMax = Math.max(...recentPrices)
     minValue = Math.min(minValue, recentMin)
     maxValue = Math.max(maxValue, recentMax)
   }

@@ -2,22 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
 describe('calculateRobustPriceRange', () => {
-  it('ignores invalid prices', () => {
-    expect(calculateRobustPriceRange([NaN, Infinity, -Infinity, -1])).toBeNull()
-    expect(calculateRobustPriceRange([1, NaN, -2, 2], [Infinity, -3, 3])).toEqual({
-      minValue: 0.9,
-      maxValue: 3.1,
-    })
+  it('returns null when no prices are available', () => {
+    expect(calculateRobustPriceRange([])).toBeNull()
   })
 
   it('does not let padding push non-negative prices below zero', () => {
     const range = calculateRobustPriceRange([0.01, 0.4], [], 0, 1, 0.1)
     expect(range?.minValue).toBe(0)
     expect(range?.maxValue).toBeCloseTo(0.439)
-  })
-
-  it('returns null when only negative prices are available', () => {
-    expect(calculateRobustPriceRange([-0.01, -0.4])).toBeNull()
   })
 
   it('keeps percentile boundaries in range', () => {
