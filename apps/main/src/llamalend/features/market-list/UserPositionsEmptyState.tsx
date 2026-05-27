@@ -60,7 +60,7 @@ export const UserPositionsEmptyState = ({
   const { title, subtitle, buttonLabel, onButtonClick } = configs[state]
 
   return (
-    <EmptyStateRow table={table}>
+    <EmptyStateRow size="sm" table={table}>
       <EmptyStateCard
         title={title}
         subtitle={subtitle}
