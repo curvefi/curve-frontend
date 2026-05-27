@@ -3,7 +3,6 @@ import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { TIME_OPTIONS } from './constants'
 
 export type TimeOption = (typeof TIME_OPTIONS)[number]
-export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
 export type ChartSelection =
   | { type: 'lp-usd' }
@@ -26,20 +25,9 @@ export interface LpPriceOhlcDataFormatted {
   low: number
 }
 
-export interface LlamaBaselinePriceData {
-  time: UTCTimestamp
-  base_price: number
-}
-
 export interface OraclePriceData {
   time: UTCTimestamp
   value: number
-}
-
-export interface LpPriceApiResponse {
-  chain: string
-  address: string
-  data: LpPriceOhlcData[]
 }
 
 export type LiquidationRange = { value: number; time: UTCTimestamp }

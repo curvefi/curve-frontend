@@ -1,23 +1,10 @@
 import { sortBy } from 'lodash'
-import { TIME_OPTION_MS } from '../../lib/model/time'
 import { formatNumber } from '../../utils/number'
-import type { TimeOption } from './types'
 
-const toSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
 const clampPercentile = (value: number, fallback: number) =>
   Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback
 const getPercentileIndex = (length: number, percentile: number) =>
   Math.max(0, Math.min(length - 1, Math.floor(length * percentile)))
-
-export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - toSeconds(timeOption)
-
-export const getThreeHundredResultsAgo = (timeOption: TimeOption, timestamp: number) =>
-  Math.floor(timestamp - 299 * toSeconds(timeOption))
-
-export const convertToLocaleTimestamp = (unixTimestamp: number) => {
-  const offsetInSeconds = new Date().getTimezoneOffset() * 60
-  return unixTimestamp - offsetInSeconds
-}
 
 /**
  * Calculates a robust non-negative price range for chart auto-scaling.
