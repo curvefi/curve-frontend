@@ -10,6 +10,7 @@ import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
+import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -29,7 +30,6 @@ import { Script } from './components/Script'
 import { ProposalHeader } from './ProposalHeader'
 import { ProposalInformation } from './ProposalInformation'
 import { Voters } from './Voters'
-import { maybe } from '@primitives/objects.utils'
 
 export const Proposal = () => {
   const { proposalId: rProposalId } = useParams<ProposalUrlParams>()

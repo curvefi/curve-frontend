@@ -9,11 +9,11 @@ import {
   useMarketUsers,
 } from '@/llamalend/queries/market'
 import type { Endpoint } from '@curvefi/prices-api/lending'
+import { maybe } from '@primitives/objects.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
-import { maybe } from '@primitives/objects.utils'
 
 const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
   [LlamaMarketType.Lend]: 'lending',

@@ -6,13 +6,13 @@ import {
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalEqual } from '@ui-kit/utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
-import { maybe } from '@primitives/objects.utils'
 
 const getIsWithdrawFull = ({
   withdrawAmount,

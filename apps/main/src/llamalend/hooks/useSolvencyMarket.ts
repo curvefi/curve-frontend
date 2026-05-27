@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { RESOLVED_QUERY_RESULT } from '@ui-kit/lib/queries'
@@ -10,7 +11,6 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateMarketSolvency, createGetBadDebtMarket } from '../llama.utils'
 import { getBadDebtLendMarketsOptions } from '../queries/market/market-bad-debt.query'
 import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
-import { maybe } from '@primitives/objects.utils'
 
 type SolvencyMarketParams = {
   blockchainId: Chain | undefined

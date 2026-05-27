@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { useMemo } from 'react'
-import type { DeepKeys } from '@tanstack/table-core'
 import { maybe } from '@primitives/objects.utils'
+import type { DeepKeys } from '@tanstack/table-core'
 
 export const useMaxValue = <TKey>({
   max,

@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type EstimatedTxCostProps } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { maybe } from '@primitives/objects.utils'
 
 type BridgeActionInfosProps = EstimatedTxCostProps & {
   /** Query returning the estimated bridge cost in the chain's native token. */

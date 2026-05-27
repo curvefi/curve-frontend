@@ -13,9 +13,9 @@ import {
 import type { PoolType } from '@/dex/components/PageDeployGauge/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import { maybe } from '@primitives/objects.utils'
 
 type Props = {
   chainId: ChainId

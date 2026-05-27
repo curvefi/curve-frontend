@@ -1,12 +1,12 @@
 import { formatEther } from 'viem'
 import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS } from '../constants'
 import type { PegKeeper } from '../types'
-import { maybe } from '@primitives/objects.utils'
 
 export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKeeper) {
   const { data: debt, refetch: refetchDebt } = useReadContract({

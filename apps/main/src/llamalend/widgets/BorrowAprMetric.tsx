@@ -1,4 +1,5 @@
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { maybe } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
@@ -6,7 +7,6 @@ import type { LlamaMarketType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
-import { maybe } from '@primitives/objects.utils'
 
 type BorrowRateMetric = {
   rate: number | null | undefined
