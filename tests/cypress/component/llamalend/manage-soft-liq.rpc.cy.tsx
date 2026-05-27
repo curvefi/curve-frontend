@@ -1,5 +1,4 @@
 import { type ReactNode, useMemo } from 'react'
-import { resetLendMarkets } from '@/lend/queries/lend-market-names.query'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -45,12 +44,7 @@ describe('Manage soft liquidation', () => {
       config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
       autoConnect
     >
-      <CurveProvider
-        app="llamalend"
-        network={network}
-        onChainUnavailable={console.error}
-        hydrate={{ llamalend: () => resetLendMarkets({ chainId, enableLLv2: true }) }}
-      >
+      <CurveProvider app="llamalend" network={network} onChainUnavailable={console.error}>
         {children}
       </CurveProvider>
     </ComponentTestWrapper>

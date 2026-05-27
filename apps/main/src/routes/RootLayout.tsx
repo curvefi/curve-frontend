@@ -22,6 +22,7 @@ import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintena
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { useBodyThemeClass } from '@ui-kit/hooks/useBodyThemeClass'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
@@ -41,10 +42,11 @@ import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 const shouldForwardProp = (propName: string, target: unknown) => typeof target !== 'string' || isPropValid(propName)
 
 function useHydrationMethods(): HydratorMap {
-  const crvusd: HydratorMap['crvusd'] = useLoanStore().hydrate
-  const dex: HydratorMap['dex'] = useDexStore().hydrate
-  const lend: HydratorMap['lend'] = useLendStore().hydrate
-  return useMemo(() => ({ crvusd, dex, lend }), [crvusd, dex, lend])
+  const loanSlicesEnabled = useLoanSlices()
+  const dex = useDexStore().hydrate
+  const crvusd = useLoanStore().hydrate
+  const lend = useLendStore().hydrate
+  return useMemo(() => ({ dex, ...(loanSlicesEnabled && { crvusd, lend }) }), [crvusd, dex, lend, loanSlicesEnabled])
 }
 
 const useBreadcrumbs = (pathname: string, { origin, search } = window.location) =>

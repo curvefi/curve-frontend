@@ -6,7 +6,14 @@ import { type Column, flexRender, type Header } from '@tanstack/react-table'
 import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Tooltip } from '../Tooltip'
-import { getAlignment, getExtraColumnPadding, type TableItem } from './data-table.utils'
+import {
+  DataTableHeaderCellPaddingBlockEnd,
+  DataTableHeaderCellVerticalAlign,
+  getAlignment,
+  getExtraColumnPadding,
+  type DataTableSize,
+  type TableItem,
+} from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -14,10 +21,12 @@ function useHeaderSx<T extends TableItem>({
   isSticky,
   column,
   width,
+  size,
 }: {
   column: Column<T>
   isSticky: boolean
   width?: string | number
+  size: DataTableSize
 }) {
   const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(column)
   const canSort = column.getCanSort()
@@ -26,10 +35,11 @@ function useHeaderSx<T extends TableItem>({
   return useMemo(
     (): SxProps<Theme> => ({
       textAlign,
-      verticalAlign: 'bottom',
-      padding: Spacing.sm,
-      paddingBlockStart: 0,
+      verticalAlign: DataTableHeaderCellVerticalAlign[size],
       color: t => t.design.Table.Header['Label_&_icon'][isSorted ? 'Active' : 'Default'],
+      paddingBlockStart: 0,
+      paddingBlockEnd: DataTableHeaderCellPaddingBlockEnd[size],
+      paddingInline: Spacing.xs,
       paddingInlineStart,
       paddingInlineEnd,
       ...(canSort && {
@@ -48,7 +58,7 @@ function useHeaderSx<T extends TableItem>({
       width,
       minWidth: Sizing['3xl'],
     }),
-    [canSort, isSorted, isSticky, paddingInlineEnd, paddingInlineStart, textAlign, width],
+    [canSort, isSorted, isSticky, paddingInlineEnd, paddingInlineStart, size, textAlign, width],
   )
 }
 
@@ -56,24 +66,26 @@ export const HeaderCell = function <T extends TableItem>({
   header,
   isSticky,
   width,
+  size,
 }: {
   header: Header<T, unknown>
   isSticky: boolean
   width?: string | number
+  size: DataTableSize
 }) {
   const { column } = header
   const { tooltip } = column.columnDef.meta ?? {}
   return (
     <Typography
       component="th"
-      sx={useHeaderSx({ column, isSticky, width })}
+      sx={useHeaderSx({ column, isSticky, width, size })}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
       variant="tableHeaderS"
     >
       <Tooltip title={tooltip?.title} {...tooltip}>
-        <Sortable column={column} isEnabled={column.getCanSort()}>
+        <Sortable column={column} size={size} isEnabled={column.getCanSort()}>
           {flexRender(column.columnDef.header, header.getContext())}
         </Sortable>
       </Tooltip>
