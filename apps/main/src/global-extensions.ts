@@ -1,4 +1,5 @@
 import type { UTCTimestamp } from 'lightweight-charts'
+import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 
 declare global {
   interface Date {
@@ -16,7 +17,7 @@ Date.prototype.getUTCTimestamp = function () {
 }
 
 Date.prototype.getLocalTimestamp = function () {
-  return ((this.getTime() - this.getTimezoneOffset() * 60000) / 1000) as UTCTimestamp
+  return toLocalTimestampSeconds(this.getTime()) as UTCTimestamp
 }
 
 BigInt.prototype.fromWei = function () {
