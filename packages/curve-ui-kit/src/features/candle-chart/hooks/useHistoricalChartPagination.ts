@@ -31,8 +31,7 @@ const shouldFetchHistoricalPage = (barsInfo: { barsBefore: number } | null) =>
 export const getHistoricalPaginationDataLength = (
   ohlcData: LpPriceOhlcDataFormatted[],
   oraclePriceData?: OraclePriceData[],
-) =>
-  ohlcData.length > 0 ? ohlcData.length : (oraclePriceData?.length ?? 0)
+) => (ohlcData.length > 0 ? ohlcData.length : (oraclePriceData?.length ?? 0))
 
 export const startHistoricalPageFetch = ({
   fetchMoreChartData,

@@ -127,10 +127,7 @@ export const fetchMoreOhlcQueries = (queries: readonly OhlcFetchMoreQuery[]) => 
 export const refetchOhlcQueries = (queries: readonly { refetch: () => Promise<unknown> }[]) =>
   Promise.all(queries.map(query => query.refetch()))
 
-export const useOhlcPagesAdapter = <TPage, TData>({
-  query,
-  selectData,
-}: UseOhlcPagesAdapterParams<TPage, TData>) => {
+export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlcPagesAdapterParams<TPage, TData>) => {
   const {
     data: queryData,
     error,
@@ -165,10 +162,7 @@ export const useOhlcPagesAdapter = <TPage, TData>({
 }
 
 export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhlcQueryAdapterParams<TPage, TItem>) => {
-  const selectData = useCallback(
-    (pages: TPage[] | undefined) => flattenOhlcPages(pages, selectItems),
-    [selectItems],
-  )
+  const selectData = useCallback((pages: TPage[] | undefined) => flattenOhlcPages(pages, selectItems), [selectItems])
 
   return useOhlcPagesAdapter({ query, selectData })
 }

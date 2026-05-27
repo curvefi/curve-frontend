@@ -13,11 +13,7 @@ import {
   type OhlcPageResult,
   useOhlcInfiniteQuery,
 } from '@ui-kit/features/candle-chart'
-import type {
-  LpPriceOhlcDataFormatted,
-  OraclePriceData,
-  TimeOption,
-} from '@ui-kit/features/candle-chart/types'
+import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@ui-kit/features/candle-chart/types'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
