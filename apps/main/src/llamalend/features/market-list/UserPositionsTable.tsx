@@ -6,9 +6,11 @@ import { notFalsyArray } from '@primitives/objects.utils'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
@@ -108,6 +110,7 @@ export const UserPositionsTable = ({
       isLoading={isLoading}
     >
       <Stack>
+        <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
         <UserPositionSummary markets={markets} tab={tab} selectedChains={undefined} />
         <Stack
           sx={{
