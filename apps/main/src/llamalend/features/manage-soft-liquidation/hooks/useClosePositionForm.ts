@@ -20,7 +20,7 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const userDefaultValues = {}
 const formOptions = {
-  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE_PRESETS.STABLE },
+  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE_PRESETS.stable },
 } as const
 
 /** Hook to build state for the close-position form */

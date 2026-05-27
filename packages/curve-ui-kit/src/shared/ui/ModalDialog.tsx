@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { type FormHTMLAttributes, ReactNode } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { Responsive } from '@ui-kit/themes/basic-theme'
 import type { SxProps } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
@@ -63,7 +64,15 @@ type ModalDialogProps = {
 
   /** Predefined width for the modal dialog */
   width?: keyof typeof modalWidth
+
+  onSubmit?: () => void
 }
+
+/**
+ * When we have a form inside the modal, we can use this component to wrap it with a form element,
+ * so that we can keep the form submission in the footer.
+ */
+const Form = (props: FormHTMLAttributes<HTMLFormElement>) => <form {...props} />
 
 export const ModalDialog = ({
   children,
@@ -77,6 +86,7 @@ export const ModalDialog = ({
   maxHeight = { mobile: modalHeight.sm, desktop: modalHeight.md },
   width = 'md',
   sx,
+  onSubmit,
 }: ModalDialogProps) => (
   <Dialog
     open={open}
@@ -96,31 +106,33 @@ export const ModalDialog = ({
     }}
   >
     <Card sx={{ width: { tablet: modalWidth[width], mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
-      <CardHeader
-        action={
-          onClose && (
-            <IconButton onClick={onClose} size="extraSmall">
-              <CloseIcon />
-            </IconButton>
-          )
-        }
-        avatar={titleAction}
-        title={
-          <Typography variant="headingXsBold" color="textSecondary">
-            {title}
-          </Typography>
-        }
-        sx={{
-          paddingInline: Spacing.md,
-          paddingBlock: Spacing.sm,
-          alignItems: 'center',
-          '& .MuiCardHeader-action': { alignSelf: 'center' },
-        }}
-      />
-      <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        {children}
-      </CardContent>
-      {footer && <CardActions>{footer}</CardActions>}
+      <WithWrapper shouldWrap={onSubmit} onSubmit={onSubmit} Wrapper={Form}>
+        <CardHeader
+          action={
+            onClose && (
+              <IconButton onClick={onClose} size="extraSmall">
+                <CloseIcon />
+              </IconButton>
+            )
+          }
+          avatar={titleAction}
+          title={
+            <Typography variant="headingXsBold" color="textSecondary">
+              {title}
+            </Typography>
+          }
+          sx={{
+            paddingInline: Spacing.md,
+            paddingBlock: Spacing.sm,
+            alignItems: 'center',
+            '& .MuiCardHeader-action': { alignSelf: 'center' },
+          }}
+        />
+        <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          {children}
+        </CardContent>
+        {footer && <CardActions>{footer}</CardActions>}
+      </WithWrapper>
     </Card>
   </Dialog>
 )

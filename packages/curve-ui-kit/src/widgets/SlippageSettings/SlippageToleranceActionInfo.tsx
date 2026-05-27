@@ -5,7 +5,9 @@ import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { ActionInfoSize } from '@ui-kit/shared/ui/ActionInfo/ActionInfo'
 import { decimal, formatPercent as formatPercent } from '@ui-kit/utils'
+import type { SlippageType } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { SlippageSettings } from '@ui-kit/widgets/SlippageSettings/SlippageSettings'
+import type { SlippageSettingsFormData } from '@ui-kit/widgets/SlippageSettings/useSlipageSettingsForm'
 
 export const SlippageToleranceActionInfoPure = ({
   maxSlippage,
@@ -13,7 +15,7 @@ export const SlippageToleranceActionInfoPure = ({
   size,
 }: {
   maxSlippage: Decimal
-  onSave: (newSlippage: Decimal) => void
+  onSave: (data: SlippageSettingsFormData) => void
   size?: ActionInfoSize
 }) => (
   <ActionInfo
@@ -23,7 +25,6 @@ export const SlippageToleranceActionInfoPure = ({
       <SlippageSettings
         buttonSize="extraExtraSmall"
         buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
-        maxSlippage={`${maxSlippage}`}
         onSave={onSave}
       />
     }
@@ -39,15 +40,15 @@ export const SlippageToleranceActionInfo = ({
   size,
 }: {
   maxSlippage: string
-  stateKey?: string
+  stateKey: SlippageType | string
   size?: ActionInfoSize
 }) => {
   const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
-
   return (
     <SlippageToleranceActionInfoPure
       maxSlippage={decimal(maxSlippage)!}
-      onSave={(slippage: string) => setMaxSlippage(slippage, stateKey)}
+      // todo: the following cast is incorrect, the new modal doesn't support string keys!
+      onSave={slippage => setMaxSlippage(slippage[stateKey as SlippageType], stateKey)}
       size={size}
     />
   )

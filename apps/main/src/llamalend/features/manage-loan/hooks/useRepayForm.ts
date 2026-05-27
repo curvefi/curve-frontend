@@ -92,7 +92,7 @@ const defaultValues = {
   maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: false,
-  slippage: SLIPPAGE_PRESETS.STABLE,
+  slippage: SLIPPAGE_PRESETS.stable,
 }
 const formOptions = {
   defaultValues,

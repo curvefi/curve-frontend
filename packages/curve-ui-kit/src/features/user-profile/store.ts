@@ -2,12 +2,19 @@ import { produce } from 'immer'
 import lodash from 'lodash'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import {
+  SLIPPAGE_PRESETS,
+  SLIPPAGE_TYPES,
+  type SlippageSettings,
+  type SlippageType,
+} from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
-  maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
+  maxSlippage: SlippageSettings & Partial<Record<string, Decimal>>
   showDeprecatedMarkets: boolean
 }
 
@@ -29,7 +36,7 @@ type Action = {
    * // Remove slippage for specific pool
    * setMaxSlippage(null, "1-0x123...")
    */
-  setMaxSlippage: (slippage: string | null, key?: string) => boolean
+  setMaxSlippage: (slippage: Decimal | null, key?: SlippageType | string) => boolean
   setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => void
 }
 
@@ -44,7 +51,7 @@ const INITIAL_THEME =
 
 const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
-  maxSlippage: { crypto: '0.1', stable: '0.03' },
+  maxSlippage: SLIPPAGE_PRESETS,
   showDeprecatedMarkets: false,
 }
 
@@ -52,12 +59,10 @@ const store: StateCreator<Store> = set => ({
   ...INITIAL_STATE,
   reset: () => set(INITIAL_STATE),
   setTheme: theme => set(state => ({ ...state, theme })),
-  setMaxSlippage: (maxSlippage: string | null, key?: string) => {
+  setMaxSlippage: (maxSlippage, key) => {
     // Check if we want to delete a slippage value first.
-    if (maxSlippage === null) {
-      if (!key) return false
-      if (key === 'crypto' || key === 'stable') return false
-
+    if (maxSlippage == null) {
+      if (!key || SLIPPAGE_TYPES.includes(key as SlippageType)) return false
       set(
         produce(state => {
           delete state.maxSlippage[key]

@@ -2,21 +2,14 @@ import { ReactNode } from 'react'
 import TuneIcon from '@mui/icons-material/Tune'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import {
-  SlippageSettingsModal,
-  type SlippageSettingsCallbacks,
-  type SlippageSettingsProps,
-} from './SlippageSettingsModal'
+import { SlippageSettingsModal, type SlippageSettingsCallbacks } from './SlippageSettingsModal'
 
-type SlippageSettingsBaseProps = Pick<SlippageSettingsProps, 'maxSlippage'> &
-  Pick<SlippageSettingsCallbacks, 'onSave'> & {
-    /** Whether the button should be disabled */
-    disabled?: boolean
-  }
+type SlippageSettingsBaseProps = Pick<SlippageSettingsCallbacks, 'onSave'> & {
+  /** Whether the button should be disabled */
+  disabled?: boolean
+}
 
 type SlippageSettingsPropsWithButton = SlippageSettingsBaseProps & {
-  /** Custom button component to render instead of the default IconButton */
-  button?: (props: { maxSlippage?: string; onClick: () => void }) => ReactNode
   /** If `button` is provided, the `buttonIcon` prop must not be provided */
   buttonIcon?: never
   /** If `button` is provided, the `buttonSize` prop must not be provided */
@@ -34,29 +27,24 @@ type SlippageSettingsPropsWithButtonIcon = SlippageSettingsBaseProps & {
 
 type Props = SlippageSettingsPropsWithButton | SlippageSettingsPropsWithButtonIcon
 
-export const SlippageSettings = ({ disabled = false, maxSlippage, onSave, ...props }: Props) => {
+export const SlippageSettings = ({ disabled = false, onSave, ...props }: Props) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch()
 
   return (
     <>
-      {props.button ? (
-        props.button({ maxSlippage, onClick: toggleModal })
-      ) : (
-        <IconButton
-          onClick={toggleModal}
-          disabled={disabled}
-          size={props.buttonSize ?? 'small'}
-          data-testid="slippage-settings-button"
-        >
-          {props.buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
-        </IconButton>
-      )}
+      <IconButton
+        onClick={toggleModal}
+        disabled={disabled}
+        size={props.buttonSize ?? 'small'}
+        data-testid="slippage-settings-button"
+      >
+        {props.buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
+      </IconButton>
 
       <SlippageSettingsModal
         isOpen={!!isOpen}
-        maxSlippage={maxSlippage}
         onSave={slippage => {
-          toggleModal()
+          closeModal()
           onSave(slippage)
         }}
         onClose={closeModal}

@@ -17,9 +17,9 @@ import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-i
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
 type FormAlertProps<Field extends string> = {
-  error: Error | null
+  error?: Error | null
   formErrors: FormErrors<Field> // list of all form errors
-  handledErrors: Field[] // list of fields that have their errors already handled/displayed elsewhere
+  handledErrors: readonly Field[] // list of fields that have their errors already handled/displayed elsewhere
 }
 
 const { Spacing } = SizesAndSpaces
@@ -54,7 +54,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
         </Alert>
       )}
       <ErrorReportModal
-        context={{ error, title: 'LoanFormError', subtitle: getErrorMessage(error) }}
+        context={{ error, title: 'LoanFormError', subtitle: error && getErrorMessage(error) }}
         isOpen={isReportOpen}
         onClose={closeReportModal}
       />

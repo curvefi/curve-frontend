@@ -81,7 +81,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxBorrowed: undefined,
   maxDebt: undefined,
   leverageEnabled: undefined,
-  slippage: SLIPPAGE_PRESETS.STABLE,
+  slippage: SLIPPAGE_PRESETS.stable,
 })
 
 /** Checks if we need a route for borrowing more */

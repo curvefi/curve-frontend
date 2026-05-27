@@ -63,7 +63,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     defaultValues: {
       ...userDefaultValues,
       leverageEnabled: false,
-      slippage: SLIPPAGE_PRESETS.STABLE,
+      slippage: SLIPPAGE_PRESETS.stable,
       range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
