@@ -17,13 +17,13 @@ type EmptyStateConfig = {
 type UserPositionsEmptyStateProps = {
   table: Table<LlamaMarket>
   state: PositionsEmptyState
-  tab: MarketRateType
+  marketRateType: MarketRateType
   onReload: () => void
   resetFilters?: () => void
 }
 
 const emptyStateConfigs = (
-  tab: MarketRateType,
+  marketRateType: MarketRateType,
   onReload: () => void,
   resetFilters?: () => void,
 ): Record<PositionsEmptyState, EmptyStateConfig> => ({
@@ -34,7 +34,7 @@ const emptyStateConfigs = (
   },
   [PositionsEmptyState.NoPositions]: {
     title: t`No active positions`,
-    subtitle: noPositionsSubTitle[tab],
+    subtitle: noPositionsSubTitle[marketRateType],
   },
   [PositionsEmptyState.Filtered]: {
     title: t`No positions found`,
@@ -52,11 +52,11 @@ const noPositionsSubTitle: Record<MarketRateType, string> = {
 export const UserPositionsEmptyState = ({
   table,
   state,
-  tab,
+  marketRateType,
   onReload,
   resetFilters,
 }: UserPositionsEmptyStateProps) => {
-  const configs = emptyStateConfigs(tab, onReload, resetFilters)
+  const configs = emptyStateConfigs(marketRateType, onReload, resetFilters)
   const { title, subtitle, buttonLabel, onButtonClick } = configs[state]
 
   return (

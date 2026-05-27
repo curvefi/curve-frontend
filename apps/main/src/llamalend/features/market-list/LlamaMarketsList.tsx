@@ -23,7 +23,7 @@ import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
 import { LegacyUserPositionsTable } from './LegacyUserPositionsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { UserPositionsTable } from './UserPositionsTable'
+import { UserPositionsTables } from './UserPositionsTables'
 
 const { Spacing } = SizesAndSpaces
 
@@ -95,7 +95,7 @@ export const LlamaMarketsList = () => {
       {address ? (
         data?.userHasPositions &&
         (isNewLayout ? (
-          <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+          <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
         ) : (
           <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
         ))

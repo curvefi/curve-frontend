@@ -166,7 +166,7 @@ export const LegacyUserPositionsTable = ({
         <UserPositionsEmptyState
           state={getEmptyState(!!error, userData?.length > 0)}
           table={table}
-          tab={tab}
+          marketRateType={tab}
           onReload={onReload}
           resetFilters={resetFilters}
         />
@@ -203,7 +203,7 @@ export const LegacyUserPositionsTable = ({
             </>
           }
         />
-        <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
+        <UserPositionSummary markets={markets} selectedChains={selectedChains} />
         <Stack
           direction="row"
           sx={{
