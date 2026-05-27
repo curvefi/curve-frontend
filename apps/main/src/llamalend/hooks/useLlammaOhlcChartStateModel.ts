@@ -55,11 +55,7 @@ export const useLlammaOhlcChartStateModel = ({
       ohlcData: oraclePoolData,
       oraclePriceData: oraclePoolOraclePriceData,
     },
-    llamma: {
-      error: llammaError,
-      isLoading: llammaIsLoading,
-      oraclePriceData: llammaOraclePriceData,
-    },
+    llamma: { error: llammaError, isLoading: llammaIsLoading, oraclePriceData: llammaOraclePriceData },
     oracleTokens,
     refetch,
     fetchMore,
