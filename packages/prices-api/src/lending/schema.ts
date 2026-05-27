@@ -72,7 +72,7 @@ export const getOracleResponse = z
   .transform(camelizeKeys)
   .transform(({ data, priceSourcePools, ...oracle }) => {
     const ohlc = data.filter(isCompleteOracleOHLC)
-    return { ...oracle, priceSourcePools, data: ohlc, pools: priceSourcePools, ohlc }
+    return { ...oracle, priceSourcePools, data, pools: priceSourcePools, ohlc }
   })
 
 const liquidation = z
@@ -189,6 +189,7 @@ export const getRateCurveResponse = z
 
 export type LoanDistribution = z.infer<typeof getLoanDistributionResponse>
 export type Oracle = z.infer<typeof getOracleResponse>
+export type OracleDataPoint = RawOracleOHLC
 export type OraclePool = z.infer<typeof oraclePool>
 export type OracleOHLC = CompleteOracleOHLC
 export type UserCollateralEvent = z.infer<typeof userCollateralEvent>
