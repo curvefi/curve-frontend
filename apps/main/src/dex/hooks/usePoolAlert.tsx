@@ -316,6 +316,23 @@ const crvLongMarketRecoveryPoolAlert = (): PoolAlert => ({
   },
 })
 
+const vsdCRVPoolAlert = (): PoolAlert => ({
+  alertType: 'danger',
+  isDisableDeposit: true,
+  isDisableSwap: true,
+  isInformationOnly: true,
+  isCloseOnTooltipOnly: true,
+  banner: {
+    title: t`vsdCRV Exploited`,
+    subtitle: t`vsdCRV has been exploited. This pool has been disabled to prevent new users from loss of funds.`,
+  },
+  message: (
+    <PoolAlertMessage>
+      <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
+    </PoolAlertMessage>
+  ),
+})
+
 const Alerts: Record<string, Record<string, PoolAlert>> = {
   ethereum: {
     '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
@@ -369,6 +386,8 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0x14515323e5c48e0ae75ad333e885cf050d0e3d9b': misconfiguredPoolsAlert(),
     '0x11fd5664121e9b464b5e8434aa7d70b8e9146ca6': misconfiguredPoolsAlert(),
     '0x2ff3ba10deb05573d2fae704a962183461d106d8': misconfiguredPoolsAlert(),
+    '0xb85246768cfea42b0c935265db798c9ae457646f': vsdCRVPoolAlert(),
+    '0x5c959d2c1a49b637fb988c40d663265f8bf6d289': vsdCRVPoolAlert(),
   },
 
   avalanche: {
