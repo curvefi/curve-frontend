@@ -19,13 +19,13 @@ type UserPositionsEmptyStateProps = {
   state: PositionsEmptyState
   tab: MarketRateType
   onReload: () => void
-  resetFilters: () => void
+  resetFilters?: () => void
 }
 
 const emptyStateConfigs = (
   tab: MarketRateType,
   onReload: () => void,
-  resetFilters: () => void,
+  resetFilters?: () => void,
 ): Record<PositionsEmptyState, EmptyStateConfig> => ({
   [PositionsEmptyState.Error]: {
     title: t`Could not load positions`,

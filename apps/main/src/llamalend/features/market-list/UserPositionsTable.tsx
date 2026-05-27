@@ -6,30 +6,20 @@ import { notFalsyArray } from '@primitives/objects.utils'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
-import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
-import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
-import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
-import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { LegacyLendingMarketsFilters } from './LegacyLendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
 import { UserPositionSummary } from './UserPositionsSummary'
 
-const { Spacing } = SizesAndSpaces
-
-const searchKey = 'search-user' as const
+const { Spacing, Sizing } = SizesAndSpaces
 
 const LOCAL_STORAGE_KEYS = {
   // not using the t`` here as the value is used as a key in the local storage
@@ -47,8 +37,8 @@ const SORT_QUERY_FIELD = {
   [MarketRateType.Supply]: 'userSortSupply',
 }
 
-const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
-  isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
+const getEmptyState = (isError: boolean): PositionsEmptyState =>
+  isError ? PositionsEmptyState.Error : PositionsEmptyState.NoPositions
 
 const buildVaultUrl = (market: LlamaMarket) =>
   getInternalUrl(
@@ -92,24 +82,17 @@ export const UserPositionsTable = ({
 
   const title = LOCAL_STORAGE_KEYS[tab]
 
-  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    { columns: LlamaMarketColumnId, scope: tab.toLowerCase(), searchKey },
-  )
-  const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
-  const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
+  const { columnVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const filterProps = { columnFiltersById, setColumnFilter }
-  const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain]
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data: userData,
-    state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
+    state: { expanded, sorting, columnVisibility },
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
-    globalFilterFn,
     ...getTableOptions(queryData),
   })
   return (
@@ -118,51 +101,20 @@ export const UserPositionsTable = ({
       // rowLimit={DEFAULT_VISIBLE_ROWS}
       // viewAllLabel="View all positions"
       emptyState={
-        <UserPositionsEmptyState
-          state={getEmptyState(!!error, userData?.length > 0)}
-          table={table}
-          tab={tab}
-          onReload={onReload}
-          resetFilters={resetFilters}
-        />
+        <UserPositionsEmptyState state={getEmptyState(!!error)} table={table} tab={tab} onReload={onReload} />
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       isLoading={isLoading}
     >
       <Stack>
-        <LegacyTableFilters<LlamaMarketColumnId>
-          filterExpandedKey={title}
-          loading={isLoading}
-          onReload={onReload}
-          visibilityGroups={columnSettings}
-          toggleVisibility={toggleVisibility}
-          hasSearchBar
-          disableSearchAutoFocus
-          searchText={globalFilter}
-          onSearch={setGlobalFilter}
-          leftChildren={<LegacyTableFiltersTitles title={t`Your Positions`} />}
-          collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
-          chips={
-            <>
-              <LlamaChainFilterChips marketsQuery={{ ...tableQuery, data: userData }} {...filterProps} />
-              <LegacyLlamaListChips
-                hiddenCount={getHiddenCount(table)}
-                resetFilters={resetFilters}
-                onSortingChange={onSortingChange}
-                sortField={sortField}
-                data={userData}
-                userPositionsTab={tab}
-                {...filterProps}
-              />
-            </>
-          }
-        />
-        <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
+        <UserPositionSummary markets={markets} tab={tab} selectedChains={undefined} />
         <Stack
           sx={{
             backgroundColor: t => t.design.Layer[1].Fill,
             paddingBlockEnd: Spacing.xs,
+            height: Sizing.md,
+            justifyContent: 'end',
           }}
         >
           <Typography variant="headingXsBold" color="textSecondary">
