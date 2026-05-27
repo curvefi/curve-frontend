@@ -110,7 +110,7 @@ export function ChartCrvUsdSupplyBreakdown() {
       createChartOptions({
         legendSets,
         options: {
-          tooltip: createTooltip(formatUsd),
+          tooltip: createTooltip(value => formatUsd(value)),
           xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
           yAxis: { axisLabel: { formatter: (v: number) => formatUsd(v) } },
           series: [
