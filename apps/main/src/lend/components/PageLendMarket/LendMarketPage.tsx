@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
@@ -11,7 +11,7 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
@@ -82,17 +82,20 @@ export const LendMarketPage = () => {
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
-
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
+  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    {
+      chainId,
+      marketId,
+      userAddress,
+    },
+    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
+  )
 
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
   const controllerAddress = getControllerAddress(market)
@@ -101,8 +104,7 @@ export const LendMarketPage = () => {
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress,
     userAddress,
-    collateralToken: market?.collateral_token,
-    borrowToken: market?.borrowed_token,
+    tokens,
     network,
   })
 
@@ -153,7 +155,7 @@ export const LendMarketPage = () => {
       <PositionDetailsComposite
         hasPosition={loanExists}
         events={collateralEvents}
-        market={market}
+        tokens={tokens}
         params={{ chainId, marketId, userAddress }}
       />
       <MarketInformationComposite
