@@ -8,7 +8,6 @@ import type { ChartSelection } from '../types'
 type UseDexChartListArgs = {
   coins: PoolCoin[]
   nCoins: number
-  hasChartData: boolean
 }
 
 /**
@@ -54,7 +53,7 @@ const DEFAULT_CHART_SELECTION: ChartSelection = { type: 'lp-usd' }
  * Handles the generation of chart combinations from pool coins and provides
  * flip functionality to swap the token order in each chart pair (for none LP token charts).
  */
-export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartListArgs) => {
+export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
   const [selectedChart, setSelectedChart] = useState<ChartSelection>(DEFAULT_CHART_SELECTION)
 
   const chartCombinations = useMemo(() => buildChartCombinations(coins, nCoins), [coins, nCoins])
@@ -76,10 +75,8 @@ export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartList
         ? 'lp-token'
         : `pair-${selectedPairIndex}`
 
-  const selectChartList: ChartSelections[] = useMemo(() => {
-    if (!hasChartData) return []
-
-    return [
+  const selectChartList: ChartSelections[] = useMemo(
+    () => [
       {
         activeTitle: t`LP Token (USD)`,
         label: t`LP Token (USD)`,
@@ -98,8 +95,9 @@ export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartList
           : formatPairLabel(mainToken, refToken)
         return { activeTitle: label, label, key: `pair-${index}` }
       }),
-    ]
-  }, [coins, chartCombinations, hasChartData, selectedPairIndex, selectedChart])
+    ],
+    [coins, chartCombinations, selectedPairIndex, selectedChart],
+  )
 
   const handleSelectChart = useCallback(
     (key: string) => {

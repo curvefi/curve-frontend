@@ -1,15 +1,15 @@
 import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
-import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import { useCandleTimeScaleSubscriptions } from './hooks/useCandleTimeScaleSubscriptions'
 import type { ChartColors } from './hooks/useChartPalette'
+import { useHistoricalChartPagination } from './hooks/useHistoricalChartPagination'
+import { useLatestValueRef } from './hooks/useLatestValueRef'
 import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
@@ -75,6 +75,8 @@ type LiquidationRangeSeriesApi = ISeriesApi<
   LiquidationRangeSeriesOptions
 >
 
+const getAdjustedChartWidth = (width: number) => (width > 0 ? Math.max(1, width - 1) : undefined)
+
 const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
 
 type Props = {
@@ -87,12 +89,9 @@ type Props = {
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  wrapperRef: any
+  wrapperRef: RefObject<HTMLDivElement | null>
   colors: ChartColors
-  refetchingCapped: boolean
-  fetchMoreChartData: (lastFetchEndTime: number) => void
-  lastFetchEndTime: number
+  fetchMoreChartData: () => Promise<unknown> | undefined
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
@@ -109,9 +108,7 @@ export const CandleChart = ({
   timeOption,
   wrapperRef,
   colors,
-  refetchingCapped,
   fetchMoreChartData,
-  lastFetchEndTime,
   oraclePriceVisible,
   liqRangeCurrentVisible,
   liqRangeNewVisible,
@@ -134,16 +131,11 @@ export const CandleChart = ({
   const historicalRangeSeriesRefs = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
-  const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const hasAppliedInitialOffset = useRef(false)
-  const ohlcDataRef = useRef(ohlcData)
+  const ohlcDataRef = useLatestValueRef(ohlcData)
 
-  const isMounted = useRef(true)
-
-  const [isUnmounting, setIsUnmounting] = useState(false)
-  const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
   const [wrapperWidth, setWrapperWidth] = useState(0)
-  const fetchingMoreRef = useRef(false)
 
   // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
@@ -208,65 +200,21 @@ export const CandleChart = ({
     ],
   )
 
-  // Debounced update of wrapper dimensions
-  const debouncedUpdateDimensions = useRef(
-    lodash.debounce(() => {
-      if (wrapperRef.current) {
-        setWrapperWidth(wrapperRef.current.clientWidth)
-      }
-    }, Duration.ChartFrame), // ~60fps
-  )
+  const setMeasuredWrapperWidth = useCallback((width: number) => {
+    const adjustedWidth = getAdjustedChartWidth(width)
+    if (!adjustedWidth) return
 
-  // Update wrapper dimensions when wrapperRef changes
-  useEffect(() => {
-    debouncedUpdateDimensions.current()
-  }, [wrapperRef])
+    setWrapperWidth(previousWidth => (previousWidth === adjustedWidth ? previousWidth : adjustedWidth))
+  }, [])
 
-  // Memoized visible range change handler
-  const handleVisibleLogicalRangeChange = useCallback(() => {
-    if (fetchingMoreRef.current || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
-      return
-    }
-
-    const timeScale = chartRef.current.timeScale()
-    const logicalRange = timeScale.getVisibleLogicalRange()
-
-    if (!logicalRange) {
-      return
-    }
-
-    const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
-    if (barsInfo && barsInfo.barsBefore < 50) {
-      void debouncedFetchMoreChartData.current()
-      setLastTimescale(timeScale.getVisibleRange())
-    }
-  }, [refetchingCapped])
-
-  useEffect(() => {
-    lastFetchEndTimeRef.current = lastFetchEndTime
-    // Reset fetching flag when new data arrives (fetch completed)
-    fetchingMoreRef.current = false
-  }, [lastFetchEndTime])
-
-  // Keep ohlcDataRef in sync with latest ohlcData
-  useEffect(() => {
-    ohlcDataRef.current = ohlcData
-  }, [ohlcData])
-
-  const debouncedFetchMoreChartData = useRef(
-    lodash.debounce(
-      () => {
-        // Check current state at execution time using ref
-        if (fetchingMoreRef.current || refetchingCapped) {
-          return
-        }
-        fetchingMoreRef.current = true
-        fetchMoreChartData(lastFetchEndTimeRef.current)
-      },
-      500,
-      { leading: true, trailing: false },
-    ),
-  )
+  const { handleVisibleLogicalRangeChange, restoreVisibleRangeAfterDataUpdate } = useHistoricalChartPagination({
+    candlestickSeriesRef,
+    chartRef,
+    fetchMoreChartData,
+    ohlcData,
+    oraclePriceData,
+    oraclePriceSeriesRef,
+  })
 
   // Chart initialization effect - only run once. Keep variables out of the dependencies array.
   useEffect(() => {
@@ -285,8 +233,6 @@ export const CandleChart = ({
       },
     })
     chartRef.current.timeScale()
-    isMounted.current = true
-
     return () => {
       if (chartRef.current) {
         chartRef.current.remove()
@@ -511,7 +457,7 @@ export const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red, ohlcDataRef])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {
@@ -548,12 +494,14 @@ export const CandleChart = ({
     candlestickSeriesRef.current.setData(ohlcData)
     candlestickSeriesRef.current.applyOptions({ priceFormat })
     chartRef.current.applyOptions({ localization: { priceFormatter: priceFormat.formatter } })
-  }, [ohlcData])
+    restoreVisibleRangeAfterDataUpdate()
+  }, [ohlcData, restoreVisibleRangeAfterDataUpdate])
 
   // Apply initial right-side spacing (10% of chart width) only on first data load between chart data and y-axis price scale
   // This effect runs when wrapperWidth changes to ensure chart is rendered with proper dimensions
   useEffect(() => {
-    if (!chartRef.current || !ohlcData?.length || hasAppliedInitialOffset.current || wrapperWidth <= 0) return
+    const hasSeriesData = ohlcData.length > 0 || !!oraclePriceData?.length
+    if (!chartRef.current || !hasSeriesData || hasAppliedInitialOffset.current || wrapperWidth <= 0) return
 
     // Use requestAnimationFrame to ensure the chart has finished rendering
     requestAnimationFrame(() => {
@@ -569,14 +517,15 @@ export const CandleChart = ({
         hasAppliedInitialOffset.current = true
       }
     })
-  }, [ohlcData, wrapperWidth])
+  }, [ohlcData, oraclePriceData, wrapperWidth])
 
   // Update oracle price data when it changes
   useEffect(() => {
     if (!oraclePriceSeriesRef.current || !oraclePriceData) return
 
     oraclePriceSeriesRef.current.setData(oraclePriceData)
-  }, [oraclePriceData])
+    restoreVisibleRangeAfterDataUpdate()
+  }, [oraclePriceData, restoreVisibleRangeAfterDataUpdate])
 
   // Update oracle price series visibility and color when they change
   useEffect(() => {
@@ -733,14 +682,6 @@ export const CandleChart = ({
     })
   }, [liqRangeCurrentVisible, liqRangeNewVisible, getSeriesAppearance, liquidationRange?.historical])
 
-  // Update timescale when lastTimescale changes
-  useEffect(() => {
-    if (!chartRef.current || !lastTimescale) return
-
-    const timeScale = chartRef.current.timeScale()
-    timeScale.setVisibleRange(lastTimescale)
-  }, [lastTimescale])
-
   // Update latest oracle price when it changes (comes from on chain to keep the last data point as up to date as possible)
   useEffect(() => {
     if (
@@ -781,33 +722,28 @@ export const CandleChart = ({
   }, [liquidationRange, liqRangeCurrentVisible, liqRangeNewVisible])
 
   useEffect(() => {
-    wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      if (isUnmounting) return
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
 
+    // wrapperRef is owned by ChartWrapper and must keep pointing at the DOM
+    // node. Store the observer separately so resize handling does not corrupt
+    // the ref or create a chart-width feedback loop while the user drags.
+    const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       const { width } = entries[0].contentRect
-      if (width <= 0) return
-
-      const adjustedWidth = Math.max(1, width - 1) // Ensure width is at least 1
-
-      // Update state with new dimensions (debounced)
-      setWrapperWidth(adjustedWidth)
-
-      // Apply dimensions immediately for smooth resizing
-      chartRef.current?.applyOptions({ width: adjustedWidth })
-      chartRef.current?.timeScale().getVisibleLogicalRange()
+      setMeasuredWrapperWidth(width)
     })
+    resizeObserverRef.current = observer
 
-    wrapperRef.current.observe(chartContainerRef.current)
-
-    const debouncedUpdate = debouncedUpdateDimensions.current
+    setMeasuredWrapperWidth(wrapper.clientWidth)
+    observer.observe(wrapper)
 
     return () => {
-      setIsUnmounting(true)
-      debouncedUpdate.cancel()
-
-      if (wrapperRef?.current) wrapperRef.current.disconnect()
+      observer.disconnect()
+      if (resizeObserverRef.current === observer) {
+        resizeObserverRef.current = null
+      }
     }
-  }, [wrapperRef, isUnmounting])
+  }, [setMeasuredWrapperWidth, wrapperRef])
 
   return (
     <Box sx={{ position: 'absolute', width: '100%', fontVariantNumeric: 'tabular-nums' }} ref={chartContainerRef} />

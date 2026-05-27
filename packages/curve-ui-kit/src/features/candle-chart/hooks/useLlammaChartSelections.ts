@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import type { FetchingStatus } from '../types'
 
 type ChartKey = 'oracle' | 'llamma'
 
 type ChartAvailability = {
-  fetchStatus: FetchingStatus
   hasData: boolean
+  isLoading: boolean
 }
 
 type TokenLabels =
@@ -31,7 +30,7 @@ type UseLlammaChartSelectionsProps = {
 export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleTokens }: UseLlammaChartSelectionsProps) => {
   const [selectedChartKey, setSelectedChartKey] = useState<ChartKey>('oracle')
 
-  const isLoading = oracleChart.fetchStatus === 'LOADING' || llammaChart.fetchStatus === 'LOADING'
+  const isLoading = oracleChart.isLoading || llammaChart.isLoading
 
   // Returns a single chart option: oracle (preferred) or llamma (fallback)
   const selectChartList = useMemo((): ChartSelections[] => {

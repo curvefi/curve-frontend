@@ -1,11 +1,13 @@
-import { useCallback, useEffect } from 'react'
-import { useStore } from '@/dex/store/useStore'
+import { useNetworkByChain } from '@/dex/entities/networks'
+import { getDexChartSelectionKey, useDexOhlcQuery } from '@/dex/queries/ohlc-chart.query'
 import type { ChainId } from '@/dex/types/main.types'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Pool } from '@curvefi/prices-api/pools'
+import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import type { LpPriceOhlcDataFormatted } from '@ui-kit/features/candle-chart/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Height } = SizesAndSpaces
@@ -15,85 +17,53 @@ type UseOhlcChartStateArgs = {
   pricesApiPoolData: Pool
 }
 
+const selectDexOhlcData = (page: { ohlcData: LpPriceOhlcDataFormatted[] }) => page.ohlcData
+
 export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
-  const chartOhlcData = useStore(state => state.pools.pricesApiState.chartOhlcData)
-  const chartStatus = useStore(state => state.pools.pricesApiState.chartStatus)
-  const refetchingCapped = useStore(state => state.pools.pricesApiState.refetchingCapped)
-  const lastFetchEndTime = useStore(state => state.pools.pricesApiState.lastFetchEndTime)
-  const fetchPricesApiCharts = useStore(state => state.pools.fetchPricesApiCharts)
-  const fetchMorePricesApiCharts = useStore(state => state.pools.fetchMorePricesApiCharts)
+  const { data: networkData } = useNetworkByChain({ chainId: rChainId })
+  const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
+  const networkId = networkData.id.toLowerCase()
+  const network = isPricesApiChain(networkId) ? networkId : undefined
 
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
     useDexChartList({
       coins: pricesApiPoolData.coins,
       nCoins: pricesApiPoolData.numCoins,
-      hasChartData: chartOhlcData.length > 0,
     })
 
-  const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
-
-  const fetchCharts = useCallback(() => {
-    fetchPricesApiCharts(
-      rChainId,
-      selectedChart,
-      pricesApiPoolData.address,
-      chartInterval,
-      timeUnit,
-      chartTimeSettings.end,
-      chartTimeSettings.start,
-    )
-  }, [
-    chartInterval,
-    chartTimeSettings.end,
-    chartTimeSettings.start,
-    fetchPricesApiCharts,
-    pricesApiPoolData.address,
-    rChainId,
-    selectedChart,
-    timeUnit,
-  ])
-
-  const refetchPricesData = useCallback(() => {
-    fetchCharts()
-  }, [fetchCharts])
-
-  useEffect(() => {
-    fetchCharts()
-  }, [fetchCharts])
-
-  const fetchMoreChartData = useCallback(
-    (lastFetchEndTimeParam: number) => {
-      const endTime = subtractTimeUnit(timeOption, lastFetchEndTimeParam)
-      const startTime = getThreeHundredResultsAgo(timeOption, endTime)
-
-      fetchMorePricesApiCharts(
-        rChainId,
-        selectedChart,
-        pricesApiPoolData.address,
-        chartInterval,
-        timeUnit,
-        +startTime,
-        endTime,
-      )
-    },
-    [chartInterval, fetchMorePricesApiCharts, pricesApiPoolData.address, rChainId, selectedChart, timeOption, timeUnit],
+  const chartSelectionKey = getDexChartSelectionKey(selectedChart)
+  const anchorEnd = useStableOhlcAnchorEnd(
+    `${rChainId}:${pricesApiPoolData.address}:${chartSelectionKey}:${timeOption}`,
   )
+  const chartQuery = useDexOhlcQuery({
+    anchorEnd,
+    chain: network,
+    chartSelection: selectedChart,
+    interval: chartInterval,
+    poolAddress: pricesApiPoolData.address,
+    timeOption,
+    units: timeUnit,
+  })
+  const {
+    isLoading,
+    error,
+    data: ohlcData,
+    refetch,
+    fetchMore,
+  } = useOhlcQueryAdapter({ query: chartQuery, selectItems: selectDexOhlcData })
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
-    chartStatus,
     chartHeight: Height.chart,
-    ohlcData: chartOhlcData,
+    isLoading,
+    error,
+    ohlcData,
     selectChartList,
     selectedChartKey,
     timeOption,
-    refetchPricesData,
-    refetchingCapped,
-    fetchMoreChartData,
-    lastFetchEndTime,
+    refetchPricesData: refetch,
+    fetchMoreChartData: fetchMore,
   }
-
-  const isLoading = chartStatus === 'LOADING'
 
   return {
     chartCombinations,
