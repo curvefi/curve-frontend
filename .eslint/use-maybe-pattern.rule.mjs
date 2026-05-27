@@ -41,14 +41,6 @@ const getNullChecks = ({ left, operator, right, type }) =>
           : null
       : null
 
-const isThenNullish = ({ argument, body, type }) =>
-  type === 'ReturnStatement'
-    ? isNullish(argument)
-    : type === 'BlockStatement' &&
-      body.length === 1 &&
-      body[0].type === 'ReturnStatement' &&
-      isNullish(body[0].argument)
-
 /**
  * Custom rule that guards for usages of the `maybe` helper.
  * @type {eslint.Rule.Module}
@@ -81,7 +73,8 @@ export const useMaybePatternRule = {
           nullChecks?.length === 1 &&
           !nullChecks[0].isNegated &&
           // The then-block must be a return with a nullish value
-          isThenNullish(consequent) &&
+          consequent.type === 'ReturnStatement' &&
+          isNullish(consequent.argument) &&
           // the next sibling must be a return statement
           (parent.type === 'BlockStatement' || parent.type === 'Program') &&
           parent.body[parent.body.indexOf(node) + 1]?.type === 'ReturnStatement'
