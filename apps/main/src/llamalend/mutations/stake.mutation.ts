@@ -22,9 +22,8 @@ type StakeOptions = {
   onReset: () => void
   userAddress: Address | undefined
 }
-
 const approveStake = async (market: LendMarketTemplate, { stakeAmount = '0' }: StakeMutation): Promise<Hex[]> =>
-  !+stakeAmount ? [] : ((await market.vault.stakeApprove(stakeAmount)) as Hex[])
+  +stakeAmount ? ((await market.vault.stakeApprove(stakeAmount)) as Hex[]) : []
 
 const stake = async (market: LendMarketTemplate, { stakeAmount }: StakeMutation): Promise<Hex> =>
   (await market.vault.stake(stakeAmount)) as Hex

@@ -60,7 +60,7 @@ export const ConfirmModal = ({
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton(
-    { onPressEnd: () => (!disabled ? overlayTriggerState.open() : null) },
+    { onPressEnd: () => (disabled ? null : overlayTriggerState.open()) },
     openButtonRef,
   )
 

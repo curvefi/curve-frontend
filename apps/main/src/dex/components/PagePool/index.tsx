@@ -186,7 +186,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <FormMargins>
             <TabsSwitcher
               variant="contained"
-              value={!rFormType ? 'deposit' : rFormType}
+              value={rFormType || 'deposit'}
               onChange={key => toggleForm(key as TransferFormType)}
               options={tabs}
               testIdPrefix="pool-form-tab"

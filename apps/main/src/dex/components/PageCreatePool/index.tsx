@@ -164,70 +164,101 @@ export const CreatePool = ({ curve }: Props) => {
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>
-      {!chainId ? (
-        <NotAvailableWrapper>
-          <StyledSpinner isDisabled size={24} />
-          <LoadingMessage>{t`Connecting to network`}</LoadingMessage>
-        </NotAvailableWrapper>
-      ) : networks[chainId].hasFactory ? (
-        <>
-          <CreateWrapper>
-            <TitleWrapper flex>
-              <MainTitle>{t`Pool Creation`}</MainTitle>
-              <SmallSummary smallScreen chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
-            </TitleWrapper>
-            {/* Top nav */}
-            <Navigation
-              navigation={navigationIndex}
-              setNavigation={setNavigationIndex}
-              chainId={chainId}
-              curve={curve}
-              blockchainId={networks[chainId]?.networkId}
-            />
-            <CreateBoxStyles flex flexColumn>
-              {chainId && (
-                <CreateFlowContainer>
-                  {navigationIndex === 0 && <PoolType chainId={chainId} />}
-                  {navigationIndex === 1 && <TokensInPool curve={curve} chainId={chainId} haveSigner={haveSigner} />}
-                  {navigationIndex === 2 && <Parameters curve={curve} chainId={chainId} haveSigner={haveSigner} />}
-                  {navigationIndex === 3 && <PoolInfo />}
-                </CreateFlowContainer>
+      {chainId ? (
+        networks[chainId].hasFactory ? (
+          <>
+            <CreateWrapper>
+              <TitleWrapper flex>
+                <MainTitle>{t`Pool Creation`}</MainTitle>
+                <SmallSummary smallScreen chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
+              </TitleWrapper>
+              {/* Top nav */}
+              <Navigation
+                navigation={navigationIndex}
+                setNavigation={setNavigationIndex}
+                chainId={chainId}
+                curve={curve}
+                blockchainId={networks[chainId]?.networkId}
+              />
+              <CreateBoxStyles flex flexColumn>
+                {chainId && (
+                  <CreateFlowContainer>
+                    {navigationIndex === 0 && <PoolType chainId={chainId} />}
+                    {navigationIndex === 1 && <TokensInPool curve={curve} chainId={chainId} haveSigner={haveSigner} />}
+                    {navigationIndex === 2 && <Parameters curve={curve} chainId={chainId} haveSigner={haveSigner} />}
+                    {navigationIndex === 3 && <PoolInfo />}
+                  </CreateFlowContainer>
+                )}
+              </CreateBoxStyles>
+              {navigationIndex === 0 && (
+                <InfoBox
+                  link1={{
+                    title: t`Learn more: Creating Stableswap pools`,
+                    link: 'https://docs.curve.finance/protocol/pool/guides/deploy-stableswap',
+                  }}
+                  link2={{
+                    title: t`Learn more: Creating Cryptoswap pools`,
+                    link: 'https://docs.curve.finance/protocol/pool/guides/deploy-cryptoswap',
+                  }}
+                />
               )}
-            </CreateBoxStyles>
-            {navigationIndex === 0 && (
-              <InfoBox
-                link1={{
-                  title: t`Learn more: Creating Stableswap pools`,
-                  link: 'https://docs.curve.finance/protocol/pool/guides/deploy-stableswap',
-                }}
-                link2={{
-                  title: t`Learn more: Creating Cryptoswap pools`,
-                  link: 'https://docs.curve.finance/protocol/pool/guides/deploy-cryptoswap',
-                }}
-              />
-            )}
-            {swapType === CRYPTOSWAP && navigationIndex === 2 && (
-              <InfoBox
-                link1={{
-                  title: t`Learn more: Understanding Cryptoswap`,
-                  link: 'https://docs.curve.finance/user/dex/overview',
-                }}
-                link2={{
-                  title: t`Learn more: Read about Cryptoswap parameters`,
-                  link: 'https://nagaking.substack.com/p/deep-dive-curve-v2-parameters',
-                }}
-              />
-            )}
-            {swapType === STABLESWAP && navigationIndex === 2 && (
-              <InfoBox
-                link1={{
-                  title: t`Learn more: Understanding Stableswap`,
-                  link: 'https://docs.curve.finance/user/dex/overview',
-                }}
-              />
-            )}
-            {/* Regular nav */}
-            <NavButtonsBox>
+              {swapType === CRYPTOSWAP && navigationIndex === 2 && (
+                <InfoBox
+                  link1={{
+                    title: t`Learn more: Understanding Cryptoswap`,
+                    link: 'https://docs.curve.finance/user/dex/overview',
+                  }}
+                  link2={{
+                    title: t`Learn more: Read about Cryptoswap parameters`,
+                    link: 'https://nagaking.substack.com/p/deep-dive-curve-v2-parameters',
+                  }}
+                />
+              )}
+              {swapType === STABLESWAP && navigationIndex === 2 && (
+                <InfoBox
+                  link1={{
+                    title: t`Learn more: Understanding Stableswap`,
+                    link: 'https://docs.curve.finance/user/dex/overview',
+                  }}
+                />
+              )}
+              {/* Regular nav */}
+              <NavButtonsBox>
+                {navigationIndex > 0 && (
+                  <NavButtonStyles variant={'icon-filled'} onClick={() => setNavigationIndex(navigationIndex - 1)}>
+                    <Icon name={'ChevronLeft'} size={24} aria-label={t`Chevron left`} /> {t`Previous`}
+                  </NavButtonStyles>
+                )}
+                {navigationIndex < 3 && (
+                  <NavButtonStyles
+                    className="next"
+                    variant={'icon-filled'}
+                    onClick={() => setNavigationIndex(navigationIndex + 1)}
+                    disabled={!isNavEnabled()}
+                  >
+                    {t`Next`} <Icon name={'ChevronRight'} size={24} aria-label={t`Chevron right`} />
+                  </NavButtonStyles>
+                )}
+                {navigationIndex === 3 && (
+                  <ConfirmModal
+                    hideOnMediumSize
+                    disabled={
+                      !checkFormReady(
+                        validation.poolType,
+                        validation.tokensInPool,
+                        validation.parameters,
+                        validation.poolInfo,
+                      )
+                    }
+                    chainId={chainId}
+                    curve={curve}
+                    blockchainId={networks[chainId]?.networkId}
+                  />
+                )}
+              </NavButtonsBox>
+            </CreateWrapper>
+            {/* Nav for small viewport width */}
+            <NavButtonsBoxFixed $navHeight={navHeight}>
               {navigationIndex > 0 && (
                 <NavButtonStyles variant={'icon-filled'} onClick={() => setNavigationIndex(navigationIndex - 1)}>
                   <Icon name={'ChevronLeft'} size={24} aria-label={t`Chevron left`} /> {t`Previous`}
@@ -245,55 +276,26 @@ export const CreatePool = ({ curve }: Props) => {
               )}
               {navigationIndex === 3 && (
                 <ConfirmModal
-                  hideOnMediumSize
-                  disabled={
-                    !checkFormReady(
-                      validation.poolType,
-                      validation.tokensInPool,
-                      validation.parameters,
-                      validation.poolInfo,
-                    )
-                  }
+                  fixedNavButton
                   chainId={chainId}
                   curve={curve}
                   blockchainId={networks[chainId]?.networkId}
                 />
               )}
-            </NavButtonsBox>
-          </CreateWrapper>
-          {/* Nav for small viewport width */}
-          <NavButtonsBoxFixed $navHeight={navHeight}>
-            {navigationIndex > 0 && (
-              <NavButtonStyles variant={'icon-filled'} onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                <Icon name={'ChevronLeft'} size={24} aria-label={t`Chevron left`} /> {t`Previous`}
-              </NavButtonStyles>
-            )}
-            {navigationIndex < 3 && (
-              <NavButtonStyles
-                className="next"
-                variant={'icon-filled'}
-                onClick={() => setNavigationIndex(navigationIndex + 1)}
-                disabled={!isNavEnabled()}
-              >
-                {t`Next`} <Icon name={'ChevronRight'} size={24} aria-label={t`Chevron right`} />
-              </NavButtonStyles>
-            )}
-            {navigationIndex === 3 && (
-              <ConfirmModal
-                fixedNavButton
-                chainId={chainId}
-                curve={curve}
-                blockchainId={networks[chainId]?.networkId}
-              />
-            )}
-          </NavButtonsBoxFixed>
-          <DetailsContainer>
-            <Summary chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
-          </DetailsContainer>
-        </>
+            </NavButtonsBoxFixed>
+            <DetailsContainer>
+              <Summary chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
+            </DetailsContainer>
+          </>
+        ) : (
+          <NotAvailableWrapper>
+            <NotAvailableTitle>{t`Pool creation is not yet available on this network.`}</NotAvailableTitle>
+          </NotAvailableWrapper>
+        )
       ) : (
         <NotAvailableWrapper>
-          <NotAvailableTitle>{t`Pool creation is not yet available on this network.`}</NotAvailableTitle>
+          <StyledSpinner isDisabled size={24} />
+          <LoadingMessage>{t`Connecting to network`}</LoadingMessage>
         </NotAvailableWrapper>
       )}
     </Box>

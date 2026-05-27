@@ -28,7 +28,7 @@ export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (
       </>
     )}
 
-    <Stack direction="row" sx={{ flexGrow: !walletAddress ? 1 : undefined, justifyContent: 'end' }}>
+    <Stack direction="row" sx={{ flexGrow: walletAddress ? undefined : 1, justifyContent: 'end' }}>
       <IconButton size="small" onClick={onClose}>
         <CloseIcon />
       </IconButton>
