@@ -121,6 +121,11 @@ export const MARKETS_ALERTS: Record<
       '0x398e6dd92Df9F792D0107668871e6F49ebdfE028': DEFAULT_ALERT,
       // one-way-market-5 - ARB-crvUSD old
       '0x76709bC0dA299Ab0234EEC51385E900922AE98f5': DEFAULT_ALERT,
+      //one-way-market-13
+      '0x83B85f3b08B5EE58dE9EF9604e7Eec087FCCf130': {
+        ...DEFAULT_ALERT,
+        message: t`Due to the vsdCRV exploit and out of caution, borrowing and lending have been disabled for this market`,
+      },
     },
     [Chain.Fraxtal]: {
       // one-way-market-4 - SQUID/crvUSD
