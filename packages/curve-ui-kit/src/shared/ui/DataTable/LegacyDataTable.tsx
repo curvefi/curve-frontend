@@ -13,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type TableItem, type TanstackTable } from './data-table.utils'
+import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { HeaderCell } from './HeaderCell'
 import { LegacyFilterRow } from './LegacyFilterRow'
@@ -73,6 +73,7 @@ export const LegacyDataTable = <T extends TableItem>({
   emptyState,
   children,
   loading,
+  size = 'large',
   maxHeight,
   rowLimit,
   viewAllLabel,
@@ -86,6 +87,7 @@ export const LegacyDataTable = <T extends TableItem>({
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   loading: boolean
+  size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
@@ -135,11 +137,12 @@ export const LegacyDataTable = <T extends TableItem>({
             {children && <LegacyFilterRow table={table}>{children}</LegacyFilterRow>}
 
             {headerGroups.map(headerGroup => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
+              <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}
                     header={header}
+                    size={size}
                     isSticky={!index && shouldStickFirstColumn}
                     width={`calc(100% / ${columnCount})`}
                   />
