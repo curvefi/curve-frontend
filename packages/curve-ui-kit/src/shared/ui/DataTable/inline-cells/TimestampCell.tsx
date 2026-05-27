@@ -43,7 +43,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
         }}
       >
         <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
-          {formatTime(timestamp)}
+          {formatTime(timestamp, { precise: !isMobile })}
         </Typography>
         {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />}
       </Stack>
