@@ -58,7 +58,7 @@ export function ChartCrvUsdPrice() {
       createChartOptions({
         legendSets,
         options: {
-          tooltip: createTooltip(formatUsd),
+          tooltip: createTooltip(value => formatUsd(value)),
           xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
           yAxis: {
             axisLabel: {

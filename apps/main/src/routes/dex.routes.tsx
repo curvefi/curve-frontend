@@ -10,6 +10,7 @@ const PageDashboard = lazyRouteComponent(() => import('@/dex/components/PageDash
 const PageDeployGauge = lazyRouteComponent(() => import('@/dex/components/PageDeployGauge/Page'), 'PageDeployGauge')
 const PagePoolList = lazyRouteComponent(() => import('@/dex/features/pool-list/Page'), 'Page')
 const PagePool = lazyRouteComponent(() => import('@/dex/components/PagePool/Page'), 'PagePool')
+const PageRefuel = lazyRouteComponent(() => import('@/dex/components/PageRefuel'), 'Refuel')
 const PageRouterSwap = lazyRouteComponent(() => import('@/dex/components/PageRouterSwap/Page'), 'PageRouterSwap')
 
 const dexLayoutRoute = createRoute({
@@ -72,6 +73,12 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     path: '$network/pools/$poolIdOrAddress/$formType',
     component: PagePool,
     head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolIdOrAddress} - Curve` }] }),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/pools/$poolAddress/refuel',
+    component: PageRefuel,
+    head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolAddress} - Refuel` }] }),
     ...layoutProps,
   }),
   createRoute({
