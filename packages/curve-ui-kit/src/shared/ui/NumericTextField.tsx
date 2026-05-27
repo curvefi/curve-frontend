@@ -94,7 +94,7 @@ const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Dec
   val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
 const AdornmentTypography = ({ children, size }: { children: ReactNode; size: NumericTextFieldProps['size'] }) => (
-  <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} color="textSecondary">
+  <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} sx={{ color: t => t.design.Inputs.Text.Unit }}>
     {children}
   </Typography>
 )

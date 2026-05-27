@@ -11,6 +11,7 @@ import type { TextFieldClasses } from '@mui/material'
  */
 interface InputSizeOverrides {
   tiny: true // called xxs in the design system
+  large: true // called xl in the design system
   // todo: we have a task to create `extraSmall`, called xs in the design system
 }
 

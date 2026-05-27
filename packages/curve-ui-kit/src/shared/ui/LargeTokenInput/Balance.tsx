@@ -63,7 +63,11 @@ export const Balance = <T extends Amount>({
     <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
       <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
         {typeof Prefix === 'string' ? (
-          <Typography variant="bodyXsRegular" color="textTertiary" {...(inline && { component: 'span' })}>
+          <Typography
+            variant="bodyXsRegular"
+            sx={{ color: t => t.design.Inputs.Text.MetaSubtle }}
+            {...(inline && { component: 'span' })}
+          >
             {Prefix}
           </Typography>
         ) : (
@@ -72,8 +76,8 @@ export const Balance = <T extends Amount>({
               sx={{
                 width: IconSize.sm,
                 height: IconSize.sm,
-                color: t => t.palette.text.primary,
-                ...(disabled && { color: t => t.palette.text.disabled }),
+                color: t => t.design.Inputs.Text.Meta,
+                ...(disabled && { color: t => t.design.Inputs.Text.Disabled }),
               }}
             />
           )
@@ -83,8 +87,10 @@ export const Balance = <T extends Amount>({
         </BalanceAmount>{' '}
         <Typography
           variant="highlightXs"
-          color={disabled ? 'textDisabled' : 'textPrimary'}
-          sx={{ ...VERTICAL_CENTER_TEXT }}
+          sx={{
+            ...VERTICAL_CENTER_TEXT,
+            color: t => (disabled ? t.design.Inputs.Text.Disabled : t.design.Inputs.Text.Unit),
+          }}
           {...(inline && { component: 'span' })}
         >
           {symbol}
@@ -92,8 +98,7 @@ export const Balance = <T extends Amount>({
         {notionalValueUsd != null && notionalValueUsd !== 0 && !loading && (
           <Typography
             variant="bodyXsRegular"
-            color="textTertiary"
-            sx={{ ...VERTICAL_CENTER_TEXT }}
+            sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
             {...(inline && { component: 'span' })}
           >
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}

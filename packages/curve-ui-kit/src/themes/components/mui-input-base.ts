@@ -5,15 +5,18 @@ import type { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize, Spacing } = SizesAndSpaces
+const { InputSize, InputSpacing } = SizesAndSpaces
 
 export const defineMuiInputBase = (
-  { Inputs: { Base } }: DesignSystem,
+  { Inputs, InputSelect }: DesignSystem,
   typography: TypographyVariantsOptions,
 ): Components['MuiInputBase'] => ({
   styleOverrides: {
     root: {
-      backgroundColor: Base.Default.Fill.Default,
+      height: InputSize.medium,
+      boxSizing: 'border-box',
+      backgroundColor: InputSelect.Base.Default.Fill.Default,
+      color: Inputs.Text.Value,
       '&': { paddingRight: '0' }, // inputs have an ugly default 14px padding on the right, not nice with end adornments
       // color the whole input base when accepting autofill suggestions in Chromium browsers
       ':has(input:autofill)': {
@@ -23,30 +26,100 @@ export const defineMuiInputBase = (
       },
       '& .MuiOutlinedInput-notchedOutline': {
         borderWidth: 1,
+        borderColor: InputSelect.Base.Default.Border.Default,
         transition: `border-color ${TransitionFunction}`,
       },
-      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: Base.Default.Border.Active,
+      '&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
+        backgroundColor: InputSelect.Base.Default.Fill.Hover,
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: InputSelect.Base.Default.Border.Hover,
+        },
       },
-      '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-        borderColor: Base.Default.Border.Error,
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: InputSelect.Base.Default.Border.Active,
+        borderWidth: 2,
+      },
+      '&.Mui-error': {
+        color: Inputs.Text.Error,
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: InputSelect.Base.Default.Border.Error,
+          borderWidth: 2,
+        },
+      },
+      '&.Mui-disabled': {
+        color: Inputs.Text.Disabled,
+      },
+      '& .MuiInputAdornment-root': {
+        color: Inputs.Text.Unit,
+      },
+      '&.Mui-error .MuiInputAdornment-root': {
+        color: Inputs.Text.Error,
+      },
+      '&.Mui-disabled .MuiInputAdornment-root': {
+        color: Inputs.Text.Disabled,
+      },
+      '& .MuiInputAdornment-positionEnd': {
+        marginInlineStart: InputSpacing.ValueGap,
+        ...handleBreakpoints({ paddingInlineEnd: InputSpacing.ContentPaddingRight }),
+      },
+      '&.MuiInputBase-sizeSmall': {
+        height: InputSize.small,
       },
       '&.MuiInputBase-sizeSmall input': {
-        height: ButtonSize.sm,
+        height: InputSize.small,
+        ...handleBreakpoints({
+          paddingInlineStart: InputSpacing.PaddingX.small,
+          paddingInlineEnd: InputSpacing.ContentPaddingRight,
+        }),
+      },
+      '&.MuiInputBase-sizeTiny': {
+        height: InputSize.tiny,
       },
       '&.MuiInputBase-sizeTiny input': {
-        // not responsive with Sizing, but using ButtonSize as in Figma
-        height: ButtonSize.xs,
+        height: InputSize.tiny,
         ...typography.bodySBold,
+        ...handleBreakpoints({
+          paddingInlineStart: InputSpacing.PaddingX.tiny,
+          paddingInlineEnd: InputSpacing.ContentPaddingRight,
+        }),
+      },
+      '&.MuiInputBase-sizeLarge': {
+        height: InputSize.large,
+      },
+      '&.MuiInputBase-sizeLarge input': {
+        height: InputSize.large,
+        ...typography.headingSBold,
+        ...handleBreakpoints({
+          paddingInlineStart: InputSpacing.PaddingX.large,
+          paddingInlineEnd: InputSpacing.ContentPaddingRight,
+        }),
+      },
+      '&.MuiInputBase-multiline': {
+        height: 'auto',
+        alignItems: 'flex-start',
+      },
+      '&.MuiInputBase-multiline .MuiInputBase-input': {
+        height: 'auto',
       },
     },
     input: {
-      height: ButtonSize.md,
+      height: InputSize.medium,
       boxSizing: 'border-box',
       textOverflow: 'ellipsis',
       padding: 0,
       ...typography.bodyMBold,
-      ...handleBreakpoints({ marginInline: Spacing.xs }),
+      ...handleBreakpoints({
+        paddingInlineStart: InputSpacing.PaddingX.medium,
+        paddingInlineEnd: InputSpacing.ContentPaddingRight,
+      }),
+      '&::placeholder': {
+        color: Inputs.Text.Placeholder,
+        opacity: 1,
+      },
+      '&.Mui-disabled': {
+        color: Inputs.Text.Disabled,
+        WebkitTextFillColor: Inputs.Text.Disabled,
+      },
     },
   },
 })

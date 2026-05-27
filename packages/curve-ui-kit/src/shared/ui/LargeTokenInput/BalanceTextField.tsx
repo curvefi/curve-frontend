@@ -1,8 +1,7 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { Transparent } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { NumericTextField } from '../NumericTextField'
-
-const { FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 type BalanceTextFieldProps = {
   balance: Decimal | undefined
@@ -18,18 +17,17 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
     placeholder="0.00"
     value={balance}
     name={name}
+    size="large"
     fullWidth
     slotProps={{
       input: {
         disableUnderline: true,
-        sx: {
-          maxHeight: Sizing.lg,
-          backgroundColor: t => t.design.Inputs.Large.Default.Fill,
-          fontFamily: t => t.typography.highlightXl.fontFamily,
-          fontSize: FontSize.xl,
-          fontWeight: FontWeight.Bold,
-          color: t => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
-        },
+        sx: theme => ({
+          maxHeight: SizesAndSpaces.InputSize.large,
+          backgroundColor: Transparent,
+          color: isError ? theme.design.Inputs.Text.Error : theme.design.Inputs.Text.Value,
+          ...theme.typography.headingSBold,
+        }),
       },
     }}
     onChange={onChange}

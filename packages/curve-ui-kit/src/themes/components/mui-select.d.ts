@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import '@mui/material/Select'
 
-type SelectSizes = 'tiny' | 'small' | 'medium'
+type SelectSizes = 'tiny' | 'small' | 'medium' | 'large'
 type SelectSizeOverrides = { [key in SelectSizes]: true }
 
 declare module '@mui/material/Select' {

@@ -57,6 +57,73 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
+const fixedResponsive = <T extends string>(value: T) => ({
+  mobile: value,
+  tablet: value,
+  desktop: value,
+})
+
+const MappedInputSize = {
+  tiny: MappedButtonSize.xs,
+  small: MappedButtonSize.sm,
+  medium: MappedButtonSize.md,
+  large: MappedButtonSize.lg,
+} as const
+
+const MappedInputSpacing = {
+  PaddingX: {
+    tiny: fixedResponsive(Spacing[300]),
+    small: fixedResponsive(Spacing[300]),
+    medium: fixedResponsive(Spacing[300]),
+    large: fixedResponsive(Spacing[300]),
+  },
+  ContentPaddingRight: {
+    mobile: Spacing[300],
+    tablet: Spacing[200],
+    desktop: Spacing[200],
+  },
+  HelperPaddingTop: Spacing[200],
+  LabelGap: Spacing[100],
+  ValueGap: Spacing[100],
+} as const
+
+const MappedSelectSize = {
+  tiny: MappedButtonSize.xs,
+  small: MappedButtonSize.sm,
+  medium: MappedButtonSize.md,
+  large: MappedButtonSize.lg,
+} as const
+
+const MappedSelectSpacing = {
+  PaddingX: {
+    tiny: fixedResponsive(Spacing[300]),
+    small: fixedResponsive(Spacing[300]),
+    medium: fixedResponsive(Spacing[300]),
+    large: fixedResponsive(Spacing[300]),
+  },
+  ContentPaddingY: {
+    tiny: fixedResponsive(Spacing[100]),
+    small: fixedResponsive(Spacing[300]),
+    medium: fixedResponsive(Spacing[300]),
+    large: fixedResponsive(Spacing[300]),
+  },
+  IconGap: Spacing[0],
+  IconPaddingRight: Spacing[200],
+} as const
+
+const MappedSelectListItem = {
+  Height: {
+    small: Sizing[450],
+    medium: MappedButtonSize.sm,
+  },
+  PaddingX: {
+    small: fixedResponsive(Spacing[200]),
+    medium: fixedResponsive(Spacing[200]),
+  },
+  PaddingY: fixedResponsive(Spacing[200]),
+  Gap: fixedResponsive(Spacing[200]),
+} as const
+
 const SliderHeight = {
   small: { mobile: Sizing[200], tablet: Sizing[200], desktop: Sizing[200] },
   medium: { mobile: Sizing[300], tablet: Sizing[300], desktop: Sizing[300] },
@@ -128,6 +195,11 @@ export const SizesAndSpaces = {
   Sizing: MappedSizing,
   IconSize: MappedIconSize,
   ButtonSize: MappedButtonSize,
+  InputSize: MappedInputSize,
+  InputSpacing: MappedInputSpacing,
+  SelectSize: MappedSelectSize,
+  SelectSpacing: MappedSelectSpacing,
+  SelectListItem: MappedSelectListItem,
   Grid: MappedGrid,
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,

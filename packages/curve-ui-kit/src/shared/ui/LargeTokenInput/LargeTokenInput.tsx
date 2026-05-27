@@ -266,12 +266,21 @@ export const LargeTokenInput = ({
       id={componentId}
       data-testid={testId}
       sx={{
-        backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+        backgroundColor: t => t.design.InputSelect.Base.Default.Fill.Default,
         outline: t =>
-          `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
+          `1px solid ${
+            isError ? t.design.InputSelect.Base.Default.Border.Error : t.design.InputSelect.Base.Default.Border.Default
+          }`,
+        ...(!disabled &&
+          !isError && {
+            '&:hover': {
+              backgroundColor: t => t.design.InputSelect.Base.Default.Fill.Hover,
+              outlineColor: t => t.design.InputSelect.Base.Default.Border.Hover,
+            },
+          }),
       }}
     >
-      <Stack sx={{ gap: Spacing.xxs, padding: Spacing.sm }}>
+      <Stack sx={{ gap: Spacing.xxs, padding: SizesAndSpaces.InputSpacing.PaddingX.large }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
@@ -284,7 +293,7 @@ export const LargeTokenInput = ({
             }}
           >
             {label && (
-              <Typography variant="bodyXsRegular" color="textSecondary">
+              <Typography variant="bodyXsRegular" sx={{ color: t => t.design.Inputs.Text.Label }}>
                 {label}
               </Typography>
             )}
@@ -347,7 +356,7 @@ export const LargeTokenInput = ({
         {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
+              <Typography variant="bodyXsRegular" sx={{ flexGrow: 1, color: t => t.design.Inputs.Text.MetaSubtle }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}
