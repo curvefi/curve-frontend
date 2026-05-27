@@ -22,8 +22,10 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Link as TanstackLink } from '@tanstack/react-router'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -39,6 +41,9 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 const { Spacing } = SizesAndSpaces
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
+
+/** Prices API tells us which pools methods are available, of which the following one is a requisite for refuels */
+const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donation_shares')
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
@@ -240,13 +245,26 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         )}
         <Stack>
-          <TabsSwitcher
-            variant="contained"
-            value={poolInfoTab}
-            onChange={setPoolInfoTab}
-            options={poolInfoTabs}
-            testIdPrefix="pool-info-tab"
-          />
+          <Stack direction="row">
+            <TabsSwitcher
+              variant="contained"
+              value={poolInfoTab}
+              onChange={setPoolInfoTab}
+              options={poolInfoTabs}
+              testIdPrefix="pool-info-tab"
+            />
+            {hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
+              <Button
+                component={TanstackLink}
+                to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
+                variant="inline"
+                color="ghost"
+                sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
+              >
+                {t`Manage pool`}
+              </Button>
+            )}
+          </Stack>
           {poolInfoTab === 'user' && (
             <MySharesStats
               curve={curve}
