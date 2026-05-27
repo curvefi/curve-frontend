@@ -1,8 +1,13 @@
-import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
-import { formatNumber } from '@ui-kit/utils'
+import { TIME_OPTION_MS } from '../../lib/model/time'
+import { formatNumber } from '../../utils/number'
 import type { TimeOption } from './types'
 
 const toSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
+const isValidPrice = (value: number) => Number.isFinite(value) && value >= 0
+const clampPercentile = (value: number, fallback: number) =>
+  Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback
+const getPercentileIndex = (length: number, percentile: number) =>
+  Math.max(0, Math.min(length - 1, Math.floor(length * percentile)))
 
 export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - toSeconds(timeOption)
 
@@ -15,19 +20,16 @@ export const convertToLocaleTimestamp = (unixTimestamp: number) => {
 }
 
 /**
- * Calculates robust price range for chart auto-scaling by filtering outliers
- * Uses percentile-based approach to exclude anomalous candles that would flatten the chart
- * Always includes recent candles to ensure current price action is visible
- * @param prices - Array of all price values (highs and lows) from visible candles
- * @param recentPrices - Array of recent price values that should always be included (e.g., latest candle)
- * @param lowerPercentile - Lower percentile threshold (0-1), default 0.02 (2nd percentile)
- * @param upperPercentile - Upper percentile threshold (0-1), default 0.98 (98th percentile)
- * @param padding - Padding factor to add visual comfort, default 0.05 (5%)
- * @returns Object with minValue and maxValue, or null if no data available
+ * Calculates a robust non-negative price range for chart auto-scaling.
+ *
+ * Invalid prices are ignored, and percentile clipping keeps old anomalous candles from flattening the chart.
+ * Recent prices bypass the percentile window so current price action remains visible.
+ *
+ * @returns Object with minValue and maxValue, or null if no valid price data is available.
  * @example
- * const prices = [100, 101, 102, 1000, 103] // 1000 is an outlier
- * const recentPrices = [103] // latest price should always be visible
- * const range = calculateRobustPriceRange(prices, recentPrices) // excludes 1000 but includes 103
+ * const prices = [100, 101, 102, 1000, 103]
+ * const recentPrices = [103]
+ * const range = calculateRobustPriceRange(prices, recentPrices) // clips the 1000 outlier
  */
 export function calculateRobustPriceRange(
   prices: number[],
@@ -36,45 +38,47 @@ export function calculateRobustPriceRange(
   upperPercentile = 0.98,
   padding = 0.05,
 ): { minValue: number; maxValue: number } | null {
-  // Return null if no data - caller should use original range
-  // We can't assume a default value (like 1.0) works for all trading pairs
-  if (!prices || prices.length === 0) {
+  const sortedPrices = prices.filter(isValidPrice).sort((a, b) => a - b)
+
+  if (sortedPrices.length === 0) {
+    // Let the chart fall back to its native autoscale rather than guessing a default price.
     return null
   }
 
-  // Sort prices in ascending order
-  const sortedPrices = [...prices].sort((a, b) => a - b)
-
-  // Calculate percentile indices
-  const lowerIndex = Math.max(0, Math.floor(sortedPrices.length * lowerPercentile))
-  const upperIndex = Math.min(sortedPrices.length - 1, Math.floor(sortedPrices.length * upperPercentile))
+  const lowerBound = clampPercentile(lowerPercentile, 0)
+  const upperBound = clampPercentile(upperPercentile, 1)
+  const lowerIndex = getPercentileIndex(sortedPrices.length, Math.min(lowerBound, upperBound))
+  const upperIndex = getPercentileIndex(sortedPrices.length, Math.max(lowerBound, upperBound))
 
   let minValue = sortedPrices[lowerIndex]
   let maxValue = sortedPrices[upperIndex]
 
-  // Ensure recent prices are always included in the range
-  if (recentPrices.length > 0) {
-    const recentMin = Math.min(...recentPrices)
-    const recentMax = Math.max(...recentPrices)
+  const validRecentPrices = recentPrices.filter(isValidPrice)
+  if (validRecentPrices.length > 0) {
+    const recentMin = Math.min(...validRecentPrices)
+    const recentMax = Math.max(...validRecentPrices)
     minValue = Math.min(minValue, recentMin)
     maxValue = Math.max(maxValue, recentMax)
   }
 
-  // Add padding for visual comfort
   const range = maxValue - minValue
-  const paddingAmount = range * padding
+  const paddingAmount = range * (Number.isFinite(padding) && padding > 0 ? padding : 0)
 
   return {
-    minValue: minValue - paddingAmount,
+    // Price charts should not show negative space introduced only by padding.
+    minValue: Math.max(0, minValue - paddingAmount),
     maxValue: maxValue + paddingAmount,
   }
 }
 
-const ABBREVIATION_CUTOFF = 10000 // Values above this are abbreviated (e.g., 15K)
-const ABBREVIATION_DECIMALS = 2 // Decimals to show when abbreviating (e.g., 15.23K)
+const ABBREVIATION_CUTOFF = 10000 // Values above this are abbreviated (e.g., 15k)
+const ABBREVIATION_DECIMALS = 2 // Decimals to show when abbreviating (e.g., 15.23k)
+const MAX_PRICE_DECIMALS = 4
+const MAX_SUB_UNIT_PRICE_DECIMALS = 8
 
 /**
- * Formats a price value for the chart's price axis with ~4 significant digits.
+ * Formats a non-negative price value for the chart's price axis with ~4 significant digits.
+ *
  * Precision is determined by the smaller of the value's magnitude or the delta (price range),
  * ensuring meaningful precision for both large price swings and tight ranges (e.g., stablecoin pegs).
  *
@@ -90,12 +94,11 @@ const ABBREVIATION_DECIMALS = 2 // Decimals to show when abbreviating (e.g., 15.
  *
  * // Based on delta (when delta is small relative to value):
  * priceFormatter(1.000234, 0.001) // "1.0002"  (delta determines precision)
- * priceFormatter(15000.5, 10000)  // "15K"     (abbreviated when > 10,000)
+ * priceFormatter(15000.5, 10000)  // "15k"     (abbreviated when > 10,000)
  */
 export const priceFormatter = (x: number, delta: number) => {
-  // Handle zero or invalid values
-  if (!Number.isFinite(x) || x === 0) {
-    return '0'
+  if (!Number.isFinite(x) || x < 0) {
+    return ''
   }
 
   if (x > ABBREVIATION_CUTOFF) {
@@ -106,24 +109,16 @@ export const priceFormatter = (x: number, delta: number) => {
     })
   }
 
-  /*
-   * Determine decimal precision to show ~4 significant digits.
-   * Use delta magnitude when the price range is very tight relative to the value
-   * (important for stablecoin pegs where values ~1.0 but variation is tiny).
-   * Cap at 4 decimals to avoid overly precise displays.
-   */
   const valueMagnitude = Math.floor(Math.log10(Math.abs(x)))
   const deltaMagnitude = delta > 0 ? Math.floor(Math.log10(delta)) : valueMagnitude
-  // Only use delta-based precision when range is tight (delta < 1% of value's order of magnitude)
+  // Let a tight visible range drive precision, while allowing extra decimals for sub-unit assets.
   const magnitude = deltaMagnitude < valueMagnitude - 1 ? deltaMagnitude : valueMagnitude
-  const decimals = Math.min(4, Math.max(0, 3 - magnitude))
+  const maxDecimals = x < 1 ? MAX_SUB_UNIT_PRICE_DECIMALS : MAX_PRICE_DECIMALS
+  const decimals = Math.min(maxDecimals, Math.max(0, 3 - magnitude))
 
-  const formatted = formatNumber(x, {
-    decimals,
-    abbreviate: false,
+  return x.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
     useGrouping: false,
   })
-
-  // Remove trailing zeros after decimal point (e.g., "1.200" → "1.2")
-  return String(parseFloat(formatted))
 }
