@@ -231,6 +231,20 @@ export const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert 
           </div>
         ),
       },
+      '0x62d5a59e0d67c0381aad53b201b4a1b8dcd2c833': {
+        alertType: 'danger',
+        address: '0x62d5a59e0d67c0381aad53b201b4a1b8dcd2c833',
+        message: (
+          <div>
+            <Trans>
+              The vsdCRV has suffered an exploit.{' '}
+              <StyledExternalLink href="https://x.com/StakeDAOHQ/status/2059586800255910039">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find(tokenAddress => !!alerts[tokenAddress])
