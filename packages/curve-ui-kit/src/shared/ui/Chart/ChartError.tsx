@@ -6,12 +6,14 @@ import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
  * Optional prop for passing a refetch function to refresh the chart */
 export const ChartError = ({
   height,
+  error,
   errorMessage,
   refetchFunction,
 }: {
   height: number
+  error: Error
   errorMessage: string
-  refetchFunction?: () => void
+  refetchFunction?: () => Promise<unknown> | void
 }) => (
   <Box
     sx={{
@@ -25,6 +27,7 @@ export const ChartError = ({
     <ErrorMessage
       title={t`An error occurred`}
       subtitle={errorMessage}
+      error={error}
       refreshData={refetchFunction}
       errorMessage={errorMessage}
     />
