@@ -143,7 +143,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
 
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)
-  const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
+  const { isFull, max } = useMaxRepayTokenValues({ market, params, form }, enabled)
 
   const priceImpact = q(useRepayPriceImpact(params, enabled))
   const { formState } = form

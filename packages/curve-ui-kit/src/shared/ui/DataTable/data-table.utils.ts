@@ -16,7 +16,7 @@ import {
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Sizing } = SizesAndSpaces
 
 /** css class to hide elements on desktop unless the row is hovered */
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
@@ -130,3 +130,35 @@ export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getSta
 
 export const getHiddenCount = <T>(table: Table<T>): number =>
   table.getPreFilteredRowModel().rows.length - table.getFilteredRowModel().rows.length
+
+// The following datatable size code lives in the util file, because at the moment of writing we have both DataTable and LegacyDataTable.
+// TODO: move to the final DataTable.tsx component once we remove the LegacyDataTable and make sure there are no circular dependencies with the other files in the DataTable folder.
+export type DataTableSize = 'extraSmall' | 'small' | 'medium' | 'large'
+
+export const DataTableHeaderHeight = {
+  extraSmall: Sizing.sm,
+  small: Sizing.md,
+  medium: Sizing.lg,
+  large: Sizing.xxl,
+} as const
+
+export const DataTableHeaderCellPaddingBlockEnd = {
+  extraSmall: 0,
+  small: 0,
+  medium: Spacing.sm,
+  large: Spacing.sm,
+}
+
+export const DataTableHeaderCellVerticalAlign = {
+  extraSmall: 'middle',
+  small: 'middle',
+  medium: 'bottom',
+  large: 'bottom',
+}
+
+export const DataTableHeaderCellSortableAlign = {
+  extraSmall: 'center',
+  small: 'center',
+  medium: 'end',
+  large: 'end',
+}

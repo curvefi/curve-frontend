@@ -3,9 +3,13 @@ import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
-import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
+import {
+  invalidateMaxRemovableCollateral,
+  useMaxRemovableCollateral,
+} from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import { useUserState } from '@/llamalend/queries/user'
+import { resetUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   type CollateralForm,
@@ -14,7 +18,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { BaseConfig } from '@ui/utils'
-import { useCallbackSync, useFormSync, useForm } from '@ui-kit/features/forms'
+import { useCallbackSync, useFormSync, useForm, useOnChangeCallback } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery, type Range } from '@ui-kit/types/util'
 
@@ -76,6 +80,11 @@ export const useRemoveCollateralForm = <
   useCallbackSync(useRemoveCollateralPrices(params, enabled), onPricesUpdated)
 
   useFormSync(form, { maxCollateral: maxRemovable.data })
+
+  useOnChangeCallback(market, () =>
+    // collateral remove queries depend on LL internal cache, reset when new market data arrives
+    Promise.all([resetUserCurrentLeverage(params), invalidateMaxRemovableCollateral(params)]),
+  )
 
   const isPending = formState.isSubmitting || action.isPending
   return {
