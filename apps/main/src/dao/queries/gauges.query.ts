@@ -1,6 +1,6 @@
 import type { TimestampResponse } from '@curvefi/prices-api/timestamp'
 import { fetchJson } from '@primitives/fetch.utils'
-import { fromEntries } from '@primitives/objects.utils'
+import { fromEntries, maybe } from '@primitives/objects.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { shortenAddress } from '@ui-kit/utils'
@@ -85,10 +85,8 @@ export const {
           title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name ?? null, gauge.address),
           gauge_weight: +gauge.gauge_weight,
           gauge_relative_weight: +(gauge.gauge_relative_weight * 100),
-          gauge_relative_weight_7d_delta:
-            gauge.gauge_relative_weight_7d_delta == null ? null : +(gauge.gauge_relative_weight_7d_delta * 100),
-          gauge_relative_weight_60d_delta:
-            gauge.gauge_relative_weight_60d_delta == null ? null : +(gauge.gauge_relative_weight_60d_delta * 100),
+          gauge_relative_weight_7d_delta: maybe(gauge.gauge_relative_weight_7d_delta, data => +(data * 100)) ?? null,
+          gauge_relative_weight_60d_delta: maybe(gauge.gauge_relative_weight_60d_delta, data => +(data * 100)) ?? null,
         },
       ]),
     )

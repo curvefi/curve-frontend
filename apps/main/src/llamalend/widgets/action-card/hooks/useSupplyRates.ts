@@ -10,6 +10,7 @@ import {
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
@@ -57,7 +58,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   },
   enabled: boolean,
 ) {
-  const blockchainId = chainId == null ? undefined : BlockchainIds[chainId]
+  const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
   const market = marketId ? requireVault(marketId) : undefined
   const snapshotsQuery = useLlamaSnapshot(market, blockchainId, enabled)
   const lendingSnapshotsQuery = q({

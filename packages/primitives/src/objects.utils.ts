@@ -68,3 +68,17 @@ export const isEmpty = (obj: object) => Object.keys(obj).length === 0
 
 export const pick = <T, K extends keyof T>(obj: T, ...keys: K[]) =>
   Object.fromEntries(keys.map(key => [key, obj[key]])) as { [P in K]: T[P] }
+type NonNullishTuple<T extends readonly unknown[]> = {
+  [K in keyof T]: NonNullable<T[K]>
+}
+
+export function maybe<const T extends readonly unknown[], R>(
+  value: readonly [...T] | null | undefined,
+  mapper: (value: NonNullishTuple<T>) => R,
+): R | undefined
+export function maybe<T, R>(value: T | null | undefined, mapper: (value: NonNullable<T>) => R): R | undefined
+export function maybe<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined {
+  if (value == null) return undefined
+  if (Array.isArray(value) && value.some(x => x == null)) return undefined
+  return mapper(value)
+}

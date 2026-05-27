@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { RESOLVED_QUERY_RESULT } from '@ui-kit/lib/queries'
@@ -62,13 +63,10 @@ export const useSolvencyMarket = (
 
         return {
           ...combineQueriesMeta(results),
-          data:
-            solvencyPercent != null && badDebtUsd != null
-              ? {
-                  solvencyPercent,
-                  badDebtUsd,
-                }
-              : undefined,
+          data: maybe([solvencyPercent, badDebtUsd], ([solvencyPercent, badDebtUsd]) => ({
+            solvencyPercent,
+            badDebtUsd,
+          })),
         }
       },
       [isEnabled, blockchainId, controllerAddress],
