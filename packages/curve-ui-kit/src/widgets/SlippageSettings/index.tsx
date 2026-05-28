@@ -1,2 +1,2 @@
-export * from './SlippageToleranceActionInfo'
-export * from './slippage.utils'
+export { SlippageToleranceActionInfo } from './SlippageToleranceActionInfo'
+export { SLIPPAGE_PRESETS, SLIPPAGE_TYPES, type SlippageType, type SlippageSettings } from './slippage.utils'

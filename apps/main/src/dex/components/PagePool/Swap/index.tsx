@@ -10,6 +10,7 @@ import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
+import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
@@ -49,7 +50,6 @@ const { cloneDeep, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
 export const Swap = ({
-  chainIdPoolId,
   curve,
   maxSlippage,
   poolAlert,
@@ -59,7 +59,6 @@ export const Swap = ({
   seed,
   tokensMapper,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
-  chainIdPoolId: string
   poolAlert: PoolAlert | null
   maxSlippage: Decimal
   seed: Seed
@@ -125,11 +124,7 @@ export const Swap = ({
 
   const { selectList, swapTokensMapper } = useMemo(() => {
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
-
-    return {
-      selectList: selectList.map(toTokenOption(network?.networkId)),
-      swapTokensMapper,
-    }
+    return { selectList: selectList.map(toTokenOption(network?.networkId)), swapTokensMapper }
   }, [poolDataCacheOrApi, tokensMapper, network?.networkId])
 
   const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
@@ -546,7 +541,7 @@ export const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
       </Stack>
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>

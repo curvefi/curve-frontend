@@ -1,5 +1,8 @@
 import { type ReactNode, useState } from 'react'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormLabel from '@mui/material/FormLabel'
@@ -34,22 +37,27 @@ export const SlippageFormField = ({
     watchValue,
     formState: { errors },
   },
+  isActive,
   helper,
 }: {
   type: SlippageType
   helper: ReactNode
   title: ReactNode
+  isActive: boolean
   form: UseFormReturn<SlippageSettingsFormData>
 }) => {
-  const preset = SLIPPAGE_PRESETS[type]
-  const high = HIGH_SLIPPAGE_PRESETS[type]
+  const presets = [SLIPPAGE_PRESETS[type], HIGH_SLIPPAGE_PRESETS[type]]
   const value = watchValue(type)
-  const [isCustom, setIsCustom] = useState(![preset, high].includes(value))
+  const [isCustom, setIsCustom] = useState(!presets.includes(value))
   const error = errors[type]
   return (
     <Stack>
       {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
-      <FormLabel>{title}</FormLabel>
+
+      <Stack direction="row" justifyContent="space-between">
+        <FormLabel>{title}</FormLabel>
+        {isActive && <Chip color="active" size="extraSmall" label={t`Current`} />}
+      </Stack>
       <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.md}>
         <RadioGroup
           row
@@ -61,8 +69,14 @@ export const SlippageFormField = ({
           sx={{ flexGrow: 1, justifyContent: 'space-between', gap: Spacing.xs }}
           data-testid="slippage-radio-group"
         >
-          <FormControlLabel value={preset} label={formatNumber(preset, formatOptions)} control={<Radio />} />
-          <FormControlLabel value={high} label={formatNumber(high, formatOptions)} control={<Radio />} />
+          {presets.map((preset, index) => (
+            <FormControlLabel
+              key={index}
+              value={preset}
+              label={formatNumber(preset, formatOptions)}
+              control={<Radio />}
+            />
+          ))}
         </RadioGroup>
 
         <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
@@ -77,44 +91,24 @@ export const SlippageFormField = ({
             onChange={value => update({ [type]: decimal(value) })}
             // Toggle to 'custom' the moment you click the text input
             onFocus={() => setIsCustom(true)}
-            onBlur={() => setIsCustom(![preset, high].includes(value))}
+            onBlur={() => setIsCustom(!presets.includes(value))}
           />
         </Box>
       </Stack>
       {error && <HelperMessage message={error.message} isError />}
       {+value > +MAX_RECOMMENDED_SLIPPAGE && (
-        <HelperMessage
-          data-testid="slippage-too-high"
-          message={
-            <>
-              {t`High slippage selected!`}
-              <br />
-              {t`This may lead to fewer tokens received and potential loss of funds.`}
-              <br />
-              {t`Proceed with caution.`}
-              <br />
-              <br />
-              {t`Max. recommended slippage is ${formatNumber(MAX_RECOMMENDED_SLIPPAGE, formatOptions)}%`}
-            </>
-          }
-        />
+        <Alert severity="warning" variant="standard">
+          <AlertTitle>{t`High slippage selected!`}</AlertTitle>
+          {t`This may lead to fewer tokens received and potential loss of funds. Proceed with caution.`}{' '}
+          {t`Max. recommended slippage is ${formatNumber(MAX_RECOMMENDED_SLIPPAGE, formatOptions)}`}
+        </Alert>
       )}
       {+value < +MIN_SLIPPAGE && (
-        <HelperMessage
-          data-testid="slippage-too-low"
-          message={
-            <>
-              {t`Low slippage selected!`}
-              <br />
-              {t`Your transaction may fail if price moves slightly.`}
-              <br />
-              {t`Consider increasing slippage if it doesn't go through.`}
-              <br />
-              <br />
-              {t`Min. slippage is ${formatNumber(MIN_SLIPPAGE, formatOptions)}%`}
-            </>
-          }
-        />
+        <Alert severity="warning" variant="standard">
+          <AlertTitle>{t`Low slippage selected!`}</AlertTitle>
+          {t`Your transaction may fail if price moves slightly. Consider increasing slippage if it doesn't go through.`}{' '}
+          {t`Min. slippage is ${formatNumber(MIN_SLIPPAGE, formatOptions)}`}
+        </Alert>
       )}
       <FormHelperText>{helper}</FormHelperText>
     </Stack>

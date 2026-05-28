@@ -11,7 +11,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -32,7 +31,6 @@ export const PageRouterSwap = () => {
   const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
   const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
@@ -64,9 +62,6 @@ export const PageRouterSwap = () => {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
-      }
-      if (paramsMaxSlippage) {
-        setMaxSlippage(paramsMaxSlippage)
       }
 
       const routerDefault = network.swap

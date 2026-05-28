@@ -221,7 +221,7 @@ export const LoanLiquidate = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey="leverage" />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
       </div>
 
       {/* actions */}

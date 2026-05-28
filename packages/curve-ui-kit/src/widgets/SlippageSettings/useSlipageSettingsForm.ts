@@ -1,6 +1,6 @@
 import { enforce, test } from 'vest'
 import type { Decimal } from '@primitives/decimal.utils'
-import { pick, recordEntries } from '@primitives/objects.utils'
+import { pick } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { createValidationSuite } from '@ui-kit/lib'
@@ -11,8 +11,12 @@ function isSlippage(nr: Decimal) {
   enforce(nr)
     .message(t`Invalid percentage number`)
     .isDecimal()
-    .gte(0)
-    .lte(100)
+  enforce(nr)
+    .message(t`The number must be larger than 0`)
+    .gt(0)
+  enforce(nr)
+    .message(t`Percentage values cannot be larger than 100`)
+    .lt(100)
 }
 
 export type SlippageSettingsFormData = SlippageSettings
@@ -31,7 +35,7 @@ export function useSlippageSettingsForm({ onChanged }: { onChanged: (data: Slipp
   return {
     form,
     onSubmit: form.handleSubmit(data => {
-      recordEntries(data).map(([key, value]) => setMaxSlippage(value, key))
+      setMaxSlippage(data)
       onChanged(data)
     }),
     reset: () => form.reset(defaultValues),

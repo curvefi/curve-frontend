@@ -65,7 +65,11 @@ type ModalDialogProps = {
   /** Predefined width for the modal dialog */
   width?: keyof typeof modalWidth
 
-  onSubmit?: () => void
+  /**
+   * When a form is used inside the modal, we need to wrap the contents of the modal with a form element,
+   * so that we can keep the form submission in the footer.
+   */
+  formProps?: Omit<FormHTMLAttributes<HTMLFormElement>, 'children'>
 
   /** Optional test id for the dialog root */
   testId?: string
@@ -90,7 +94,7 @@ export const ModalDialog = ({
   width = 'md',
   sx,
   testId,
-  onSubmit,
+  formProps,
 }: ModalDialogProps) => (
   <Dialog
     open={open}
@@ -111,7 +115,7 @@ export const ModalDialog = ({
     }}
   >
     <Card sx={{ width: { tablet: modalWidth[width], mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
-      <WithWrapper shouldWrap={onSubmit} onSubmit={onSubmit} Wrapper={Form}>
+      <WithWrapper shouldWrap={formProps} Wrapper={Form} {...formProps}>
         <CardHeader
           action={
             onClose && (

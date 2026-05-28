@@ -268,7 +268,7 @@ export const LoanActionInfoList = ({
         {slippage && onSlippageChange && (
           <SlippageToleranceActionInfo
             maxSlippage={slippage}
-            stateKey="leverage"
+            type="leverage"
             onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
           />

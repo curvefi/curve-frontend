@@ -41,7 +41,6 @@ export type PageTransferProps = {
 }
 
 export type TransferProps = {
-  chainIdPoolId: string
   blockchainId: string
   poolAlert: PoolAlert | null
   maxSlippage: Decimal
