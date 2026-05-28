@@ -1,11 +1,8 @@
 import { type ReactNode } from 'react'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
-import { t } from '@ui-kit/lib/i18n'
+import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { showToast } from '@ui-kit/widgets/Toast/toast.util'
-
-const testId = 'copy-confirmation' as const
 
 type CopyIconButtonProps = {
   copyText: string
@@ -21,22 +18,14 @@ export const CopyIconButton = ({
   children = <CopyIcon />,
   size = 'extraSmall',
   ...iconProps
-}: CopyIconButtonProps) => (
-  <Tooltip title={label} placement="top">
-    <IconButton
-      size={size}
-      {...iconProps}
-      onClick={() => {
-        console.info(`Copying to clipboard: ${copyText}`)
-        return (
-          navigator.clipboard?.writeText(copyText).then(
-            () => showToast({ message: copyText, severity: 'info', title: confirmationText, testId }),
-            e => showToast({ title: e.message, severity: 'error', testId }),
-          ) ?? showToast({ title: t`Clipboard not available`, severity: 'warning', testId })
-        )
-      }}
-    >
-      {children}
-    </IconButton>
-  </Tooltip>
-)
+}: CopyIconButtonProps) => {
+  const copyToClipboard = useCopyToClipboard({ copyText, confirmationText })
+
+  return (
+    <Tooltip title={label} placement="top">
+      <IconButton size={size} {...iconProps} onClick={copyToClipboard}>
+        {children}
+      </IconButton>
+    </Tooltip>
+  )
+}

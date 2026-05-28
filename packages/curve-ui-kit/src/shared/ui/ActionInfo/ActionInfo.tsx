@@ -5,8 +5,8 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
-import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { IconButtonIconSize } from '@ui-kit/themes/components/button'
@@ -42,7 +42,7 @@ export type ActionInfoProps = {
   prevValueColor?: TypographyProps['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
-  /** Value to be copied (will display a copy button). */
+  /** Value to be copied from the value text when clicked. */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
   copiedTitle?: string
@@ -95,13 +95,23 @@ const ValueTypography = ({
   children,
   testId,
   value,
-}: ValueDecoratorProps & { children: ReactNode }) => (
+  onClick,
+}: ValueDecoratorProps & {
+  children: ReactNode
+  onClick?: () => void
+}) => (
   <Typography
     variant={valueSize[size]}
     color={error ? 'error' : (valueColor ?? 'textPrimary')}
-    component="div"
     data-testid={testId}
     data-value={value}
+    onClick={onClick}
+    sx={
+      onClick && {
+        cursor: 'pointer',
+        '&:hover': { textDecoration: 'underline' },
+      }
+    }
   >
     {children}
   </Typography>
@@ -136,6 +146,11 @@ export const ActionInfo = ({
   const iconSize = IconButtonIconSize[buttonSize]
   const value = givenValue ?? givenPrevValue
   const prevValue = value === givenPrevValue ? null : givenPrevValue
+  const copyToClipboard = useCopyToClipboard({
+    copyText: copyValue ?? '',
+    confirmationText: copiedTitle ?? t`Value has been copied to clipboard`,
+  })
+
   return (
     <Stack
       direction="row"
@@ -196,6 +211,7 @@ export const ActionInfo = ({
                     valueColor={valueColor}
                     testId={`${testId}-value`}
                     value={value}
+                    onClick={copyValue && !loading && !error ? copyToClipboard : undefined}
                   >
                     {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
                   </ValueTypography>
@@ -213,14 +229,6 @@ export const ActionInfo = ({
         </Stack>
 
         {error && <ErrorIconButton error={error} size={buttonSize} />}
-        {copyValue && (
-          <CopyIconButton
-            copyText={copyValue}
-            label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
-            confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
-            size={buttonSize}
-          />
-        )}
 
         {link && (
           <IconButton
