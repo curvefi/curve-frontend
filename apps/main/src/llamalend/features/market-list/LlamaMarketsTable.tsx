@@ -6,14 +6,12 @@ import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { TableButton } from '@ui-kit/shared/ui/DataTable/TableButton'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
+import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
@@ -89,6 +87,7 @@ export const LlamaMarketsTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       isLoading={isLoading}
     >
+      <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
       <TableFilters<LlamaMarketColumnId>
         testIdPrefix={LOCAL_STORAGE_KEY}
         visibilityGroups={columnSettings}
@@ -96,12 +95,6 @@ export const LlamaMarketsTable = ({
         disableSearchAutoFocus
         searchText={globalFilter}
         onSearch={setGlobalFilter}
-        header={
-          <TableFiltersHeader
-            title={t`Markets`}
-            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />}
-          />
-        }
         collapsibleFilters={{
           collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
           hasActiveFilters,

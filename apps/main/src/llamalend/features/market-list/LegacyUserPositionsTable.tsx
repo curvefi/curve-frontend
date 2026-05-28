@@ -110,7 +110,7 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({
+export const LegacyUserPositionsTable = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading, error },
@@ -166,7 +166,7 @@ export const UserPositionsTable = ({
         <UserPositionsEmptyState
           state={getEmptyState(!!error, userData?.length > 0)}
           table={table}
-          tab={tab}
+          marketRateType={tab}
           onReload={onReload}
           resetFilters={resetFilters}
         />
@@ -203,7 +203,7 @@ export const UserPositionsTable = ({
             </>
           }
         />
-        <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
+        <UserPositionSummary markets={markets} selectedChains={selectedChains} />
         <Stack
           direction="row"
           sx={{
