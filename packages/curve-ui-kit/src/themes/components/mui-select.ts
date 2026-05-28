@@ -118,10 +118,7 @@ export const defineMuiSelect = (
   },
   variants: [
     ...Object.entries(selectSizes).map(
-      ([
-        size,
-        { height, iconSize, iconPaddingRight, paddingBlock, paddingInlineStart, typography: font },
-      ]) => {
+      ([size, { height, iconSize, iconPaddingRight, paddingBlock, paddingInlineStart, typography: font }]) => {
         const iconSpace = getSelectIconSpace(iconSize, iconPaddingRight)
 
         return {

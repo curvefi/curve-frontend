@@ -86,11 +86,7 @@ export const TokenSelectButton = ({
     size={size}
     sx={size === 'small' ? smallTokenSelectorSx : undefined}
     renderValue={() =>
-      token ? (
-        <TokenSelectButtonLabel token={token} disabled={disabled} size={size} />
-      ) : (
-        <Spinner useTheme={true} />
-      )
+      token ? <TokenSelectButtonLabel token={token} disabled={disabled} size={size} /> : <Spinner useTheme={true} />
     }
     IconComponent={KeyboardArrowDownIcon}
   />
