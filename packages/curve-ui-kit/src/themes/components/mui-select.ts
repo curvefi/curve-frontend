@@ -14,15 +14,16 @@ const fixedResponsive = <T extends string>(value: T): Responsive<T> => ({
   desktop: value,
 })
 
-const getSelectIconSpace = (iconSize: Responsive): Responsive<string> => ({
-  mobile: `calc(${iconSize.mobile} + ${SelectSpacing.IconGap} + ${SelectSpacing.IconPaddingRight})`,
-  tablet: `calc(${iconSize.tablet} + ${SelectSpacing.IconGap} + ${SelectSpacing.IconPaddingRight})`,
-  desktop: `calc(${iconSize.desktop} + ${SelectSpacing.IconGap} + ${SelectSpacing.IconPaddingRight})`,
+const getSelectIconSpace = (iconSize: Responsive, iconPaddingRight: Responsive): Responsive<string> => ({
+  mobile: `calc(${iconSize.mobile} + ${SelectSpacing.IconGap} + ${iconPaddingRight.mobile})`,
+  tablet: `calc(${iconSize.tablet} + ${SelectSpacing.IconGap} + ${iconPaddingRight.tablet})`,
+  desktop: `calc(${iconSize.desktop} + ${SelectSpacing.IconGap} + ${iconPaddingRight.desktop})`,
 })
 
 type SelectSizeDefinition = {
   height: string
   iconSize: Responsive
+  iconPaddingRight: Responsive
   paddingBlock: Responsive
   paddingInlineStart: Responsive
   typography: 'bodySBold' | 'bodyMBold' | 'headingSBold'
@@ -34,6 +35,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   tiny: {
     height: SelectSize.tiny,
     iconSize: IconSize.md,
+    iconPaddingRight: SelectSpacing.IconPaddingRight.tiny,
     paddingBlock: SelectSpacing.ContentPaddingY.tiny,
     paddingInlineStart: SelectSpacing.PaddingX.tiny,
     typography: 'bodySBold',
@@ -41,6 +43,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   small: {
     height: SelectSize.small,
     iconSize: fixedResponsive(IconSize.lg.desktop),
+    iconPaddingRight: SelectSpacing.IconPaddingRight.small,
     paddingBlock: SelectSpacing.ContentPaddingY.small,
     paddingInlineStart: SelectSpacing.PaddingX.small,
     typography: 'bodySBold',
@@ -48,6 +51,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   medium: {
     height: SelectSize.medium,
     iconSize: fixedResponsive(IconSize.lg.desktop),
+    iconPaddingRight: SelectSpacing.IconPaddingRight.medium,
     paddingBlock: SelectSpacing.ContentPaddingY.medium,
     paddingInlineStart: SelectSpacing.PaddingX.medium,
     typography: 'bodyMBold',
@@ -55,6 +59,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   large: {
     height: SelectSize.large,
     iconSize: fixedResponsive(IconSize.lg.desktop),
+    iconPaddingRight: SelectSpacing.IconPaddingRight.large,
     paddingBlock: SelectSpacing.ContentPaddingY.large,
     paddingInlineStart: SelectSpacing.PaddingX.large,
     typography: 'headingSBold',
@@ -106,7 +111,6 @@ export const defineMuiSelect = (
       // Use hardcoded transition values instead of MUI's theme function, which isn't accessible here.
       color: design.Select.Text.Value,
       transition: 'transform 225ms cubic-bezier(0.4, 0, 0.2, 1)',
-      right: SelectSpacing.IconPaddingRight,
       '.Mui-disabled &': {
         color: design.Select.Text.Disabled,
       },
@@ -114,15 +118,18 @@ export const defineMuiSelect = (
   },
   variants: [
     ...Object.entries(selectSizes).map(
-      ([size, { height, iconSize, paddingBlock, paddingInlineStart, typography: font }]) => {
-        const iconSpace = getSelectIconSpace(iconSize)
+      ([
+        size,
+        { height, iconSize, iconPaddingRight, paddingBlock, paddingInlineStart, typography: font },
+      ]) => {
+        const iconSpace = getSelectIconSpace(iconSize, iconPaddingRight)
 
         return {
           props: { size: size as SelectSizes },
           style: {
             // Override InputBase height at root level and desktop size accross all breakpoints
             '&.MuiInputBase-root': { height },
-            '& .MuiSelect-select': {
+            '&& .MuiSelect-select.MuiSelect-select': {
               // parasite margin inline from MUI
               marginInline: 0,
               height,
@@ -131,6 +138,7 @@ export const defineMuiSelect = (
                 paddingBlock,
                 paddingInlineStart,
                 paddingInlineEnd: iconSpace,
+                paddingRight: iconSpace,
                 /**
                  * The overflow hiding doesn't take into account the expansion chevron icon, so we need to deduct
                  * the icon width from the available text space (100% by default).
@@ -147,6 +155,7 @@ export const defineMuiSelect = (
               ...handleBreakpoints({
                 width: iconSize,
                 height: iconSize,
+                right: iconPaddingRight,
                 // MUI default of `calc(50% - .5em)` doesn't really vertically center correctly given our responsive icon size
                 '--icon-size': iconSize,
                 top: '50%',

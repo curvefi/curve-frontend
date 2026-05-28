@@ -72,16 +72,12 @@ const MappedInputSize = {
 
 const MappedInputSpacing = {
   PaddingX: {
-    tiny: fixedResponsive(Spacing[300]),
+    tiny: fixedResponsive(Spacing[200]),
     small: fixedResponsive(Spacing[300]),
     medium: fixedResponsive(Spacing[300]),
     large: fixedResponsive(Spacing[300]),
   },
-  ContentPaddingRight: {
-    mobile: Spacing[300],
-    tablet: Spacing[200],
-    desktop: Spacing[200],
-  },
+  ContentPaddingRight: fixedResponsive(Spacing[300]),
   HelperPaddingTop: Spacing[200],
   LabelGap: Spacing[100],
   ValueGap: Spacing[100],
@@ -96,7 +92,7 @@ const MappedSelectSize = {
 
 const MappedSelectSpacing = {
   PaddingX: {
-    tiny: fixedResponsive(Spacing[300]),
+    tiny: fixedResponsive(Spacing[200]),
     small: fixedResponsive(Spacing[300]),
     medium: fixedResponsive(Spacing[300]),
     large: fixedResponsive(Spacing[300]),
@@ -107,8 +103,13 @@ const MappedSelectSpacing = {
     medium: fixedResponsive(Spacing[300]),
     large: fixedResponsive(Spacing[300]),
   },
-  IconGap: Spacing[0],
-  IconPaddingRight: Spacing[200],
+  IconGap: Spacing[300],
+  IconPaddingRight: {
+    tiny: fixedResponsive(Spacing[200]),
+    small: fixedResponsive(Spacing[300]),
+    medium: fixedResponsive(Spacing[300]),
+    large: fixedResponsive(Spacing[300]),
+  },
 } as const
 
 const MappedSelectListItem = {

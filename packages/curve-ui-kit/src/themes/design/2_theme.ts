@@ -475,6 +475,11 @@ export const createLightDesign = (
         },
       },
     },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
+      },
+    },
   } as const
 
   const Sliders = {
@@ -1027,6 +1032,11 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         },
       },
     },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
+      },
+    },
   } as const
 
   const Sliders = {
@@ -1538,6 +1548,11 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
           Hover: Inputs.Base.Default.Border.Hover,
           Error: Inputs.Base.Default.Border.Error,
         },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
       },
     },
   } as const

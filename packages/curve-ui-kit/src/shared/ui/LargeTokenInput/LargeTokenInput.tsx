@@ -266,7 +266,7 @@ export const LargeTokenInput = ({
       id={componentId}
       data-testid={testId}
       sx={{
-        backgroundColor: t => t.design.InputSelect.Base.Default.Fill.Default,
+        backgroundColor: t => t.design.InputSelect.Large.Default.Fill,
         outline: t =>
           `1px solid ${
             isError ? t.design.InputSelect.Base.Default.Border.Error : t.design.InputSelect.Base.Default.Border.Default

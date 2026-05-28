@@ -1,8 +1,31 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { Select, type SelectProps } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../types'
+
+const { IconSize, SelectSpacing, Spacing } = SizesAndSpaces
+
+const smallTokenSelectorIconSpace = {
+  mobile: `calc(${IconSize.lg.desktop} + ${SelectSpacing.IconPaddingRight.small.mobile})`,
+  tablet: `calc(${IconSize.lg.desktop} + ${SelectSpacing.IconPaddingRight.small.tablet})`,
+  desktop: `calc(${IconSize.lg.desktop} + ${SelectSpacing.IconPaddingRight.small.desktop})`,
+}
+
+const smallTokenSelectorSx = {
+  '&& .MuiSelect-select.MuiSelect-select': {
+    ...handleBreakpoints({
+      paddingInlineEnd: smallTokenSelectorIconSpace,
+      paddingRight: smallTokenSelectorIconSpace,
+      '--icon-space': smallTokenSelectorIconSpace,
+    }),
+  },
+}
 
 type TokenSelectButtonCallbacks = {
   onClick: () => void
@@ -13,6 +36,32 @@ type TokenSelectButtonProps = {
   disabled: boolean
   size?: SelectProps['size']
 }
+
+const TokenSelectButtonLabel = ({
+  token,
+  disabled,
+  size,
+}: {
+  token: TokenOption
+  disabled: boolean
+  size: SelectProps['size']
+}) =>
+  size === 'small' ? (
+    <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
+      <TokenIcon blockchainId={token.chain} address={token.address} size="mui-md" disabled={disabled} />
+      <Typography variant="bodySBold" color={disabled ? 'textDisabled' : undefined}>
+        {token.symbol}
+      </Typography>
+    </Stack>
+  ) : (
+    <TokenLabel
+      blockchainId={token.chain}
+      address={token.address}
+      size="mui-md"
+      label={token.symbol}
+      disabled={disabled}
+    />
+  )
 
 /** The token selector is Select but acts like a button, so it's a bit unique */
 export const TokenSelectButton = ({
@@ -29,15 +78,10 @@ export const TokenSelectButton = ({
     disabled={disabled}
     displayEmpty
     size={size}
+    sx={size === 'small' ? smallTokenSelectorSx : undefined}
     renderValue={() =>
       token ? (
-        <TokenLabel
-          blockchainId={token.chain}
-          address={token.address}
-          size="mui-md"
-          label={token.symbol}
-          disabled={disabled}
-        />
+        <TokenSelectButtonLabel token={token} disabled={disabled} size={size} />
       ) : (
         <Spinner useTheme={true} />
       )
