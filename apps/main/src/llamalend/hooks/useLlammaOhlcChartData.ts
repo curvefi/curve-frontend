@@ -72,8 +72,9 @@ export const useLlammaOhlcChartData = ({
   })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
   const oraclePoolHasOraclePriceData = oraclePool.data.oraclePriceData.length > 0
-  // The oracle-pool endpoint is primary because it can return candles and the oracle line.
-  // Some markets have no oracle line there, so fetch LLAMMA only as a fallback line source.
+  // Oracle-pool is primary because it has the richest candle data. LLAMMA is
+  // only needed as an oracle-line fallback when oracle-pool does not supply
+  // oracle price data.
   const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolHasOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
