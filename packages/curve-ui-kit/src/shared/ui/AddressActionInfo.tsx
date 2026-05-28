@@ -28,7 +28,7 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
     sx={{
       alignItems: 'center',
       ...(isBorderBottom && {
-        borderBottom: theme => `1px solid ${theme.palette.divider}`,
+        borderBottom: t => `1px solid ${t.palette.divider}`,
       }),
     }}
   />
