@@ -5,10 +5,10 @@ import {
   useChartLegendToggles,
   useChartTimeSettings,
   useLiquidationRange,
-  useLlammaChartSelections,
   useStableOhlcAnchorEnd,
 } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
@@ -55,7 +55,11 @@ export const useLlammaOhlcChartStateModel = ({
       ohlcData: oraclePoolData,
       oraclePriceData: oraclePoolOraclePriceData,
     },
-    llamma: { error: llammaError, isLoading: llammaIsLoading, oraclePriceData: llammaOraclePriceData },
+    llammaFallback: {
+      error: llammaFallbackError,
+      isLoading: llammaFallbackIsLoading,
+      oraclePriceData: llammaFallbackOraclePriceData,
+    },
     oracleTokens,
     refetch,
     fetchMore,
@@ -71,43 +75,48 @@ export const useLlammaOhlcChartStateModel = ({
     anchorEnd,
     enabled: enabled && !!network,
   })
-  const oraclePoolHasData = oraclePoolData.length > 0 || oraclePoolOraclePriceData.length > 0
 
-  const { selectChartList, selectedChartKey, isLoading } = useLlammaChartSelections({
-    oracleChart: { hasData: oraclePoolHasData, isLoading: oraclePoolIsLoading },
-    llammaChart: { hasData: llammaOraclePriceData.length > 0, isLoading: llammaIsLoading },
-    oracleTokens,
-  })
+  // Collapse the oracle-pool and LLAMMA fallback query sources into one chart payload.
+  const hasOraclePoolData = oraclePoolData.length > 0 || oraclePoolOraclePriceData.length > 0
+  const hasFallbackOracleLine = llammaFallbackOraclePriceData.length > 0
+  const shouldUseFallbackChart = !hasOraclePoolData && hasFallbackOracleLine
+  const hasChartData = hasOraclePoolData || hasFallbackOracleLine
 
-  const isLlamma = selectedChartKey === 'llamma'
-  const currentError = isLlamma ? llammaError : oraclePoolError
-  // The LLAMMA OHLC candles are intentionally hidden because that endpoint is too sparse.
-  const ohlcData = isLlamma ? [] : oraclePoolData
-  const currentOraclePriceData = isLlamma ? llammaOraclePriceData : oraclePoolOraclePriceData
-  const currentChartHasData = isLlamma ? llammaOraclePriceData.length > 0 : oraclePoolHasData
-  const noDataAvailable = enabled && !isLoading && !currentError && !currentChartHasData
+  const isLoading = oraclePoolIsLoading || (!hasOraclePoolData && llammaFallbackIsLoading)
+  const selectedChartKey = isLoading ? undefined : shouldUseFallbackChart ? 'llamma' : 'oracle'
+  const currentError = hasOraclePoolData ? oraclePoolError : (llammaFallbackError ?? oraclePoolError)
+  const noDataAvailable = enabled && !isLoading && !currentError && !hasChartData
 
-  const oraclePriceData = useMemo(() => {
-    if (oraclePoolOraclePriceData.length > 0) return oraclePoolOraclePriceData
-    // If oracle-pool data lacks oracle prices, the LLAMMA endpoint may still have the fallback line.
-    if (llammaOraclePriceData.length > 0) return llammaOraclePriceData
-    return undefined
-  }, [oraclePoolOraclePriceData, llammaOraclePriceData])
+  const ohlcData = shouldUseFallbackChart ? [] : oraclePoolData
+  const oraclePriceData =
+    oraclePoolOraclePriceData.length > 0
+      ? oraclePoolOraclePriceData
+      : hasFallbackOracleLine
+        ? llammaFallbackOraclePriceData
+        : undefined
+  const currentOraclePriceData = shouldUseFallbackChart ? llammaFallbackOraclePriceData : oraclePoolOraclePriceData
+
+  const oraclePoolLabel = oracleTokens ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}` : t`Oracle`
+  const chartLabel = shouldUseFallbackChart ? t`Oracle price` : oraclePoolLabel
+  const selectChartList = useMemo(
+    () => [{ activeTitle: chartLabel, label: chartLabel, key: selectedChartKey ?? 'oracle' }],
+    [chartLabel, selectedChartKey],
+  )
 
   const newLiqPrices = previewPrices ?? legacyPreviewPrices
 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!newLiqPrices,
     hasLiquidationRange: !!userPrices,
-    llammaEndpoint: selectedChartKey === 'llamma',
+    llammaEndpoint: shouldUseFallbackChart,
   })
-  const needsLlammaFallbackLine = oraclePriceVisible && oraclePoolOraclePriceData.length === 0
+  const shouldFetchFallbackOracleLine = shouldUseFallbackChart || (oraclePriceVisible && oraclePoolOraclePriceData.length === 0)
   const neededHistoricalSelection = useMemo(
     () => ({
-      oraclePool: !isLlamma,
-      llamma: isLlamma || needsLlammaFallbackLine,
+      oraclePool: !shouldUseFallbackChart,
+      llamma: shouldFetchFallbackOracleLine,
     }),
-    [isLlamma, needsLlammaFallbackLine],
+    [shouldFetchFallbackOracleLine, shouldUseFallbackChart],
   )
   const refetchPricesData = useCallback(() => refetch(neededHistoricalSelection), [neededHistoricalSelection, refetch])
   const fetchMoreChartData = useCallback(

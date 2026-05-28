@@ -97,21 +97,15 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   fetchPage,
   queryKey,
   timeOption,
-}: UseOhlcInfiniteQueryParams<TPage, TQueryKey>) => {
-  const fetchPageRef = useRef(fetchPage)
-  fetchPageRef.current = fetchPage
-
-  // Callers own the endpoint-specific fetcher and include its identity inputs in queryKey.
-  // eslint-disable-next-line @tanstack/query/exhaustive-deps
-  return useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
+}: UseOhlcInfiniteQueryParams<TPage, TQueryKey>) =>
+  useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
     ...CANDLE_CHART_QUERY_OPTIONS,
     queryKey,
     initialPageParam: createOhlcPageParam(timeOption, anchorEnd),
     enabled,
-    queryFn: ({ pageParam, signal }) => fetchPageRef.current({ pageParam, signal }),
+    queryFn: fetchPage,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => getNextOhlcPageParam(timeOption, lastPage, lastPageParam),
   })
-}
 
 export const getOhlcPaginationState = (query: OhlcPaginationQuery) => ({
   canFetchMore: canFetchMoreOhlc(query),
