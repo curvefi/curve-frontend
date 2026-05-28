@@ -52,14 +52,6 @@ export interface GaugeVotesMapper {
   }
 }
 
-export type GaugeWeightHistoryData = {
-  is_killed: boolean
-  gauge_weight: number
-  gauge_relative_weight: number
-  emissions: number
-  epoch: number
-}
-
 export type SnapshotVotingPower = {
   value: number
   blockNumber: number

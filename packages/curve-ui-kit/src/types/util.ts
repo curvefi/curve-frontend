@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { maybe } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -71,7 +72,7 @@ export const mapQuery = <TSource, TResult>(
 ) =>
   q({
     isLoading,
-    data: data == null ? undefined : (selector(data) ?? undefined),
+    data: maybe(data, data => selector(data) ?? undefined),
     error,
   })
 
@@ -85,6 +86,6 @@ export const useMappedQuery = <TSource, TResult>(
 ) =>
   q({
     isLoading,
-    data: useMemo(() => (data == null ? undefined : (transform(data) ?? undefined)), [data, transform]),
+    data: useMemo(() => maybe(data, data => transform(data) ?? undefined), [data, transform]),
     error,
   })

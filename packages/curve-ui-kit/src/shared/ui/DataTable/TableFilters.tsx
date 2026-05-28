@@ -18,7 +18,6 @@ const { Spacing } = SizesAndSpaces
  * A component that wraps a table and provides a title, subtitle, and filter controls.
  */
 export const TableFilters = <ColumnIds extends string>({
-  header,
   testIdPrefix,
   visibilityGroups,
   toggleVisibility,
@@ -30,7 +29,6 @@ export const TableFilters = <ColumnIds extends string>({
   disableSearchAutoFocus,
   onSearch,
 }: {
-  header: ReactNode
   testIdPrefix: string
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
@@ -52,7 +50,6 @@ export const TableFilters = <ColumnIds extends string>({
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-      {header}
       <Grid
         container
         spacing={Spacing.lg}

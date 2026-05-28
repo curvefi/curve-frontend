@@ -1,6 +1,7 @@
 import { formatEther } from 'viem'
 import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'
@@ -74,9 +75,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
   const rate =
     priceOracle !== undefined
       ? formatEther(priceOracle)
-      : priceOracleFallback !== undefined
-        ? formatEther(priceOracleFallback)
-        : undefined
+      : maybe(priceOracleFallback, priceOracleFallback => formatEther(priceOracleFallback))
 
   const refetch = async () => {
     const [, , newPriceOracle] = await Promise.all([refetchDebt(), refetchEstCallerProfit(), refetchPriceOracle()])
@@ -100,16 +99,12 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
 
   return {
     rate,
-    debt: debt == null ? undefined : (formatEther(debt) as Decimal),
+    debt: maybe(debt, debt => formatEther(debt) as Decimal),
     estCallerProfit:
       !estCallerProfitEnabled || estCallerProfitError
-        ? estCallerProfitFallback == null
-          ? undefined
-          : (formatEther(estCallerProfitFallback) as Decimal)
-        : estCallerProfit?.result == null
-          ? undefined
-          : (formatEther(estCallerProfit.result) as Decimal),
-    debtCeiling: debtCeiling == null ? undefined : (formatEther(debtCeiling) as Decimal),
+        ? maybe(estCallerProfitFallback, estCallerProfitFallback => formatEther(estCallerProfitFallback) as Decimal)
+        : maybe(estCallerProfit?.result, data => formatEther(data) as Decimal),
+    debtCeiling: maybe(debtCeiling, debtCeiling => formatEther(debtCeiling) as Decimal),
     rebalance,
     isRebalancing,
   }

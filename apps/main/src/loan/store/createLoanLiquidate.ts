@@ -96,7 +96,7 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
       const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
       clonedFormStatus.error = resp.error
       const canSelfLiquidate = haveEnoughCrvusdForLiquidation(userWalletBalances.stablecoin, resp.tokensToLiquidate)
-      clonedFormStatus.warning = !canSelfLiquidate ? 'warning-not-enough-crvusd' : ''
+      clonedFormStatus.warning = canSelfLiquidate ? '' : 'warning-not-enough-crvusd'
 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
       if (canSelfLiquidate) {

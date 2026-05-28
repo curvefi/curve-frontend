@@ -1,11 +1,20 @@
-import { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TableButton } from './TableButton'
 
 const { Spacing } = SizesAndSpaces
 
-export const TableFiltersHeader = ({ title, rightChildren }: { title: string; rightChildren?: ReactNode }) => (
+export const TableHeader = ({
+  title,
+  onReload,
+  isLoading,
+}: {
+  title: string
+  onReload: () => void
+  isLoading: boolean
+}) => (
   <Stack
     direction="row"
     sx={{
@@ -18,6 +27,6 @@ export const TableFiltersHeader = ({ title, rightChildren }: { title: string; ri
     <Typography variant="headingSBold" color="textSecondary" sx={{ paddingInlineStart: Spacing.sm }}>
       {title}
     </Typography>
-    {rightChildren}
+    <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />
   </Stack>
 )

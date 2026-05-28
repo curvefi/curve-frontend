@@ -32,7 +32,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
       sx={{ gap: Spacing.xxs }}
     >
       <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
-        {formatDate(timestamp, 'short')}
+        {formatDate(timestamp, 'short', { omitYear: isMobile })}
       </Typography>
       <Stack
         direction="row"
@@ -43,7 +43,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
         }}
       >
         <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
-          {formatTime(timestamp)}
+          {formatTime(timestamp, { precise: !isMobile })}
         </Typography>
         {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />}
       </Stack>

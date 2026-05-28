@@ -6,6 +6,7 @@ import {
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib'
@@ -60,7 +61,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
   useFormSync(form, { userVaultShares: userBalances.data.depositedShares })
   useEffect(
-    () => (isFull.data == null ? undefined : updateForm({ isFull: isFull.data }, { automated: true })),
+    () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],
   )
 

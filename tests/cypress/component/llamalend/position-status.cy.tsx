@@ -16,7 +16,7 @@ import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
 import type { Range } from '@ui-kit/types/util'
@@ -71,7 +71,7 @@ const PositionDetailsTest = ({
         [getUserBandsKey(params), userBands],
         [getUserPricesKey(params), userPrices],
         [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-        [getUserHealthKey({ ...params, isFull: false }), healthNotFull == null ? null : `${healthNotFull}`],
+        [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
         [getMarketOraclePriceKey(params), `${oraclePrice}`],
         [getMarketLiquidationBandKey(params), marketLiquidationBand],
         [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],

@@ -68,3 +68,14 @@ export const isEmpty = (obj: object) => Object.keys(obj).length === 0
 
 export const pick = <T, K extends keyof T>(obj: T, ...keys: K[]) =>
   Object.fromEntries(keys.map(key => [key, obj[key]])) as { [P in K]: T[P] }
+type NonNullishTuple<T extends readonly unknown[]> = {
+  [K in keyof T]: NonNullable<T[K]>
+}
+
+export const maybes = <const T extends readonly unknown[], R>(
+  value: readonly [...T] | null | undefined,
+  mapper: (value: NonNullishTuple<T>) => R,
+): R | undefined => (value == null || value.some(x => x == null) ? undefined : mapper(value as NonNullishTuple<T>))
+export const maybe = <T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined =>
+  // eslint-disable-next-line local/use-maybe-pattern
+  value == null ? undefined : mapper(value)

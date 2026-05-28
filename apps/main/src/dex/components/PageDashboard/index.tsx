@@ -74,7 +74,7 @@ export const Dashboard = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, !pageLoaded ? null : curve, poolsMapper, updatedFormValues)
+      setFormValues(rChainId, pageLoaded ? curve : null, poolsMapper, updatedFormValues)
     },
     [curve, pageLoaded, poolsMapper, rChainId, setFormValues],
   )
