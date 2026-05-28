@@ -14,26 +14,6 @@ type TokenSelectButtonProps = {
   size?: SelectProps['size']
 }
 
-const TokenSelectButtonLabel = ({
-  token,
-  disabled,
-  size,
-}: {
-  token: TokenOption
-  disabled: boolean
-  size: SelectProps['size']
-}) => (
-  <TokenLabel
-    blockchainId={token.chain}
-    address={token.address}
-    size="mui-md"
-    label={token.symbol}
-    disabled={disabled}
-    noWrap
-    typographyVariant={size === 'small' ? 'bodySBold' : undefined}
-  />
-)
-
 /** The token selector is Select but acts like a button, so it's a bit unique */
 export const TokenSelectButton = ({
   token,
@@ -50,7 +30,19 @@ export const TokenSelectButton = ({
     displayEmpty
     size={size}
     renderValue={() =>
-      token ? <TokenSelectButtonLabel token={token} disabled={disabled} size={size} /> : <Spinner useTheme={true} />
+      token ? (
+        <TokenLabel
+          blockchainId={token.chain}
+          address={token.address}
+          size="mui-md"
+          label={token.symbol}
+          disabled={disabled}
+          noWrap
+          typographyVariant={size === 'small' ? 'bodySBold' : undefined}
+        />
+      ) : (
+        <Spinner useTheme={true} />
+      )
     }
     IconComponent={KeyboardArrowDownIcon}
   />
