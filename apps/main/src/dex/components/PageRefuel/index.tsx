@@ -72,19 +72,19 @@ export const Refuel = () => {
             <BorrowInformationContainer blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
 
-          <Grid size={{ mobile: 12, tablet: 6 }}>
+          <Grid size={{ mobile: 12, desktop: 6 }}>
             <RefuelPricesChart blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
 
-          <Grid size={{ mobile: 12, tablet: 6 }}>
+          <Grid size={{ mobile: 12, desktop: 6 }}>
             <RefuelSharesChart chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
 
-          <Grid size={{ mobile: 12, tablet: 6 }}>
+          <Grid size={{ mobile: 12, desktop: 6 }}>
             <ReservesCompositionChart blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
 
-          <Grid size={{ mobile: 12, tablet: 6 }}>
+          <Grid size={{ mobile: 12, desktop: 6 }}>
             <DailyRefuelsChart blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
 
