@@ -3,7 +3,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 
 type UserPoolsQuery = ChainQuery & UserQuery
 type UserPoolsParams = FieldsOf<UserPoolsQuery>
@@ -15,7 +15,7 @@ export const { useQuery: useUserPools, fetchQuery: fetchUserPools } = queryFacto
   validationSuite: createValidationSuite((params: UserPoolsParams) => {
     curveApiValidationGroup(params, { requireRpc: true })
     chainValidationGroup(params)
-    userAddressValidationGroup(params)
+    evmAddressValidationGroup({ evmAddress: params.userAddress })
   }),
   category: 'dex.user',
 })

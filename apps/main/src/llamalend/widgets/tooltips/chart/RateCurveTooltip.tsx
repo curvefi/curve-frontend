@@ -1,11 +1,7 @@
 import type { RateCurveChartPoint } from '@/llamalend/widgets/MarketRateCurveChart'
-import {
-  ChartTooltipSeriesGroup,
-  ChartTooltipSeriesRow,
-  ChartTooltipShell,
-} from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatPercent } from '@ui-kit/utils'
 

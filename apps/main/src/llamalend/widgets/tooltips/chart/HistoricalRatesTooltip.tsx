@@ -1,10 +1,6 @@
 import type { RateChartPoint } from '@/llamalend/widgets/MarketHistoricalRatesChart'
-import {
-  ChartTooltipSeriesGroup,
-  ChartTooltipSeriesRow,
-  ChartTooltipShell,
-} from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
 import { formatDate } from '@ui/utils'
+import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatNumber } from '@ui-kit/utils'
 
