@@ -1,23 +1,29 @@
 import { enforce, group, skipWhen, test } from 'vest'
 import { isAddress } from 'viem'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import type { UserParams } from './root-keys'
 
-export const evmAddressValidationGroup = <T extends string>({
-  evmAddress,
-  required = true,
-}: {
+type EvmAddressValidationParams<T extends string, TField extends string = 'evmAddress'> = {
   evmAddress?: T | null
+  fieldName?: TField
   required?: boolean
-}) =>
-  group('evmAddressValidation', () => {
+}
+
+export const evmAddressValidationGroup = <T extends string, TField extends string = 'evmAddress'>({
+  evmAddress,
+  fieldName,
+  required = true,
+}: EvmAddressValidationParams<T, TField>) => {
+  const field = fieldName ?? 'evmAddress'
+  return group(`${field}Validation`, () => {
     skipWhen(
       () => !required && !evmAddress,
       () => {
-        test('evmAddress', 'Address is required', () => {
+        test(field, 'Address is required', () => {
           enforce(evmAddress).isNotEmpty()
         })
 
-        test('evmAddress', 'Invalid EVM address', () => {
+        test(field, 'Invalid EVM address', () => {
           if (evmAddress) {
             enforce(isAddress(evmAddress)).equals(true)
           }
@@ -25,5 +31,18 @@ export const evmAddressValidationGroup = <T extends string>({
       },
     )
   })
+}
 
 export const evmAddressValidationSuite = createValidationSuite(evmAddressValidationGroup)
+
+export const userAddressValidationGroup = <T extends string>({
+  userAddress,
+  required = true,
+}: UserParams<T> & { required?: boolean }) =>
+  evmAddressValidationGroup({
+    evmAddress: userAddress,
+    fieldName: 'userAddress',
+    required,
+  })
+
+export const userAddressValidationSuite = createValidationSuite(userAddressValidationGroup)

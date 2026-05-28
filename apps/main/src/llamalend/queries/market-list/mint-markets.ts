@@ -8,7 +8,7 @@ import {
 import type { Address } from '@primitives/address.utils'
 import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { evmAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
 import {
   UserContractParams,
   UserContractQuery,
@@ -37,7 +37,7 @@ const {
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
     mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map(market => market.controller)),
   category: 'llamalend.user',
-  validationSuite: evmAddressValidationSuite,
+  validationSuite: userAddressValidationSuite,
 })
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions

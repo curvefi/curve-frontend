@@ -11,7 +11,7 @@ import {
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { evmAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
 import {
   type UserContractParams,
   type UserContractQuery,
@@ -45,7 +45,7 @@ const {
       ]),
     ) as Record<ChainName, Address[]>,
   category: 'llamalend.user',
-  validationSuite: evmAddressValidationSuite,
+  validationSuite: userAddressValidationSuite,
 })
 
 const {
@@ -109,7 +109,7 @@ const {
       ]),
     )
   },
-  validationSuite: evmAddressValidationSuite,
+  validationSuite: userAddressValidationSuite,
 })
 
 export async function invalidateAllUserLendingSupplies(userAddress: Address | null | undefined) {
