@@ -18,7 +18,7 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
     label={title}
     value={
       /** TODO: Clarify: The design has this typography component as as semi-bold,
-       * should Bold typography variants have an updated font-weight? */
+       * should Bold typography variants have an updated font-weight? 🤔 */
       <Typography variant="bodyMBold">{shortenAddress(address)}</Typography>
     }
     copyValue={address}
