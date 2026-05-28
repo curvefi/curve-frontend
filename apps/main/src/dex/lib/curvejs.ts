@@ -630,11 +630,11 @@ const poolSwap = {
             ? p.swapWrappedExpected(fromAddress, toAddress, fromAmount)
             : p.swapExpected(fromAddress, toAddress, fromAmount)
           : '',
-        !isFrom
-          ? isWrapped
+        isFrom
+          ? ''
+          : isWrapped
             ? p.swapWrappedRequired(fromAddress, toAddress, toAmount)
-            : p.swapRequired(fromAddress, toAddress, toAmount)
-          : '',
+            : p.swapRequired(fromAddress, toAddress, toAmount),
       ])
       const swapExpected = fulfilledValue(swapExpectedResult) ?? ''
       const swapRequired = fulfilledValue(swapRequiredResult) ?? ''

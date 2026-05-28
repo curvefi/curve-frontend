@@ -166,12 +166,12 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
             n2: Math.floor(Math.random() * 50) + 50,
           }
         : null,
-      withdrawal: !isDeposit
-        ? {
+      withdrawal: isDeposit
+        ? null
+        : {
             amountBorrowed: Math.random() * 5000 + 100,
             amountCollateral: Math.random() * 2 + 0.1,
-          }
-        : null,
+          },
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),

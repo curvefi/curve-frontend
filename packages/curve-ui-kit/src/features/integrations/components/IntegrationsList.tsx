@@ -129,7 +129,15 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
           ))}
         </Stack>
 
-        {!integrationsFiltered.length ? (
+        {integrationsFiltered.length ? (
+          <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
+            {(integrationsFiltered ?? []).map(app => (
+              <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
+                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
             <Trans>
               No integration apps found with for{' '}
@@ -138,14 +146,6 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
                 .join(t` and `)}
             </Trans>
           </Box>
-        ) : (
-          <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
-            {(integrationsFiltered ?? []).map(app => (
-              <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
-              </Grid>
-            ))}
-          </Grid>
         )}
       </Stack>
     </WithSkeleton>
