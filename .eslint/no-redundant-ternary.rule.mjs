@@ -1,7 +1,7 @@
 /**
  * Check if two AST nodes are structurally equivalent.
- * Returns true if both nodes represent the same source code structure.
- */
+ * @return true if both nodes represent the same source code structure.
+ **/
 const areNodesEqual = (node1, node2) => {
   if (!node1 || !node2) return node1 === node2
   if (node1.type !== node2.type) return false
@@ -56,26 +56,27 @@ const areNodesEqual = (node1, node2) => {
   }
 }
 
-/** Forbids redundant ternary patterns like `x ? x : y`, which should be `x || y`. */
+/**
+ * Forbids redundant ternary patterns like `x ? x : y`, which should be `x || y`.
+ * @type {eslint.Rule.Module}
+ */
 export const noRedundantTernaryRule = {
   meta: {
     type: 'suggestion',
     docs: { description: 'Disallow redundant ternary expressions that can be simplified to logical OR' },
     messages: { redundant: 'Prefer `{{test}} || {{alternate}}` instead of `{{test}} ? {{test}} : {{alternate}}`.' },
   },
-  create: context => {
-    return {
-      ConditionalExpression(node) {
-        const { test, consequent, alternate } = node
-        // Only report if test and consequent are identical
-        if (areNodesEqual(test, consequent)) {
-          context.report({
-            node,
-            messageId: 'redundant',
-            data: { test: context.sourceCode.getText(test), alternate: context.sourceCode.getText(alternate) },
-          })
-        }
-      },
-    }
-  },
+  create: context => ({
+    ConditionalExpression(node) {
+      const { test, consequent, alternate } = node
+      // Only report if test and consequent are identical
+      if (areNodesEqual(test, consequent)) {
+        context.report({
+          node,
+          messageId: 'redundant',
+          data: { test: context.sourceCode.getText(test), alternate: context.sourceCode.getText(alternate) },
+        })
+      }
+    },
+  }),
 }
