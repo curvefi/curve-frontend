@@ -76,7 +76,9 @@ export const useLlammaOhlcChartStateModel = ({
     enabled: enabled && !!network,
   })
 
-  // Collapse the oracle-pool and LLAMMA fallback query sources into one chart payload.
+  // Oracle-pool is primary because it has the richest candle data. LLAMMA is
+  // only needed as an oracle-line fallback when oracle-pool does not supply
+  // oracle price data.
   const hasOraclePoolData = oraclePoolData.length > 0 || oraclePoolOraclePriceData.length > 0
   const hasFallbackOracleLine = llammaFallbackOraclePriceData.length > 0
   const shouldUseFallbackChart = !hasOraclePoolData && hasFallbackOracleLine
@@ -84,16 +86,13 @@ export const useLlammaOhlcChartStateModel = ({
 
   const isLoading = oraclePoolIsLoading || (!hasOraclePoolData && llammaFallbackIsLoading)
   const selectedChartKey = isLoading ? undefined : shouldUseFallbackChart ? 'llamma' : 'oracle'
-  const currentError = hasOraclePoolData ? oraclePoolError : (llammaFallbackError ?? oraclePoolError)
+  const currentError = hasChartData ? null : (llammaFallbackError ?? oraclePoolError)
   const noDataAvailable = enabled && !isLoading && !currentError && !hasChartData
 
   const ohlcData = shouldUseFallbackChart ? [] : oraclePoolData
-  const oraclePriceData =
-    oraclePoolOraclePriceData.length > 0
-      ? oraclePoolOraclePriceData
-      : hasFallbackOracleLine
-        ? llammaFallbackOraclePriceData
-        : undefined
+  const selectedOraclePriceData =
+    oraclePoolOraclePriceData.length > 0 ? oraclePoolOraclePriceData : llammaFallbackOraclePriceData
+  const oraclePriceData = selectedOraclePriceData.length > 0 ? selectedOraclePriceData : undefined
   const currentOraclePriceData = shouldUseFallbackChart ? llammaFallbackOraclePriceData : oraclePoolOraclePriceData
 
   const oraclePoolLabel = oracleTokens ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}` : t`Oracle`
