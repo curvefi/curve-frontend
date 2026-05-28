@@ -95,7 +95,9 @@ export const useLlammaOhlcChartStateModel = ({
   const oraclePriceData = selectedOraclePriceData.length > 0 ? selectedOraclePriceData : undefined
   const currentOraclePriceData = shouldUseFallbackChart ? llammaFallbackOraclePriceData : oraclePoolOraclePriceData
 
-  const oraclePoolLabel = oracleTokens ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}` : t`Oracle`
+  const oraclePoolLabel = oracleTokens
+    ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`
+    : t`Oracle`
   const chartLabel = shouldUseFallbackChart ? t`Oracle price` : oraclePoolLabel
   const selectChartList = useMemo(
     () => [{ activeTitle: chartLabel, label: chartLabel, key: selectedChartKey ?? 'oracle' }],
@@ -109,7 +111,8 @@ export const useLlammaOhlcChartStateModel = ({
     hasLiquidationRange: !!userPrices,
     llammaEndpoint: shouldUseFallbackChart,
   })
-  const shouldFetchFallbackOracleLine = shouldUseFallbackChart || (oraclePriceVisible && oraclePoolOraclePriceData.length === 0)
+  const shouldFetchFallbackOracleLine =
+    shouldUseFallbackChart || (oraclePriceVisible && oraclePoolOraclePriceData.length === 0)
   const neededHistoricalSelection = useMemo(
     () => ({
       oraclePool: !shouldUseFallbackChart,
