@@ -1,14 +1,11 @@
 import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import CallMade from '@mui/icons-material/CallMade'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
-import Link from '@mui/material/Link'
+import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -40,8 +37,6 @@ export type ActionInfoProps = {
   prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
-  /** URL to navigate to when clicking the external link button */
-  link?: string
   /** Value to be copied from the value text when clicked. */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
@@ -133,7 +128,6 @@ export const ActionInfo = ({
   valueLeft,
   valueRight,
   valueTooltip,
-  link,
   size = DEFAULT_SIZE,
   copyValue,
   copiedTitle,
@@ -183,7 +177,7 @@ export const ActionInfo = ({
               />
             )}
 
-            <Tooltip title={valueTooltip} placement="top">
+            <Tooltip title={valueTooltip} placement="top" clickable={!!valueTooltip}>
               {/** Additional stack to add some space between left (icon), value and right (icon) */}
               <Stack
                 direction="row"
@@ -229,18 +223,6 @@ export const ActionInfo = ({
         </Stack>
 
         {error && <ErrorIconButton error={error} size={buttonSize} />}
-
-        {link && (
-          <IconButton
-            component={link.startsWith('http') ? Link : RouterLink}
-            href={link}
-            target="_blank"
-            rel="noopener"
-            size={buttonSize}
-          >
-            <CallMade />
-          </IconButton>
-        )}
       </Stack>
     </Stack>
   )
