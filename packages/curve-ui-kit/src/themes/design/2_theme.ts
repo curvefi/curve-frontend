@@ -275,11 +275,44 @@ export const createLightDesign = (
     Transition: 'Transition',
   } as const
 
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Grays[100],
+          Active: Grays[50],
+        },
+        Border: {
+          Default: Grays[200],
+          Active: Light.Text.Highlight,
+          Filled: Grays[850],
+          Error: Reds[500],
+        },
+      },
+      Nested: {
+        Nested: Grays[10],
+        Fill: Grays[100],
+        Border: {
+          Default: Grays[400],
+          Active: Light.Text.Highlight,
+          Filled: Grays[850],
+          Error: Reds[500],
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[100],
+        Outline: Grays[200],
+      },
+    },
+  } as const
+
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer[1].Fill,
-      Stroke: Text.TextColors.Primary,
+      Fill: Layer[2].Fill,
+      Stroke: Inputs.Base.Default.Border.Default,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -396,39 +429,6 @@ export const createLightDesign = (
       Hover: {
         Primary: Light.Text.Primary,
         Secondary: Light.Text.Secondary,
-      },
-    },
-  } as const
-
-  const Inputs = {
-    Base: {
-      Default: {
-        Fill: {
-          Default: Grays[100],
-          Active: Grays[50],
-        },
-        Border: {
-          Default: Grays[200],
-          Active: Light.Text.Highlight,
-          Filled: Grays[850],
-          Error: Reds[500],
-        },
-      },
-      Nested: {
-        Nested: Grays[10],
-        Fill: Grays[100],
-        Border: {
-          Default: Grays[400],
-          Active: Light.Text.Highlight,
-          Filled: Grays[850],
-          Error: Reds[500],
-        },
-      },
-    },
-    Large: {
-      Default: {
-        Fill: Grays[100],
-        Outline: Grays[200],
       },
     },
   } as const
@@ -781,11 +781,44 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Transition: 'Transition',
   } as const
 
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Grays[900],
+          Active: Grays[900],
+        },
+        Border: {
+          Default: Grays[800],
+          Active: Dark.Text.Highlight,
+          Filled: Grays[75],
+          Error: Reds[500],
+        },
+      },
+      Nested: {
+        Nested: Grays[850],
+        Fill: Grays[850],
+        Border: {
+          Default: Grays[600],
+          Active: Dark.Text.Highlight,
+          Filled: Grays[75],
+          Error: Reds[500],
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[900],
+        Outline: Grays[800],
+      },
+    },
+  } as const
+
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer[1].Fill,
-      Stroke: Text.TextColors.Primary,
+      Fill: Layer[2].Fill,
+      Stroke: Inputs.Base.Default.Border.Default,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -793,7 +826,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     },
     Current: {
       Label: Color.Primary[500],
-      Fill: Color.Neutral[75],
+      Fill: Layer[2].Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -902,39 +935,6 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Hover: {
         Primary: Dark.Text.Primary,
         Secondary: Dark.Text.Secondary,
-      },
-    },
-  } as const
-
-  const Inputs = {
-    Base: {
-      Default: {
-        Fill: {
-          Default: Grays[900],
-          Active: Grays[900],
-        },
-        Border: {
-          Default: Grays[800],
-          Active: Dark.Text.Highlight,
-          Filled: Grays[75],
-          Error: Reds[500],
-        },
-      },
-      Nested: {
-        Nested: Grays[850],
-        Fill: Grays[850],
-        Border: {
-          Default: Grays[600],
-          Active: Dark.Text.Highlight,
-          Filled: Grays[75],
-          Error: Reds[500],
-        },
-      },
-    },
-    Large: {
-      Default: {
-        Fill: Grays[900],
-        Outline: Grays[800],
       },
     },
   } as const
@@ -1248,11 +1248,44 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Transition: 'Transition',
   } as const
 
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Grays[100],
+          Active: Grays[100],
+        },
+        Border: {
+          Default: Grays[400],
+          Active: Violets[400],
+          Filled: Violets[600],
+          Error: Reds[500],
+        },
+      },
+      Nested: {
+        Nested: Grays[50],
+        Fill: Violets[50],
+        Border: {
+          Default: Grays[200],
+          Active: Violets[400],
+          Filled: Violets[400],
+          Error: Reds[500],
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[100],
+        Outline: Grays[400],
+      },
+    },
+  } as const
+
   const Chips = {
     Default: {
       Label: Grays[950],
       Fill: Layer[1].Fill,
-      Stroke: Grays[950],
+      Stroke: Inputs.Base.Default.Border.Default,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -1369,39 +1402,6 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Hover: {
         Primary: Chad.Text.Primary,
         Secondary: Chad.Text.Secondary,
-      },
-    },
-  } as const
-
-  const Inputs = {
-    Base: {
-      Default: {
-        Fill: {
-          Default: Grays[100],
-          Active: Grays[100],
-        },
-        Border: {
-          Default: Grays[400],
-          Active: Violets[400],
-          Filled: Violets[600],
-          Error: Reds[500],
-        },
-      },
-      Nested: {
-        Nested: Grays[50],
-        Fill: Violets[50],
-        Border: {
-          Default: Grays[200],
-          Active: Violets[400],
-          Filled: Violets[400],
-          Error: Reds[500],
-        },
-      },
-    },
-    Large: {
-      Default: {
-        Fill: Grays[100],
-        Outline: Grays[400],
       },
     },
   } as const

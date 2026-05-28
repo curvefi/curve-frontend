@@ -12,6 +12,7 @@ import {
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
@@ -208,8 +209,7 @@ export const LargeTokenInput = ({
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
-      if (maxBalanceValue != null)
-        setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalanceValue, newPercentage))
+      if (maxBalanceValue != null) setBalance(maybe(newPercentage, p => calculateNewBalance(maxBalanceValue, p)))
     },
     [maxBalanceValue, setBalance],
   )

@@ -22,6 +22,7 @@ export const defineMuiInputBase = (
         '& svg': { color: 'rgb(232, 240, 254)' },
       },
       '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: Base.Default.Border.Default,
         borderWidth: 1,
         transition: `border-color ${TransitionFunction}`,
       },

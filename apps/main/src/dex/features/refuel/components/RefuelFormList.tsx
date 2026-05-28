@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -34,7 +35,7 @@ const formatPercentage = (value: number | undefined) =>
   formatNumber(value, { unit: 'percentage', decimals: 2, abbreviate: false, fallback: '-' })
 
 const extrapolateYearly = (value: number | undefined, donationsPerYear: number) =>
-  value == null ? undefined : value * donationsPerYear
+  maybe(value, value => value * donationsPerYear)
 
 export const RefuelFormList = ({ values, tokenA, tokenB, poolTvl: pool }: RefuelFormListProps) => {
   const refuelTvlPercentage = useMemo(

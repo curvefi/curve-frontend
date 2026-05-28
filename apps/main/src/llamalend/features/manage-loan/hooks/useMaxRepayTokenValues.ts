@@ -8,6 +8,7 @@ import {
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
+import { maybe } from '@primitives/objects.utils'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
@@ -51,7 +52,7 @@ export function useMaxRepayTokenValues(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
-    () => (isFull.data == null ? undefined : updateForm({ isFull: isFull.data }, { automated: true })),
+    () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],
   )
   useFormSync(form, { maxStateCollateral: userState.data?.collateral })
