@@ -1,4 +1,5 @@
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { maybe } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
@@ -40,14 +41,10 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
       value={borrowRate?.rate}
       loading={borrowRate?.rate == null && borrowRate?.loading}
       valueOptions={{ unit: 'percentage' }}
-      notional={
-        borrowRate?.averageRate == null
-          ? undefined
-          : {
-              value: borrowRate.averageRate,
-              unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' },
-            }
-      }
+      notional={maybe(borrowRate?.averageRate, data => ({
+        value: data,
+        unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' },
+      }))}
       valueTooltip={{
         title,
         body: (

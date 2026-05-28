@@ -6,14 +6,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketRateType } from '@ui-kit/types/market'
 import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useUserPositionsSummary'
 
 const { Spacing } = SizesAndSpaces
 
 type UserPositionStatisticsProps = {
   markets: LlamaMarket[] | undefined
-  tab: MarketRateType
   selectedChains: string | undefined // the table filter for the chains column, unserialized from the url
 }
 

@@ -2,7 +2,7 @@ import type { EChartsOption } from 'echarts'
 import { useMemo } from 'react'
 import { useTheme, type Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
-import { notFalsyArray } from '@primitives/objects.utils'
+import { notFalsyArray, maybe } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { buildContinuousOption, buildRangeMarkAreas, buildSplitOption } from './small-liquidation-range-chart.options'
@@ -73,7 +73,7 @@ export const useSmallLiquidationRangeChartOption = ({
     () => getRenderableRanges({ currentRange, newRange }),
     [currentRange, newRange],
   )
-  const renderableOraclePrice = oraclePrice == null ? undefined : Number(oraclePrice)
+  const renderableOraclePrice = maybe(oraclePrice, oraclePrice => Number(oraclePrice))
   const chartLayout = useMemo(
     () =>
       getSmallLiquidationRangeChartLayout({

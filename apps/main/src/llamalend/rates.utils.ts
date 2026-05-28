@@ -1,5 +1,5 @@
 import { sumBy } from 'lodash'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy, maybe } from '@primitives/objects.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { ExtraIncentive } from '@ui-kit/types/market'
@@ -61,7 +61,7 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
   daysBack,
 }: BorrowRateMetricsParams<TSnapshot>) => {
   const rebasingYield = getLatestSnapshotValue(snapshots, getRebasingYield)
-  const totalRate = borrowRate == null ? null : computeTotalRate(borrowRate, rebasingYield ?? 0)
+  const totalRate = maybe(borrowRate, borrowRate => computeTotalRate(borrowRate, rebasingYield ?? 0)) ?? null
 
   const averages = calculateAverageRates(snapshots, daysBack, {
     rate: getBorrowRate,
@@ -75,15 +75,17 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
     totalRate,
     averageRate,
     averageRebasingYield,
-    averageTotalRate: averageRate == null ? null : computeTotalRate(averageRate, averageRebasingYield ?? 0),
+    averageTotalRate:
+      maybe(averageRate, averageRate => computeTotalRate(averageRate, averageRebasingYield ?? 0)) ?? null,
   }
 }
 
 /** Sum a base rate with optional additional components, returning null if the base is null */
 const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
-  base == null ? null : components.reduce<number>((sum, c) => sum + (c ?? 0), base)
+  maybe(base, base => components.reduce<number>((sum, c) => sum + (c ?? 0), base)) ?? null
 
-export const toNumberOrNull = (value: number | string | null | undefined) => (value == null ? null : Number(value))
+export const toNumberOrNull = (value: number | string | null | undefined) =>
+  maybe(value, value => Number(value)) ?? null
 
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
@@ -147,8 +149,7 @@ export const getSupplyApyMetrics = ({
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy =
-    crvMinBoostApr == null || userSupplyBoost == null ? null : aprToApy(crvMinBoostApr * userSupplyBoost)
+  const userBoostApy = maybe([crvMinBoostApr, userSupplyBoost], ([apr, boost]) => aprToApy(apr * boost)) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy)
 
@@ -161,8 +162,7 @@ export const getSupplyApyMetrics = ({
     extraIncentivesTotalApy: extraIncentivesApy,
     totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApy),
     totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApy),
-    totalUserBoost:
-      totalWithoutBoost == null || userBoostApy == null ? null : sumRates(totalWithoutBoost, userBoostApy),
+    totalUserBoost: maybe([totalWithoutBoost, userBoostApy], ([total, boost]) => sumRates(total, boost)) ?? null,
   }
 }
 
