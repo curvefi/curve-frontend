@@ -28,7 +28,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 

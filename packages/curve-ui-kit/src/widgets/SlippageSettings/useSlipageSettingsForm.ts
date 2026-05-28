@@ -1,6 +1,6 @@
 import { enforce, test } from 'vest'
 import type { Decimal } from '@primitives/decimal.utils'
-import { mapRecord, pick } from '@primitives/objects.utils'
+import { pick, recordEntries } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { createValidationSuite } from '@ui-kit/lib'
@@ -23,7 +23,7 @@ const validation = createValidationSuite(({ stable, leverage, crypto }: Slippage
   test('crypto', () => isSlippage(crypto))
 })
 
-export function useSlippageSettingsForm({ onSave }: { onSave: (data: SlippageSettingsFormData) => void }) {
+export function useSlippageSettingsForm({ onChanged }: { onChanged: (data: SlippageSettingsFormData) => void }) {
   const maxSlippage = useUserProfileStore(state => state.maxSlippage)
   const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
   const defaultValues = pick(maxSlippage, ...SLIPPAGE_TYPES)
@@ -31,8 +31,8 @@ export function useSlippageSettingsForm({ onSave }: { onSave: (data: SlippageSet
   return {
     form,
     onSubmit: form.handleSubmit(data => {
-      mapRecord(data, (key, value) => setMaxSlippage(value, key))
-      onSave(data)
+      recordEntries(data).map(([key, value]) => setMaxSlippage(value, key))
+      onChanged(data)
     }),
     reset: () => form.reset(defaultValues),
   }

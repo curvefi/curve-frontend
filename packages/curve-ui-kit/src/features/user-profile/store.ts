@@ -9,7 +9,7 @@ import {
   SLIPPAGE_TYPES,
   type SlippageSettings,
   type SlippageType,
-} from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+} from '@ui-kit/widgets/SlippageSettings'
 
 type UserProfileState = {
   theme: ThemeKey

@@ -1,33 +1,16 @@
-import { ReactNode } from 'react'
-import TuneIcon from '@mui/icons-material/Tune'
-import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
+import IconButton from '@mui/material/IconButton'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { SlippageSettingsModal, type SlippageSettingsCallbacks } from './SlippageSettingsModal'
+import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
+import { SlippageSettingsModal } from './SlippageSettingsModal'
+import type { SlippageSettingsFormData } from './useSlipageSettingsForm'
 
-type SlippageSettingsBaseProps = Pick<SlippageSettingsCallbacks, 'onSave'> & {
+type SlippageSettingsProps = {
+  onChanged?: (data: SlippageSettingsFormData) => void
   /** Whether the button should be disabled */
   disabled?: boolean
 }
 
-type SlippageSettingsPropsWithButton = SlippageSettingsBaseProps & {
-  /** If `button` is provided, the `buttonIcon` prop must not be provided */
-  buttonIcon?: never
-  /** If `button` is provided, the `buttonSize` prop must not be provided */
-  buttonSize?: never
-}
-
-type SlippageSettingsPropsWithButtonIcon = SlippageSettingsBaseProps & {
-  /** Custom icon to use in the default IconButton */
-  buttonIcon?: ReactNode
-  /** Size of the default `IconButton` (ignored if button prop is provided) */
-  buttonSize?: IconButtonProps['size']
-  /** If `buttonIcon` or `buttonSize` are provided, the `button` prop must not be provided */
-  button?: never
-}
-
-type Props = SlippageSettingsPropsWithButton | SlippageSettingsPropsWithButtonIcon
-
-export const SlippageSettings = ({ disabled = false, onSave, ...props }: Props) => {
+export const SlippageSettings = ({ disabled = false, onChanged }: SlippageSettingsProps) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch()
 
   return (
@@ -35,17 +18,17 @@ export const SlippageSettings = ({ disabled = false, onSave, ...props }: Props) 
       <IconButton
         onClick={toggleModal}
         disabled={disabled}
-        size={props.buttonSize ?? 'small'}
+        size="extraExtraSmall"
         data-testid="slippage-settings-button"
       >
-        {props.buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
+        <GearIcon sx={{ color: disabled ? 'text.secondary' : 'text.primary' }} />
       </IconButton>
 
       <SlippageSettingsModal
         isOpen={!!isOpen}
-        onSave={slippage => {
+        onChanged={slippage => {
           closeModal()
-          onSave(slippage)
+          onChanged?.(slippage)
         }}
         onClose={closeModal}
       />

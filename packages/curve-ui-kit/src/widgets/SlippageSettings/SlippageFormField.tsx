@@ -19,8 +19,8 @@ import {
   MIN_SLIPPAGE,
   SLIPPAGE_PRESETS,
   type SlippageType,
-} from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { type SlippageSettingsFormData } from '@ui-kit/widgets/SlippageSettings/useSlipageSettingsForm'
+} from './slippage.utils'
+import { type SlippageSettingsFormData } from './useSlipageSettingsForm'
 
 const { Spacing } = SizesAndSpaces
 
@@ -92,6 +92,9 @@ export const SlippageFormField = ({
               {t`This may lead to fewer tokens received and potential loss of funds.`}
               <br />
               {t`Proceed with caution.`}
+              <br />
+              <br />
+              {t`Max. recommended slippage is ${formatNumber(MAX_RECOMMENDED_SLIPPAGE, formatOptions)}%`}
             </>
           }
         />
@@ -108,7 +111,7 @@ export const SlippageFormField = ({
               {t`Consider increasing slippage if it doesn't go through.`}
               <br />
               <br />
-              {t`Min. slippage is ${MIN_SLIPPAGE}%`}
+              {t`Min. slippage is ${formatNumber(MIN_SLIPPAGE, formatOptions)}%`}
             </>
           }
         />

@@ -61,7 +61,7 @@ export const Swap = ({
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
   chainIdPoolId: string
   poolAlert: PoolAlert | null
-  maxSlippage: string
+  maxSlippage: Decimal
   seed: Seed
   tokensMapper: TokensMapper
 }) => {

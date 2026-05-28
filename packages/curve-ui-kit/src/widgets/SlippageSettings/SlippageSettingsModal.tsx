@@ -1,5 +1,6 @@
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { recordEntries } from '@primitives/objects.utils'
 import { FormProvider } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -11,17 +12,11 @@ import { type SlippageSettingsFormData, useSlippageSettingsForm } from './useSli
 
 const { Spacing } = SizesAndSpaces
 
-export type SlippageSettingsProps = {
-  /** Whether the modal is currently open */
-  isOpen: boolean
+const slippageTypes = {
+  stable: { title: t`Stableswap slippage`, helper: t`Used when the route only goes through stableswaps` },
+  crypto: { title: t`Cryptoswap slippage`, helper: t`Used when the route goes through at least one cryptoswap` },
+  leverage: { title: t`Leverage slippage`, helper: t`Used when leveraging on llamalend` },
 }
-
-export type SlippageSettingsCallbacks = {
-  onClose: () => void
-  onSave: (data: SlippageSettingsFormData) => void
-}
-
-type Props = SlippageSettingsProps & SlippageSettingsCallbacks
 
 /**
  * Modal component for configuring slippage settings
@@ -30,9 +25,16 @@ type Props = SlippageSettingsProps & SlippageSettingsCallbacks
  * - Min slippage: 0.01% (values below this are considered too low)
  * - Max recommended slippage: 5% (values above this trigger a warning)
  */
-export const SlippageSettingsModal = ({ isOpen, onSave, onClose }: Props) => {
-  const { onSubmit, form, reset } = useSlippageSettingsForm({ onSave })
-
+export const SlippageSettingsModal = ({
+  isOpen,
+  onChanged,
+  onClose,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  onChanged: (data: SlippageSettingsFormData) => void
+}) => {
+  const { onSubmit, form, reset } = useSlippageSettingsForm({ onChanged })
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit}>
@@ -56,24 +58,9 @@ export const SlippageSettingsModal = ({ isOpen, onSave, onClose }: Props) => {
           compact
         >
           <Stack gap={Spacing.sm}>
-            <SlippageFormField
-              type="stable"
-              helper={t`Used when the route only goes through stableswaps`}
-              title={t`Stableswap slippage`}
-              form={form}
-            />
-            <SlippageFormField
-              type="crypto"
-              title={t`Cryptoswap slippage`}
-              helper={t`Used when the route goes through at least one cryptoswap`}
-              form={form}
-            />
-            <SlippageFormField
-              type="leverage"
-              title={t`Leverage slippage`}
-              helper={t`Used when leveraging on llamalend`}
-              form={form}
-            />
+            {recordEntries(slippageTypes).map(([type, props]) => (
+              <SlippageFormField key={type} type={type} form={form} {...props} />
+            ))}
           </Stack>
         </ModalDialog>
       </form>

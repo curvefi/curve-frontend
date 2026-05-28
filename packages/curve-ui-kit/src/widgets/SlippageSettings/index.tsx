@@ -1,1 +1,2 @@
-export { SlippageToleranceActionInfoPure, SlippageToleranceActionInfo } from './SlippageToleranceActionInfo'
+export * from './SlippageToleranceActionInfo'
+export * from './slippage.utils'

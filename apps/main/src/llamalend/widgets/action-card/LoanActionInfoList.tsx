@@ -14,7 +14,7 @@ import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
-import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
@@ -256,9 +256,10 @@ export const LoanActionInfoList = ({
 
       <Stack>
         {slippage && onSlippageChange && (
-          <SlippageToleranceActionInfoPure
+          <SlippageToleranceActionInfo
             maxSlippage={slippage}
-            onSave={({ leverage }) => onSlippageChange(leverage)}
+            stateKey="leverage"
+            onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
           />
         )}
