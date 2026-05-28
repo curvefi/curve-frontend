@@ -127,10 +127,10 @@ export const defineMuiSelect = (
         return {
           props: { size: size as SelectSizes },
           style: {
-            // Override InputBase height at root level and desktop size accross all breakpoints
+            // Override InputBase height at root level and desktop size across all breakpoints.
             '&.MuiInputBase-root': { height },
             '&& .MuiSelect-select.MuiSelect-select': {
-              // parasite margin inline from MUI
+              // Remove MUI's inline margin.
               marginInline: 0,
               height,
               ...typography[font],

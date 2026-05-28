@@ -22,7 +22,7 @@ const ghostSx = (theme: Theme) => ({
   '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: Transparent },
 })
 
-type SelectProps = Omit<MuiSelectProps, 'variant'> & {
+export type SelectProps = Omit<MuiSelectProps, 'variant'> & {
   variant?: MuiSelectProps['variant'] | 'ghost'
 }
 
@@ -38,5 +38,3 @@ export const Select = ({ sx, variant, ...props }: SelectProps) => (
     {...props}
   />
 )
-
-export type { MuiSelectProps as SelectProps }

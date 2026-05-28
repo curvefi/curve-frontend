@@ -18,6 +18,8 @@ const smallTokenSelectorIconSpace = {
 }
 
 const smallTokenSelectorSx = {
+  // Token selector triggers use the visual Select pattern, but token symbols do not need the generic value/icon gap
+  // because the trigger label is an intrinsic token chip rather than free-form select text.
   '&& .MuiSelect-select.MuiSelect-select': {
     ...handleBreakpoints({
       paddingInlineEnd: smallTokenSelectorIconSpace,
@@ -47,9 +49,13 @@ const TokenSelectButtonLabel = ({
   size: SelectProps['size']
 }) =>
   size === 'small' ? (
-    <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
+    <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs, minWidth: 0 }}>
       <TokenIcon blockchainId={token.chain} address={token.address} size="mui-md" disabled={disabled} />
-      <Typography variant="bodySBold" color={disabled ? 'textDisabled' : undefined}>
+      <Typography
+        variant="bodySBold"
+        noWrap
+        sx={{ minWidth: 0, color: t => (disabled ? t.design.Select.Text.Disabled : t.design.Select.Text.Value) }}
+      >
         {token.symbol}
       </Typography>
     </Stack>

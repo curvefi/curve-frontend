@@ -65,7 +65,7 @@ export const defineMuiInputBase = (
       '&.MuiInputBase-sizeSmall': {
         height: InputSize.small,
       },
-      '&.MuiInputBase-sizeSmall input': {
+      '&.MuiInputBase-sizeSmall .MuiInputBase-input': {
         height: InputSize.small,
         ...handleBreakpoints({
           paddingInlineStart: InputSpacing.PaddingX.small,
@@ -75,7 +75,7 @@ export const defineMuiInputBase = (
       '&.MuiInputBase-sizeTiny': {
         height: InputSize.tiny,
       },
-      '&.MuiInputBase-sizeTiny input': {
+      '&.MuiInputBase-sizeTiny .MuiInputBase-input': {
         height: InputSize.tiny,
         ...typography.bodySBold,
         ...handleBreakpoints({
@@ -86,7 +86,7 @@ export const defineMuiInputBase = (
       '&.MuiInputBase-sizeLarge': {
         height: InputSize.large,
       },
-      '&.MuiInputBase-sizeLarge input': {
+      '&.MuiInputBase-sizeLarge .MuiInputBase-input': {
         height: InputSize.large,
         ...typography.headingSBold,
         ...handleBreakpoints({

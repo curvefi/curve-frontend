@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { Property } from 'csstype'
-import { ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
@@ -231,7 +231,7 @@ export const NumericTextField = ({
         ...(adornment && {
           input: {
             sx: {
-              '& input': {
+              '& .MuiInputBase-input': {
                 textAlign: adornments[adornment].textAlign,
               },
             },
