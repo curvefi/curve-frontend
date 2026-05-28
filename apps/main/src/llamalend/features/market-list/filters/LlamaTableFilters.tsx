@@ -17,6 +17,7 @@ import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
+import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns'
 import { LendingMarketsFilters } from '../LendingMarketsFilters'
 
@@ -101,7 +102,7 @@ export const LlamaTableFilters = ({
           },
         }}
       >
-        <Stack sx={{ '& > * + *': { borderTop: t => `1px solid ${t.design.Layer[1].Outline}` } }}>
+        <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
           <Stack
             direction="row"
             sx={{

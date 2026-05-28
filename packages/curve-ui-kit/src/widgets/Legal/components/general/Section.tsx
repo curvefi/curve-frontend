@@ -2,6 +2,7 @@ import { ReactNode, Children, isValidElement } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -9,7 +10,7 @@ export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
     sx={{
       justifyContent: 'end',
-      borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`,
+      borderBottom: borderStyle,
       paddingBlockStart: Spacing.lg,
       paddingInline: Spacing.md,
     }}

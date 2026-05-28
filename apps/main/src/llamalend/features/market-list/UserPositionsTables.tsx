@@ -4,6 +4,7 @@ import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { MarketRateType } from '@ui-kit/types/market'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
+import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils/mui'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
@@ -27,23 +28,25 @@ export const UserPositionsTables = ({
 }: UserPositionsTableProps) => (
   <Stack>
     <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
-    <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
-    <UserPositionsMarketRateTable
-      tableQuery={mapQuery(tableQuery, ({ markets }) =>
-        markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
-      )}
-      marketRateType={MarketRateType.Borrow}
-      onReload={onReload}
-    />
-    <UserPositionsMarketRateTable
-      tableQuery={mapQuery(tableQuery, ({ markets }) =>
-        markets
-          .filter(market => market.userHasPositions?.[MarketRateType.Supply])
-          // For supply positions, navigate to vault page instead of borrow page
-          .map(market => ({ ...market, url: buildVaultUrl(market) })),
-      )}
-      marketRateType={MarketRateType.Supply}
-      onReload={onReload}
-    />
+    <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
+      <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
+      <UserPositionsMarketRateTable
+        tableQuery={mapQuery(tableQuery, ({ markets }) =>
+          markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
+        )}
+        marketRateType={MarketRateType.Borrow}
+        onReload={onReload}
+      />
+      <UserPositionsMarketRateTable
+        tableQuery={mapQuery(tableQuery, ({ markets }) =>
+          markets
+            .filter(market => market.userHasPositions?.[MarketRateType.Supply])
+            // For supply positions, navigate to vault page instead of borrow page
+            .map(market => ({ ...market, url: buildVaultUrl(market) })),
+        )}
+        marketRateType={MarketRateType.Supply}
+        onReload={onReload}
+      />
+    </Stack>
   </Stack>
 )
