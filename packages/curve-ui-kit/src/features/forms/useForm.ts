@@ -45,18 +45,15 @@ const collectFieldFlags = <T extends FieldValues>(
       .map(([field]) => [field, true]),
   )
 
-/** Resolves the effective error from an errorMap, skipping stale onMount once the field is dirty */
-const getFormError = ({ onBlur, onChange, onMount, onSubmit }: ValidationErrorMap, isDirty = false) => {
-  const error = toFormError(onSubmit) || toFormError(onChange) || toFormError(onBlur)
-  return isDirty ? error || undefined : error || toFormError(onMount) || undefined
-}
+const getFormError = ({ onBlur, onChange, onMount, onSubmit }: ValidationErrorMap) =>
+  toFormError(onSubmit) || toFormError(onChange) || toFormError(onBlur) || toFormError(onMount) || undefined
 
 /** Retrieves field errors from field metadata */
 const getFieldErrors = <T extends FieldValues>(fieldMeta: FieldMetaMap<T>): FieldErrors<T> =>
   fromEntries(
     notFalsy(
-      ...recordEntries(fieldMeta).map(([field, { errorMap, isDirty }]) => {
-        const error = getFormError(errorMap, isDirty)
+      ...recordEntries(fieldMeta).map(([field, { errorMap }]) => {
+        const error = getFormError(errorMap)
         return error && ([field, error] as [FieldPath<T>, FormError])
       }),
     ),
@@ -105,6 +102,19 @@ export const useForm = <T extends FieldValues = FieldValues>({
   const fieldErrors = useMemo(() => getFieldErrors(fieldMeta), [fieldMeta])
   const rootError = useMemo(() => getFormError(formErrorMap), [formErrorMap])
 
+  /** Clear onMount root errors and field errors and reruns onChange validation */
+  const rerunValidation = useCallback(() => {
+    // clear onMount root errors + field errors & rerun validation
+    if (form.state.errorMap.onMount) form.setErrorMap({ onMount: undefined })
+    // clear onMount field errors
+    recordEntries(form.state.fieldMeta)
+      .filter(([, meta]) => meta.errorMap.onMount)
+      .forEach(([field]) =>
+        form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev.errorMap, onMount: undefined } })),
+      )
+    Promise.resolve(form.validate('change')).catch(e => console.error('form update validation failed', e))
+  }, [form])
+
   return {
     handleSubmit: useCallback(
       mutate => (event?: SubmitEvent<HTMLFormElement>) => {
@@ -129,11 +139,9 @@ export const useForm = <T extends FieldValues = FieldValues>({
         changes.forEach(([field, value]) =>
           form.setFieldValue(field, value as never, { dontValidate: true, dontRunListeners: true, dontUpdateMeta }),
         )
-        if (changes.length) {
-          Promise.resolve(form.validate('change')).catch(e => console.error('form update validation failed', e))
-        }
+        if (changes.length) rerunValidation()
       },
-      [form],
+      [form, rerunValidation],
     ),
     setError: useCallback(
       (field, onSubmit) => form.setFieldMeta(field, prev => ({ ...prev, errorMap: { ...prev.errorMap, onSubmit } })),
@@ -158,7 +166,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
       ),
       touchedFields,
       isDirty: useStore(form.store, state => state.isDirty),
-      isValid: !Object.keys(fieldErrors).length && !rootError,
+      isValid: useStore(form.store, state => state.isValid),
       dirtyFields,
     },
   }
