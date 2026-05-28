@@ -26,11 +26,7 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
   const errorMessage = useStore(state => state.createPool.transactionState.errorMessage)
   const { connectState, connect: connectWallet } = useWallet()
 
-  return !haveSigner ? (
-    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
-      {t`Connect Wallet`}
-    </StyledButton>
-  ) : (
+  return haveSigner ? (
     <>
       {txSuccess && <InfoLinkBar description={t`Tx: ${poolId} created`} link={txLink} />}
       {txStatus === 'ERROR' && (
@@ -51,6 +47,10 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
       )}
       {txStatus === 'SUCCESS' && <SuccessWrapper>{t`Pool Creation Complete`}</SuccessWrapper>}
     </>
+  ) : (
+    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
+      {t`Connect Wallet`}
+    </StyledButton>
   )
 }
 
