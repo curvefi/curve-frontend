@@ -2,7 +2,6 @@ import { type ReactNode, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormLabel from '@mui/material/FormLabel'
@@ -12,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -54,11 +54,13 @@ export const SlippageFormField = ({
     <Stack>
       {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
 
-      <Stack direction="row" justifyContent="space-between">
+      <Stack sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <FormLabel>{title}</FormLabel>
-        {isActive && <Chip color="active" size="extraSmall" label={t`Current`} />}
+        {isActive && <Badge color="active" size="extraSmall" label={t`Current`} />}
       </Stack>
-      <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.md}>
+      <Stack
+        sx={{ flexDirection: { mobile: 'column', tablet: 'row' }, justifyContent: 'space-between', gap: Spacing.md }}
+      >
         <RadioGroup
           row
           value={isCustom ? null : value}
@@ -79,13 +81,14 @@ export const SlippageFormField = ({
           ))}
         </RadioGroup>
 
-        <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
+        <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: { mobile: 'start', tablet: 'end' } }}>
           <NumericTextField
             fullWidth
             variant="standard"
             value={isCustom ? value : undefined}
             placeholder={t`Custom slippage`}
             adornment="percentage"
+            data-testid="slippage-input"
             slotProps={{ input: { sx: { color: t => (isCustom ? 'inherit' : t.design.Text.TextColors.Disabled) } } }}
             error={!!error}
             onChange={value => update({ [type]: decimal(value) })}

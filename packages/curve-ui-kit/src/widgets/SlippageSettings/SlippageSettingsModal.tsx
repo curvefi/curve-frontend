@@ -41,7 +41,7 @@ export const SlippageSettingsModal = ({
         onTransitionExited={reset}
         title={t`Slippage Settings`}
         footer={
-          <Stack gap={Spacing.sm} flexGrow={1}>
+          <Stack sx={{ gap: Spacing.sm, flexGrow: 1 }}>
             <Button
               disabled={!form.formState.isValid}
               fullWidth
@@ -55,7 +55,7 @@ export const SlippageSettingsModal = ({
         formProps={{ onSubmit }}
         compact
       >
-        <Stack gap={Spacing.sm}>
+        <Stack sx={{ gap: Spacing.sm }}>
           {types.map(type => (
             <SlippageFormField key={type} type={type} isActive={active === type} form={form} {...slippageTypes[type]} />
           ))}

@@ -1,4 +1,3 @@
-import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import { capitalize } from '@mui/material/utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -7,6 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { ActionInfoSize } from '@ui-kit/shared/ui/ActionInfo/ActionInfo'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { formatPercent as formatPercent } from '@ui-kit/utils'
 import type { SlippageType } from './slippage.utils'
 import { SlippageSettingsModal } from './SlippageSettingsModal'
@@ -31,7 +31,7 @@ export const SlippageToleranceActionInfo = ({
       <ActionInfo
         label={t`Slippage`}
         value={formatPercent(maxSlippage)}
-        valueLeft={active && <Chip size="extraSmall" label={capitalize(active)} />}
+        valueLeft={active && <Badge size="extraSmall" label={capitalize(active)} />}
         valueRight={
           <IconButton onClick={openModal} size="extraExtraSmall" data-testid="slippage-settings-button">
             <GearIcon sx={{ color: 'text.primary' }} />

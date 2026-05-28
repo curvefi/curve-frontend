@@ -15,12 +15,12 @@ describe('Pool page', () => {
     cy.visitWithoutTestConnector(path)
     clickTab('pool-form-tab', 'deposit', API_LOAD_TIMEOUT)
     cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('have.class', 'Mui-selected')
-    cy.get('[data-testid="borrow-slippage-value"]').contains(path.includes('crypto') ? '0.10%' : '0.03%')
+    cy.get('[data-testid="borrow-slippage-value"]').contains(path.includes('crypto') ? '0.50%' : '0.03%')
     cy.get('[data-testid="slippage-settings-button"]').click()
     const [isPreset, value] = oneOf([true, oneOf('0.1', '0.5'), [false, oneFloat(5).toFixed(2)]])
     if (isPreset) {
       cy.get(`[data-testid="slippage-radio-group"] [value="${value}"]`).click()
-      cy.get('[data-testid="slippage-input-disabled"]').should('be.visible') // check it's disabled
+      cy.get('[data-testid="slippage-input"]').should('have.value', '') // value is empty, placeholder shown
     } else {
       cy.get('[data-testid^="slippage-input"]').type(value)
       cy.get('[data-testid="slippage-input-selected"]').blur()
