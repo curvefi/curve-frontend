@@ -12,7 +12,7 @@ import { formatNumber } from '@ui-kit/utils'
 import { WalletIcon } from '../../icons/WalletIcon'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, LargeTokenInput } = SizesAndSpaces
 
 /** Props for the Balance component */
 export type Props<T> = {
@@ -74,8 +74,8 @@ export const Balance = <T extends Amount>({
           Prefix && (
             <Prefix
               sx={{
-                width: IconSize.sm,
-                height: IconSize.sm,
+                width: LargeTokenInput.BalanceIconSize,
+                height: LargeTokenInput.BalanceIconSize,
                 color: t => t.design.Inputs.Text.Meta,
                 ...(disabled && { color: t => t.design.Inputs.Text.Disabled }),
               }}

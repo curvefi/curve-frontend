@@ -2,13 +2,14 @@ import BigNumber from 'bignumber.js'
 import type { Property } from 'csstype'
 import { ReactNode, useEffect, useState } from 'react'
 import { Typography } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { MaxWidth } = SizesAndSpaces
 
 type NumericTextFieldAdornments = 'dollar' | 'percentage' | 'bands'
 
@@ -93,10 +94,20 @@ const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
 const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) =>
   val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
-const AdornmentTypography = ({ children, size }: { children: ReactNode; size: NumericTextFieldProps['size'] }) => (
-  <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} sx={{ color: t => t.design.Inputs.Text.Unit }}>
-    {children}
-  </Typography>
+const AdornmentTypography = ({
+  children,
+  position,
+  size,
+}: {
+  children: ReactNode
+  position: 'start' | 'end'
+  size: NumericTextFieldProps['size']
+}) => (
+  <InputAdornment position={position}>
+    <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} sx={{ color: t => t.design.Inputs.Text.Unit }}>
+      {children}
+    </Typography>
+  </InputAdornment>
 )
 
 const adornments: Record<
@@ -109,15 +120,27 @@ const adornments: Record<
 > = {
   dollar: {
     textAlign: 'left',
-    inputEndAdornment: size => <AdornmentTypography size={size}>$</AdornmentTypography>,
+    inputEndAdornment: size => (
+      <AdornmentTypography position="end" size={size}>
+        $
+      </AdornmentTypography>
+    ),
   },
   percentage: {
     textAlign: 'left',
-    inputEndAdornment: size => <AdornmentTypography size={size}>%</AdornmentTypography>,
+    inputEndAdornment: size => (
+      <AdornmentTypography position="end" size={size}>
+        %
+      </AdornmentTypography>
+    ),
   },
   bands: {
     textAlign: 'left',
-    inputEndAdornment: size => <AdornmentTypography size={size}>{t`Bands`}</AdornmentTypography>,
+    inputEndAdornment: size => (
+      <AdornmentTypography position="end" size={size}>
+        {t`Bands`}
+      </AdornmentTypography>
+    ),
   },
 }
 
@@ -208,7 +231,6 @@ export const NumericTextField = ({
         ...(adornment && {
           input: {
             sx: {
-              paddingInline: Spacing.xs,
               '& input': {
                 textAlign: adornments[adornment].textAlign,
               },

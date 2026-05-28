@@ -17,16 +17,21 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
     placeholder="0.00"
     value={balance}
     name={name}
-    size="large"
+    size="small"
     fullWidth
     slotProps={{
       input: {
         disableUnderline: true,
         sx: theme => ({
-          maxHeight: SizesAndSpaces.InputSize.large,
+          height: SizesAndSpaces.LargeTokenInput.AmountHeight,
+          maxHeight: SizesAndSpaces.LargeTokenInput.AmountHeight,
           backgroundColor: Transparent,
           color: isError ? theme.design.Inputs.Text.Error : theme.design.Inputs.Text.Value,
           ...theme.typography.headingSBold,
+          '& input': {
+            height: SizesAndSpaces.LargeTokenInput.AmountHeight,
+            ...theme.typography.headingSBold,
+          },
         }),
       },
     }}

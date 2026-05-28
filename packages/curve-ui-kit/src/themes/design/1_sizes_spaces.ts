@@ -124,6 +124,13 @@ const MappedSelectListItem = {
   Gap: fixedResponsive(Spacing[200]),
 } as const
 
+const MappedLargeTokenInput = {
+  AmountHeight: MappedButtonSize.sm,
+  BalanceIconSize: MappedIconSize.xs,
+  PaddingX: MappedInputSpacing.PaddingX.large,
+  RowGap: Spacing[0],
+} as const
+
 const SliderHeight = {
   small: { mobile: Sizing[200], tablet: Sizing[200], desktop: Sizing[200] },
   medium: { mobile: Sizing[300], tablet: Sizing[300], desktop: Sizing[300] },
@@ -200,6 +207,7 @@ export const SizesAndSpaces = {
   SelectSize: MappedSelectSize,
   SelectSpacing: MappedSelectSpacing,
   SelectListItem: MappedSelectListItem,
+  LargeTokenInput: MappedLargeTokenInput,
   Grid: MappedGrid,
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,

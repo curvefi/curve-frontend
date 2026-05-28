@@ -280,7 +280,7 @@ export const LargeTokenInput = ({
           }),
       }}
     >
-      <Stack sx={{ gap: Spacing.xxs, padding: SizesAndSpaces.InputSpacing.PaddingX.large }}>
+      <Stack sx={{ gap: SizesAndSpaces.LargeTokenInput.RowGap, padding: SizesAndSpaces.LargeTokenInput.PaddingX }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
@@ -332,6 +332,7 @@ export const LargeTokenInput = ({
                         }
                       }}
                       selected={false}
+                      size="extraSmall"
                     />
                   ),
                 )}
