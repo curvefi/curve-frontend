@@ -3,6 +3,8 @@ import { Transparent } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { NumericTextField } from '../NumericTextField'
 
+const { AmountHeight } = SizesAndSpaces.LargeTokenInput
+
 type BalanceTextFieldProps = {
   balance: Decimal | undefined
   isError: boolean
@@ -23,15 +25,13 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
       input: {
         disableUnderline: true,
         sx: theme => ({
-          height: SizesAndSpaces.LargeTokenInput.AmountHeight,
-          maxHeight: SizesAndSpaces.LargeTokenInput.AmountHeight,
+          height: AmountHeight,
           backgroundColor: Transparent,
           color: isError ? theme.design.Inputs.Text.Error : theme.design.Inputs.Text.Value,
           ...theme.typography.headingSBold,
           '&& input.MuiInputBase-input': {
-            height: SizesAndSpaces.LargeTokenInput.AmountHeight,
+            height: AmountHeight,
             paddingInlineStart: 0,
-            paddingLeft: 0,
             ...theme.typography.headingSBold,
           },
         }),

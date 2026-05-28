@@ -4,23 +4,17 @@ import type { Theme } from '@mui/material/styles'
 import { Transparent } from '@ui-kit/themes/design/0_primitives'
 import { applySxProps } from '@ui-kit/utils'
 
-const ghostSx = (theme: Theme) => ({
+const ghostSx = {
   '&.MuiInputBase-root': { backgroundColor: Transparent },
   '& .MuiOutlinedInput-notchedOutline': { borderColor: Transparent, backgroundColor: Transparent },
   '&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
     backgroundColor: Transparent,
     '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.design.InputSelect.Base.Default.Border.Hover,
+      borderColor: (theme: Theme) => theme.design.InputSelect.Base.Default.Border.Hover,
     },
   },
-  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.design.InputSelect.Base.Default.Border.Active,
-  },
-  '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.design.InputSelect.Base.Default.Border.Error,
-  },
   '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: Transparent },
-})
+} as const
 
 export type SelectProps = Omit<MuiSelectProps, 'variant'> & {
   variant?: MuiSelectProps['variant'] | 'ghost'

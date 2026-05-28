@@ -1,5 +1,4 @@
 import type { Components } from '@mui/material/styles'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -8,13 +7,11 @@ const { SelectListItem } = SizesAndSpaces
 export const defineMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem'] => ({
   styleOverrides: {
     root: {
-      ...handleBreakpoints({
-        height: SelectListItem.Height.medium,
-        transition: design.Button.Transition,
-        gap: SelectListItem.Gap,
-        paddingBlock: SelectListItem.PaddingY,
-        paddingInline: SelectListItem.PaddingX.medium,
-      }),
+      height: SelectListItem.Height.medium,
+      transition: design.Button.Transition,
+      gap: SelectListItem.Gap,
+      paddingBlock: SelectListItem.PaddingY,
+      paddingInline: SelectListItem.PaddingX.medium,
       '&:hover': {
         backgroundColor: design.Layer.TypeAction.Hover,
       },
@@ -31,10 +28,8 @@ export const defineMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem
       },
     },
     dense: {
-      ...handleBreakpoints({
-        height: SelectListItem.Height.small,
-        paddingInline: SelectListItem.PaddingX.small,
-      }),
+      height: SelectListItem.Height.small,
+      paddingInline: SelectListItem.PaddingX.small,
     },
   },
 })

@@ -14,7 +14,6 @@ export const defineMuiInputBase = (
   styleOverrides: {
     root: {
       height: InputSize.medium,
-      boxSizing: 'border-box',
       backgroundColor: InputSelect.Base.Default.Fill.Default,
       color: Inputs.Text.Value,
       '&': { paddingRight: '0' }, // inputs have an ugly default 14px padding on the right, not nice with end adornments

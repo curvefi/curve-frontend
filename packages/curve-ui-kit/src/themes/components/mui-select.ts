@@ -8,24 +8,23 @@ import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { IconSize, SelectSize, SelectSpacing } = SizesAndSpaces
 
-const fixedResponsive = <T extends string>(value: T): Responsive<T> => ({
-  mobile: value,
-  tablet: value,
-  desktop: value,
-})
+type ResponsiveOrStatic = Responsive | string
 
-const getSelectIconSpace = (iconSize: Responsive, iconPaddingRight: Responsive): Responsive<string> => ({
-  mobile: `calc(${iconSize.mobile} + ${SelectSpacing.IconGap} + ${iconPaddingRight.mobile})`,
-  tablet: `calc(${iconSize.tablet} + ${SelectSpacing.IconGap} + ${iconPaddingRight.tablet})`,
-  desktop: `calc(${iconSize.desktop} + ${SelectSpacing.IconGap} + ${iconPaddingRight.desktop})`,
+const getResponsiveValue = (value: ResponsiveOrStatic, breakpoint: keyof Responsive) =>
+  typeof value === 'string' ? value : value[breakpoint]
+
+const getSelectIconSpace = (iconSize: Responsive, iconPaddingRight: ResponsiveOrStatic): Responsive<string> => ({
+  mobile: `calc(${iconSize.mobile} + ${SelectSpacing.IconGap} + ${getResponsiveValue(iconPaddingRight, 'mobile')})`,
+  tablet: `calc(${iconSize.tablet} + ${SelectSpacing.IconGap} + ${getResponsiveValue(iconPaddingRight, 'tablet')})`,
+  desktop: `calc(${iconSize.desktop} + ${SelectSpacing.IconGap} + ${getResponsiveValue(iconPaddingRight, 'desktop')})`,
 })
 
 type SelectSizeDefinition = {
   height: string
   iconSize: Responsive
-  iconPaddingRight: Responsive
-  paddingBlock: Responsive
-  paddingInlineStart: Responsive
+  iconPaddingRight: ResponsiveOrStatic
+  paddingBlock: ResponsiveOrStatic
+  paddingInlineStart: ResponsiveOrStatic
   typography: 'bodySBold' | 'bodyMBold' | 'headingSBold'
 }
 
@@ -42,7 +41,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   },
   small: {
     height: SelectSize.small,
-    iconSize: fixedResponsive(IconSize.lg.desktop),
+    iconSize: IconSize.lg,
     iconPaddingRight: SelectSpacing.IconPaddingRight.small,
     paddingBlock: SelectSpacing.ContentPaddingY.small,
     paddingInlineStart: SelectSpacing.PaddingX.small,
@@ -50,7 +49,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   },
   medium: {
     height: SelectSize.medium,
-    iconSize: fixedResponsive(IconSize.lg.desktop),
+    iconSize: IconSize.lg,
     iconPaddingRight: SelectSpacing.IconPaddingRight.medium,
     paddingBlock: SelectSpacing.ContentPaddingY.medium,
     paddingInlineStart: SelectSpacing.PaddingX.medium,
@@ -58,7 +57,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   },
   large: {
     height: SelectSize.large,
-    iconSize: fixedResponsive(IconSize.lg.desktop),
+    iconSize: IconSize.lg,
     iconPaddingRight: SelectSpacing.IconPaddingRight.large,
     paddingBlock: SelectSpacing.ContentPaddingY.large,
     paddingInlineStart: SelectSpacing.PaddingX.large,

@@ -266,18 +266,26 @@ export const LargeTokenInput = ({
       id={componentId}
       data-testid={testId}
       sx={{
-        backgroundColor: t => t.design.InputSelect.Large.Default.Fill,
+        backgroundColor: t => t.design.Inputs.Large.Default.Fill,
         outline: t =>
-          `1px solid ${
-            isError ? t.design.InputSelect.Base.Default.Border.Error : t.design.InputSelect.Base.Default.Border.Default
-          }`,
-        ...(!disabled &&
-          !isError && {
-            '&:hover': {
-              backgroundColor: t => t.design.InputSelect.Base.Default.Fill.Hover,
-              outlineColor: t => t.design.InputSelect.Base.Default.Border.Hover,
-            },
-          }),
+          `1px solid ${isError ? t.design.Inputs.Base.Default.Border.Error : t.design.Inputs.Base.Default.Border.Default}`,
+        '&:hover': {
+          backgroundColor: t => t.design.Inputs.Base.Default.Fill.Hover,
+          outlineColor: t => t.design.Inputs.Base.Default.Border.Hover,
+        },
+        ...(isError && {
+          '&:hover': {
+            backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+            outlineColor: t => t.design.Inputs.Base.Default.Border.Error,
+          },
+        }),
+        ...(disabled && {
+          '&:hover': {
+            backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+            outlineColor: t =>
+              isError ? t.design.Inputs.Base.Default.Border.Error : t.design.Inputs.Base.Default.Border.Default,
+          },
+        }),
       }}
     >
       <Stack sx={{ gap: SizesAndSpaces.LargeTokenInput.RowGap, padding: SizesAndSpaces.LargeTokenInput.PaddingX }}>

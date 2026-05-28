@@ -57,12 +57,6 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
-const fixedResponsive = <T extends string>(value: T) => ({
-  mobile: value,
-  tablet: value,
-  desktop: value,
-})
-
 const MappedInputSize = {
   tiny: MappedButtonSize.xs,
   small: MappedButtonSize.sm,
@@ -72,12 +66,12 @@ const MappedInputSize = {
 
 const MappedInputSpacing = {
   PaddingX: {
-    tiny: fixedResponsive(Spacing[200]),
-    small: fixedResponsive(Spacing[300]),
-    medium: fixedResponsive(Spacing[300]),
-    large: fixedResponsive(Spacing[300]),
+    tiny: Spacing[200],
+    small: Spacing[300],
+    medium: Spacing[300],
+    large: Spacing[300],
   },
-  ContentPaddingRight: fixedResponsive(Spacing[300]),
+  ContentPaddingRight: Spacing[300],
   HelperPaddingTop: Spacing[200],
   LabelGap: Spacing[100],
   ValueGap: Spacing[100],
@@ -92,23 +86,23 @@ const MappedSelectSize = {
 
 const MappedSelectSpacing = {
   PaddingX: {
-    tiny: fixedResponsive(Spacing[200]),
-    small: fixedResponsive(Spacing[300]),
-    medium: fixedResponsive(Spacing[300]),
-    large: fixedResponsive(Spacing[300]),
+    tiny: Spacing[200],
+    small: Spacing[300],
+    medium: Spacing[300],
+    large: Spacing[300],
   },
   ContentPaddingY: {
-    tiny: fixedResponsive(Spacing[100]),
-    small: fixedResponsive(Spacing[300]),
-    medium: fixedResponsive(Spacing[300]),
-    large: fixedResponsive(Spacing[300]),
+    tiny: Spacing[100],
+    small: Spacing[300],
+    medium: Spacing[300],
+    large: Spacing[300],
   },
   IconGap: Spacing[300],
   IconPaddingRight: {
-    tiny: fixedResponsive(Spacing[200]),
-    small: fixedResponsive(Spacing[300]),
-    medium: fixedResponsive(Spacing[300]),
-    large: fixedResponsive(Spacing[300]),
+    tiny: Spacing[200],
+    small: Spacing[300],
+    medium: Spacing[300],
+    large: Spacing[300],
   },
 } as const
 
@@ -118,11 +112,11 @@ const MappedSelectListItem = {
     medium: MappedButtonSize.sm,
   },
   PaddingX: {
-    small: fixedResponsive(Spacing[200]),
-    medium: fixedResponsive(Spacing[200]),
+    small: Spacing[200],
+    medium: Spacing[200],
   },
-  PaddingY: fixedResponsive(Spacing[200]),
-  Gap: fixedResponsive(Spacing[200]),
+  PaddingY: Spacing[200],
+  Gap: Spacing[200],
 } as const
 
 const MappedLargeTokenInput = {
