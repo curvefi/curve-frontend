@@ -18,14 +18,10 @@ export const CopyIconButton = ({
   children = <CopyIcon />,
   size = 'extraSmall',
   ...iconProps
-}: CopyIconButtonProps) => {
-  const copyToClipboard = useCopyToClipboard({ copyText, confirmationText })
-
-  return (
-    <Tooltip title={label} placement="top">
-      <IconButton size={size} {...iconProps} onClick={copyToClipboard}>
-        {children}
-      </IconButton>
-    </Tooltip>
-  )
-}
+}: CopyIconButtonProps) => (
+  <Tooltip title={label} placement="top">
+    <IconButton size={size} {...iconProps} onClick={useCopyToClipboard({ copyText, confirmationText })}>
+      {children}
+    </IconButton>
+  </Tooltip>
+)
