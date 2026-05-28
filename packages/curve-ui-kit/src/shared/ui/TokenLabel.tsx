@@ -24,10 +24,14 @@ type TokenLabelProps = TokenIconProps & {
 export const TokenLabel = ({ label, noWrap, typographyVariant = 'bodyMBold', ...tokenIconProps }: TokenLabelProps) => (
   <Stack
     direction="row"
-    sx={{ gap: Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]], alignItems: 'center', minWidth: 0 }}
+    sx={{
+      gap: Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]],
+      alignItems: 'center',
+      ...(noWrap && { minWidth: 0 }),
+    }}
   >
     <TokenIcon {...tokenIconProps} />
-    <Stack sx={{ minWidth: 0 }}>
+    <Stack sx={{ ...(noWrap && { minWidth: 0 }) }}>
       <Typography
         variant={typographyVariant}
         color={tokenIconProps.disabled ? 'textDisabled' : undefined}

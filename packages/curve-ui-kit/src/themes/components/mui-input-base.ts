@@ -1,6 +1,5 @@
 /// <reference path="./mui-input-base.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import type { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -59,17 +58,15 @@ export const defineMuiInputBase = (
       },
       '& .MuiInputAdornment-positionEnd': {
         marginInlineStart: InputSpacing.ValueGap,
-        ...handleBreakpoints({ paddingInlineEnd: InputSpacing.ContentPaddingRight }),
+        paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
       '&.MuiInputBase-sizeSmall': {
         height: InputSize.small,
       },
       '&.MuiInputBase-sizeSmall .MuiInputBase-input': {
         height: InputSize.small,
-        ...handleBreakpoints({
-          paddingInlineStart: InputSpacing.PaddingX.small,
-          paddingInlineEnd: InputSpacing.ContentPaddingRight,
-        }),
+        paddingInlineStart: InputSpacing.PaddingX.small,
+        paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
       '&.MuiInputBase-sizeTiny': {
         height: InputSize.tiny,
@@ -77,10 +74,8 @@ export const defineMuiInputBase = (
       '&.MuiInputBase-sizeTiny .MuiInputBase-input': {
         height: InputSize.tiny,
         ...typography.bodySBold,
-        ...handleBreakpoints({
-          paddingInlineStart: InputSpacing.PaddingX.tiny,
-          paddingInlineEnd: InputSpacing.ContentPaddingRight,
-        }),
+        paddingInlineStart: InputSpacing.PaddingX.tiny,
+        paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
       '&.MuiInputBase-sizeLarge': {
         height: InputSize.large,
@@ -88,10 +83,8 @@ export const defineMuiInputBase = (
       '&.MuiInputBase-sizeLarge .MuiInputBase-input': {
         height: InputSize.large,
         ...typography.headingSBold,
-        ...handleBreakpoints({
-          paddingInlineStart: InputSpacing.PaddingX.large,
-          paddingInlineEnd: InputSpacing.ContentPaddingRight,
-        }),
+        paddingInlineStart: InputSpacing.PaddingX.large,
+        paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
       '&.MuiInputBase-multiline': {
         height: 'auto',
@@ -107,10 +100,8 @@ export const defineMuiInputBase = (
       textOverflow: 'ellipsis',
       padding: 0,
       ...typography.bodyMBold,
-      ...handleBreakpoints({
-        paddingInlineStart: InputSpacing.PaddingX.medium,
-        paddingInlineEnd: InputSpacing.ContentPaddingRight,
-      }),
+      paddingInlineStart: InputSpacing.PaddingX.medium,
+      paddingInlineEnd: InputSpacing.ContentPaddingRight,
       '&::placeholder': {
         color: Inputs.Text.Placeholder,
         opacity: 1,

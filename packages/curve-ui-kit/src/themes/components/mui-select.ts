@@ -133,7 +133,6 @@ export const defineMuiSelect = (
               ...handleBreakpoints({
                 paddingBlock,
                 paddingInlineStart,
-                paddingInlineEnd: iconSpace,
                 paddingRight: iconSpace,
                 /**
                  * The overflow hiding doesn't take into account the expansion chevron icon, so we need to deduct
