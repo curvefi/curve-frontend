@@ -70,7 +70,7 @@ export const UserPositionsMarketRateTable = ({
       table={table}
       defaultVisibleRows={{
         max: DEFAULT_VISIBLE_ROWS,
-        buttonLabel: t`View all ${marketRateType.toLowerCase()} positions`,
+        buttonLabel: t`View all ${data.length} ${marketRateType.toLowerCase()} positions`,
       }}
       emptyState={
         <UserPositionsEmptyState
