@@ -154,8 +154,8 @@ export const ActionInfo = ({
         {label}
       </Typography>
       <Stack direction="row" className="ActionInfo-valueGroup" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        <Stack direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
-          <Stack direction="row" sx={{ gap: Spacing.xs }}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <Typography
               variant={prevValueSize[size]}
               color={prevValueColor ?? 'textTertiary'}
