@@ -1,7 +1,6 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
 import Grid from '@mui/material/Grid'
-import { useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -14,7 +13,7 @@ import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from './columns'
 import { LegacyMultiSelectFilter } from './filters/LegacyMultiSelectFilter'
-import { RangeSliderFilter } from './filters/RangeSliderFilter'
+import { LegacyRangeSliderFilter } from './filters/RangeSliderFilter/LegacyRangeSliderFilter'
 
 const { Spacing } = SizesAndSpaces
 const TABLE_FILTER_COLUMN_SIZE = { mobile: 12, tablet: 12 / 4, desktop: 12 / 5 } as const
@@ -68,9 +67,10 @@ export const LegacyLendingMarketsFilters = ({
     <Grid
       container
       spacing={Spacing.sm}
-      paddingBlockStart={Spacing.sm}
-      {...(useNewMarketListLayout() && { paddingBlockEnd: Spacing.sm })}
-      paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
+      sx={{
+        paddingBlockStart: Spacing.sm,
+        paddingInline: { mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop },
+      }}
     >
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
         <LegacyMultiSelectFilter
@@ -83,7 +83,6 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
         <LegacyMultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
@@ -95,9 +94,8 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
-        <RangeSliderFilter
+        <LegacyRangeSliderFilter
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
           title={t`TVL`}
@@ -108,9 +106,8 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Available liquidity`}>
-        <RangeSliderFilter
+        <LegacyRangeSliderFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
           title={t`Liquidity`}
@@ -121,9 +118,8 @@ export const LegacyLendingMarketsFilters = ({
           {...filterProps}
         />
       </TableFilterColumn>
-
       <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Utilization`}>
-        <RangeSliderFilter
+        <LegacyRangeSliderFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
           title={t`Utilization`}

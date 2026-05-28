@@ -1,9 +1,10 @@
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
-import { Stack } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
@@ -15,33 +16,12 @@ import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTabl
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
+import { HiddenInlinedItems } from './HiddenInlinedItems'
+import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
-
-/**  Show only the first few selected values inline so the closed select stays compact.
- * Any remaining selections are collapsed into a single "+N" item, if more than 1 item is hidden */
-const getVisibleSelectedOptionsCount = (selectedOptionsLength: number) => {
-  const maxVisibleSelectedOptions = 4
-  return selectedOptionsLength === maxVisibleSelectedOptions ? maxVisibleSelectedOptions : maxVisibleSelectedOptions - 1
-}
-
-/** Renders the overflow indicator for selected options hidden behind max selected options limit.  */
-const HiddenSelectedOptions = ({
-  selectedOptionsLength,
-  renderItem,
-  selectedItemRender,
-}: {
-  selectedOptionsLength: number
-  renderItem?: (value: string) => ReactNode
-  selectedItemRender?: (value: string) => ReactNode
-}) => {
-  const visibleSelectedOptionsCount = getVisibleSelectedOptionsCount(selectedOptionsLength)
-  const label = `+${selectedOptionsLength - visibleSelectedOptionsCount}`
-  return (
-    selectedOptionsLength > visibleSelectedOptionsCount && (selectedItemRender?.(label) ?? renderItem?.(label) ?? label)
-  )
-}
 
 /**
  * A filter for tanstack tables that allows multi-select of string values.
@@ -49,7 +29,7 @@ const HiddenSelectedOptions = ({
 export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
-  data,
+  query,
   defaultText = t`All`,
   defaultTextMobile,
   renderItem,
@@ -57,7 +37,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   field,
   id,
 }: FilterProps<TColumnId> & {
-  data: TKeys[]
+  query: QueryProp<TKeys[]>
   defaultText?: string
   defaultTextMobile: string
   field: DeepKeys<TKeys>
@@ -70,7 +50,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
+  const options = useMemo(() => getUniqueSortedStrings(notFalsyArray(query.data), field), [query.data, field])
   const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -93,6 +73,8 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
     [setColumnFilter, id, selectedOptions],
   )
 
+  const [visibleSelectedOptions, hiddenSelectedOptions] = getInlinedItemsVisibility(selectedOptions)
+
   // the select component does a lot of stuff with its children, so we cannot add a wrapper for the theme inverter.
   // therefore, I was forced to reimplement the menu separate from the select component.
   return (
@@ -112,21 +94,14 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             <>
-              {selectedOptions.slice(0, getVisibleSelectedOptionsCount(selectedOptions.length)).map(optionId => (
-                <MenuItem
-                  key={optionId}
-                  sx={{
-                    display: 'inline-flex', // display inline to avoid wrapping
-                    '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
-                  }}
-                >
+              {visibleSelectedOptions.map(optionId => (
+                <Box component="span" key={optionId} sx={{ display: 'inline-flex', alignItems: 'center' }}>
                   {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
-                </MenuItem>
+                </Box>
               ))}
-              <HiddenSelectedOptions
-                selectedOptionsLength={selectedOptions.length}
-                selectedItemRender={selectedItemRender}
-                renderItem={renderItem}
+              <HiddenInlinedItems
+                hiddenSelectedItemsLength={hiddenSelectedOptions.length}
+                renderItem={label => selectedItemRender?.(label) ?? renderItem?.(label)}
               />
             </>
           ) : (
@@ -148,10 +123,12 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         >
           <Stack
             direction="row"
-            justifyContent="space-between"
-            borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`}
-            padding={Spacing.sm}
             component="li"
+            sx={{
+              justifyContent: 'space-between',
+              borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
+              padding: Spacing.sm,
+            }}
           >
             <Button
               color="ghost"
@@ -168,7 +145,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
                 <MenuItem
                   ref={menuRef}
                   value={optionId}
-                  className={isSelected ? 'Mui-selected' : ''}
+                  selected={isSelected}
                   onClick={onItemClicked}
                   sx={{ justifyContent: 'space-between' }}
                 >

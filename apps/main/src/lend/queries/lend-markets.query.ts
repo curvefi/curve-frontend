@@ -38,7 +38,7 @@ const getMarketData = ({
 
 export const { useQuery: useLendMarkets } = queryFactory({
   queryKey: ({ chainId, enableLLv2 }: ChainParams & { enableLLv2: boolean }) =>
-    [...rootKeys.chain({ chainId }), 'lendMarkets.getMarketList', { enableLLv2 }] as const,
+    [...rootKeys.chain({ chainId }), 'getLendMarkets', { enableLLv2 }] as const,
   queryFn: async ({
     chainId,
     enableLLv2,

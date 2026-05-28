@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
@@ -7,7 +7,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
-import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
@@ -15,12 +15,13 @@ import { TableButton } from '@ui-kit/shared/ui/DataTable/TableButton'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { FilterChip } from './chips/FilterChip'
+import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
-import { LlamaTableFiltersPopover } from './filters/LlamaTableFiltersPopover'
+import { LlamaTableFilters } from './filters/LlamaTableFilters'
+import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -30,18 +31,15 @@ const pagination = { pageIndex: 0, pageSize: 200 }
 
 export const LlamaMarketsTable = ({
   onReload,
-  result,
-  isError,
-  loading,
+  tableQuery,
+  tableQuery: { data: queryData, isLoading, error },
 }: {
   onReload: () => void
-  result: LlamaMarketsResult | undefined
-  isError: boolean
-  loading: boolean
+  tableQuery: QueryProp<LlamaMarketsResult>
 }) => {
-  const { markets, userHasPositions, hasFavorites } = result ?? {}
-  const data = useMemo(() => markets ?? [], [markets])
-  const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
+  const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
+  const isError = !!error
+  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
@@ -66,8 +64,10 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange,
     globalFilterFn,
-    ...getTableOptions(result),
+    ...getTableOptions(queryData),
   })
+
+  const hasActiveFilters = !!table.getState().columnFilters.length
 
   return (
     <DataTable
@@ -87,7 +87,7 @@ export const LlamaMarketsTable = ({
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={loading}
+      isLoading={isLoading}
     >
       <TableFilters<LlamaMarketColumnId>
         testIdPrefix={LOCAL_STORAGE_KEY}
@@ -99,29 +99,22 @@ export const LlamaMarketsTable = ({
         header={
           <TableFiltersHeader
             title={t`Markets`}
-            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
+            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />}
           />
         }
-        popoverFilters={
-          <LlamaTableFiltersPopover
-            hiddenCount={getHiddenCount(table)}
-            open={filterPopoverOpen}
-            onClose={closeFilterPopover}
-            anchorRef={filterChipRef}
-            markets={data}
-            resetFilters={resetFilters}
-            {...filterProps}
-          />
-        }
+        collapsibleFilters={{
+          collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
+          hasActiveFilters,
+        }}
         filterChip={
-          <FilterChip
-            filterChipRef={filterChipRef}
-            filterPopoverOpen={filterPopoverOpen}
-            toggleFilterPopover={toggleFilterPopover}
-            hiddenCount={getHiddenCount(table)}
+          <LlamaTableFilters
+            popoverFilterChipRef={filterChipRef}
+            hasActiveFilters={hasActiveFilters}
+            open={filtersOpen}
+            setOpen={setFiltersOpen}
+            anchorRef={filterChipRef}
+            marketsQuery={mapQuery(tableQuery, d => d.markets)}
             resetFilters={resetFilters}
-            hasFavorites={hasFavorites}
-            data={data}
             {...filterProps}
           />
         }

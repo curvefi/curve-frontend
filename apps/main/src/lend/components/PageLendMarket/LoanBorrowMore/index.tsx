@@ -338,8 +338,8 @@ export const LoanBorrowMore = ({
   const network = networks[rChainId]
 
   return (
-    <Stack gap={Spacing.lg}>
-      <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.lg }}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <InpToken
           network={network}
           id="userCollateral"
@@ -370,8 +370,7 @@ export const LoanBorrowMore = ({
           />
         )}
       </Stack>
-
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <InpTokenBorrow
           network={network}
           id="debt"
@@ -384,12 +383,10 @@ export const LoanBorrowMore = ({
           handleInpChange={useCallback(debt => updateFormValues({ debt }), [updateFormValues])}
         />
       </Stack>
-
       {/* detail info */}
       <StyledDetailInfoWrapper>
         {isLeverage ? <DetailInfoLeverage {...detailInfoProps} /> : <DetailInfo {...detailInfoProps} />}
       </StyledDetailInfoWrapper>
-
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
         {txInfoBar}

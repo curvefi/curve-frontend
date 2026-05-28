@@ -112,7 +112,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       )}
       {isSuccess && formattedRate !== null && (
         <Alert severity="info" variant="standard" sx={{ marginTop: Spacing.sm }}>
-          <Stack gap={Spacing.xs}>
+          <Stack sx={{ gap: Spacing.xs }}>
             <Typography variant="bodySRegular">
               {t`Oracle rate:`} {formattedRate}
             </Typography>

@@ -37,7 +37,7 @@ export const WithdrawModule = () => {
     t`Input amount exceeds your balance, click max to use all your balance`
 
   return (
-    <Stack gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xs }}>
       <LargeTokenInput
         label={t`From Vault`}
         name="withdraw-from"

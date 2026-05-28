@@ -7,10 +7,13 @@ const { Spacing, LineHeight } = SizesAndSpaces
 export const DrawerHeader = ({ title, children }: { title: string; children?: ReactNode }) => (
   <Stack
     direction="row"
-    alignItems="flex-end"
-    justifyContent="flex-start"
-    sx={{ minHeight: LineHeight.xxl, p: Spacing.md }}
-    borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`}
+    sx={{
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
+      minHeight: LineHeight.xxl,
+      p: Spacing.md,
+    }}
   >
     <Typography variant="headingXsBold">{title}</Typography>
     {children}

@@ -354,9 +354,9 @@ export const LoanRepay = ({
   )
 
   return (
-    <Stack gap={Spacing.lg}>
+    <Stack sx={{ gap: Spacing.lg }}>
       {hasLeverage && (
-        <Stack gap={Spacing.sm}>
+        <Stack sx={{ gap: Spacing.sm }}>
           <Typography variant="headingXsMedium"> {t`Repay from collateral:`} </Typography>
 
           <InpToken
@@ -373,11 +373,10 @@ export const LoanRepay = ({
           />
         </Stack>
       )}
-
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <Typography variant="headingXsMedium">{t`Repay from wallet:`}</Typography>
 
-        <Stack gap={Spacing.md}>
+        <Stack sx={{ gap: Spacing.md }}>
           {hasLeverage && (
             <InpToken
               network={network}
@@ -454,12 +453,10 @@ export const LoanRepay = ({
           />
         </Stack>
       </Stack>
-
       <Typography variant="headingXsMedium">
         {t`Debt balance`} {formatNumber(amount(userState?.debt), { abbreviate: false, fallback: '-' })}{' '}
         {borrowed_token?.symbol}
       </Typography>
-
       <Checkbox
         isDisabled={disableCheckbox}
         isSelected={detailInfoLeverage?.repayIsFull || formValues.isFullRepay}
@@ -473,7 +470,6 @@ export const LoanRepay = ({
       >
         {t`Repay in full and close loan`}
       </Checkbox>
-
       {/* detail info */}
       <StyledDetailInfoWrapper>
         <DetailInfo
@@ -490,7 +486,6 @@ export const LoanRepay = ({
           setHealthMode={setHealthMode}
         />
       </StyledDetailInfoWrapper>
-
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
         {txInfoBar}

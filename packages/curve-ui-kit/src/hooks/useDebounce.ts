@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash'
+import { identity, isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
@@ -119,44 +119,44 @@ export function useFormDebounce<T>(givenValue: T, options?: DebouncedValueOption
  * @param callback - Function called when the debounced value changes
  * @param debounceMs - The debounce period in milliseconds (default: 166ms)
  * @param equals - Optional custom equality function to compare values
+ * @param sanitize - Optional custom cleaning function to transform values before comparison (default: identity)
  * @returns A tuple containing the current value and a setter function
  */
 export function useUniqueDebounce<T>({
   defaultValue,
-  callback,
+  callback: onChange,
   debounceMs = Duration.FormDebounce,
-  equals,
+  equals = isEqual,
+  sanitize = identity,
 }: {
   defaultValue: T
   callback: ((value: T) => void) | undefined
   debounceMs?: number
   equals?: (a: T, b: T) => boolean
+  sanitize?: (value: T) => T
 }) {
-  const lastValue = useRef(defaultValue)
+  const [value, setValue] = useState<T>(defaultValue)
+  const lastCallbackValue = useRef(defaultValue)
 
-  /**
-   * Update lastValue when defaultValue changes to handle async initialization.
-   * This prevents stale comparisons when defaultValue is loaded asynchronously.
-   *
-   * Example: In llamalend markets search bar, the search value is loaded from localStorage
-   * asynchronously. Without this update, clearing the search after async load would compare
-   * the new empty string against the initial empty string (before localStorage loaded),
-   * causing the callback to not fire and missing the table filter reset.
-   */
   useEffect(() => {
-    lastValue.current = defaultValue
-  }, [defaultValue])
+    // if the default value changes externally and is different from the last value that triggered the callback,
+    // update the initial value to reflect the change. This will override the input contents and the debounced value.
+    if (!equals(lastCallbackValue.current, defaultValue)) {
+      lastCallbackValue.current = defaultValue
+      setValue(defaultValue)
+    }
+  }, [defaultValue, equals])
 
-  const debounceCallback = useCallback(
-    (value: T) => {
-      const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
-      if (!isEqual) {
-        lastValue.current = value
-        callback?.(value)
+  const callback = useCallback(
+    (givenValue: T) => {
+      const value = sanitize(givenValue)
+      if (!equals(value, lastCallbackValue.current)) {
+        lastCallbackValue.current = value
+        onChange?.(value)
       }
     },
-    [callback, equals],
+    [onChange, sanitize, equals],
   )
 
-  return useDebounce({ initialValue: defaultValue, debounceMs, callback: debounceCallback })
+  return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }

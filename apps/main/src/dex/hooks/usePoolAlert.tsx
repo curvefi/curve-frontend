@@ -316,6 +316,23 @@ const crvLongMarketRecoveryPoolAlert = (): PoolAlert => ({
   },
 })
 
+const vsdCRVPoolAlert = (): PoolAlert => ({
+  alertType: 'danger',
+  isDisableDeposit: true,
+  isDisableSwap: true,
+  isInformationOnly: true,
+  isCloseOnTooltipOnly: true,
+  banner: {
+    title: t`vsdCRV Exploited`,
+    subtitle: t`vsdCRV has been exploited. This pool has been disabled to prevent new users from loss of funds.`,
+  },
+  message: (
+    <PoolAlertMessage>
+      <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
+    </PoolAlertMessage>
+  ),
+})
+
 const Alerts: Record<string, Record<string, PoolAlert>> = {
   ethereum: {
     '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
@@ -338,6 +355,10 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
     '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
     '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2': yieldbasisAlert(),
+    '0x862cb4e988fb66e72f128d1183829f8c05b6c6a0': yieldbasisAlert(),
+    '0x4f52c3a81e33521e5a9a47fd9d3be475d2279c2e': yieldbasisAlert(),
+    '0x313698667d7fdd6789a9bc70821309ff891e729a': yieldbasisAlert(),
+    '0x656341ef90b622c6634e0573772ffb7f3669b9f3': yieldbasisAlert(),
     '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
     '0x526afb67a479d4e9b0154d4cc1a44d47df91bf3e': eurtPoolsAlert(),
     '0x3fb78e61784c9c637d560ede23ad57ca1294c14a': eurtPoolsAlert(),
@@ -365,6 +386,8 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0x14515323e5c48e0ae75ad333e885cf050d0e3d9b': misconfiguredPoolsAlert(),
     '0x11fd5664121e9b464b5e8434aa7d70b8e9146ca6': misconfiguredPoolsAlert(),
     '0x2ff3ba10deb05573d2fae704a962183461d106d8': misconfiguredPoolsAlert(),
+    '0xb85246768cfea42b0c935265db798c9ae457646f': vsdCRVPoolAlert(),
+    '0x5c959d2c1a49b637fb988c40d663265f8bf6d289': vsdCRVPoolAlert(),
   },
 
   avalanche: {

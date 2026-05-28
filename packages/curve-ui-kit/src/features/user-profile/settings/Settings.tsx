@@ -11,7 +11,7 @@ import { ThemeToggleButtons } from './ThemeToggleButtons'
 const { ButtonSize, Spacing } = SizesAndSpaces
 
 export const Settings = () => (
-  <Stack gap={Spacing.xs} paddingBlock={{ ...Spacing.md, desktop: 0 }} data-testid="user-profile-settings">
+  <Stack data-testid="user-profile-settings" sx={{ gap: Spacing.xs, paddingBlock: { ...Spacing.md, desktop: 0 } }}>
     <SettingsOption label={t`Theme`}>
       <ThemeToggleButtons />
     </SettingsOption>
@@ -28,18 +28,18 @@ export const Settings = () => (
 
 const SettingsOption = ({ label, children }: { label: string; children: ReactNode }) => (
   <Stack
-    height={ButtonSize.sm}
     direction="row"
-    justifyContent="space-between"
-    alignItems="center"
-    marginInline={{ ...Spacing.sm, desktop: 0 }}
-    gap={{ desktop: Spacing.sm.desktop }}
+    sx={{
+      height: ButtonSize.sm,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginInline: { ...Spacing.sm, desktop: 0 },
+      gap: { desktop: Spacing.sm.desktop },
+    }}
   >
     <Typography variant="bodyMBold" color={useIsDesktop() ? 'text.secondary' : 'navigation'}>
       {label}
     </Typography>
-    <Stack alignItems="center" justifyContent="center">
-      {children}
-    </Stack>
+    <Stack sx={{ alignItems: 'center', justifyContent: 'center' }}>{children}</Stack>
   </Stack>
 )

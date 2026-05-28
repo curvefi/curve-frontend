@@ -2,6 +2,7 @@ import type { Property } from 'csstype'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
+import { TableSecondaryTextClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -22,11 +23,11 @@ type AddressCellProps = {
 export const AddressCell = ({ address, label, justifyContent = 'flex-start' }: AddressCellProps) => (
   <InlineTableCell>
     {label && (
-      <Typography variant="bodyXsRegular" sx={t => ({ color: t.design.Text.TextColors.Secondary })}>
+      <Typography variant="bodyXsRegular" className={TableSecondaryTextClass}>
         {label}
       </Typography>
     )}
-    <Stack direction="row" alignItems="center" justifyContent={justifyContent} gap={Spacing.xs}>
+    <Stack direction="row" sx={{ alignItems: 'center', justifyContent, gap: Spacing.xs }}>
       <Typography variant="tableCellMBold">{shortenString(address)}</Typography>
     </Stack>
   </InlineTableCell>

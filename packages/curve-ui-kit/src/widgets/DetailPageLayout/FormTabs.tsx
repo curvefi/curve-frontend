@@ -80,9 +80,7 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
 const marginInline = { mobile: 'auto', desktop: 0 } as const
 
 /** @deprecated This is only necessary until all the forms migrate to using the `FormTabs` component. **/
-export const FormMargins = ({ children }: { children: ReactNode }) => (
-  <Stack marginInline={marginInline}>{children}</Stack>
-)
+export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx={{ marginInline }}>{children}</Stack>
 
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
@@ -99,9 +97,8 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
-    <Stack marginInline={marginInline}>
+    <Stack sx={{ marginInline }}>
       <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} overflow={overflow} />
-
       {subTab && subTabs.length > 1 && (
         <TabsSwitcher
           variant="underlined"
@@ -112,7 +109,6 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
           onChange={onChangeSubTab}
         />
       )}
-
       <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
         {content}
       </WithWrapper>

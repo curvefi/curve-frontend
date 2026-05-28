@@ -4,7 +4,6 @@ import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -55,14 +54,18 @@ export const LegacyTableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
-  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
+  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
 
   return (
-    <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
-      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
+    <Stack
+      sx={{
+        paddingBlockEnd: { mobile: Spacing.sm.tablet },
+        paddingBlockStart: { mobile: Spacing.md.tablet },
+      }}
+    >
+      <Grid container spacing={Spacing.sm} sx={{ paddingInline: Spacing.md, justifyContent: 'space-between' }}>
         <Fade in={!hideTitle} timeout={Duration.Transition} mountOnEnter unmountOnExit>
           <Grid size={{ mobile: 'grow', tablet: 6 }} sx={{ position: hideTitle ? 'absolute' : 'relative' }}>
             {leftChildren}
@@ -70,15 +73,17 @@ export const LegacyTableFilters = <ColumnIds extends string>({
         </Fade>
         <Grid
           size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
-          display="flex"
-          justifyContent="flex-end"
-          gap={Spacing.xs}
-          flexWrap="wrap"
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: Spacing.xs,
+            flexWrap: 'wrap',
+          }}
         >
           {hasSearchBar && (
             <LegacyTableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
+              value={searchText}
+              onChange={onSearch}
               testId={filterExpandedKey}
               {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
               isExpanded={isExpandedOrValue}
@@ -104,12 +109,11 @@ export const LegacyTableFilters = <ColumnIds extends string>({
           )}
           {onReload && !isMobile && <LegacyTableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
         </Grid>
-        <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
+        <Grid container size={12} spacing={Spacing.sm} sx={{ justifyContent: 'space-between' }}>
           {chips}
         </Grid>
       </Grid>
       {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
-
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorRef={settingsRef}

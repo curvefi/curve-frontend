@@ -60,10 +60,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   return (
     <Stack>
       <Stack
-        display="grid"
-        gap={3}
         sx={{
-          gridTemplateColumns: { mobile: '1fr 1fr', desktop: 'repeat(4, 1fr)' },
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
         }}
       >
         <Metric

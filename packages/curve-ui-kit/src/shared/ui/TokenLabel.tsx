@@ -19,7 +19,10 @@ type TokenLabelProps = TokenIconProps & {
 }
 
 export const TokenLabel = ({ label, ...tokenIconProps }: TokenLabelProps) => (
-  <Stack direction="row" gap={Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]]} alignItems="center">
+  <Stack
+    direction="row"
+    sx={{ gap: Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]], alignItems: 'center' }}
+  >
     <TokenIcon {...tokenIconProps} />
     <Stack>
       <Typography

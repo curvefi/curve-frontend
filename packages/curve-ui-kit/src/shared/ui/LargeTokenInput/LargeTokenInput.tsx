@@ -12,6 +12,7 @@ import {
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
@@ -208,8 +209,7 @@ export const LargeTokenInput = ({
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
-      if (maxBalanceValue != null)
-        setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalanceValue, newPercentage))
+      if (maxBalanceValue != null) setBalance(maybe(newPercentage, p => calculateNewBalance(maxBalanceValue, p)))
     },
     [maxBalanceValue, setBalance],
   )
@@ -271,13 +271,14 @@ export const LargeTokenInput = ({
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
-      <Stack gap={Spacing.xxs} sx={{ padding: Spacing.sm }}>
+      <Stack sx={{ gap: Spacing.xxs, padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
             direction="row"
-            alignItems="center"
             sx={{
+              alignItems: 'center',
+
               // Prevent small size difference in inputs when there's only a label and no chips
               minHeight: chipSizeClickable.extraSmall.height,
             }}
@@ -291,8 +292,8 @@ export const LargeTokenInput = ({
             {showChips && (
               <Stack
                 direction="row"
-                gap={Spacing.xxs}
                 sx={{
+                  gap: Spacing.xxs,
                   flexGrow: 1,
                   justifyContent: 'end',
                   // Hide by default, show on parent hover
@@ -331,7 +332,7 @@ export const LargeTokenInput = ({
         )}
 
         {/** Second row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="center" gap={Spacing.md}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.md }}>
           <BalanceTextField
             disabled={disabled}
             balance={balance}
@@ -344,7 +345,7 @@ export const LargeTokenInput = ({
 
         {/** Third row containing input and max balances */}
         {(walletBalance || inputBalanceUsd) && (
-          <Stack direction="row" justifyContent="end">
+          <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
               <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
@@ -371,7 +372,6 @@ export const LargeTokenInput = ({
           </Stack>
         )}
       </Stack>
-
       {/** Fourth row containing optional helper (or error) message */}
       {message && <HelperMessage onNumberClick={onBalance} message={message} isError={isError} />}
       {children}

@@ -47,15 +47,15 @@ export const RewardsTooltipItems = ({
                 component={Link}
                 href={r.dashboardLink}
                 target="_blank"
+                direction="row"
                 sx={{
+                  alignItems: 'center',
+                  gap: Spacing.xs,
                   textDecoration: 'none',
                   color: t => t.design.Text.TextColors.Secondary,
                   svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
                   '&:hover svg': { fontSize: 20 },
                 }}
-                direction="row"
-                alignItems="center"
-                gap={Spacing.xs}
               >
                 {r.multiplier}
                 {typeof r.multiplier === 'number' ? 'x' : ''}

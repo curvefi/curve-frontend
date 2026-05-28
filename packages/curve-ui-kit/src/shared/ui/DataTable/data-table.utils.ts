@@ -5,6 +5,7 @@ import type { PartialRecord } from '@primitives/objects.utils'
 import {
   type Column,
   type ColumnDef,
+  type ColumnMeta as TanstackColumnMeta,
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
@@ -15,13 +16,16 @@ import {
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Sizing } = SizesAndSpaces
 
 /** css class to hide elements on desktop unless the row is hovered */
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 
 /** css class to make elements clickable in a row and ignore the row click */
 export const ClickableInRowClass = 'clickable-in-row'
+
+/** css class for secondary text inside data table rows */
+export const TableSecondaryTextClass = 'table-secondary-text'
 
 /**
  * We use `satisfies` when declaring columns, but when we want to receive that definition using ColumnDef<T, unknown>,
@@ -34,6 +38,8 @@ export type ColumnDefinition<T> = ColumnDef<T, any>
 export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
+
+export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
 
 /**
  * Wrapper around useReactTable to create a table instance.
@@ -124,3 +130,35 @@ export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getSta
 
 export const getHiddenCount = <T>(table: Table<T>): number =>
   table.getPreFilteredRowModel().rows.length - table.getFilteredRowModel().rows.length
+
+// The following datatable size code lives in the util file, because at the moment of writing we have both DataTable and LegacyDataTable.
+// TODO: move to the final DataTable.tsx component once we remove the LegacyDataTable and make sure there are no circular dependencies with the other files in the DataTable folder.
+export type DataTableSize = 'extraSmall' | 'small' | 'medium' | 'large'
+
+export const DataTableHeaderHeight = {
+  extraSmall: Sizing.sm,
+  small: Sizing.md,
+  medium: Sizing.lg,
+  large: Sizing.xxl,
+} as const
+
+export const DataTableHeaderCellPaddingBlockEnd = {
+  extraSmall: 0,
+  small: 0,
+  medium: Spacing.sm,
+  large: Spacing.sm,
+}
+
+export const DataTableHeaderCellVerticalAlign = {
+  extraSmall: 'middle',
+  small: 'middle',
+  medium: 'bottom',
+  large: 'bottom',
+}
+
+export const DataTableHeaderCellSortableAlign = {
+  extraSmall: 'center',
+  small: 'center',
+  medium: 'end',
+  large: 'end',
+}

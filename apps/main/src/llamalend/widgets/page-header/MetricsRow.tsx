@@ -3,6 +3,7 @@ import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -32,10 +33,10 @@ export const MetricsRow = ({
 
   return (
     <Stack
-      display={{ mobile: 'grid', tablet: 'flex' }}
-      gridTemplateColumns="1fr 1fr"
       direction="row"
       sx={{
+        display: { mobile: 'grid', tablet: 'flex' },
+        gridTemplateColumns: '1fr 1fr',
         gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
       }}
     >
@@ -52,14 +53,10 @@ export const MetricsRow = ({
           value={supplyRate.totalMinBoost}
           loading={supplyRate.loading}
           valueOptions={{ unit: 'percentage' }}
-          notional={
-            supplyRate.totalAverageMinBoost != null
-              ? {
-                  value: supplyRate.totalAverageMinBoost,
-                  unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
-                }
-              : undefined
-          }
+          notional={maybe(supplyRate.totalAverageMinBoost, data => ({
+            value: data,
+            unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
+          }))}
           valueTooltip={{
             title: NET_SUPPLY_RATE_TITLE,
             body: (

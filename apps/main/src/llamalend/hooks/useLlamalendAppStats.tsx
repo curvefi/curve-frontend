@@ -10,9 +10,8 @@ import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { type AppName, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
-import { Chain, CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
+import { formatUsd } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
@@ -22,20 +21,6 @@ const { useQuery: useAppStatsDailyVolume } = queryFactory({
       'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',
     )
     return resp.data.totalVolume
-  },
-  category: 'llamalend.appStats',
-  validationSuite: EmptyValidationSuite,
-})
-
-/**
- * Gets the total supply of crvUSD from the Curve Finance API.
- * It includes the full supply, including YB mints, and is more reliable than on-chain data.
- */
-const { useQuery: useCrvUsdTotalSupply } = queryFactory({
-  queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
-  queryFn: async () => {
-    const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
-    return decimal(await resp.text()) ?? null
   },
   category: 'llamalend.appStats',
   validationSuite: EmptyValidationSuite,
@@ -65,8 +50,6 @@ export function useLlamalendAppStats(
   const tvl = useMemo(() => sum((marketData?.markets ?? []).map(m => m.tvl)), [marketData])
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
-  const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)
-  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, enabled)
 
   return enabled
     ? [
@@ -77,14 +60,6 @@ export function useLlamalendAppStats(
         {
           label: t`Daily volume`,
           value: (dailyVolume && formatUsd(dailyVolume)) || '-',
-        },
-        {
-          label: t`Total crvUSD Supply`,
-          value: (crvusdTotalSupply && formatUsd(crvusdTotalSupply)) || '-',
-        },
-        {
-          label: 'crvUSD',
-          value: (crvusdPrice && formatNumber(crvusdPrice, { unit: 'dollar', decimals: 5, abbreviate: false })) || '-',
         },
       ]
     : []

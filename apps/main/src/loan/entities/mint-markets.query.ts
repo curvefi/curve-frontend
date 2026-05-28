@@ -50,7 +50,7 @@ const getMarketData = ({
 })
 
 export const { useQuery: useMintMarkets } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'mintMarkets.getMarketList'] as const,
+  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'getMintMarkets'] as const,
   queryFn: async (): Promise<Record<string | Address, MintMarketData>> => {
     const api = requireLib('llamaApi')
     await api.mintMarkets.fetchMintMarkets({ useApi: USE_API })

@@ -20,7 +20,7 @@ export const ToggleBandsChartButton = (
   <SelectableChip
     toggle={toggle}
     label={
-      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
         {isVisible ? <EyeOpen /> : <EyeClosed />}
         {label}
       </Stack>

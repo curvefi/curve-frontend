@@ -19,22 +19,20 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
 
   return (
     <Stack>
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Parameters`} size="small" data-inline />
+      <Stack sx={{ gap: Spacing.sm }}>
+        <CardHeader title={t`Parameters`} size="inline" />
         <Stack>
           <MarketLoanParameters chainId={chainId} marketId={marketId} />
         </Stack>
       </Stack>
-
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Prices`} size="small" data-inline />
+      <Stack sx={{ gap: Spacing.sm }}>
+        <CardHeader title={t`Prices`} size="inline" />
         <Stack>
           <MarketPricesRows chainId={chainId} marketId={marketId} enablePricePerShare={enablePricePerShare} />
         </Stack>
       </Stack>
-
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Market`} size="small" data-inline />
+      <Stack sx={{ gap: Spacing.sm }}>
+        <CardHeader title={t`Market`} size="inline" />
         <Stack>
           <MarketIdRow marketId={marketId} />
         </Stack>

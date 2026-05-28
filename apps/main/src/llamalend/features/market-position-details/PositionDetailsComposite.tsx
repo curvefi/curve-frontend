@@ -30,7 +30,7 @@ export const PositionDetailsComposite = ({
 
   return (
     <Stack>
-      <Stack alignItems="end" direction="row" justifyContent="space-between" width="100%">
+      <Stack direction="row" sx={{ alignItems: 'end', justifyContent: 'space-between', width: '100%' }}>
         <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
         <LlamaMonitorBotButton />
       </Stack>

@@ -12,29 +12,12 @@ const { IconSize, Spacing, FontWeight } = SizesAndSpaces
 const Image = styled('img')({})
 
 export const Description = () => (
-  <Box
-    sx={{
-      display: 'flex',
-      flexDirection: 'column',
-    }}
-  >
-    <RouterLink
-      href="/"
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        gap: Spacing.xs,
-      }}
-    >
+  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', gap: Spacing.xs }}>
       <Image
         alt={t`Curve Logo`}
         src={CURVE_LOGO_URL}
-        sx={{
-          width: IconSize.xxl,
-          height: IconSize.xxl,
-          margin: Spacing.sm,
-        }}
+        sx={{ width: IconSize.xxl, height: IconSize.xxl, margin: Spacing.sm }}
       />
 
       <Typography
@@ -51,13 +34,7 @@ export const Description = () => (
       </Typography>
     </RouterLink>
 
-    <Typography
-      variant="bodySRegular"
-      color="textSecondary"
-      sx={{
-        textWrap: 'balance',
-      }}
-    >
+    <Typography variant="bodySRegular" color="textSecondary" sx={{ textWrap: 'balance' }}>
       {t`Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and autonomous.`}
     </Typography>
   </Box>

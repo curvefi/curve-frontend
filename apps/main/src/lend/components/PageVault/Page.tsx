@@ -20,6 +20,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
+import { MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -117,7 +118,7 @@ export const Page = () => {
         rewardsBanner={<CampaignRewardsBanner chainId={rChainId} market={market} />}
       />
       {hasSupplyPosition && <SupplyPositionDetails {...supplyPositionDetails} />}
-      <MarketInformationComposite pageProps={pageProps} type="supply" />
+      <MarketInformationComposite pageProps={pageProps} rateType={MarketRateType.Supply} />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

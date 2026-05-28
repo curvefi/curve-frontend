@@ -78,10 +78,11 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   return (
     <Stack
       direction={'column'}
-      alignItems={'center'}
-      gap={Sizing[400]}
-      width="100%"
       sx={{
+        alignItems: 'center',
+        gap: Sizing[400],
+        width: '100%',
+
         [`@media (max-width: calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section} + ${Sizing[400]}))`]:
           {
             padding: `0 ${Sizing[100]}`,
@@ -90,10 +91,12 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     >
       <Stack
         direction={'column'}
-        gap={Sizing[200]}
-        width="100%"
-        justifyContent={'center'}
-        sx={{ maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})` }}
+        sx={{
+          gap: Sizing[200],
+          width: '100%',
+          justifyContent: 'center',
+          maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
+        }}
       >
         {showStatsBanner && (
           <Fade in={showStatsBanner}>
@@ -103,10 +106,10 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
           </Fade>
         )}
         <Stack
-          justifyContent="center"
           direction={isChartExpanded ? 'column' : 'row'}
-          gap={Sizing[200]}
           sx={{
+            justifyContent: 'center',
+            gap: Sizing[200],
             [`@media (max-width: ${columnViewBreakPoint})`]: { flexDirection: 'column', alignItems: 'center', gap: 0 },
           }}
         >
@@ -123,11 +126,13 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
           <DepositWithdraw params={params} />
           {!isChartExpanded && (
             <Stack
-              gap={Sizing[200]}
-              width="100%"
-              maxWidth={MaxWidth.section}
-              justifyContent="center"
-              sx={{ [`@media (max-width: ${columnViewBreakPoint})`]: { alignItems: 'center' } }}
+              sx={{
+                gap: Sizing[200],
+                width: '100%',
+                maxWidth: MaxWidth.section,
+                justifyContent: 'center',
+                [`@media (max-width: ${columnViewBreakPoint})`]: { alignItems: 'center' },
+              }}
             >
               {!isUserScrvUsdBalanceZero && <UserPosition />}
               <Statistics

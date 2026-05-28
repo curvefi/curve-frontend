@@ -134,7 +134,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const maxTokenValues = useMaxTokenValues(collateralToken?.address, params, form)
+  const maxTokenValues = useMaxTokenValues({ market, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)

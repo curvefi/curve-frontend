@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { maybe } from '@primitives/objects.utils'
 import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
@@ -49,8 +50,8 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
     isIntersecting,
   )
   const { design } = useTheme()
-  if (rate == null) return null // supply yield disabled for mint markets
-  return (
+  // supply yield disabled for mint markets
+  return maybe(rate, () => (
     <Box data-testid={`line-graph-${type}`} ref={ref}>
       {snapshots?.length ? (
         <LineChart data={snapshots} {...graphSize} compact>
@@ -76,5 +77,5 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
         </Typography>
       )}
     </Box>
-  )
+  ))
 }

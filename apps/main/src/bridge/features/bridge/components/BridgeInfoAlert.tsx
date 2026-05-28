@@ -16,7 +16,7 @@ const { Spacing } = SizesAndSpaces
 export const BridgeInfoAlert = () => (
   <Alert variant="outlined" severity="info">
     <AlertTitle>{t`crvUSD to mainnet in minutes`}</AlertTitle>
-    <Stack gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xs }}>
       <Typography component="p" variant="bodyXsRegular">
         {t`Fastbridge lets you use Curve’s decentralised infrastructure to bridge back crvUSD from selected L2s to Ethereum mainnet bypassing the 7 days challenge period.`}
       </Typography>
@@ -29,7 +29,7 @@ export const BridgeInfoAlert = () => (
         {t`Bridges are not instant, and funds may take up to 15 minutes or more before arriving.`}
       </Typography>
 
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
         <ExternalLink href="https://curvefi.github.io/fast-bridge/" label={t`FastBridge Monitor`} />
         <ExternalLink href="https://docs.curve.finance/developer/fast-bridge/overview" label={t`Learn More`} />
       </Stack>

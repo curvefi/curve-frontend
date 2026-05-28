@@ -14,8 +14,8 @@ export const Slider = (props: SliderProps) => {
   const isHorizontal = orientation === 'horizontal'
   return (
     <Stack
-      flexDirection={isHorizontal ? 'row' : 'column'}
       sx={{
+        flexDirection: isHorizontal ? 'row' : 'column',
         width: isHorizontal ? '100%' : 'auto',
         height: isHorizontal ? 'auto' : '100%',
       }}

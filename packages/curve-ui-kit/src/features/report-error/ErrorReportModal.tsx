@@ -1,5 +1,5 @@
 import { type MouseEvent, useEffect } from 'react'
-import { useConnection } from 'wagmi'
+import { WagmiProviderNotFoundError, useConnection } from 'wagmi'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
@@ -27,8 +27,20 @@ type ErrorReportModalProps = {
   context: ErrorContext
 }
 
+/*** Returns the connected wallet address when wagmi context is available. */
+const useTryConnection = () => {
+  try {
+    return useConnection()
+  } catch (error) {
+    // Error boundaries can render before the WagmiProvider mounts. In that case, wagmi throws WagmiProviderNotFoundError,
+    // which we swallow so the modal can still render and users can submit reports without a prefilled address.
+    if (error instanceof WagmiProviderNotFoundError) return
+    throw error
+  }
+}
+
 export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalProps) => {
-  const { address: userAddress } = useConnection()
+  const { address: userAddress } = useTryConnection() ?? {}
   const {
     form,
     values: { address, contact, contactMethod, description },
@@ -60,12 +72,12 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
       }
       width="xl"
     >
-      <Stack data-testid="submit-error-report-modal" gap={Spacing.md} sx={{ overflowY: 'auto', height: '100%' }}>
+      <Stack data-testid="submit-error-report-modal" sx={{ gap: Spacing.md, overflowY: 'auto', height: '100%' }}>
         <Stack>
-          <Typography variant="bodyMBold" color="text.primary">
+          <Typography variant="bodyMBold" sx={{ color: 'text.primary' }}>
             {t`Seems like there's been an error T_T.`}
           </Typography>
-          <Typography variant="bodySRegular" color="text.secondary">
+          <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
             {t`We're on it. Want to speed things up? Share what happened below.`}
           </Typography>
         </Stack>
@@ -128,7 +140,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
           />
         </FormControl>
 
-        <Typography variant="bodySRegular" color="text.tertiary">
+        <Typography variant="bodySRegular" sx={{ color: 'text.tertiary' }}>
           {t`Error reports help us improve the product for everyone.`}
         </Typography>
       </Stack>
