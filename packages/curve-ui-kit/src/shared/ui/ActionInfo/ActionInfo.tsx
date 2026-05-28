@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
@@ -60,8 +60,6 @@ export type ActionInfoProps = {
   testId?: string
   /** Additional styles */
   sx?: StackProps['sx']
-  /** CSS align-items property */
-  alignItems?: CSSProperties['alignItems']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -131,7 +129,6 @@ export const ActionInfo = ({
   copiedTitle,
   loading = false,
   error = false,
-  alignItems = 'center',
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
@@ -143,7 +140,7 @@ export const ActionInfo = ({
     <Stack
       direction="row"
       data-testid={testId}
-      sx={applySxProps({ alignItems, columnGap: Spacing.sm }, sx, { minHeight: rowHeight[size] })}
+      sx={applySxProps({ alignItems: 'center', columnGap: Spacing.sm, minHeight: rowHeight[size] }, sx)}
     >
       <Typography
         variant={labelSize[size]}
@@ -176,7 +173,7 @@ export const ActionInfo = ({
               <Stack
                 direction="row"
                 className="ActionInfo-value"
-                sx={{ alignItems, gap: Spacing.xxs, whiteSpace: 'nowrap' }}
+                sx={{ alignItems: 'center', gap: Spacing.xxs, whiteSpace: 'nowrap' }}
               >
                 <ValueDecorator
                   value={valueLeft}
