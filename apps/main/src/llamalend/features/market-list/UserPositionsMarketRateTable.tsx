@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -87,14 +87,12 @@ export const UserPositionsMarketRateTable = ({
       <Stack
         sx={{
           backgroundColor: t => t.design.Layer[1].Fill,
-          paddingBlockEnd: Spacing.xs,
           height: Sizing.md,
           justifyContent: 'end',
+          paddingInline: Spacing.md,
         }}
       >
-        <Typography variant="headingXsBold" color="textSecondary">
-          {label}
-        </Typography>
+        <CardHeader title={label} size="small" />
       </Stack>
     </DataTable>
   )
