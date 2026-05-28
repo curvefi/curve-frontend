@@ -59,7 +59,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
                     <AgainstIcon name="Misuse" size={16} />
                   )}
                   <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`)}>
-                    {vote.topHolder ? vote.topHolder : shortenAddress(vote.voter)}
+                    {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
                 <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], vote.txHash)}>
