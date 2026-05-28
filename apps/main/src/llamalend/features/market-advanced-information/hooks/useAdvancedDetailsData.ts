@@ -9,7 +9,7 @@ import {
   useMarketUsers,
 } from '@/llamalend/queries/market'
 import type { Endpoint } from '@curvefi/prices-api/lending'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -68,7 +68,7 @@ export const useAdvancedDetailsData = ({
   const collateralUsdValue = collateralTotal && collateralUsdRate && collateralTotal * collateralUsdRate
   const borrowedUsdValue = borrowedTotal && borrowedUsdRate && borrowedTotal * borrowedUsdRate
   const combinedCollateralUsdValue =
-    maybe(
+    maybes(
       [collateralUsdValue, borrowedUsdValue],
       ([collateralUsdValue, borrowedUsdValue]) => collateralUsdValue + borrowedUsdValue,
     ) ?? null
