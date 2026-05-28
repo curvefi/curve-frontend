@@ -1,11 +1,10 @@
-import { enforce, group, test } from 'vest'
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainQuery, UserQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 
 type UserGaugeQuery = ChainQuery<ChainId> & UserQuery<string> & { gaugeAddress: string }
@@ -25,11 +24,7 @@ export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUs
     validationSuite: createValidationSuite(({ chainId, userAddress, gaugeAddress }: UserGaugeParams) => {
       chainValidationGroup({ chainId })
       curveApiValidationGroup({ chainId })
-      userAddressValidationGroup({ userAddress })
-      group('gaugeValidation', () => {
-        test('gaugeAddress', () => {
-          enforce(gaugeAddress).message('Gauge address is required')
-        })
-      })
+      evmAddressValidationGroup({ evmAddress: userAddress })
+      evmAddressValidationGroup({ evmAddress: gaugeAddress })
     }),
   })

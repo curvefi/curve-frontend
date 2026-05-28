@@ -11,7 +11,7 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { notFalsy, maybe } from '@primitives/objects.utils'
+import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import {
@@ -94,7 +94,7 @@ export const MarketRateCurveChart = ({
     return +borrowed < 0 ? decimal(0)! : borrowed
   }, [capAndAvailable])
   const totalBorrowedUsdValue =
-    maybe(
+    maybes(
       [totalBorrowed, borrowedUsdRate],
       ([totalBorrowed, borrowedUsdRate]) => Number(totalBorrowed) * borrowedUsdRate,
     ) ?? null
@@ -108,10 +108,10 @@ export const MarketRateCurveChart = ({
 
   const collateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.collateral)) ?? null
   const borrowedCollateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.borrowed)) ?? null
-  const collateralUsdValue = maybe([collateralTotal, collateralUsdRate], ([total, usdRate]) => total * usdRate) ?? null
+  const collateralUsdValue = maybes([collateralTotal, collateralUsdRate], ([total, usdRate]) => total * usdRate) ?? null
   const borrowedCollateralUsdValue =
-    maybe([borrowedCollateralTotal, borrowedUsdRate], ([total, usdRate]) => total * usdRate) ?? null
-  const combinedCollateralUsdValue = maybe([collateralUsdValue, borrowedCollateralUsdValue], ([c, b]) => c + b) ?? null
+    maybes([borrowedCollateralTotal, borrowedUsdRate], ([total, usdRate]) => total * usdRate) ?? null
+  const combinedCollateralUsdValue = maybes([collateralUsdValue, borrowedCollateralUsdValue], ([c, b]) => c + b) ?? null
   const isTotalCollateralMetricLoading =
     !market || isTotalCollateralLoading || isCollateralUsdRateLoading || isBorrowedUsdRateLoading
 
