@@ -31,7 +31,8 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const legacyBackground =
     typeof window === 'undefined'
       ? undefined
-      : getComputedStyle(document.body ?? document.documentElement)
+      : // eslint-disable-next-line @eslint-react/purity -- keep chart colors in sync with the active CSS theme.
+        getComputedStyle(document.body ?? document.documentElement)
           .getPropertyValue('--box--secondary--background-color')
           .trim()
 

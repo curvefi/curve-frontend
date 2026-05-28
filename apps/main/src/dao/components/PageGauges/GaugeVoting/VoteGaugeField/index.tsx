@@ -9,6 +9,7 @@ import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { formatDate } from '@ui/utils'
+import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
@@ -31,7 +32,8 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
     userAddress,
   })
   const { userPower, gaugeAddress } = userGaugeVoteData
-  const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
+  const currentDate = useCurrentDate()
+  const canVote = userGaugeVoteNextTime ? currentDate.getTime() > userGaugeVoteNextTime : true
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100

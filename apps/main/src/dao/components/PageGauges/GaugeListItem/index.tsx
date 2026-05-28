@@ -20,6 +20,7 @@ import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
@@ -56,7 +57,8 @@ export const GaugeListItem = ({
 
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
-  const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
+  const currentDate = useCurrentDate()
+  const canVote = userGaugeVoteNextTime ? currentDate.getTime() > userGaugeVoteNextTime : true
 
   const gaugeHistoryLoading =
     gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
