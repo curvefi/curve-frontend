@@ -5,7 +5,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@ui/utils'
 import { useManualPagination, getPageCount } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -35,8 +35,10 @@ export const RecentRefuels = ({
 
   const rows = useMemo<RecentRefuelRow[]>(
     () =>
-      data?.data.map(event => ({ ...event, txUrl: event.txHash ? scanTxPath(networkConfig, event.txHash) : null })) ??
-      [],
+      data?.data.map(event => ({
+        ...event,
+        donorUrl: event.donor ? scanAddressPath(networkConfig, event.donor) : undefined,
+      })) ?? [],
     [data?.data, networkConfig],
   )
   const columns = useMemo(() => createRecentRefuelsColumns(data?.tokens ?? []), [data?.tokens])

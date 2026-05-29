@@ -16,7 +16,7 @@ export const LLAMMA_TRADES_COLUMNS = [
   columnHelper.accessor('buyer', {
     id: LlammaTradesColumnId.User,
     header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.buyerUrl} />,
   }),
   columnHelper.accessor('amountBought', {
     id: LlammaTradesColumnId.Bought,
