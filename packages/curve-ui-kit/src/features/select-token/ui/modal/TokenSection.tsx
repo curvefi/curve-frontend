@@ -106,7 +106,6 @@ export const TokenSection = <T extends Option = Option>({
             // Override variant button height to match menu list item height, so !important is required over '&'.
             sx={{ height: `${ButtonSize.md} !important` }}
           >
-            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
             {showAllLabel || t`Show more`}
           </Button>
         )}

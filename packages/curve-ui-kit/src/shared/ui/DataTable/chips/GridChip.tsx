@@ -18,7 +18,6 @@ export const GridChip = ({
     <ChipGridItem size={size}>
       <SelectableChip
         {...props}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         size={selectableChipSize || getDefaultSelectableChipSize(isMobile)}
         sx={{ width: { mobile: '100%', tablet: 'auto' } }}
       />

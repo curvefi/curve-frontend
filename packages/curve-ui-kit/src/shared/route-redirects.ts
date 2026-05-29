@@ -52,7 +52,6 @@ export function getHashRedirectUrl({ pathname: path, search: query, hash }: Pars
   const search = new URLSearchParams(query)
   const hashPath = hash.replace(/^\/?/, '') // note tanstack hash doesn't start with #, but window.location.hash does
   const pathname = path.endsWith('/') ? path : `${path}/` // the ending slash is only there in root routes
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const oldApp = oldOrigins.find(app => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
   const [, app, network, ...rest] = `${oldApp ? `/${oldApp}` : ''}${pathname}${hashPath}`.split('/')
   if ([app, network].includes('integrations')) {

@@ -33,7 +33,6 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const hasMarketData =
     (typeof data.bandCollateralAmount === 'number' && data.bandCollateralAmount > 0) ||
     (typeof data.bandBorrowedAmount === 'number' && data.bandBorrowedAmount > 0)
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const hasUserData = !!(data.userBandCollateralValueUsd || data.userBandBorrowedValueUsd)
 
   return (

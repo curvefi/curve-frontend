@@ -70,7 +70,6 @@ export const ButtonMenu = <T extends string>({
   return (
     <Stack ref={anchorEl} direction="row" sx={{ gap: '1px' }}>
       <Button color="primary" disabled={isDisabled} sx={{ flexGrow: 1 }} onClick={onPrimary}>
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {executing == false || executing == 'primary' ? primary : options.find(x => x.id === executing)?.label || '?'}
       </Button>
       {options.length > 0 && (

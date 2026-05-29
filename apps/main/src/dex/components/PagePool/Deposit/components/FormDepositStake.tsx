@@ -97,7 +97,6 @@ export const FormDepositStake = ({
         updatedFormValues,
         loadMaxAmount,
         seed.isSeed,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
       )
     },
@@ -169,7 +168,6 @@ export const FormDepositStake = ({
                     <HighSlippagePriceImpactModal
                       slippage
                       confirmed={slippageConfirmed}
-                      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                       value={slippage.slippage || 0}
                       transferType="Deposit"
                       setConfirmed={setSlippageConfirmed}

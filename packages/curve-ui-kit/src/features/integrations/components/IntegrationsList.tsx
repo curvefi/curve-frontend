@@ -77,7 +77,6 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
     () =>
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       (notFalsyArray(networksQuery.data).find(network => network === searchParams?.get('network')) || networkId) ??
       'ethereum',
     [networkId, networksQuery.data, searchParams],

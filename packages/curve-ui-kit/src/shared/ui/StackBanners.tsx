@@ -15,7 +15,6 @@ const SEVERITY_ORDER: Record<NonNullable<BannerProps['severity']>, number> = {
 }
 
 const compareBanners = (a: ReactElement<BannerProps>, b: ReactElement<BannerProps>) =>
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   SEVERITY_ORDER[a.props.severity || DEFAULT_SEVERITY] - SEVERITY_ORDER[b.props.severity || DEFAULT_SEVERITY]
 
 /**

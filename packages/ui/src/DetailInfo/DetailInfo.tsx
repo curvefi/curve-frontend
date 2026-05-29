@@ -41,9 +41,7 @@ export const DetailInfo = ({
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
     <ActionInfo
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       value={children || '-'}
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.

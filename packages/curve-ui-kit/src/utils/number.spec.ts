@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import type { Amount } from '@primitives/decimal.utils'
 import {
@@ -314,8 +315,7 @@ describe('defaultNumberFormatter', () => {
 
 describe('decomposeNumber', () => {
   // Mock console.warn for USD overflow tests
-  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-  const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+  const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(noop)
 
   afterEach(() => {
     consoleSpy.mockClear()

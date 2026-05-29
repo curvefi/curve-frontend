@@ -14,10 +14,8 @@ export const submitUnstakeForm = () => submitSupplyForm('unstake', 'Unstake succ
 export const readUnstakeAvailableAmount = () =>
   getSupplyInputBalanceValueAttr('unstake')
     .should(balanceValue => {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
     })
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     .then(balanceValue => (balanceValue || '0') as Decimal)
 
 /**

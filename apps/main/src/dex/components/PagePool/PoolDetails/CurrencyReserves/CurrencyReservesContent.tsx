@@ -32,7 +32,6 @@ export const CurrencyReservesContent = ({
         size="sm"
         blockchainId={network?.id}
         tooltip={token}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
       />
 

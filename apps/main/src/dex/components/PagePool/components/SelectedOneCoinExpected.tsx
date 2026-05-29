@@ -55,7 +55,6 @@ export const SelectedOneCoinExpected = ({
                 size="sm"
                 blockchainId={blockchainId}
                 tooltip={symbol}
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                 address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
               />{' '}
               {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}

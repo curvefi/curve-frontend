@@ -43,9 +43,7 @@ import { getErrorMessage } from '@ui-kit/utils'
 
 export const helpers = {
   isTooMuch: (val1: string | number | undefined, val2: string | number | undefined) => {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     val1 = val1 || '0'
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     val2 = val2 || '0'
     return BigNumber(val1).isGreaterThan(val2)
   },
@@ -499,7 +497,6 @@ const loanCreate = {
     debt: string,
     isLeverage: boolean,
   ) => {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     totalCollateral = totalCollateral || '0'
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -532,7 +529,6 @@ const loanCreate = {
           n: Number(n),
           collateral: isLeverage ? totalCollateral : userBorrowed,
           debt,
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           maxRecv: maxRecv || '',
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
@@ -563,7 +559,6 @@ const loanCreate = {
           n: Number(n),
           collateral: userCollateral,
           debt,
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           maxRecv: maxRecv || '',
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',

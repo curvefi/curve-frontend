@@ -93,7 +93,6 @@ export const DetailPageLayout = ({
             ...stickyFormTabsSx(navHeight, pageHeaderHeight),
           }}
         >
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {formTabs || <FormSkeleton />}
         </Grid>
       )}

@@ -45,7 +45,6 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const [steps, setSteps] = useState<Step[]>([])

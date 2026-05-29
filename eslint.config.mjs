@@ -156,6 +156,7 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
+      '@typescript-eslint/prefer-nullish-coalescing': ['error', { ignorePrimitives: { string: true, number: true } }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
       'no-console': [

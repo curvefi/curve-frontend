@@ -12,7 +12,6 @@ import { AppLib, CurveApi, LibChainId, LibKey, LibNetworkId, Libs } from './type
  * Compare the signer address of the wallet with the one in the library.
  */
 const compareSignerAddress = (wallet: Wallet | undefined, lib: Libs[LibKey]) =>
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   wallet?.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
 
 export const isWalletMatching = <TChainId extends number>(

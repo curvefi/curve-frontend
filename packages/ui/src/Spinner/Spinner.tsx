@@ -27,7 +27,6 @@ const spin = keyframes`
 interface StyledSpinnerProps {
   isDisabled: boolean
   size?: number
-  /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 }
 
 const StyledSpinner = styled.div<StyledSpinnerProps>`
@@ -59,7 +58,6 @@ const StyledSpinner = styled.div<StyledSpinnerProps>`
     animation-delay: -0.15s;
   }
 `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 
 function getSpinnerColor(isDisabled: boolean) {
   if (isDisabled) {

@@ -69,7 +69,6 @@ export const FormWithdraw = ({
   // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
@@ -103,7 +102,6 @@ export const FormWithdraw = ({
         updatedFormValues,
         null,
         seed.isSeed,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
       )
     },
@@ -190,7 +188,6 @@ export const FormWithdraw = ({
                   content: (
                     <WarningModal
                       slippage
-                      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                       value={slippage.slippage || 0}
                       confirmed={slippageConfirmed}
                       transferType="Withdrawal"
@@ -452,7 +449,6 @@ export const FormWithdraw = ({
                         isWithdraw
                         blockchainId={blockchainId}
                         token={token}
-                        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
                         handleAmountChange={handleAmountChange}
                         hideMaxButton

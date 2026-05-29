@@ -125,12 +125,10 @@ const ModalContainer = styled.div<{ maxWidth?: string; isFullScreen: boolean }>`
         border: none;
         max-height: 100vh;
       `
-      /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
     } else {
       return `
         max-width: ${maxWidth || '28.125rem'}; //450px
       `
-      /* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
     }
   }}
 `

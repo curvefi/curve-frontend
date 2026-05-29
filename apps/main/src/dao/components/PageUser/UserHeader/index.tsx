@@ -13,7 +13,6 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
   <Wrapper variant="secondary">
     <Box flex flexAlignItems="center">
       <Box flex flexColumn flexJustifyContent="center">
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         <h3>{TOP_HOLDERS[userAddress]?.title || userEnsName || getAddress(userAddress)}</h3>
         {((TOP_HOLDERS[userAddress]?.title && userAddress) || (userEnsName && userAddress)) && (
           <Box flex flexAlignItems="center">
@@ -23,7 +22,6 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
               <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
                 <Icon name="Copy" size={16} />
               </StyledCopyButton>
-              {}
               <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
@@ -37,7 +35,6 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
           <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
             <Icon name="Copy" size={16} />
           </StyledCopyButton>
-          {}
           <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
             <Icon name="Launch" size={16} />
           </StyledExternalLink>

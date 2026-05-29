@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import {
   type Chain,
   createWalletClient,
@@ -95,8 +96,7 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     type: 'test',
 
     connect,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-    disconnect: async () => {},
+    disconnect: () => Promise.resolve(undefined),
 
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     getAccounts: async () => [account.address],
@@ -110,11 +110,8 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     switchChain: async () => chain,
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-    onAccountsChanged: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-    onChainChanged: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-    onDisconnect: () => {},
+    onAccountsChanged: noop,
+    onChainChanged: noop,
+    onDisconnect: noop,
   }))
 }

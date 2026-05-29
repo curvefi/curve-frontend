@@ -65,7 +65,6 @@ const validateRepayFieldsForMarket = (
         userCollateral: userCollateral ?? '0',
         userBorrowed: userBorrowed ?? '0',
       })
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
   })

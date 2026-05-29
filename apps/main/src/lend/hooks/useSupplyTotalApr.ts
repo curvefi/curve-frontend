@@ -72,9 +72,7 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
   const { other, crv } = marketRewardsResp.rewards ?? {}
   const { rates } = marketRatesResp ?? {}
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const lendApr = Number(rates?.lendApr || '0')
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const lendApy = Number(rates?.lendApy || '0')
   const [crvBase = 0, crvBoost = 0] = crv ?? []
   const others = other ?? []

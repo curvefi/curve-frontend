@@ -34,7 +34,6 @@ export const AlertInfoSelfLiquidation = ({
   return (
     <AlertBox alertType="info">
       <Box flex flexDirection="column" fillWidth gridGap={1} padding="0 var(--spacing-3)">
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {errorMessage || (
           <>
             <div>

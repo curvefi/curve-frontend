@@ -111,7 +111,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const maxSlippage = useMemo(() => {
     const poolTypeDefaultMaxSlippage = pool.isCrypto ? '0.1' : '0.03'
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     return poolMaxSlippage || poolTypeMaxSlippage || poolTypeDefaultMaxSlippage
   }, [pool.isCrypto, poolMaxSlippage, poolTypeMaxSlippage])
 

@@ -105,7 +105,6 @@ export const LoanDeleverage = ({
         curve,
         llamma,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
         isFullReset,
       )

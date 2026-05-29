@@ -167,7 +167,6 @@ export const createDashboardSlice = (
               poolName: pool.name,
               poolAddress: pool.address,
               userCrvApy,
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
               liquidityUsd: userPoolBalances?.[idx] || '0',
               profitBase: baseProfit,
               profitCrv: crvProfit,

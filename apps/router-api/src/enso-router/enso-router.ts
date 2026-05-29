@@ -82,7 +82,6 @@ export const buildEnsoRouteResponse = async (
       amountOut: [amountOut],
       warnings: [], // legacy code seems to only use warnings for stableswap routes
       route: route.map(({ action, chainId: routeChainId, primary, protocol, ...stepProps }) => ({
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         name: primary || `${protocol}:${action}`,
         chainId: routeChainId ?? chainId,
         protocol,

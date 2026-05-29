@@ -15,7 +15,6 @@ export const useHasPoolRewards = (rewards: RewardsApy | undefined, poolData: Poo
 
   return {
     hasCrv: hasCrvRewards(rewards),
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     hasIncentives: rewards?.other?.length || campaigns.length > 0,
     campaigns,
   }

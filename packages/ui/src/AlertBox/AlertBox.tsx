@@ -38,7 +38,6 @@ export const AlertBox = ({
   }, [children, limitHeight])
 
   return (
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     (title || children) && (
       <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle}>
         {title ? (

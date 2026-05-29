@@ -12,7 +12,6 @@ export const Item = ({ label, value, ...props }: ItemCompProps & { label: ReactN
     <span>{label}</span>
     <span>{value}</span>
   </ItemComp>
-  /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 )
 
 const ItemComp = styled.div<ItemCompProps>`
@@ -44,4 +43,3 @@ const ItemComp = styled.div<ItemCompProps>`
     opacity: 0.8;
   }
 `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */

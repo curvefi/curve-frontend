@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { QuickSwap } from '@/dex/components/PageRouterSwap'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -41,8 +42,7 @@ function QuickSwapTest({
       rChainId={chainId}
       tokensMapper={tokensMapper}
       tokensMapperStr={tokensMapperStr}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-      redirect={() => {}}
+      redirect={noop}
     />
   )
 }

@@ -15,7 +15,6 @@ describe('health endpoint', () => {
         status: 'ok',
         service: 'router-api',
         environment: 'test',
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         version: process.env.npm_package_version || '0.0.1',
       })
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.

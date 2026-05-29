@@ -83,7 +83,6 @@ export function TooltipButton({
           sx: {
             ...(increaseZIndex && { zIndex: 2 }),
             '& .MuiTooltip-tooltip': {
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
               maxWidth: minWidth || '20rem',
               textAlign,
               ...(noWrap && { whiteSpace: 'nowrap' }),
@@ -133,9 +132,7 @@ const Button = styled.span`
   }
 `
 
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 const StyledIcon = styled(Icon)<IconStyles>`
   position: relative;
   top: ${({ $svgTop }) => $svgTop || `0.2rem`};
 `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */

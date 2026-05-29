@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { chunk, noop } from 'lodash'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { SelectGaugeListChunk as ComboBoxListChunk } from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
@@ -16,9 +16,6 @@ import { Spinner } from '@ui/Spinner'
 import { SpinnerWrapper } from '@ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { chunk } = lodash
 
 export const ComboBox = ({
   testId,
@@ -56,8 +53,7 @@ export const ComboBox = ({
 
   return (
     <>
-      {/* eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule. */}
-      <Popover data-testid={`modal-${testId}`} popoverRef={popoverRef} isOpen onClose={() => {}}>
+      <Popover data-testid={`modal-${testId}`} popoverRef={popoverRef} isOpen onClose={noop}>
         <Box grid gridGap={3}>
           {showInpSearch && (
             <Box ref={topContentRef} grid gridTemplateRows="auto 1fr" gridRowGap={3}>

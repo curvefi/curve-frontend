@@ -39,9 +39,7 @@ export const PageRouterSwap = () => {
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams?.get('slippage')
   const searchedParams = useMemo(

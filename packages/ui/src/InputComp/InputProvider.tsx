@@ -16,7 +16,6 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
         flex
         gridColumnGap={2}
         {...boxProps}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         className={`${className || ''} ${isFocusVisible ? 'focus-visible' : ''}`}
         disabled={disabled}
         inputVariant={inputVariant}
@@ -33,7 +32,6 @@ interface InputWrapperProps {
   padding?: string
   inputVariant?: InputVariant | ''
   minHeight?: InputMinHeight
-  /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 }
 
 const InputWrapper: IStyledComponent<'web', InputWrapperProps & ComponentPropsWithRef<'div'>> = styled(
@@ -73,6 +71,5 @@ const InputWrapper: IStyledComponent<'web', InputWrapperProps & ComponentPropsWi
     }
   }}
 `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 
 InputProvider.displayName = 'InputProvider'

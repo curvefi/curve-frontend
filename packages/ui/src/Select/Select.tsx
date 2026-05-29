@@ -36,7 +36,7 @@ export function Select<T extends object>({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const { labelProps, triggerProps, menuProps } = useSelect(props, state, buttonRef)
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const title = props['aria-label'] || 'Select'
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const selectListIsGreaterThanOne = [...(props.items ?? [])].length > 1
@@ -55,7 +55,6 @@ export function Select<T extends object>({
           loading={props.loading}
           buttonRef={buttonRef}
         >
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {noLabelChange ? title : state.selectedItem ? props.selectedItemLabel || state.selectedItem.rendered : title}
           {!onSelectionDelete && (
             <StyledIcon

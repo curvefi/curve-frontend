@@ -275,7 +275,6 @@ export const LargeTokenInput = ({
     >
       <Stack sx={{ gap: Spacing.xxs, padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {(label || showChips) && (
           <Stack
             direction="row"

@@ -200,7 +200,6 @@ export const createPoolDepositSlice = (
           amounts: tokens.map((token, idx) => ({
             token,
             tokenAddress: tokenAddresses[idx],
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
             value: seedAmounts?.[idx] || '',
           })),
           isWrapped: hasWrapped,

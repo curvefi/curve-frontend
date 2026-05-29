@@ -7,7 +7,6 @@ interface TextEllipsisProps {
   smMaxWidth?: string
   mdMaxWidth?: string
   lgMaxWidth?: string
-  /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 }
 
 export const TextEllipsis: IStyledComponent<'web', TextEllipsisProps & ComponentPropsWithRef<'span'>> =
@@ -32,4 +31,3 @@ export const TextEllipsis: IStyledComponent<'web', TextEllipsisProps & Component
         lgMaxWidth || mdMaxWidth || smMaxWidth || maxWidth || '1024px'};
     }
   `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */

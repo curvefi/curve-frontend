@@ -8,18 +8,16 @@ interface TableRowWrapperProps {
   gridTemplateColumns?: string
 }
 
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & ComponentPropsWithRef<'div'>> =
   styled.div<TableRowWrapperProps>`
     display: grid;
-    grid-template-columns: ${({ columns, gridTemplateColumns }) => gridTemplateColumns || `repeat(${columns}, 1fr)`};
+    grid-template-columns: ${({ columns, gridTemplateColumns }) => gridTemplateColumns ?? `repeat(${columns}, 1fr)`};
     padding: var(--spacing-1) var(--spacing-3);
     border-bottom: 1px solid var(--gray-500a20);
     &:last-child {
       border-bottom: none;
     }
   `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 
 export const TableData: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
   font-variant-numeric: tabular-nums;

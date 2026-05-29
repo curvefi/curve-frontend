@@ -91,7 +91,6 @@ export const Swap = ({
   // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
@@ -162,7 +161,6 @@ export const Swap = ({
         updatedFormValues,
         isGetMaxFrom,
         seed.isSeed,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
       )
     },

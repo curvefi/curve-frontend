@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { create, enforce, only, type Suite } from 'vest'
 import { extendEnforce } from './enforce-extension'
 import { FieldName, FieldsOf } from './types'
@@ -39,5 +40,4 @@ export const createValidationSuite = <T extends object, TGroupName extends strin
     validationGroup(data)
   })
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
-export const EmptyValidationSuite = createValidationSuite(() => {})
+export const EmptyValidationSuite = createValidationSuite(noop)

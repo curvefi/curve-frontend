@@ -6,7 +6,6 @@ import type { BoxProps } from './types'
 function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {
   const fillWidthClassName = fillWidth ? 'width--full' : ''
   const fillHeightClassName = fillHeight ? 'height--full' : ''
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const classNames = `${className || ''} ${fillWidthClassName} ${fillHeightClassName}`
   return { ...rest, className: classNames }
 }

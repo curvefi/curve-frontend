@@ -6,7 +6,6 @@ import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangl
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 
 const getShortMessage = (error: Error | string | boolean) =>
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   (error as Error).message || (error as CallExceptionError).reason || error.toString() || 'Unknown error'
 
 export const ErrorIconButton = ({

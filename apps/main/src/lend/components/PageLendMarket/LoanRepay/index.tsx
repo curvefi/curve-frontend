@@ -96,7 +96,6 @@ export const LoanRepay = ({
         isLoaded ? api : null,
         market,
         updatedFormValues,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
         shouldRefetch,
       )

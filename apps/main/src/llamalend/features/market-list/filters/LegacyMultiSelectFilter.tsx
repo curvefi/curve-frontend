@@ -113,7 +113,6 @@ export const LegacyMultiSelectFilter = <TKeys, TColumnId extends string>({
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
             list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } },
             paper: { sx: { maxWidth: '100%' } },
           }}

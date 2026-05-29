@@ -660,11 +660,11 @@ const poolSwap = {
       const swapExpected = fulfilledValue(swapExpectedResult) ?? ''
       const swapRequired = fulfilledValue(swapRequiredResult) ?? ''
       if (swapExpectedResult.status === 'rejected') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         resp.error = swapExpectedResult.reason?.reason || 'error-swap-exchange-and-output'
       }
       if (swapRequiredResult.status === 'rejected') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         resp.error = swapRequiredResult.reason?.reason || 'error-swap-exchange-and-output'
       }
 

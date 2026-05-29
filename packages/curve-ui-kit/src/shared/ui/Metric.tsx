@@ -141,7 +141,6 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
           )}
         </Stack>
       </Tooltip>
-      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
       {(change || change === 0) && (
         <Typography
           variant={MetricChangeSize[size]}

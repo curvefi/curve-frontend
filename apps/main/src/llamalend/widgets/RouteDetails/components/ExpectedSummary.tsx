@@ -52,7 +52,6 @@ const Wrapper = styled.section`
   padding: var(--spacing-3);
 `
 
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 const Item = styled.div<BreakdownItem>`
   align-items: baseline;
   display: flex;
@@ -86,4 +85,3 @@ const Item = styled.div<BreakdownItem>`
     opacity: 0.6;
   }
 `
-/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */

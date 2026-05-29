@@ -47,7 +47,6 @@ export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?:
   new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id)
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       reject(new Error(message || `Promise timed out after ${timeout}ms`))
     }, timeout)
     promise.then(resolve, reject)
