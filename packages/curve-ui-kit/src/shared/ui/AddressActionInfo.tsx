@@ -4,7 +4,8 @@ import { maybe } from '@primitives/objects.utils'
 import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '../../utils'
-import { ActionInfo, ActionInfoLinkTooltipContent } from './ActionInfo'
+import { ActionInfo } from './ActionInfo'
+import { ExternalLink } from './ExternalLink'
 
 interface AddressActionInfoProps {
   network: BaseConfig | undefined
@@ -23,7 +24,7 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
     }
     copyValue={address}
     valueTooltip={maybe(address && scanAddressPath(network, address), link => (
-      <ActionInfoLinkTooltipContent href={link} label={t`View on explorer`} />
+      <ExternalLink href={link} label={t`View on explorer`} />
     ))}
     sx={{
       alignItems: 'center',

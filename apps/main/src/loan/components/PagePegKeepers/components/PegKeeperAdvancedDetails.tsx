@@ -2,7 +2,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { ActionInfo, ActionInfoLinkTooltipContent } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
@@ -32,7 +33,7 @@ export const PegKeeperAdvancedDetails = ({
       label={t`Pool`}
       value={shortenAddress(poolAddress, { digits: 2 })}
       valueTooltip={
-        <ActionInfoLinkTooltipContent
+        <ExternalLink
           href={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolId}/deposit`)}
           label={t`View pool`}
         />
@@ -44,9 +45,7 @@ export const PegKeeperAdvancedDetails = ({
     <ActionInfo
       label={t`Contract`}
       value={shortenAddress(address, { digits: 2 })}
-      valueTooltip={
-        <ActionInfoLinkTooltipContent href={`https://etherscan.io/address/${address}`} label={t`View on Etherscan`} />
-      }
+      valueTooltip={<ExternalLink href={`https://etherscan.io/address/${address}`} label={t`View on Etherscan`} />}
       copyValue={address}
       testId={`${testId}-action-info-contract`}
     />

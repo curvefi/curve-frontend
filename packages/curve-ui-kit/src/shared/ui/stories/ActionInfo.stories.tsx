@@ -5,8 +5,9 @@ import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
-import { ActionInfo, ActionInfoLinkTooltipContent } from '../ActionInfo'
+import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
+import { ExternalLink } from '../ExternalLink'
 
 const SIZES: ActionInfoSize[] = ['small', 'medium']
 
@@ -73,7 +74,7 @@ const meta: Meta<typeof ActionInfo> = {
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     valueColor: 'textPrimary',
     valueTooltip: (
-      <ActionInfoLinkTooltipContent
+      <ExternalLink
         href="https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367"
         label={t`View on Etherscan`}
       />
@@ -192,7 +193,7 @@ export const WithLinkTooltip: Story = {
   args: {
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     valueTooltip: (
-      <ActionInfoLinkTooltipContent
+      <ExternalLink
         href="https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367"
         label={t`View on Etherscan`}
       />
