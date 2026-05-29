@@ -18,7 +18,7 @@ export const GridChip = ({
     <ChipGridItem size={size}>
       <SelectableChip
         {...props}
-        size={selectableChipSize ? selectableChipSize : getDefaultSelectableChipSize(isMobile)}
+        size={selectableChipSize || getDefaultSelectableChipSize(isMobile)}
         sx={{ width: { mobile: '100%', tablet: 'auto' } }}
       />
     </ChipGridItem>

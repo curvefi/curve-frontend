@@ -15,9 +15,9 @@ import { createValidationSuite } from '@ui-kit/lib'
 import { validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import type { UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 
 export type CollateralForm = {
   userCollateral: Decimal | undefined
@@ -33,7 +33,7 @@ const collateralValidationGroup = ({
 }: CollateralParams) =>
   group('chainValidation', () => {
     marketIdValidationSuite({ chainId, marketId })
-    userAddressValidationGroup({ userAddress })
+    evmAddressValidationGroup({ evmAddress: userAddress })
     validateUserCollateral(userCollateral, { required: true })
     validateMaxCollateral(userCollateral, maxCollateral, { required: true })
   })
@@ -52,7 +52,7 @@ export const leverageUserMarketValidationSuite = createValidationSuite(
     chainValidationGroup({ chainId })
     llamaApiValidationGroup({ chainId })
     marketIdValidationGroup({ marketId })
-    userAddressValidationGroup({ userAddress })
+    evmAddressValidationGroup({ evmAddress: userAddress })
     validateLeverageValuesSupported(marketId)
   },
 )
@@ -76,7 +76,7 @@ export const closeLoanValidationSuite = createValidationSuite(
     chainValidationGroup({ chainId })
     llamaApiValidationGroup({ chainId })
     marketIdValidationGroup({ marketId })
-    userAddressValidationGroup({ userAddress })
+    evmAddressValidationGroup({ evmAddress: userAddress })
     validateSlippage({ slippage })
   },
 )

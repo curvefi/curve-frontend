@@ -2,8 +2,8 @@ import { enforce, group, test } from 'vest'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import {
   addressValidationFn,
   amountValidationFn,
@@ -63,7 +63,7 @@ export const gaugeDistributorsValidationSuite = createValidationSuite(
   ({ chainId, poolId, userAddress }: GaugeDistributorsParams) => {
     curveApiValidationGroup({ chainId })
     poolValidationGroup({ chainId, poolId })
-    userAddressValidationGroup({ userAddress })
+    evmAddressValidationGroup({ evmAddress: userAddress })
   },
 )
 

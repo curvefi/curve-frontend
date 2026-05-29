@@ -17,8 +17,8 @@ import { createValidationSuite, FieldsOf } from '@ui-kit/lib'
 import { type UserMarketQuery, validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
 
 export type BorrowMoreMutation = {
@@ -114,7 +114,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   chainValidationGroup({ chainId })
   llamaApiValidationGroup({ chainId })
   marketIdValidationGroup({ marketId })
-  userAddressValidationGroup({ userAddress })
+  evmAddressValidationGroup({ evmAddress: userAddress })
   validateUserCollateral(userCollateral, { required: false })
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, { required: debtRequired })

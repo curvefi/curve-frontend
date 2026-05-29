@@ -4,7 +4,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
 async function _fetchLockerVecrvInfo({ userAddress }: ChainQuery<ChainId> & UserQuery) {
@@ -20,6 +20,6 @@ export const { useQuery: useLockerVecrvInfo, invalidate: invalidateLockerVecrvIn
   category: 'dao.user',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & UserParams) => {
     curveApiValidationGroup({ chainId: params.chainId })
-    userAddressValidationGroup({ userAddress: params.userAddress })
+    evmAddressValidationGroup({ evmAddress: params.userAddress })
   }),
 })
