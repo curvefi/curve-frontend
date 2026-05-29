@@ -98,6 +98,7 @@ const ValueTypography = ({
   <Typography
     variant={valueSize[size]}
     color={error ? 'error' : (valueColor ?? 'textPrimary')}
+    component="div"
     data-testid={testId}
     data-value={value}
     onClick={onClick}
