@@ -22,9 +22,6 @@ const headers = {
   [ClaimTabColumnId.Notional]: t`Notional`,
 } as const
 
-const formatBalance = (balance: ClaimableToken['amount'] | undefined) =>
-  balance == null ? '-' : formatNumber(balance, { abbreviate: false })
-
 export const CLAIM_TAB_COLUMNS = [
   columnHelper.accessor('amount', {
     id: ClaimTabColumnId.Token,
@@ -35,7 +32,7 @@ export const CLAIM_TAB_COLUMNS = [
           address={row.original.token}
           blockchainId={row.original.networkId}
           iconPosition="left"
-          primary={formatBalance(getValue())}
+          primary={formatNumber(getValue(), { abbreviate: false })}
           secondary={row.original.symbol}
           showChainIcon
         />
