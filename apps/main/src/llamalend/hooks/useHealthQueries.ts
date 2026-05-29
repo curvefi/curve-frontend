@@ -1,5 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybes } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
@@ -37,7 +37,7 @@ type HealthQueryResults = QueryResultsArray<readonly HealthQueryOptions[]>
  *   When healthNotFull is below 0, the user is in soft-liq and we should return the corresponding metric.
  */
 const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
-  data: maybe([healthFull.data, healthNotFull.data], ([full, notFull]) => (+notFull < 0 ? notFull : full)),
+  data: maybes([healthFull.data, healthNotFull.data], ([full, notFull]) => (+notFull < 0 ? notFull : full)),
   ...combineQueriesMeta([healthFull, healthNotFull]),
 })
 

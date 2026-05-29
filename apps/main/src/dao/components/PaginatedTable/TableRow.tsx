@@ -8,8 +8,7 @@ type TableRowWrapperProps = { columns: number; gridTemplateColumns?: string }
 export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & ComponentPropsWithRef<'div'>> =
   styled.div<TableRowWrapperProps>`
     display: grid;
-    grid-template-columns: ${({ columns, gridTemplateColumns }) =>
-      gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
+    grid-template-columns: ${({ columns, gridTemplateColumns }) => gridTemplateColumns || `repeat(${columns}, 1fr)`};
     padding: var(--spacing-1) var(--spacing-3);
     border-bottom: 1px solid var(--gray-500a20);
     &:last-child {
