@@ -64,7 +64,8 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
           buyerUrl: scanAddressPath(networkConfig, trade.buyer),
           txUrl: scanTxPath(networkConfig, trade.txHash),
           network,
-        }))) ?? [],
+        }))) ??
+      [],
     [tradesData?.trades, networkConfig, network],
   )
 
