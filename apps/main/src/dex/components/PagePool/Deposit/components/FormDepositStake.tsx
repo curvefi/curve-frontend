@@ -45,7 +45,7 @@ export const FormDepositStake = ({
   tokensMapper,
 }: TransferProps) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
@@ -120,7 +120,7 @@ export const FormDepositStake = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDepositStake(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const TxDescription = t`Deposit and staked ${tokenText}`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -207,10 +207,10 @@ export const FormDepositStake = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

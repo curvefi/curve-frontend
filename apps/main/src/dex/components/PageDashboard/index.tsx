@@ -38,7 +38,7 @@ export const Dashboard = ({
   pageLoaded: boolean
 }) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
 
   const activeKey = useStore(state => state.dashboard.activeKey)
@@ -82,10 +82,10 @@ export const Dashboard = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

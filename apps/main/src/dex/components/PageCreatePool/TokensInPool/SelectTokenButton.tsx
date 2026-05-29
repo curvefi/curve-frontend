@@ -45,7 +45,7 @@ export const SelectTokenButton = ({
 }: Props) => {
   const { data: network } = useNetworkByChain({ chainId })
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const visibleTokens = useRef<Record<string, boolean>>({})
+  const visibleTokensRef = useRef<Record<string, boolean>>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
@@ -72,7 +72,7 @@ export const SelectTokenButton = ({
   ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 
   if (!overlayTriggerState.isOpen) {
-    visibleTokens.current = {}
+    visibleTokensRef.current = {}
   }
 
   // handles search/filtering

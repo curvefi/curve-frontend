@@ -42,7 +42,7 @@ export const LoanCollateralRemove = ({
   userActiveKey,
 }: PageContentProps) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralRemove.activeKey)
   const detailInfo = useStore(state => state.loanCollateralRemove.detailInfo[activeKey])
@@ -91,7 +91,7 @@ export const LoanCollateralRemove = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(network, resp.hash)
         setTxInfoBar(
@@ -194,10 +194,10 @@ export const LoanCollateralRemove = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

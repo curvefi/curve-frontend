@@ -30,7 +30,7 @@ export const FormProvider = <T extends FieldValues>({
   )
   return (
     // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
-    <FormContext.Provider
+    <FormContext
       value={useMemo(
         /** memoize the provider value to prevent unnecessary re-renders of consuming components */
         () =>
@@ -70,6 +70,6 @@ export const FormProvider = <T extends FieldValues>({
           </AccordionDetails>
         </Accordion>
       )}
-    </FormContext.Provider>
+    </FormContext>
   )
 }

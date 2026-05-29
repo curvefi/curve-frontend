@@ -23,7 +23,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'unstake'
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.vaultUnstake.activeKey)
   const formEstGas = useStore(state => state.vaultUnstake.formEstGas[activeKey])
@@ -74,7 +74,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
       const resp = await fetchStepUnstake(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
@@ -127,10 +127,10 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])

@@ -1,0 +1,33 @@
+{
+  "campaignName": "Pips",
+  "platform": "Apyx",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "apyx.png",
+  "dashboardLink": "https://app.apyx.fi/rewards/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xE1B96555BbecA40E583BbB41a11C68Ca4706A414",
+      "network": "ethereum",
+      "multiplier": "60x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xe41be7B340f7c2EDA4DA1e99b42Ee1b228b526b7",
+      "network": "ethereum",
+      "multiplier": "24x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

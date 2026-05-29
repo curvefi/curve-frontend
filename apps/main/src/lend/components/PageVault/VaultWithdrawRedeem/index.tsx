@@ -28,7 +28,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'withdraw'
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.vaultWithdrawRedeem.activeKey)
   const formEstGas = useStore(state => state.vaultWithdrawRedeem.formEstGas[activeKey])
@@ -101,7 +101,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
       setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
       const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues, vaultShares)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = t`Transaction complete.`
         setTxInfoBar(
           <TxInfoBar
@@ -161,10 +161,10 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])

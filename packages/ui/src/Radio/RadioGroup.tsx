@@ -23,7 +23,7 @@ export const RadioGroup = ({
   return (
     <RadioGroupContainer data-testid={`radio-group-${testId}`} {...radioGroupProps} className={className}>
       {/* eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule. */}
-      <RadioContext.Provider value={state}>{children}</RadioContext.Provider>
+      <RadioContext value={state}>{children}</RadioContext>
     </RadioGroupContainer>
   )
 }

@@ -23,7 +23,7 @@ import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const formStatus = useStore(state => state.vaultClaim.formStatus)
   const claimable = useStore(state => state.vaultClaim.claimable[userActiveKey])
@@ -70,7 +70,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
 
-      if (isSubscribed.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -132,10 +132,10 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])

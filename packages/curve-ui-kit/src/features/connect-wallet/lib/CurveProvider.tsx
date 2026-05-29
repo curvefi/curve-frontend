@@ -128,7 +128,7 @@ export const CurveProvider = <App extends AppName>({
 
   return (
     // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
-    <CurveContext.Provider
+    <CurveContext
       value={{
         connectState,
         network,
@@ -141,6 +141,6 @@ export const CurveProvider = <App extends AppName>({
       }}
     >
       {children}
-    </CurveContext.Provider>
+    </CurveContext>
   )
 }

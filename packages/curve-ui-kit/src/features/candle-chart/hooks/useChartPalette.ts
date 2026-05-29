@@ -21,73 +21,48 @@ export interface ChartColors {
   rangeLineFutureBottom: string
 }
 
-interface UseChartPaletteOptions {
-  backgroundOverride?: string
-}
-
-export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
+export function useChartPalette({ backgroundOverride }: { backgroundOverride?: string } = {}): ChartColors {
   const theme = useTheme()
+  return useMemo(() => {
+    const {
+      design: {
+        Color: { Neutral },
+        Chart: {
+          Candles: { Negative, Positive },
+          LiquidationZone: { Current, CurrentBottomLine, CurrentTopLine, Future, FutureLine },
+          Lines,
+        },
+      },
+      palette: {
+        background: { paper },
+        primary: { main: primary },
+        text: { highlight, tertiary },
+      },
+    } = theme
 
-  const legacyBackground =
-    typeof window === 'undefined'
-      ? undefined
-      : // eslint-disable-next-line @eslint-react/purity -- keep chart colors in sync with the active CSS theme.
+    return {
+      backgroundColor:
+        backgroundOverride ??
         getComputedStyle(document.body ?? document.documentElement)
           .getPropertyValue('--box--secondary--background-color')
-          .trim()
-
-  const backgroundColor = options?.backgroundOverride ?? legacyBackground ?? theme.palette.background.paper
-  const primary = theme.palette.primary.main
-  const success = theme.design.Chart.Candles.Positive
-  const error = theme.design.Chart.Candles.Negative
-  const textPrimary = theme.palette.text.tertiary
-  const textHighlight = theme.palette.text.highlight
-  const rangeLineTop = theme.design.Chart.LiquidationZone.CurrentTopLine
-  const rangeLineBottom = theme.design.Chart.LiquidationZone.CurrentBottomLine
-  const rangeBackground = theme.design.Chart.LiquidationZone.Current
-  const rangeLineFutureTop = theme.design.Chart.LiquidationZone.FutureLine
-  const rangeLineFutureBottom = theme.design.Chart.LiquidationZone.FutureLine
-  const rangeBackgroundFuture = theme.design.Chart.LiquidationZone.Future
-  const oraclePrice = primary
-  const cursorVertLine = theme.design.Chart.Lines[1]
-  const gridLine = theme.design.Color.Neutral[300]
-
-  return useMemo(
-    () => ({
-      backgroundColor,
+          .trim() ??
+        paper,
       lineColor: primary,
-      textColor: textPrimary,
-      gridLine,
-      green: success,
-      red: error,
-      cursorLabel: textHighlight,
-      cursorVertLine,
-      volumeRed: error,
-      volumeGreen: success,
-      oraclePrice,
-      rangeBackground,
-      rangeLineTop,
-      rangeLineBottom,
-      rangeBackgroundFuture,
-      rangeLineFutureTop,
-      rangeLineFutureBottom,
-    }),
-    [
-      backgroundColor,
-      primary,
-      textPrimary,
-      gridLine,
-      success,
-      error,
-      textHighlight,
-      cursorVertLine,
-      oraclePrice,
-      rangeBackground,
-      rangeLineTop,
-      rangeLineBottom,
-      rangeBackgroundFuture,
-      rangeLineFutureTop,
-      rangeLineFutureBottom,
-    ],
-  )
+      textColor: tertiary,
+      gridLine: Neutral[300],
+      green: Positive,
+      red: Negative,
+      cursorLabel: highlight,
+      cursorVertLine: Lines[1],
+      volumeRed: Negative,
+      volumeGreen: Positive,
+      oraclePrice: primary,
+      rangeBackground: Current,
+      rangeLineTop: CurrentTopLine,
+      rangeLineBottom: CurrentBottomLine,
+      rangeBackgroundFuture: Future,
+      rangeLineFutureTop: FutureLine,
+      rangeLineFutureBottom: FutureLine,
+    }
+  }, [backgroundOverride, theme])
 }

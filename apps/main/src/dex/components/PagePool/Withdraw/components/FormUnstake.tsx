@@ -21,7 +21,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
@@ -72,7 +72,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -112,10 +112,10 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

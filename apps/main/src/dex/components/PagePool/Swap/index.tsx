@@ -67,7 +67,7 @@ export const Swap = ({
   tokensMapper: TokensMapper
 }) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
@@ -180,7 +180,7 @@ export const Swap = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         setTxInfoBar(
@@ -298,10 +298,10 @@ export const Swap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

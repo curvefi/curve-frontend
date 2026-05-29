@@ -24,7 +24,7 @@ const WalletStateSync = () => {
 export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperProps) => (
   <ComponentTestWrapper config={mockedWagmiConfig}>
     {/* eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule. */}
-    <CurveContext.Provider
+    <CurveContext
       value={{
         connectState: ConnectState.SUCCESS,
         isHydrated: true,
@@ -37,6 +37,6 @@ export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperP
     >
       <WalletStateSync />
       <Box sx={{ maxWidth: 520 }}>{children}</Box>
-    </CurveContext.Provider>
+    </CurveContext>
   </ComponentTestWrapper>
 )

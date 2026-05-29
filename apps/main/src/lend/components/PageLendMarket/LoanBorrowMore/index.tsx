@@ -48,7 +48,7 @@ export const LoanBorrowMore = ({
   isLeverage = false,
 }: LoanBorrowMoreProps) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const activeKey = useStore(state => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore(state => state.loanBorrowMore.activeKeyMax)
   const detailInfoLeverage = useStore(state => state.loanBorrowMore.detailInfoLeverage[activeKey])
@@ -116,7 +116,7 @@ export const LoanBorrowMore = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -266,10 +266,10 @@ export const LoanBorrowMore = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

@@ -39,7 +39,7 @@ export const LoanSelfLiquidation = ({
   params,
 }: PageContentProps<MarketUrlParams>) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const formEstGas = useStore(state => state.loanSelfLiquidation.formEstGas)
   const formStatus = useStore(state => state.loanSelfLiquidation.formStatus)
   const futureRates = useStore(state => state.loanSelfLiquidation.futureRates)
@@ -132,7 +132,7 @@ export const LoanSelfLiquidation = ({
             const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
             const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)
 
-            if (isSubscribed.current && resp?.hash && !resp.loanExists && !resp.error) {
+            if (isSubscribedRef.current && resp?.hash && !resp.loanExists && !resp.error) {
               const TxDescription = (
                 <Trans>
                   Transaction completed. This loan will no longer exist. Click{' '}
@@ -170,10 +170,10 @@ export const LoanSelfLiquidation = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

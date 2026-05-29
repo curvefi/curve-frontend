@@ -18,7 +18,7 @@ const VariantToColorMap = {
   success: 'success',
 } satisfies Record<Variant, ActionInfoProps['valueColor']>
 
-type Props = Pick<ActionInfoProps, 'label' | 'testId' | 'alignItems'> & {
+type Props = Pick<ActionInfoProps, 'label' | 'testId'> & {
   children: ReactNode
   isBold?: boolean | null
   isDivider?: boolean

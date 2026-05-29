@@ -41,7 +41,7 @@ describe('Refuel page', () => {
     getTestById('pool-apr-value').invoke('attr', 'data-value').should('match', /\d/)
 
     getTestById('prices-chart').should('be.visible')
-    getTestById('lp-token-value-value').invoke('attr', 'data-value').should('match', /\d/)
+    getTestById('lp-token-value-value').invoke(API_LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
     getTestById('virtual-price-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('prices-chart').contains('Last price').should('be.visible')
     getTestById('prices-chart').contains('Oracle price').should('be.visible')

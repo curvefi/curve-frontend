@@ -75,7 +75,7 @@ export const QuickSwap = ({
   curve: CurveApi | null
 }) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
@@ -225,7 +225,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -391,10 +391,10 @@ export const QuickSwap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       updateFormValues({}, false, '', true)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

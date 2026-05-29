@@ -63,12 +63,12 @@ export const ButtonMenu = <T extends string>({
   onClose,
 }: Props<T>) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const anchorEl = useRef<HTMLDivElement>(null)
-  const [stackWidth] = useResizeObserver(anchorEl) ?? []
+  const anchorRef = useRef<HTMLDivElement>(null)
+  const [stackWidth] = useResizeObserver(anchorRef) ?? []
   const isDisabled = disabled || executing != false
 
   return (
-    <Stack ref={anchorEl} direction="row" sx={{ gap: '1px' }}>
+    <Stack ref={anchorRef} direction="row" sx={{ gap: '1px' }}>
       <Button color="primary" disabled={isDisabled} sx={{ flexGrow: 1 }} onClick={onPrimary}>
         {executing == false || executing == 'primary' ? primary : options.find(x => x.id === executing)?.label || '?'}
       </Button>
@@ -84,7 +84,7 @@ export const ButtonMenu = <T extends string>({
       )}
       {options.length > 0 && (
         <Menu
-          anchorEl={anchorEl.current}
+          anchorEl={anchorRef.current}
           open={open}
           onClose={onClose}
           // Modify anchor and transform to open upwards from the right

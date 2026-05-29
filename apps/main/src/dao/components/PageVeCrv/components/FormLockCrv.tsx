@@ -20,7 +20,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useCurve()
@@ -65,7 +65,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncreaseCrv(activeKey, curve, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txDescription = t`Lock amount updated`
 
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />)
@@ -125,11 +125,11 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
     updateFormValues({}, true)
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])

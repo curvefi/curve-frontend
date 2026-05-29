@@ -25,7 +25,7 @@ import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
@@ -79,7 +79,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, poolData)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         const claimedLabel = formStatus.isClaimCrv
           ? 'CRV'
           : `${formValues.claimableRewards.map(r => r.symbol).join(', ')} rewards`
@@ -135,10 +135,10 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

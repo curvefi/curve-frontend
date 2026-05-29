@@ -11,7 +11,7 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
 
   return (
     // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
-    <InputContext.Provider value={{ disabled, id, inputVariant, setIsFocusVisible }}>
+    <InputContext value={{ disabled, id, inputVariant, setIsFocusVisible }}>
       <InputWrapper
         flex
         gridColumnGap={2}
@@ -23,7 +23,7 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
       >
         {children}
       </InputWrapper>
-    </InputContext.Provider>
+    </InputContext>
   )
 }
 

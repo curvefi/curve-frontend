@@ -1,4 +1,4 @@
-import { useContext, useRef } from 'react'
+import { use, useRef } from 'react'
 import { styled } from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
 import { useRadio } from '@react-aria/radio'
@@ -20,7 +20,7 @@ export const Radio = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
   // eslint-disable-next-line @eslint-react/no-use-context -- Existing violation before enabling this rule.
-  const state = useContext(RadioContext)
+  const state = use(RadioContext)
   const { inputProps = {}, isSelected } = useRadio(props, state, inputRef)
   const { isFocusVisible, focusProps } = useFocusRing()
   const labelClassName = `${className} ${state.isDisabled ? 'disabled' : ''}`
