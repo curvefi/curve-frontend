@@ -315,7 +315,7 @@ export const createWithdrawScenario = ({
   stakedShares?: Decimal
 }) => {
   const input = {
-    amount: (isFull ? depositedShares : '22.5'),
+    amount: isFull ? depositedShares : '22.5',
     isFull,
   }
   const amount = input.amount

@@ -7,7 +7,9 @@ import { useStore } from '@/loan/store/useStore'
 import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
-interface DeployButtonProps { className?: string }
+interface DeployButtonProps {
+  className?: string
+}
 
 export const DeployButton = ({ className }: DeployButtonProps) => {
   const { address } = useConnection()

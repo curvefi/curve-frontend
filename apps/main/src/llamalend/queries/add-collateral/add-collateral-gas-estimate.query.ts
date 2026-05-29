@@ -29,7 +29,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
       market.estimateGas.addCollateralApprove(userCollateral),
       market.estimateGas.addCollateral(userCollateral),
     ])
-    return (Number(approveGas) + Number(addCollateralGas))
+    return Number(approveGas) + Number(addCollateralGas)
   },
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,

@@ -13,7 +13,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 
-interface AddCollateralMutation { userCollateral: Decimal }
+interface AddCollateralMutation {
+  userCollateral: Decimal
+}
 
 interface AddCollateralOptions {
   marketId: string | undefined

@@ -7,7 +7,7 @@ export interface BridgeAlert {
   message?: ReactNode
 }
 
-type Alerts = Record<number, BridgeAlert>;
+type Alerts = Record<number, BridgeAlert>
 
 const BRIDGE_ALERTS: Alerts = {}
 

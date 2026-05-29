@@ -19,7 +19,10 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Query } from '@ui-kit/types/util'
 import { requireChainId } from '@ui-kit/utils'
 
-export interface UserPositionSummaryMetric { label: string; metric: Query<number> }
+export interface UserPositionSummaryMetric {
+  label: string
+  metric: Query<number>
+}
 
 type StatsQueryOptions =
   | ReturnType<typeof getUserLendingVaultStatsOptions>
@@ -46,7 +49,10 @@ interface SupplyPositionQuery {
   suppliedTokenAddress: Address
 }
 
-interface TokenPriceEntry { chainId: number; tokenAddress: Address }
+interface TokenPriceEntry {
+  chainId: number
+  tokenAddress: Address
+}
 
 type PositionQueryEntry =
   | { kind: 'borrow'; value: BorrowPositionQuery }

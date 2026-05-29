@@ -18,22 +18,25 @@ export interface ExchangeRate {
   label: string
 }
 
-export type RoutesAndOutputModal = Record<string, | {
-        lowExchangeRate: boolean
-        title: string
-        exchangeRate: string
-      }
-    | {
-        priceImpact: boolean
-        title: string
-        value: string
-      }
-    | {
-        priceImpactLowExchangeRate: boolean
-        title: string
-        value: string
-        exchangeRate: string
-      }>;
+export type RoutesAndOutputModal = Record<
+  string,
+  | {
+      lowExchangeRate: boolean
+      title: string
+      exchangeRate: string
+    }
+  | {
+      priceImpact: boolean
+      title: string
+      value: string
+    }
+  | {
+      priceImpactLowExchangeRate: boolean
+      title: string
+      value: string
+      exchangeRate: string
+    }
+>
 
 export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   loading: boolean

@@ -71,7 +71,7 @@ function argToString(i: unknown, max = 200, trailing = 3) {
   return str.replaceAll('%', '%%')
 }
 
-type LogKey = string | QueryKey   | string[]
+type LogKey = string | QueryKey | string[]
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[]) {

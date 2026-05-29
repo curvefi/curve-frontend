@@ -46,8 +46,8 @@ describe('Collateral forms', () => {
 
         const addAmount = '0.01' as Decimal
         const removeAmount = '0.005' as Decimal
-        const collateralAfterAdd = `${+collateral + +addAmount}`
-        const collateralAfterRemove = `${+collateralAfterAdd - +removeAmount}`
+        const collateralAfterAdd: Decimal = `${+collateral + +addAmount}`
+        const collateralAfterRemove: Decimal = `${+collateralAfterAdd - +removeAmount}`
         let onPricesUpdated: ReturnType<typeof cy.stub>
         const CollateralTest = ({ tab }: { tab: 'add-collateral' | 'remove-collateral' }) => (
           <LlammalendTestCase

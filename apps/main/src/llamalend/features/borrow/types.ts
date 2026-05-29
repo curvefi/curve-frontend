@@ -5,7 +5,7 @@ import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 
 /** Complete create loan form with all fields already filled in (after validation) */
-interface CompleteCreateLoanForm {
+export interface CompleteCreateLoanForm {
   userCollateral: Decimal
   userBorrowed: Decimal // currently hidden and always 0, this can be used to leverage by depositing debt token
   debt: Decimal
@@ -16,7 +16,10 @@ interface CompleteCreateLoanForm {
 }
 
 // todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
-interface CalculatedValues { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
+interface CalculatedValues {
+  maxDebt: Decimal | undefined
+  maxCollateral: Decimal | undefined
+}
 
 /** Create loan form as used in the UI, with some fields still optional or being filled in */
 export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues

@@ -8,12 +8,18 @@ export interface EtherContract {
   token: string
 }
 
-export type Balances = Record<string, {
+export type Balances = Record<
+  string,
+  {
     poolId: string
     balance: number
-  }[]>;
+  }[]
+>
 
-export type VestedTotals = Record<string, {
+export type VestedTotals = Record<
+  string,
+  {
     poolId: string
     amount: number
-  }[]>;
+  }[]
+>

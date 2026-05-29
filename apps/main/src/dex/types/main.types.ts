@@ -15,7 +15,9 @@ export interface NetworkConfigFromApi {
   hasRouter: boolean | undefined
 }
 
-export interface NetworkUrlParams { network: INetworkName }
+export interface NetworkUrlParams {
+  network: INetworkName
+}
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
@@ -63,7 +65,7 @@ export interface CurrencyReserves {
   total: string
   totalUsd: string
 }
-export type CurrencyReservesMapper = Record<string, CurrencyReserves>;
+export type CurrencyReservesMapper = Record<string, CurrencyReserves>
 export const FormTypes = [
   'deposit',
   'withdraw',
@@ -103,7 +105,7 @@ export interface RewardsApy {
   crv: RewardCrv[]
   error: Record<string, boolean>
 }
-export type RewardsApyMapper = Record<string, RewardsApy>;
+export type RewardsApyMapper = Record<string, RewardsApy>
 export interface Token {
   address: string
   ethAddress?: string
@@ -112,9 +114,12 @@ export interface Token {
   haveSameTokenName: boolean // use to display token address if duplicated token names
   volume?: number
 }
-export type TokensMapper = Record<string, Token | undefined>;
-export type TokensNameMapper = Record<string, string>;
-export interface GaugeStatus { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
+export type TokensMapper = Record<string, Token | undefined>
+export type TokensNameMapper = Record<string, string>
+export interface GaugeStatus {
+  rewardsNeedNudging: boolean
+  areCrvRewardsStuckInBridge: boolean
+}
 
 export interface Gauge {
   status: GaugeStatus | null
@@ -140,7 +145,7 @@ export interface PoolData {
   failedFetching24hOldVprice: boolean
 }
 
-export type PoolDataMapper = Record<string, PoolData>;
+export type PoolDataMapper = Record<string, PoolData>
 export interface PoolDataCache {
   gauge: Gauge
   hasWrapped: boolean
@@ -166,7 +171,7 @@ export interface PoolDataCache {
     referenceAsset: string
   }
 }
-export type PoolDataCacheMapper = Record<string, PoolDataCache>;
+export type PoolDataCacheMapper = Record<string, PoolDataCache>
 export type PoolDataCacheOrApi = PoolData | PoolDataCache
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''

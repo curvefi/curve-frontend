@@ -42,7 +42,10 @@ export interface LpPriceApiResponse {
   data: LpPriceOhlcData[]
 }
 
-export interface LiquidationRange { value: number; time: UTCTimestamp }
+export interface LiquidationRange {
+  value: number
+  time: UTCTimestamp
+}
 
 export interface LlammaLiquididationRange {
   price1: LiquidationRange[]

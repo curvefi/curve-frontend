@@ -1,11 +1,6 @@
 import { useChainId, useConnection } from 'wagmi'
 import { formatDate } from '@ui/utils'
-import {
-  DEPRECATED_CHAINS,
-  isFailure,
-  useCurve,
-  useSwitchChain,
-} from '@ui-kit/features/connect-wallet'
+import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
@@ -62,11 +57,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
         isConnected &&
         chainId &&
         walletChainId != chainId && (
-          <Banner
-            severity="warning"
-            buttonText={t`Change network`}
-            onClick={() => void switchChain({ chainId })}
-          >
+          <Banner severity="warning" buttonText={t`Change network`} onClick={() => void switchChain({ chainId })}>
             {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
             <strong>{networkId}</strong>.{' '}
           </Banner>

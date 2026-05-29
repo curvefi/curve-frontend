@@ -329,7 +329,11 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getUserLendingSuppliesOptions>,
   ReturnType<typeof getUserMintMarketsOptions>,
 ]
-interface LlamaMarketParams { userAddress: Address | undefined; enableLLv2: boolean; enableDeprecatedMarkets: boolean }
+interface LlamaMarketParams {
+  userAddress: Address | undefined
+  enableLLv2: boolean
+  enableDeprecatedMarkets: boolean
+}
 
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.

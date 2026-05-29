@@ -17,7 +17,7 @@ interface NetworkWithFactory {
   isCrvRewardsEnabled: boolean
 }
 
-type NetworksWithFactory = Record<string, NetworkWithFactory>;
+type NetworksWithFactory = Record<string, NetworkWithFactory>
 
 interface DeploymentStatus {
   status: 'LOADING' | 'CONFIRMING' | 'ERROR' | 'SUCCESS' | ''
@@ -142,7 +142,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
         ([_, network]) => network.name.toLowerCase() === chainNameLower,
       )
 
-      const matchingChainId: ChainId | null = matchingEntry ? (Number(matchingEntry[0])) : null
+      const matchingChainId: ChainId | null = matchingEntry ? Number(matchingEntry[0]) : null
 
       set(
         produce((state: State) => {

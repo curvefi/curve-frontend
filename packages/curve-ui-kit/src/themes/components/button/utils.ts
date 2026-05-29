@@ -1,5 +1,14 @@
-interface ButtonStyle { Label?: string; Fill?: string; Outline?: string }
-interface ButtonColor { Default: ButtonStyle; Disabled?: ButtonStyle; Hover: ButtonStyle; Current?: ButtonStyle }
+interface ButtonStyle {
+  Label?: string
+  Fill?: string
+  Outline?: string
+}
+interface ButtonColor {
+  Default: ButtonStyle
+  Disabled?: ButtonStyle
+  Hover: ButtonStyle
+  Current?: ButtonStyle
+}
 
 const buttonStyle = ({ Fill, Label, Outline }: ButtonStyle) => ({
   color: Label,

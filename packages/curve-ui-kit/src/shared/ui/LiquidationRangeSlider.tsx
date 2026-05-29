@@ -7,7 +7,9 @@ import { formatNumber } from '@ui-kit/utils'
 import { Slider } from './Slider'
 
 // the real type has more fields, but we only use this one
-interface LiqRange { n: number }
+interface LiqRange {
+  n: number
+}
 
 export const LiquidationRangeSlider = ({
   liqRanges,

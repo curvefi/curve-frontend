@@ -285,7 +285,7 @@ interface TokenProportion {
  * @description Configuration for how the path visualization image should be rendered.
  * The exact shape is defined in the `PathVizImageConfig` OpenAPI schema.
  */
-type PathVizImageConfig = Record<string, unknown>;
+type PathVizImageConfig = Record<string, unknown>
 
 /**
  * Quote response schema.

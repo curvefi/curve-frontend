@@ -45,7 +45,9 @@ export interface TransactionContext {
   wallet: NonNullable<ReturnType<typeof useCurve>['wallet']>
 }
 
-interface TransactionResult { hash: Hex }
+export interface TransactionResult {
+  hash: Hex
+}
 
 interface TransactionMutationOptionsBase<
   TVariables extends object,
@@ -84,7 +86,7 @@ interface TransactionMutationOptionsBase<
     receipt: FormattedTransactionReceipt,
     variables: TVariables,
     context: TContext,
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   ) => unknown | Promise<unknown>
   /** Callback executed to reset the form when mutation is finished successfully */
   onReset: () => void

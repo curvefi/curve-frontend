@@ -1,9 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import type {
-  RoutesAndOutput,
-  RoutesAndOutputModal,
-  SearchedParams,
-} from '@/dex/components/PageRouterSwap/types'
+import type { RoutesAndOutput, RoutesAndOutputModal, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
@@ -73,18 +69,15 @@ const convertRoute = (
     ),
     isHighSlippage: warnings.includes('high-slippage'),
     isStableswapRoute,
-    routes: route.map(
-      ({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) =>
-        ({
-          inputCoinAddress,
-          outputCoinAddress,
-          name,
+    routes: route.map(({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) => ({
+      inputCoinAddress,
+      outputCoinAddress,
+      name,
 
-          routeUrlId: (args as { poolId: string }).poolId ?? '',
+      routeUrlId: (args as { poolId: string }).poolId ?? '',
 
-          ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
-        }),
-    ),
+      ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
+    })),
 
     modal: getRouterWarningModal(
       modalArgs,

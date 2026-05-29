@@ -36,7 +36,9 @@ export const TableSecondaryTextClass = 'table-secondary-text'
 export type ColumnDefinition<T> = ColumnDef<T, any>
 
 /** Required fields for the data in the table. */
-export interface TableItem { url?: string | null }
+export interface TableItem {
+  url?: string | null
+}
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
 

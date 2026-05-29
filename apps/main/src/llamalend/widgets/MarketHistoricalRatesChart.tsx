@@ -56,7 +56,11 @@ interface MarketHistoricalRatesChartProps {
   rateMode: MarketRateType
 }
 
-interface RateSeriesConfig { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
+interface RateSeriesConfig {
+  key: RateSeriesKey
+  label: string
+  dash?: ChartLineDashPattern
+}
 interface RateModeConfig {
   chartTitle: string
   currentRateLabel: string
@@ -234,7 +238,7 @@ export const MarketHistoricalRatesChart = ({
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}
-            xTickFormatter={(value: RateChartPoint['timestamp']   | string) => formatDate(value)}
+            xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
             yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}

@@ -80,7 +80,7 @@ export const LoanIncrease = ({
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
-  const resolvedChainId = (chainId ?? 1)
+  const resolvedChainId = chainId ?? 1
   const network = networks[resolvedChainId]
 
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []

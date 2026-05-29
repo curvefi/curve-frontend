@@ -6,7 +6,11 @@ import { Checkbox } from '@ui/Checkbox'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-interface PriceImpact { priceImpact: string; swapFrom: string; swapTo: string }
+interface PriceImpact {
+  priceImpact: string
+  swapFrom: string
+  swapTo: string
+}
 
 export function DialogFormWarning({
   health,

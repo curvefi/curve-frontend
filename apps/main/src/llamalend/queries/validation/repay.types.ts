@@ -12,7 +12,7 @@ export interface CompleteRepayForm {
   routeId: string | undefined
 }
 
-interface RepayCalculatedValues {
+export interface RepayCalculatedValues {
   maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined
   maxStateCollateral: Decimal | undefined

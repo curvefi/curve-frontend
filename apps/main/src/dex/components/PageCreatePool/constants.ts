@@ -14,7 +14,9 @@ export const TOKEN_F = 'tokenF'
 export const TOKEN_G = 'tokenG'
 export const TOKEN_H = 'tokenH'
 
-type PRESETS = Record<number, {
+type PRESETS = Record<
+  number,
+  {
     name: string
     descriptionName: string
     description: string
@@ -32,7 +34,8 @@ type PRESETS = Record<number, {
       adjustmentStep: string
       maHalfTime: string
     }
-  }>;
+  }
+>
 
 export const ORACLE_DECIMALS = 18
 

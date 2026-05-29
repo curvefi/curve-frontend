@@ -7,7 +7,9 @@ const { Weekly, Monthly } = Duration.AverageRates
 const { meanBy } = lodash
 
 /** A timestamped snapshot record */
-export interface WithTimestamp { timestamp: string | number | Date }
+export interface WithTimestamp {
+  timestamp: string | number | Date
+}
 
 /**
  * Calculates average rates from snapshots over a given time period

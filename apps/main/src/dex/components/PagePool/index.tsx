@@ -243,11 +243,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
-          <OhlcAndActivityComp
-            rChainId={rChainId}
-            poolAddress={poolAddress}
-            pricesApiPoolData={pricesApiPoolData}
-          />
+          <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
         <Stack>
           <Stack direction="row">

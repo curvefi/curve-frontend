@@ -87,7 +87,11 @@ const sumRates = (base: number | null | undefined, ...components: (number | null
 export const toNumberOrNull = (value: number | string | null | undefined) =>
   maybe(value, value => Number(value)) ?? null
 
-interface OnChainSupplyRewardApr { apy: number; symbol: string; tokenAddress: string }
+interface OnChainSupplyRewardApr {
+  apy: number
+  symbol: string
+  tokenAddress: string
+}
 
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
   rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)!) : null

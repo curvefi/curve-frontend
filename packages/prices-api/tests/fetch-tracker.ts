@@ -12,10 +12,10 @@ const fetchInputUrl = (input: Parameters<typeof fetch>[0]) =>
   typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url
 
 /** Patches global fetch once; AsyncLocalStorage keeps concurrent endpoint cases isolated. */
-globalThis.fetch = ((input, init) => {
+globalThis.fetch = (input, init) => {
   fetchTracker.getStore()?.urls.push(fetchInputUrl(input))
   return originalFetch(input, init)
-})
+}
 
 /** Creates an isolated URL capture context around one async operation. */
 export const createFetchTracker = () => {

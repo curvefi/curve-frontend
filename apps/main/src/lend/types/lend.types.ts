@@ -15,7 +15,9 @@ export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 export type EstimatedGas = number | number[] | null
 
-export interface NetworkUrlParams { network: NetworkEnum }
+export interface NetworkUrlParams {
+  network: NetworkEnum
+}
 export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
@@ -85,7 +87,7 @@ export interface PageContentProps<T = UrlParams> {
   api: LlamaApi | null
   market: LendMarketTemplate | undefined
 }
-export type BandsBalances = Record<number, { borrowed: string; collateral: string }>;
+export type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 export interface ParsedBandsBalances {
   borrowed: string
@@ -111,11 +113,18 @@ export interface MarketStatBands {
   } | null
   error: string
 }
-export type MarketsStatsBandsMapper = Record<string, MarketStatBands>;
-export interface MarketStatCapAndAvailable { totalAssets: string; available: string; error: string }
-export type MarketsStatsCapAndAvailableMapper = Record<string, MarketStatCapAndAvailable>;
-export interface MarketMaxLeverage { maxLeverage: string; error: string }
-export type MarketsMaxLeverageMapper = Record<string, MarketMaxLeverage>;
+export type MarketsStatsBandsMapper = Record<string, MarketStatBands>
+export interface MarketStatCapAndAvailable {
+  totalAssets: string
+  available: string
+  error: string
+}
+export type MarketsStatsCapAndAvailableMapper = Record<string, MarketStatCapAndAvailable>
+export interface MarketMaxLeverage {
+  maxLeverage: string
+  error: string
+}
+export type MarketsMaxLeverageMapper = Record<string, MarketMaxLeverage>
 export interface MarketPrices {
   prices: {
     oraclePrice: string
@@ -125,7 +134,7 @@ export interface MarketPrices {
   } | null
   error: string
 }
-export type MarketsPricesMapper = Record<string, MarketPrices>;
+export type MarketsPricesMapper = Record<string, MarketPrices>
 export interface MarketRates {
   rates: {
     borrowApr: string
@@ -135,7 +144,7 @@ export interface MarketRates {
   } | null
   error: string
 }
-export type MarketsRatesMapper = Record<string, MarketRates>;
+export type MarketsRatesMapper = Record<string, MarketRates>
 export interface RewardOther {
   apy: number
   decimals?: number
@@ -153,7 +162,7 @@ export interface MarketRewards {
   } | null
   error: string
 }
-export type MarketsRewardsMapper = Record<string, MarketRewards>;
+export type MarketsRewardsMapper = Record<string, MarketRewards>
 export interface MarketClaimable {
   claimable: {
     crv: string
@@ -168,7 +177,13 @@ export interface UserLoss {
   loss: string
   loss_pct: string
 }
-export interface UserLoanState { collateral: string; borrowed: string; debt: string; N: string; error: string }
+export interface UserLoanState {
+  collateral: string
+  borrowed: string
+  debt: string
+  N: string
+  error: string
+}
 export interface UserLoanDetails {
   details: {
     health: string
@@ -187,7 +202,7 @@ export interface UserLoanDetails {
   } | null
   error: string
 }
-export type UsersLoansDetailsMapper = Record<string, UserLoanDetails>;
+export type UsersLoansDetailsMapper = Record<string, UserLoanDetails>
 export interface UserMarketBalances {
   collateral: string
   borrowed: string
@@ -196,7 +211,7 @@ export interface UserMarketBalances {
   gauge: string
   error: string
 }
-export type UsersMarketsBalancesMapper = Record<string, UserMarketBalances>;
+export type UsersMarketsBalancesMapper = Record<string, UserMarketBalances>
 export interface FutureRates {
   borrowApr: string
   lendApr: string

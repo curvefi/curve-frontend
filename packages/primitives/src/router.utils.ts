@@ -16,7 +16,12 @@ export interface RouteStep {
   chainId: number
 }
 
-export interface TransactionData { data: Hex; to: Address; from: Address; value: Decimal }
+export interface TransactionData {
+  data: Hex
+  to: Address
+  from: Address
+  value: Decimal
+}
 
 export interface RouterRouteResponse {
   router: RouteProvider

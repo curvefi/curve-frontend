@@ -13,7 +13,7 @@ export type ProposalData = Omit<Proposal, 'timestamp'> & {
   timestamp: number
 }
 
-type ProposalsMapper = Record<string, ProposalData>;
+type ProposalsMapper = Record<string, ProposalData>
 
 export const createProposalKey = (proposalId: number, proposalType: ProposalType) =>
   `${proposalId}-${proposalType.toLowerCase()}`

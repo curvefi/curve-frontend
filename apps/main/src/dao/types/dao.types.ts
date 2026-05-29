@@ -11,7 +11,9 @@ export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
-export interface NetworkUrlParams { network: INetworkName }
+export interface NetworkUrlParams {
+  network: INetworkName
+}
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
@@ -45,10 +47,13 @@ export interface GaugeVote {
   transaction: string
 }
 
-export type GaugeVotesMapper = Record<string, {
+export type GaugeVotesMapper = Record<
+  string,
+  {
     fetchingState: FetchingState
     votes: GaugeVote[]
-  }>;
+  }
+>
 
 export interface SnapshotVotingPower {
   value: number
@@ -100,7 +105,10 @@ export interface FnStepResponse {
 export type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
-export interface ProposalListFilterItem { key: ProposalListFilter; label: string }
+export interface ProposalListFilterItem {
+  key: ProposalListFilter
+  label: string
+}
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
   | 'gauge_relative_weight'

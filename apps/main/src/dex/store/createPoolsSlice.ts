@@ -43,7 +43,10 @@ interface SliceState {
   currencyReserves: CurrencyReservesMapper
   haveAllPools: Record<string, boolean>
   rewardsApyMapper: Record<string, RewardsApyMapper>
-  stakedMapper: Record<string, { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }>
+  stakedMapper: Record<
+    string,
+    { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
+  >
   pricesApiState: {
     chartOhlcData: LpPriceOhlcDataFormatted[]
     chartStatus: FetchingStatus

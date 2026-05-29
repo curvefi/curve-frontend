@@ -11,7 +11,11 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-interface Props { data: ScrvUsdYieldWithAverages[]; height: number; visibleSeries?: YieldKeys[] }
+interface Props {
+  data: ScrvUsdYieldWithAverages[]
+  height: number
+  visibleSeries?: YieldKeys[]
+}
 
 export const RevenueLineChart = ({ data, height, visibleSeries }: Props) => {
   const {

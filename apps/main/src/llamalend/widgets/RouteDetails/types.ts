@@ -5,7 +5,11 @@ export interface Hop {
   part: number
 }
 
-export interface BreakdownItem { $opacity?: boolean; $isTotal?: boolean; $minWidth?: string }
+export interface BreakdownItem {
+  $opacity?: boolean
+  $isTotal?: boolean
+  $minWidth?: string
+}
 
 export type RouteDetailsProps = BreakdownItem & {
   network: INetworkName

@@ -41,8 +41,8 @@ export interface WalletPoolData {
   percentStaked: string
 }
 
-export type DashboardDataMapper = Record<string, WalletPoolData>;
-export type DashboardDatasMapper = Record<string, DashboardDataMapper>;
+export type DashboardDataMapper = Record<string, WalletPoolData>
+export type DashboardDatasMapper = Record<string, DashboardDataMapper>
 
 export interface FormValues {
   sortBy: SortId

@@ -61,7 +61,7 @@ interface CurveGaugeResponse {
   generatedTimeMs: number
 }
 
-type GaugeCurveApiDataMapper = Record<string, CurveApiGaugeData>;
+type GaugeCurveApiDataMapper = Record<string, CurveApiGaugeData>
 
 /**
  * Legacy refers to the fact that we're using the old api.curve.finance endpoint.

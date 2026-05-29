@@ -6,8 +6,17 @@ import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
-interface TabStyle { Label?: string; Fill?: string; Outline?: string }
-interface TabVariant { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+interface TabStyle {
+  Label?: string
+  Fill?: string
+  Outline?: string
+}
+interface TabVariant {
+  Inset?: string
+  Default: TabStyle
+  Hover: TabStyle
+  Current: TabStyle
+}
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 type SpacingKey = keyof typeof SizesAndSpaces.Spacing | string | number
 interface TabSizeConfig {

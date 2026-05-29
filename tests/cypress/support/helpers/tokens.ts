@@ -54,8 +54,7 @@ const TOKENS: Token[] = [
   { chain: 'optimism', symbol: 'wstETH', address: '0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb', usdPrice: null  },
 ]
 
-export const oneToken = (chain?: string) =>
-  chain ? oneOf(...TOKENS.filter(t => t.chain === chain)) : oneOf(...TOKENS)
+export const oneToken = (chain?: string) => (chain ? oneOf(...TOKENS.filter(t => t.chain === chain)) : oneOf(...TOKENS))
 
 export const mockTokenPrices = () =>
   cy.intercept('https://prices.curve.finance/v1/usd_price/*/*', req => {

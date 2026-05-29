@@ -42,7 +42,7 @@ export const { useQuery: useLendMarkets } = queryFactory({
   queryFn: async ({
     chainId,
     enableLLv2,
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   }: ChainQuery & { enableLLv2: boolean }): Promise<Record<string | Address, LendMarketData>> => {
     const api = requireLib('llamaApi')
     await Promise.all(
