@@ -21,7 +21,6 @@ export const TokenInfo = ({
   showChainIcon?: boolean
 }) => {
   const isIconRight = iconPosition === 'right'
-  const textAlign = isIconRight ? 'right' : 'left'
   const tokenIcon = <TokenIcon blockchainId={blockchainId} address={address} size="lg" showChainIcon={showChainIcon} />
 
   return (
@@ -29,16 +28,12 @@ export const TokenInfo = ({
       {!isIconRight && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: isIconRight ? 'end' : 'start' }}>
-        <Typography variant="tableCellMBold" noWrap sx={{ textAlign }}>
+        <Typography variant="tableCellMBold" noWrap>
           {primary}
         </Typography>
 
         {secondary && (
-          <Typography
-            variant="tableCellSRegular"
-            noWrap
-            sx={theme => ({ color: theme.design.Text.TextColors.Secondary, textAlign })}
-          >
+          <Typography variant="tableCellSRegular" color="textSecondary" noWrap>
             {secondary}
           </Typography>
         )}
