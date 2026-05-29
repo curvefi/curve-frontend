@@ -10,6 +10,7 @@ import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
+import { maybes } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -77,12 +78,10 @@ export const Proposal = () => {
 
   const snapshotVeCrv = useMemo(
     () =>
-      proposal != null && votingPower != null
-        ? {
-            value: votingPower,
-            blockNumber: proposal.block,
-          }
-        : undefined,
+      maybes([proposal, votingPower], ([proposal, votingPower]) => ({
+        value: votingPower,
+        blockNumber: proposal.block,
+      })),
     [proposal, votingPower],
   )
 

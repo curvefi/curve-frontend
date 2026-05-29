@@ -19,7 +19,7 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
@@ -63,7 +63,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     defaultValues: {
       ...userDefaultValues,
       leverageEnabled: false,
-      slippage: SLIPPAGE_PRESETS.STABLE,
+      slippage: SLIPPAGE_PRESETS.stable,
       range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
@@ -134,7 +134,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const maxTokenValues = useMaxTokenValues(collateralToken?.address, params, form)
+  const maxTokenValues = useMaxTokenValues({ market, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)

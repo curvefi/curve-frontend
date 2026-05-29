@@ -10,6 +10,9 @@ import { reactRefresh } from 'eslint-plugin-react-refresh'
 import storybook from 'eslint-plugin-storybook'
 import unusedImports from 'eslint-plugin-unused-imports'
 import tseslint from 'typescript-eslint'
+import { useMaybePatternRule } from './.eslint/use-maybe-pattern.rule.mjs'
+import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
+import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -45,6 +48,13 @@ const config = [
     plugins: {
       'no-only-tests': noOnlyTests,
       'unused-imports': unusedImports,
+      local: {
+        rules: {
+          'use-maybe-pattern': useMaybePatternRule,
+          'no-double-negative': noDoubleNegativeRule,
+          'no-redundant-ternary': noRedundantTernaryRule,
+        },
+      },
     },
     languageOptions: {
       parserOptions: {
@@ -95,6 +105,10 @@ const config = [
           enforceLazyInitialization: false, // something we didn't adhere to previously, but should refactor in the future anyway?
         },
       ],
+
+      'local/use-maybe-pattern': 'error',
+      'local/no-double-negative': 'error',
+      'local/no-redundant-ternary': 'error',
 
       'object-shorthand': 'warn',
       'arrow-body-style': ['error', 'as-needed'],

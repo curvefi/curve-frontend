@@ -46,28 +46,30 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
     <Box flex flexColumn flexGap="var(--spacing-2)">
       <Box flex flexColumn>
         <SubTitle>{t`User`}</SubTitle>
-        {!userAddress ? (
-          <Loader isLightBg skeleton={[80, 16.5]} />
-        ) : noLink ? (
-          <Box flex flexColumn>
-            {userEns ? (
-              <UserIdentifier>{userEns}</UserIdentifier>
-            ) : (
-              <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
-            )}
-            {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
-          </Box>
-        ) : (
-          <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
-            <Box flex flexAlignItems="end">
+        {userAddress ? (
+          noLink ? (
+            <Box flex flexColumn>
               {userEns ? (
                 <UserIdentifier>{userEns}</UserIdentifier>
               ) : (
                 <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
               )}
+              {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
             </Box>
-            {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
-          </StyledInternalLink>
+          ) : (
+            <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
+              <Box flex flexAlignItems="end">
+                {userEns ? (
+                  <UserIdentifier>{userEns}</UserIdentifier>
+                ) : (
+                  <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
+                )}
+              </Box>
+              {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
+            </StyledInternalLink>
+          )
+        ) : (
+          <Loader isLightBg skeleton={[80, 16.5]} />
         )}
       </Box>
 

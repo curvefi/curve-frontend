@@ -15,7 +15,8 @@ import {
 } from '@ui-kit/shared/ui/DataTable/filters'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { constQ } from '@ui-kit/types/util'
+import { borderStyle, formatNumber } from '@ui-kit/utils'
 import { Unit } from '@ui-kit/utils/units'
 import { LLAMA_MARKET_COLUMNS, LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
@@ -24,6 +25,7 @@ import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
+const TEST_ID = 'table-filters-collapsible'
 const LLAMA_MARKET_COLUMN_ORDER = new Map(LLAMA_MARKET_COLUMNS.map((column, index) => [column.id, index]))
 
 const formatRangeValue = (value: number, unit?: Unit) =>
@@ -77,8 +79,9 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
         alignItems: 'end',
         gap: Spacing.sm,
         justifyContent: 'space-between',
-        borderTop: t => `1px solid ${t.design.Layer[1].Outline}`,
+        borderTop: borderStyle,
       }}
+      data-testid={TEST_ID}
     >
       <Stack direction="row" sx={{ gap: Spacing.sm, flexWrap: 'wrap' }}>
         {sortedFiltersState.map(({ id, value }) => {
@@ -98,10 +101,18 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
 
           return (
             !!labels?.length && (
-              <SelectedFilterChips key={`selected-chip-${id}`} title={LLAMA_MARKET_TITLES[id]}>
+              <SelectedFilterChips
+                key={`selected-chip-${id}`}
+                title={LLAMA_MARKET_TITLES[id]}
+                testId={`${TEST_ID}-active-filter-${id}`}
+              >
                 {/* Special chip for the chains filter */}
                 {id === LlamaMarketColumnId.Chain ? (
-                  <ChainFilterChips chains={labels} selectedChains={labels} toggleChain={removeClickedValue} />
+                  <ChainFilterChips
+                    chainsQuery={constQ(labels)}
+                    selectedChains={labels}
+                    toggleChain={removeClickedValue}
+                  />
                 ) : (
                   <>
                     {visibleLabels.map(label => (
@@ -124,7 +135,14 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
           )
         })}
       </Stack>
-      <Button color="ghost" size="extraSmall" onClick={resetFilters} sx={{ flexShrink: 0 }}>
+
+      <Button
+        color="ghost"
+        size="extraSmall"
+        onClick={resetFilters}
+        sx={{ flexShrink: 0 }}
+        data-testid={`${TEST_ID}-reset-btn`}
+      >
         {t`Reset filters`}
       </Button>
     </Stack>

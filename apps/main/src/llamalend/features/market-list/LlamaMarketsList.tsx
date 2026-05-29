@@ -20,9 +20,10 @@ import {
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
+import { LegacyUserPositionsTable } from './LegacyUserPositionsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { UserPositionsTable } from './UserPositionsTable'
+import { UserPositionsTables } from './UserPositionsTables'
 
 const { Spacing } = SizesAndSpaces
 
@@ -76,9 +77,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
   }
 }
 
-/**
- * Page for displaying the lending markets table.
- */
+/** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
@@ -89,10 +88,17 @@ export const LlamaMarketsList = () => {
     onReload,
   } = useTableLlamaMarkets(address)
 
+  const isNewLayout = useNewMarketListLayout()
+
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {address ? (
-        data?.userHasPositions && <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+        data?.userHasPositions &&
+        (isNewLayout ? (
+          <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+        ) : (
+          <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+        ))
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
@@ -106,7 +112,7 @@ export const LlamaMarketsList = () => {
           />
         </Box>
       )}
-      {useNewMarketListLayout() ? (
+      {isNewLayout ? (
         <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={!!error} loading={isLoading} />

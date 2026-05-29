@@ -7,6 +7,7 @@ import {
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -108,7 +109,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Max leverage`}
-          value={maxLeverage?.value == null ? undefined : maxLeverage.value}
+          value={maybe(maxLeverage?.value, () => maxLeverage.value)}
           loading={maxLeverage?.loading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{

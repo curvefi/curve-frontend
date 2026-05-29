@@ -46,3 +46,13 @@ export function movingAverage(values: number[], timestamps: number[], windowMs: 
     return windowSum / (i - windowStart + 1)
   })
 }
+
+/**
+ * Returns the median value from an array of numbers or `undefined` when the array is empty.
+ * For even-length arrays, this returns the lower-middle value.
+ */
+export const median = (values: number[]) => {
+  const sorted = [...values].sort((a, b) => a - b)
+  const middle = Math.floor(sorted.length / 2)
+  return sorted.length % 2 === 0 ? sorted[middle - 1] : sorted[middle]
+}

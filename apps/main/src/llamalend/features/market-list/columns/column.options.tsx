@@ -32,7 +32,7 @@ const createLlamaMarketsColumnOptions = ({
       {
         label: t`Max leverage`,
         columns: [LlamaMarketColumnId.MaxLeverage],
-        active: true,
+        active: !onlyPositions,
         enabled: true,
       },
       {

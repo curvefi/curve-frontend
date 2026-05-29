@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -38,7 +39,7 @@ export const ActionInfoGasEstimate = ({
         </Typography>
       </>
     }
-    value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
+    value={maybe(gas.data?.estGasCostUsd, data => formatUsd(data))}
     valueTooltip={gas.data?.tooltip}
     loading={gas.isLoading}
     valueLeft={<FireIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}

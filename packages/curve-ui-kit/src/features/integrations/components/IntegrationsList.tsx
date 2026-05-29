@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { BLOCKCHAIN_LEGACY_NAMES } from '@ui/utils'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -14,6 +14,7 @@ import { getDefaultSelectableChipSize } from '@ui-kit/shared/ui/selectable-chip.
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { useIntegrations } from '../queries/integrations'
 import { useIntegrationsTags } from '../queries/integrations-tags'
 
@@ -52,32 +53,33 @@ const filterIntegrations = ({
 }
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
-  const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
+  const integrationsQuery = useIntegrations({})
+  // to do: handle query error
+  const { data: integrations = [], isLoading: integrationsLoading } = integrationsQuery
   const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
   const isLoading = integrationsLoading || integrationsTagsLoading
   const isMobile = useIsMobile()
 
   // Collect the unique list of networks from the integrations response
-  const networks = useMemo(
-    () => [
-      ...new Set(
-        integrations.flatMap(integration =>
-          Object.entries(integration.networks ?? [])
-            .filter(([, enabled]) => enabled)
-            .map(([networkId]) => networkId),
-        ),
+  const networksQuery = useMappedQuery(integrationsQuery, data => [
+    ...new Set(
+      data.flatMap(integration =>
+        Object.entries(integration.networks ?? [])
+          .filter(([, enabled]) => enabled)
+          .map(([networkId]) => networkId),
       ),
-    ],
-    [integrations],
-  )
+    ),
+  ])
 
   const push = useNavigate()
   const searchParams = useSearchParams()
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
-    () => (networks.find(network => network === searchParams?.get('network')) || networkId) ?? 'ethereum',
-    [networkId, networks, searchParams],
+    () =>
+      (notFalsyArray(networksQuery.data).find(network => network === searchParams?.get('network')) || networkId) ??
+      'ethereum',
+    [networkId, networksQuery.data, searchParams],
   )
 
   const updateFilters = useCallback(
@@ -104,7 +106,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
     <WithSkeleton loading={isLoading} sx={{ height: Sizing.xxl }}>
       <Stack direction="column" sx={{ gap: Spacing.sm }}>
         <ChainFilterChips
-          chains={networks}
+          chainsQuery={networksQuery}
           selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
           toggleChain={useCallback(network => updateFilters({ network }), [updateFilters])}
         />
@@ -127,7 +129,15 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
           ))}
         </Stack>
 
-        {!integrationsFiltered.length ? (
+        {integrationsFiltered.length ? (
+          <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
+            {(integrationsFiltered ?? []).map(app => (
+              <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
+                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
             <Trans>
               No integration apps found with for{' '}
@@ -136,14 +146,6 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
                 .join(t` and `)}
             </Trans>
           </Box>
-        ) : (
-          <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
-            {(integrationsFiltered ?? []).map(app => (
-              <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
-              </Grid>
-            ))}
-          </Grid>
         )}
       </Stack>
     </WithSkeleton>

@@ -3,7 +3,7 @@ import { enforce, test } from 'vest'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
-import { assert, notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy, maybe } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
 import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
@@ -115,14 +115,8 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
 
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
-  const route = data == null ? undefined : (data[0] ?? null)
-  return useMemo(
-    () => ({
-      ...q({ isLoading, data: route, error }),
-      isFetching,
-    }),
-    [isLoading, route, error, isFetching],
-  )
+  const route = maybe(data, ([route = null]) => route)
+  return useMemo(() => ({ ...q({ isLoading, data: route, error }), isFetching }), [isLoading, route, error, isFetching])
 }
 
 export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryKey = QueryKey> = (
