@@ -35,7 +35,7 @@ describe('Refuel page', () => {
     getTestById('monthly-action-info-value').should('have.attr', 'data-value', '-')
 
     getTestById('pool-information').should('be.visible')
-    getTestById('pool-tvl-value', API_LOAD_TIMEOUT).invoke('attr', 'data-value').should('match', /\d/)
+    getTestById('pool-tvl-value').invoke(API_LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
     getTestById('pool-volume-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('pool-fees-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('pool-apr-value').invoke('attr', 'data-value').should('match', /\d/)

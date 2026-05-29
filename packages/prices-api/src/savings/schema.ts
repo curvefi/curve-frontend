@@ -19,7 +19,7 @@ const event = z
   .transform(({ actionType, receiver, assets, shares, transactionHash, ...data }) => ({
     ...data,
     type: actionType.toLowerCase(),
-    receiver: receiver ? receiver : undefined,
+    receiver: receiver || undefined,
     assets: BigInt(assets),
     supply: BigInt(shares),
     txHash: transactionHash,

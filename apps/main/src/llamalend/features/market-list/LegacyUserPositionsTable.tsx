@@ -15,6 +15,7 @@ import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTabl
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
+import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
@@ -175,7 +176,7 @@ export const LegacyUserPositionsTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >
-      <Stack>
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         <LegacyTableFilters<LlamaMarketColumnId>
           filterExpandedKey={title}
           loading={isLoading}

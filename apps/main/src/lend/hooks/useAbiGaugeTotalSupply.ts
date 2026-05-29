@@ -18,18 +18,14 @@ export const useAbiGaugeTotalSupply = (
     async (jsonModuleName: string, contractAddress: string, provider: Provider | JsonRpcProvider) => {
       try {
         const abi = await import(`@/lend/abis/${jsonModuleName}.json`).then(module => module.default.abi)
-
-        if (!abi) {
-          console.error('cannot find abi')
-          return null
-        } else {
-          const iface = new Interface(abi)
-          return new Contract(contractAddress, iface.format(), provider)
+        if (abi) {
+          return new Contract(contractAddress, new Interface(abi).format(), provider)
         }
+        console.error('cannot find abi')
       } catch (error) {
         console.error(error)
-        return null
       }
+      return null
     },
     [],
   )
