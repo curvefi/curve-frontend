@@ -15,7 +15,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
 import { useUserMarketStats } from '../../queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
@@ -178,7 +178,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         </Grid>
       )}
       <Button
-        sx={{ flexGrow: 1, borderBlock: t => `1px solid ${t.design.Layer[1].Outline}` }}
+        sx={{ flexGrow: 1, borderBlock: borderStyle }}
         component={Link}
         href={url}
         color="ghost"

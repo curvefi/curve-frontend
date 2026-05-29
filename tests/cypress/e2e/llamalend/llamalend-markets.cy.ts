@@ -77,9 +77,9 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
-        mobile: [90],
-        tablet: [100],
-        desktop: [100],
+        mobile: [48],
+        tablet: [56],
+        desktop: [56],
       }[breakpoint]
       cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
       cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
