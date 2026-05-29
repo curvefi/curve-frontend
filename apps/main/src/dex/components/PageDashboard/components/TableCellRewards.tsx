@@ -40,32 +40,38 @@ export const TableCellRewards = ({
 
   const rewards = haveRewards && (
     <>
-      {!showUserCrvRewards ? (
+      {showUserCrvRewards ? (
+        typeof userCrvApy !== 'undefined' && haveCrv ? (
+          <Chip
+            isBlock
+            {...(haveUserCrvApy && boostedCrvApy && fetchUserPoolBoost
+              ? {
+                  tooltip: (
+                    <TableCellRewardsTooltip
+                      crv={crv}
+                      userCrvApy={userCrvApy}
+                      fetchUserPoolBoost={fetchUserPoolBoost}
+                    />
+                  ),
+                  tooltipProps: {
+                    textAlign: 'left',
+                    minWidth: '300px',
+                  },
+                }
+              : {})}
+            size="md"
+          >
+            <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
+              {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
+            </WithWrapper>{' '}
+            {boostedCrvApy ? (
+              <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
+            ) : null}
+          </Chip>
+        ) : null
+      ) : (
         <PoolRewardsCrv rewardsApy={rewardsApy} poolData={poolData} />
-      ) : typeof userCrvApy !== 'undefined' && haveCrv ? (
-        <Chip
-          isBlock
-          {...(haveUserCrvApy && boostedCrvApy && fetchUserPoolBoost
-            ? {
-                tooltip: (
-                  <TableCellRewardsTooltip crv={crv} userCrvApy={userCrvApy} fetchUserPoolBoost={fetchUserPoolBoost} />
-                ),
-                tooltipProps: {
-                  textAlign: 'left',
-                  minWidth: '300px',
-                },
-              }
-            : {})}
-          size="md"
-        >
-          <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
-            {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
-          </WithWrapper>{' '}
-          {boostedCrvApy ? (
-            <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
-          ) : null}
-        </Chip>
-      ) : null}
+      )}
       <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
     </>
   )

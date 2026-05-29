@@ -18,29 +18,31 @@ export const TableRowNoResult = ({ colSpan, error, noResult }: Props) => {
 
   return (
     <>
-      {!walletAddress ? (
+      {walletAddress ? (
+        error ? (
+          <tr>
+            <td colSpan={colSpan}>
+              <SpinnerWrapper>{t`Unable to get pool list`}</SpinnerWrapper>
+            </td>
+          </tr>
+        ) : (
+          !isLoading &&
+          noResult && (
+            <tr>
+              <td colSpan={colSpan}>
+                <StyledSpinnerWrapper>
+                  {t`No active pool found for`} {walletAddress ? shortenAccount(walletAddress) : ''}
+                </StyledSpinnerWrapper>
+              </td>
+            </tr>
+          )
+        )
+      ) : (
         <tr>
           <td colSpan={colSpan}>
             <SpinnerWrapper>{t`Please connect wallet or enter a wallet address to view active pools.`}</SpinnerWrapper>
           </td>
         </tr>
-      ) : error ? (
-        <tr>
-          <td colSpan={colSpan}>
-            <SpinnerWrapper>{t`Unable to get pool list`}</SpinnerWrapper>
-          </td>
-        </tr>
-      ) : (
-        !isLoading &&
-        noResult && (
-          <tr>
-            <td colSpan={colSpan}>
-              <StyledSpinnerWrapper>
-                {t`No active pool found for`} {walletAddress ? shortenAccount(walletAddress) : ''}
-              </StyledSpinnerWrapper>
-            </td>
-          </tr>
-        )
       )}
     </>
   )

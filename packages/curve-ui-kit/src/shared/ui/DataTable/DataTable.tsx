@@ -75,8 +75,7 @@ export const DataTable = <T extends TableItem>({
   isLoading,
   size = 'small',
   maxHeight,
-  rowLimit,
-  viewAllLabel,
+  defaultVisibleRows,
   disableStickyHeader,
   shouldStickFirstColumn = false,
   hideHeader = false,
@@ -89,17 +88,18 @@ export const DataTable = <T extends TableItem>({
   isLoading: boolean
   size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
-  rowLimit?: number
-  viewAllLabel?: string
+  // maximum number of visible rows and the button's label to expand them all
+  defaultVisibleRows?: { max: number; buttonLabel: string }
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
+  const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
-  const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
+  const visibleRows = isLimited ? rows.slice(0, rowLimit) : rows
   const showViewAllButton = isLimited && rows.length > rowLimit!
   // pagination should bw shown if no rows limit and if needed
   const showPagination = !isLimited && table.getPageCount() > 1

@@ -2,6 +2,8 @@ import { z } from 'zod/v4'
 import type { Chain } from '..'
 import { address, camelizeKeys, timestamp } from '../schemas'
 
+const GAUGE_WEIGHT_SCALE = 1e18
+
 const gauge = z
   .object({
     address,
@@ -104,15 +106,15 @@ const weightHistory = z
     gauge_weight: z.string(),
     gauge_relative_weight: z.string(),
     emissions: z.string(),
-    epoch: z.number(),
+    epoch: timestamp,
   })
   .transform(camelizeKeys)
-  .transform(({ isKilled, gaugeWeight, gaugeRelativeWeight, emissions, ...data }) => ({
-    ...data,
+  .transform(({ isKilled, gaugeWeight, gaugeRelativeWeight, emissions, epoch: timestamp }) => ({
     killed: isKilled,
-    weight: parseFloat(gaugeWeight),
-    weightRelative: parseFloat(gaugeRelativeWeight),
+    weight: parseFloat(gaugeWeight) / GAUGE_WEIGHT_SCALE,
+    weightRelative: (parseFloat(gaugeRelativeWeight) / GAUGE_WEIGHT_SCALE) * 100,
     emissions: parseFloat(emissions),
+    timestamp,
   }))
 
 export const getDeploymentResponse = z

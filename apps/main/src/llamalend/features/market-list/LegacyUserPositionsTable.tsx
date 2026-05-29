@@ -15,6 +15,7 @@ import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTabl
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp, useMappedQuery } from '@ui-kit/types/util'
+import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
@@ -110,7 +111,7 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({
+export const LegacyUserPositionsTable = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading, error },
@@ -166,7 +167,7 @@ export const UserPositionsTable = ({
         <UserPositionsEmptyState
           state={getEmptyState(!!error, userData?.length > 0)}
           table={table}
-          tab={tab}
+          marketRateType={tab}
           onReload={onReload}
           resetFilters={resetFilters}
         />
@@ -175,7 +176,7 @@ export const UserPositionsTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >
-      <Stack>
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         <LegacyTableFilters<LlamaMarketColumnId>
           filterExpandedKey={title}
           loading={isLoading}
@@ -203,7 +204,7 @@ export const UserPositionsTable = ({
             </>
           }
         />
-        <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
+        <UserPositionSummary markets={markets} selectedChains={selectedChains} />
         <Stack
           direction="row"
           sx={{
