@@ -22,75 +22,47 @@ export type ChartColors = {
 }
 
 export function useChartPalette({ backgroundOverride }: { backgroundOverride?: string } = {}): ChartColors {
-  const {
-    design,
-    palette: {
-      background,
-      primary: { main: primary },
-      text,
-    },
-  } = useTheme()
+  const theme = useTheme()
+  return useMemo(() => {
+    const {
+      design: {
+        Color: { Neutral },
+        Chart: {
+          Candles: { Negative, Positive },
+          LiquidationZone: { Current, CurrentBottomLine, CurrentTopLine, Future, FutureLine },
+          Lines,
+        },
+      },
+      palette: {
+        background: { paper },
+        primary: { main: primary },
+        text: { highlight, tertiary },
+      },
+    } = theme
 
-  const backgroundColor = useMemo(
-    () =>
-      backgroundOverride ??
-      getComputedStyle(document.body ?? document.documentElement)
-        .getPropertyValue('--box--secondary--background-color')
-        .trim() ??
-      background.paper,
-    [background.paper, backgroundOverride],
-  )
-
-  const success = design.Chart.Candles.Positive
-  const error = design.Chart.Candles.Negative
-  const textPrimary = text.tertiary
-  const textHighlight = text.highlight
-  const rangeLineTop = design.Chart.LiquidationZone.CurrentTopLine
-  const rangeLineBottom = design.Chart.LiquidationZone.CurrentBottomLine
-  const rangeBackground = design.Chart.LiquidationZone.Current
-  const rangeLineFutureTop = design.Chart.LiquidationZone.FutureLine
-  const rangeLineFutureBottom = design.Chart.LiquidationZone.FutureLine
-  const rangeBackgroundFuture = design.Chart.LiquidationZone.Future
-  const oraclePrice = primary
-  const cursorVertLine = design.Chart.Lines[1]
-  const gridLine = design.Color.Neutral[300]
-
-  return useMemo(
-    () => ({
-      backgroundColor,
+    return {
+      backgroundColor:
+        backgroundOverride ??
+        getComputedStyle(document.body ?? document.documentElement)
+          .getPropertyValue('--box--secondary--background-color')
+          .trim() ??
+        paper,
       lineColor: primary,
-      textColor: textPrimary,
-      gridLine,
-      green: success,
-      red: error,
-      cursorLabel: textHighlight,
-      cursorVertLine,
-      volumeRed: error,
-      volumeGreen: success,
-      oraclePrice,
-      rangeBackground,
-      rangeLineTop,
-      rangeLineBottom,
-      rangeBackgroundFuture,
-      rangeLineFutureTop,
-      rangeLineFutureBottom,
-    }),
-    [
-      backgroundColor,
-      primary,
-      textPrimary,
-      gridLine,
-      success,
-      error,
-      textHighlight,
-      cursorVertLine,
-      oraclePrice,
-      rangeBackground,
-      rangeLineTop,
-      rangeLineBottom,
-      rangeBackgroundFuture,
-      rangeLineFutureTop,
-      rangeLineFutureBottom,
-    ],
-  )
+      textColor: tertiary,
+      gridLine: Neutral[300],
+      green: Positive,
+      red: Negative,
+      cursorLabel: highlight,
+      cursorVertLine: Lines[1],
+      volumeRed: Negative,
+      volumeGreen: Positive,
+      oraclePrice: primary,
+      rangeBackground: Current,
+      rangeLineTop: CurrentTopLine,
+      rangeLineBottom: CurrentBottomLine,
+      rangeBackgroundFuture: Future,
+      rangeLineFutureTop: FutureLine,
+      rangeLineFutureBottom: FutureLine,
+    }
+  }, [backgroundOverride, theme])
 }
