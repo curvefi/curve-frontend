@@ -30,7 +30,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const activeKey = useStore(state => state.vaultDepositMint.activeKey)
@@ -87,7 +87,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
 
       const resp = await fetchStepDepositMint(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -157,10 +157,10 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])

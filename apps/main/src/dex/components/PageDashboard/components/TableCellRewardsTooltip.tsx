@@ -13,21 +13,21 @@ type Props = {
 }
 
 export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: Props) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const [boost, setBoost] = useState('')
 
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
     void (async () => {
       const fetchedBoosted = await fetchUserPoolBoost()
 
-      if (isSubscribed.current) {
+      if (isSubscribedRef.current) {
         setBoost(fetchedBoosted)
       }
     })()
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
