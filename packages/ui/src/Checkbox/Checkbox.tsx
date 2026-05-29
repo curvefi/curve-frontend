@@ -82,8 +82,8 @@ const Rect = styled.rect<{ isSelected: boolean; isDisabled: boolean; fillColor: 
   ${({ isSelected, isDisabled, fillColor }) => {
     if (isSelected) {
       return `
-        stroke: ${fillColor ? fillColor : 'var(--active--border-color)'};
-        fill: ${fillColor ? fillColor : 'var(--checkbox--active--background-color)'};
+        stroke: ${fillColor || 'var(--active--border-color)'};
+        fill: ${fillColor || 'var(--checkbox--active--background-color)'};
       `
     } else if (isDisabled) {
       return `

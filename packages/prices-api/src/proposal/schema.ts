@@ -86,7 +86,7 @@ export const getProposalDetailsResponse = z
   .transform(({ executionTx, script, votes, ...details }) => ({
     ...transformProposal({ ...details, executionTx }),
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    txExecution: executionTx ? executionTx : undefined,
+    txExecution: executionTx || undefined,
     script: script ?? '',
     votes: votes.map(item => ({
       voter: item.voter,

@@ -331,12 +331,12 @@ export const getPoolMetadataResponse = z
     has_donations: z.boolean(),
   })
   .transform(camelizeKeys)
-  .transform(({ deploymentDate, gauges, assetTypes, oracles, ...data }) => ({
+  .transform(({ deploymentDate, gauges, assetTypes, oracles = null, ...data }) => ({
     ...data,
     gauges: [...gauges],
     assetTypes: assetTypes ? [...assetTypes] : null,
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    oracles: oracles?.map(item => (item ? item : null)) ?? null,
+     
+    oracles,
     deploymentDate: deploymentDate ?? null,
   }))
 

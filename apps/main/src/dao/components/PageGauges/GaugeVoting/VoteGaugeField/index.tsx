@@ -33,7 +33,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
   })
   const { userPower, gaugeAddress } = userGaugeVoteData
   const currentDate = useCurrentDate()
-  const canVote = userGaugeVoteNextTime ? currentDate.getTime() > userGaugeVoteNextTime : true
+  const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100

@@ -1,5 +1,5 @@
 import { sumBy } from 'lodash'
-import { notFalsy, maybe } from '@primitives/objects.utils'
+import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { ExtraIncentive } from '@ui-kit/types/market'
@@ -149,7 +149,7 @@ export const getSupplyApyMetrics = ({
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy = maybe([crvMinBoostApr, userSupplyBoost], ([apr, boost]) => aprToApy(apr * boost)) ?? null
+  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], ([apr, boost]) => aprToApy(apr * boost)) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy)
 
@@ -162,7 +162,7 @@ export const getSupplyApyMetrics = ({
     extraIncentivesTotalApy: extraIncentivesApy,
     totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApy),
     totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApy),
-    totalUserBoost: maybe([totalWithoutBoost, userBoostApy], ([total, boost]) => sumRates(total, boost)) ?? null,
+    totalUserBoost: maybes([totalWithoutBoost, userBoostApy], ([total, boost]) => sumRates(total, boost)) ?? null,
   }
 }
 

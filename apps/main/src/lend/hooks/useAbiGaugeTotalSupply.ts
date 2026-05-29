@@ -19,19 +19,14 @@ export const useAbiGaugeTotalSupply = (
       try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         const abi = await import(`@/lend/abis/${jsonModuleName}.json`).then(module => module.default.abi)
-
-        if (!abi) {
-          console.error('cannot find abi')
-          return null
-        } else {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-          const iface = new Interface(abi)
-          return new Contract(contractAddress, iface.format(), provider)
+        if (abi) {
+          return new Contract(contractAddress, new Interface(abi).format(), provider)
         }
+        console.error('cannot find abi')
       } catch (error) {
         console.error(error)
-        return null
       }
+      return null
     },
     [],
   )

@@ -76,13 +76,10 @@ type NonNullishTuple<T extends readonly unknown[]> = {
   [K in keyof T]: NonNullable<T[K]>
 }
 
-export function maybe<const T extends readonly unknown[], R>(
+export const maybes = <const T extends readonly unknown[], R>(
   value: readonly [...T] | null | undefined,
   mapper: (value: NonNullishTuple<T>) => R,
-): R | undefined
-export function maybe<T, R>(value: T | null | undefined, mapper: (value: NonNullable<T>) => R): R | undefined
-export function maybe<T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined {
-  if (value == null) return undefined
-  if (Array.isArray(value) && value.some(x => x == null)) return undefined
-  return mapper(value)
-}
+): R | undefined => (value == null || value.some(x => x == null) ? undefined : mapper(value as NonNullishTuple<T>))
+export const maybe = <T, R>(value: T | null | undefined, mapper: (value: T) => R): R | undefined =>
+  // eslint-disable-next-line local/use-maybe-pattern
+  value == null ? undefined : mapper(value)

@@ -35,8 +35,7 @@ export const TableSortDialog = ({ className = '', tableLabel }: Props) => {
   }
 
   const value = `${sortBy}-${sortByOrder}`
-  const btnLabel = tableLabel[sortBy].mobile ? tableLabel[sortBy].mobile : tableLabel[sortBy].name
-
+  const btnLabel = tableLabel[sortBy].mobile || tableLabel[sortBy].name
   return (
     <Box className={className}>
       <OpenDialogButton overlayTriggerState={overlayTriggerState} showCaret variant="icon-outlined">
@@ -54,33 +53,30 @@ export const TableSortDialog = ({ className = '', tableLabel }: Props) => {
             <StyledChip>Asc</StyledChip> <StyledChip>Desc</StyledChip>
           </SortHeader>
           <RadioGroup aria-label={`Type`} onChange={handleRadioGroupChange} value={`${sortBy}-${sortByOrder}`}>
-            {Object.entries(tableLabel).map(([key, { name, mobile }]) => {
-              const tableLabel = mobile ? mobile : name
-              return (
-                <RadioWrapper
-                  key={key}
-                  flex
-                  flexAlignItems="center"
-                  flexJustifyContent="space-between"
-                  padding="var(--spacing-2) 0"
-                >
-                  {tableLabel}{' '}
-                  <RadiosWrapper grid gridTemplateColumns="repeat(2, auto)">
-                    {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => (
-                      <StyledRadio
-                        key={orderKey}
-                        aria-label={`Sort by ${tableLabel} ${label}`}
-                        isCustom
-                        className={value === `${key}-${orderKey}` ? 'selected' : ''}
-                        value={`${key}-${orderKey}`}
-                      >
-                        {IconComp}
-                      </StyledRadio>
-                    ))}
-                  </RadiosWrapper>
-                </RadioWrapper>
-              )
-            })}
+            {Object.entries(tableLabel).map(([key, { name, mobile }]) => (
+              <RadioWrapper
+                key={key}
+                flex
+                flexAlignItems="center"
+                flexJustifyContent="space-between"
+                padding="var(--spacing-2) 0"
+              >
+                {mobile || name}{' '}
+                <RadiosWrapper grid gridTemplateColumns="repeat(2, auto)">
+                  {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => (
+                    <StyledRadio
+                      key={orderKey}
+                      aria-label={`Sort by ${mobile || name} ${label}`}
+                      isCustom
+                      className={value === `${key}-${orderKey}` ? 'selected' : ''}
+                      value={`${key}-${orderKey}`}
+                    >
+                      {IconComp}
+                    </StyledRadio>
+                  ))}
+                </RadiosWrapper>
+              </RadioWrapper>
+            ))}
           </RadioGroup>
         </ModalDialog>
       )}

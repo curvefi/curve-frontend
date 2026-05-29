@@ -19,8 +19,7 @@ const event = z
   .transform(({ actionType, receiver, assets, shares, transactionHash, ...data }) => ({
     ...data,
     type: actionType.toLowerCase(),
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    receiver: receiver ? receiver : undefined,
+    receiver: receiver ?? undefined,
     assets: BigInt(assets),
     supply: BigInt(shares),
     txHash: transactionHash,
