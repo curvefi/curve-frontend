@@ -1,4 +1,3 @@
-import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenInfo } from '../TokenInfo'
 
@@ -62,11 +61,6 @@ export const PoolSwapUsage: Story = {
     primary: '10.420M',
     secondary: '$37.24M',
   },
-  render: args => (
-    <Stack sx={{ width: 220, alignItems: 'flex-end' }}>
-      <TokenInfo {...args} />
-    </Stack>
-  ),
   parameters: {
     docs: {
       description: {
