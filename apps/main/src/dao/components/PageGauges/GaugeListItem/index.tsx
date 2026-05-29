@@ -54,7 +54,7 @@ export const GaugeListItem = ({
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
   const currentDate = useCurrentDate()
-  const canVote = userGaugeVoteNextTime ? currentDate.getTime() > userGaugeVoteNextTime : true
+  const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
 
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]

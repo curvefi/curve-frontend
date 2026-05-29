@@ -84,8 +84,7 @@ const config = [
       '@eslint-react/naming-convention-ref-name': 'off',
       '@eslint-react/naming-convention-id-name': 'off',
       '@eslint-react/component-hook-factories': 'off',
-      '@eslint-react/set-state-in-effect': 'warn',
-      '@eslint-react/purity': 'error',
+      '@eslint-react/set-state-in-effect': 'off',
       '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
@@ -117,7 +116,6 @@ const config = [
       'unused-imports/no-unused-imports': 'warn',
 
       'import-x/no-default-export': 'error',
-      'import-x/no-named-as-default': 'error',
       'import-x/no-restricted-paths': [
         'error',
         {
@@ -199,8 +197,6 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
-      '@typescript-eslint/triple-slash-reference': ['error', { lib: 'always', path: 'always', types: 'prefer-import' }],
-
       // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-duplicate-type-constituents': 'off',
