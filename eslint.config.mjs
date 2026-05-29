@@ -86,8 +86,6 @@ const config = [
       '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
-      '@eslint-react/no-use-context': 'off',
-      '@eslint-react/no-context-provider': 'off',
       '@eslint-react/no-unnecessary-use-prefix': 'off',
       '@eslint-react/no-children-to-array': 'off',
       '@eslint-react/no-children-map': 'off',
