@@ -20,10 +20,15 @@ interface EChartsLineChartTooltipContext<TData, TSeriesKey extends string> {
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-interface EChartsLineMarkLine { value: number; label?: string; color: string; dash?: ChartLineDashPattern }
+interface EChartsLineMarkLine {
+  value: number
+  label?: string
+  color: string
+  dash?: ChartLineDashPattern
+}
 
 /** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
-const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
+const getYAxisBounds = <TData, TSeriesKey extends Extract<keyof TData, string>>(
   data: TData[],
   activeSeries: LineSeriesConfig<TSeriesKey>[],
   paddingRatio: number,
@@ -38,7 +43,7 @@ const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extend
 }
 
 export const EChartsLineChart = <
-  TData extends Record<string, unknown>,
+  TData,
   TSeriesKey extends Extract<keyof TData, string>,
   TXKey extends Extract<keyof TData, string>,
 >({

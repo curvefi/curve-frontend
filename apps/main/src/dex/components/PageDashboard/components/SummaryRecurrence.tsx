@@ -13,14 +13,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
-type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>;
+type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>
 
 interface TotalAll {
   tokens: TotalOtherProfit
   totalUsd: number
 }
 
-interface Props { title?: string }
+interface Props {
+  title?: string
+}
 
 export const TotalRecurrence = ({ title }: Props) => {
   const {
@@ -32,7 +34,7 @@ export const TotalRecurrence = ({ title }: Props) => {
   const { tokens, totalUsd } = useMemo(() => {
     if (typeof dashboardDataMapper === 'undefined') return {} as TotalAll
 
-    return Object.values(dashboardDataMapper).reduce(
+    return Object.values(dashboardDataMapper).reduce<TotalAll>(
       (prev, { profitBase, profitCrv, profitOthers, profitsTotalUsd }) => {
         if (profitBase) {
           prev.tokens.base = { symbol: t`Base`, day: Number(profitBase.day), price: 1 }
@@ -43,7 +45,6 @@ export const TotalRecurrence = ({ title }: Props) => {
           if (typeof prev.tokens.CRV === 'undefined') {
             prev.tokens.CRV = { symbol: 'CRV', day: Number(day), price }
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             prev.tokens.CRV.day += Number(day)
           }
         }
@@ -52,7 +53,6 @@ export const TotalRecurrence = ({ title }: Props) => {
           if (typeof prev.tokens[token] === 'undefined') {
             prev.tokens[token] = { symbol, day: Number(day), price }
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             prev.tokens[token].day += Number(day)
           }
         })
@@ -79,19 +79,16 @@ export const TotalRecurrence = ({ title }: Props) => {
             if (day === 0) return null
 
             return (
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
                 <Chip
                   size="md"
                   {...(token === 'base'
                     ? {}
                     : {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                         tooltip: `${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`,
                         tooltipProps,
                       })}
                 >
-                  {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                   {formatNumber(day, { abbreviate: false })}
                 </Chip>
               </StyledStats>

@@ -1,12 +1,6 @@
 import lodash from 'lodash'
 import { type Address, getAddress } from 'viem'
-import {
-  CurveApi,
-  NetworkConfig,
-  Pool,
-  PoolData,
-  PoolDataCache,
-} from '@/dex/types/main.types'
+import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { fulfilledValue, getCurvefiUrl } from '@/dex/utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib'
@@ -66,7 +60,13 @@ export async function getPools(
   const { orgUIPath } = network
 
   const resp = poolList.reduce(
-    (prev, poolId) => {
+    (
+      prev,
+      poolId,
+    ): {
+      poolsMapper: Record<string, PoolData>
+      poolsMapperCache: Record<string, PoolDataCache>
+    } => {
       const pool = getPool(poolId)
 
       if (blacklist.has(getAddress(pool.address))) {
@@ -111,30 +111,20 @@ export async function getPools(
   // get gauge info
   await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
     const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       pool.gaugeStatus(),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       pool.isGaugeKilled(),
     ])
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    const gaugeStatus = fulfilledValue(gaugeStatusResult) || null
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) || null
+    const gaugeStatus = (fulfilledValue(gaugeStatusResult) ?? null) as GaugeStatus | null
+    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
       log(
         'rewardsNeedNudging, areCrvRewardsStuckInBridge',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         pool.id,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         gaugeStatus.rewardsNeedNudging,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         gaugeStatus.areCrvRewardsStuckInBridge,
       )
     }

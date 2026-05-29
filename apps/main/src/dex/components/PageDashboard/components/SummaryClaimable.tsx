@@ -33,14 +33,13 @@ export const SummaryClaimable = ({ title }: Props) => {
     if (typeof dashboardDataMapper === 'undefined') return {} as AllTotal
 
     let totalUsd = 0
-    const allTotal = Object.values(dashboardDataMapper).reduce(
+    const allTotal = Object.values(dashboardDataMapper).reduce<AllTotal>(
       (prev, { claimableCrv = [], claimableOthers, claimablesTotalUsd }) => {
         // crv
         claimableCrv.forEach(({ amount, price }) => {
           if (typeof prev.tokens.crv === 'undefined') {
             prev.tokens.crv = { symbol: 'CRV', total: Number(amount), price }
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             prev.tokens.crv.total += Number(amount)
           }
         })
@@ -50,7 +49,6 @@ export const SummaryClaimable = ({ title }: Props) => {
           if (typeof prev.tokens[token] === 'undefined') {
             prev.tokens[token] = { symbol, total: Number(amount), price }
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             prev.tokens[token].total += Number(amount)
           }
         })
@@ -74,15 +72,12 @@ export const SummaryClaimable = ({ title }: Props) => {
         )}
         {tokens &&
           Object.entries(tokens).map(([token, { symbol, total, price }]) => (
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
             <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
               <Chip
                 size="md"
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                 tooltip={`${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`}
                 tooltipProps={tooltipProps}
               >
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                 {formatNumber(total, { abbreviate: false })}
               </Chip>
             </StyledStats>

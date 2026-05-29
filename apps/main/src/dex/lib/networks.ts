@@ -2,10 +2,12 @@ import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type NetworkEnum, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG as NETWORKS } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
+
+const NETWORK_BASE_CONFIG = NETWORKS as Record<ChainId, (typeof NETWORKS)[keyof typeof NETWORKS]>
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
@@ -298,11 +300,7 @@ export const defaultNetworks = Object.entries({
     const chainId = Number(key)
 
     prev[chainId] = {
-      ...getBaseNetworksConfig<NetworkEnum, ChainId>(
-        chainId,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-        NETWORK_BASE_CONFIG[chainId],
-      ),
+      ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,
@@ -320,14 +318,12 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
     const baseConfig = NETWORK_BASE_CONFIG[chainId]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
       ...(isUpgraded && {
         poolFilters: [
