@@ -1,16 +1,15 @@
-import { MouseEvent, useEffect, useState } from 'react'
+import { MouseEvent, useState } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
-import { LineChartComponent } from '@/dao/components/Charts/LineChartComponent'
-import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { GaugeWeightHistoryChart } from '@/dao/components/Charts/GaugeWeightHistoryChart'
 import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain, formatNumber } from '@ui-kit/utils'
@@ -34,23 +33,9 @@ export const SmallScreenCard = ({
   addUserVote = false,
 }: Props) => {
   const { address: userAddress } = useConnection()
-  const gaugeWeightHistoryMapper = useStore(state => state.gauges.gaugeWeightHistoryMapper)
-  const getHistoricGaugeWeights = useStore(state => state.gauges.getHistoricGaugeWeights)
   const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
-
-  const gaugeHistoryLoading =
-    gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
-    !gaugeWeightHistoryMapper[gaugeData.address] ||
-    (gaugeWeightHistoryMapper[gaugeData.address]?.data.length === 0 &&
-      gaugeWeightHistoryMapper[gaugeData.address]?.loadingState !== 'ERROR')
-
-  useEffect(() => {
-    if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
-      void getHistoricGaugeWeights(gaugeData.address)
-    }
-  }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
   const getGaugeListSortingData = (key: string) => {
     if (key === 'gauge_relative_weight') {
@@ -112,26 +97,7 @@ export const SmallScreenCard = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
-              <ErrorWrapper onClick={e => e.stopPropagation()}>
-                <ErrorMessage
-                  message={t`Error fetching historical gauge weights data`}
-                  onClick={(e?: MouseEvent) => {
-                    e?.stopPropagation()
-                    void getHistoricGaugeWeights(gaugeData.address)
-                  }}
-                />
-              </ErrorWrapper>
-            )}
-            {gaugeHistoryLoading && (
-              <StyledSpinnerWrapper>
-                <Spinner size={16} />
-              </StyledSpinnerWrapper>
-            )}
-            {gaugeWeightHistoryMapper[gaugeData.address]?.data.length !== 0 &&
-              gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'SUCCESS' && (
-                <LineChartComponent height={400} data={gaugeWeightHistoryMapper[gaugeData.address]?.data} />
-              )}
+            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
@@ -200,16 +166,4 @@ const VoteGaugeFieldWrapper = styled.div`
   @media (min-width: 45.625rem) {
     width: 50%;
   }
-`
-
-const ErrorWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 400px;
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  height: 400px;
 `

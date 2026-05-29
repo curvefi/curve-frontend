@@ -4,7 +4,7 @@ import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 import { createValidationSuite } from '@ui-kit/lib'
 import { validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import type { RoutesQuery } from './router-api.types'
 
 const validateRouter = ({
@@ -41,7 +41,7 @@ export const routerApiValidation = createValidationSuite(
     test('amount', 'Provide either amountIn or amountOut (not both)' + ` Got ${amountIn} and ${amountOut}`, () => {
       enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
     })
-    userAddressValidationGroup({ userAddress, required: false })
+    evmAddressValidationGroup({ evmAddress: userAddress, required: false })
     validateSlippage({ slippage, required: false })
     validateRouter({ router, isRequired: false })
   },
