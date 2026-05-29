@@ -45,7 +45,7 @@ export const LLAMMA_TRADES_COLUMNS = [
           address={row.original.tokenSold.address}
           blockchainId={row.original.network}
           iconPosition="right"
-          primary={formatNumber(-row.original.amountBought, { abbreviate: false })}
+          primary={formatNumber(-row.original.amountSold, { abbreviate: false })}
         />
       </InlineTableCell>
     ),
