@@ -10,7 +10,6 @@ import { formatNumber } from '@ui-kit/utils'
 
 export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   const currentDate = useCurrentDate()
-
   if (active && payload?.length) {
     const { feesUsd, timestamp } = payload[0].payload as Distribution
 

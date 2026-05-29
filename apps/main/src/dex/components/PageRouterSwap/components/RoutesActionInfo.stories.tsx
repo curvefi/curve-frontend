@@ -40,7 +40,6 @@ const meta: Meta<typeof RoutesActionInfo> = {
     params: { network: 'ethereum' },
     loading: false,
     tokensNameMapper,
-
     poolDataMapper: poolDataMapper as unknown as PoolDataMapper,
     swapCustomRouteRedirect: undefined,
   },

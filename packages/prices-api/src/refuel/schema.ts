@@ -132,7 +132,6 @@ export const refuelChainsResponse = z
     chains: z.array(z.string()),
     count: z.number(),
   })
-
   .transform(({ chains: chainNames }) => chainNames.filter((chain): chain is Chain => chains.includes(chain as Chain)))
 
 export const refuelPoolsResponse = getPoolsResponse // just a reuse of the pools schema since the response is the same

@@ -47,7 +47,6 @@ const visitNotFoundPage = () => {
 function check500Error({ context }: { context: object }) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
   expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
-
   const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
   expect(title).to.equal('Unexpected Error')
   expect(subtitle).to.contain(expectedMessage)
@@ -153,7 +152,6 @@ describe('Error Boundary', () => {
               'NotFoundError',
             )
           }
-
           return originalRemoveChild.call(this, child) as T
         }
       },

@@ -144,7 +144,6 @@ export const QuickSwap = ({
     {
       chainId,
       userAddress,
-
       tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
     },
     !!userAddress && !!fromAddress,
@@ -159,7 +158,6 @@ export const QuickSwap = ({
     {
       chainId,
       userAddress,
-
       tokenAddress: toAddress ? (toAddress as Address) : undefined,
     },
     !!userAddress && !!toAddress,
@@ -467,7 +465,6 @@ export const QuickSwap = ({
       error: null,
       isLoading: routesAndOutputLoading,
     },
-
     { slippage: storeMaxSlippage as Decimal },
   )
 

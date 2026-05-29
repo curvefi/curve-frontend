@@ -29,7 +29,6 @@ interface UsePoolActivityProps {
  */
 export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolActivityProps) => {
   const { data: networkConfig } = useNetworkByChain({ chainId })
-
   const network = networkConfig?.id.toLowerCase() as Chain
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()

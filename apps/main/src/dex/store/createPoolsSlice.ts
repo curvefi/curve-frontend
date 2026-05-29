@@ -389,7 +389,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         const responseData: LpPriceApiResponse = await response.json()
         const filteredData = responseData.data
           .filter(item => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
-
           .map(item => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
 
         set(
@@ -434,7 +433,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         const responseData: LpPriceApiResponse = await response.json()
         const filteredData = responseData.data
           .filter(item => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
-
           .map(item => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
 
         const updatedData = [...filteredData, ...get().pools.pricesApiState.chartOhlcData]

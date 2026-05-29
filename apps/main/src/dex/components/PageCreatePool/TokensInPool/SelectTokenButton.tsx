@@ -90,7 +90,6 @@ export const SelectTokenButton = ({
     () =>
       filteredResults.map(token => ({
         chain: blockchainId,
-
         address: token.address as Address,
         symbol: token.symbol,
         label: [token.basePool && 'Base pool', token.userAddedToken && 'User added'].filter(Boolean).join(' - '),

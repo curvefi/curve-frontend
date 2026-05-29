@@ -100,13 +100,11 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
 
   return {
     rate,
-
     debt: maybe(debt, debt => formatEther(debt) as Decimal),
     estCallerProfit:
       !estCallerProfitEnabled || estCallerProfitError
         ? maybe(estCallerProfitFallback, estCallerProfitFallback => formatEther(estCallerProfitFallback) as Decimal)
         : maybe(estCallerProfit?.result, data => formatEther(data) as Decimal),
-
     debtCeiling: maybe(debtCeiling, debtCeiling => formatEther(debtCeiling) as Decimal),
     rebalance,
     isRebalancing,

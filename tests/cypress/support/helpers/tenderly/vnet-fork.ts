@@ -55,6 +55,5 @@ export const forkVirtualTestnet = ({
           `Failed to fork virtual testnet '${forkOptions.vnet_id}': ${response.status} ${response.statusText}`,
         )
       }
-
       return response.body as ForkVirtualTestnetResponse
     })

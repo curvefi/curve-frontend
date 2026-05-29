@@ -216,7 +216,6 @@ export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: Store
         isInProgress: true,
         step: 'BORROW',
       })
-
       const chainId = curve.chainId as ChainId
       const network = networks[chainId]
       const { collateral, debt } = formValues

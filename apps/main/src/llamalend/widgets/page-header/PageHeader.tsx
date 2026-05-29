@@ -134,7 +134,6 @@ export const PageHeaderView = ({
               return invalidateAllUserMarketDetails({
                 chainId,
                 marketId: market.id,
-
                 userAddress: signerAddress as Address,
                 blockchainId,
                 contractAddress: getControllerAddress(market),

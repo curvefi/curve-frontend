@@ -151,7 +151,6 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const computeSliderValue = useCallback(
     (rawValue: SliderValue): T | undefined => {
       const mapped = apply(rawValue, v => decimal(mapFromSliderValue(v)))
-
       return Array.isArray(mapped) && mapped.find(v => v == null) ? undefined : (mapped as T)
     },
     [mapFromSliderValue],
@@ -191,11 +190,9 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
           // the user first types "8" which can be smaller than the first input.
           else return
         }
-
         setInternalValue([decimal(nextFirst), decimal(nextSecond)] as T)
         return
       }
-
       setInternalValue(decimal(numericValue) as T)
     },
     [displayValue, isRange, setInternalValue],
@@ -217,10 +214,8 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const { onChangeCommitted: sliderOnChangeCommitted, ...restSliderProps } = sliderProps ?? {}
 
   /** First input's value */
-
   const currentFirst = isRange ? (displayValue as DecimalRangeValue)?.[0] : (displayValue as Decimal | undefined)
   /** Second input's value */
-
   const currentSecond = isRange ? (displayValue as DecimalRangeValue)?.[1] : (displayValue as Decimal | undefined)
 
   const renderInput = (inputValue: Decimal | undefined, index: 0 | 1) => (

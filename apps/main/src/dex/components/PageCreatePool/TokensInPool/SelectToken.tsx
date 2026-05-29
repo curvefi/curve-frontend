@@ -65,7 +65,6 @@ export const SelectToken = ({
   const { data: network } = useNetworkByChain({ chainId })
   void useAutoDetectErc4626({
     tokenId,
-
     address: token.address as Address,
   })
 

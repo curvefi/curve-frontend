@@ -10,7 +10,6 @@ export const hasCrvRewards = (rewards: RewardsApy | undefined) => sum(rewards?.c
 export const useHasPoolRewards = (rewards: RewardsApy | undefined, poolData: PoolListItem) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: poolData.network as Chain,
-
     address: poolData?.pool?.address as Address,
   })
 

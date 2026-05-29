@@ -55,7 +55,6 @@ export const PagePool = () => {
    * the lookup will succeed or fail deterministically, and the `useEffect` above
    * will set `poolNotFound` accordingly.
    */
-
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: networkId as Chain })
   const isBlacklisted = useMemo(
     () =>

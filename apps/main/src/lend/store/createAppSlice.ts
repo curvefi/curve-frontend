@@ -43,7 +43,6 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
       recordEntries(get())
         .filter(([stateKey]) => stateKey.startsWith('loan') || stateKey.startsWith('user') || stateKey === 'chartBands')
         .filter(([, state]) => 'resetState' in state)
-
         .forEach(([, state]) => (state as { resetState: () => void }).resetState())
     }
 

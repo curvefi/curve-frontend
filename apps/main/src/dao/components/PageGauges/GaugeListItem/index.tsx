@@ -94,7 +94,6 @@ export const GaugeListItem = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            {}
             <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
           </ChartWrapper>
           <GaugeDetails gaugeData={gaugeData} />

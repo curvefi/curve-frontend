@@ -114,7 +114,6 @@ export const createPoolSwapSlice = (
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           const ignoreExchangeRateCheck = Object.values(storedRates).some(rate => {
             // if rate is > 1, then number cannot be checked for exchange rate
-
             const parsedRate = BigInt(rate as bigint)
               .toString()
               .replace(/0+$/, '')
@@ -169,7 +168,6 @@ export const createPoolSwapSlice = (
             [activeKey]: {
               ...resp,
               loading: false,
-
               modal: getRouterWarningModal(resp, maxSlippage, cFormValues) as RoutesAndOutputModal | null,
             },
           },

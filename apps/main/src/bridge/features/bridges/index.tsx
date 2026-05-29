@@ -14,7 +14,6 @@ const { Spacing } = SizesAndSpaces
 export const Bridges = () => {
   const searchParams = useSearchParams()
   const tabParam = searchParams?.get('tab')
-
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'web3'
 
   const tabs = useMemo(

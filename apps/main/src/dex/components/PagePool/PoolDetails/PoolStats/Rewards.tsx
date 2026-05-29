@@ -34,7 +34,6 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network.networkId as Chain,
-
     address: poolData.pool.address as Address,
   })
   const { isLite } = network

@@ -15,7 +15,6 @@ export function delayAction<T>(cb: T) {
 export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'
-
   return Chain[lodash.upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
 }
 

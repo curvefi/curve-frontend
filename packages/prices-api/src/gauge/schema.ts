@@ -59,7 +59,6 @@ const gauge = z
       ? {
           address: data.pool.address,
           name: data.pool.name,
-
           chain: data.pool.chain as Chain,
           tvlUsd: data.pool.tvlUsd,
           tradingVolume24h: data.pool.tradingVolume24h,
@@ -73,7 +72,6 @@ const gauge = z
     market: data.market
       ? {
           name: data.market.name,
-
           chain: data.market.chain as Chain,
         }
       : undefined,

@@ -97,7 +97,6 @@ export const SmallScreenCard = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            {}
             <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />

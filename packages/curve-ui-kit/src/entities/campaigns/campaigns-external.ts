@@ -18,7 +18,6 @@ const REWARDS = groupBy(
 
       // Pool specific properties
       ...pool,
-
       address: pool.address.toLocaleLowerCase() as Address,
       description: pool.description !== 'null' ? pool.description : campaign.description,
       lock: pool.lock === 'true',

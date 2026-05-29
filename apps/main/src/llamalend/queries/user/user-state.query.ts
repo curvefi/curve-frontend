@@ -14,7 +14,6 @@ export const {
     const userState = await getUserPositionImplementation(marketId).userState(userAddress)
     return {
       /** The amount of collateral tokens the user's put in his loan */
-
       collateral: userState.collateral as Decimal,
       /**
        * The amount of crvUSD that is in the AMM.
@@ -22,14 +21,12 @@ export const {
        * and if you enter soft liquidation you can end up with 1100
        * in crvUSD even though your debt is still 100.
        */
-
       stablecoin: ('N' in userState ? userState.borrowed : userState.stablecoin) as Decimal,
       /**
        * The amount of crvUSD borrowed with the collateral.
        * This does not include the crvUSD in the AMM that
        * got there because of soft liquidations and such.
        */
-
       debt: userState.debt as Decimal,
     }
   },

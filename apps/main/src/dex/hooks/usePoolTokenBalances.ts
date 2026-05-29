@@ -25,7 +25,6 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     {
       chainId,
       userAddress,
-
       tokenAddresses: pool?.wrappedCoinAddresses as Address[],
     },
     enabled && isHydrated,
@@ -39,7 +38,6 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     {
       chainId,
       userAddress,
-
       tokenAddresses: pool?.underlyingCoinAddresses as Address[],
     },
     enabled && isHydrated,
@@ -66,7 +64,6 @@ export const fetchPoolTokenBalances = async (config: Config, curve: CurveApi, po
         balance => [tokenAddress, balance] as const,
       ),
     ),
-
     ...(underlyingCoinAddresses as Address[]).map(tokenAddress =>
       fetchTokenBalance(config, { chainId, userAddress, tokenAddress }).then(
         balance => [tokenAddress, balance] as const,

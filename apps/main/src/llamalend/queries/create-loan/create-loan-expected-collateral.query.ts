@@ -32,9 +32,7 @@ const convertNumbers = ({
   avgPrice?: string
 }): CreateLoanExpectedCollateralResult => ({
   totalCollateral: totalCollateral as Decimal,
-
   leverage: leverage as Decimal,
-
   userCollateral: userCollateral as Decimal,
   avgPrice: decimal(avgPrice),
   collateralFromUserBorrowed: decimal(collateralFromUserBorrowed),

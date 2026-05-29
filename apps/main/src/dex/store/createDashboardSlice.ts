@@ -123,7 +123,6 @@ export const createDashboardSlice = (
 
       try {
         // Get user pool list
-
         const poolList = await fetchUserPools({ chainId, userAddress: walletAddress as Address })
 
         // no staked pools
@@ -180,7 +179,6 @@ export const createDashboardSlice = (
               claimableCrv: claimables.filter(({ symbol, amount }) => symbol === 'CRV' && +amount > 0),
               claimableOthers: claimables.filter(({ symbol, amount }) => symbol !== 'CRV' && +amount > 0),
               claimablesTotalUsd: claimables.reduce((total, { amount, price }) => total + +amount * price, 0),
-
               percentStaked: getPercentStaked(lpTokenBalances as { gauge: string; lpToken: string }),
             }
           })
@@ -242,7 +240,6 @@ export const createDashboardSlice = (
       formValues.walletAddress = (formValues.walletAddress ?? '').toLowerCase()
 
       const activeKey = getActiveKey(rChainId, formValues)
-
       const isValidAddress = isAddress(formValues.walletAddress)
       const storedDashboardData = storedDashboardDatasMapper[formValues.walletAddress]
 

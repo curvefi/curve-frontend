@@ -104,9 +104,7 @@ export const usePageHeader = ({
 }) => {
   const isMarketMetadataLoading = !market
   const isLendMarket = market instanceof LendMarketTemplate
-
   const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined
-
   const controllerAddress = (isLendMarket ? market.addresses.controller : market?.controller) as Address | undefined
   const marketType = isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
 
@@ -154,7 +152,6 @@ export const usePageHeader = ({
     extraRewards: borrowCampaigns,
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
-
   const lendingSnapshots = isLendMarket ? (snapshots as LendingSnapshot[] | undefined) : undefined
   const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield)
   const supplyRate = isLendMarket

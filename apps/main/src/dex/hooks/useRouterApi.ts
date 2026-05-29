@@ -73,12 +73,9 @@ const convertRoute = (
       inputCoinAddress,
       outputCoinAddress,
       name,
-
       routeUrlId: (args as { poolId: string }).poolId ?? '',
-
       ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
     })),
-
     modal: getRouterWarningModal(
       modalArgs,
       { toAddress, fromAddress },
@@ -114,9 +111,7 @@ export function useRouterApi(
   const { data, isLoading, isPending, error } = useRouterApiQuery(
     {
       chainId,
-
       tokenIn: fromAddress as Address,
-
       tokenOut: toAddress as Address,
       router: 'curve',
       userAddress,

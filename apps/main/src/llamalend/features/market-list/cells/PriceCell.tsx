@@ -161,7 +161,6 @@ const AssetUsdValue = ({
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { assets } = market
-
   const columnId = column.id as LlamaMarketColumnId
 
   const { data: stats, error: statsError, isLoading: isLoadingStats } = useUserMarketStats(market, columnId)

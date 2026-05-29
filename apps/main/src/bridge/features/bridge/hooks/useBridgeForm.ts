@@ -66,7 +66,6 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   const bridgeNetworks = useMemo(() => curve?.fastBridge.getSupportedNetworks() ?? [], [curve?.fastBridge])
   const { data: crvUsdBalance, isLoading: crvUsdBalanceLoading } = useTokenBalance({
     ...params,
-
     tokenAddress: bridgeNetworks.find(network => network.chainId === chainId)?.crvUsdAddress as Address,
   })
 

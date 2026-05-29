@@ -62,7 +62,6 @@ export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi
       }
 
       // stored
-
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k] ?? {}
       const missing = markets.filter(market => {
@@ -89,7 +88,6 @@ export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi
       }
 
       // stored
-
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k] ?? {}
 

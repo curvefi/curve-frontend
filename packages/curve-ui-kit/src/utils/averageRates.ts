@@ -34,7 +34,6 @@ export function calculateAverageRates<
   if (recentSnapshots.length === 0) return null
 
   // Calculate averages for each extractor
-
   const result = {} as { [P in keyof K]: number | null }
 
   for (const [key, extractor] of Object.entries(extractors)) {

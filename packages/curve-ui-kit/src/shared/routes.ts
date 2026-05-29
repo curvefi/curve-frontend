@@ -134,7 +134,6 @@ export const replaceNetworkInPath = (path: string, networkId: string) => {
 export const getCurrentApp = (path: string | null): AppName => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const [, app] = path?.split('/') || []
-
   return AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
 }
 

@@ -124,7 +124,6 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
     'color: #666; font-weight: bold;', // @
     'color: #2196F3;', // timestamp
     'color: #666;', // ->
-
     ...(hasDefinedStatus ? [getStatusStyle(status as LogStatus), 'color: #4CAF50; font-weight: bold;'] : []), // status
     ...keyStyles, // key
     ...(restArgs.length ? ['color: #fff;', 'color: #666;', 'color: #fff;'] : []), // args

@@ -151,7 +151,6 @@ export const createPoolDepositSlice = (
       const userBalance = await fetchTokenBalance(config, {
         chainId,
         userAddress,
-
         tokenAddress: tokenAddress as Address,
       })
 

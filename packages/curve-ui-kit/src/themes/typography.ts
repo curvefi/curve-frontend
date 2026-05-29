@@ -45,7 +45,6 @@ const responsiveValues = (
 ) => ({
   [basicMuiTheme.breakpoints.up(breakpoint)]: {
     fontSize: FontSize[fontSize as keyof typeof FontSize]?.[breakpoint],
-
     lineHeight: LineHeight[lineHeight as keyof typeof LineHeight]?.[breakpoint],
   },
 })

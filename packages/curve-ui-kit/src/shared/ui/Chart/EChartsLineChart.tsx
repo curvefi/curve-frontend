@@ -133,7 +133,6 @@ export const EChartsLineChart = <
           align: 'left',
           formatter: (value: string | number) => {
             if (!xTickFormatterRef.current) return String(value)
-
             return xTickFormatterRef.current(value)
           },
         },

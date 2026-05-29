@@ -18,13 +18,9 @@ const castFieldsToDecimal = ({
   avgPrice: string
 }) => ({
   totalCollateral: totalCollateral as Decimal,
-
   userCollateral: newUserCollateral as Decimal,
-
   collateralFromUserBorrowed: collateralFromUserBorrowed as Decimal,
-
   collateralFromDebt: collateralFromDebt as Decimal,
-
   avgPrice: avgPrice as Decimal,
 })
 

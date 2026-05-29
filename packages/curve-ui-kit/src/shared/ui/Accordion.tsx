@@ -77,7 +77,6 @@ type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | Control
 function useAccordionToggle(props: UncontrolledAccordionProps | ControlledAccordionProps) {
   const { defaultExpanded = false } = props as UncontrolledAccordionProps
   const [internalExpanded, , , internalToggle] = useSwitch(defaultExpanded)
-
   const { expanded = internalExpanded, toggle = internalToggle } = props as ControlledAccordionProps
   return [expanded, toggle] as const
 }

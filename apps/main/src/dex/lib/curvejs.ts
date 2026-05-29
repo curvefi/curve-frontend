@@ -1111,7 +1111,6 @@ const poolWithdraw = {
     const claimableRewards = await p.claimableRewards()
 
     // ClaimableReward[] = [{token: '0x5a98fcbea516cf06857215779fd812ca3bef1b32', symbol: 'LDO', amount: '15.589367306902830498'}]
-
     return claimableRewards.filter(r => {
       if (chainId !== 1) {
         return r.symbol !== 'CRV' && +r.amount > 0
@@ -1302,13 +1301,9 @@ const lockCrv = {
         curve.boosting.getVeCrv([walletAddress]),
         curve.boosting.getVeCrvPct([walletAddress]),
       ])
-
       resp.resp.crv = crv as string
-
       resp.resp.lockedAmountAndUnlockTime = lockedAmountAndUnlockTime as { lockedAmount: string; unlockTime: number }
-
       resp.resp.veCrv = veCrv as string
-
       resp.resp.veCrvPct = veCrvPct as string
 
       return resp

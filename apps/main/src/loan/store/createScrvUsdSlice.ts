@@ -126,7 +126,6 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
-
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.depositApprove(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -145,7 +144,6 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
-
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.deposit(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -162,7 +160,6 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
-
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.withdraw(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -180,7 +177,6 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
-
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.redeem(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })

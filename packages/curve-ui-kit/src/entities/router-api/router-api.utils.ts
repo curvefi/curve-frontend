@@ -33,7 +33,6 @@ export const parseMutationRoute = (
   { routeId, slippage, isRepay }: { routeId: string | undefined; slippage: Decimal; isRepay: boolean },
 ): RouteMutationMeta => {
   const route = parseRoute(routeId)
-
   const lendMarket = market as LendMarketTemplate
   const zapV2 = assert(lendMarket.leverageZapV2, `Invalid market template ${market.id}`)
   const decimals = lendMarket.coinDecimals[isRepay ? 0 : 1] // outCoin is borrow for repay, collateral otherwise
@@ -54,11 +53,8 @@ export const getExpectedFn =
   async (tokenIn, tokenOut, amountIn) => {
     const routes = await fetchApiRoutes({
       chainId,
-
       tokenIn: tokenIn as Address,
-
       tokenOut: tokenOut as Address,
-
       amountIn: `${amountIn}` as Decimal,
       router: router ?? 'curve', // use curve router for getting the maximum amounts
       slippage,

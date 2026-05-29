@@ -63,7 +63,6 @@ export const {
         return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult
       case 'deleverage': {
         const { stablecoins, routeIdx } = await impl.repayStablecoins(...args)
-
         return { totalBorrowed: stablecoins[routeIdx] as Decimal }
       }
       case 'unleveragedMint':

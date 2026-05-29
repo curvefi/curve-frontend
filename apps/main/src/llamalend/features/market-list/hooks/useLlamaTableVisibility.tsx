@@ -63,7 +63,6 @@ export const useLlamaTableVisibility = (
   userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
 ) => {
   const variant = getVariant(userHasPositions)
-
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
   const visibilitySettings = useVisibilitySettings(
     title,

@@ -102,7 +102,6 @@ const MultiSelect = <T extends string>({
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
-                {}
                 {renderItem?.(optionId as T) ?? optionId}
               </Box>
             ))

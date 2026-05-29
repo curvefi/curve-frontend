@@ -61,7 +61,6 @@ export const createLoanDeleverageSlice = (
     fetchDetailInfo: async (activeKey, curve, llamma, formValues, maxSlippage, userState) => {
       const { collateral } = formValues
       const { chainId, signerAddress } = curve
-
       const fn = networks[chainId as ChainId].api.loanDeleverage.detailInfo
       const fDetailInfo = await fn(activeKey, llamma, collateral, signerAddress, maxSlippage, userState)
       get()[sliceKey].setStateByKey('detailInfo', { [fDetailInfo.activeKey]: { ...fDetailInfo.resp } })
@@ -159,7 +158,6 @@ export const createLoanDeleverageSlice = (
         isInProgress: true,
         step: 'REPAY',
       })
-
       const chainId = curve.chainId as ChainId
       const network = networks[chainId]
       const repayFn = network.api.loanDeleverage.repay

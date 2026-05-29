@@ -15,7 +15,6 @@ describe('Manage soft liquidation', () => {
   const chainId = Chain.Ethereum
   const privateKey = '0xc9dc976b6701eb9d79c8358317c565cfc6d238a6ecbb0839b352d4f5d71953c9' // 0xDD84Be02F834295ebE3328e0fE03C015492e2A51
   const network = networks[chainId]
-
   const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
   const MARKET_ID = 'wsteth' // https://www.curve.finance/crvusd/ethereum/markets/wstETH/create
 

@@ -34,7 +34,6 @@ function parseFilters<TColumnId extends string>(
   const filterPrefix = scopedPrefix(scope)
   return Array.from(search.entries())
     .filter(([key, value]) => value && allowed.has(key))
-
     .map(([key, value]) => ({ id: key.slice(filterPrefix.length) as TColumnId, value }))
 }
 

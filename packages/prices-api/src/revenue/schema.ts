@@ -62,7 +62,6 @@ const poolsWeekly = z
   .transform(camelizeKeys)
   .transform(({ timestamp, ...fees }) => ({
     ...fees,
-
     chain: fees.chain as Chain,
     timestamp,
   }))

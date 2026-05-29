@@ -63,7 +63,6 @@ export const toTokenOption =
   (chain?: string) =>
   (token: Token): TokenOption => ({
     chain,
-
     address: token.address as Address,
     symbol: token.symbol,
     volume: token.volume,

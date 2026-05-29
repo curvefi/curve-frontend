@@ -60,7 +60,6 @@ type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
 function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: LlammalendTestProps) {
   const isLoan = type === 'loan'
   const { marketId, chainId } = props
-
   const mintChain = chainId as MintChain
   const { data: lendMarket, error: lendError } = useLendMarket(chainId, marketId, marketType === LlamaMarketType.Lend)
   const { data: mintMarket, error: mintError } = useMintMarket(mintChain, marketId, marketType === LlamaMarketType.Mint)

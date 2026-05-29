@@ -59,7 +59,6 @@ export function getHashRedirectUrl({ pathname: path, search: query, hash }: Pars
     // old routes directly to integrations
     return `/${app === 'integrations' ? 'dex' : app}/${networkId}/integrations/${search}`
   }
-
   const appName = AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
   const routes = OldRoutes[appName]
   if (network && routes?.find(r => r.startsWith(`/${network}`))) {

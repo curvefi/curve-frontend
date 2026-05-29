@@ -76,9 +76,7 @@ testCases.forEach(
       skipTestsAfterFailure()
 
       const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toFixed() as Decimal
-
       const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toFixed() as Decimal
-
       const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toFixed() as Decimal
 
       const privateKey = generatePrivateKey()

@@ -89,7 +89,6 @@ export function getExchangeRates(expected: string, fromAmount: string): [Decimal
   if (Number(expected) === 0 || Number(fromAmount) === 0) {
     return ['0', '0']
   }
-
   const parsedExpected = decimalDiv(expected as Decimal, fromAmount as Decimal)
   return [parsedExpected, +parsedExpected ? decimalDiv('1', parsedExpected) : '0']
 }

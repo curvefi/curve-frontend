@@ -63,7 +63,6 @@ export function useSupplyRates<ChainId extends IChainId>(
   const snapshotsQuery = useLlamaSnapshot(market, blockchainId, enabled)
   const lendingSnapshotsQuery = q({
     ...snapshotsQuery,
-
     data: snapshotsQuery.data as LendingSnapshot[] | undefined,
   })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)

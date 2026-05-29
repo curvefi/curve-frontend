@@ -112,7 +112,6 @@ export const Swap = ({
   } = useTokenBalance({
     chainId,
     userAddress,
-
     tokenAddress: (formValues.fromAddress as Address) || undefined,
   })
 
@@ -123,7 +122,6 @@ export const Swap = ({
   } = useTokenBalance({
     chainId,
     userAddress,
-
     tokenAddress: (formValues.toAddress as Address) || undefined,
   })
 

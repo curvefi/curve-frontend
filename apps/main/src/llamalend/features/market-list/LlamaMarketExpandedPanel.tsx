@@ -55,7 +55,6 @@ function useMobileGraphSize() {
 
 const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType }) => {
   const { tooltipComponent: Tooltip, title, rateKey } = ratesConfig[type]
-
   const rateValue = market.rates[rateKey] as number
   return (
     rateValue != null && (

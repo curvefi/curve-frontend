@@ -40,7 +40,6 @@ const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAl
   recordEntries(marketAlerts).flatMap(([chainId, chainAlerts]) =>
     recordEntries(chainAlerts).map(([controllerAddress, alert]) => ({
       marketType,
-
       chainId: Number(chainId) as IChainId,
       controllerAddress,
       alertType: alert.alertType,

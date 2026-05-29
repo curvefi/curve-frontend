@@ -49,14 +49,12 @@ export const APP_ROUTES = {
 /**
  * Returns a random app route for testing. Excludes redirect routes.
  */
-
 export const oneAppRoute = () => APP_ROUTES[oneAppPath() || 'dex']() as AppRoute
 type AppName = Exclude<AppPath, ''>
 
 export type AppRoute = `${AppName}/${string}`
 
 /** Gets the app name from a given route */
-
 export const getRouteApp = (route: AppRoute) => route.split('/')[0] as AppName
 
 export const DEFAULT_PAGES = {

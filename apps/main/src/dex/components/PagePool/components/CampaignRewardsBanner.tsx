@@ -15,7 +15,6 @@ export const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBanne
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network.networkId as Chain,
-
     address: address as Address,
   })
   const message = campaigns.some(campaign => campaign.tags.includes('points'))

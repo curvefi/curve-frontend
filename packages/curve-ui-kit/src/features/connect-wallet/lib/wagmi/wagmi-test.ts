@@ -38,7 +38,6 @@ const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
   return custom({
     request: async ({ method, params: [param] }): Promise<unknown> => {
       if (method === 'eth_accounts') return [account.address]
-
       if (method === 'eth_sendTransaction') return writeClient.sendTransaction(param as SendTransactionParameters)
       throw new Error(`Unsupported method: ${method}, http fallback is used`)
     },

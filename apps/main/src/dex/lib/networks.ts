@@ -8,7 +8,6 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
 const NETWORK_BASE_CONFIG = NETWORKS as Record<ChainId, (typeof NETWORKS)[keyof typeof NETWORKS]>
-
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
     poolIsWrappedOnly: {

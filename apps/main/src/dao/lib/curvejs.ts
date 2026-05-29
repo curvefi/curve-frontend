@@ -31,13 +31,9 @@ const lockCrv = {
         curve.boosting.getVeCrv([walletAddress]),
         curve.boosting.getVeCrvPct([walletAddress]),
       ])
-
       resp.resp.crv = crv as string
-
       resp.resp.lockedAmountAndUnlockTime = lockedAmountAndUnlockTime as { lockedAmount: string; unlockTime: number }
-
       resp.resp.veCrv = veCrv as string
-
       resp.resp.veCrvPct = veCrvPct as string
 
       return resp

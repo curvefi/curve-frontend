@@ -129,7 +129,6 @@ export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
     ? {
         collateralToken: {
           symbol: market.collateralSymbol,
-
           address: market.collateral as Address,
           decimals: market.collateralDecimals,
         },
@@ -138,13 +137,11 @@ export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
     : {
         collateralToken: {
           symbol: market.collateral_token.symbol,
-
           address: market.collateral_token.address as Address,
           decimals: market.collateral_token.decimals,
         },
         borrowToken: {
           symbol: market.borrowed_token.symbol,
-
           address: market.borrowed_token.address as Address,
           decimals: market.borrowed_token.decimals,
         },
@@ -199,7 +196,6 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-
   void updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
 }
 

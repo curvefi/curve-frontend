@@ -81,7 +81,6 @@ export const FormCompensation = ({
         const signer = await provider.getSigner()
         const vestAddresses = await Promise.all(contracts.map(c => c.contract.vest()))
         const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(module => module.default)
-
         const iface = new Interface(abi as InterfaceAbi)
         const vestedTotals = await Promise.all(
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.

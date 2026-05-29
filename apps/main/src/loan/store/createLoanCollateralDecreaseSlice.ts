@@ -164,7 +164,6 @@ export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], 
         isInProgress: true,
         step: 'REMOVE',
       })
-
       const chainId = curve.chainId as ChainId
       const network = networks[chainId]
       const removeCollateralFn = network.api.collateralDecrease.removeCollateral

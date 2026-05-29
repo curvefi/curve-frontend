@@ -103,7 +103,6 @@ export const LoanLiquidate = ({
         !formEstGas.loading &&
         !error &&
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
-
       const chainId = curve.chainId as ChainId
 
       const stepsObj: Record<string, Step> = {

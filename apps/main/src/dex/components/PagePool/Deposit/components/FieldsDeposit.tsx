@@ -138,7 +138,6 @@ export const FieldsDeposit = ({
   const { data: userPoolBalances, isLoading: balancesLoading } = useTokenBalances({
     chainId,
     userAddress,
-
     tokenAddresses: poolDataCacheOrApi.tokenAddresses as Address[],
   })
 

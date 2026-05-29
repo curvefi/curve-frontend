@@ -565,9 +565,7 @@ const loanCreate = {
         n: Number(n),
         collateral,
         debt,
-
         maxRecv: (!isLeverage && (maxRecvs as Record<number, string>)?.[n]) || '',
-
         maxRecvLeverage: (isLeverage && (maxRecvs as Record<number, MaxRecvLeverage>)?.[n]) || null,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',

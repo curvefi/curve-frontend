@@ -47,6 +47,5 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
   if (!resp.ok) {
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
   }
-
   return (await resp.json()) as T
 }

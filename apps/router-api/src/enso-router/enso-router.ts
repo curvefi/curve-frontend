@@ -73,12 +73,10 @@ export const buildEnsoRouteResponse = async (
   }
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object
-
   const json = (await response.json()) as EnsoRouteResponse | EnsoRouteResponse[]
   return toArray(json).map(
     ({ route, amountOut, gas, ...routeProps }): RouterRouteResponse => ({
       router: 'enso',
-
       gas: gas as Decimal,
       amountIn: [amountIn],
       amountOut: [amountOut],

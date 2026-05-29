@@ -45,7 +45,6 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
   } = poolData
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network as Chain,
-
     address: address as Address,
   })
   const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)

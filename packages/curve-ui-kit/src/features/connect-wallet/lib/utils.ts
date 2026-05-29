@@ -33,7 +33,6 @@ const initLib: {
     }
     const api = createLlamalend()
     await api.init('Web3', { network, externalProvider }, { chainId: network.chainId })
-
     return api as LlamaApi
   },
   curveApi: async (network, externalProvider) => {
@@ -44,7 +43,6 @@ const initLib: {
     } else {
       await curveApi.init('NoRPC', 'NoRPC', { chainId })
     }
-
     return curveApi as CurveApi
   },
 }

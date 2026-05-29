@@ -25,7 +25,6 @@ export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
     mutationFn: async ({ amount }) => {
       const curve = requireLib('curveApi')
       await fetchBridgeCost({ chainId }) // Must be called before bridging to cache the value
-
       return await curve.fastBridge.bridge(amount).then(({ hash }) => ({ hash: hash as Hex }))
     },
     validationSuite: bridgeFormValidationSuite,

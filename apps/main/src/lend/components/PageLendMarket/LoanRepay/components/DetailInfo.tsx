@@ -39,7 +39,6 @@ export const DetailInfo = ({
   const detailInfo = detailInfoNonLeverage ?? detailInfoLeverage
 
   const { signerAddress } = api ?? {}
-
   const { expectedBorrowed, repayIsFull, routeImage } = (detailInfo ?? {}) as FormDetailInfo & FormDetailInfoLeverage
   const { swapRequired, haveValues, haveFormErrors } = _parseValues(formValues)
 

@@ -49,7 +49,6 @@ const PaletteStory = () => {
                             width: 100,
                             height: 100,
                             border: 1,
-
                             bgcolor: color as StandardCSSProperties['backgroundColor'],
                           }}
                         />
@@ -70,5 +69,4 @@ const meta: Meta = {
 }
 
 export const Palette = {}
-
 export default meta

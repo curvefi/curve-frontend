@@ -32,7 +32,6 @@ export const useUnstakeMutation = ({
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
-
       return { hash: (await lendMarket.vault.unstake(variables.unstakeAmount)) as Hex }
     },
     validationSuite: unstakeValidationSuite,
@@ -40,7 +39,6 @@ export const useUnstakeMutation = ({
       t`Unstaking... ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Unstake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
-
     mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     ...props,
   })

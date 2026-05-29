@@ -141,7 +141,6 @@ export const WagmiConnectModal = () => {
       {error ? (
         <Alert variant="filled" severity="error">
           <AlertTitle>{t`Error connecting wallet`}</AlertTitle>
-          {}
           {(error as BaseError).shortMessage ?? (error as Error).message ?? (error as string)}
         </Alert>
       ) : null}

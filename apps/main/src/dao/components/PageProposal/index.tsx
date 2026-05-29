@@ -33,9 +33,7 @@ import { Voters } from './Voters'
 
 export const Proposal = () => {
   const { proposalId: rProposalId } = useParams<ProposalUrlParams>()
-
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
-
   const proposalType = voteType.toLowerCase() as ProposalType
   const { address: userAddress } = useConnection()
 
