@@ -56,7 +56,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
             </GroupedFieldsContainer>
           </FormFieldsContainer>
           <DepositStepper chainId={chainId} poolId={poolId} />
-          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
+          <FormErrorsDisplay errorKeys={['root']} component={AlertFormError} />
         </FormContainer>
       </form>
     </FormProvider>

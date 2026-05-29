@@ -128,7 +128,7 @@ export const checkLeverageCheckbox = ({
   hasLeverage: boolean
 }) =>
   cy
-    .get('[data-testid="leverage-checkbox"]')
+    .get('[data-testid="leverage-checkbox"]', LOAD_TIMEOUT)
     .should(hasLeverage ? 'be.visible' : 'not.exist')
     .and(leverageEnabled ? 'be.checked' : hasLeverage ? 'not.be.checked' : 'not.exist')
 
