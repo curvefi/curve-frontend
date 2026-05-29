@@ -19,7 +19,7 @@ export async function getLoanDistribution(
   return Schema.getLoanDistributionResponse.parse(response)
 }
 
-type GetOracleParams = {
+interface GetOracleParams {
   endpoint: Schema.Endpoint
   chain: Chain
   controller: Address

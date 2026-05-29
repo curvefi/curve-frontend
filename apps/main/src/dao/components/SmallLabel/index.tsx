@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 
-type SmallLabelProps = {
+interface SmallLabelProps {
   description: ReactNode
   isKilled?: boolean
   isNetwork?: boolean

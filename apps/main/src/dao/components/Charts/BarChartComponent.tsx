@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 
-type Props<T> = {
+interface Props<T> {
   data: T[]
   dataKey: keyof T & string
   CustomTooltip: (props: TooltipProps<ValueType, NameType>) => ReactNode
@@ -67,7 +67,7 @@ export const BarChartComponent = <T extends object>({ data, dataKey, CustomToolt
             dx={4}
           />
           <Tooltip content={props => <CustomTooltip {...props} />} cursor={{ opacity: 0.3 }} />
-          <Bar dataKey={dataKey as string} label={false}>
+          <Bar dataKey={dataKey} label={false}>
             {data.map((_, index) => (
               // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

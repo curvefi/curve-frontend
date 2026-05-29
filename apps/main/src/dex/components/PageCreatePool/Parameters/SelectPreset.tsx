@@ -16,7 +16,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 
-type Props = {
+interface Props {
   setStableFeeValue: Dispatch<SetStateAction<string>>
   setMidValue: Dispatch<SetStateAction<string>>
   setOutValue: Dispatch<SetStateAction<string>>
@@ -39,6 +39,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
   // prevent modal button from being pressed when opened
   useEffect(() => {
     if (overlayTriggerState.isOpen) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setIsButtonDisabled(true)
       const timer = setTimeout(() => {
         setIsButtonDisabled(false)

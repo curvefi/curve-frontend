@@ -26,7 +26,7 @@ const sizeBreakpoint = (
   },
 })
 
-type ButtonSize = {
+interface ButtonSize {
   height: keyof typeof ButtonSize
   fontSize: keyof typeof FontSize
   fontWeight?: keyof typeof FontWeight

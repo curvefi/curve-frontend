@@ -58,5 +58,5 @@ export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
       return curve
     })()
   }
-  return instances[chainId]!
+  return instances[chainId]
 }

@@ -1,7 +1,7 @@
 import { type RefObject, useEffect, useState } from 'react'
 
 /** Options for the height resize observer */
-type ResizeObserverOptions = {
+interface ResizeObserverOptions {
   threshold?: number
 }
 
@@ -39,10 +39,12 @@ export function useResizeObserver(
   useEffect(() => {
     const node = elementRef.current
     if (!node) {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
       return console.warn(`Could not find the element to observe for resize: ${elementRef}`)
     }
 
     const { width, height } = node.getBoundingClientRect()
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setDimensions([width, height])
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {

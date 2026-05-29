@@ -16,7 +16,7 @@ import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 
-type MarketInformationCompProps = {
+interface MarketInformationCompProps {
   pageProps: PageContentProps
   rateType: MarketRateType
   previewPrices?: Range<Decimal> | undefined

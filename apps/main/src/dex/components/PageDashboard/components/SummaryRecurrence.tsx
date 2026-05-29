@@ -13,16 +13,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
-type TotalOtherProfit = {
-  [token: string]: { symbol: string; day: number; price: number }
-}
+type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>;
 
-type TotalAll = {
+interface TotalAll {
   tokens: TotalOtherProfit
   totalUsd: number
 }
 
-type Props = { title?: string }
+interface Props { title?: string }
 
 export const TotalRecurrence = ({ title }: Props) => {
   const {
@@ -60,7 +58,7 @@ export const TotalRecurrence = ({ title }: Props) => {
         prev.totalUsd += profitsTotalUsd
         return prev
       },
-      { tokens: {}, totalUsd: 0 } as TotalAll,
+      { tokens: {}, totalUsd: 0 },
     )
   }, [dashboardDataMapper])
 

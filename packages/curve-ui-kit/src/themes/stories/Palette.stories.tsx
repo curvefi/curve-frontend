@@ -14,7 +14,7 @@ const PaletteStory = () => {
       {Object.entries({ palette, Color, Text }).map(([palette, p]) => (
         <Box key={palette}>
           {Object.entries(p)
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
             .filter(([, options]) => Object.values(options).some(o => `${o}`.startsWith('#')))
             .map(([type, options]) => (
               <Box key={type} sx={{ marginY: 7 }}>

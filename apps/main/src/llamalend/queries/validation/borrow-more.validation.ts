@@ -21,7 +21,7 @@ import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-v
 import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
 
-export type BorrowMoreMutation = {
+export interface BorrowMoreMutation {
   userCollateral: Decimal
   userBorrowed: Decimal
   debt: Decimal
@@ -30,7 +30,7 @@ export type BorrowMoreMutation = {
   routeId: string | undefined
 }
 
-type CalculatedValues = {
+interface CalculatedValues {
   maxDebt: Decimal | undefined
   maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined

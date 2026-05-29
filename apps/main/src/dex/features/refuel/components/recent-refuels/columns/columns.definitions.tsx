@@ -6,7 +6,7 @@ import { AddressCell, TimestampCell } from '@ui-kit/shared/ui/DataTable/inline-c
 import { AmountCell } from '../cells/AmountCell'
 import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 
-export type RecentRefuelsToken = {
+export interface RecentRefuelsToken {
   symbol: string
   address: Address
   decimals: number

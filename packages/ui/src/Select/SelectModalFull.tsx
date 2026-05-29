@@ -18,6 +18,7 @@ export function SelectModalFull<T extends object>({
   const handleRadioGroupChange = (updatedKey: string) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
     if (typeof onSelectionChange === 'function') onSelectionChange(updatedKey)
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     setTimeout(state.close, Duration.Delay)
   }
 

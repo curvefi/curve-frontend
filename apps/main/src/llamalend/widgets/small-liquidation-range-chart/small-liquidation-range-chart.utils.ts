@@ -18,7 +18,7 @@ const DEFAULT_PADDED_MIN_RATIO = 1 - DEFAULT_PADDING_RATIO
 // two liquidation-range widths away. Below that threshold, the real-price scale is readable.
 const SPLIT_ORACLE_DISTANCE_RATIO = 2
 
-type GetChartLayoutParams = {
+interface GetChartLayoutParams {
   currentRange?: RenderableLiquidationRange
   newRange?: RenderableLiquidationRange
   oraclePrice?: number

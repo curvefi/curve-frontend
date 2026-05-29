@@ -122,6 +122,7 @@ describe('setTimeoutInterval', () => {
     'logs errors but continues scheduling subsequent ticks',
     withFakeTimers(async () => {
       const error = new Error('boom')
+      // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
       const cb = vi.fn(() => {

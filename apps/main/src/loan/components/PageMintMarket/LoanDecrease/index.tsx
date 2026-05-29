@@ -42,6 +42,7 @@ export const LoanDecrease = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const push = useNavigate()
 
@@ -57,10 +58,15 @@ export const LoanDecrease = ({
   )
   const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
 
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanDecrease.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDecrease = useStore(state => state.loanDecrease.fetchStepDecrease)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanDecrease.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.loanDecrease.setStateByKey)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanDecrease.resetState)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -168,7 +174,7 @@ export const LoanDecrease = ({
       const isValidFormValue = isFullRepay || (+debt > 0 && !debtError)
       const isValid = !!curve.signerAddress && !formEstGas.loading && isValidFormValue && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -220,6 +226,7 @@ export const LoanDecrease = ({
   useEffect(() => {
     if (curve && llamma) {
       const updatedSteps = getSteps(activeKey, curve, llamma, formEstGas, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

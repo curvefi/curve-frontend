@@ -24,7 +24,7 @@ import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
+interface Props {
   curve: CurveApi
   chainId: ChainId
   haveSigner: boolean
@@ -102,8 +102,11 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const cryptoAValue = formatCryptoA(cryptoA, swapType)
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setStableFeeValue(stableSwapFee)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setMidValue(midFee)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setOutValue(outFee)
     if (+offpegFeeMultiplier > STABLESWAP_MIN_MAX.offpegFeeMultiplier.max) {
       updateOffpegFeeMultiplier(STABLESWAP_MIN_MAX.offpegFeeMultiplier.max.toString())
@@ -121,6 +124,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   useEffect(() => {
     if (midFee > outValue) {
       updateOutFee(new BigNumber(midFee).toString())
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setOutValue(new BigNumber(midFee).toString())
     }
   }, [midFee, outValue, updateOutFee])
@@ -139,7 +143,9 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
       }
       if (outFee === 'NaN') {
         updateOutFee(preset.outFee)
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setMidValue(preset.midFee)
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setOutValue(preset.outFee)
       }
       if (cryptoA === 'NaN') updateCryptoA(preset.cryptoA)

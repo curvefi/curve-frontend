@@ -23,12 +23,13 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   activeKeyVecrvInfo: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formValues: FormValues
   formStatus: FormStatus
 
@@ -42,7 +43,7 @@ type SliceState = {
 const sliceKey = 'lockedCrv'
 
 // prettier-ignore
-export type LockedCrvSlice = {
+export interface LockedCrvSlice {
   [sliceKey]: SliceState & {
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 
@@ -81,7 +82,7 @@ export const createLockedCrvSlice = (
 ): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
       // stored state
       const storedFormValues = get()[sliceKey].formValues

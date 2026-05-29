@@ -6,7 +6,7 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 
 const { WEEK } = TIME_FRAMES
 
-export type UserProposalVoteFormatted = {
+export interface UserProposalVoteFormatted {
   voteId: number
   voteType: ProposalType
   voteFor: number
@@ -16,9 +16,7 @@ export type UserProposalVoteFormatted = {
   voteTotalSupply: number
 }
 
-type UserProposalVotesMapper = {
-  [proposalKey: string]: UserProposalVoteFormatted
-}
+type UserProposalVotesMapper = Record<string, UserProposalVoteFormatted>;
 
 const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string }) => {
   const results: UserProposalVote[] = await paginate(

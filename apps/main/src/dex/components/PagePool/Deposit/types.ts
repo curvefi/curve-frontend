@@ -3,16 +3,17 @@ import type { Amount } from '@/dex/components/PagePool/utils'
 export type StepKey = 'APPROVAL' | 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE' | ''
 export type FormType = 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE'
 
-export type FormStatus = {
+export interface FormStatus {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: FormType | 'APPROVE' | ''
   step: StepKey | ''
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   error: 'lpToken-too-much' | string
   warning: string
 }
 
-export type FormValues = {
+export interface FormValues {
   amounts: Amount[]
   /**
    * The balanced amounts switch works as follows:
@@ -25,14 +26,14 @@ export type FormValues = {
   lpToken: string
 }
 
-export type FormLpTokenExpected = {
+export interface FormLpTokenExpected {
   expected: string
   virtualPrice: string
   loading: boolean
   error: string
 }
 
-export type LoadMaxAmount = {
+export interface LoadMaxAmount {
   tokenAddress: string
   idx: number
 }

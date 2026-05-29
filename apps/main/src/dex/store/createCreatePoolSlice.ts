@@ -40,7 +40,7 @@ import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'
 import { getBasePools } from '../queries/base-pools.query'
 
-type SliceState = {
+interface SliceState {
   navigationIndex: number
   swapType: SwapType
   advanced: boolean
@@ -104,7 +104,7 @@ type SliceState = {
   }
 }
 
-export type CreatePoolSlice = {
+export interface CreatePoolSlice {
   createPool: SliceState & {
     setNavigationIndex: (index: number) => void
     updateSwapType: (type: SwapType, chainId: ChainId) => void
@@ -823,6 +823,7 @@ export const createCreatePoolSlice = (
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         pools: { fetchNewPool },
         createPool: {
           poolSymbol,

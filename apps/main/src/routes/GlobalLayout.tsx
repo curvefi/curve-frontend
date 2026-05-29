@@ -32,6 +32,7 @@ const useAppRoutes = (network: NetworkDef) => ({
   analytics: APP_LINK.analytics.routes,
 })
 
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
 const useAppMenu = (app: AppName): AppMenuOption =>
   ({
     dao: 'dao' as const,
@@ -43,6 +44,7 @@ const useAppMenu = (app: AppName): AppMenuOption =>
     analytics: 'analytics' as const,
   })[app]
 
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
 const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
     dao: daoNetworks,

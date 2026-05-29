@@ -17,7 +17,7 @@ import type {
 
 type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
-type SliceState = {
+interface SliceState {
   chartLlammaOhlc: {
     oraclePriceData: OraclePriceData[]
     baselinePriceData: LlamaBaselinePriceData[]
@@ -48,7 +48,7 @@ type SliceState = {
 
 const sliceKey = 'ohlcCharts'
 
-export type OhlcChartSlice = {
+export interface OhlcChartSlice {
   [sliceKey]: SliceState & {
     fetchOracleOhlcData(
       chainId: ChainId,
@@ -521,6 +521,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
       start: number,
       end: number,
     ) => {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const { chartLlammaOhlc, chartOraclePoolOhlc, fetchMoreLlammaOhlcData, fetchMoreOracleOhlcData } = get()[sliceKey]
 
       if (chartLlammaOhlc.refetchingCapped && chartOraclePoolOhlc.refetchingCapped) {

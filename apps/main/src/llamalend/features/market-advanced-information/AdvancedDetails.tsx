@@ -17,7 +17,7 @@ import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
 
-type AdvancedDetailsProps = {
+interface AdvancedDetailsProps {
   chainId: number | undefined | null
   marketId: string | undefined | null
   market: LlamaMarketTemplate | undefined

@@ -5,7 +5,7 @@ import type { RouteProvider, RouterRouteResponse } from '@primitives/router.util
 import type { FieldsOf } from '@ui-kit/lib'
 import type { QueryProp } from '@ui-kit/types/util'
 
-export type RoutesQuery = {
+export interface RoutesQuery {
   chainId: number
   tokenIn: Address
   tokenOut: Address
@@ -21,7 +21,7 @@ export type RoutesParams = FieldsOf<RoutesQuery>
 /**
  * Route meta expected by the curve/llamalend.js libraries
  */
-export type RouteMeta = {
+export interface RouteMeta {
   router: string
   calldata: string
   quote: IQuote

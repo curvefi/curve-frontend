@@ -8,6 +8,7 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
 
 export const DailyLocks = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvLocks = useStore(state => state.analytics.getVeCrvLocks)
   const veCrvLocks = useStore(state => state.analytics.veCrvLocks)
 

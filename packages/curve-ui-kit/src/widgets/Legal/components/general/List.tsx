@@ -4,7 +4,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = {
+interface Props {
   children: ReactNode
   type: 'numeric' | 'lower-alpha' | 'disc'
 }

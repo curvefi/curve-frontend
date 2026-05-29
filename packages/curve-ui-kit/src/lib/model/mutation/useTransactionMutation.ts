@@ -41,17 +41,17 @@ function throwIfError(data: unknown) {
 }
 
 /** Base context provided to all transaction mutations */
-export type TransactionContext = {
+export interface TransactionContext {
   wallet: NonNullable<ReturnType<typeof useCurve>['wallet']>
 }
 
-type TransactionResult = { hash: Hex }
+interface TransactionResult { hash: Hex }
 
-type TransactionMutationOptionsBase<
+interface TransactionMutationOptionsBase<
   TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
   TData extends TransactionResult = TransactionResult,
-> = {
+> {
   /** Unique key for the mutation */
   mutationKey: readonly unknown[]
   /**
@@ -84,6 +84,7 @@ type TransactionMutationOptionsBase<
     receipt: FormattedTransactionReceipt,
     variables: TVariables,
     context: TContext,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   ) => unknown | Promise<unknown>
   /** Callback executed to reset the form when mutation is finished successfully */
   onReset: () => void
@@ -151,6 +152,7 @@ export function useTransactionMutation<
 
       const params = { userAddress, ...validationParams, ...variables, mutationKey }
       assertValidity(validationSuite, params)
+      // eslint-disable-next-line @eslint-react/naming-convention-context-name -- Existing violation before enabling this rule.
       const context = createContext(variables) // throws before logging, in case of a missing wallet
 
       logMutation(mutationKey, params)
@@ -162,6 +164,7 @@ export function useTransactionMutation<
     mutationFn: async (variables: TVariables) => {
       // We need to reconstruct context here since mutationFn doesn't receive onMutate's return.
       // buildContext is called again, which is fine since it should be deterministic. No side-effect please though.
+      // eslint-disable-next-line @eslint-react/naming-convention-context-name -- Existing violation before enabling this rule.
       const context = createContext(variables)
       const data = await withPendingToast(mutationFn(variables, context), pendingMessage(variables, context))
       throwIfError(data)

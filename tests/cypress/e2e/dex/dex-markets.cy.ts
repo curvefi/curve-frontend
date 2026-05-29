@@ -35,7 +35,7 @@ function visitAndWait(
   }
 }
 
-type UsdValue = { text: string; parsed: number }
+interface UsdValue { text: string; parsed: number }
 
 const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
   expect(JSON.stringify(actual), `Table values should be in ${order} order`).to.equal(

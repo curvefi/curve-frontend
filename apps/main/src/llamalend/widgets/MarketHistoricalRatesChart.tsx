@@ -35,7 +35,7 @@ import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export type RateChartPoint = {
+export interface RateChartPoint {
   timestamp: number
   rate: number
   movingAverage: number
@@ -48,7 +48,7 @@ type MarketRates = NonNullable<ReturnType<typeof useMarketRates>['data']>
 type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | null | undefined
 
-type MarketHistoricalRatesChartProps = {
+interface MarketHistoricalRatesChartProps {
   market: LlamaMarketTemplate | undefined | null
   blockchainId: Chain | undefined
   chainId: number
@@ -56,8 +56,8 @@ type MarketHistoricalRatesChartProps = {
   rateMode: MarketRateType
 }
 
-type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
-type RateModeConfig = {
+interface RateSeriesConfig { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
+interface RateModeConfig {
   chartTitle: string
   currentRateLabel: string
   oneWeekAverageLabel: string
@@ -234,7 +234,7 @@ export const MarketHistoricalRatesChart = ({
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}
-            xTickFormatter={(value: RateChartPoint['timestamp'] | number | string) => formatDate(value)}
+            xTickFormatter={(value: RateChartPoint['timestamp']   | string) => formatDate(value)}
             yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}

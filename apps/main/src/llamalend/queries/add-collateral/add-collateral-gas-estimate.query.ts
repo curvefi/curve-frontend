@@ -1,6 +1,6 @@
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
@@ -29,7 +29,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
       market.estimateGas.addCollateralApprove(userCollateral),
       market.estimateGas.addCollateral(userCollateral),
     ])
-    return (Number(approveGas) + Number(addCollateralGas)) as TGas
+    return (Number(approveGas) + Number(addCollateralGas))
   },
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,

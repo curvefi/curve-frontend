@@ -22,6 +22,7 @@ import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 const { IconSize } = SizesAndSpaces
 
 export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const withdrawLockedCrv = useStore(state => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore(state => state.lockedCrv.withdrawLockedCrvStatus)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -54,6 +55,7 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
 
   useEffect(() => {
     if (withdrawTxSuccess) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(
         <TxInfoBar
           description={t`Locked CRV withdrawn`}

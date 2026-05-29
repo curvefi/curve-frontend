@@ -295,17 +295,17 @@ export const defaultNetworks = Object.entries({
   },
 }).reduce(
   (prev, [key, config]) => {
-    const chainId = Number(key) as ChainId
+    const chainId = Number(key)
 
     prev[chainId] = {
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(
         chainId,
-        NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG],
+        NETWORK_BASE_CONFIG[chainId],
       ),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,
-    } as NetworkConfig
+    }
     return prev
   },
   {} as Record<ChainId, NetworkConfig>,
@@ -319,7 +319,7 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
-    const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
+    const baseConfig = NETWORK_BASE_CONFIG[chainId]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)

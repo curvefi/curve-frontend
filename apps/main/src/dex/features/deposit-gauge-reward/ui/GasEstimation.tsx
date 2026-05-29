@@ -7,6 +7,7 @@ import { useFormContext } from '@ui-kit/features/forms'
 
 export const GasEstimation = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     watchValue,
     formState: { isValid },
   } = useFormContext<DepositRewardFormValues>()

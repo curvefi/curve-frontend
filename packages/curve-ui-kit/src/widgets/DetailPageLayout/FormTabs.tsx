@@ -18,7 +18,7 @@ const applyFnOrValue = <Props extends object, Result>(
 
 type FormSubTab<Props extends object> = Omit<FormTab<Props>, 'subTabs'>
 
-export type FormTab<Props extends object> = {
+export interface FormTab<Props extends object> {
   /** Unique value of the tab, it might be used in the URL later */
   value: string
   /** Label of the tab, can be a function that receives the form props */
@@ -51,7 +51,7 @@ const createOptions = <Props extends object>(
       href: applyFnOrValue(href, params),
     })) ?? []
 
-type UseFormTabOptions<T extends object> = {
+interface UseFormTabOptions<T extends object> {
   menu: FormTab<T>[]
   params: T
 }

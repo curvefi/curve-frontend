@@ -27,21 +27,22 @@ import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formType: FormType
   formStatus: FormStatus
   formValues: FormValues
   maxLoading: number | null
-  slippage: { [activeKey: string]: Slippage }
+  slippage: Record<string, Slippage>
 }
 
 const sliceKey = 'poolWithdraw'
 
-type FetchWithdrawProps = {
+interface FetchWithdrawProps {
   activeKey: string
   storedActiveKey: string
   config: Config
@@ -53,7 +54,7 @@ type FetchWithdrawProps = {
 }
 
 // prettier-ignore
-export type PoolWithdrawSlice = {
+export interface PoolWithdrawSlice {
   [sliceKey]: SliceState & {
     fetchWithdrawToken(props: FetchWithdrawProps): Promise<void>
     fetchWithdrawLpToken(props: FetchWithdrawProps): Promise<void>
@@ -324,6 +325,7 @@ export const createPoolWithdrawSlice = (
         }
       }
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (
       formType,
       config,
@@ -704,6 +706,7 @@ function getActiveKey(
   } else if (formType === 'UNSTAKE') {
     activeKey += `${stakedLpToken}`
   } else if (formType === 'CLAIM') {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     activeKey += `${claimableCrv}-${claimableRewards}`
   }
   return activeKey

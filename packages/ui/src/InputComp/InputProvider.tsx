@@ -10,6 +10,7 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
   const [isFocusVisible, setIsFocusVisible] = useState(false)
 
   return (
+    // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
     <InputContext.Provider value={{ disabled, id, inputVariant, setIsFocusVisible }}>
       <InputWrapper
         flex

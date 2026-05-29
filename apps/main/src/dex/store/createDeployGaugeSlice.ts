@@ -9,7 +9,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getNetworks } from '../entities/networks'
 
-type NetworkWithFactory = {
+interface NetworkWithFactory {
   chainId: ChainId
   name: string
   poolTypes: PoolTypes
@@ -17,11 +17,9 @@ type NetworkWithFactory = {
   isCrvRewardsEnabled: boolean
 }
 
-type NetworksWithFactory = {
-  [key: string]: NetworkWithFactory
-}
+type NetworksWithFactory = Record<string, NetworkWithFactory>;
 
-type DeploymentStatus = {
+interface DeploymentStatus {
   status: 'LOADING' | 'CONFIRMING' | 'ERROR' | 'SUCCESS' | ''
   transaction: ContractTransactionResponse | null
   errorMessage: string
@@ -29,7 +27,7 @@ type DeploymentStatus = {
 
 type SidechainNav = 0 | 1
 
-type SliceState = {
+interface SliceState {
   curveNetworks: NetworksWithFactory
   sidechainGauge: boolean
   currentPoolType: PoolType | null
@@ -47,7 +45,7 @@ type SliceState = {
 
 const sliceKey = 'deployGauge'
 
-export type DeployGaugeSlice = {
+export interface DeployGaugeSlice {
   [sliceKey]: SliceState & {
     setCurveNetworks: () => void
     setSidechainGauge: (bool: boolean) => void
@@ -101,7 +99,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
       Object.entries(networks).forEach(([key, chain]) => {
         if (chain.hasFactory) {
           networksWithFactory[key] = {
-            chainId: +key as ChainId,
+            chainId: +key,
             name: chain.name,
             poolTypes: {
               stableswap: chain.stableswapFactory,
@@ -144,7 +142,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
         ([_, network]) => network.name.toLowerCase() === chainNameLower,
       )
 
-      const matchingChainId: ChainId | null = matchingEntry ? (Number(matchingEntry[0]) as ChainId) : null
+      const matchingChainId: ChainId | null = matchingEntry ? (Number(matchingEntry[0])) : null
 
       set(
         produce((state: State) => {

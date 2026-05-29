@@ -10,7 +10,7 @@ import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
 
-type StepProgress = {
+interface StepProgress {
   active: number
   total: number
 }

@@ -9,7 +9,7 @@ import type { LlammaEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-type LlammaEventActionCellProps = {
+interface LlammaEventActionCellProps {
   event: LlammaEventRow
 }
 

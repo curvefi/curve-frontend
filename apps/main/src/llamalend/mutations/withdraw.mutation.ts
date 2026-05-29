@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { formatTokenAmounts } from '../llama.utils'
 
-type WithdrawOptions = {
+interface WithdrawOptions {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
@@ -49,12 +49,13 @@ export const useWithdrawMutation = ({
   })
 
   const onSubmit = useCallback(
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async ({ withdrawAmount = '0', userVaultShares = '0', ...form }: WithdrawForm) =>
       mutate({
         ...form,
         userVaultShares,
         withdrawAmount,
-      } as WithdrawMutation),
+      }),
     [mutate],
   )
 

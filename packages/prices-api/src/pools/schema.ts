@@ -335,7 +335,6 @@ export const getPoolMetadataResponse = z
     ...data,
     gauges: [...gauges],
     assetTypes: assetTypes ? [...assetTypes] : null,
-     
     oracles,
     deploymentDate: deploymentDate ?? null,
   }))

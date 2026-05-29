@@ -26,8 +26,8 @@ export const getLoanImplementation = (marketId: string | LlamaMarketTemplate) =>
   return market instanceof LendMarketTemplate ? market.loan : market
 }
 
-type LendBalances = { collateral: string; borrowed: string }
-type MintBalances = { collateral: string; stablecoin: string }
+interface LendBalances { collateral: string; borrowed: string }
+interface MintBalances { collateral: string; stablecoin: string }
 export const normalizeBands = (bands: Record<number, MintBalances | LendBalances>): Record<number, LendBalances> =>
   fromEntries(
     recordEntries(bands).map(([key, item]) => [

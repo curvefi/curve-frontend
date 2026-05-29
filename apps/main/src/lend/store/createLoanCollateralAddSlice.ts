@@ -14,12 +14,13 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -27,7 +28,7 @@ type SliceState = {
 const sliceKey = 'loanCollateralAdd'
 
 // prettier-ignore
-export type LoanCollateralAddSlice = {
+export interface LoanCollateralAddSlice {
   [sliceKey]: SliceState & {
     fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
     fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>

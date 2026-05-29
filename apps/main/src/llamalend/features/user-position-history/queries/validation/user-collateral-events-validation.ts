@@ -5,7 +5,7 @@ import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-v
 import { pricesApiChainNameValidationGroup } from '@ui-kit/lib/model/query/prices-chain-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
-type UserCollateralEventsValidationParams = {
+interface UserCollateralEventsValidationParams {
   blockchainId: Chain
   contractAddress: Address | undefined
   userAddress: Address | undefined

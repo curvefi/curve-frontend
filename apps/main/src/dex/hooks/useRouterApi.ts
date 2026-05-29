@@ -1,7 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import type {
-  FormValues,
-  Route,
   RoutesAndOutput,
   RoutesAndOutputModal,
   SearchedParams,
@@ -85,7 +83,7 @@ const convertRoute = (
           routeUrlId: (args as { poolId: string }).poolId ?? '',
 
           ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
-        }) as Route,
+        }),
     ),
 
     modal: getRouterWarningModal(
@@ -115,7 +113,7 @@ export function useRouterApi(
   data: RoutesAndOutput | undefined
   isLoading: boolean
 } {
-  const formValues = useStore(state => state.quickSwap.formValues) as FormValues
+  const formValues = useStore(state => state.quickSwap.formValues)
   const tokensMapper = useStore(state => state.tokens.tokensMapper[chainId])
   const fromDecimals = tokensMapper?.[fromAddress]?.decimals
   const toDecimals = tokensMapper?.[toAddress]?.decimals
@@ -140,6 +138,7 @@ export function useRouterApi(
   /** Update the store with the fetched amounts and error status */
   useEffect(() => {
     const route = data?.[0]
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     const { setAppStateByKeys, quickSwap } = useStore.getState()
     setAppStateByKeys('quickSwap', {
       ...quickSwap,

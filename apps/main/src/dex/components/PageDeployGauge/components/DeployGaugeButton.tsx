@@ -45,6 +45,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
 
   const handleConnectEth = () => push(getPath({ network: 'ethereum' }, `/${restFullPathname}`))
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const handleClick = async () => {
     if (!curve) throw new Error('No current curve')
     if (sidechainGauge) {

@@ -16,7 +16,7 @@ import { useLlamaMarketSortOptions } from '../hooks/useLlamaMarketSortOptions'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-type Props = {
+interface Props {
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
 }

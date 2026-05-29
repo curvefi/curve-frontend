@@ -10,6 +10,7 @@ import { shortenAddress } from '@ui-kit/utils'
 export const ComboBoxListItem = ({
   testId,
   selectedGauge,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleOnSelectChange,
   ...item
 }: Pick<ComboBoxSelectGaugeProps, 'testId'> &

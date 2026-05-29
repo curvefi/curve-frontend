@@ -15,7 +15,7 @@ import { formatNumber } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { NumberField } from './NumberField'
 
-type VoteGaugeFieldProps = {
+interface VoteGaugeFieldProps {
   powerUsed: number
   userGaugeVoteData: UserGaugeVoteWeight
   userVeCrv: number
@@ -24,6 +24,7 @@ type VoteGaugeFieldProps = {
 
 export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
   const { address: userAddress } = useConnection()
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const castVote = useStore(state => state.gauges.castVote)
   const txCastVoteState = useStore(state => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({

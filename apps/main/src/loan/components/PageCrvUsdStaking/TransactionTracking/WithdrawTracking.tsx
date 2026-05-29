@@ -15,7 +15,7 @@ import {
   WalletIcon,
 } from './styles'
 
-type WithdrawTrackingProps = {
+interface WithdrawTrackingProps {
   className?: string
 }
 

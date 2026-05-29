@@ -14,14 +14,14 @@ import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
-type CreateLoanMutationContext = {
+interface CreateLoanMutationContext {
   chainId: LlamaChainId
   marketId: string | undefined
 }
 
 export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutationContext>
 
-export type CreateLoanOptions = {
+export interface CreateLoanOptions {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

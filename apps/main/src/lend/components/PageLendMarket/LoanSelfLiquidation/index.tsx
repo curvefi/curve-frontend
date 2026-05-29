@@ -38,6 +38,7 @@ export const LoanSelfLiquidation = ({
   userActiveKey,
   params,
 }: PageContentProps<MarketUrlParams>) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const formEstGas = useStore(state => state.loanSelfLiquidation.formEstGas)
   const formStatus = useStore(state => state.loanSelfLiquidation.formStatus)
@@ -45,9 +46,13 @@ export const LoanSelfLiquidation = ({
   const liquidationAmt = useStore(state => state.loanSelfLiquidation.liquidationAmt)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchDetails = useStore(state => state.loanSelfLiquidation.fetchDetails)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanSelfLiquidation.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepLiquidate = useStore(state => state.loanSelfLiquidation.fetchStepLiquidate)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanSelfLiquidation.resetState)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
@@ -83,6 +88,7 @@ export const LoanSelfLiquidation = ({
 
       if (isValid) {
         const notifyMessage = t`Self-liquidate ${market.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -97,10 +103,11 @@ export const LoanSelfLiquidation = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -189,6 +196,7 @@ export const LoanSelfLiquidation = ({
   useEffect(() => {
     if (isLoaded && api && market && userState) {
       const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, userState)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

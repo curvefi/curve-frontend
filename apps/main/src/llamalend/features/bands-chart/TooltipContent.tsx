@@ -10,7 +10,7 @@ import { BandsChartToken, ChartDataPoint } from './types'
 
 const { Spacing } = SizesAndSpaces
 
-type TooltipContentProps = {
+interface TooltipContentProps {
   data: ChartDataPoint
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken

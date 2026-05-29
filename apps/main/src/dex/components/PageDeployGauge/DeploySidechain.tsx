@@ -17,7 +17,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
+interface Props {
   chainId: ChainId
 }
 

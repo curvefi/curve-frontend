@@ -37,6 +37,7 @@ export const Dashboard = ({
   params: NetworkUrlParams
   pageLoaded: boolean
 }) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const push = useNavigate()
 

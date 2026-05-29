@@ -14,6 +14,7 @@ const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }:
   const [value, setValue] = useState<Decimal | DecimalRangeValue>(initialValue)
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setValue(initialValue)
   }, [initialValue])
 
@@ -34,7 +35,7 @@ const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }:
 const meta: Meta<typeof SliderInputComponent> = {
   title: 'UI Kit/Widgets/SliderInput',
   component: SliderInputComponent,
-  render: args => <SliderInputComponent {...(args as SliderInputStoryProps)} />,
+  render: args => <SliderInputComponent {...(args)} />,
   args: {
     name: 'slider-story',
     layoutDirection: 'row',

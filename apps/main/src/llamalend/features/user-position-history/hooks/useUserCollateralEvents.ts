@@ -50,7 +50,7 @@ const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd',
 export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> &
   TableItem & { type: UserCollateralEventType } & Partial<MarketTokens>
 
-export type UserCollateralEvents = {
+export interface UserCollateralEvents {
   events: ParsedUserCollateralEvent[]
   originalLeverage: Decimal
 }
@@ -68,10 +68,10 @@ const parseEventType = (
   if (type === 'Liquidate') return 'Hard Liquidation'
   if (type === 'Repay' && isPositionClosed) return 'Repay and Close'
   if (type === 'RemoveCollateral') return 'Remove Collateral'
-  return type as UserCollateralEventType
+  return type
 }
 
-export type UserCollateralEventsProps = {
+export interface UserCollateralEventsProps {
   app: LlamaMarketType
   userAddress: Address | undefined
   controllerAddress: Address | undefined

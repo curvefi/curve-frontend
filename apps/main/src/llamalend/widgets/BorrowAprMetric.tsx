@@ -8,7 +8,7 @@ import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
-type BorrowRateMetric = {
+interface BorrowRateMetric {
   rate: number | null | undefined
   averageRate: number | null | undefined
   averageCategory: AverageCategory
@@ -19,7 +19,7 @@ type BorrowRateMetric = {
   loading: boolean
 }
 
-type BorrowAprMetricProps = {
+interface BorrowAprMetricProps {
   marketType: LlamaMarketType
   borrowRate: BorrowRateMetric
   collateralSymbol: string | null | undefined

@@ -1,7 +1,7 @@
 export type Hex = `0x${string}` // // Same as viem without the dependency
 export type Address = Hex
 
-export type Token = {
+export interface Token {
   symbol: string
   address: Address
 }

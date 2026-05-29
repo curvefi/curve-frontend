@@ -2,8 +2,8 @@
 import type { CSSObject } from '@mui/system'
 import type { TypographyVariantKey, DisabledTypographyVariantKey } from '../../typography'
 
-type NewTypographyVariants<T> = { [key in TypographyVariantKey]: T }
-type DisabledTypographyVariants = { [key in DisabledTypographyVariantKey[number]]: false }
+type NewTypographyVariants<T> = Record<TypographyVariantKey, T>
+type DisabledTypographyVariants = Record<DisabledTypographyVariantKey[number], false>
 
 declare module '@mui/material/styles' {
   interface TypographyVariants extends NewTypographyVariants<CSSObject> {}

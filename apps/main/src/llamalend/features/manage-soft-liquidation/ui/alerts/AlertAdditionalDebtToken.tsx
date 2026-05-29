@@ -7,7 +7,7 @@ import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { useCrvSwapUrl } from '../../hooks/useCrvSwapUrl'
 import { formatTokens } from '../action-infos/util'
 
-type Props = {
+interface Props {
   debtTokenSymbol: string | undefined // this can be undefined if the userState query failed or is pending
   missing: Decimal
   balance: Decimal

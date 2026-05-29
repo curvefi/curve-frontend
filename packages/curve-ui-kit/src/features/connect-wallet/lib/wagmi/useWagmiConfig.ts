@@ -29,7 +29,7 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
               privateKey: generatePrivateKey(),
               // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
               chain: chains.find(chain => chain.id === ChainEnum.Ethereum)!,
-            })!,
+            }),
           ],
         }),
     })

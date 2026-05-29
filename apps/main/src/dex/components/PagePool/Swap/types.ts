@@ -2,7 +2,7 @@ import type { ExchangeRate, Route, RoutesAndOutputModal } from '@/dex/components
 
 export type StepKey = 'APPROVAL' | 'SWAP' | ''
 
-export type ExchangeOutput = {
+export interface ExchangeOutput {
   loading: boolean
   exchangeRates: ExchangeRate[]
   isExchangeRateLow: boolean
@@ -11,7 +11,7 @@ export type ExchangeOutput = {
   modal?: RoutesAndOutputModal | null
 }
 
-export type RouterSwapOutput = {
+export interface RouterSwapOutput {
   isExchangeRateLow: boolean
   isHighSlippage: boolean
   priceImpact: number
@@ -30,20 +30,22 @@ export type RouterSwapOutput = {
   isApproved: boolean
 }
 
-export type FormValues = {
+export interface FormValues {
   isFrom: boolean | null
   isWrapped: boolean
   fromAmount: string
   fromAddress: string
   fromToken: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   fromError: 'too-much' | string
   toAddress: string
   toAmount: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   toError: 'too-much-reserves' | string
   toToken: string
 }
 
-export type FormStatus = {
+export interface FormStatus {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''

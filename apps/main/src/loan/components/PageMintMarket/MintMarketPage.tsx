@@ -14,7 +14,7 @@ import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { type Chain, isPricesApiChain } from '@curvefi/prices-api'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
@@ -39,6 +39,7 @@ function useLegacyFetching({
 }) {
   const enabled = useLoanSlices()
   const [loaded, setLoaded] = useState(!enabled)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
   useEffect(() => {
     if (curve && market && enabled) {
@@ -121,7 +122,7 @@ export const MintMarketPage = () => {
           marketId={market?.id ?? ''}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id as Chain}
+          blockchainId={network.id}
         />
       }
     >

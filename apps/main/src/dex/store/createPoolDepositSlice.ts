@@ -47,24 +47,25 @@ import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   poolAddress: string
-  formEstGas: { [activeKey: string]: FormEstGas }
-  formLpTokenExpected: { [activeKey: string]: FormLpTokenExpected }
+  formEstGas: Record<string, FormEstGas>
+  formLpTokenExpected: Record<string, FormLpTokenExpected>
   formType: FormType
   formStatus: FormStatus
   formValues: FormValues
   maxLoading: number | null
-  slippage: { [activeKey: string]: Slippage }
+  slippage: Record<string, Slippage>
 }
 
 const sliceKey = 'poolDeposit'
 
 // prettier-ignore
-export type PoolDepositSlice = {
+export interface PoolDepositSlice {
   [sliceKey]: SliceState & {
     fetchExpected(activeKey: string, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
     fetchMaxAmount(

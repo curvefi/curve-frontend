@@ -2,7 +2,7 @@ import type { PEG_KEEPERS } from './constants'
 
 export type PegKeeper = (typeof PEG_KEEPERS)[number]
 
-export type PegKeeperDetails = {
+export interface PegKeeperDetails {
   rate: string | undefined
   debt: string | undefined
   estCallerProfit: string | undefined

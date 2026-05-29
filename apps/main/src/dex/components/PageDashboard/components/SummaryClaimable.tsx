@@ -13,12 +13,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
-type AllTotal = {
+interface AllTotal {
   totalUsd: number
-  tokens: { [token: string]: { symbol: string; total: number; price: number } }
+  tokens: Record<string, { symbol: string; total: number; price: number }>
 }
 
-type Props = {
+interface Props {
   title?: string
 }
 
@@ -55,7 +55,7 @@ export const SummaryClaimable = ({ title }: Props) => {
         totalUsd += claimablesTotalUsd
         return prev
       },
-      { totalUsd: 0, tokens: {} } as AllTotal,
+      { totalUsd: 0, tokens: {} },
     )
 
     return { ...allTotal, totalUsd }

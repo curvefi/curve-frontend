@@ -7,7 +7,7 @@ import { ComponentTestWrapper } from '../ComponentTestWrapper'
 import { createMockLlamaApi, TEST_ADDRESS } from './mock-loan-test-data'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
 
-type MockLoanTestWrapperProps = {
+interface MockLoanTestWrapperProps {
   children: ReactElement
   llamaApi: ReturnType<typeof createMockLlamaApi>
 }
@@ -23,6 +23,7 @@ const WalletStateSync = () => {
 
 export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperProps) => (
   <ComponentTestWrapper config={mockedWagmiConfig}>
+    {/* eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule. */}
     <CurveContext.Provider
       value={{
         connectState: ConnectState.SUCCESS,
@@ -30,6 +31,7 @@ export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperP
         isInitialized: true,
 
         llamaApi: llamaApi as never,
+        // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
         wallet: { provider: { request: async () => undefined }, address: TEST_ADDRESS },
 
         provider: {} as never, // Intentionally unused here; gas info is seeded via setGasInfo() in test context.

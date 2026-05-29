@@ -5,7 +5,7 @@ import { TokenId } from '@/dex/components/PageCreatePool/types'
 import { useStore } from '@/dex/store/useStore'
 import type { Address } from '@primitives/address.utils'
 
-type UseAutoDetectErc4626Params = {
+interface UseAutoDetectErc4626Params {
   tokenId: TokenId
   address: Address
 }

@@ -6,6 +6,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { kebabCase } = lodash
 
 function getFromLocalStorage<T>(storageKey: string): T | null {

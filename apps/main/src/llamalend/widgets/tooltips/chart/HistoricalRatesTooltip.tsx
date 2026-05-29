@@ -6,7 +6,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 type RateSeriesKey = keyof Omit<RateChartPoint, 'timestamp'>
 
-type HistoricalRatesTooltipProps = {
+interface HistoricalRatesTooltipProps {
   datum: RateChartPoint
   visibleSeries: LineSeriesConfig<RateSeriesKey>[]
 }

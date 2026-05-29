@@ -5,7 +5,7 @@ type ValueOf<T> = T[keyof T]
 
 export type ChipSize = 'xs' | 'sm' | 'md' | 'lg'
 
-export type ChipProps = {
+export interface ChipProps {
   className?: string
   as?: keyof JSX.IntrinsicElements
   isBlock?: boolean

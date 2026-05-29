@@ -203,6 +203,7 @@ export function DatePicker<T extends DateValue>(
         </Box>
 
         {state.isOpen && (
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
           <ModalDialog title="" maxWidth="22.5rem" state={{ ...state, close: state.close }}>
             <Calendar {...calendarProps} />
             {props.quickActions}

@@ -30,7 +30,7 @@ import { requireBlockchainId } from '@ui-kit/utils/network'
 
 const { Spacing } = SizesAndSpaces
 
-type PoolParametersProps = {
+interface PoolParametersProps {
   poolData: PoolData
   rChainId: ChainId
 }
@@ -333,7 +333,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
               <Stack>
                 <StatsTitle>{t`Price Oracle:`}</StatsTitle>
                 {priceOracle.map((p, idx) => {
-                  const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                  const wrappedCoins = poolData.pool.wrappedCoins
                   const symbol = wrappedCoins[idx + 1]
                   return (
                     <ActionInfo
@@ -354,7 +354,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
               <Stack>
                 <StatsTitle>{t`Price Scale:`}</StatsTitle>
                 {priceScale.map((p, idx) => {
-                  const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                  const wrappedCoins = poolData.pool.wrappedCoins
                   const symbol = wrappedCoins[idx + 1]
                   return (
                     <ActionInfo

@@ -8,7 +8,7 @@ import { AVERAGE_CATEGORIES, MAINNET_CRV_ADDRESS, decimal, defaultNumberFormatte
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
 import type { SupplyExtraIncentive } from './rates.types'
 
-type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
+interface BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> {
   borrowRate: number | null | undefined
   snapshots: TSnapshot[] | undefined
   getBorrowRate: (snapshot: TSnapshot) => number | null | undefined
@@ -87,7 +87,7 @@ const sumRates = (base: number | null | undefined, ...components: (number | null
 export const toNumberOrNull = (value: number | string | null | undefined) =>
   maybe(value, value => Number(value)) ?? null
 
-type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
+interface OnChainSupplyRewardApr { apy: number; symbol: string; tokenAddress: string }
 
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
   rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)!) : null
@@ -123,7 +123,7 @@ export const formatSupplyExtraIncentives = ({
     ...incentives.map(incentive => incentive.percentage > 0 && incentive),
   )
 
-type SupplyRateMetricsParams = {
+interface SupplyRateMetricsParams {
   supplyApy: number | null | undefined
   crvBoostApr: Range<number> | null | undefined
   rebasingYieldApy: number | null | undefined

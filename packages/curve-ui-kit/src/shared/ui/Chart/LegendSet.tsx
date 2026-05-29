@@ -30,7 +30,7 @@ export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fil
   </svg>
 )
 
-export type LegendItem = {
+export interface LegendItem {
   label: string
   line?: {
     lineStroke: string

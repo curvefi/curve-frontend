@@ -10,18 +10,19 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultClaim'
 
-type SliceState = {
-  claimable: { [userActiveKey: string]: MarketClaimable }
-  formEstGas: { [userActiveKey: string]: FormEstGas }
+interface SliceState {
+  claimable: Record<string, MarketClaimable>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
 }
 
 // prettier-ignore
-export type VaultClaimSlice = {
+export interface VaultClaimSlice {
   [sliceKey]: SliceState & {
     fetchClaimable(userActiveKey: string, api: Api, market: LendMarketTemplate): Promise<void>
     setFormValues(userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined): Promise<void>
@@ -58,6 +59,7 @@ export const createVaultClaim = (
       const resp = await apiLending.vaultClaim.claimable(userActiveKey, market)
       get()[sliceKey].setStateByKey('claimable', { [resp.userActiveKey]: { claimable: resp.claimable } })
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (userActiveKey, api, market) => {
       // update userActiveKey, formValues
       const cFormStatus: FormStatus = cloneDeep(DEFAULT_FORM_STATUS)

@@ -46,6 +46,7 @@ export const FieldDatePicker = ({
   isMax?: boolean
   calcdUtcDate: string
   utcDate: DateValue | null
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
   minUtcDate: dayjs.Dayjs
   maxUtcDate: dayjs.Dayjs | null

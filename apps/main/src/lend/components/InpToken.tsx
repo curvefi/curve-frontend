@@ -20,6 +20,7 @@ export const InpToken = ({
   tokenSymbol,
   tokenBalance,
   debt,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleInpChange,
   handleMaxClick,
   network,

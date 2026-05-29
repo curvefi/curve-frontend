@@ -1,5 +1,4 @@
 import { z } from 'zod/v4'
-import type { Token } from '@primitives/address.utils'
 import { address, camelizeKeys, timestamp } from '../schemas'
 
 const token = z.object({ symbol: z.string(), address }).transform(
@@ -7,7 +6,7 @@ const token = z.object({ symbol: z.string(), address }).transform(
     ({
       symbol,
       address,
-    }) as Token,
+    }),
 )
 
 export const endpoint = z.enum(['crvusd', 'lending'])

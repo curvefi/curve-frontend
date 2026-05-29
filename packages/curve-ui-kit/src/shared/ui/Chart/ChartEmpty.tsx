@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
-type ChartEmptyProps = {
+interface ChartEmptyProps {
   height: number
   title?: ReactNode
   message?: ReactNode

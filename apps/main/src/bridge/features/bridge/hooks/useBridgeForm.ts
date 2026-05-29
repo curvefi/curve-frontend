@@ -18,7 +18,7 @@ import { useBridgeGasEstimate } from '../queries/bridge-gas-estimate'
 import { invalidateBridgeIsApproved, useBridgeIsApproved } from '../queries/bridge-is-approved'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
-export type BridgeForm = {
+export interface BridgeForm {
   fromChainId: number | undefined
   amount: Decimal | undefined
 

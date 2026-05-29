@@ -16,6 +16,7 @@ export const InpTokenBorrow = ({
   tokenAddress,
   tokenSymbol,
   maxRecv,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleInpChange,
   network,
 }: {

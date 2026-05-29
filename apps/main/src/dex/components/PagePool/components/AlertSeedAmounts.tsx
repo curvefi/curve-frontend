@@ -6,7 +6,7 @@ import { AlertBox } from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   seed: Seed
   poolData: PoolData | undefined
 }

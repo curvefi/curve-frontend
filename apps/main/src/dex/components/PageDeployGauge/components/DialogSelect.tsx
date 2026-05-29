@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { DialogSelectContent } from '@/dex/components/PageDeployGauge/components/DialogSelectContent'
 import { Popover2Dialog, Popover2Trigger as Popover } from '@ui/Popover2'
 
-type Props<T> = {
+interface Props<T> {
   currentData: T | null
   data: T[]
   isDisabled: boolean

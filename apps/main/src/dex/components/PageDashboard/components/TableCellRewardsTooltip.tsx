@@ -6,13 +6,14 @@ import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import { Box } from '@ui/Box'
 import { formatNumber } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   crv?: RewardCrv[]
   userCrvApy: number
   fetchUserPoolBoost: () => Promise<string>
 }
 
 export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: Props) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const [boost, setBoost] = useState('')
 

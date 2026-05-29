@@ -32,6 +32,7 @@ export const combineQueriesToObject = <TData, K extends string[]>(
 /**
  * Returns the minimum value from multiple queries returning Decimal values.
  */
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
 export const useQueryMinimum = (...queries: Query<Decimal>[]) => ({
   data: queries.some(d => d.data == null) ? undefined : decimalMin(...queries.map(d => d.data!)),
   isLoading: queries.some(d => d?.isLoading),

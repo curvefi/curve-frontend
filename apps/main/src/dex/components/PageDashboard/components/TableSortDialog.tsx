@@ -14,7 +14,7 @@ const sortOrder = {
   desc: { label: 'Descending', icon: <Icon name="ArrowDown" size={24} /> },
 }
 
-type Props = {
+interface Props {
   className?: string
   tableLabel: TableLabel
 }

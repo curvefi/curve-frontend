@@ -3,14 +3,14 @@ import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
 import { getThreeHundredResultsAgo } from '../utils'
 
-type ChartTimeSettings = {
+interface ChartTimeSettings {
   /** Start timestamp for fetching chart data */
   start: number
   /** End timestamp (current time) */
   end: number
 }
 
-type UseChartTimeSettingsReturn = {
+interface UseChartTimeSettingsReturn {
   /** Currently selected time option */
   timeOption: TimeOption
   /** Update the selected time option */
@@ -42,6 +42,7 @@ const intervals: Record<TimeOption, number> = {
 export const useChartTimeSettings = (
   initialTimeOption: TimeOption = DEFAULT_TIME_OPTION,
 ): UseChartTimeSettingsReturn => {
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [timeOption, setTimeOptionState] = useState<TimeOption>(initialTimeOption)
 
   const setTimeOption = useCallback((option: TimeOption) => {

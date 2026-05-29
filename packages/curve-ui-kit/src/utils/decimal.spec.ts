@@ -22,7 +22,7 @@ describe('decimal', () => {
   })
 
   it.each(['Infinity', '-Infinity', undefined, null, '', '?', '-', NaN])('handles edge cases', invalidCharacter => {
-    expect(decimal(invalidCharacter as string | number | undefined | null)).toBe(undefined)
+    expect(decimal(invalidCharacter)).toBe(undefined)
   })
 
   it('handles large and small numbers', () => {
@@ -73,7 +73,7 @@ describe('amount', () => {
   it.each([undefined, null, '', '?', '-', NaN, 'abc', '12.34.56', '12a34', 'Infinity'])(
     'returns undefined for invalid values',
     invalidValue => {
-      expect(amount(invalidValue as string | number | undefined | null)).toBe(undefined)
+      expect(amount(invalidValue)).toBe(undefined)
     },
   )
 })

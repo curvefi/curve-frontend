@@ -41,7 +41,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
 export const AlertFormError = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
-    const messages: { [key: AlertFormErrorKey | string]: string } = {
+    const messages: Record<AlertFormErrorKey | string, string> = {
       // quick swap and pool swap
       [AlertFormErrorKey.SWAP_NOT_AVAILABLE]: t`Swap route is not available on Curve. Try an aggregator.`,
       [AlertFormErrorKey.SWAP_EXCHANGE_AND_OUTPUT]: t`Unable to get exchange rates and swap amount`,

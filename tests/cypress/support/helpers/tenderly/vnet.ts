@@ -32,7 +32,7 @@ export const getRpcUrls = (
   publicRpcUrl: vnet.rpcs.find(rpc => rpc.name === 'Public RPC')!.url,
 })
 
-export type TenderlyWagmiConfigFromVNet = {
+export interface TenderlyWagmiConfigFromVNet {
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
   privateKey?: Hex
 }

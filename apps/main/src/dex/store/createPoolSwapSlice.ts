@@ -35,15 +35,16 @@ import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  exchangeOutput: { [activeKey: string]: ExchangeOutput }
-  routerSwapOutput: { [activeKey: string]: RouterSwapOutput }
+  exchangeOutput: Record<string, ExchangeOutput>
+  routerSwapOutput: Record<string, RouterSwapOutput>
   isMaxLoading: boolean
-  ignoreExchangeRateCheck: { [poolId: string]: boolean }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  ignoreExchangeRateCheck: Record<string, boolean>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -51,7 +52,7 @@ type SliceState = {
 const sliceKey = 'poolSwap'
 
 // prettier-ignore
-export type PoolSwapSlice = {
+export interface PoolSwapSlice {
   [sliceKey]: SliceState & {
     fetchIgnoreExchangeRateCheck(curve: CurveApi, pool: Pool): Promise<boolean>
     fetchExchangeOutput(activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
@@ -320,6 +321,7 @@ export const createPoolSwapSlice = (
 
       // validate toAmount: If have toAmount and isFrom is false, confirm toAmount is not bigger than currency reserves
       if (+cFormValues.toAmount > 0 && !cFormValues.isFrom) {
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         const { currencyReserves, fetchPoolCurrenciesReserves } = get().pools
         const currencyReserve = currencyReserves[poolId] ?? (await fetchPoolCurrenciesReserves(curve, poolData))
 

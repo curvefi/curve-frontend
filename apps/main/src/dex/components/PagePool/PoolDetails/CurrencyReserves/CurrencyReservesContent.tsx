@@ -23,6 +23,7 @@ export const CurrencyReservesContent = ({
   tokenAddress,
   tokenLink,
   tokensMapper,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleCopyClick,
 }: CurrencyReservesProps) => (
   <Wrapper flex flexJustifyContent="space-between" isBorderBottom>

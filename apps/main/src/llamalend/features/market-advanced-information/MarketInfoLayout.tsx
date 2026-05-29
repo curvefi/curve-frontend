@@ -9,7 +9,7 @@ import { MarketParametersSection } from './MarketParametersSection'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-type MarketInfoSectionsProps = {
+interface MarketInfoSectionsProps {
   chainId: IChainId
   marketType: LlamaMarketType
   market: LlamaMarketTemplate | undefined

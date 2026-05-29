@@ -24,6 +24,7 @@ export const RouteDetails = ({
   $minWidth,
   network,
 }: RouteDetailsProps) => {
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [showDetails, toggleShowDetails] = useState(false)
 
   const { address: swapToAddress = '', symbol: swapToSymbol = '' } = swapTo ?? {}

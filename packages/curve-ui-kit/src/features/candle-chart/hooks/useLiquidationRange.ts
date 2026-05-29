@@ -3,7 +3,7 @@ import type { LiquidationRanges, LlammaLiquididationRange, LpPriceOhlcDataFormat
 
 type TimeSeriesData = LpPriceOhlcDataFormatted[] | OraclePriceData[]
 
-type UseLiquidationRangeProps = {
+interface UseLiquidationRangeProps {
   /** OHLC chart data to use for time series */
   chartData: LpPriceOhlcDataFormatted[]
   /** Fallback time series data (e.g., oracle price data) if chartData is empty */

@@ -14,7 +14,7 @@ import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
-type RangeValueAccumulator = {
+interface RangeValueAccumulator {
   upper?: number
   lower?: number
 }
@@ -44,8 +44,8 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   const fallbackStart = orderedEntries[0][0] as Time
 
   const fallbackEnd = orderedEntries[orderedEntries.length - 1][0] as Time
-  const rangeStartTime = (range.startTime ?? fallbackStart) as Time
-  const rangeEndTime = (range.endTime ?? fallbackEnd) as Time
+  const rangeStartTime = (range.startTime ?? fallbackStart)
+  const rangeEndTime = (range.endTime ?? fallbackEnd)
 
   return orderedEntries.map(([time, values]) => {
     const upper = values.upper!
@@ -78,7 +78,7 @@ type LiquidationRangeSeriesApi = ISeriesApi<
 
 const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
 
-type Props = {
+interface Props {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
@@ -132,13 +132,16 @@ export const CandleChart = ({
     top: null,
     bottom: null,
   })
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const historicalRangeSeriesRefs = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const hasAppliedInitialOffset = useRef(false)
   const ohlcDataRef = useRef(ohlcData)
 
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isMounted = useRef(true)
 
   const [isUnmounting, setIsUnmounting] = useState(false)
@@ -210,6 +213,7 @@ export const CandleChart = ({
   )
 
   // Debounced update of wrapper dimensions
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
@@ -256,6 +260,7 @@ export const CandleChart = ({
     ohlcDataRef.current = ohlcData
   }, [ohlcData])
 
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const debouncedFetchMoreChartData = useRef(
     lodash.debounce(
       () => {

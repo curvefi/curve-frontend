@@ -12,7 +12,7 @@ export type ChainId = 1 // note lend also has other chains, but we only use eth 
 /** LOAN app specific API that constrains chainId to Ethereum only */
 export type NetworkEnum = Extract<INetworkName, 'ethereum'>
 
-export type NetworkUrlParams = { network: NetworkEnum }
+export interface NetworkUrlParams { network: NetworkEnum }
 export type CollateralUrlParams = NetworkUrlParams & { collateralId: string }
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
@@ -26,17 +26,17 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
 
 export type Llamma = MintMarketTemplate
 
-export type LiqRange = {
+export interface LiqRange {
   prices: string[]
   bands: [number, number]
 }
-export type LoanPriceInfo = {
+export interface LoanPriceInfo {
   oraclePrice: string
   oraclePriceBand: number | null
   price: string
   error: string
 }
-export type LoanParameter = {
+export interface LoanParameter {
   fee: string
   admin_fee: string
   rates: IRates
@@ -45,7 +45,7 @@ export type LoanParameter = {
   loan_discount: string
 }
 export type BandBalance = Record<string, { stablecoin: string; collateral: string }>
-export type LoanDetails = {
+export interface LoanDetails {
   loading: boolean
   oraclePriceBand: number | null
   parameters: LoanParameter
@@ -58,7 +58,7 @@ export type LoanDetails = {
   priceInfo: LoanPriceInfo
   capAndAvailable: { totalAssets: string; available: string }
 }
-export type BandsBalancesData = {
+export interface BandsBalancesData {
   collateral: string
   collateralUsd: string
   isLiquidationBand: string
@@ -71,7 +71,7 @@ export type BandsBalancesData = {
   stablecoin: string
   collateralStablecoinUsd: number
 }
-export type UserLoanDetails = {
+export interface UserLoanDetails {
   loading: boolean
   healthFull: string
   healthNotFull: string
@@ -87,7 +87,7 @@ export type UserLoanDetails = {
   userLoss: { deposited_collateral: string; current_collateral_estimation: string; loss: string; loss_pct: string }
   userStatus: { label: string; colorKey: HealthColorKey; tooltip: string }
 }
-export type UserWalletBalances = {
+export interface UserWalletBalances {
   stablecoin: string
   collateral: string
   error: string

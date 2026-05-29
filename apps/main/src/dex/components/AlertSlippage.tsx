@@ -3,7 +3,7 @@ import { AlertBox } from '@ui/AlertBox'
 import { Trans } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   maxSlippage: string
   usdAmount?: string | number
 }

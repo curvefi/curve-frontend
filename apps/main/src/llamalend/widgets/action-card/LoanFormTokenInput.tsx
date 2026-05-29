@@ -17,11 +17,11 @@ import { decimal } from '@ui-kit/utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
-export type LoanFormTokenInputProps<
+export interface LoanFormTokenInputProps<
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
   TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-> = {
+> {
   label: string
   token: { address: Address; symbol?: string } | undefined
   blockchainId: INetworkName | undefined
@@ -68,7 +68,9 @@ export const LoanFormTokenInput = <
   name,
   max,
   form: {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     getValue,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     update: updateForm,
     formState: { errors: formErrors, touchedFields },
   },

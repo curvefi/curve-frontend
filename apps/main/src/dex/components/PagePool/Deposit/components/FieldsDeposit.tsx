@@ -83,6 +83,7 @@ export const FieldsDeposit = ({
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const reserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])

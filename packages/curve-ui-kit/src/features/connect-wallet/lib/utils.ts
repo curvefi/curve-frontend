@@ -92,4 +92,5 @@ export const globalLibs = {
 }
 
 export const getLib = globalLibs.get
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 export const requireLib = globalLibs.require

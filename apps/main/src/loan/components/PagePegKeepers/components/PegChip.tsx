@@ -9,7 +9,7 @@ const pegChipLabels = {
   underpegged: t`Under peg`,
 } as const satisfies Record<PegStatus['label'], string>
 
-type Props = {
+interface Props {
   status: PegStatus
 }
 

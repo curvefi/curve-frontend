@@ -58,7 +58,7 @@ const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenSta
   return basePoolCoins
 }
 
-type Props = {
+interface Props {
   curve: CurveApi
   haveSigner: boolean
   chainId: ChainId
@@ -113,7 +113,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const findSymbol = useCallback(
     (address: string) => {
       if (address !== '') {
-        if (tokensMapper[address]) return tokensMapper[address]!.symbol
+        if (tokensMapper[address]) return tokensMapper[address].symbol
         //search through user added tokens
         const addedToken = userAddedTokens.find(userToken => userToken.address === address)
         if (addedToken) return addedToken.symbol

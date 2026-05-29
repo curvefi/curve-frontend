@@ -50,7 +50,7 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Pa
 export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolId: string) =>
   fetchTokenBalance(config, {
     chainId: curve?.chainId,
-    userAddress: curve.signerAddress as Address,
+    userAddress: curve.signerAddress,
 
     tokenAddress: curve.getPool(poolId).lpToken as Address,
   })

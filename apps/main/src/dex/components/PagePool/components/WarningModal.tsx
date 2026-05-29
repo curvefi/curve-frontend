@@ -5,7 +5,7 @@ import { Checkbox } from '@ui/Checkbox'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-type SharedProps = {
+interface SharedProps {
   confirmed: boolean
   setConfirmed: Dispatch<SetStateAction<boolean>>
 }

@@ -15,19 +15,20 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultUnstake'
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
 
 // prettier-ignore
-export type VaultUnstakeSlice = {
+export interface VaultUnstakeSlice {
   [sliceKey]: SliceState & {
     fetchEstGas(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
     setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>

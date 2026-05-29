@@ -21,6 +21,7 @@ const ALERT_FORM_ERROR_KEYS = {
 type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   errorKey: AlertFormErrorKey | string
 }
 
@@ -28,7 +29,8 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
 export const AlertFormError = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
-    const messages: { [key: AlertFormErrorKey | string]: string } = {
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
+    const messages: Record<AlertFormErrorKey | string, string> = {
       // loan deleverage
       [ALERT_FORM_ERROR_KEYS['error-deleverage-api']]: t`Unable to get deleverage info`,
       [ALERT_FORM_ERROR_KEYS['error-full-repayment-required']]:

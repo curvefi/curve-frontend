@@ -8,7 +8,7 @@ const Image = styled('img')({
   height: 26,
 })
 
-type HeaderLogoProps = {
+interface HeaderLogoProps {
   sx?: SxProps
 }
 

@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { GaugeQuery, type UserQuery } from '@ui-kit/lib/model/query'
 import { FieldsOf } from '@ui-kit/lib/validation'
 
-export type AddReward = {
+export interface AddReward {
   rewardTokenId: Address
   distributorId: Address
 }
@@ -11,7 +11,7 @@ export type AddRewardQuery = GaugeQuery & AddReward
 export type AddRewardParams = FieldsOf<AddRewardQuery>
 export type AddRewardMutation = FieldsOf<AddReward>
 
-export type DepositRewardApprove = {
+export interface DepositRewardApprove {
   rewardTokenId: Address
   amount: number | string
   userBalance?: Decimal

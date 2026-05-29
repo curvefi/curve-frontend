@@ -5,7 +5,7 @@ import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-valid
 import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { Chain } from '@ui-kit/utils'
 
-export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
+export interface ScrvUsdUserBalances { crvUSD: string; scrvUSD: string }
 
 async function _fetchSavingsUserBalances({ userAddress }: UserQuery): Promise<ScrvUsdUserBalances | null> {
   const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.userBalances(userAddress)

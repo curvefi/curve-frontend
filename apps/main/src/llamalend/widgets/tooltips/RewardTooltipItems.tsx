@@ -12,7 +12,7 @@ import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
 
-type RewardsTooltipItemsProps = {
+interface RewardsTooltipItemsProps {
   title: string
   boostedApr?: number | null | undefined
   extraRewards: CampaignRewards[]

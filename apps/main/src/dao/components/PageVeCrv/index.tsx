@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useConnection } from 'wagmi'
-import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import { networksIdMapper } from '@/dao/networks'
 import { useStore } from '@/dao/store/useStore'
@@ -27,6 +26,7 @@ export const VeCrv = () => {
   const { address: userAddress } = useConnection()
 
   const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.lockedCrv.resetState)
 
   // onMount
@@ -51,7 +51,7 @@ export const VeCrv = () => {
               <FormCrvLocker
                 curve={curveApi}
                 rChainId={rChainId}
-                rFormType={rFormType as FormType}
+                rFormType={rFormType}
                 vecrvInfo={vecrvInfo}
               />
             ) : (

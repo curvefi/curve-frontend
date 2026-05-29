@@ -19,12 +19,13 @@ import type { Tab, DisclaimerTab } from './types/tabs'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-type LegalPageProps = {
+interface LegalPageProps {
   currentApp: AppName
 }
 
 function useAfterHydration(result: string) {
   const [value, setValue] = useState<string>()
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(result), [result]) // only after hydration, otherwise test may click too fast
   return value
 }

@@ -22,12 +22,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const formStatus = useStore(state => state.vaultClaim.formStatus)
   const claimable = useStore(state => state.vaultClaim.claimable[userActiveKey])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepClaim = useStore(state => state.vaultClaim.fetchStepClaim)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultClaim.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultClaim.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -100,7 +104,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const stepKey = isCrv ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM_CRV: {
           key: 'CLAIM_CRV',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
@@ -145,6 +149,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
   useEffect(() => {
     if (isLoaded && api && market && (haveClaimableCrv || haveClaimableRewards)) {
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

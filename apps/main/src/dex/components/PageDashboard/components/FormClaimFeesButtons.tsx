@@ -94,6 +94,7 @@ export const FormClaimFeesButtons = ({
           status: 'succeeded',
           type: 'action',
           content: t`Claimed ${key}`,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
           onClick: () => {},
         },
       ])

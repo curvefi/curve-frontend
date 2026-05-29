@@ -33,7 +33,7 @@ export const DEFAULT_ALERT: MarketAlert = {
  */
 export const MARKETS_ALERTS: Record<
   LlamaMarketType,
-  { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
+  Record<number, Record<Address, MarketAlert>>
 > = {
   /** LEND MARKET ALERTS */
   Lend: {
@@ -165,7 +165,7 @@ export const MARKETS_ALERTS: Record<
   Mint: {},
 }
 
-export type DeprecatedMarketAlert = { message: string; url?: string }
+export interface DeprecatedMarketAlert { message: string; url?: string }
 
 // Deprecated markets are hidden from market list for new users but remain accessible to users with existing positions.
 export const DEPRECATED_LLAMAS: Record<

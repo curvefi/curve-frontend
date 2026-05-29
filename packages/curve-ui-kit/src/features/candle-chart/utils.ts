@@ -39,7 +39,6 @@ export function calculateRobustPriceRange(
   padding = 0.05,
 ): { minValue: number; maxValue: number } | null {
   const sortedPrices = sortBy(prices, price => price)
-
   if (sortedPrices.length === 0) {
     // Let the chart fall back to its native autoscale rather than guessing a default price.
     return null

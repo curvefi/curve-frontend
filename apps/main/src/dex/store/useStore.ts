@@ -13,6 +13,7 @@ import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPo
 import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import { TokensSlice, createTokensSlice } from '@/dex/store/createTokensSlice'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { debounce, merge } = lodash
 
 export type State = GlobalSlice &

@@ -50,13 +50,13 @@ const DEFAULT_OPTIONS: LiquidationRangeSeriesOptions = {
   showBottomLine: true,
 }
 
-type PreparedPoint = {
+interface PreparedPoint {
   x: number
   upper: Coordinate
   lower: Coordinate
 }
 
-type RendererPayload = {
+interface RendererPayload {
   data: PaneRendererCustomData<Time, LiquidationRangePoint> | null
   options: LiquidationRangeSeriesOptions
 }
@@ -252,6 +252,7 @@ const createLiquidationRangePaneView = (): ICustomSeriesPaneView<
   LiquidationRangePoint,
   LiquidationRangeSeriesOptions
 > => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { renderer, setPayload } = createRenderer()
 
   return {

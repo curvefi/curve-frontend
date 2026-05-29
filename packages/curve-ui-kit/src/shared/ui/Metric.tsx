@@ -154,7 +154,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
   )
 }
 
-export type MetricProps = {
+export interface MetricProps {
   /** The actual metric value to display */
   value: Amount | '' | false | undefined | null
   valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {

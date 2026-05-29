@@ -14,7 +14,7 @@ import { Chip } from '@ui/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
-type Props = {
+interface Props {
   className?: string
   blockchainId: INetworkName
   isVisible?: boolean

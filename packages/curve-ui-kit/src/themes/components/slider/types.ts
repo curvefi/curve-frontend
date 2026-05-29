@@ -5,14 +5,14 @@ import { DesignSystem } from '@ui-kit/themes/design'
 export type SliderSize = NonNullable<SliderProps['size']>
 export type SliderRailBackground = NonNullable<SliderProps['data-rail-background']>
 
-export type SliderSizeDefinition = {
+export interface SliderSizeDefinition {
   height: Responsive
   thumbWidth: Responsive
 }
 
 export type GradientStopsDefinition = Readonly<Record<number | `${number}`, string>>
 
-export type OrientationConfig = {
+export interface OrientationConfig {
   gradientDirection: 'to right' | 'to top'
   extensionOffsets: {
     start: Record<string, string>

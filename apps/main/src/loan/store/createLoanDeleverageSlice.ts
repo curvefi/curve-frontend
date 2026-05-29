@@ -17,12 +17,13 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -30,7 +31,7 @@ type SliceState = {
 const sliceKey = 'loanDeleverage'
 
 // prettier-ignore
-export type LoanDeleverageSlice = {
+export interface LoanDeleverageSlice {
   [sliceKey]: SliceState & {
     fetchDetailInfo(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
     setFormValues(llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>

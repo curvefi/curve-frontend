@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent, Chain } from '@ui-kit/utils'
 import { getActionValue } from '../action-info.helpers'
 
-type SupplyRpcTestMarket = {
+interface SupplyRpcTestMarket {
   id: string
   label: string
   chainId: LlamaChainId
@@ -74,6 +74,7 @@ export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
 export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>
   getSupplyInputBalanceValue(type).invoke(LOAD_TIMEOUT, 'attr', 'data-value')
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
   getSupplyInput(type).type(amount)

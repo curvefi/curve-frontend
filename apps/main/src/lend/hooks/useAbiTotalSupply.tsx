@@ -11,6 +11,7 @@ export const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | u
   const contract = useAbiGaugeTotalSupply(rChainId, false, 'totalSupply', contractAddress)
   const isValidAddress = contractAddress !== zeroAddress
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [totalSupply, settotalSupply] = useState<number | null>(null)
 
   const getTotalSupply = useCallback(async (contract: Contract) => {

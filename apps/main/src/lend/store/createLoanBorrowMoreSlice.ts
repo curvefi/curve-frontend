@@ -23,23 +23,24 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   activeKeyMax: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  detailInfoLeverage: Record<string, FormDetailInfoLeverage>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
-  maxRecv: { [activeKeyMax: string]: string }
+  maxRecv: Record<string, string>
 }
 
 const sliceKey = 'loanBorrowMore'
 
 // prettier-ignore
-export type LoanBorrowMoreSlice = {
+export interface LoanBorrowMoreSlice {
   [sliceKey]: SliceState & {
     fetchMaxRecv(activeKeyMax: string, api: Api, market: LendMarketTemplate, isLeverage: boolean): Promise<void>
     refetchMaxRecv(market: LendMarketTemplate | undefined, isLeverage: boolean): Promise<string>

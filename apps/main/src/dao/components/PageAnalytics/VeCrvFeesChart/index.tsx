@@ -9,6 +9,7 @@ import { FeesBarChart } from './FeesBarChart'
 
 export const VeCrvFeesChart = () => {
   const veCrvFees = useStore(state => state.analytics.veCrvFees)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'

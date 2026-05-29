@@ -2,7 +2,7 @@ import { identity, isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
-type DebouncedValueOptions<T> = {
+interface DebouncedValueOptions<T> {
   defaultValue?: T
   debounceMs?: number
 }
@@ -80,6 +80,7 @@ export function useDebounce<T>({
   debounceMs?: number
 }) {
   const [value, setValue] = useState<T>(initialValue)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(initialValue), [initialValue])
   return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }
@@ -136,6 +137,7 @@ export function useUniqueDebounce<T>({
   sanitize?: (value: T) => T
 }) {
   const [value, setValue] = useState<T>(defaultValue)
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const lastCallbackValue = useRef(defaultValue)
 
   useEffect(() => {

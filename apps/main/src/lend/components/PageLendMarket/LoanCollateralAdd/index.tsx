@@ -27,6 +27,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralAdd.activeKey)
@@ -36,9 +37,13 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
   const formValues = useStore(state => state.loanCollateralAdd.formValues)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanCollateralAdd.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepIncrease = useStore(state => state.loanCollateralAdd.fetchStepIncrease)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanCollateralAdd.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanCollateralAdd.resetState)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -90,6 +95,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
 
       if (+collateral > 0) {
         const notifyMessage = t`deposit ${formValues.collateral} ${market.collateral_token.symbol}.`
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -103,10 +109,11 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -165,6 +172,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
   useEffect(() => {
     if (isLoaded && api && market) {
       const updatedSteps = getSteps(activeKey, api, market, formEstGas, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

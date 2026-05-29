@@ -4,7 +4,7 @@ import Link from '@mui/material/Link'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
 
-type SidebarItemProps = {
+interface SidebarItemProps {
   page: AppPage
   child?: boolean
 }

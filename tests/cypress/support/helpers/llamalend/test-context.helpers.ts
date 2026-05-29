@@ -12,7 +12,7 @@ export const setLlamaApi = (llamaApi: unknown) => (globalLibs.current.llamaApi =
 export const resetLlamaTestContext = () => {
   queryClient.clear()
 
-  globalLibs.current = {} as never
+  globalLibs.current = {}
   globalLibs.hydrated = {}
 }
 

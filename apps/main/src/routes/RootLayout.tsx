@@ -43,8 +43,11 @@ const shouldForwardProp = (propName: string, target: unknown) => typeof target !
 
 function useHydrationMethods(): HydratorMap {
   const loanSlicesEnabled = useLoanSlices()
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const dex = useDexStore().hydrate
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const crvusd = useLoanStore().hydrate
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const lend = useLendStore().hydrate
   return useMemo(() => ({ dex, ...(loanSlicesEnabled && { crvusd, lend }) }), [crvusd, dex, lend, loanSlicesEnabled])
 }

@@ -10,7 +10,7 @@ import type { EIP1193Provider } from 'viem'
  * The detail object for the EIP-6963 provider announcement event.
  * @see https://eips.ethereum.org/EIPS/eip-6963
  */
-type Eip6963ProviderDetail = {
+interface Eip6963ProviderDetail {
   info: { uuid: string; name: string; icon: string; rdns: string }
   provider: EIP1193Provider
 }

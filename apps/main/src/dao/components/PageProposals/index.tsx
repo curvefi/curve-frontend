@@ -23,9 +23,13 @@ import { Proposal } from './Proposal'
 export const Proposals = () => {
   const activeSortBy = useStore(state => state.proposals.activeSortBy)
   const activeSortDirection = useStore(state => state.proposals.activeSortDirection)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setActiveSortBy = useStore(state => state.proposals.setActiveSortBy)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setActiveSortDirection = useStore(state => state.proposals.setActiveSortDirection)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setActiveFilter = useStore(state => state.proposals.setActiveFilter)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setSearchValue = useStore(state => state.proposals.setSearchValue)
   const searchValue = useStore(state => state.proposals.searchValue)
   const activeFilter = useStore(state => state.proposals.activeFilter)

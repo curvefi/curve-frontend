@@ -44,6 +44,7 @@ export const FormDepositStake = ({
   seed,
   tokensMapper,
 }: TransferProps) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -58,9 +59,13 @@ export const FormDepositStake = ({
   const formValues = useStore(state => state.poolDeposit.formValues)
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 
@@ -79,7 +84,9 @@ export const FormDepositStake = ({
       loadMaxAmount: LoadMaxAmount | null,
       updatedMaxSlippage: string | null,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSlippageConfirmed(false)
       void setFormValues(
         'DEPOSIT_STAKE',
@@ -140,7 +147,7 @@ export const FormDepositStake = ({
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'DEPOSIT_STAKE'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
@@ -171,6 +178,7 @@ export const FormDepositStake = ({
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
@@ -245,6 +253,7 @@ export const FormDepositStake = ({
         steps,
         maxSlippage,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

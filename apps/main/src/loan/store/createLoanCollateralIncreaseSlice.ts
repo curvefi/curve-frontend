@@ -17,19 +17,20 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { loadingLRPrices } from '../lib/apiCrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
 
 const sliceKey = 'loanCollateralIncrease'
 
-export type LoanCollateralIncreaseSlice = {
+export interface LoanCollateralIncreaseSlice {
   [sliceKey]: SliceState & {
     fetchEstGasApproval(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
     fetchDetailInfo(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
@@ -101,6 +102,7 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
 
       get()[sliceKey].setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       // stored values
       const prevActiveKey = get()[sliceKey].activeKey

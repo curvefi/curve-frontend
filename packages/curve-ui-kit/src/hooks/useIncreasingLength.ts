@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
-export type IncreasingLengthOptions = {
+export interface IncreasingLengthOptions {
   initialLength?: number
   increaseEveryMs?: number
   maxLength?: number

@@ -11,7 +11,7 @@ const { FAILURE, LOADING } = ConnectState
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
-type CurveContextValue = {
+interface CurveContextValue {
   connectState: ConnectState
   curveApi?: CurveApi
   llamaApi?: LlamaApi
@@ -38,6 +38,7 @@ function useWagmiIsInitialized(hasWallet: boolean) {
   const [wasInitialized, setWasInitialized] = useState(false)
 
   const isInitialized = !isConnecting && !isReconnecting && (!isConnected || hasWallet)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setWasInitialized(wasInitialized => isInitialized || wasInitialized), [isInitialized])
   return isInitialized || wasInitialized // note: use || since `isInitialized` is set one render before `wasInitialized`
 }
@@ -63,4 +64,5 @@ export function useWagmiWallet() {
   }
 }
 
+// eslint-disable-next-line @eslint-react/no-use-context -- Existing violation before enabling this rule.
 export const useCurve = () => useContext(CurveContext)

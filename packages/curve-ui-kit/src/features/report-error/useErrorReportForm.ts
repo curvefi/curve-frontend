@@ -3,13 +3,13 @@ import { captureError, captureString } from '@ui-kit/features/sentry'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
-export type ErrorContext = {
+export interface ErrorContext {
   error: Error | string | null | undefined
   title: string
   subtitle: string
 }
 
-type ErrorReportFormValues = {
+interface ErrorReportFormValues {
   address: string
   contactMethod: ContactMethod
   contact: string
@@ -24,6 +24,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
   return {
     form,
     values: form.watchValues(),
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     onSubmit: form.handleSubmit(async formData => {
       const body = {
         formData,

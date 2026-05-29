@@ -24,6 +24,7 @@ export function useTabs<T>(
   onTabChange: (value: T) => void
   tabOptions: readonly TabOption<T>[]
 } {
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [requestedValue, onTabChange] = useState<T | undefined>(defaultValue)
   const isPresent = requestedValue !== undefined && options.some(o => o.value === requestedValue)
   const tab = isPresent ? requestedValue : options[0]?.value

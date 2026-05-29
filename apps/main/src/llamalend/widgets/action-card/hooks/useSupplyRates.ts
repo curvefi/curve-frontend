@@ -17,7 +17,7 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { BlockchainIds, decimal } from '@ui-kit/utils'
 
-type SupplyRewards = {
+interface SupplyRewards {
   crvRates?: Range<number> | null
   rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[]
 }

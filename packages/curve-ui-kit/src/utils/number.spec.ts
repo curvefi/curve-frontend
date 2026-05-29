@@ -314,6 +314,7 @@ describe('defaultNumberFormatter', () => {
 
 describe('decomposeNumber', () => {
   // Mock console.warn for USD overflow tests
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
   const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
   afterEach(() => {

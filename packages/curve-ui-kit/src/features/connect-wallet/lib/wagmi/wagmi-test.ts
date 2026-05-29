@@ -13,9 +13,9 @@ import { createConnector, type CreateConnectorFn } from 'wagmi'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { WAGMI_HTTP_OPTIONS } from './transports'
 
-type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
-type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
-type Account = { address: Address; capabilities: Record<string, unknown> }
+interface ConnectParams<T> { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
+interface ConnectResult<T> { accounts: readonly T[]; chainId: number }
+interface Account { address: Address; capabilities: Record<string, unknown> }
 
 /** Default custom transport for Cypress E2E tests, read-only */
 const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
@@ -35,7 +35,7 @@ const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
   })
 }
 
-export type CreateTestConnectorOptions = {
+export interface CreateTestConnectorOptions {
   /** A hexadecimal private key used to generate a test account */
   privateKey: Hex
   /** The testnet chain configuration */
@@ -73,6 +73,7 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
   // A connect function with overloads to satisfy Wagmi's conditional return type
   function connect(params: ConnectParams<true>): Promise<ConnectResult<Account>>
   function connect(params?: ConnectParams<false>): Promise<ConnectResult<Address>>
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   async function connect(params?: ConnectParams<boolean>): Promise<ConnectResult<Account | Address>> {
     return params?.withCapabilities
       ? { accounts: [{ address: account.address, capabilities: {} }], chainId: chain.id }
@@ -85,17 +86,26 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     type: 'test',
 
     connect,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
     disconnect: async () => {},
 
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     getAccounts: async () => [account.address],
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     getChainId: async () => chain.id,
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     getProvider: async () => client,
 
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     isAuthorized: async () => true,
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     switchChain: async () => chain,
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
     onAccountsChanged: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
     onChainChanged: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
     onDisconnect: () => {},
   }))
 }

@@ -27,6 +27,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'withdraw'
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const activeKey = useStore(state => state.vaultWithdrawRedeem.activeKey)
@@ -37,9 +38,13 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
   const maxResp = useStore(state => state.vaultWithdrawRedeem.max[maxActiveKey])
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepWithdrawRedeem = useStore(state => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultWithdrawRedeem.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultWithdrawRedeem.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -130,7 +135,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
       const isValid = !!signerAddress && (isValidAmount || isFullWithdraw)
       const isWithdraw = _isWithdraw(rFormType)
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW_REDEEM: {
           key: 'WITHDRAW_REDEEM',
           status: helpers.getStepStatus(isComplete, step === 'WITHDRAW_REDEEM', isValid),
@@ -173,6 +178,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

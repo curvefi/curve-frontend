@@ -37,6 +37,7 @@ export const LoanLiquidate = ({
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
   const { chainId, haveSigner } = curveProps(curve)
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const formEstGas = useStore(state => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
@@ -45,10 +46,15 @@ export const LoanLiquidate = ({
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore(state => state.loans.userWalletBalancesMapper[llammaId])
 
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchTokensToLiquidate = useStore(state => state.loanLiquidate.fetchTokensToLiquidate)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanLiquidate.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepLiquidate = useStore(state => state.loanLiquidate.fetchStepLiquidate)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.loanLiquidate.setStateByKey)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanLiquidate.resetState)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
@@ -100,7 +106,7 @@ export const LoanLiquidate = ({
 
       const chainId = curve.chainId as ChainId
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -196,6 +202,7 @@ export const LoanLiquidate = ({
         userWalletBalances,
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

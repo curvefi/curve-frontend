@@ -23,7 +23,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   curve: CurveApi
   chainId: ChainId
   disabledKeys?: string[]
@@ -44,7 +44,8 @@ export const SelectTokenButton = ({
   onSelectionChange,
 }: Props) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const visibleTokens = useRef<{ [k: string]: boolean }>({})
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
+  const visibleTokens = useRef<Record<string, boolean>>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
@@ -132,6 +133,7 @@ export const SelectTokenButton = ({
     setFilterValue('')
     setError(undefined)
     if (isMobile) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       delayAction(overlayTriggerState.close)
     } else {
       overlayTriggerState.close()

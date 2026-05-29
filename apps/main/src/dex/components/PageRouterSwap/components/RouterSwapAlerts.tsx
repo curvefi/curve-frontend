@@ -8,6 +8,7 @@ import { AlertBox } from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { isUndefined, isNaN } = lodash
 
 export const RouterSwapAlerts = ({

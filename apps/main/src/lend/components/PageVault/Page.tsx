@@ -13,7 +13,6 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { type Chain } from '@curvefi/prices-api'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -33,13 +32,17 @@ export const Page = () => {
   const network = networks[rChainId]
 
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
 
   const marketId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { address: userAddress } = useConnection()
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [isLoaded, setLoaded] = useState(false)
 
   const { data: loanExists } = useLoanExists({
@@ -56,6 +59,7 @@ export const Page = () => {
   })
   useEffect(() => {
     if (api && market && isPageVisible) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setLoaded(true)
       const timer = setTimeout(
         // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
@@ -109,7 +113,7 @@ export const Page = () => {
           marketId={marketId}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id as Chain}
+          blockchainId={network.id}
         />
       }
     >

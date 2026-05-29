@@ -32,7 +32,7 @@ import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export type CrvUsdPriceChartPoint = {
+export interface CrvUsdPriceChartPoint {
   timestamp: number
   price: number
   movingAverage: number
@@ -170,7 +170,7 @@ export const CrvUsdPriceChart = () => {
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}
-            xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | number | string) => formatDate(value)}
+            xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp']   | string) => formatDate(value)}
             yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
             yPaddingRatio={0.25}
             renderTooltip={CrvUsdPriceTooltip}

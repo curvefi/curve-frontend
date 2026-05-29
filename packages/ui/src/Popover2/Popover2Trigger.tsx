@@ -43,6 +43,7 @@ export function Popover2Trigger({ label, children, showExpandIcon = false, ...pr
       </Popover2Button>
       {state.isOpen && (
         <Popover2 {...props} triggerRef={ref} state={state}>
+          {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
           {cloneElement(children, { ...overlayProps, ...state })}
         </Popover2>
       )}

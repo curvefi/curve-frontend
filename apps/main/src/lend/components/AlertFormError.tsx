@@ -12,7 +12,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
 export const AlertFormError = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
-    const messages: { [key: FormError | string]: string } = {
+    const messages: Record<FormError | string, string> = {
       // vault
       [FormError.API]: t`Unable to get data from api`,
 

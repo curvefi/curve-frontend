@@ -13,7 +13,7 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-type TxInfo = {
+interface TxInfo {
   description: string
   txHash: string | undefined
 }
@@ -21,8 +21,11 @@ type TxInfo = {
 export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     watchValue,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     update: updateForm,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     getValue,
     setError,
     handleSubmit,

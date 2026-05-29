@@ -34,6 +34,7 @@ export const FormVecrv = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const dashboardVecrvInfo = useStore(state => state.dashboard.vecrvInfo[activeKey])
@@ -86,7 +87,7 @@ export const FormVecrv = () => {
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, lockedAmount: string, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW: {
           key: 'WITHDRAW',
           status: getStepStatus(
@@ -119,6 +120,7 @@ export const FormVecrv = () => {
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, lockedAmount, parsedFormStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

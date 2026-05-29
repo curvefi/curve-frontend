@@ -69,6 +69,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralEvents,
   })
 
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm } = form
   const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 

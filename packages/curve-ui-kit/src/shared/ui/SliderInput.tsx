@@ -16,7 +16,7 @@ const { Spacing, MaxWidth } = SizesAndSpaces
 type RangeValue = [number, number]
 export type DecimalRangeValue = [Decimal, Decimal]
 
-export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
+export interface SliderInputProps<T extends Decimal | DecimalRangeValue> {
   /** The direction of the layout. Row: inputs on the left and right of the slider. Column: inputs below the slider. */
   layoutDirection?: 'column' | 'row'
   /** The size of the slider and inputs. Sizes of the inputs are calculated based on the size of the slider. */
@@ -142,7 +142,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       setInternalValue(nextValue)
       cancelDebounce()
       if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
-      onChange(nextValue as T)
+      onChange(nextValue)
     },
     [cancelDebounce, onChange, setInternalValue],
   )

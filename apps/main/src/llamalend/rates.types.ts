@@ -4,7 +4,7 @@ import type { AverageCategory } from '@ui-kit/utils'
 
 export type SupplyExtraIncentive = ExtraIncentive
 
-export type BorrowRate = {
+export interface BorrowRate {
   rate: number | null | undefined
   averageRate: number | null | undefined
   averageCategory: AverageCategory
@@ -16,7 +16,7 @@ export type BorrowRate = {
   loading: boolean
 }
 
-export type SupplyRate = {
+export interface SupplyRate {
   supplyApy: number | null | undefined
   averageLendApy: number | null | undefined
   averageCategory: AverageCategory

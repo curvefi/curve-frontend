@@ -10,7 +10,7 @@ import { formatDate, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress, formatNumber } from '@ui-kit/utils'
 
-type GaugeDetailsSmProps = {
+interface GaugeDetailsSmProps {
   gaugeData: GaugeFormattedData
   userGaugeWeightVoteData?: UserGaugeVoteWeight
   className?: string

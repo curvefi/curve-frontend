@@ -17,7 +17,7 @@ const Llama = styled('img')({
   position: 'absolute',
 })
 
-type FooterProps = {
+interface FooterProps {
   networkId: string
   appName: AppName
 }

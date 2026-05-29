@@ -1,6 +1,6 @@
 import type { FormStatus as Fs } from '@/lend/types/lend.types'
 
-export type FormValues = {
+export interface FormValues {
   amount: string
   amountError: 'too-much-wallet' | 'too-much-max' | ''
   isFullWithdraw: boolean

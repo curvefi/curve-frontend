@@ -21,9 +21,12 @@ const { Spacing } = SizesAndSpaces
 
 export const GaugesList = () => {
   const { data: gauges, isSuccess: gaugesIsSuccess, isLoading: gaugesIsLoading, isError: gaugesIsError } = useGauges({})
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setGauges = useStore(state => state.gauges.setGauges)
   const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setGaugeListSortBy = useStore(state => state.gauges.setGaugeListSortBy)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setSearchValue = useStore(state => state.gauges.setSearchValue)
   const searchValue = useStore(state => state.gauges.searchValue)
   const filteredGauges = useStore(state => state.gauges.filteredGauges)

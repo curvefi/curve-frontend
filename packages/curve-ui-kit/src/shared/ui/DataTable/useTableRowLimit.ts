@@ -7,6 +7,7 @@ import { useCallback, useState, useTransition } from 'react'
  * Once clicked, all rows are shown with pagination enabled.
  */
 export function useTableRowLimit(rowLimit: number | undefined, totalRows: number) {
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [isShowingAllRows, setShowAll] = useState(false)
   const [isLoading, startTransition] = useTransition()
 

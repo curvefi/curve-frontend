@@ -7,7 +7,7 @@ import { formatPercent } from '@ui-kit/utils'
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
-type RateCurveTooltipProps = {
+interface RateCurveTooltipProps {
   datum: RateCurveChartPoint
   visibleSeries: LineSeriesConfig<RateCurveSeriesKey>[]
 }

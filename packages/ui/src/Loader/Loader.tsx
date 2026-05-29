@@ -1,6 +1,6 @@
 import { styled, keyframes } from 'styled-components'
 
-type Props = {
+interface Props {
   className?: string
   isLightBg?: boolean
   skeleton?: [number, number]

@@ -1,18 +1,18 @@
 import type { EIP1193Provider } from 'viem'
 
 declare global {
-  type Eip6963ProviderInfo = {
+  interface Eip6963ProviderInfo {
     icon: string
     name: string
     rdns: string // reverse DNS
     uuid: string
   }
-  type Eip6963Provider = {
+  interface Eip6963Provider {
     info: Eip6963ProviderInfo
     provider: EIP1193Provider
   }
 
-  type DetectedEip6963Connector = {
+  interface DetectedEip6963Connector {
     id: string
     name: string
     icon: string

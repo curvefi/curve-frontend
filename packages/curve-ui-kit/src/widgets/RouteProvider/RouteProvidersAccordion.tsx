@@ -25,7 +25,7 @@ const providerLabels = {
   odos: t`Odos`,
 }
 
-export type RouteProviderProps = {
+export interface RouteProviderProps {
   queries: RouteQueries
   enabled: boolean
   selectedRoute: RouteResponse | undefined

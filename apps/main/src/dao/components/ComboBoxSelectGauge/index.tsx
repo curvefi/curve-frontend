@@ -34,7 +34,9 @@ export const ComboBoxGauges = ({
 
   const { address: userAddress } = useConnection()
   const selectedGauge = useStore(state => state.gauges.selectedGauge)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setSelectedGauge = useStore(state => state.gauges.setSelectedGauge)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.gauges.setStateByKey)
   const isMobile = useIsMobile()
 
@@ -84,6 +86,7 @@ export const ComboBoxGauges = ({
 
   const handleClose = () => {
     if (isMobile) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       delayAction(overlayTriggerState.close)
     } else {
       overlayTriggerState.close()

@@ -21,7 +21,7 @@ export interface SmallLiquidationRangeChartOptionProps {
   oraclePrice: Amount | undefined
 }
 
-export type OracleRailLayout = {
+export interface OracleRailLayout {
   // Synthetic x-value on the rail axis where the oracle marker is rendered.
   markerPosition: number
   // Rounded price label shown at the far end of the truncated rail.
@@ -44,14 +44,14 @@ export type SmallLiquidationRangeChartLayout =
 export type SplitLayout = Extract<SmallLiquidationRangeChartLayout, { mode: 'split-left' | 'split-right' }>
 export type RangeMarkArea = [Record<string, unknown>, Record<string, unknown>]
 
-export type ChartTextStyle = {
+export interface ChartTextStyle {
   fontFamily: string
   fontSize: number
   fontWeight: number
   lineHeight: number
 }
 
-export type ChartColors = {
+export interface ChartColors {
   axisLabel: string
   axisLine: string
   referenceLine: string
@@ -62,7 +62,7 @@ export type ChartColors = {
   newRangeLine: string
 }
 
-export type RangeSeriesParams = {
+export interface RangeSeriesParams {
   rangeMarkAreas: RangeMarkArea[]
   seriesData: number[][]
 }

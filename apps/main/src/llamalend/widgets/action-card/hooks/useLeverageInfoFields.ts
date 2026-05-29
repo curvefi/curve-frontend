@@ -7,7 +7,7 @@ import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 
-type LeverageInfoFieldsOptions = {
+interface LeverageInfoFieldsOptions {
   leverageEnabled: boolean | undefined
   leverageValue: Query<Decimal | null>
   prevLeverageValue: Query<Decimal | null>
@@ -21,6 +21,7 @@ type LeverageInfoFieldsOptions = {
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
 export const useLeverageInfoFields = ({
   leverageEnabled,
   routes,
@@ -61,6 +62,6 @@ export const useLeverageInfoFields = ({
         }
       : {
           prevCollateral,
-          collateral: mapQuery(prevCollateral, prev => prev && collateralDelta && decimalSum(prev, collateralDelta)!),
+          collateral: mapQuery(prevCollateral, prev => prev && collateralDelta && decimalSum(prev, collateralDelta)),
         }),
   }) satisfies Partial<LoanActionInfoListProps>

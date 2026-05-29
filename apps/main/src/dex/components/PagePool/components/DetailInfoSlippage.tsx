@@ -6,7 +6,7 @@ import { Chip } from '@ui/Typography'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
-type SlippageDetail = {
+interface SlippageDetail {
   isBold: boolean
   label: ReactNode
   tip: string

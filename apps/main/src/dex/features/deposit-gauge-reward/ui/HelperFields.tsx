@@ -6,6 +6,7 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const HelperFields = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { watchValue } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watchValue('rewardTokenId')
   const amount = watchValue('amount')

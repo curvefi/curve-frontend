@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-router'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type NavigateOptions = { replace?: boolean; resetScroll?: boolean; state?: any }
+interface NavigateOptions { replace?: boolean; resetScroll?: boolean; state?: any }
 
 /**
  * Use navigate function from tanstack router.
@@ -67,7 +67,7 @@ export const useParams = <T>(): T => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const params = useTanstackParams({ strict: false })
 
-  return params as unknown as T
+  return params
 }
 
 /**

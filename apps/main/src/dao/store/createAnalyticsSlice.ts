@@ -7,7 +7,7 @@ import { type Distribution, getDistributions } from '@curvefi/prices-api/revenue
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {
+interface SliceState {
   veCrvFees: {
     fees: Distribution[]
     veCrvTotalFees: number
@@ -19,7 +19,7 @@ type SliceState = {
   }
   veCrvHolders: {
     topHolders: Locker[]
-    allHolders: { [userAddress: string]: Locker }
+    allHolders: Record<string, Locker>
     totalHolders: number
     canCreateVote: number
     totalValues: {
@@ -39,7 +39,7 @@ type SliceState = {
 const sliceKey = 'analytics'
 
 // prettier-ignore
-export type AnalyticsSlice = {
+export interface AnalyticsSlice {
   [sliceKey]: SliceState & {
     getVeCrvFees(): Promise<void>
     getVeCrvLocks(): Promise<void>

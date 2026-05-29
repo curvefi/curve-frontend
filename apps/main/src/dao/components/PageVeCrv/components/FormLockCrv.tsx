@@ -19,6 +19,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
@@ -27,7 +28,9 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
   const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore(state => state.lockedCrv.formStatus)
   const formValues = useStore(state => state.lockedCrv.formValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.lockedCrv.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepIncreaseCrv = useStore(state => state.lockedCrv.fetchStepIncreaseCrv)
   const setFormValues = useStore(state => state.lockedCrv.setFormValues)
 
@@ -39,6 +42,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
@@ -82,7 +86,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
       const isValid =
         +formValues.lockedAmt > 0 && formValues.lockedAmtError === '' && !formStatus.error && !formEstGas.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
@@ -133,6 +137,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

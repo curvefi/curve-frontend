@@ -5,11 +5,11 @@ import { ChipColors } from './colors'
 
 type DisabledChipColors = 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 
-type NewChipColorOverrides = { [key in ChipColors]: true }
-type DisabledChipColorsOverrides = { [key in DisabledChipColors]: false }
+type NewChipColorOverrides = Record<ChipColors, true>
+type DisabledChipColorsOverrides = Record<DisabledChipColors, false>
 
 type ChipSizes = 'extraSmall' | 'small' | 'medium' | 'large' | 'extraLarge'
-type ChipSizeOverrides = { [key in ChipSizes]: true }
+type ChipSizeOverrides = Record<ChipSizes, true>
 
 declare module '@mui/material/Chip' {
   export interface ChipPropsColorOverrides extends NewChipColorOverrides, DisabledChipColorsOverrides {}

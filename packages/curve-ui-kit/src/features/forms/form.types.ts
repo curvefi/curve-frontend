@@ -10,7 +10,7 @@ export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root' | `root.serv
 export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<ErrorKey<T>, Error>
 export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, true>
 
-export type FormState<T extends FieldValues> = {
+export interface FormState<T extends FieldValues> {
   isSubmitting: boolean
   errors: FormErrors<T>
   visibleErrors: [ErrorKey<T>, string][]
@@ -29,7 +29,7 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 }>
 
 /** The value returned by the useForm hook. */
-export type UseFormReturn<T extends FieldValues = FieldValues> = {
+export interface UseFormReturn<T extends FieldValues = FieldValues> {
   handleSubmit: UseFormHandleSubmit<T>
   reset: (userDefaultValues: FormUpdates<T>) => void
   watchValues: () => T

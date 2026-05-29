@@ -7,7 +7,7 @@ import { shortenAddress } from '@ui-kit/utils'
 
 const GAUGES_URL = 'https://prices.curve.finance/v1/dao/gauges/overview'
 
-type PricesGaugeOverviewData = {
+interface PricesGaugeOverviewData {
   address: string
   effective_address?: string
   gauge_type: string
@@ -41,7 +41,7 @@ type PricesGaugeOverviewData = {
   last_vote_tx: string
 }
 
-type PricesGaugeOverviewResponse = {
+interface PricesGaugeOverviewResponse {
   gauges: PricesGaugeOverviewData[]
 }
 
@@ -51,9 +51,7 @@ export type GaugeFormattedData = Omit<PricesGaugeOverviewData, 'gauge_weight'> &
   gauge_weight: number
 }
 
-export type GaugeMapper = {
-  [gaugeAddress: string]: GaugeFormattedData
-}
+export type GaugeMapper = Record<string, GaugeFormattedData>;
 
 const formatGaugeTitle = (poolName: string | undefined, marketName: string | null, address: string): string => {
   if (poolName) {

@@ -12,7 +12,7 @@ import { RowExpandedPanel } from './RowExpandedPanel'
 
 const { MaxHeight } = SizesAndSpaces
 
-type UserEventsTableProps = {
+interface UserEventsTableProps {
   events: ParsedUserCollateralEvent[]
   isError: boolean
   loading: boolean

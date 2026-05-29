@@ -23,6 +23,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'stake'
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   const activeKey = useStore(state => state.vaultStake.activeKey)
@@ -30,9 +31,13 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
   const formStatus = useStore(state => state.vaultStake.formStatus)
   const formValues = useStore(state => state.vaultStake.formValues)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.vaultStake.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepStake = useStore(state => state.vaultStake.fetchStepStake)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultStake.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultStake.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -99,7 +104,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
 
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -156,6 +161,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

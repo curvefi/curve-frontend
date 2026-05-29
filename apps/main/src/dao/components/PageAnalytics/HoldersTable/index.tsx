@@ -15,7 +15,9 @@ import { shortenAddress, formatNumber } from '@ui-kit/utils'
 export const TopHoldersTable = () => {
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const allHoldersSortBy = useStore(state => state.analytics.allHoldersSortBy)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setAllHoldersSortBy = useStore(state => state.analytics.setAllHoldersSortBy)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
 
   const tableMinWidth = 41.875

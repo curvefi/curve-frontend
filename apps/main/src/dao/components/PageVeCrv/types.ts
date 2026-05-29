@@ -5,21 +5,21 @@ export type { FormType } from '@/dao/types/dao.types'
 
 export type StepKey = 'APPROVE' | 'CREATE_LOCK' | 'INCREASE_CRV' | 'INCREASE_TIME' | 'APPROVAL' | 'WITHDRAW' | ''
 
-export type VecrvInfo = {
+export interface VecrvInfo {
   crv: string
   lockedAmountAndUnlockTime: { lockedAmount: string; unlockTime: number }
   veCrv: string
   veCrvPct: string
 }
 
-export type PageVecrv = {
+export interface PageVecrv {
   curve: CurveApi | null
   rChainId: ChainId
   rFormType: FormType
   vecrvInfo: VecrvInfo
 }
 
-export type FormStatus = {
+export interface FormStatus {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: StepKey | ''
@@ -27,14 +27,15 @@ export type FormStatus = {
   error: string
 }
 
-export type FormEstGas = {
+export interface FormEstGas {
   loading: boolean
   estimatedGas: EstimatedGas | null
   error: string
 }
 
-export type FormValues = {
+export interface FormValues {
   utcDate: DateValue | null
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
   days: number
   calcdUtcDate: string

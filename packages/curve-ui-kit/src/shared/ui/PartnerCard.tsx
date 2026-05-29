@@ -22,7 +22,7 @@ const LinkProps = {
 } as const
 
 /** Represents a partner organization or project displayed in the partner card component. */
-export type Partner = {
+export interface Partner {
   /** The display name of the partner */
   name: string
   /** A brief description of the partner and their services */
@@ -33,7 +33,7 @@ export type Partner = {
    * A map of network names to boolean values indicating which networks the partner supports
    * Format isn't a simple array for compatibility with older external integration lists
    */
-  networks?: { [network: string]: boolean }
+  networks?: Record<string, boolean>
   /** Optional array of tags/categories associated with the partner */
   tags?: string[]
   /** Optional URL to the partner's application or website */

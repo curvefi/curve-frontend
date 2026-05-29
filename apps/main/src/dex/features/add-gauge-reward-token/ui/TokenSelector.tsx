@@ -25,6 +25,7 @@ export const TokenSelector = ({
 }) => {
   const { curveApi } = useCurve()
   const aliasesCrv = curveApi?.getNetworkConstants()?.ALIASES?.crv
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { getValue, update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
   const rewardTokenId = watchValue('rewardTokenId')

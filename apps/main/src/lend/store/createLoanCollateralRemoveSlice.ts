@@ -13,14 +13,15 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
   maxRemovable: string
@@ -29,7 +30,7 @@ type SliceState = {
 const sliceKey = 'loanCollateralRemove'
 
 // prettier-ignore
-export type LoanCollateralRemoveSlice = {
+export interface LoanCollateralRemoveSlice {
   [sliceKey]: SliceState & {
     fetchMaxRemovable(api: Api, market: LendMarketTemplate): Promise<void>
     fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>

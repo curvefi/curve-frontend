@@ -14,6 +14,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const { curveApi = null } = useCurve()
   const { provider: walletProvider } = useWallet()
   const staked = useStore(state => state.pools.stakedMapper[address])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
   const { data: networks } = useNetworks()
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.

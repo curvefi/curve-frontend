@@ -12,7 +12,7 @@ import { refuelPoolAbi } from '../abi'
 import type { RefuelFormValues, Tokens } from '../types'
 import { refuelFormValidationSuite } from '../validation/refuel.validation'
 
-type RefuelMutationOptions = {
+interface RefuelMutationOptions {
   chainId: number
   poolAddress: Address
   tokens: Tokens | undefined

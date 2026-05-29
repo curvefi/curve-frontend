@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
 import { Spinner } from '@ui/Spinner'
 
-type Props = {
+interface Props {
   pendingMessage: string
   className?: string
 }

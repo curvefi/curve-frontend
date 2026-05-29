@@ -17,4 +17,5 @@ interface InputContextProps extends Pick<InputProviderProps, 'disabled' | 'id' |
 
 export const InputContext = createContext<InputContextProps>(undefined!)
 
+// eslint-disable-next-line @eslint-react/no-use-context -- Existing violation before enabling this rule.
 export const useInputContext = () => useContext(InputContext)

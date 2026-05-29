@@ -11,7 +11,7 @@ import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 import { useLendMarketData } from '../../hooks/useLendMarket'
 
-type ChartAndActivityCompProps = {
+interface ChartAndActivityCompProps {
   rChainId: ChainId
   marketId: string
   api: Api | undefined

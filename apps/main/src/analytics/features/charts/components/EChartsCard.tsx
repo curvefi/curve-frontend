@@ -15,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 
 export const MIN_HEIGHT = 300 // (default) min height of charts when not in fullscreen
 
-type ChartCardProps = {
+interface ChartCardProps {
   /** Card title */
   title: ReactNode
   /** Card actions */

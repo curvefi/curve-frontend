@@ -37,7 +37,7 @@ const TABLE_CONFIG = {
 const getEmptyState = (isError: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : PositionsEmptyState.NoPositions
 
-type UserPositionsTableProps = {
+interface UserPositionsTableProps {
   tableQuery: QueryProp<LlamaMarket[]>
   marketRateType: MarketRateType
   onReload: () => void
@@ -54,6 +54,7 @@ export const UserPositionsMarketRateTable = ({
   const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
 
   const table = useTable({

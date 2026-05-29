@@ -6,7 +6,7 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 
 const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`
 
-type IntegrationTag = { id: string; displayName: string; color: string }
+interface IntegrationTag { id: string; displayName: string; color: string }
 
 export const { useQuery: useIntegrationsTags } = queryFactory({
   queryKey: () => ['integrations-tags'] as const,
@@ -31,9 +31,7 @@ const INTEGRATIONS_TAGS_COLORS = [
 
 const parseIntegrationsTags = (
   integrationsTags: { id: string; displayName: string }[],
-): {
-  [k: string]: IntegrationTag
-} =>
+): Record<string, IntegrationTag> =>
   fromEntries(
     integrationsTags.map((t, idx) => {
       if (t.id === 'all') return ['all', { ...t, color: '' }]

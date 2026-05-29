@@ -12,11 +12,11 @@ import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
 
-type TokenOptionCallbacks = {
+interface TokenOptionCallbacks {
   onToken: () => void
 }
 
-type TokenOptionsProps = {
+interface TokenOptionsProps {
   balance?: string
   tokenPrice?: number
   disabled?: boolean
@@ -35,6 +35,7 @@ export const TokenOption = ({
 }: Option & TokenOptionCallbacks & TokenOptionsProps) => {
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const menuItem = useRef<HTMLLIElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const [primary, secondary, tertiary] = disabled

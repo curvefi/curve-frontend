@@ -2,7 +2,7 @@ import { oneOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
-type Token = {
+interface Token {
   symbol: string
   address: Address
   chain: string
@@ -55,7 +55,7 @@ const TOKENS: Token[] = [
 ]
 
 export const oneToken = (chain?: string) =>
-  chain ? oneOf(...TOKENS.filter(t => t.chain === chain)!) : oneOf(...TOKENS)
+  chain ? oneOf(...TOKENS.filter(t => t.chain === chain)) : oneOf(...TOKENS)
 
 export const mockTokenPrices = () =>
   cy.intercept('https://prices.curve.finance/v1/usd_price/*/*', req => {

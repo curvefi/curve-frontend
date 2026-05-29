@@ -9,11 +9,11 @@ import { formatNumber } from '@ui-kit/utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
-type BridgeApproveMutation = {
+interface BridgeApproveMutation {
   amount: Decimal
 }
 
-type BridgeApproveOptions = {
+interface BridgeApproveOptions {
   chainId: number
   onApproved: OnTransactionSuccess<BridgeApproveMutation>
   onReset: () => void
@@ -35,6 +35,7 @@ export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: Brid
     ...props,
   })
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const onSubmit = useCallback(async (form: BridgeForm) => mutate(form as BridgeApproveMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }

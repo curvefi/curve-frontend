@@ -74,6 +74,7 @@ export const QuickSwap = ({
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
 }) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
@@ -85,9 +86,13 @@ export const QuickSwap = ({
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
   const rpcRoutesAndOutput = useStore(state => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.quickSwap.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepSwap = useStore(state => state.quickSwap.fetchStepSwap)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetFormErrors = useStore(state => state.quickSwap.resetFormErrors)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.quickSwap.setFormValues)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
@@ -181,7 +186,9 @@ export const QuickSwap = ({
       isFullReset?: boolean,
       isRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
 
       void setFormValues(
@@ -259,7 +266,7 @@ export const QuickSwap = ({
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [k: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid && !formProcessing),
@@ -294,6 +301,7 @@ export const QuickSwap = ({
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
@@ -359,6 +367,7 @@ export const QuickSwap = ({
   )
 
   const lastFetchTimeRef = useRef<number>(0)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
   const fetchDataRef = useRef<() => void>(() => {})
 
   // Keep fetchDataRef always pointing to the latest fetchData logic
@@ -434,6 +443,7 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])

@@ -21,7 +21,6 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import type { Decimal } from '@primitives/decimal.utils'
 import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
@@ -102,7 +101,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks: llamaNetworks })
-        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` as Decimal })
+        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>

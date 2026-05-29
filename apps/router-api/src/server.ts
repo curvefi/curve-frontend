@@ -5,6 +5,7 @@ import { RoutesOpts, RoutesPath } from './routes/routes.schemas'
 export const createRouterApiServer = ({ npm_package_version, NODE_ENV, SERVICE_NAME, LOG_LEVEL } = process.env) =>
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   createFastify({ logger: { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') } })
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     .get('/health', async () => ({
       status: 'ok',
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.

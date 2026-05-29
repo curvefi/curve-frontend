@@ -18,7 +18,7 @@ import { Chain } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-type ChainFilterChipsProps = {
+interface ChainFilterChipsProps {
   chainsQuery: QueryProp<string[]>
   selectedChains: string[] | undefined
   toggleChain: (chain: string) => void

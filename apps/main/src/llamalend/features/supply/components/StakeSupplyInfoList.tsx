@@ -13,7 +13,7 @@ import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
-type StakeSupplyInfoListProps<ChainId extends IChainId> = {
+interface StakeSupplyInfoListProps<ChainId extends IChainId> {
   params: StakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }

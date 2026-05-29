@@ -76,6 +76,7 @@ export const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
+            {/* eslint-disable-next-line @typescript-eslint/no-base-to-string -- Existing violation before enabling this rule. */}
             <SummaryClaimable title={tabs[1].label?.toString()} />
           </>
         ) : (
@@ -164,7 +165,7 @@ const TitleWrapper = styled.div`
   }
 `
 
-type SummarySpinnerWrapperProps = { isMain?: boolean }
+interface SummarySpinnerWrapperProps { isMain?: boolean }
 // eslint-disable-next-line react-refresh/only-export-components
 export const SummarySpinnerWrapper: IStyledComponent<'web', SummarySpinnerWrapperProps & DivProps> = styled(
   SpinnerWrapper,

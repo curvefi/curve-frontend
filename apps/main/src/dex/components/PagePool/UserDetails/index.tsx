@@ -11,7 +11,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Stats } from '@ui/Stats'
 import { Table } from '@ui/Table'
@@ -42,7 +41,7 @@ export const MySharesStats = ({
   const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo({
     chainId: rChainId,
     poolId,
-    userAddress: curve?.signerAddress as Address | undefined,
+    userAddress: curve?.signerAddress,
   })
 
   const userWithdrawAmounts = userPoolInfo?.userWithdrawAmounts ?? DEFAULT_WITHDRAW_AMOUNTS

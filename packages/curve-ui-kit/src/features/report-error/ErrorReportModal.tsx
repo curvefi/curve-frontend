@@ -21,7 +21,7 @@ const contactCopyByMethod: Record<ContactMethod, { label: string; placeholder: s
   discord: { label: t`Discord`, placeholder: '@johnthellama' },
 }
 
-type ErrorReportModalProps = {
+interface ErrorReportModalProps {
   isOpen: boolean
   onClose: () => void
   context: ErrorContext
@@ -46,6 +46,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
     values: { address, contact, contactMethod, description },
     onSubmit,
   } = useErrorReportForm(context, onClose)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm } = form
   const { label, placeholder } = contactCopyByMethod[contactMethod]
 

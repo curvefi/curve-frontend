@@ -18,6 +18,7 @@ export const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
   const { buttonProps } = useButton(
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     { onPress: () => (isMobile ? setTimeout(overlayTriggerState.open, Duration.Delay) : overlayTriggerState.open()) },
     openButtonRef,
   )

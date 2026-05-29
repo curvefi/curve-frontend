@@ -7,7 +7,7 @@ import { createWagmiConfig } from '@ui-kit/features/connect-wallet'
 import { createTenderlyConnector } from './connector'
 
 /** Configuration options for creating a test Wagmi config */
-type Options = {
+interface Options {
   /** Private key for the test account */
   privateKey: Hex
   /** RPC URL for the Ethereum network */

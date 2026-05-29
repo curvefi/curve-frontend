@@ -15,11 +15,12 @@ import { PoolColumnId } from '../columns'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-type Props = {
+interface Props {
   onSortingChange: OnChangeFn<SortingState>
   sortField: PoolColumnId
 }
 
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
 const useDexPoolSortOptions = () =>
   [
     { id: PoolColumnId.Volume, label: t`Volume` },

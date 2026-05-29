@@ -52,6 +52,7 @@ export const LlamaMarketsTable = ({
     sorting,
     userHasPositions,
   )
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 

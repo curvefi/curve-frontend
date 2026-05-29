@@ -175,11 +175,9 @@ interface Transaction {
  *
  * Replace with the real Simulation schema if defined elsewhere.
  */
-interface Simulation {
-  [key: string]: unknown
-}
+type Simulation = Record<string, unknown>;
 
-export type CurveOdosAssembleRequest = {
+export interface CurveOdosAssembleRequest {
   path_id: AssemblePathRequest['pathId']
   user: AssemblePathRequest['userAddr']
 }

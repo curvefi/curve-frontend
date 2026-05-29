@@ -30,7 +30,7 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
 type ChartPalette = ReturnType<typeof createPalette>
 
 /** Cast is necessary as the typing of echarts is not in sync with the actual data for some reason. */
-type TooltipParam = { axisValue: string; marker: string; seriesName: string; value: number }
+interface TooltipParam { axisValue: string; marker: string; seriesName: string; value: number }
 
 /**
  * Creates an ECharts tooltip that renders series rows aligned like a table.

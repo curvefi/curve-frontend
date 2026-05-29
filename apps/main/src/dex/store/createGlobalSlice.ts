@@ -14,11 +14,12 @@ import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { isEqual } = lodash
 
-type GlobalState = {
-  hasDepositAndStake: { [chainId: string]: boolean | null }
-  hasRouter: { [chainId: string]: boolean | null }
+interface GlobalState {
+  hasDepositAndStake: Record<string, boolean | null>
+  hasRouter: Record<string, boolean | null>
 }
 
 export interface GlobalSlice extends GlobalState {

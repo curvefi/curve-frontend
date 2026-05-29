@@ -16,12 +16,14 @@ const ALERT_FORM_WARNING_KEYS = {
 type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   errorKey: AlertFormWarningKey | string
 }
 
 export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
-    const messages: { [key: AlertFormWarningKey | string]: { message: string; alertType?: AlertType } } = {
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
+    const messages: Record<AlertFormWarningKey | string, { message: string; alertType?: AlertType }> = {
       [ALERT_FORM_WARNING_KEYS['warning-full-repayment-only']]: {
         message: t`Only full repayment is allowed when in soft-liquidation mode.`,
       },

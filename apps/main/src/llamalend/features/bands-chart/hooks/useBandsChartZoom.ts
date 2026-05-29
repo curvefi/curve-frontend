@@ -12,7 +12,7 @@ import type {
   RangeSeriesData,
 } from '../types'
 
-type Params = {
+interface Params {
   option: BandsChartOption
   priceRange?: { min: number; max: number }
   chartData: ChartDataPoint[]

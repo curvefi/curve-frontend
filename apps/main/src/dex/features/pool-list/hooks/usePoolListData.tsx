@@ -53,7 +53,9 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[chainId])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchPoolsRewardsApy = useStore(state => state.pools.fetchPoolsRewardsApy)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchMissingPoolsRewardsApy = useStore(state => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
 

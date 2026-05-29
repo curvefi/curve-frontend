@@ -3,9 +3,9 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { weiToEther } from '@ui-kit/utils'
 
-type Epoch = { startDate: Date; endDate: Date; weeklyRevenue: number; data: Revenue[] }
+interface Epoch { startDate: Date; endDate: Date; weeklyRevenue: number; data: Revenue[] }
 
-export type ScrvUsdRevenue = { totalDistributed: string; epochs: Epoch[]; history: Revenue[] }
+export interface ScrvUsdRevenue { totalDistributed: string; epochs: Epoch[]; history: Revenue[] }
 
 /**
  * Separate the revenue in epochs (to display bars containing up to 7 days each)

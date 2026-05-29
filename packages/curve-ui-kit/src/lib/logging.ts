@@ -1,5 +1,5 @@
 import { toArray } from '@primitives/array.utils'
-import type { MutationKey, QueryKey } from '@tanstack/react-query'
+import type { QueryKey } from '@tanstack/react-query'
 import { enableLogging, isCypress } from '@ui-kit/utils/env'
 
 export enum LogStatus {
@@ -71,8 +71,9 @@ function argToString(i: unknown, max = 200, trailing = 3) {
   return str.replaceAll('%', '%%')
 }
 
-type LogKey = string | QueryKey | MutationKey | string[]
+type LogKey = string | QueryKey   | string[]
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[]) {
   if (!enableLogging) return
 
@@ -95,6 +96,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
     return [formattedString, styles]
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   const logMethod = (status: LogStatus | unknown) => {
     switch (status) {
       case LogStatus.ERROR:
@@ -115,6 +117,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
   const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
   const restArgs = (hasDefinedStatus ? args : [status, ...args]).filter(x => x != null)
   const argsFormat = restArgs.length ? `%c (%c${restArgs.map(i => argToString(i)).join(', ')}%c)` : ''
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
   const format = `%cDApp%c @ %c${timestamp}%c -> ${hasDefinedStatus ? `%c${status}%c ` : ''}${formattedKeyString}${argsFormat}`
   const styles = [
     'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;', // DApp

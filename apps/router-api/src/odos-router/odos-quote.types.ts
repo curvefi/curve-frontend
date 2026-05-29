@@ -216,7 +216,7 @@ export interface PathRequestV2 {
 /**
  * Interface from the prices API that provides access to the Odos quote endpoint.
  */
-export type CurveOdosQuoteRequest = {
+export interface CurveOdosQuoteRequest {
   chain_id: PathRequestV2['chainId']
   from_address: PathRequestV2['inputTokens'][number]['tokenAddress']
   to_address: PathRequestV2['outputTokens'][number]['tokenAddress']
@@ -285,13 +285,7 @@ interface TokenProportion {
  * @description Configuration for how the path visualization image should be rendered.
  * The exact shape is defined in the `PathVizImageConfig` OpenAPI schema.
  */
-interface PathVizImageConfig {
-  /**
-   * Arbitrary configuration bag. Extend this according to the actual
-   * `PathVizImageConfig` schema.
-   */
-  [key: string]: unknown
-}
+type PathVizImageConfig = Record<string, unknown>;
 
 /**
  * Quote response schema.

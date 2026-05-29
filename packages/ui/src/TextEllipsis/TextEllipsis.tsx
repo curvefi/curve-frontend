@@ -2,7 +2,7 @@ import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
 
-type TextEllipsisProps = {
+interface TextEllipsisProps {
   maxWidth?: string
   smMaxWidth?: string
   mdMaxWidth?: string

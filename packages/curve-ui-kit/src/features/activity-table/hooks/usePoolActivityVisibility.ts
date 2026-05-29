@@ -21,7 +21,7 @@ const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState =
   ...fromEntries(poolTokens.map((_, index) => [getTokenAmountColumnId(index), false])),
 })
 
-type UsePoolActivityVisibilityParams = {
+interface UsePoolActivityVisibilityParams {
   poolTokens: Token[]
 }
 

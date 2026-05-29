@@ -44,6 +44,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
   },
   enabled?: boolean,
 ) {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm } = form
   const userBalances = useVaultUserBalances(params, enabled)
   const maxWithdrawAmount = useVaultMaxWithdrawAmount(params, enabled)

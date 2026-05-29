@@ -45,6 +45,7 @@ import { decimal, formatNumber } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
@@ -65,6 +66,7 @@ export const Swap = ({
   seed: Seed
   tokensMapper: TokensMapper
 }) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -78,10 +80,15 @@ export const Swap = ({
   const hasRouter = useStore(state => state.hasRouter)
   const isMaxLoading = useStore(state => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolSwap.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepSwap = useStore(state => state.poolSwap.fetchStepSwap)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolSwap.resetState)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolSwap.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -144,7 +151,9 @@ export const Swap = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
 
       void setFormValues(
@@ -219,7 +228,7 @@ export const Swap = ({
       const isApprove = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApprove, step === 'APPROVAL', isValid && !formProcessing),
@@ -254,6 +263,7 @@ export const Swap = ({
                   cancelBtnProps: {
                     label: t`Cancel`,
                     onClick: () => {
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmedLoss(false)
                     },
                   },
@@ -344,6 +354,7 @@ export const Swap = ({
         maxSlippage,
         userFromBalanceLoading || userToBalanceLoading,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

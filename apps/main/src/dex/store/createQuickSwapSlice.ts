@@ -25,20 +25,21 @@ import { sleep } from '@ui-kit/utils/time.utils'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
   isMaxLoading: boolean
-  routesAndOutput: { [activeKey: string]: RoutesAndOutput }
+  routesAndOutput: Record<string, RoutesAndOutput>
 }
 
 const sliceKey = 'quickSwap'
 
-export type QuickSwapSlice = {
+export interface QuickSwapSlice {
   [sliceKey]: SliceState & {
     fetchMaxAmount(config: Config, curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchRoutesAndOutput(
@@ -522,7 +523,7 @@ function getRouterActiveKey(
 function getRouterSwapsExchangeRate(
   [value]: [Decimal, Decimal],
   { fromAddress, toAddress }: SearchedParams,
-  tokensNameMapper: { [p: string]: string },
+  tokensNameMapper: Record<string, string>,
 ) {
   const fromToken = tokensNameMapper[fromAddress]
   const toToken = tokensNameMapper[toAddress]
@@ -543,7 +544,7 @@ export function getRouterWarningModal(
   >,
   { toAddress }: SearchedParams,
   maxSlippage: string,
-  storedTokensNameMapper: { [address: string]: string },
+  storedTokensNameMapper: Record<string, string>,
 ) {
   const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
     maxSlippage,

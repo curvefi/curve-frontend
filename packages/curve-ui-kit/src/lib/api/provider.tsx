@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type Persister, PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 
-type QueryProviderWrapperProps = {
+interface QueryProviderWrapperProps {
   children: ReactNode
   persister: Persister | null
   queryClient: QueryClient

@@ -6,7 +6,7 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
-export type GetEventsParams = {
+export interface GetEventsParams {
   endpoint: Schema.Endpoint
   chain: Chain
   llamma: Address
@@ -30,7 +30,7 @@ export async function getEvents(
   return Schema.getLlammaEventsResponse.parse(response)
 }
 
-export type GetTradesParams = {
+export interface GetTradesParams {
   endpoint: Schema.Endpoint
   chain: Chain
   llamma: Address
@@ -54,7 +54,7 @@ export async function getTrades(
   return Schema.getLlammaTradesResponse.parse(response)
 }
 
-type GetOHLCParams = {
+interface GetOHLCParams {
   endpoint: Schema.Endpoint
   chain: Chain
   llamma: Address

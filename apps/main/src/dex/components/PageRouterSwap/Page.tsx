@@ -27,6 +27,7 @@ export const PageRouterSwap = () => {
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
   const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
   const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
@@ -60,6 +61,7 @@ export const PageRouterSwap = () => {
 
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setLoaded(false)
     if (!isConnecting && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
@@ -86,6 +88,7 @@ export const PageRouterSwap = () => {
           const toAddress = routerCachedToAddress ?? routerDefault.toAddress
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
         } else {
+          // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
           setLoaded(true)
         }
       }

@@ -35,16 +35,15 @@ import { getPools } from '../lib/pools'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { chunk, countBy, groupBy, isNaN } = lodash
 
-type SliceState = {
-  poolsMapper: { [chainId: string]: PoolDataMapper }
+interface SliceState {
+  poolsMapper: Record<string, PoolDataMapper>
   currencyReserves: CurrencyReservesMapper
-  haveAllPools: { [chainId: string]: boolean }
-  rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
-  stakedMapper: {
-    [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
-  }
+  haveAllPools: Record<string, boolean>
+  rewardsApyMapper: Record<string, RewardsApyMapper>
+  stakedMapper: Record<string, { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }>
   pricesApiState: {
     chartOhlcData: LpPriceOhlcDataFormatted[]
     chartStatus: FetchingStatus
@@ -56,7 +55,7 @@ type SliceState = {
 
 const sliceKey = 'pools'
 
-export type PoolsSlice = {
+export interface PoolsSlice {
   [sliceKey]: SliceState & {
     fetchPools(
       curve: CurveApi,
@@ -127,7 +126,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
-      const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
+      const failedFetching24hOldVprice: Record<string, boolean> =
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
@@ -258,6 +257,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     fetchPoolsRewardsApy: async (chainId, poolIds, useApi = true) => {
       log('fetchPoolsRewardsApy', chainId, poolIds.length)
       const state = get()
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[sliceKey]
       const networks = await fetchNetworks()
       const network = networks[chainId]
@@ -277,7 +277,9 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const { rewardsApyMapper: allRewardsApyMapper, fetchPoolsRewardsApy } = get()[sliceKey]
       const rewardsApyMapper = allRewardsApyMapper[chainId] ?? {}
       const missingRewardsPoolIds = poolDatas.filter(({ pool }) => typeof rewardsApyMapper[pool.id] === 'undefined')
@@ -492,7 +494,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
 }
 
 function parsedTokensNameMapper(poolDatas: PoolData[]) {
-  const tokensNameMapper: { [address: string]: string } = {}
+  const tokensNameMapper: Record<string, string> = {}
 
   // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const idx in poolDatas) {

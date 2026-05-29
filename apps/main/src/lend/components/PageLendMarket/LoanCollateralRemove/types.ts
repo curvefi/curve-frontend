@@ -1,7 +1,7 @@
 import type { InpError } from '@/lend/components/PageLendMarket/types'
 import type { FormStatus as Fs } from '@/lend/types/lend.types'
 
-export type FormValues = {
+export interface FormValues {
   collateral: string
   collateralError: InpError
 }

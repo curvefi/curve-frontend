@@ -12,9 +12,12 @@ export const FormProvider = <T extends FieldValues>({
   handleSubmit,
   reset,
   watchValues,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   watchValue,
   getValues,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   getValue,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   update,
   setError,
   clearErrors,
@@ -26,6 +29,7 @@ export const FormProvider = <T extends FieldValues>({
     [errors, visibleErrors, isValid, isSubmitting, isDirty, dirtyFields, touchedFields],
   )
   return (
+    // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
     <FormContext.Provider
       value={useMemo(
         /** memoize the provider value to prevent unnecessary re-renders of consuming components */

@@ -1,6 +1,6 @@
 import type { FormStatus as Fs } from '@/lend/types/lend.types'
 
-export type FormValues = {
+export interface FormValues {
   collateral: string
   collateralError: string
 }

@@ -14,16 +14,16 @@ import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
 
-export type Shares = {
+export interface Shares {
   value: number | undefined | null
   staked: number | undefined | null
   loading: boolean
 }
-type Boost = {
+interface Boost {
   value: number | undefined | null
   loading: boolean
 }
-export type SupplyAsset = {
+export interface SupplyAsset {
   symbol: string | undefined | null
   address: string | undefined | null
   usdRate: number | undefined | null
@@ -32,7 +32,7 @@ export type SupplyAsset = {
   loading: boolean
 }
 
-export type SupplyPositionDetailsProps = {
+export interface SupplyPositionDetailsProps {
   userSupplyRate: SupplyRate
   shares: Shares
   supplyAsset: SupplyAsset

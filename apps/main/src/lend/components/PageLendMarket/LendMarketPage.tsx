@@ -16,7 +16,7 @@ import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type Chain, isPricesApiChain } from '@curvefi/prices-api'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -43,9 +43,13 @@ function useLegacyFetching({
   const enabled = useLoanSlices()
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -98,6 +102,7 @@ export const LendMarketPage = () => {
     !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
   )
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
   const controllerAddress = getControllerAddress(market)
   const collateralEvents = useUserCollateralEvents({
@@ -144,7 +149,7 @@ export const LendMarketPage = () => {
           marketId={marketId}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id as Chain}
+          blockchainId={network.id}
         />
       }
     >

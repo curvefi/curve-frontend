@@ -25,6 +25,7 @@ export function assertValidity<D extends object, S extends ValidationSuite>(
   const result = suite(data, fields)
   const entries = Object.entries(result.getErrors())
   if (entries.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
   }
 
@@ -39,4 +40,5 @@ export const createValidationSuite = <T extends object, TGroupName extends strin
     validationGroup(data)
   })
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule.
 export const EmptyValidationSuite = createValidationSuite(() => {})

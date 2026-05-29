@@ -19,6 +19,7 @@ const tabs: TabOption<Tab>[] = [
 ]
 
 export const Analytics = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const [tab, setTab] = useState<Tab>('fees')

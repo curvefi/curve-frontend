@@ -12,7 +12,7 @@ const formatAmount = (amount: number | null | undefined) => {
   return formatNumber(amount, { abbreviate: false })
 }
 
-type TokenAmountCellProps = {
+interface TokenAmountCellProps {
   /** The amount to display (can be positive or negative) */
   amount: number | null | undefined
   /** The token symbol to display after the amount */

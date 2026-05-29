@@ -19,6 +19,7 @@ export const Radio = ({
   testId?: string
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
+  // eslint-disable-next-line @eslint-react/no-use-context -- Existing violation before enabling this rule.
   const state = useContext(RadioContext)
   const { inputProps = {}, isSelected } = useRadio(props, state, inputRef)
   const { isFocusVisible, focusProps } = useFocusRing()

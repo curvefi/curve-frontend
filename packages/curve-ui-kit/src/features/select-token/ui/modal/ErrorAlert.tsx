@@ -8,7 +8,7 @@ import { copyToClipboard } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = {
+interface Props {
   error: string
 }
 

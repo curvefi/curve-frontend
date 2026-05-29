@@ -2,14 +2,14 @@ import type { NetworkMapping } from '@ui/utils'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
-export type AppPage = {
+export interface AppPage {
   href: string // this is the full pathname to the page, including leading slash, the app name and the network
   label: string
   isActive?: boolean
   target?: '_self' | '_blank'
 }
 
-export type AppRoute = {
+export interface AppRoute {
   app: AppName
   route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
@@ -17,17 +17,17 @@ export type AppRoute = {
   matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
 }
 
-export type AppRoutes = {
+export interface AppRoutes {
   label: string
   routes: AppRoute[]
 }
 
-export type NavigationSection = {
+export interface NavigationSection {
   title: string
   links: AppPage[]
 }
 
-export type HeaderBaseProps = {
+export interface HeaderBaseProps {
   currentMenu: AppMenuOption
   isLite: boolean | undefined
   networkId: string // ID of the network as displayed in the URL

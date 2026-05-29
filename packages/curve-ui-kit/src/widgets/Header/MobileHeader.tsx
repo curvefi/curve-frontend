@@ -38,6 +38,7 @@ export const MobileHeader = ({
   supportedNetworks,
   networkId,
 }: HeaderImplementationProps) => {
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen(isOpen => !isOpen), [])

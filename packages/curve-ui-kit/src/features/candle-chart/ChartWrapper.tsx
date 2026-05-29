@@ -8,7 +8,7 @@ import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
-export type OhlcChartProps = {
+export interface OhlcChartProps {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */

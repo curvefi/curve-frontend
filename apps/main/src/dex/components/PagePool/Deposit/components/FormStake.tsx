@@ -25,6 +25,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -35,9 +36,13 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -53,6 +58,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
         'STAKE',
@@ -107,7 +113,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
@@ -167,6 +173,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   useEffect(() => {
     if (curve && poolId) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

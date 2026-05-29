@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { type DeepKeys } from '@tanstack/table-core'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { get, sortBy, sortedUniq } = lodash
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.

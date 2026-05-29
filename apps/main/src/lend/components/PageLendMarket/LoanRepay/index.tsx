@@ -48,6 +48,7 @@ export const LoanRepay = ({
   userActiveKey,
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const push = useNavigate()
   const activeKey = useStore(state => state.loanRepay.activeKey)
@@ -57,14 +58,20 @@ export const LoanRepay = ({
   const formValues = useStore(state => state.loanRepay.formValues)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanRepay.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepRepay = useStore(state => state.loanRepay.fetchStepRepay)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllUserDetails = useStore(state => state.user.fetchAll)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanRepay.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanRepay.resetState)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -83,6 +90,7 @@ export const LoanRepay = ({
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       void setFormValues(
         isLoaded ? api : null,
@@ -93,6 +101,7 @@ export const LoanRepay = ({
         shouldRefetch,
       )
 
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLoaded, maxSlippage, market, setFormValues],
@@ -167,6 +176,7 @@ export const LoanRepay = ({
             ? t`Repay in full.`
             : t`Repay with ${tokensMessage}.`
 
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -182,10 +192,11 @@ export const LoanRepay = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -210,6 +221,7 @@ export const LoanRepay = ({
             ? {
                 modal: {
                   isDismissable: false,
+                  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                   initFn: () => setConfirmWarning({ isConfirming: true, confirmedWarning: false }),
                   title: t`Warning!`,
                   content: (
@@ -220,11 +232,13 @@ export const LoanRepay = ({
                         swapFrom: collateral_token.symbol,
                       }}
                       confirmed={confirmedWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
@@ -307,6 +321,7 @@ export const LoanRepay = ({
         steps,
         detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

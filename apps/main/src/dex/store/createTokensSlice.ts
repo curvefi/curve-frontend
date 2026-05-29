@@ -7,18 +7,19 @@ import { log } from '@ui-kit/lib/logging'
 import { fetchPoolVolumes } from '../queries/pool-volume.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { countBy } = lodash
 
-type SliceState = {
-  tokensNameMapper: { [chainId: string]: TokensNameMapper }
-  tokensMapper: { [chainId: string]: TokensMapper } // list of all tokens from poolDatas
+interface SliceState {
+  tokensNameMapper: Record<string, TokensNameMapper>
+  tokensMapper: Record<string, TokensMapper> // list of all tokens from poolDatas
   loading: boolean
 }
 
 const sliceKey = 'tokens'
 
 // prettier-ignore
-export type TokensSlice = {
+export interface TokensSlice {
   [sliceKey]: SliceState & {
     setTokensMapper(curve: CurveApi, poolDatas: PoolData[]): Promise<string[]>
     setEmptyPoolListDefault(curve: CurveApi): void
@@ -106,7 +107,7 @@ export const createTokensSlice = (
 
       return Object.keys(parsedPartialTokensMapper)
     },
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setEmptyPoolListDefault: async curve => {
       const { [sliceKey]: sliceState } = get()
       const chainId = curve.chainId
@@ -122,7 +123,7 @@ export const createTokensSlice = (
       }
       sliceState.setStateByActiveKey('tokensNameMapper', strChainId, tokensNameMapper)
 
-      const tokensMapper: { [tokenAddress: string]: Token } = {
+      const tokensMapper: Record<string, Token> = {
         [nativeToken.address]: {
           ...DEFAULT_TOKEN,
           address: nativeToken.address,

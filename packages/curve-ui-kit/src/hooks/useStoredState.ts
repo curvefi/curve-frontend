@@ -5,7 +5,7 @@ export type GetAndSet<T> = [T, Dispatch<SetStateAction<T>>]
 
 const storageEvent = new EventTarget()
 
-export type MigrationOptions<T> = {
+export interface MigrationOptions<T> {
   /**
    * Version of the stored value. When increased, the migrate function is called (if provided) to migrate old values to new values.
    */
@@ -70,6 +70,7 @@ export function useStoredState<T>({
   oldKey,
 }: StoredStateOptions<T>): GetAndSet<T> {
   const fullKey = getStorageKey(key, version)
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [stateValue, setState] = useState<T>(get(fullKey, initialValue))
   const setStateValue = useCallback((value: T) => setState(old => (isEqual(old, value) ? old : value)), [])
 

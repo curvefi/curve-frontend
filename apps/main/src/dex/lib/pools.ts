@@ -6,8 +6,6 @@ import {
   Pool,
   PoolData,
   PoolDataCache,
-  PoolDataCacheMapper,
-  PoolDataMapper,
 } from '@/dex/types/main.types'
 import { fulfilledValue, getCurvefiUrl } from '@/dex/utils'
 import { PromisePool } from '@supercharge/promise-pool'
@@ -18,10 +16,10 @@ const hasNoWrapped = (pool: Pool) => pool?.isPlain || pool?.isFake
 
 const getPoolData = (p: Pool, network: NetworkConfig) => {
   const isWrappedOnly = network.poolIsWrappedOnly[p.id]
-  const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx])!)
+  const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx]))
   const tokens = isWrappedOnly
     ? tokensWrapped
-    : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx])!)
+    : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx]))
   const tokensLowercase = tokens.map(c => c.toLowerCase())
   const tokensAll = isWrappedOnly ? tokensWrapped : [...tokens, ...tokensWrapped]
   const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
@@ -62,7 +60,7 @@ export async function getPools(
   poolList: string[],
   blacklist: Set<Address>,
   network: NetworkConfig,
-  failedFetching24hOldVprice?: { [p: string]: boolean } | null,
+  failedFetching24hOldVprice?: Record<string, boolean> | null,
 ) {
   const { getPool } = curve
   const { orgUIPath } = network
@@ -107,7 +105,7 @@ export async function getPools(
 
       return prev
     },
-    { poolsMapper: {}, poolsMapperCache: {} } as { poolsMapper: PoolDataMapper; poolsMapperCache: PoolDataCacheMapper },
+    { poolsMapper: {}, poolsMapperCache: {} },
   )
 
   // get gauge info

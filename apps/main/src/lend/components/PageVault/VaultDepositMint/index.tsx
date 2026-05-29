@@ -30,6 +30,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
   const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 
@@ -41,9 +42,13 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
   const maxResp = useStore(state => state.vaultDepositMint.max[maxActiveKey])
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.vaultDepositMint.fetchStepApprove)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDepositMint = useStore(state => state.vaultDepositMint.fetchStepDepositMint)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultDepositMint.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultDepositMint.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -119,7 +124,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
       const { symbol } = market.borrowed_token
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -176,6 +181,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
   useEffect(() => {
     if (isLoaded && api && market) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

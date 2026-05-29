@@ -11,7 +11,7 @@ export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
-export type NetworkUrlParams = { network: INetworkName }
+export interface NetworkUrlParams { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
@@ -27,17 +27,17 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
-export type GaugeVotesResponse = {
+export interface GaugeVotesResponse {
   votes: GaugeVoteData[]
 }
-export type GaugeVoteData = {
+export interface GaugeVoteData {
   user: string
   weight: number
   block_number: number
   timestamp: string
   transaction: string
 }
-export type GaugeVote = {
+export interface GaugeVote {
   user: string
   weight: number
   block_number: number
@@ -45,24 +45,22 @@ export type GaugeVote = {
   transaction: string
 }
 
-export interface GaugeVotesMapper {
-  [gaugeAddress: string]: {
+export type GaugeVotesMapper = Record<string, {
     fetchingState: FetchingState
     votes: GaugeVote[]
-  }
-}
+  }>;
 
-export type SnapshotVotingPower = {
+export interface SnapshotVotingPower {
   value: number
   blockNumber: number
 }
-export type ActiveProposal = {
+export interface ActiveProposal {
   active: boolean
   startTimestamp: number
   endTimestamp: number
 }
 
-export type UserGaugeVoteWeight = {
+export interface UserGaugeVoteWeight {
   title?: string
   userPower: number
   userVeCrv: number
@@ -102,13 +100,13 @@ export interface FnStepResponse {
 export type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
-export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
+export interface ProposalListFilterItem { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
   | 'gauge_relative_weight'
   | 'gauge_relative_weight_7d_delta'
   | 'gauge_relative_weight_60d_delta'
-export type SortByFilterGauges = {
+export interface SortByFilterGauges {
   key: SortByFilterGaugesKeys
   order: SortDirection
 }

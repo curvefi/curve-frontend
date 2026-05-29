@@ -21,7 +21,7 @@ const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: Design
 
 const { Sizing, Spacing, IconSize, LineHeight, ButtonSize } = SizesAndSpaces
 
-type ChipSizeDefinition = {
+interface ChipSizeDefinition {
   font: TypographyVariantKey
   height: Responsive
   iconSize: Responsive

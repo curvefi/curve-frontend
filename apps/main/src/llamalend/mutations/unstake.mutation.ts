@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { formatTokenAmounts } from '../llama.utils'
 
-type UnstakeOptions = {
+interface UnstakeOptions {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
@@ -45,6 +45,7 @@ export const useUnstakeMutation = ({
     ...props,
   })
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const onSubmit = useCallback(async (form: UnstakeForm) => mutate(form as UnstakeMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }

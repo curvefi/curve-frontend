@@ -2,7 +2,7 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 export type EndsWith = (string: string, substring: string) => boolean
 
-export type ComboBoxSelectGaugeProps = {
+export interface ComboBoxSelectGaugeProps {
   disabled?: boolean
   listBoxHeight?: string
   selectedGauge: GaugeFormattedData | undefined

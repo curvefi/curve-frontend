@@ -24,6 +24,7 @@ const visitErrorBoundary = () => {
   cy.visit(url, {
     timeout: API_LOAD_TIMEOUT.timeout,
     onBeforeLoad: ({ String, TypeError }) => {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const originalToLowerCase = String.prototype.toLowerCase
       String.prototype.toLowerCase = function (this: string) {
         if (this.toString() === invalidIconAddress) {
@@ -84,6 +85,7 @@ describe('Error Boundary', () => {
     const contact = 'test@curve.fi'
     // Sentry sends envelope format: newline-delimited JSON with body in extra.body
     const { origin, pathname } = new URL(SENTRY_DSN)
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     cy.intercept('POST', `${origin}/api/${pathname}/envelope/?**`, ({ body: envelope, reply }) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const lines = envelope.split('\n').filter(Boolean)
@@ -139,6 +141,7 @@ describe('Error Boundary', () => {
     cy.visit(url, {
       timeout: API_LOAD_TIMEOUT.timeout,
       onBeforeLoad: ({ DOMException, Node }) => {
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         const originalRemoveChild = Node.prototype.removeChild
         restoreRemoveChild = () => (Node.prototype.removeChild = originalRemoveChild)
         Node.prototype.removeChild = function <T extends Node>(child: T): T {

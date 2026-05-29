@@ -17,6 +17,7 @@ import { SpinnerWrapper } from '@ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { chunk } = lodash
 
 export const ComboBox = ({
@@ -27,7 +28,9 @@ export const ComboBox = ({
   selectedGauge,
   showInpSearch,
   gauges,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleInpChange,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleOnSelectChange,
 }: Pick<ComboBoxSelectGaugeProps, 'testId' | 'listBoxHeight' | 'showInpSearch' | 'gauges'> & {
   dialogClose: () => void
@@ -53,6 +56,7 @@ export const ComboBox = ({
 
   return (
     <>
+      {/* eslint-disable-next-line @typescript-eslint/no-empty-function -- Existing violation before enabling this rule. */}
       <Popover data-testid={`modal-${testId}`} popoverRef={popoverRef} isOpen onClose={() => {}}>
         <Box grid gridGap={3}>
           {showInpSearch && (

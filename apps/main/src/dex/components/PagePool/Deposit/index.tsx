@@ -20,7 +20,9 @@ const tabs: TabOption<FormType>[] = [
 export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
   const formType = useStore(state => state.poolDeposit.formType)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKeys = useStore(state => state.poolDeposit.setStateByKeys)
 
   const [tab, setTab] = useState<FormType>('DEPOSIT')
@@ -31,6 +33,7 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
         formStatus: DEFAULT_FORM_STATUS,
         formType: tab,
       })
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTab(tab)
     },
     [setStateByKeys],

@@ -88,6 +88,7 @@ const useTabs = (results: LlamaMarketsResult | undefined) => {
 
   // Update tab when defaultTab changes (e.g., when user positions data loads)
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setTab(defaultTab.value)
   }, [defaultTab.value])
 
@@ -104,7 +105,7 @@ const buildVaultUrl = (market: LlamaMarket) =>
     `${LEND_ROUTES.PAGE_MARKETS}/${market.controllerAddress}${LEND_MARKET_ROUTES.PAGE_VAULT}`,
   )
 
-type UserPositionsTableProps = {
+interface UserPositionsTableProps {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsResult>
 }
@@ -145,6 +146,7 @@ export const LegacyUserPositionsTable = ({
   const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
   const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain]

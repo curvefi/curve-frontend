@@ -1,18 +1,18 @@
 import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
 
-export type FormStatus = {
+export interface FormStatus {
   isApproved: boolean
   isComplete: boolean
   isInProgress: boolean
   error: string
 }
 
-export type FormEstGas = {
+export interface FormEstGas {
   estimatedGas: number
   loading?: boolean
 }
 
-export type FormDetailInfo = {
+export interface FormDetailInfo {
   healthFull: string
   healthNotFull: string
   bands: [number, number]
@@ -20,7 +20,7 @@ export type FormDetailInfo = {
   loading: boolean
 }
 
-export type ManageLoanProps = {
+export interface ManageLoanProps {
   curve: LlamaApi | null
   isReady: boolean
   market: Llamma | null
@@ -28,17 +28,19 @@ export type ManageLoanProps = {
   rChainId: ChainId
 }
 
-export type FormValues = {
+export interface FormValues {
   collateral: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   collateralError: 'too-much' | string
   debt: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   debtError: 'too-much' | string
   n: number | null
 }
 
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
 
-export type PageLoanCreateProps = {
+export interface PageLoanCreateProps {
   curve: LlamaApi | null
   isReady: boolean
   market: Llamma | null
@@ -46,7 +48,7 @@ export type PageLoanCreateProps = {
   rChainId: ChainId
 }
 
-export type MaxRecvLeverage = {
+export interface MaxRecvLeverage {
   maxBorrowable: string
   maxCollateral: string
   leverage: string

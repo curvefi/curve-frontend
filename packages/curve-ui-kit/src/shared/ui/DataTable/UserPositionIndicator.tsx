@@ -24,7 +24,7 @@ const ColorStates = {
 
 export type ColorState = keyof typeof ColorStates
 
-export type UserPositionIndicatorProps = {
+export interface UserPositionIndicatorProps {
   colorState?: ColorState
   tooltipTitle: TooltipProps['title']
   tooltipBody?: TooltipProps['body']

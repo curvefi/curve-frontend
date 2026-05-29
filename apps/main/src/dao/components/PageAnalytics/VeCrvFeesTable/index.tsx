@@ -11,6 +11,7 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 import { VeCrvFeesChart } from '../VeCrvFeesChart'
 
 export const VeCrcFees = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
   const veCrvFees = useStore(state => state.analytics.veCrvFees)
 

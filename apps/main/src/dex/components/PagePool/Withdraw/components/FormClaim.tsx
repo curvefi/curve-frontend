@@ -24,6 +24,7 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribed = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -31,10 +32,15 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
   const formValues = useStore(state => state.poolWithdraw.formValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchClaimable = useStore(state => state.poolWithdraw.fetchClaimable)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepClaim = useStore(state => state.poolWithdraw.fetchStepClaim)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.poolWithdraw.setStateByKey)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -54,7 +60,9 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const config = useConfig()
 
   const updateFormValues = useCallback(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setTxInfoBar(null)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
     void setFormValues('CLAIM', config, curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
   }, [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
@@ -103,7 +111,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isClaimedRewards = formStatus.formTypeCompleted === 'CLAIM_REWARDS'
       const isComplete = isClaimedCRV || isClaimedRewards
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM: {
           key: 'CLAIM',
           status: getStepStatus(isComplete, step === 'CLAIM', isValid),
@@ -162,6 +170,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   useEffect(() => {
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging, seed.isSeed)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

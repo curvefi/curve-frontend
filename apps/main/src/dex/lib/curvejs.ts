@@ -39,6 +39,7 @@ import { log } from '@ui-kit/lib/logging'
 import { getErrorMessage } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { isUndefined } = lodash
 
 const helpers = { waitForTransaction, waitForTransactions }
@@ -51,19 +52,19 @@ const network = {
   }),
   getTVL: (curve: CurveApi) => {
     log('getChainTVL', curve.chainId)
-    const api = curve as CurveApi
+    const api = curve
     return api.getTVL()
   },
   getVolume: (curve: CurveApi) => {
     log('getChainVolume', curve.chainId)
-    const api = curve as CurveApi
+    const api = curve
     return api.getVolume()
   },
   getFailedFetching24hOldVprice: async () => {
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
     // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
     // something like a dash with a tooltip "not available currently"
-    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
+    const failedFetching24hOldVprice: Record<string, boolean> = {}
     const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
@@ -186,7 +187,7 @@ const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: { [poolId: string]: PoolData },
+    poolsMapper: Record<string, PoolData>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {
@@ -322,7 +323,7 @@ const router = {
     fromAmount: string,
   ) => {
     log('swapApprove', fromAddress, fromAmount)
-    const api = curve as CurveApi
+    const api = curve
     const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await api.router.approve(fromAddress, fromAmount)

@@ -16,7 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 
-type RepayMutation = {
+interface RepayMutation {
   stateCollateral: Decimal
   userCollateral: Decimal
   userBorrowed: Decimal
@@ -25,7 +25,7 @@ type RepayMutation = {
   routeId: string | undefined
 }
 
-type RepayOptions = {
+interface RepayOptions {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
@@ -120,6 +120,7 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
   })
 
   const onSubmit = useCallback(
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
       mutate({
         ...form,

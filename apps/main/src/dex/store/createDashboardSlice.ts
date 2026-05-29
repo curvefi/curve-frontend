@@ -27,26 +27,27 @@ import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const { orderBy } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   loading: boolean
   error: 'error-get-dashboard-data' | ''
   noResult: boolean
-  dashboardDataPoolIds: { [activeKey: string]: string[] }
+  dashboardDataPoolIds: Record<string, string[]>
   dashboardDatasMapper: DashboardDatasMapper
-  claimableFees: { [activeKey: string]: { ['3CRV']: string; crvUSD: string } | null }
+  claimableFees: Record<string, { ['3CRV']: string; crvUSD: string } | null>
   formValues: FormValues
   formStatus: FormStatus
   searchedWalletAddresses: string[]
-  vecrvInfo: { [activeKey: string]: Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null }
+  vecrvInfo: Record<string, Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null>
 }
 
 const sliceKey = 'dashboard'
 
 // prettier-ignore
-export type DashboardSlice = {
+export interface DashboardSlice {
   [sliceKey]: SliceState & {
     fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
     fetchDashboardData: (curve: CurveApi, walletAddress: string, poolDataMapper: PoolDataMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
@@ -242,7 +243,7 @@ export const createDashboardSlice = (
 
       const activeKey = getActiveKey(rChainId, formValues)
 
-      const isValidAddress = isAddress(formValues.walletAddress as Address)
+      const isValidAddress = isAddress(formValues.walletAddress)
       const storedDashboardData = storedDashboardDatasMapper[formValues.walletAddress]
 
       sliceState.setStateByKeys({
@@ -267,7 +268,7 @@ export const createDashboardSlice = (
 
       const { sortBy, sortByOrder, walletAddress } = formValues
 
-      if (!isAddress(walletAddress as Address)) return
+      if (!isAddress(walletAddress)) return
 
       // update search addresses, local storage
       const cachedAddresses = getStorageValue('APP_DASHBOARD')?.addresses ?? []

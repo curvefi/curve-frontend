@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormActions = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     watchValue,
   } = useAddRewardTokenFormContext()
   const rewardTokenId = watchValue('rewardTokenId')

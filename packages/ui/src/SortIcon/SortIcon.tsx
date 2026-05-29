@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Icon } from '@ui/Icon/Icon'
 import { breakpoints } from '@ui/utils/responsive'
 
-type SortIconProps = {
+interface SortIconProps {
   className?: string
   activeType: 'asc' | 'desc' | null
 }

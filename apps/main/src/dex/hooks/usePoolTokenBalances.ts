@@ -58,7 +58,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
 export const fetchPoolTokenBalances = async (config: Config, curve: CurveApi, poolId: string) => {
   const { wrappedCoinAddresses, underlyingCoinAddresses } = curve.getPool(poolId)
   const chainId = curve.chainId
-  const userAddress = curve.signerAddress as Address
+  const userAddress = curve.signerAddress
 
   const balances = await Promise.allSettled([
     ...(wrappedCoinAddresses as Address[]).map(tokenAddress =>

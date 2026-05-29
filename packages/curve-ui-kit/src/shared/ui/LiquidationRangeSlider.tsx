@@ -7,7 +7,7 @@ import { formatNumber } from '@ui-kit/utils'
 import { Slider } from './Slider'
 
 // the real type has more fields, but we only use this one
-type LiqRange = { n: number }
+interface LiqRange { n: number }
 
 export const LiquidationRangeSlider = ({
   liqRanges,
@@ -31,6 +31,7 @@ export const LiquidationRangeSlider = ({
 
   useEffect(() => {
     if (selectedLiqRange?.n) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSliderValue(selectedLiqRange.n)
     }
   }, [selectedLiqRange?.n])

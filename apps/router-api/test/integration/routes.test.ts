@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { PartialRecord } from '@primitives/objects.utils'
-import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
 import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
@@ -23,9 +23,9 @@ const BTC_DECIMALS = 18
 const USD_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
-type SuccessCase = { query: QueryString; expectedRoutes?: number }
-type ErrorResponse = { statusCode: number; code: string; error: string; message: string }
-type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
+interface SuccessCase { query: QueryString; expectedRoutes?: number }
+interface ErrorResponse { statusCode: number; code: string; error: string; message: string }
+interface FailureCase { query: Partial<QueryString>; expectedResponse: ErrorResponse }
 
 /**
  * Success cases per provider. Curve supports amountIn and amountOut; Enso and Odos require amountIn.
@@ -174,7 +174,7 @@ describe('GET routes integration', () => {
         })
         expect(statusCode).toBe(200)
 
-        const payload = json() as RouterRouteResponse[]
+        const payload = json()
         expect(payload).toHaveLength(expectedRoutes)
         payload.forEach(route => {
           expect(route.router).toBe(router)

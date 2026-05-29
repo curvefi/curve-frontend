@@ -10,7 +10,7 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
+interface Props {
   blockchainId: string
   chainId: ChainId
   curve: CurveApi

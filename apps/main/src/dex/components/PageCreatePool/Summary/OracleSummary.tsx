@@ -28,11 +28,11 @@ import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   chainId: ChainId
 }
 
-type OracleTokenSummaryProps = {
+interface OracleTokenSummaryProps {
   chainId: ChainId
   token: TokenState
   title: string

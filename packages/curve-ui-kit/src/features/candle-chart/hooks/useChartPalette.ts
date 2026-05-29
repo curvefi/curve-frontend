@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 
-export type ChartColors = {
+export interface ChartColors {
   backgroundColor: string
   lineColor: string
   textColor: string
@@ -21,7 +21,7 @@ export type ChartColors = {
   rangeLineFutureBottom: string
 }
 
-type UseChartPaletteOptions = {
+interface UseChartPaletteOptions {
   backgroundOverride?: string
 }
 

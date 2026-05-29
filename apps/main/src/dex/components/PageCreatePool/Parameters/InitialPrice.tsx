@@ -7,7 +7,7 @@ import { CurveApi } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
+interface Props {
   curve: CurveApi
   haveSigner: boolean
 }

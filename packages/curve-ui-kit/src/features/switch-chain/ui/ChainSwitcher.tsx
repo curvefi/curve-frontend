@@ -16,7 +16,7 @@ import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
-type ChainSwitcherProps = {
+interface ChainSwitcherProps {
   networks: NetworkMapping
 }
 

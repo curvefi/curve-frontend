@@ -22,7 +22,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function parseRouterRoutes(
   routes: IRouteStep[],
-  poolsMapper: { [poolId: string]: PoolData },
+  poolsMapper: Record<string, PoolData>,
   getPool: (poolId: string) => Pool,
 ) {
   let haveCryptoRoutes = false
