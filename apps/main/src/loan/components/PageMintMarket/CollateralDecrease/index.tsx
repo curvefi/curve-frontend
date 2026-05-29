@@ -40,7 +40,7 @@ export const CollateralDecrease = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralDecrease.activeKey)
   const detailInfo = useStore(state => state.loanCollateralDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
@@ -111,7 +111,7 @@ export const CollateralDecrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = `Remove ${formValues.collateral} ${llamma.collateralSymbol} collateral.`
         setTxInfoBar(
           <TxInfoBar
@@ -183,10 +183,10 @@ export const CollateralDecrease = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])

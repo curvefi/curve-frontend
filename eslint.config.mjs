@@ -80,16 +80,11 @@ const config = [
       // These rules are new recommended ones that came with the migration from eslint-plugin-react to @eslint-react,
       // and we haven't had the bandwidth to fix all the issues they raise yet.
       // We should create future PRs to re-enable these rules and fix any issues that arise
-      '@eslint-react/naming-convention-context-name': 'off',
-      '@eslint-react/naming-convention-ref-name': 'off',
-      '@eslint-react/naming-convention-id-name': 'off',
       '@eslint-react/component-hook-factories': 'off',
       '@eslint-react/set-state-in-effect': 'off', // painful to disable but we manually disabled it in a shit ton of cases already, requires a huge refactor
       '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
-      '@eslint-react/no-use-context': 'off',
-      '@eslint-react/no-context-provider': 'off',
       '@eslint-react/no-unnecessary-use-prefix': 'off',
       '@eslint-react/no-children-to-array': 'off',
       '@eslint-react/no-children-map': 'off',

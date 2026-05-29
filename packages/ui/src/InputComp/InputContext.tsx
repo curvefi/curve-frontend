@@ -1,4 +1,4 @@
-import { createContext, type Dispatch, type ReactNode, type SetStateAction, useContext } from 'react'
+import { createContext, type Dispatch, type ReactNode, type SetStateAction, use } from 'react'
 import type { BoxProps } from '../Box/types'
 import type { InputMinHeight, InputVariant } from './types'
 
@@ -17,4 +17,4 @@ interface InputContextProps extends Pick<InputProviderProps, 'disabled' | 'id' |
 
 export const InputContext = createContext<InputContextProps>(undefined!)
 
-export const useInputContext = () => useContext(InputContext)
+export const useInputContext = () => use(InputContext)

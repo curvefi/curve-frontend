@@ -41,7 +41,7 @@ export const FormDeposit = ({
   seed,
   tokensMapper,
 }: TransferProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
@@ -109,7 +109,7 @@ export const FormDeposit = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -192,10 +192,10 @@ export const FormDeposit = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

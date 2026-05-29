@@ -48,7 +48,7 @@ export const LoanRepay = ({
   userActiveKey,
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
   const activeKey = useStore(state => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore(state => state.loanRepay.detailInfoLeverage[activeKey])
@@ -108,7 +108,7 @@ export const LoanRepay = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
 
         setTxInfoBar(
@@ -261,10 +261,10 @@ export const LoanRepay = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
