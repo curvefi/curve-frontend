@@ -37,7 +37,7 @@ export const FormCompensation = ({
       setBalances(groupedBalances)
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
       setError(getErrorMessage(error, 'error'))
     }
   }, [])

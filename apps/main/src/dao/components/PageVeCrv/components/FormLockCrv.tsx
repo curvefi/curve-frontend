@@ -67,7 +67,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
 
       if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
         const txDescription = t`Lock amount updated`
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()

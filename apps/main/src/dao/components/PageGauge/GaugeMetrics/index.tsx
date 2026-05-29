@@ -42,7 +42,6 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 <StyledMetricsColumnData>{shortenAddress(gaugeAddress)}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                     href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeAddress)}
                     tooltip={t`View on explorer`}
                   />
@@ -53,7 +52,6 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
               href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeAddress)}
               tooltip={t`View on explorer`}
             />
@@ -157,7 +155,6 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             />
             <SmallScreenButtonsWrapper>
               <ExternalLinkIconButton
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                 href={scanAddressPath(networks[chainId], gaugeData?.pool?.address)}
                 tooltip={t`View on explorer`}
               />

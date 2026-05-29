@@ -172,17 +172,13 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         const partialPoolDatas = Object.keys(poolsMapper).map(poolId => poolsMapper[poolId])
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
         // fetch tokens
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         await tokens.setTokensMapper(curve, partialPoolDatas)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         return { poolsMapper, poolDatas: partialPoolDatas }
       } catch (error) {
         console.error(error)
@@ -340,8 +336,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+        produce((state: State) => {
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
@@ -350,9 +345,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
       set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          state.pools.poolsMapper[chainId][poolId] = updatedPoolData
+        produce((state: State) => {
+          state.pools.poolsMapper[chainId][poolId] = { ...state.pools.poolsMapper[chainId][poolId], ...updatedPoolData }
         }),
       )
     },

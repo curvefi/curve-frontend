@@ -6,6 +6,7 @@ import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStat
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
+import { Hex } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
@@ -58,20 +59,16 @@ export const Compensation = ({
 
       try {
         setStep('claiming')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
-        const hash = await contract.claim()
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+        const hash = (await contract.claim()) as Hex
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         const txHash = scanTxPath(network, hash)
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={txHash} />)
         if (typeof dismiss === 'function') dismiss()
       } catch (error) {
         console.error(error)
         setStep('error')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         setError(getErrorMessage(error, 'error-step-claim'))
         if (typeof dismiss === 'function') dismiss()
       }

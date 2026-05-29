@@ -69,15 +69,15 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       }
 
       const days = utcDate.diff(currUtcDate, 'd')
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
+
       const calcdUtcDate = fn(curve, 'create', null, days)
 
       updateFormValues({
         utcDate: toCalendarDate(utcDate),
         utcDateError,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+
         calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
         days,
       })
@@ -87,24 +87,22 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
 
   const handleBtnClickQuickAction = useCallback(
     (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const { calcUnlockTime } = networks[rChainId].api.lockCrv
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUtcDate, 'd')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
+
         const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
         updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
       const utcDate = dayjs.utc().add(value, unit)
       const days = utcDate.diff(currUtcDate, 'd')
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
+
       const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
       return utcDate
     },
@@ -132,7 +130,6 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
         if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Successfully locked ${resp.lockedAmt} CRV until ${resp.lockedDate}`
           setTxInfoBar(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,
           )
         }

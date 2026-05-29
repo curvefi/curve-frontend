@@ -76,7 +76,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
-          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
+          {}
           <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}>
             {shortenAddress(gaugeData.address)}
           </StyledExternalLink>
@@ -104,7 +104,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
           <StatTitle>{t`Contract Address`}</StatTitle>
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
-              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
+              {}
               <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.pool.address)}>
                 {shortenAddress(gaugeData.pool.address)}
               </StyledExternalLink>

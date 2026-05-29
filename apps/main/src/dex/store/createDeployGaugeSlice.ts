@@ -173,8 +173,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
     },
     setLinkPoolAddress: (linkPoolAddress: string) => {
       set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+        produce((state: State) => {
           state.deployGauge.linkPoolAddress = linkPoolAddress
         }),
       )
@@ -205,10 +204,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.stableNgFactory.deployGauge(tokenAddress)
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
               }),
             )
@@ -220,8 +217,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.stableNgFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
               }),
             )
@@ -231,8 +227,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
@@ -247,10 +242,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.cryptoFactory.deployGauge(tokenAddress)
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
               }),
             )
@@ -262,8 +255,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.cryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
               }),
             )
@@ -273,8 +265,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
@@ -289,10 +280,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.twocryptoFactory.deployGauge(tokenAddress)
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
               }),
             )
@@ -304,8 +293,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
               }),
             )
@@ -315,8 +303,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
@@ -331,10 +318,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.tricryptoFactory.deployGauge(tokenAddress)
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
               }),
             )
@@ -346,8 +331,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.tricryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
               }),
             )
@@ -357,8 +341,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
@@ -372,10 +355,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.factory.deployGauge(tokenAddress)
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
               }),
             )
@@ -387,8 +368,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.factory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
               }),
             )
@@ -398,8 +378,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
@@ -423,10 +402,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.stableNgFactory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
               }),
             )
@@ -438,12 +415,9 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.stableNgFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.sidechainNav = isLite ? 0 : 1
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.currentSidechain = chainId
               }),
             )
@@ -453,8 +427,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
@@ -468,10 +441,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.cryptoFactory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
               }),
             )
@@ -483,12 +454,9 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.cryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.sidechainNav = isLite ? 0 : 1
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.currentSidechain = chainId
               }),
             )
@@ -498,8 +466,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
@@ -513,10 +480,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.twocryptoFactory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
               }),
             )
@@ -528,12 +493,9 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.sidechainNav = isLite ? 0 : 1
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.currentSidechain = chainId
               }),
             )
@@ -543,8 +505,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
@@ -558,10 +519,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.tricryptoFactory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
               }),
             )
@@ -573,12 +532,9 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.tricryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.sidechainNav = isLite ? 0 : 1
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.currentSidechain = chainId
               }),
             )
@@ -588,8 +544,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
@@ -603,10 +558,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.factory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
               }),
             )
@@ -618,12 +571,9 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.factory.getDeployedGaugeAddress(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.sidechainNav = isLite ? 0 : 1
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.currentSidechain = chainId
               }),
             )
@@ -633,8 +583,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
@@ -661,10 +610,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
               }),
             )
@@ -676,8 +623,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.stableNgFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
               }),
             )
@@ -687,8 +633,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
@@ -705,10 +650,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
               }),
             )
@@ -720,8 +663,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.cryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
               }),
             )
@@ -731,8 +673,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
@@ -749,10 +690,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
               }),
             )
@@ -764,8 +703,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.twocryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
               }),
             )
@@ -775,8 +713,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
@@ -793,10 +730,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
               }),
             )
@@ -808,8 +743,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.tricryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
               }),
             )
@@ -819,8 +753,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
@@ -834,10 +767,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             const deployGaugeTx = await curve.factory.deployGaugeMirror(currentSidechain!, cutSalt(lpTokenAddress))
 
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
               }),
             )
@@ -849,8 +780,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
 
             await curve.factory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
               }),
             )
@@ -860,8 +790,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
           } catch (error) {
             dismissNotificationHandler()
             set(
-              produce(state => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+              produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
@@ -874,9 +803,8 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
     },
     resetState: () => {
       set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          state.deployGauge = { ...get().deployGauge, DEFAULT_STATE }
+        produce((state: State) => {
+          state.deployGauge = { ...get().deployGauge, ...DEFAULT_STATE }
         }),
       )
     },

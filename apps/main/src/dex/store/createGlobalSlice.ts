@@ -176,11 +176,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     set(
       produce(state => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-        state[sliceKey] = {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          ...state[sliceKey],
-          ...defaultState,
-        }
+        state[sliceKey] = { ...state[sliceKey], ...defaultState }
       }),
     )
   },

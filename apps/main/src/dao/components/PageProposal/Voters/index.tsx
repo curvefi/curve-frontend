@@ -62,7 +62,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
                     {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
+                {}
                 <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], vote.txHash)}>
                   <Data>
                     {formatNumber(+vote.stake, { abbreviate: true })} (

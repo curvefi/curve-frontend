@@ -20,7 +20,7 @@ const MAX_WIDTH = '30rem' as const // Temporary hard coded with, in the future t
 export const VeCrv = () => {
   const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
   const { curveApi = null, connectState } = useCurve()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+
   const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
 
@@ -49,13 +49,7 @@ export const VeCrv = () => {
         {rChainId === 1 ? (
           <Stack>
             {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
-              <FormCrvLocker
-                curve={curveApi}
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
-                rChainId={rChainId}
-                rFormType={rFormType}
-                vecrvInfo={vecrvInfo}
-              />
+              <FormCrvLocker curve={curveApi} rChainId={rChainId} rFormType={rFormType} vecrvInfo={vecrvInfo} />
             ) : (
               <SpinnerWrapper>
                 <Spinner />

@@ -9,12 +9,10 @@ export const useEstimateGasConversion = (gas: number | null | undefined) => {
   const chainId = useChainId()
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const network = networks[chainId]
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
 
   return useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     () => calculateGas(gas, gasInfo, chainTokenUsdRate, network),
     [gas, network, gasInfo, chainTokenUsdRate],
   )

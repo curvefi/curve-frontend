@@ -42,7 +42,6 @@ export const ProposalHeader = ({ proposal, loading, voteId, proposalType }: Prop
         <MetricsComp
           title={t`Executed On`}
           data={
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
             <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], executionTx)}>
               <MetricsColumnData>{formatDate(executionDate)}</MetricsColumnData>
             </StyledExternalLink>

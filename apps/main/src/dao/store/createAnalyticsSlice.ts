@@ -196,10 +196,8 @@ export const createAnalyticsSlice = (
       const { topHolders } = get()[sliceKey].veCrvHolders
 
       set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+        produce((state: State) => {
           state[sliceKey].topHoldersSortBy = sortBy
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state[sliceKey].veCrvHolders.topHolders = [...topHolders].sort(
             (a, b) => Number(b[sortBy]) - Number(a[sortBy]),
           )
@@ -217,11 +215,9 @@ export const createAnalyticsSlice = (
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
+          produce((state: State) => {
             const reversedEntries = Object.entries(allHolders).reverse()
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(reversedEntries)
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].allHoldersSortBy.order = order
           }),
         )
@@ -229,12 +225,9 @@ export const createAnalyticsSlice = (
         const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => Number(b[sortBy]) - Number(a[sortBy]))
 
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].allHoldersSortBy.key = sortBy
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].allHoldersSortBy.order = 'desc'
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(sortedEntries)
           }),
         )

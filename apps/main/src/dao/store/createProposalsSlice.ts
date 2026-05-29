@@ -135,7 +135,7 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'LOADING',
               hash: voteResponseHash,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
               txLink: scanTxPath(networks[1], voteResponseHash),
             },
           })
@@ -147,7 +147,7 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'SUCCESS',
               hash: voteResponseHash,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
               txLink: scanTxPath(networks[1], voteResponseHash),
             },
           })
@@ -227,7 +227,7 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'LOADING',
               hash: transactionHash,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
               txLink: scanTxPath(networks[1], transactionHash),
               error: null,
             },
@@ -247,7 +247,7 @@ export const createProposalsSlice = (
               state[sliceKey].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
                 hash: transactionHash,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+
                 txLink: scanTxPath(networks[1], transactionHash) ?? null,
                 error: null,
               }

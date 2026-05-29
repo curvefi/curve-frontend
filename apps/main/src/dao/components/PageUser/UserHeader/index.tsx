@@ -23,7 +23,7 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
               <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
                 <Icon name="Copy" size={16} />
               </StyledCopyButton>
-              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
+              {}
               <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
@@ -37,7 +37,7 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
           <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
             <Icon name="Copy" size={16} />
           </StyledCopyButton>
-          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
+          {}
           <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
             <Icon name="Launch" size={16} />
           </StyledExternalLink>

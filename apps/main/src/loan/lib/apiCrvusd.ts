@@ -305,7 +305,6 @@ const detailInfo = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-user-wallet-balances')
       return resp
     }
@@ -319,7 +318,6 @@ const detailInfo = {
       resp.balance = tokenBalances[0]
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-user-token-balance')
       return resp
     }
@@ -365,7 +363,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -510,7 +507,6 @@ const loanCreate = {
           healthNotFull: '',
           priceImpact: '',
           isHighImpact: false,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           error: getErrorMessage(error, ''),
         },
       }
@@ -592,7 +588,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-amount')
       return resp
     }
@@ -617,7 +612,6 @@ const loanCreate = {
       return { activeKey, resp, error: '' }
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       return { activeKey, resp, error: getErrorMessage(error, 'error-max-amount') }
     }
   },
@@ -635,7 +629,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -663,7 +656,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-create')
       return resp
     }
@@ -689,7 +681,6 @@ const loanIncrease = {
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
       }
       return resp
@@ -746,7 +737,6 @@ const loanIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-amount')
       return resp
     }
@@ -762,7 +752,6 @@ const loanIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -779,7 +768,6 @@ const loanIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-borrow-more')
       return resp
     }
@@ -803,7 +791,6 @@ const loanDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -842,7 +829,6 @@ const loanDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -857,7 +843,6 @@ const loanDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-repay')
       return resp
     }
@@ -883,7 +868,6 @@ const loanLiquidate = {
       if (haveErrorMessage && err.message.includes('not in liquidation mode')) {
         resp.warning = 'warning-not-in-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
       }
       return resp
@@ -911,7 +895,6 @@ const loanLiquidate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-liquidate')
       return resp
     }
@@ -925,7 +908,6 @@ const loanLiquidate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -939,7 +921,6 @@ const loanLiquidate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-liquidate')
       return resp
     }
@@ -963,7 +944,6 @@ const collateralIncrease = {
       if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
       }
       return resp
@@ -1003,7 +983,6 @@ const collateralIncrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -1022,7 +1001,6 @@ const collateralIncrease = {
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-step-add-collateral')
       }
       return resp
@@ -1044,7 +1022,6 @@ const collateralDecrease = {
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
       }
       return resp
@@ -1060,7 +1037,6 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-removable')
       return resp
     }
@@ -1104,7 +1080,6 @@ const collateralDecrease = {
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-step-remove-collateral')
       }
       return resp
@@ -1132,7 +1107,6 @@ const swap = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1167,7 +1141,6 @@ const loanDeleverage = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1307,7 +1280,6 @@ const loanDeleverage = {
       return { activeKey, resp }
     } catch (error) {
       console.warn(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deleverage-api')
       return { activeKey, resp }
     }
@@ -1339,7 +1311,6 @@ const loanDeleverage = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-repay')
       return resp
     }

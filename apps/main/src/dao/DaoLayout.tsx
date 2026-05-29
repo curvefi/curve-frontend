@@ -7,12 +7,11 @@ import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 export function DaoLayout() {
   const { network = 'ethereum' } = useParams<Partial<UrlParams>>()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+
   const chainId = networksIdMapper[network]
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   useRedirectToEth(networks[chainId], network)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+
   useGasInfoAndUpdateLib({ chainId, networks })
 
   return <Outlet />

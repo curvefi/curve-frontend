@@ -187,7 +187,6 @@ export const createDashboardSlice = (
       } catch (error) {
         console.error(error)
         const errorKey = 'error-get-dashboard-data'
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         sliceState.setStateByKey('error', getErrorMessage(error, errorKey))
         return { dashboardDataMapper: {}, error: errorKey }
       }

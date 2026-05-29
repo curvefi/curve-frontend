@@ -353,7 +353,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       return resp
     }
@@ -381,7 +380,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-amount')
       return resp
     }
@@ -420,7 +418,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-details')
       return resp
     }
@@ -489,7 +486,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-details')
       return resp
     }
@@ -616,7 +612,6 @@ const loanCreate = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -673,7 +668,6 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-amount')
       return resp
     }
@@ -699,7 +693,6 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-amount')
       return resp
     }
@@ -739,7 +732,6 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-details')
       return resp
     }
@@ -802,7 +794,6 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-details')
       return resp
     }
@@ -840,7 +831,6 @@ const loanBorrowMore = {
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
       }
       return resp
@@ -903,7 +893,6 @@ const loanRepay = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       return resp
     }
@@ -942,7 +931,6 @@ const loanRepay = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-details')
       return resp
     }
@@ -1039,7 +1027,6 @@ const loanRepay = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-details')
       return resp
     }
@@ -1091,7 +1078,6 @@ const loanRepay = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1156,7 +1142,6 @@ const loanSelfLiquidation = {
       resp.tokensToLiquidate = await market.loan.tokensToLiquidate()
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
     }
 
@@ -1165,7 +1150,6 @@ const loanSelfLiquidation = {
         resp.futureRates = await market.stats.futureRates(0, `-${resp.tokensToLiquidate}`)
       } catch (error) {
         console.error(error)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-api')
       }
     }
@@ -1183,7 +1167,6 @@ const loanSelfLiquidation = {
       return resp
     } catch (err) {
       console.error(err)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(err, 'error-est-gas-approval')
       return resp
     }
@@ -1228,7 +1211,6 @@ const loanCollateralAdd = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1249,7 +1231,6 @@ const loanCollateralAdd = {
       if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(err, 'error-est-gas-approval')
       }
       return resp
@@ -1278,7 +1259,6 @@ const loanCollateralRemove = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-max-removable')
       return resp
     }
@@ -1310,7 +1290,6 @@ const loanCollateralRemove = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1328,7 +1307,6 @@ const loanCollateralRemove = {
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         resp.error = getErrorMessage(error, 'error-est-gas-approval')
       }
       return resp
@@ -1356,7 +1334,6 @@ const vaultDeposit = {
       resp.max = await market.vault.maxDeposit()
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1380,7 +1357,6 @@ const vaultDeposit = {
       resp.futureRates = futureRates
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1398,7 +1374,6 @@ const vaultDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1412,7 +1387,6 @@ const vaultDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -1426,7 +1400,6 @@ const vaultDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -1442,7 +1415,6 @@ const vaultMint = {
       resp.max = await market.vault.maxMint()
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1466,7 +1438,6 @@ const vaultMint = {
       resp.futureRates = futureRates
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1484,7 +1455,6 @@ const vaultMint = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1498,7 +1468,6 @@ const vaultMint = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -1512,7 +1481,6 @@ const vaultMint = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -1532,7 +1500,6 @@ const vaultStake = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1546,7 +1513,6 @@ const vaultStake = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -1560,7 +1526,6 @@ const vaultStake = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -1576,7 +1541,6 @@ const vaultWithdraw = {
       resp.max = await market.vault.maxWithdraw()
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1600,7 +1564,6 @@ const vaultWithdraw = {
       resp.futureRates = futureRates
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1615,7 +1578,6 @@ const vaultWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1639,7 +1601,6 @@ const vaultWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -1655,7 +1616,6 @@ const vaultRedeem = {
       resp.max = await market.vault.maxRedeem()
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1676,7 +1636,6 @@ const vaultRedeem = {
       resp.futureRates = await market.stats.futureRates(`-${resp.preview}`, 0)
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1691,7 +1650,6 @@ const vaultRedeem = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1705,7 +1663,6 @@ const vaultRedeem = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step')
       return resp
     }
@@ -1722,7 +1679,6 @@ const vaultUnstake = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1736,7 +1692,6 @@ const vaultUnstake = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -1762,7 +1717,6 @@ const vaultClaim = {
       resp.claimable.rewards = rewards
       return resp
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-api')
       console.error(error)
       return resp
@@ -1777,7 +1731,6 @@ const vaultClaim = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-claim')
       return resp
     }
@@ -1791,7 +1744,6 @@ const vaultClaim = {
       return resp
     } catch (error) {
       console.error(error)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-claim')
       return resp
     }
@@ -1879,7 +1831,6 @@ async function approve(activeKey: string, approveFn: () => Promise<string[]>, pr
     return resp
   } catch (error) {
     console.error(error)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     resp.error = getErrorMessage(error, 'error-step-approve')
     return resp
   }
@@ -1893,7 +1844,6 @@ async function submit(activeKey: string, submitFn: () => Promise<string>, provid
     return resp
   } catch (error) {
     console.error(error)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     resp.error = getErrorMessage(error, 'error-api')
     return resp
   }

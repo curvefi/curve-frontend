@@ -79,17 +79,14 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
       } else {
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].userLocksSortBy.key = sortBy
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].userLocksSortBy.order = 'desc'
           }),
         )
@@ -106,10 +103,8 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
       }
 
       set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+        produce((state: State) => {
           state[sliceKey].userProposalVotesSortBy.key = sortBy
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state[sliceKey].userProposalVotesSortBy.order = order
         }),
       )
@@ -122,17 +117,14 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
       } else {
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].userGaugeVotesSortBy.key = sortBy
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
           }),
         )
@@ -146,17 +138,14 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
       } else {
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
           }),
         )

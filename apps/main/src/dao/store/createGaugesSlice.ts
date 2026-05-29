@@ -43,7 +43,7 @@ interface SliceState {
 
 interface FilterOptions {
   showSearch?: boolean
-  endsWith(string: string, substring: string): boolean
+  endsWith: (string: string, substring: string) => boolean
 }
 
 const sliceKey = 'gauges'
@@ -164,10 +164,8 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
         )
@@ -175,12 +173,9 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
-          produce(state => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+          produce((state: State) => {
             state[sliceKey].gaugeVotesSortBy.key = sortBy
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
           }),
         )
@@ -336,7 +331,6 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   return result.map(r => r.item)
 }
 
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 const selectGaugeFilterFn = (filterValue: string, gauges: GaugeFormattedData[], { endsWith }: FilterOptions) => {
   const fuse = new Fuse<GaugeFormattedData>(gauges, {
     ignoreLocation: true,
