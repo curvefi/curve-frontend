@@ -176,6 +176,7 @@ export const createComponents = (
   },
   MuiPopover: {
     defaultProps: {
+      disableScrollLock,
       marginThreshold: 8, // allows the popover to be closer to the edge of the screen. Default is 16px
       elevation: 3,
     },
