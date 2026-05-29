@@ -28,7 +28,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
@@ -92,7 +92,7 @@ const defaultValues = {
   maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: false,
-  slippage: SLIPPAGE_PRESETS.STABLE,
+  slippage: SLIPPAGE_PRESETS.stable,
 }
 const formOptions = {
   defaultValues,
@@ -143,7 +143,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
 
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)
-  const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
+  const { isFull, max } = useMaxRepayTokenValues({ market, params, form }, enabled)
 
   const priceImpact = q(useRepayPriceImpact(params, enabled))
   const { formState } = form

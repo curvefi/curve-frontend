@@ -32,7 +32,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
 
 const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   userCollateral,
@@ -81,7 +81,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxBorrowed: undefined,
   maxDebt: undefined,
   leverageEnabled: undefined,
-  slippage: SLIPPAGE_PRESETS.STABLE,
+  slippage: SLIPPAGE_PRESETS.stable,
 })
 
 /** Checks if we need a route for borrowing more */

@@ -11,10 +11,10 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimal } from '@ui-kit/utils'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -31,7 +31,6 @@ export const PageRouterSwap = () => {
   const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
   const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
@@ -40,7 +39,7 @@ export const PageRouterSwap = () => {
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
-  const paramsMaxSlippage = searchParams?.get('slippage')
+  const paramsMaxSlippage = decimal(searchParams?.get('slippage'))
   const searchedParams = useMemo(
     () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
     [paramsFromAddress, paramsToAddress],
@@ -63,9 +62,6 @@ export const PageRouterSwap = () => {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
-      }
-      if (paramsMaxSlippage) {
-        setMaxSlippage(paramsMaxSlippage)
       }
 
       const routerDefault = network.swap

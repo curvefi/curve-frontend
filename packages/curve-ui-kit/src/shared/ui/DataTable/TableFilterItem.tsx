@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
  */
 export const TableFilterItem = ({ title, children }: { title: ReactNode; children: ReactNode }) => (
   <Stack>
-    <Typography variant="bodyXsRegular" color="textTertiary" sx={{ display: { mobile: 'none', tablet: 'block' } }}>
+    <Typography variant="bodyXsRegular" color="textTertiary">
       {title}
     </Typography>
     {children}

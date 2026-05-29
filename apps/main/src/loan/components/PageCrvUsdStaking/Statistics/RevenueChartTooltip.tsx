@@ -1,12 +1,8 @@
-import {
-  ChartTooltipShell,
-  ChartTooltipSeriesGroup,
-  ChartTooltipSeriesRow,
-} from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { ChartTooltipShell, ChartTooltipSeriesGroup, ChartTooltipSeriesRow } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatNumber } from '@ui-kit/utils'
 

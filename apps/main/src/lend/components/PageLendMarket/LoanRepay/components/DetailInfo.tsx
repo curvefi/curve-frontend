@@ -119,7 +119,7 @@ export const DetailInfo = ({
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
-          <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
+          <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
         </>
       )}
     </>

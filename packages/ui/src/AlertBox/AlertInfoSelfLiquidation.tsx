@@ -34,9 +34,7 @@ export const AlertInfoSelfLiquidation = ({
   return (
     <AlertBox alertType="info">
       <Box flex flexDirection="column" fillWidth gridGap={1} padding="0 var(--spacing-3)">
-        {errorMessage ? (
-          errorMessage
-        ) : (
+        {errorMessage || (
           <>
             <div>
               <TextCaption isCaps isBold>

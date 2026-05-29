@@ -149,6 +149,7 @@ export type PoolDataCache = {
   hasVyperVulnerability: boolean
   tokenAddresses: string[]
   tokenAddressesAll: string[]
+  tokenDecimalsAll: number[]
   tokens: string[]
   tokensCountBy: { [key: string]: number }
   tokensAll: string[]

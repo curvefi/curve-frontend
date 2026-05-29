@@ -11,7 +11,7 @@ import {
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
 import {
   type UserContractParams,
   type UserContractQuery,

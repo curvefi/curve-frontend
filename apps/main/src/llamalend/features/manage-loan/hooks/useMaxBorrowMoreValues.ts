@@ -2,11 +2,12 @@ import { PRESET_RANGES } from '@/llamalend/constants'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { resetBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useFormSync } from '@ui-kit/features/forms'
+import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
@@ -48,6 +49,9 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
   // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
   useFormSync(form, { leverageEnabled: events && isPositionLeveraged(events.originalLeverage) })
+
+  // some borrow queries depend on LL internal cache for expected collateral, reset when new market data arrives
+  useOnChangeCallback(market, () => resetBorrowMoreExpectedCollateral(params))
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },

@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
 import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
-import { setTimeoutInterval } from '@ui-kit/utils/timers'
+import { IncreasingLengthOptions, useIncreasingLength } from '@ui-kit/hooks/useIncreasingLength'
 import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
 
 const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (
@@ -24,21 +23,14 @@ const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boo
 export const SkeletonRows = <T extends TableItem>({
   table,
   shouldStickFirstColumn,
-  initialLength = 3,
-  increaseEveryMs = 5000,
-  maxLength = 10,
+  initialLength,
+  increaseEveryMs,
+  maxLength,
 }: {
   table: TanstackTable<T>
   shouldStickFirstColumn: boolean
-  initialLength?: number
-  increaseEveryMs?: number // after this time, the length will increase by 1
-  maxLength?: number // maximum length of the skeleton rows
-}) => {
-  const [length, setLength] = useState(initialLength)
-  useEffect(
-    () => setTimeoutInterval(() => setLength(prevLength => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
-    [increaseEveryMs, maxLength],
-  )
+} & IncreasingLengthOptions) => {
+  const length = useIncreasingLength({ initialLength, increaseEveryMs, maxLength })
 
   return (
     <>

@@ -8,6 +8,7 @@ import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
 import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
+import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
@@ -22,8 +23,10 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Link as TanstackLink } from '@tanstack/react-router'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -40,6 +43,9 @@ const { Spacing } = SizesAndSpaces
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
+/** Prices API tells us which pools methods are available, of which the following one is a requisite for refuels */
+const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donation_shares')
+
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
@@ -54,23 +60,15 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { pool } = poolDataCacheOrApi
 
-  const poolMaxSlippage = useUserProfileStore(state => state.maxSlippage[chainIdPoolId])
-  const poolTypeMaxSlippage = useUserProfileStore(state => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
-    {
-      chainId: rChainId,
-      poolId: poolData?.pool.id,
-    },
+    { chainId: rChainId, poolId: poolData?.pool.id },
     !!curve,
   )
 
   const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors(
-    {
-      chainId: rChainId,
-      poolId: poolData?.pool.id,
-      userAddress: signerAddress,
-    },
+    { chainId: rChainId, poolId: poolData?.pool.id, userAddress: signerAddress },
     !!curve,
   )
 
@@ -81,13 +79,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address as Address
   const shouldFetchSnapshots = pricesApi && !!poolAddress
-  const { data: snapshots } = usePoolSnapshots(
-    {
-      chain: networkId as Chain,
-      poolAddress,
-    },
-    shouldFetchSnapshots,
-  )
+  const { data: snapshots } = usePoolSnapshots({ chain: networkId as Chain, poolAddress }, shouldFetchSnapshots)
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
@@ -102,11 +94,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     [signerAddress, pricesApi, pricesApiPoolData, snapshotData],
   )
   const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTab>('pool')
-
-  const maxSlippage = useMemo(() => {
-    const poolTypeDefaultMaxSlippage = pool.isCrypto ? '0.1' : '0.03'
-    return poolMaxSlippage || poolTypeMaxSlippage || poolTypeDefaultMaxSlippage
-  }, [pool.isCrypto, poolMaxSlippage, poolTypeMaxSlippage])
 
   usePageVisibleInterval(() => {
     if (curve && poolData) {
@@ -186,7 +173,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <FormMargins>
             <TabsSwitcher
               variant="contained"
-              value={!rFormType ? 'deposit' : rFormType}
+              value={rFormType || 'deposit'}
               onChange={key => toggleForm(key as TransferFormType)}
               options={tabs}
               testIdPrefix="pool-form-tab"
@@ -197,7 +184,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               ) : (
                 <Swap
                   {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}
@@ -207,7 +193,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             ) : rFormType === 'deposit' ? (
               <Deposit
                 {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
                 blockchainId={networkId}
                 hasDepositAndStake={hasDepositAndStake}
                 poolAlert={poolAlert}
@@ -218,7 +203,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             ) : rFormType === 'withdraw' ? (
               <Withdraw
                 {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
                 blockchainId={networkId}
                 poolAlert={poolAlert}
                 maxSlippage={maxSlippage}
@@ -240,13 +224,26 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         )}
         <Stack>
-          <TabsSwitcher
-            variant="contained"
-            value={poolInfoTab}
-            onChange={setPoolInfoTab}
-            options={poolInfoTabs}
-            testIdPrefix="pool-info-tab"
-          />
+          <Stack direction="row">
+            <TabsSwitcher
+              variant="contained"
+              value={poolInfoTab}
+              onChange={setPoolInfoTab}
+              options={poolInfoTabs}
+              testIdPrefix="pool-info-tab"
+            />
+            {hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
+              <Button
+                component={TanstackLink}
+                to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
+                variant="inline"
+                color="ghost"
+                sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
+              >
+                {t`Manage pool`}
+              </Button>
+            )}
+          </Stack>
           {poolInfoTab === 'user' && (
             <MySharesStats
               curve={curve}

@@ -1,28 +1,31 @@
-import { max, sum } from 'lodash'
+import { sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, type TokenType } from '@cy/support/generators'
+import { oneOf, shuffle } from '@cy/support/generators'
 import {
   closeDrawer,
-  closeSlider,
   expandFirstRowOnMobile,
+  getTableCellAssets,
   openDrawer,
-  openFilters,
   withFilterChips,
+  withFilters,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
-import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import {
-  assertInViewport,
-  assertNotInViewport,
-  LOAD_TIMEOUT,
-  oneDesktopViewport,
-  oneMobileViewport,
-  oneViewport,
-  RETRY_IN_CI,
-} from '@cy/support/ui'
-import { range, recordValues, repeat } from '@primitives/objects.utils'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+  checkChainSelection,
+  checkCoinSelection,
+  checkLineGraphColor,
+  checkTableFilterButtonGroupSelection,
+  enableGraphColumn,
+  filterByMarketType,
+  getOneColumnMedianValue,
+  typeFilterInput,
+  visitAndWait,
+} from '@cy/support/helpers/llamalend/llamalend-markets'
+import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { assertInViewport, assertNotInViewport, LOAD_TIMEOUT, oneDesktopViewport, oneViewport } from '@cy/support/ui'
+import { assert, notFalsy, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
+import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const sfrxEthMarket = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
@@ -32,43 +35,88 @@ const testCases = [oneViewport()] as const
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
-    const itMobileOnly = breakpoint === 'mobile' ? it : it.skip
+    const itSkipOnMobile = breakpoint === 'mobile' ? it.skip : it
 
     beforeEach(() => {
       ;({ vaultData } = setupLlamalendListMocks())
       visitAndWait([width, height])
     })
 
-    it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
-      if (breakpoint !== 'mobile') cy.viewport(oneMobileViewport()[0], height)
-      const mobile = 'mobile' // todo: filter by rewards currently only visible on mobile
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-      withFilterChips(mobile, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      })
-      expandFirstRowOnMobile(mobile)
-      cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-      withFilterChips(mobile, () => {
-        cy.get(`[data-testid="chip-rewards"]`).click()
-        return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
-      })
+    it(`should copy the market address`, () => {
+      expandFirstRowOnMobile(breakpoint)
+      cy.get(
+        notFalsy(
+          breakpoint === 'mobile' && `[data-testid="data-table-expansion-row"]`,
+          `[data-testid^="copy-market-address"]`,
+        ).join(' '),
+      )
+        .first()
+        // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
+        .click({ force: breakpoint === 'desktop' })
+      cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
+    })
+
+    it(`should navigate to the market details`, () => {
+      const [type, urlRegex] = oneOf(
+        [LlamaMarketType.Mint, /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
+        [LlamaMarketType.Lend, /\/lend\/\w+\/markets\/.+\/?$/],
+      )
+      filterByMarketType([width, height], type)
+      cy.get(`[data-testid^="market-link-"]`).first().click()
+      if (breakpoint === 'mobile') {
+        cy.get(`[data-testid^="llama-market-go-to-market"]`).click()
+      }
+      cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
 
     it('should have sticky headers', () => {
       cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
       cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
       cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
-      cy.get(`[data-testid^="market-type-"]`).should('be.visible') // wait for the table to render
+      cy.get(`[data-testid^="badge-market-type-"]`).should('be.visible') // wait for the table to render
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
-        mobile: [90],
-        tablet: [100],
-        desktop: [100],
+        mobile: [48],
+        tablet: [56],
+        desktop: [56],
       }[breakpoint]
       cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
       cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
+    })
+
+    it('should hide columns', () => {
+      if (breakpoint == 'mobile') {
+        // mobile viewports do not have this feature
+        const [width, height] = oneDesktopViewport()
+        cy.viewport(width, height)
+      }
+      const { toggle, element } = oneOf(
+        { toggle: 'tvl', element: 'data-table-header-tvl' },
+        { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
+        { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
+      )
+      cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
+      cy.get(`[data-testid="${element}"]`).should('be.visible')
+      cy.get(`[data-testid="btn-visibility-settings"]`).click()
+      cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
+      cy.get(`[data-testid="${element}"]`).should('not.exist')
+    })
+
+    it('should display Borrow APR by default', () => {
+      const borrowColumnId = LlamaMarketColumnId.BorrowRate
+
+      if (breakpoint === 'mobile') {
+        // On mobile, expand the first row and check the metric is visible in the expanded panel
+        expandFirstRowOnMobile(breakpoint)
+        cy.get('[data-testid="data-table-expansion-row"]').contains('Borrow APR').should('be.visible')
+        cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
+      } else {
+        // On tablet/desktop, the column header and cell should be visible by default
+        cy.get(`[data-testid="data-table-header-${borrowColumnId}"]`).should('be.visible')
+        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().should('be.visible')
+        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().contains('%')
+      }
     })
 
     it('should sort', () => {
@@ -78,9 +126,9 @@ testCases.forEach(([width, height, breakpoint]) => {
         .find(`[data-testid="market-link-${HighTVLAddress}"]`)
         .should('exist')
       if (breakpoint == 'mobile') {
-        withFilterChips(breakpoint, () => {
-          cy.get(`[data-testid="chip-lend"]`).click()
-          return cy.get(`[data-testid="market-type-mint"]`).should('not.exist')
+        withFilters(breakpoint, () => {
+          cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
+          return cy.get(`[data-testid="badge-market-type-${LlamaMarketType.Mint}"]`).should('not.exist')
         })
         cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
         openDrawer(breakpoint, 'sort')
@@ -144,82 +192,15 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
     })
 
-    it('persists search filter across reload', () => {
+    it('should persists search filter across reload', () => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
       cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
-      cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
+      getTableCellAssets().first().contains('wstETH')
     })
 
-    itMobileOnly('should allow filtering by using a slider', () => {
-      const [columnId, initialFilterText] = oneOf(
-        [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
-        [LlamaMarketColumnId.Tvl, '$0 -'],
-        [LlamaMarketColumnId.UtilizationPercent, '0% -'],
-      )
-      // Keep the viewport stable for slider width.
-      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
-      cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        if (breakpoint === 'mobile') {
-          cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        }
-        openFilters(breakpoint)
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
-        cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
-
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-        cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
-        cy.get(`@slider`)
-          .then(
-            (
-              $el, // With log slider a click from the left is not enough to filter
-            ) =>
-              // Click 20px from the right edge and vertically centered
-              [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
-          )
-          .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
-        closeSlider(breakpoint)
-        cy.get(`[data-testid^="data-table-row"]`, LOAD_TIMEOUT).should('have.length.below', length)
-      })
-    })
-
-    itMobileOnly(`should allow filtering by using a slider input`, () => {
-      const [columnId, getFilterValue] = oneOf(
-        ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
-        ['tvl', () => getMaxTvl(vaultData) / 10],
-        ['utilizationPercent', () => 90],
-      )
-
-      cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-        openFilters(breakpoint)
-
-        // open the chosen filter
-        cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-        cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
-
-        // Always type into the right input when the slider has a range.
-        cy.get(`@slider`).closest('[role="presentation"]').find('input[type="text"]').last().as('inputs')
-
-        cy.get('@inputs').click()
-        cy.get('@inputs').type('{selectAll}')
-        cy.get('@inputs').type(`${getFilterValue()}`)
-        cy.get('@inputs').blur()
-
-        closeSlider(breakpoint)
-        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
-        cy.url().should('include', `${columnId}=`)
-      })
-    })
-    // todo: filter by chain
-
-    it(`should allow filtering by token`, () => {
-      openFilters(breakpoint)
-      checkCoinSelection('collateral')
-      checkCoinSelection('borrowed')
-    })
-
-    it('should allow filtering favorites', { scrollBehavior: false }, () => {
+    /** Filter chip not yet available on mobile */
+    itSkipOnMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
       openDrawer(breakpoint, 'filter')
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -233,133 +214,112 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
-    // todo: test reset fiter button yet to be implemented
+    it('should allow filtering by chain', () => {
+      const chains = objectKeys(vaultData)
+      const chain = oneOf(...chains)
+      withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
+      checkChainSelection(chain)
 
-    it(`should copy the market address`, RETRY_IN_CI, () => {
-      expandFirstRowOnMobile(breakpoint)
-      // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
-      range(2).forEach(() =>
-        breakpoint === 'desktop'
-          ? // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
-            cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
-          : cy.get(`[data-testid^="copy-market-address"]:visible`).first().click(),
+      // filter by multiple chains at the same time
+      const otherChain = oneOf(...chains.filter(c => c !== chain))
+      withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
+      checkChainSelection(chain, otherChain)
+    })
+
+    it(`should allow filtering by token`, () => {
+      checkCoinSelection(breakpoint, vaultData, 'collateral')
+      checkCoinSelection(breakpoint, vaultData, 'borrowed')
+    })
+
+    it('should allow filtering by using a range inputs', () => {
+      const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [
+        LlamaMarketColumnId.BorrowRate,
+        LlamaMarketColumnId.Tvl,
+        LlamaMarketColumnId.LiquidityUsd,
+        LlamaMarketColumnId.UtilizationPercent,
+      ])
+      const bound = oneOf('min', 'max')
+      cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
+        withFilters(breakpoint, () => typeFilterInput(`range-filter-${columnId}-${bound}`, medianValue).blur())
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+        cy.url().should('include', `${columnId}=`)
+      })
+    })
+
+    it(`should allow filtering by using a slider and input`, () => {
+      // Keep the viewport stable for slider width.
+      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
+      const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [LlamaMarketColumnId.MaxLtv])
+      const bound = oneOf('min', 'max')
+
+      // test the slider's input
+      cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
+        withFilters(breakpoint, () => typeFilterInput(`slider-input-${columnId}-${bound}`, medianValue).blur())
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+        cy.url().should('include', `${columnId}=`)
+
+        // reset the filters
+        withFilters(breakpoint, () => cy.get(`[data-testid="btn-reset-filters"]`).click())
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
+
+        // test the slider
+        withFilters(breakpoint, () =>
+          cy
+            .get(`[data-testid="slider-${columnId}"]`)
+            .as('slider')
+            .then($el => {
+              const sliderWidth = assert($el.width(), "The slider's width was not found")
+              const sliderHeight = assert($el.height(), "The slider's height was not found")
+              // we click ~75% percent of the slider range (from the left) and vertically centered
+              return cy.get(`@slider`).click(sliderWidth * (3 / 4), sliderHeight / 2, { waitForAnimations: true })
+            }),
+        )
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+        cy.url().should('include', `${columnId}=`)
+      })
+    })
+
+    it(`should allow filtering by market type`, () => {
+      const marketTypes = shuffle(...recordValues(LlamaMarketType))
+      marketTypes.forEach(type =>
+        checkTableFilterButtonGroupSelection(breakpoint, type, 'type', () => {
+          getTableCellAssets().find(`[data-testid="badge-market-type-${type}"]`).should('be.visible')
+        }),
       )
-      cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
     })
 
-    it(`should navigate to market details`, () => {
-      const [type, urlRegex] = oneOf(
-        [LlamaMarketType.Mint, /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
-        [LlamaMarketType.Lend, /\/lend\/\w+\/markets\/.+\/?$/],
+    it(`should allow filtering by market version`, () => {
+      const marketVersions = shuffle(...recordValues(LlamaMarketVersion))
+      marketVersions.forEach(version =>
+        checkTableFilterButtonGroupSelection(breakpoint, version, 'version', () => {
+          getTableCellAssets().find(`[data-testid="badge-market-version-${version}"]`).should('be.visible')
+        }),
       )
-      filterByMarketType([width, height], type)
-      cy.get(`[data-testid^="market-link-"]`).first().click()
-      if (breakpoint === 'mobile') {
-        cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
-      }
-      cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
 
-    it('should hide columns', () => {
-      if (breakpoint == 'mobile') {
-        // mobile viewports do not have this feature
-        const [width, height] = oneDesktopViewport()
-        cy.viewport(width, height)
-      }
-      const { toggle, element } = oneOf(
-        { toggle: 'tvl', element: 'data-table-header-tvl' },
-        { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
-        { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
-      )
-      cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
-      cy.get(`[data-testid="${element}"]`).should('be.visible')
-      cy.get(`[data-testid="btn-visibility-settings"]`).click()
-      cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
-      cy.get(`[data-testid="${element}"]`).should('not.exist')
+    it(`should reset filters when pressing the reset button`, () => {
+      withFilters(breakpoint, () => cy.get(`[data-testid="btn-reset-filters"]`).should('be.disabled'))
+      visitAndWait([width, height], `/llamalend/ethereum/markets?isFavorite=yes`)
+      cy.get(`[data-testid="table-empty-row"]`).should('exist')
+      withFilters(breakpoint, () => cy.get(`[data-testid="btn-reset-filters"]`).click())
+      cy.url().should('not.include', 'isFavorite=')
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
 
-    it('should display Borrow APR by default', () => {
-      const borrowColumnId = LlamaMarketColumnId.BorrowRate
+    /** Filters collapsible is not shown on mobile */
+    itSkipOnMobile('should show active filters in the collapsible', () => {
+      withFilters(breakpoint, () => {
+        cy.get(`[data-testid="table-filter-btn-market-version-${LlamaMarketVersion.v1}"]`).click()
+        cy.get(`[data-testid="table-filter-btn-market-type-${LlamaMarketType.Lend}"]`).click()
+        return cy.get(`[data-testid="chip-chain-ethereum"]`).click()
+      })
 
-      if (breakpoint === 'mobile') {
-        // On mobile, expand the first row and check the metric is visible in the expanded panel
-        expandFirstRowOnMobile(breakpoint)
-        cy.get('[data-testid="data-table-expansion-row"]').contains('Borrow APR').should('be.visible')
-        cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
-      } else {
-        // On tablet/desktop, the column header and cell should be visible by default
-        cy.get(`[data-testid="data-table-header-${borrowColumnId}"]`).should('be.visible')
-        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().should('be.visible')
-        cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().contains('%')
-      }
+      cy.get(`[data-testid="table-filters-collapsible"]`).as('collapsible')
+      cy.get('@collapsible').find('[data-testid^="table-filters-collapsible-active-filter-"]').should('have.length', 3)
+
+      cy.get(`[data-testid="table-filters-collapsible-reset-btn"]`).click()
+      cy.get('@collapsible').should('not.be.visible')
+      cy.url().should('not.include', `?`)
     })
-
-    function checkLineGraphColor(type: MarketRateType, color: string) {
-      // the graphs are lazy loaded, so we need to scroll to them first before checking the color
-      cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
-      cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
-    }
-
-    function checkCoinSelection(type: TokenType) {
-      const symbol = oneOf(...vaultData.ethereum.data.map(d => d[`${type}_token`].symbol))
-      const columnId = `assets_${type}_symbol`
-      cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-      cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
-      cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
-      cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
-      cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
-      cy.get('body').click(0, 0) // close popover
-
-      cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
-      cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
-
-      cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-      cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
-      cy.url().should('not.include', `assets_${type}_symbol`)
-    }
   })
 })
-
-function visitAndWait(
-  [width, height]: [number, number],
-  path = '/llamalend/ethereum/markets/',
-  options?: Partial<Cypress.VisitOptions>,
-) {
-  cy.viewport(width, height)
-  cy.visit(path, { ...LOAD_TIMEOUT, ...options })
-  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
-}
-
-function enableGraphColumn() {
-  cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('not.exist')
-  cy.get(`[data-testid="btn-visibility-settings"]`).click()
-  cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
-  cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('exist')
-  cy.get('body').click(0, 0) // close popover
-}
-
-const getMaxLiquidity = (vaultData: Record<Chain, GetMarketsResponse>) =>
-  max(
-    recordValues(vaultData).flatMap(({ data }) =>
-      data.map(({ total_assets_usd, total_debt_usd }) => total_assets_usd - total_debt_usd),
-    ),
-  ) ?? 0
-
-const getMaxTvl = (vaultData: Record<Chain, GetMarketsResponse>) =>
-  max(
-    recordValues(vaultData).flatMap(({ data }) =>
-      data.map(
-        ({ borrowed_balance_usd, collateral_balance_usd, total_assets_usd, total_debt_usd }) =>
-          borrowed_balance_usd + collateral_balance_usd + total_assets_usd - total_debt_usd,
-      ),
-    ),
-  ) ?? 0
-
-// no more chips to filter by market type for the new table
-const filterByMarketType = (size: [number, number], marketType: LlamaMarketType = LlamaMarketType.Lend) => {
-  visitAndWait(size, `/llamalend/ethereum/markets?type=${marketType}`)
-  cy.url().should('include', `type=${marketType}`)
-  cy.get(
-    `[data-testid="market-type-${(marketType === LlamaMarketType.Lend ? LlamaMarketType.Mint : LlamaMarketType.Lend).toLowerCase()}"]`,
-  ).should('not.exist')
-}

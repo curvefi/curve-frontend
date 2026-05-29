@@ -13,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type TableItem, type TanstackTable } from './data-table.utils'
+import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
@@ -73,9 +73,9 @@ export const DataTable = <T extends TableItem>({
   emptyState,
   children,
   isLoading,
+  size = 'small',
   maxHeight,
-  rowLimit,
-  viewAllLabel,
+  defaultVisibleRows,
   disableStickyHeader,
   shouldStickFirstColumn = false,
   hideHeader = false,
@@ -86,18 +86,20 @@ export const DataTable = <T extends TableItem>({
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   isLoading: boolean
+  size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
-  rowLimit?: number
-  viewAllLabel?: string
+  // maximum number of visible rows and the button's label to expand them all
+  defaultVisibleRows?: { max: number; buttonLabel: string }
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
+  const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
-  const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
+  const visibleRows = isLimited ? rows.slice(0, rowLimit) : rows
   const showViewAllButton = isLimited && rows.length > rowLimit!
   // pagination should bw shown if no rows limit and if needed
   const showPagination = !isLimited && table.getPageCount() > 1
@@ -131,11 +133,12 @@ export const DataTable = <T extends TableItem>({
             {children && <FilterRow table={table}>{children}</FilterRow>}
 
             {headerGroups.map(headerGroup => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
+              <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}
                     header={header}
+                    size={size}
                     isSticky={!index && shouldStickFirstColumn}
                     width={`calc(100% / ${columnCount})`}
                   />

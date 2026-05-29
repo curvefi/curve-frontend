@@ -18,11 +18,9 @@ const { Spacing } = SizesAndSpaces
  * A component that wraps a table and provides a title, subtitle, and filter controls.
  */
 export const TableFilters = <ColumnIds extends string>({
-  header,
   testIdPrefix,
   visibilityGroups,
   toggleVisibility,
-  popoverFilters,
   collapsibleFilters,
   chips,
   filterChip,
@@ -31,11 +29,10 @@ export const TableFilters = <ColumnIds extends string>({
   disableSearchAutoFocus,
   onSearch,
 }: {
-  header: ReactNode
   testIdPrefix: string
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
-  popoverFilters?: ReactNode // filters shown in the popover menu
+  filtersOverlay?: ReactNode // filters shown in the filter overlay (popover or drawer for mobile)
   // collabsible bar that displays the active filters for desktop and tablet only
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
@@ -53,7 +50,6 @@ export const TableFilters = <ColumnIds extends string>({
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-      {header}
       <Grid
         container
         spacing={Spacing.lg}
@@ -102,7 +98,6 @@ export const TableFilters = <ColumnIds extends string>({
           onClose={closeVisibilitySettings}
         />
       )}
-      {popoverFilters}
     </Stack>
   )
 }

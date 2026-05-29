@@ -1,28 +1,26 @@
 import { useRef, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
-import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { TableButton } from '@ui-kit/shared/ui/DataTable/TableButton'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableFiltersHeader } from '@ui-kit/shared/ui/DataTable/TableFiltersHeader'
+import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
-import { FilterChip } from './chips/FilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { LlamaTableFilters } from './filters/LlamaTableFilters'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
-import { LlamaTableFiltersPopover } from './filters/LlamaTableFiltersPopover'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -40,7 +38,7 @@ export const LlamaMarketsTable = ({
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
   const isError = !!error
-  const [filterPopoverOpen, , closeFilterPopover, toggleFilterPopover] = useSwitch(false)
+  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
@@ -71,68 +69,54 @@ export const LlamaMarketsTable = ({
   const hasActiveFilters = !!table.getState().columnFilters.length
 
   return (
-    <DataTable
-      table={table}
-      emptyState={
-        <EmptyStateRow table={table}>
-          <EmptyStateCard
-            title={isError ? t`Could not load markets` : t`No markets found`}
-            subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
-            action={
-              <Button size="small" onClick={isError ? onReload : resetFilters}>
-                {isError ? t`Reload` : t`Show All Markets`}
-              </Button>
-            }
-          />
-        </EmptyStateRow>
-      }
-      expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      isLoading={isLoading}
-    >
-      <TableFilters<LlamaMarketColumnId>
-        testIdPrefix={LOCAL_STORAGE_KEY}
-        visibilityGroups={columnSettings}
-        toggleVisibility={toggleVisibility}
-        disableSearchAutoFocus
-        searchText={globalFilter}
-        onSearch={setGlobalFilter}
-        header={
-          <TableFiltersHeader
-            title={t`Markets`}
-            rightChildren={<TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />}
-          />
+    <Stack>
+      <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
+      <DataTable
+        table={table}
+        emptyState={
+          <EmptyStateRow table={table}>
+            <EmptyStateCard
+              title={isError ? t`Could not load markets` : t`No markets found`}
+              subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
+              action={
+                <Button size="small" onClick={isError ? onReload : resetFilters}>
+                  {isError ? t`Reload` : t`Show All Markets`}
+                </Button>
+              }
+            />
+          </EmptyStateRow>
         }
-        collapsibleFilters={{
-          collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
-          hasActiveFilters,
-        }}
-        popoverFilters={
-          <LlamaTableFiltersPopover
-            hasActiveFilters={hasActiveFilters}
-            open={filterPopoverOpen}
-            onClose={closeFilterPopover}
-            anchorRef={filterChipRef}
-            marketsQuery={mapQuery(tableQuery, d => d.markets)}
-            resetFilters={resetFilters}
-            {...filterProps}
-          />
-        }
-        filterChip={
-          <FilterChip
-            filterChipRef={filterChipRef}
-            filterPopoverOpen={filterPopoverOpen}
-            toggleFilterPopover={toggleFilterPopover}
-            hiddenCount={getHiddenCount(table)}
-            resetFilters={resetFilters}
-            hasFavorites={hasFavorites}
-            data={data}
-            {...filterProps}
-          />
-        }
-        sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
-        chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
-      />
-    </DataTable>
+        expandedPanel={LlamaMarketExpandedPanel}
+        shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
+        isLoading={isLoading}
+      >
+        <TableFilters<LlamaMarketColumnId>
+          testIdPrefix={LOCAL_STORAGE_KEY}
+          visibilityGroups={columnSettings}
+          toggleVisibility={toggleVisibility}
+          disableSearchAutoFocus
+          searchText={globalFilter}
+          onSearch={setGlobalFilter}
+          collapsibleFilters={{
+            collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
+            hasActiveFilters,
+          }}
+          filterChip={
+            <LlamaTableFilters
+              popoverFilterChipRef={filterChipRef}
+              hasActiveFilters={hasActiveFilters}
+              open={filtersOpen}
+              setOpen={setFiltersOpen}
+              anchorRef={filterChipRef}
+              marketsQuery={mapQuery(tableQuery, d => d.markets)}
+              resetFilters={resetFilters}
+              {...filterProps}
+            />
+          }
+          sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
+          chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
+        />
+      </DataTable>
+    </Stack>
   )
 }

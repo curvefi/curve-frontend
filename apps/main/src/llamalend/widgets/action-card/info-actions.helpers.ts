@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { QueryProp } from '@ui-kit/types/util'
@@ -35,4 +35,4 @@ export const combineActionInfoState = (...queries: (QueryProp<unknown> | undefin
 export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
-) => (value?.data != null && comparedValue != null ? !new BigNumber(value.data).isEqualTo(comparedValue) : undefined)
+) => maybes([value?.data, comparedValue], ([data, comparedValue]) => !new BigNumber(data).isEqualTo(comparedValue))

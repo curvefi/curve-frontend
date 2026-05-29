@@ -23,6 +23,7 @@ import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -92,8 +93,6 @@ export const QuickSwap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const cryptoMaxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
-  const stableMaxSlippage = useUserProfileStore(state => state.maxSlippage.stable)
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
     !userAddress,
@@ -102,10 +101,8 @@ export const QuickSwap = ({
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
-  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
-  const slippageImpact = routesAndOutput
-    ? getSlippageImpact({ maxSlippage: storeMaxSlippage, ...routesAndOutput })
-    : null
+  const storeMaxSlippage = useUserProfileStore(state => state.maxSlippage[isStableswapRoute ? 'stable' : 'crypto'])
+  const slippageImpact = maybe(routesAndOutput, r => getSlippageImpact({ maxSlippage: storeMaxSlippage, ...r }))
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -396,8 +393,7 @@ export const QuickSwap = ({
     if (isReady) updateFormValues({}, false, storeMaxSlippage)
     // Intentionally depend on raw profile slippage values, not storeMaxSlippage.
     // storeMaxSlippage also changes when route metadata resolves, which can trigger a slippage/activeKey refresh loop.
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [cryptoMaxSlippage, stableMaxSlippage])
+  }, [storeMaxSlippage, isReady, updateFormValues])
 
   // pageVisible re-fetch data
   useEffect(() => {
@@ -558,7 +554,8 @@ export const QuickSwap = ({
         <Stack>
           <SlippageToleranceActionInfo
             maxSlippage={storeMaxSlippage}
-            stateKey={isStableswapRoute ? 'stable' : 'crypto'}
+            type={['stable', 'crypto']}
+            active={isStableswapRoute ? 'stable' : 'crypto'}
             size="small"
           />
           <ActionInfo
