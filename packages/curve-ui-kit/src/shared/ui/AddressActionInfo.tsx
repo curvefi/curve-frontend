@@ -1,8 +1,11 @@
 import { ReactNode } from 'react'
 import { Typography } from '@mui/material'
+import { maybe } from '@primitives/objects.utils'
 import { BaseConfig, scanAddressPath } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '../../utils'
 import { ActionInfo } from './ActionInfo'
+import { ExternalLink } from './ExternalLink'
 
 interface AddressActionInfoProps {
   network: BaseConfig | undefined
@@ -20,12 +23,14 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
       <Typography variant="bodyMBold">{shortenAddress(address)}</Typography>
     }
     copyValue={address}
+    valueTooltip={maybe(address && scanAddressPath(network, address), link => (
+      <ExternalLink href={link} label={t`View on explorer`} />
+    ))}
     sx={{
       alignItems: 'center',
       ...(isBorderBottom && {
         borderBottom: t => `1px solid ${t.palette.divider}`,
       }),
     }}
-    link={network && address ? scanAddressPath(network, address) : undefined}
   />
 )
