@@ -5,6 +5,7 @@ import type { SxProps } from '@mui/system'
 import { type Column, flexRender, type Header } from '@tanstack/react-table'
 import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import {
   DataTableHeaderCellPaddingBlockEnd,
@@ -53,7 +54,7 @@ function useHeaderSx<T extends TableItem>({
         left: 0,
         zIndex: (t: Theme) => t.zIndex.tableHeaderStickyColumn,
         backgroundColor: (t: Theme) => t.design.Table.Header.Fill,
-        borderRight: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
+        borderRight: borderStyle,
       }),
       width,
       minWidth: Sizing['3xl'],

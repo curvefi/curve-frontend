@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import Typography from '@mui/material/Typography'
+import { borderStyle } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 export const MenuSectionHeader = ({ children }: { children: ReactNode }) => (
@@ -13,7 +14,7 @@ export const MenuSectionHeader = ({ children }: { children: ReactNode }) => (
       paddingBlockEnd: SizesAndSpaces.Spacing.xs,
       height: SizesAndSpaces.ButtonSize.sm,
       alignContent: 'end',
-      borderBottom: `1px solid ${t.design.Layer[1].Outline}`,
+      borderBottom: borderStyle(t),
     })}
   >
     {children}
