@@ -27,7 +27,6 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralAdd.activeKey)

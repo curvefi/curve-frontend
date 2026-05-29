@@ -43,7 +43,6 @@ export const LoanIncrease = ({
   market: llamma,
 }: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
   const llammaId = llamma?.id ?? ''
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanIncrease.activeKey)

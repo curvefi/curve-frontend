@@ -74,7 +74,6 @@ export const QuickSwap = ({
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
 }) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)

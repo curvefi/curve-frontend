@@ -27,7 +27,6 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'withdraw'
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.vaultWithdrawRedeem.activeKey)

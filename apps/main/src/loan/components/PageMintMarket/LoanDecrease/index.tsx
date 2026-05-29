@@ -42,7 +42,6 @@ export const LoanDecrease = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
   const push = useNavigate()
 

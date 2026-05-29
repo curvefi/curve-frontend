@@ -22,7 +22,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const formStatus = useStore(state => state.vaultClaim.formStatus)

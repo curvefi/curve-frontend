@@ -30,7 +30,6 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
   const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 

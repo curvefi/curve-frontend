@@ -47,7 +47,6 @@ export const LoanBorrowMore = ({
   userActiveKey,
   isLeverage = false,
 }: LoanBorrowMoreProps) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
   const activeKey = useStore(state => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore(state => state.loanBorrowMore.activeKeyMax)

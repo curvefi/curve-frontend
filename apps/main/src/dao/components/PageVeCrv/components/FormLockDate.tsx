@@ -24,7 +24,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)

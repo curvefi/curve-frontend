@@ -48,7 +48,6 @@ export const LoanRepay = ({
   userActiveKey,
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
   const push = useNavigate()
   const activeKey = useStore(state => state.loanRepay.activeKey)

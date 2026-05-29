@@ -62,7 +62,6 @@ export const ButtonMenu = <T extends string>({
   onOpen,
   onClose,
 }: Props<T>) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const anchorRef = useRef<HTMLDivElement>(null)
   const [stackWidth] = useResizeObserver(anchorRef) ?? []
   const isDisabled = disabled || executing != false

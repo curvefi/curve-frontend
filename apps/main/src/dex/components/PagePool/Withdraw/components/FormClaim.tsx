@@ -24,7 +24,6 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.

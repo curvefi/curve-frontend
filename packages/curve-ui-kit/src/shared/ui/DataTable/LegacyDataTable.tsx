@@ -54,7 +54,6 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const lastResultCountRef = useRef<number>(resultCount)
   useEffect(() => {
     // Skip for manual pagination - data is expected to change on page change

@@ -34,7 +34,6 @@ export const FormVecrv = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const dashboardVecrvInfo = useStore(state => state.dashboard.vecrvInfo[activeKey])

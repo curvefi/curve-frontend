@@ -44,7 +44,6 @@ export const SelectTokenButton = ({
   onSelectionChange,
 }: Props) => {
   const { data: network } = useNetworkByChain({ chainId })
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const visibleTokensRef = useRef<Record<string, boolean>>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)

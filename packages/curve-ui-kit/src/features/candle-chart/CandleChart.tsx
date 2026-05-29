@@ -131,16 +131,13 @@ export const CandleChart = ({
     top: null,
     bottom: null,
   })
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const historicalRangeSeriesRef = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const hasAppliedInitialOffsetRef = useRef(false)
   const ohlcDataRef = useRef(ohlcData)
 
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isMountedRef = useRef(true)
 
   const [isUnmounting, setIsUnmounting] = useState(false)
@@ -212,7 +209,6 @@ export const CandleChart = ({
   )
 
   // Debounced update of wrapper dimensions
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const debouncedUpdateDimensionsRef = useRef(
     lodash.debounce(() => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
@@ -259,7 +255,6 @@ export const CandleChart = ({
     ohlcDataRef.current = ohlcData
   }, [ohlcData])
 
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const debouncedFetchMoreChartDataRef = useRef(
     lodash.debounce(
       () => {

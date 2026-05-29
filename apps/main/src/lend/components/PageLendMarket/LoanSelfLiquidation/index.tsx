@@ -38,7 +38,6 @@ export const LoanSelfLiquidation = ({
   userActiveKey,
   params,
 }: PageContentProps<MarketUrlParams>) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
   const formEstGas = useStore(state => state.loanSelfLiquidation.formEstGas)
   const formStatus = useStore(state => state.loanSelfLiquidation.formStatus)

@@ -41,7 +41,6 @@ export const LoanCollateralRemove = ({
   market,
   userActiveKey,
 }: PageContentProps) => {
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralRemove.activeKey)

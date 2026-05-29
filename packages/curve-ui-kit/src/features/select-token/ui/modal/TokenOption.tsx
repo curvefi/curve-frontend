@@ -35,7 +35,6 @@ export const TokenOption = ({
 }: Option & TokenOptionCallbacks & TokenOptionsProps) => {
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const menuItemRef = useRef<HTMLLIElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const [primary, secondary, tertiary] = disabled

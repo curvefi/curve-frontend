@@ -137,7 +137,6 @@ export function useUniqueDebounce<T>({
   sanitize?: (value: T) => T
 }) {
   const [value, setValue] = useState<T>(defaultValue)
-  // eslint-disable-next-line @eslint-react/naming-convention-ref-name -- Existing violation before enabling this rule.
   const lastCallbackValueRef = useRef(defaultValue)
 
   useEffect(() => {
