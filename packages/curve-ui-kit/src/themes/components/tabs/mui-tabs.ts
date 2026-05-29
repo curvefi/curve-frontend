@@ -156,8 +156,11 @@ const buildTabStateStylesByVariant = ({ Current, Default, Hover, Inset }: TabVar
 const tabPaddingStyles = ({ blockStart, blockEnd, inlineStart, inlineEnd }: TabPadding) => ({
   ...handleBreakpoints({
     paddingBlockStart: Spacing[blockStart as keyof typeof Spacing] ?? blockStart,
+
     paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
+
     paddingInlineStart: Spacing[inlineStart as keyof typeof Spacing] ?? inlineStart,
+
     paddingInlineEnd: Spacing[inlineEnd as keyof typeof Spacing] ?? inlineEnd,
   }),
 })

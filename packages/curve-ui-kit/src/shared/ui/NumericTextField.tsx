@@ -49,6 +49,7 @@ const sanitize = (value: string, current: string): string => {
   const normalizedValue = value.replace(/,/g, '.')
 
   // If more than one decimal point, return the current value (ignore the change)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   if ((normalizedValue.match(/\./g) || []).length > 1) {
     return current
   }

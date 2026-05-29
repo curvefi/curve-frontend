@@ -5,6 +5,7 @@ import { isPricesApiChain } from '@curvefi/prices-api'
 function isDecimal<T>(value: T, options?: { decimal_digits?: string }): boolean {
   if (typeof value !== 'string') return false
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const decimal_digits = options?.decimal_digits || '1,'
   const blacklist = ['', '-', '+']
 

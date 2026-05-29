@@ -10,11 +10,13 @@ export const hasCrvRewards = (rewards: RewardsApy | undefined) => sum(rewards?.c
 export const useHasPoolRewards = (rewards: RewardsApy | undefined, poolData: PoolListItem) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: poolData.network as Chain,
+
     address: poolData?.pool?.address as Address,
   })
 
   return {
     hasCrv: hasCrvRewards(rewards),
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     hasIncentives: rewards?.other?.length || campaigns.length > 0,
     campaigns,
   }

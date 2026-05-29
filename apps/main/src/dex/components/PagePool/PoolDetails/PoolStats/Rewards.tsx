@@ -34,6 +34,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network.networkId as Chain,
+
     address: poolData.pool.address as Address,
   })
   const { isLite } = network
@@ -124,6 +125,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                       </TokenWrapper>
                     </StyledExternalLink>
 
+                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
                     <StyledIconButton size="small" onClick={() => copyToClipboard(tokenAddress)}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>

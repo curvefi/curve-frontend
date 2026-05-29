@@ -17,6 +17,7 @@ export const LoanFormConnect = ({
   return (
     <>
       {!isLoading(connectState) && !loading && !haveSigner ? (
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         <Button fillWidth size="large" variant="filled" onClick={() => connect()} loading={isLoading(connectState)}>
           {t`Connect Wallet`}
         </Button>

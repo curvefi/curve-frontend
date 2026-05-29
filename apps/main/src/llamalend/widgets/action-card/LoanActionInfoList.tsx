@@ -114,6 +114,7 @@ export const LoanActionInfoList = ({
 
   const debtActionInfo = (
     <>
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
       {(debt || prevDebt) && (
         <ActionInfo
           label={t`Debt`}
@@ -133,6 +134,7 @@ export const LoanActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(rates || prevRates) && (
             <ActionInfo
               label={t`Borrow APR`}
@@ -171,6 +173,7 @@ export const LoanActionInfoList = ({
             size="small"
             testId="borrow-health"
           />
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(loanToValue || prevLoanToValue) && (
             <ActionInfo
               label={
@@ -191,6 +194,7 @@ export const LoanActionInfoList = ({
             oraclePrice={oraclePrice}
             isFullRepay={isFullRepay}
           />
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
@@ -205,6 +209,7 @@ export const LoanActionInfoList = ({
           )}
         </Stack>
         <Stack>
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(collateral || prevCollateral) && (
             <ActionInfo
               label={t`Collateral`}
@@ -222,6 +227,7 @@ export const LoanActionInfoList = ({
 
       {leverageEnabled && (
         <Stack data-testid="borrow-leverage-info-list">
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(prevLeverageValue || leverageValue) && (
             <ActionInfo
               label={t`Leverage`}
@@ -232,6 +238,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(prevLeverageCollateral || leverageCollateral) && (
             <ActionInfo
               label={t`Leverage collateral`}
@@ -246,6 +253,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage-collateral"
             />
           )}
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {(prevLeverageTotalCollateral || leverageTotalCollateral) && (
             <ActionInfo
               label={t`Total collateral`}

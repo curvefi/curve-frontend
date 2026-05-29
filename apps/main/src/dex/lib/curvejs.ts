@@ -66,14 +66,19 @@ const network = {
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
     const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       const resp = await httpFetcher(url)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (resp.success && Object.keys(resp.data.poolDetails).length) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         for (const poolDetail of resp.data.poolDetails) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           failedFetching24hOldVprice[poolDetail.poolAddress.toLowerCase()] = poolDetail.failedFetching24hOldVprice
         }
       }
       return failedFetching24hOldVprice
     } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`, e.message)
       return failedFetching24hOldVprice
     }
@@ -89,6 +94,7 @@ const pool = {
       return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       return { error: getErrorMessage(error, 'error-stats-balances') }
     }
   },
@@ -269,6 +275,7 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-swap-exchange-and-output')
       return resp
     }
@@ -302,6 +309,7 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -322,6 +330,7 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -347,6 +356,7 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-swap')
       return resp
     }
@@ -362,6 +372,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-balance')
       return resp
     }
@@ -374,6 +385,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-bonus')
       return resp
     }
@@ -386,6 +398,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected')
       return resp
     }
@@ -415,6 +428,7 @@ const poolDeposit = {
       void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -428,6 +442,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -450,6 +465,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -464,6 +480,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-bonus')
       return resp
     }
@@ -478,6 +495,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected')
       return resp
     }
@@ -510,6 +528,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -529,6 +548,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -551,6 +571,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -568,6 +589,7 @@ const poolDeposit = {
       void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -581,6 +603,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -594,6 +617,7 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-stake')
       return resp
     }
@@ -639,9 +663,11 @@ const poolSwap = {
       const swapExpected = fulfilledValue(swapExpectedResult) ?? ''
       const swapRequired = fulfilledValue(swapRequiredResult) ?? ''
       if (swapExpectedResult.status === 'rejected') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         resp.error = swapExpectedResult.reason?.reason || 'error-swap-exchange-and-output'
       }
       if (swapRequiredResult.status === 'rejected') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         resp.error = swapRequiredResult.reason?.reason || 'error-swap-exchange-and-output'
       }
 
@@ -683,6 +709,7 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-swap-exchange-and-output')
       return resp
     }
@@ -717,6 +744,7 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -739,6 +767,7 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -763,6 +792,7 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-swap')
       return resp
     }
@@ -781,6 +811,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-expected')
       return resp
     }
@@ -809,6 +840,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -822,6 +854,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -844,6 +877,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-withdraw')
       return resp
     }
@@ -863,6 +897,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected-bonus')
       return resp
     }
@@ -891,6 +926,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -904,6 +940,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -926,6 +963,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-withdraw')
       return resp
     }
@@ -955,6 +993,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected-bonus')
       return resp
     }
@@ -983,6 +1022,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -996,6 +1036,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -1019,6 +1060,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-withdraw')
       return resp
     }
@@ -1034,6 +1076,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1047,6 +1090,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-unstake')
       return resp
     }
@@ -1066,6 +1110,7 @@ const poolWithdraw = {
     const claimableRewards = await p.claimableRewards()
 
     // ClaimableReward[] = [{token: '0x5a98fcbea516cf06857215779fd812ca3bef1b32', symbol: 'LDO', amount: '15.589367306902830498'}]
+
     return claimableRewards.filter(r => {
       if (chainId !== 1) {
         return r.symbol !== 'CRV' && +r.amount > 0
@@ -1094,6 +1139,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-get-claimable')
       return resp
     }
@@ -1107,6 +1153,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-claim')
       return resp
     }
@@ -1120,6 +1167,7 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-claim')
       return resp
     }
@@ -1159,6 +1207,7 @@ const wallet = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-get-claimable')
       return resp
     }
@@ -1252,14 +1301,19 @@ const lockCrv = {
         curve.boosting.getVeCrv([walletAddress]),
         curve.boosting.getVeCrvPct([walletAddress]),
       ])
+
       resp.resp.crv = crv as string
+
       resp.resp.lockedAmountAndUnlockTime = lockedAmountAndUnlockTime as { lockedAmount: string; unlockTime: number }
+
       resp.resp.veCrv = veCrv as string
+
       resp.resp.veCrvPct = veCrvPct as string
 
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-get-locked-crv-info')
       return resp
     }
@@ -1273,6 +1327,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-withdraw-locked-crv')
       return resp
     }
@@ -1288,6 +1343,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-claim-fees')
       return resp
     }

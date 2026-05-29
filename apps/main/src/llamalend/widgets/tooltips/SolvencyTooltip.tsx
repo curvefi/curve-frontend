@@ -16,6 +16,7 @@ const descriptions: Record<LlamaMarketType, string[]> = {
 export const SolvencyTooltip = ({ marketType }: { marketType: LlamaMarketType }) => (
   <TooltipWrapper>
     {descriptions[marketType].map((description, index) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <TooltipDescription key={`${marketType}-${index}`} text={description} />
     ))}
   </TooltipWrapper>

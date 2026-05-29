@@ -33,6 +33,7 @@ export function usePoolListVisibilitySettings(
   },
 ) {
   const variant: PoolColumnVariant = isLite ? 'lite' : 'full'
+
   const sortField = (sorting.length ? sorting : getDefaultSort(isLite))[0].id as PoolColumnId
   const visibilitySettings = useVisibilitySettings(
     title,

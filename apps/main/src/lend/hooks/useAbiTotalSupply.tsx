@@ -15,6 +15,7 @@ export const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | u
 
   const getTotalSupply = useCallback(async (contract: Contract) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       const totalSupply = await contract.totalSupply()
       settotalSupply(weiToEther(Number(totalSupply)))
     } catch (error) {

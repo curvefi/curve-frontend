@@ -88,6 +88,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: formStatus.isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleBtnClickApproval(activeKey, curve, formValues),
         },
         INCREASE_CRV: {
@@ -99,6 +100,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_CRV' ? t`Lock Amount Increased` : t`Increase Lock Amount`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleBtnClickIncrease(activeKey, curve, formValues),
         },
       }

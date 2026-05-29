@@ -80,6 +80,7 @@ const oneLendingPool = (
     collateral_token: oneApiToken(collateral),
     borrowed_token: oneApiToken(borrowed),
     extra_reward_apr: [],
+
     created_at: (oneDate().getTime() / 1000) as unknown as TimestampResponse,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }

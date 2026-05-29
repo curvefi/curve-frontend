@@ -106,6 +106,7 @@ export const createTokensSlice = (
 
       return Object.keys(parsedPartialTokensMapper)
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     setEmptyPoolListDefault: async curve => {
       const { [sliceKey]: sliceState } = get()
       const chainId = curve.chainId

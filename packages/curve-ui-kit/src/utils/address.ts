@@ -34,6 +34,7 @@ export const shortenHash = (hash: string, { digits = 5 }: ShortenAddressOptions 
  * To enforce consistency, there's no option to include the 0x prefix on the starting digits length.
  */
 export const shortenAddress = (address: string | undefined, options?: ShortenAddressOptions): string =>
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   shortenHash(getAddress(address || zeroAddress), options)
 
 /** Makes sure a list of addresses doesn't contain duplicates. */

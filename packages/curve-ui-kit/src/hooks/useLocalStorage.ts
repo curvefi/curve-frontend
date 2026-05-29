@@ -13,11 +13,13 @@ function getFromLocalStorage<T>(storageKey: string): T | null {
     return null
   }
   const item = window.localStorage.getItem(storageKey)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   return item && JSON.parse(item)
 }
 
 const get = <T>(key: string, initialValue: T): T => {
   const existing = getFromLocalStorage<T>(key)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return existing == null ? initialValue : existing
 }
 

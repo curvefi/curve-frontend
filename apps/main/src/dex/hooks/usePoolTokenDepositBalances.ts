@@ -21,6 +21,7 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Pa
     {
       chainId,
       userAddress,
+
       tokenAddress: pool?.lpToken as Address,
     },
     enabled && isHydrated,
@@ -31,6 +32,7 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Pa
     {
       chainId,
       userAddress,
+
       tokenAddress: pool?.gauge.address as Address,
     },
     enabled && hasGauge,
@@ -49,5 +51,6 @@ export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolId:
   fetchTokenBalance(config, {
     chainId: curve?.chainId,
     userAddress: curve.signerAddress as Address,
+
     tokenAddress: curve.getPool(poolId).lpToken as Address,
   })

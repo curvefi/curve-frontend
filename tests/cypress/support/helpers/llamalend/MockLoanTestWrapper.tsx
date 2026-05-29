@@ -28,8 +28,10 @@ export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperP
         connectState: ConnectState.SUCCESS,
         isHydrated: true,
         isInitialized: true,
+
         llamaApi: llamaApi as never,
         wallet: { provider: { request: async () => undefined }, address: TEST_ADDRESS },
+
         provider: {} as never, // Intentionally unused here; gas info is seeded via setGasInfo() in test context.
       }}
     >

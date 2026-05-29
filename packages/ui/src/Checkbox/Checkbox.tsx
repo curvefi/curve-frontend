@@ -33,6 +33,7 @@ export const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...p
           width={blank ? 12 : state.isSelected ? 16 : 14}
           height={blank ? 12 : state.isSelected ? 16 : 14}
           strokeWidth={2}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           fillColor={fillColor || ''}
         />
         {state.isSelected && (

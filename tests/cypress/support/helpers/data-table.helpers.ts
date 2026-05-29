@@ -54,6 +54,7 @@ export const withMultiSelectFilter = <T>(
   callback?: () => Cypress.Chainable<T>,
 ) => {
   cy.get(`[data-testid="multi-select-filter-${id}"]`).click() // open the menu
+
   return (callback ? callback() : cy.wrap(undefined as T)).then(result => {
     // clearing the filters automatically close the menu
     if (clearOnClose) {

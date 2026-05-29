@@ -43,6 +43,7 @@ export const useClosePositionMutation = ({
     mutationFn: async ({ slippage }, { market }) => {
       await waitForApproval({
         isApproved: async () => await fetchCloseIsApproved({ marketId, chainId, userAddress }, { staleTime: 0 }),
+
         onApprove: async () => (await getLoanImplementation(market).selfLiquidateApprove()) as Hex[],
         message: t`Approved closing position`,
         config,

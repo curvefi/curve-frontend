@@ -60,6 +60,7 @@ const meta: Meta<typeof RouteProviderStory> = {
   component: RouteProviderStory,
   args: {
     chainId: 1,
+
     networks: { 1: {} as BaseConfig },
     queries: fromEntries(
       RouteProviders.map(router => [

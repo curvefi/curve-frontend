@@ -177,6 +177,7 @@ export const LoanIncrease = ({
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${formValues.collateral}`
             const notification = notify(notifyMessage, 'pending')
@@ -207,13 +208,15 @@ export const LoanIncrease = ({
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
                 },
               }
-            : { onClick: async () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma) }),
+            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+              { onClick: async () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma) }),
         },
       }
 

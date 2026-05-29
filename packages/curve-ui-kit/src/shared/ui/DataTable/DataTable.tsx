@@ -171,6 +171,7 @@ export const DataTable = <T extends TableItem>({
             {showViewAllButton && (
               <TableRow>
                 <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
+                  {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
                   {viewAllLabel || t`View all`}
                 </TableViewAllCell>
               </TableRow>

@@ -35,6 +35,7 @@ export const RewardsTooltipItems = ({
     <>
       <TooltipItem title={title}>{totalExtraPercentage}</TooltipItem>
       {extraIncentives.map(({ percentage, title, address, blockchainId }, i) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         <TooltipItem key={i} variant="subItem" title={title} titleIcon={{ blockchainId, address, size: 'mui-sm' }}>
           {formatPercent(percentage)}
         </TooltipItem>
@@ -42,6 +43,7 @@ export const RewardsTooltipItems = ({
       {extraRewards.map(
         (r, i) =>
           r.action === tooltipType && (
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <TooltipItem variant="subItem" key={i} title={t`Points`} imageId={r.platformImageId}>
               <Stack
                 component={Link}

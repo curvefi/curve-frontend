@@ -238,4 +238,5 @@ export const ButtonsGroupVariantScrvUsdStatisticsHeaderNarrow: Story = {
     },
   },
 }
+
 export default meta

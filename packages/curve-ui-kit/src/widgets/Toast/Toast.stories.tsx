@@ -28,6 +28,7 @@ export const AllSeverities: Story = {
       <Button
         variant="contained"
         color="success"
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         onClick={() => showToast({ message: 'A success message', severity: 'success', title })}
       >
         Success
@@ -35,6 +36,7 @@ export const AllSeverities: Story = {
       <Button
         variant="contained"
         color="primary"
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         onClick={() => showToast({ message: 'Here is your info toastr', severity: 'info', title })}
       >
         Info
@@ -43,6 +45,7 @@ export const AllSeverities: Story = {
         variant="contained"
         color="warning"
         sx={{ color: '#000' }} // warning is not really part of the design system, only used in the story.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         onClick={() => showToast({ message: 'Warning: We are testing', severity: 'warning', title })}
       >
         Warning
@@ -50,6 +53,7 @@ export const AllSeverities: Story = {
       <Button
         variant="contained"
         color="error"
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         onClick={() => showToast({ message: 'An error has been simulated', severity: 'error', title })}
       >
         Error
@@ -57,6 +61,7 @@ export const AllSeverities: Story = {
       <Button
         variant="outlined"
         color="primary"
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         onClick={() =>
           withPendingToast(new Promise(resolve => setTimeout(() => resolve(null), 30000)), 'This operation takes 30s')
         }

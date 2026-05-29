@@ -102,10 +102,12 @@ const MultiSelect = <T extends string>({
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
+                {}
                 {renderItem?.(optionId as T) ?? optionId}
               </Box>
             ))
           ) : (
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
             <Typography>{placeholder || 'Select options'}</Typography>
           )
         }
@@ -117,6 +119,7 @@ const MultiSelect = <T extends string>({
           onClose={close}
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
           <Box
@@ -139,6 +142,7 @@ const MultiSelect = <T extends string>({
           {options.map(option => (
             <InvertOnHover hoverRef={menuRef} key={option}>
               <MenuItem ref={menuRef} value={option} selected={selected.includes(option)} onClick={handleItemClick}>
+                {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
                 {renderItem?.(option) || option}
               </MenuItem>
             </InvertOnHover>

@@ -49,6 +49,7 @@ export const FormWithdraw = ({
 }: TransferProps) => {
   const isSubscribed = useRef(false)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -62,6 +63,7 @@ export const FormWithdraw = ({
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
@@ -93,6 +95,7 @@ export const FormWithdraw = ({
         updatedFormValues,
         null,
         seed.isSeed,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
       )
     },
@@ -164,6 +167,7 @@ export const FormWithdraw = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
         },
         WITHDRAW: {
@@ -178,6 +182,7 @@ export const FormWithdraw = ({
                   content: (
                     <WarningModal
                       slippage
+                      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                       value={slippage.slippage || 0}
                       confirmed={slippageConfirmed}
                       transferType="Withdrawal"
@@ -190,13 +195,15 @@ export const FormWithdraw = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+              { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -435,6 +442,7 @@ export const FormWithdraw = ({
                         isWithdraw
                         blockchainId={blockchainId}
                         token={token}
+                        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
                         handleAmountChange={handleAmountChange}
                         hideMaxButton

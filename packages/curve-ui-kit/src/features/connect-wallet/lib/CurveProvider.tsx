@@ -75,6 +75,7 @@ export const CurveProvider = <App extends AppName>({
         setConnectState(HYDRATING)
         await hydrate[app](config, lib, prevLib, wallet, releaseChannel) // if thrown, it will be caught in initLib
       }
+
       globalLibs.hydrated[app] = lib as (typeof globalLibs.hydrated)[App]
       setConnectState(SUCCESS)
     }

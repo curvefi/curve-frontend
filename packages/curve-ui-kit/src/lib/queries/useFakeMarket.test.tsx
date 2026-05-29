@@ -14,8 +14,10 @@ export const useFakeMarket = ({
   borrowSymbol: string
   borrowAddress: Address
 }) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   useMemo(
     () =>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
       Object.assign(Object.create(LendMarketTemplate.prototype), {
         borrowed_token: {
           address: borrowAddress,

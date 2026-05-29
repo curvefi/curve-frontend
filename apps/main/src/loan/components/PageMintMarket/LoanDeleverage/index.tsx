@@ -99,6 +99,7 @@ export const LoanDeleverage = ({
         curve,
         llamma,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
         isFullReset,
       )
@@ -183,13 +184,15 @@ export const LoanDeleverage = ({
                     onClick: () => setConfirmHighPriceImpact(false),
                   },
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage),
                     disabled: !confirmHighPriceImpact,
                   },
                   primaryBtnLabel: t`Repay anyway`,
                 },
               }
-            : { onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage) }),
+            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+              { onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage) }),
         },
       }
 

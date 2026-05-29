@@ -18,6 +18,7 @@ export const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCa
 
     const key = `${rChainId}-${poolId}`
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     if (key === Pool.fantomFactoryStableNg24) {
       // prettier-ignore
       setMapper({
@@ -32,6 +33,7 @@ export const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCa
       })
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     if (key === Pool.fantomFactoryStableNg39) {
       // prettier-ignore
       setMapper({

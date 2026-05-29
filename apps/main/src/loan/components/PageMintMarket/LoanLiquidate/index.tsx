@@ -97,6 +97,7 @@ export const LoanLiquidate = ({
         !formEstGas.loading &&
         !error &&
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
+
       const chainId = curve.chainId as ChainId
 
       const stepsObj: { [key: string]: Step } = {
@@ -105,6 +106,7 @@ export const LoanLiquidate = ({
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${getTokenName(llamma).stablecoin}`
             const notification = notify(notifyMessage, 'pending')
@@ -118,6 +120,7 @@ export const LoanLiquidate = ({
           status: getStepStatus(isComplete, step === 'LIQUIDATE', isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const stablecoinName = getTokenName(llamma).stablecoin
             const notifyMessage = t`Please confirm ${stablecoinName} self-liquidation at max ${maxSlippage}% slippage.`

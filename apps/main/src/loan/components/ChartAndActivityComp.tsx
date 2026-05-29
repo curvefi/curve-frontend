@@ -25,7 +25,9 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
   const borrowedTokenAddress = market?.coinAddresses[0]
 
   const networkConfig = networks[chainId]
+
   const network = networkConfig?.id.toLowerCase() as Chain
+
   const ammAddress = market?.address as Address | undefined
 
   const {
@@ -56,6 +58,7 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
   })
 
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateralSymbol) as Token | undefined
+
   const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.coins[0]) as Token | undefined
 
   return (

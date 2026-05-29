@@ -52,6 +52,7 @@ const getStatusStyle = (status: LogStatus) => {
 
 // Wagmi uses bigints in query keys and args, so need to add in serialization support
 const stringify = (obj: unknown) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value))
 
 function argToString(i: unknown, max = 200, trailing = 3) {
@@ -120,6 +121,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
     'color: #666; font-weight: bold;', // @
     'color: #2196F3;', // timestamp
     'color: #666;', // ->
+
     ...(hasDefinedStatus ? [getStatusStyle(status as LogStatus), 'color: #4CAF50; font-weight: bold;'] : []), // status
     ...keyStyles, // key
     ...(restArgs.length ? ['color: #fff;', 'color: #666;', 'color: #fff;'] : []), // args

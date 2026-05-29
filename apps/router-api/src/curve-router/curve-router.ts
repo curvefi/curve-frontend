@@ -19,6 +19,7 @@ const tryGetPools = (routes: IRouteStep[], curve: CurveJS, log: FastifyBaseLogge
     try {
       return [route, curve.getPool(route.poolId)]
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       log.info({ message: 'routerBestRouteAndOutput missing poolName', poolId: route.poolId }, error.message)
       return [route, undefined]
     }
@@ -37,6 +38,7 @@ async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAddress: 
   if (poolAddress === zeroAddress) return
   const pool = curve.getPool(poolId)
   const storedRates = await pool.getStoredRates()
+
   return storedRates[
     pool.underlyingCoinAddresses.findIndex(r => r.toLowerCase() === toAddress.toLowerCase())
   ] as Decimal
@@ -114,12 +116,15 @@ export async function buildCurveRouteResponse(
       isStableswapRoute,
       warnings,
       gas: null, // curve-js doesn't return gas estimates without a signer.
+
       tx: tx as TransactionData | undefined,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
           name,
           action: 'swap',
+
           tokenIn: [inputCoinAddress as Address],
+
           tokenOut: [outputCoinAddress as Address],
           protocol: 'curve',
           chainId,

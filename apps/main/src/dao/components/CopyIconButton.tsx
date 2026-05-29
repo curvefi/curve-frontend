@@ -10,6 +10,7 @@ type CopyIconButtonProps = {
 export const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
   <TooltipButton
     clickable
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     onClick={() => copyToClipboard(copyContent)}
     noWrap
     tooltip={tooltip}

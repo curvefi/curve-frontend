@@ -49,6 +49,7 @@ function useLegacyFetching({
   const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
   useEffect(() => {
     // delay fetch rest after form details are fetched first
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     const timer = setTimeout(async () => {
       if (!api || !market || !isPageVisible || !enabled) return
       await fetchAllMarketDetails(api, market, true)

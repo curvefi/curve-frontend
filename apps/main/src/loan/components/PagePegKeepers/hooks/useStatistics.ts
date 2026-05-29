@@ -48,6 +48,7 @@ export function useStatistics() {
 
   return {
     totalDebt: maybe(totalDebt, totalDebt => formatEther(totalDebt) as Decimal),
+
     totalCeiling: maybe(totalCeiling, totalCeiling => formatEther(totalCeiling) as Decimal),
     isFetchingDebt,
     isFetchingCeiling,

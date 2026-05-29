@@ -139,6 +139,7 @@ export const QuickSwap = ({
     {
       chainId,
       userAddress,
+
       tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
     },
     !!userAddress && !!fromAddress,
@@ -153,6 +154,7 @@ export const QuickSwap = ({
     {
       chainId,
       userAddress,
+
       tokenAddress: toAddress ? (toAddress as Address) : undefined,
     },
     !!userAddress && !!toAddress,
@@ -187,6 +189,7 @@ export const QuickSwap = ({
         pageLoaded ? curve : null,
         updatedFormValues,
         searchedParams,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         maxSlippage || storeMaxSlippage,
         isGetMaxFrom,
         isFullReset,
@@ -262,6 +265,7 @@ export const QuickSwap = ({
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
@@ -453,6 +457,7 @@ export const QuickSwap = ({
       error: null,
       isLoading: routesAndOutputLoading,
     },
+
     { slippage: storeMaxSlippage as Decimal },
   )
 
@@ -616,5 +621,6 @@ function _isRoutesAndOutputLoading(
   if (typeof routesAndOutput !== 'undefined') {
     return routesAndOutput.loading
   }
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }

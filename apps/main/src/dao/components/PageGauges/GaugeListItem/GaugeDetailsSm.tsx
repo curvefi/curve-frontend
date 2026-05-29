@@ -17,6 +17,7 @@ type GaugeDetailsSmProps = {
 }
 
 export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: GaugeDetailsSmProps) => {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData || {}
   const hasFutureVeCrv = userVeCrv && userFutureVeCrv && userFutureVeCrv > userVeCrv
 

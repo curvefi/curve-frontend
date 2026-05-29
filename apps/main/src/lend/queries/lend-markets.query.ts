@@ -55,6 +55,7 @@ export const { useQuery: useLendMarkets } = queryFactory({
         .map(name => [name, getMarketData(api.getLendMarket(name))] as const)
         .flatMap(([name, market]) => [
           [name, market],
+
           [market.addresses.controller as Address, market],
         ]),
     )

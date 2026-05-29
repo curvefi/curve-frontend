@@ -89,6 +89,7 @@ export function getExchangeRates(expected: string, fromAmount: string): [Decimal
   if (Number(expected) === 0 || Number(fromAmount) === 0) {
     return ['0', '0']
   }
+
   const parsedExpected = decimalDiv(expected as Decimal, fromAmount as Decimal)
   return [parsedExpected, +parsedExpected ? decimalDiv('1', parsedExpected) : '0']
 }
@@ -121,6 +122,7 @@ export function _parseRoutesAndOutput(
     toAmount,
     toAmountOutput: output,
     fromAmount,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     fetchedToAmount: fetchedToAmount || '',
   }
 }

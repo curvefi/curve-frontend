@@ -36,6 +36,7 @@ export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
         const tokenAddress = poolDataCachedOrApi.tokenAddresses[idx]
         return (
           <CurrencyReservesContent
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             key={`${token}-${idx}`}
             cr={currencyReserves?.tokens.find(t => t.tokenAddress === tokenAddress)}
             haveSameTokenName={poolDataCachedOrApi.tokensCountBy[token] > 1}
@@ -45,6 +46,7 @@ export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
             token={token}
             tokenAddress={tokenAddress}
             tokenLink={poolTokensLinks?.[tokenAddress]}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             handleCopyClick={copyToClipboard}
           />
         )

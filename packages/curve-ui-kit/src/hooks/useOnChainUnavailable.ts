@@ -10,10 +10,12 @@ export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | un
   return useCallback(
     (walletChainId?: number) => {
       const { pathname, href } = location
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       const networkId = (walletChainId && networks?.[walletChainId]?.id) || ('ethereum' as const)
       const redirectUrl = getCurrentNetwork(pathname)
         ? replaceNetworkInPath(pathname, networkId)
-        : getHashRedirectUrl(location, networkId)
+        : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+          getHashRedirectUrl(location, networkId)
       console.warn('Redirecting from %s to %s...', href, redirectUrl)
       return navigate(redirectUrl, { replace: true })
     },

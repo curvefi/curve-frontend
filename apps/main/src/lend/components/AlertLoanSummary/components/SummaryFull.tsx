@@ -24,7 +24,9 @@ export const SummaryFull = ({
         totalBorrowed: decimal(receive),
         userState: userState && {
           debt: userState.debt as Decimal,
+
           collateral: userState.collateral as Decimal,
+
           stablecoin: userState.borrowed as Decimal,
         },
         stateCollateralDelta: decimal(formValueStateCollateral),

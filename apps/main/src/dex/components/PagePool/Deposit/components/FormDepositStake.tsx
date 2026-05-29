@@ -46,6 +46,7 @@ export const FormDepositStake = ({
 }: TransferProps) => {
   const isSubscribed = useRef(false)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -89,6 +90,7 @@ export const FormDepositStake = ({
         updatedFormValues,
         loadMaxAmount,
         seed.isSeed,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
       )
     },
@@ -144,6 +146,7 @@ export const FormDepositStake = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues, maxSlippage),
         },
         DEPOSIT_STAKE: {
@@ -159,6 +162,7 @@ export const FormDepositStake = ({
                     <HighSlippagePriceImpactModal
                       slippage
                       confirmed={slippageConfirmed}
+                      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                       value={slippage.slippage || 0}
                       transferType="Deposit"
                       setConfirmed={setSlippageConfirmed}
@@ -170,13 +174,15 @@ export const FormDepositStake = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : { onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+              { onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

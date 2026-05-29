@@ -36,6 +36,7 @@ export const UserBox = ({ className, children, votingPower, snapshotVotingPower,
       ) : chainId === 1 ? (
         <Box flex flexColumn flexGap="var(--spacing-2)">
           <p>{t`Please connect a wallet to see user information.`}</p>
+          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
           <StyledButton variant="outlined" onClick={() => connect()} loading={isLoading(connectState)}>
             {t`Connect Wallet`}
           </StyledButton>

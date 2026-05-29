@@ -18,6 +18,7 @@ export const curveProps = (curve: LlamaApi | null) =>
         chainId: curve.chainId as ChainId,
         haveSigner: !!curve.signerAddress,
         signerAddress: curve.signerAddress,
+
         network: networks[curve.chainId as ChainId],
       }
     : {

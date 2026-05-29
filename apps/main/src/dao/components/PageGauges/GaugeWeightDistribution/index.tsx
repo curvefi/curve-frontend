@@ -77,6 +77,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
         )}
         {isError && (
           <ErrorMessageWrapper>
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
           </ErrorMessageWrapper>
         )}

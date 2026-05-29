@@ -58,16 +58,20 @@ export const Compensation = ({
 
       try {
         setStep('claiming')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const hash = await contract.claim()
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         const txHash = scanTxPath(network, hash)
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={txHash} />)
         if (typeof dismiss === 'function') dismiss()
       } catch (error) {
         console.error(error)
         setStep('error')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         setError(getErrorMessage(error, 'error-step-claim'))
         if (typeof dismiss === 'function') dismiss()
       }
@@ -101,6 +105,7 @@ export const Compensation = ({
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
             )}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
             <StyledIconButton size="medium" onClick={() => copyToClipboard(contractAddress)}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>
@@ -128,6 +133,7 @@ export const Compensation = ({
             disabled={disabled}
             loading={loading}
             variant="filled"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             onClick={() => handleClaimClick(activeKey, contract, balance)}
           >
             {step || `Claim`}

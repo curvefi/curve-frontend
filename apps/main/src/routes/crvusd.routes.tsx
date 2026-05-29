@@ -39,6 +39,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets/$collateralId',
     component: MintMarketPage,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `${params.collateralId} - Curve Llamalend` }] }),
     ...layoutProps,
   }),

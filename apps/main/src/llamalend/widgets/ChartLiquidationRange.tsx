@@ -58,11 +58,16 @@ interface TooltipContentProps {
 const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHealthColor }: TooltipContentProps) => {
   if (!active || !payload?.length || !oraclePrice) return null
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const currPrices = isManage ? payload.find(p => p.name === 'curr') : undefined
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const newPrices = isManage ? payload.find(p => p.name === 'new') : payload[0]
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const [np1, np2] = (newPrices?.payload.new as string[]) ?? []
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const oraclePriceValue = newPrices?.payload.oraclePrice
 
   return (
@@ -71,6 +76,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
         <div>
           <TipTitle>{t`Liquidation range`}</TipTitle>
           <TipContent>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
             <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
             <>{`${formatNumber(amount(cp2), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(cp1), { abbreviate: false, fallback: '-' })}`}</>
           </TipContent>
@@ -87,6 +93,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
       )}
       <div>
         <TipTitle>{t`Oracle price`}</TipTitle>
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
         <TipContent>{formatNumber(amount(oraclePriceValue), { abbreviate: false, fallback: '-' })}</TipContent>
       </div>
     </ChartTooltip>
@@ -96,6 +103,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
 const LegendContent = ({ payload }: LegendContentProps) => (
   <Stack sx={{ gap: Spacing.xs }}>
     {payload?.map(({ color, type, value }, index) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <Stack direction="row" key={index} sx={{ gap: Spacing.xs }}>
         <Stack
           sx={{
@@ -147,6 +155,7 @@ export const ChartLiquidationRange = ({
     : `var(--health_mode_${healthColorKey}--color)`
   const chartLabelColor = isDetailView ? 'var(--chart_label--color)' : 'var(--chart_label_darkBg--color)'
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const TooltipContentComponent = tooltipContent || DefaultTooltipContent
 
   return (
@@ -161,6 +170,7 @@ export const ChartLiquidationRange = ({
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
               tickFormatter={tick =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                 `${formatNumber(amount(tick), { ...(tick > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
               }
               domain={([dataMin, dataMax]) => {
@@ -194,7 +204,9 @@ export const ChartLiquidationRange = ({
               wrapperStyle={{ zIndex: 1000 }}
               content={({ active, payload }) => (
                 <TooltipContentComponent
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                   active={active || false}
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                   payload={payload || []}
                   oraclePrice={oraclePrice}
                   isManage={isManage}
@@ -275,7 +287,9 @@ export const ChartLiquidationRange = ({
                       strokeWidth: 1,
                       label: ({ viewBox }) => (
                         <svg
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                           x={viewBox.x - 31}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                           y={viewBox.y - 6}
                           width={50}
                           height={50}

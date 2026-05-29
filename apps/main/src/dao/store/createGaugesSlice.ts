@@ -104,6 +104,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
       try {
         const response = await fetch(`https://prices.curve.finance/v1/dao/gauges/${address}/votes`)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const data: GaugeVotesResponse = await response.json()
 
         const formattedData = data.votes.map(vote => ({ ...vote, timestamp: new Date(vote.timestamp).getTime() }))
@@ -164,7 +165,9 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
         set(
           produce(state => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
         )
@@ -173,8 +176,11 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
         set(
           produce(state => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesSortBy.key = sortBy
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
           }),
         )

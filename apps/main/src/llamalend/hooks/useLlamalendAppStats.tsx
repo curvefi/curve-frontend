@@ -59,6 +59,7 @@ export function useLlamalendAppStats(
         },
         {
           label: t`Daily volume`,
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           value: (dailyVolume && formatUsd(dailyVolume)) || '-',
         },
       ]

@@ -30,11 +30,13 @@ export const CopyIconButton = (
       <IconButton
         size={size}
         {...iconProps}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         onClick={() => {
           console.info(`Copying to clipboard: ${copyText}`)
           return (
             navigator.clipboard?.writeText(copyText).then(
               () => showToast({ message: copyText, severity: 'info', title: confirmationText, testId }),
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
               e => showToast({ title: e.message, severity: 'error', testId }),
             ) ?? showToast({ title: t`Clipboard not available`, severity: 'warning', testId })
           )

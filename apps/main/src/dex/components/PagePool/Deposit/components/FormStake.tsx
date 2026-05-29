@@ -27,6 +27,7 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -39,6 +40,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -111,6 +113,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
         },
         STAKE: {
@@ -118,6 +121,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
         },
       }

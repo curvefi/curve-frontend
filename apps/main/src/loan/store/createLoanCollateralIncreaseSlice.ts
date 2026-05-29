@@ -153,6 +153,7 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
         isInProgress: true,
         step: 'APPROVAL',
       })
+
       const chainId = curve.chainId as ChainId
       const collateralIncreaseApproveFn = networks[chainId].api.collateralIncrease.approve
       const resp = await collateralIncreaseApproveFn(activeKey, provider, llamma, formValues.collateral)
@@ -180,6 +181,7 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
         isInProgress: true,
         step: 'ADD',
       })
+
       const chainId = curve.chainId as ChainId
       const network = networks[chainId]
       const addCollateralFn = network.api.collateralIncrease.addCollateral

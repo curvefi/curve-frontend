@@ -15,6 +15,7 @@ const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: Design
     color: Badges.Label[color],
     borderColor: Badges.Border[color],
   },
+
   props: { color: color.toLowerCase() as ChipProps['color'] },
 })
 

@@ -73,15 +73,18 @@ export const buildEnsoRouteResponse = async (
   }
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object
+
   const json = (await response.json()) as EnsoRouteResponse | EnsoRouteResponse[]
   return toArray(json).map(
     ({ route, amountOut, gas, ...routeProps }): RouterRouteResponse => ({
       router: 'enso',
+
       gas: gas as Decimal,
       amountIn: [amountIn],
       amountOut: [amountOut],
       warnings: [], // legacy code seems to only use warnings for stableswap routes
       route: route.map(({ action, chainId: routeChainId, primary, protocol, ...stepProps }) => ({
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         name: primary || `${protocol}:${action}`,
         chainId: routeChainId ?? chainId,
         protocol,

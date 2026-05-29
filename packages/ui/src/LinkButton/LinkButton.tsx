@@ -8,6 +8,7 @@ interface Props extends ButtonProps, Omit<RouterLinkProps, 'to'> {
 }
 
 export const LinkButton = ({ children, href, ...rest }: Props) => (
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   <StyledLink to={href || '/'} {...rest}>
     {children}
   </StyledLink>

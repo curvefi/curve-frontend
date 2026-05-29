@@ -11,6 +11,7 @@ export const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
   <Container mobile={mobile}>
     {rewardItems.map((rewardItem, index) => (
       <CampaignRewardsComp
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
         rewardsPool={rewardItem}
         mobile={mobile}

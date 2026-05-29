@@ -43,5 +43,6 @@ export const getVirtualTestnet = ({
       if (!response.isOkStatusCode) {
         throw new Error(`Failed to get virtual testnet '${vnetId}': ${response.status} ${response.statusText}`)
       }
+
       return response.body as GetVirtualTestnetResponse
     })

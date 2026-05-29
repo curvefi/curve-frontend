@@ -109,6 +109,7 @@ export const ComboBox = ({
             {Array.isArray(result) && result.length > 0 ? (
               chunk(result, 30).map((gauges, idx) => (
                 <ComboBoxListChunk
+                  // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
                   key={`gauges-${idx}`}
                   testId={testId}
                   inputRef={inputRef}

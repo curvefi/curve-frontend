@@ -114,6 +114,7 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
         isInProgress: true,
         step: 'APPROVAL',
       })
+
       const chainId = curve.chainId as ChainId
       const resp = await networks[chainId].api.loanLiquidate.approve(provider, llamma)
       const updatedFormStatus: FormStatus = {
@@ -136,6 +137,7 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
         isInProgress: true,
         step: 'LIQUIDATE',
       })
+
       const chainId = curve.chainId as ChainId
       const network = networks[chainId]
       const liquidateFn = network.api.loanLiquidate.liquidate

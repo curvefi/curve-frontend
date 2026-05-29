@@ -31,14 +31,19 @@ const lockCrv = {
         curve.boosting.getVeCrv([walletAddress]),
         curve.boosting.getVeCrvPct([walletAddress]),
       ])
+
       resp.resp.crv = crv as string
+
       resp.resp.lockedAmountAndUnlockTime = lockedAmountAndUnlockTime as { lockedAmount: string; unlockTime: number }
+
       resp.resp.veCrv = veCrv as string
+
       resp.resp.veCrvPct = veCrvPct as string
 
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-get-locked-crv-info')
       return resp
     }
@@ -69,6 +74,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-create-locked-crv')
       return resp
     }
@@ -104,6 +110,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -117,6 +124,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -130,6 +138,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-locked-crv')
       return resp
     }
@@ -143,6 +152,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-locked-time')
       return resp
     }
@@ -156,6 +166,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-est-gas-withdraw-locked-crv')
       return resp
     }
@@ -169,6 +180,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-withdraw-locked-crv')
       return resp
     }
@@ -184,6 +196,7 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       resp.error = getErrorMessage(error, 'error-step-claim-fees')
       return resp
     }

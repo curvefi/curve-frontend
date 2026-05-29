@@ -51,6 +51,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
         sortBy={userGaugeVotesSortBy}
         errorMessage={t`An error occurred while fetching user gauge votes.`}
         setSortBy={key => setUserGaugeVotesSortBy(key as UserGaugeVotesSortBy)}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         getData={() => invalidateUserGaugeVoteQuery({ userAddress })}
         noDataMessage={t`No gauge votes found for this user.`}
         gridTemplateColumns={gridTemplateColumns}

@@ -46,9 +46,11 @@ const visitNotFoundPage = () => {
 function check500Error({ context }: { context: object }) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
   expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
+
   const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
   expect(title).to.equal('Unexpected Error')
   expect(subtitle).to.contain(expectedMessage)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const { message: actualMessage, name: actualName, stack } = JSON.parse(error)
   expect(actualName).to.equal(expectedName)
   expect(actualMessage).to.contain(expectedMessage)
@@ -83,13 +85,20 @@ describe('Error Boundary', () => {
     // Sentry sends envelope format: newline-delimited JSON with body in extra.body
     const { origin, pathname } = new URL(SENTRY_DSN)
     cy.intercept('POST', `${origin}/api/${pathname}/envelope/?**`, ({ body: envelope, reply }) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const lines = envelope.split('\n').filter(Boolean)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const event = JSON.parse(lines[2]) // event payload is the third line
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const body = event.extra.body
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       expect(body.url).to.equal(url)
       if (is500) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         check500Error(body)
       } else {
         expect(body).to.deep.equal({
@@ -141,6 +150,7 @@ describe('Error Boundary', () => {
               'NotFoundError',
             )
           }
+
           return originalRemoveChild.call(this, child) as T
         }
       },
@@ -155,7 +165,9 @@ describe('Error Boundary', () => {
         const warn = win.console.warn
         win.console.warn = (...args) => {
           // throw when `useOnChainUnavailable` tries to redirect the user due to the bad chain name in the URL
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           if (args[0].includes('Redirecting from')) throw new Error('Simulating error')
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           return warn(...args)
         }
       },

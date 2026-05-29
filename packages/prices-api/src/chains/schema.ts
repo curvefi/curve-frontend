@@ -17,6 +17,7 @@ const users = activity.extend({ users: z.number() })
 
 export const getSupportedChainsResponse = z
   .object({ data: z.array(z.object({ name: z.string() })) })
+
   .transform(({ data }) => data.map(item => item.name as Chain).filter(item => chains.includes(item)))
 
 export const getChainInfoResponse = z

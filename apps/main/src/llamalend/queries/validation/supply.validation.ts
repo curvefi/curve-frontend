@@ -71,6 +71,7 @@ export type SharesToAssetsParams<ChainId = number> = FieldsOf<SharesToAssetsQuer
 export function requireVault(marketId: string | LlamaMarketTemplate): LendMarketTemplate {
   const market = getLlamaMarket(marketId)
   assert(hasVault(market), 'Market does not have a vault')
+
   return market as LendMarketTemplate
 }
 

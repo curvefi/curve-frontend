@@ -134,6 +134,7 @@ export const checkSupplyActionInfoValues = ({
   if (prevVaultShares != null) {
     getActionValue('supply-vault-shares', 'previous').should(
       'equal',
+
       formatNumber(prevVaultShares as Decimal, { abbreviate: true }),
     )
   }
@@ -143,6 +144,7 @@ export const checkSupplyActionInfoValues = ({
   if (prevAmountSupplied != null) {
     getActionValue('supply-amount', 'previous').should(
       'equal',
+
       formatNumber(prevAmountSupplied as Decimal, { abbreviate: false }),
     )
   }

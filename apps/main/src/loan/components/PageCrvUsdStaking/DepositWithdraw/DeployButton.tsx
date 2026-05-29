@@ -74,6 +74,7 @@ export const DeployButton = ({ className }: DeployButtonProps) => {
       loading={approvalLoading}
       className={className}
       disabled={isError || inputAmount === '0'}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onClick={handleClick}
     >
       {buttonTitle}

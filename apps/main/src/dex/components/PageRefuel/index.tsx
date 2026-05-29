@@ -29,6 +29,7 @@ const LOW_RESERVES_RATIO = 1 / 10000
 export const Refuel = () => {
   const { network, poolAddress } = useParams<NetworkUrlParams & { poolAddress: Address }>()
   const chainId = useChainId(network)
+
   const blockchainId = network as Chain
 
   const pool = useRefuelPool({ blockchainId, poolAddress })

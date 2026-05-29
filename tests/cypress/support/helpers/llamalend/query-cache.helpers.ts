@@ -92,9 +92,13 @@ export const seedLendMarketSolvencyQueries = ({
   const chain = BlockchainIds[chainId]!
   const totalAssetsUsd = 100
   const badDebt = (totalAssetsUsd * (100 - solvencyPercent)) / 100
+
   const controllerAddress = market.addresses.controller as Address
+
   const vaultAddress = market.addresses.vault as Address
+
   const collateralAddress = market.collateral_token.address as Address
+
   const borrowedAddress = market.borrowed_token.address as Address
 
   queryClient.setQueryData(getLendingVaultsOptions({}, true).queryKey, [

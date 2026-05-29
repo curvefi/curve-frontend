@@ -47,6 +47,7 @@ function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: stri
         isCaseSensitive: false,
         minMatchCharLength: 2,
         threshold: 0.01,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         getFn: (obj, path) => cleanValue(get(obj, path)),
         keys,
       }),

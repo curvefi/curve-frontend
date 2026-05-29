@@ -72,12 +72,14 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   createRoute({
     path: '$network/pools/$poolIdOrAddress/$formType',
     component: PagePool,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolIdOrAddress} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/pools/$poolAddress/refuel',
     component: PageRefuel,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolAddress} - Refuel` }] }),
     ...layoutProps,
   }),

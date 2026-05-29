@@ -84,6 +84,7 @@ export const HighPriceImpactAlert = ({
       {error.message}
     </Alert>
   ) : (
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     (severity || (prevSeverity && isLoading)) && (
       <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">

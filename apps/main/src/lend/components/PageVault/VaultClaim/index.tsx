@@ -106,6 +106,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim CRV`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'crv'),
         },
         CLAIM_REWARDS: {
@@ -113,6 +114,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim Rewards`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'rewards'),
         },
       }
@@ -193,6 +195,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                 onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'crv')}
               >
                 Claim CRV
@@ -206,6 +209,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                 onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'rewards')}
               >
                 Claim Rewards
@@ -227,5 +231,6 @@ const ClaimableWrapper = styled.div`
 `
 
 function _getRewardsAmount(rewards: { token: string; symbol: string; amount: string }[] | undefined) {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return (rewards || []).map(({ symbol, amount }) => `${amount} ${symbol}`).join(', ')
 }

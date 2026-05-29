@@ -72,6 +72,7 @@ export const VoteDialog = ({
       {executeTx?.status !== 'SUCCESS' && (
         <ExecuteButton
           variant="icon-filled"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick={() => executeProposal(proposalId, proposalType)}
           loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
         >
@@ -158,11 +159,13 @@ export const VoteDialog = ({
           <VoteButton
             isFor
             variant="icon-filled"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             onClick={() => castVote(proposalId, proposalType, true)}
             loading={false}
           >
             {t`Vote For`}
           </VoteButton>
+          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
           <VoteButton variant="icon-filled" onClick={() => castVote(proposalId, proposalType, false)} loading={false}>
             {t`Vote Against`}
           </VoteButton>

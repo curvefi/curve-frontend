@@ -136,6 +136,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
           status: helpers.getStepStatus(isComplete, step === 'WITHDRAW_REDEEM', isValid),
           type: 'action',
           content: isComplete ? (isWithdraw ? t`Withdrawn` : t`Redeemed`) : isWithdraw ? t`Withdraw` : t`Redeem`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues),
         },
       }

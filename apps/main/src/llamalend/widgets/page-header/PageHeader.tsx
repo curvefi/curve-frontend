@@ -129,11 +129,13 @@ export const PageHeaderView = ({
         {isDevelopment && market && (
           <IconButton
             size="extraSmall"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             onClick={() => {
               const { chainId, signerAddress } = market.getLlamalend()
               return invalidateAllUserMarketDetails({
                 chainId: chainId as IChainId,
                 marketId: market.id,
+
                 userAddress: signerAddress as Address,
                 blockchainId,
                 contractAddress: getControllerAddress(market),

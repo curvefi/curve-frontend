@@ -53,6 +53,7 @@ export const MySharesStats = ({
   const haveBoosting = rChainId === 1
   const crvRewards = rewardsApy?.crv
   const haveCrvRewards = crvRewards?.[0] !== 0
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 
   const userShareLabel = useMemo(() => {

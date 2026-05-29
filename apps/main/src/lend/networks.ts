@@ -65,11 +65,13 @@ export const { networks, networksIdMapper } = Object.entries(networksConfig).red
     }
 
     mapper.networks[chainId] = networkConfig
+
     mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
     return mapper
   },
   {
     networks: {} as Record<ChainId, NetworkConfig<NetworkEnum, ChainId>>,
+
     networksIdMapper: {} as Record<NetworkEnum, ChainId>,
   },
 )

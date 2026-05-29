@@ -7,6 +7,7 @@ import type { ButtonProps } from '@ui/Button/types'
 import { Spinner } from '@ui/Spinner/Spinner'
 import { buttonBaseStyles } from './styles'
 
+// eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const Button = forwardRef<
   HTMLButtonElement,
   ButtonProps &
@@ -23,7 +24,9 @@ export const Button = forwardRef<
       {...props}
       {...focusProps}
       data-testid={`btn-${testId}`}
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       className={`${className || ''} ${loading ? 'loading' : ''} ${isFocusVisible ? 'focus-visible' : ''}`}
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       ref={ref || buttonRef}
     >
       {children}

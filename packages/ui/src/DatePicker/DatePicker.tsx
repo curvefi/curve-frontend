@@ -51,6 +51,7 @@ function DateField<T extends DateValue>({ state, ...props }: DateFieldProps<T>) 
       <span {...labelProps}>{props.label}</span>
       <DateFieldField {...fieldProps} ref={ref}>
         {state.segments.map((segment, i) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           <DateSegment key={i} segment={segment} state={state} />
         ))}{' '}
         {state.value ? 'UTC' : ''} {/*// TODO: refactor to avoid harding UTC timezone*/}
@@ -110,6 +111,7 @@ function CalendarGrid({ state, ...props }: AriaCalendarGridProps & { state: Cale
       <thead {...headerProps}>
         <tr>
           {weekDays.map((day, index) => (
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <th key={index}>{day}</th>
           ))}
         </tr>
@@ -119,6 +121,7 @@ function CalendarGrid({ state, ...props }: AriaCalendarGridProps & { state: Cale
           <tr key={weekIndex}>
             {state
               .getDatesInWeek(weekIndex)
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               .map((date, i) => (date ? <CalendarCell key={i} state={state} date={date} /> : <td key={i} />))}
           </tr>
         ))}

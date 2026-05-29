@@ -55,6 +55,7 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
     <Box data-testid={`line-graph-${type}`} ref={ref}>
       {snapshots?.length ? (
         <LineChart data={snapshots} {...graphSize} compact>
+          {}
           <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
           <Line
             type="monotone"

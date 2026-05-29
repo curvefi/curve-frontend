@@ -19,6 +19,7 @@ export const { useQuery: useMarketVaultOnChainRewards, invalidate: invalidateMar
         vault.rewardsApr(USE_API),
         addresses.gauge == zeroAddress ? [0, 0] : vault.crvApr(USE_API),
       ])
+
       return { rewardsApr, crvRates: crvRates as Range<number> }
     },
     category: 'llamalend.market',

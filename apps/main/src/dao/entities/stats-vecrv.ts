@@ -11,6 +11,7 @@ const _fetchVeCrvStats = async () => {
   const veCrvContract = new Contract(CONTRACT_VECRV, ABI_VECRV, provider)
   const crvContract = new Contract(MAINNET_CRV_ADDRESS, ABI_VECRV, provider)
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const [totalLockedCrv, totalCrv, totalVeCrv] = await Promise.all([
     veCrvContract.supply(),
     crvContract.totalSupply(),
@@ -18,8 +19,11 @@ const _fetchVeCrvStats = async () => {
   ])
 
   return {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     totalVeCrv: BigInt(totalVeCrv),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     totalLockedCrv: BigInt(totalLockedCrv),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     totalCrv: BigInt(totalCrv),
     lockedPercentage: (Number(totalLockedCrv) / Number(totalCrv)) * 100,
   }

@@ -126,6 +126,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
+
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.depositApprove(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -144,6 +145,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
+
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.deposit(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -160,6 +162,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
+
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.withdraw(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -177,6 +180,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
 
         try {
           // only returns number[] on base or optimism
+
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.redeem(amount)) as number
 
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
@@ -237,6 +241,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('approveDepositTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)
@@ -293,6 +298,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('depositTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)
@@ -348,6 +354,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)
@@ -402,6 +409,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)

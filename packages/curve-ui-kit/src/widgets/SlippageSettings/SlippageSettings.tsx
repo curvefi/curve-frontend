@@ -48,6 +48,7 @@ export const SlippageSettings = ({ disabled = false, maxSlippage, onSave, ...pro
           size={props.buttonSize ?? 'small'}
           data-testid="slippage-settings-button"
         >
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           {props.buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
         </IconButton>
       )}

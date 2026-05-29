@@ -85,6 +85,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
     ),
     formState: {
       isSubmitting,
+
       errors: errors as FormErrors<T>,
       visibleErrors: useMemo(
         () =>
@@ -95,13 +96,16 @@ export const useForm = <T extends FieldValues = FieldValues>({
                   (field in touchedFields || (field.startsWith('root') && Object.keys(dirtyFields).length)) &&
                   error?.message,
               )
+
               .map(([field, error]) => [field, error!.message] as [ErrorKey<T>, string]),
           ),
         [errors, touchedFields, dirtyFields],
       ),
+
       touchedFields: touchedFields as PartialFields<T>,
       isDirty,
       isValid,
+
       dirtyFields: dirtyFields as PartialFields<T>,
     },
   }

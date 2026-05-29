@@ -49,6 +49,7 @@ export const TokenSelector = ({
             token.decimals == 18 &&
             !!aliasesCrv &&
             ![
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
               ...Object.keys(gaugeRewardsDistributors || {}), // Tokens already added as reward
               zeroAddress,
               ethAddress,

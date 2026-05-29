@@ -184,6 +184,7 @@ export const createLoanRepaySlice = (
       try {
         userState = { ...(await market.userPosition.userState()), error: '' }
       } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         userState = { collateral: '', borrowed: '', debt: '', N: '', error }
       }
 

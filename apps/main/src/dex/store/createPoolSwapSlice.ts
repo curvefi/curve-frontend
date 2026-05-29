@@ -100,16 +100,20 @@ export const createPoolSwapSlice = (
         return storedIgnoreExchangeRateCheck
       } else {
         const networks = await fetchNetworks()
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         const provider = useWallet.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
           const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then(module => module.default)
           const iface = new Interface(json)
           const contract = new Contract(pool.address, iface.format(), provider)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           const storedRates = await contract.stored_rates()
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           const ignoreExchangeRateCheck = Object.values(storedRates).some(rate => {
             // if rate is > 1, then number cannot be checked for exchange rate
+
             const parsedRate = BigInt(rate as bigint)
               .toString()
               .replace(/0+$/, '')
@@ -164,6 +168,7 @@ export const createPoolSwapSlice = (
             [activeKey]: {
               ...resp,
               loading: false,
+
               modal: getRouterWarningModal(resp, maxSlippage, cFormValues) as RoutesAndOutputModal | null,
             },
           },

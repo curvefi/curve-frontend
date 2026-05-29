@@ -139,6 +139,7 @@ export function useTransactionMutation<
   /** Creates the context object, throwing an error if no wallet is connected */
   const createContext = (variables: TVariables) => {
     const baseContext: TransactionContext = { wallet: assert(wallet, 'Missing provider') }
+
     return buildContext ? buildContext(variables, baseContext) : (baseContext as TContext)
   }
 
@@ -171,6 +172,7 @@ export function useTransactionMutation<
         data,
         receipt: await withPendingToast(
           waitForTransactionReceipt(config, data),
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           confirmingMessage?.(variables, context) || t`Waiting for transaction confirmation...`,
         ),
       }

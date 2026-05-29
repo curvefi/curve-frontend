@@ -18,6 +18,7 @@ export const TextInput = (props: Props) => {
       <label {...labelProps}>{label}</label>
       <StyledInput {...inputProps} ref={ref} />
       {props.description && <div {...descriptionProps}>{props.description}</div>}
+      {}
       {props.errorMessage && <ErrorMessage {...errorMessageProps}>{props.errorMessage as ReactNode}</ErrorMessage>}
     </InputWrapper>
   )

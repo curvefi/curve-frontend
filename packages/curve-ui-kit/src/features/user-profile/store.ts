@@ -60,6 +60,7 @@ const store: StateCreator<Store> = set => ({
 
       set(
         produce(state => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           delete state.maxSlippage[key]
         }),
       )
@@ -75,9 +76,12 @@ const store: StateCreator<Store> = set => ({
     set(
       produce(state => {
         if (key) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state.maxSlippage[key] = maxSlippage
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           for (const k of Object.keys(state.maxSlippage)) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state.maxSlippage[k] = maxSlippage
           }
         }

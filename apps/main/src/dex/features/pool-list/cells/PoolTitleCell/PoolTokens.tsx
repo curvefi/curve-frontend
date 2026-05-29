@@ -19,6 +19,7 @@ export function PoolTokens({
       {tokenList.map(({ symbol, address }, index) => (
         <Typography
           // note: there are pools with duplicated tokens, so we need to use index as key
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           key={index}
           sx={{
             fontWeight: isHighlighted(symbol, address, searchedTerms) ? 'bold' : 'normal',

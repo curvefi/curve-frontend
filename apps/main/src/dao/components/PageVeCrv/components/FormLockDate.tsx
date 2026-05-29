@@ -141,6 +141,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleBtnClickIncrease(activeKey, curve, formValues),
         },
       }
@@ -213,6 +214,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
         {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
         {txInfoBar}
         <Stepper steps={steps} hideStepNumber />

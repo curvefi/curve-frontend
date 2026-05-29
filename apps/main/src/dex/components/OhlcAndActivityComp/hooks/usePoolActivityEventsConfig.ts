@@ -30,6 +30,7 @@ type UsePoolActivityProps = {
 export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolActivityProps) => {
   const { isHydrated } = useCurve()
   const { data: networkConfig } = useNetworkByChain({ chainId })
+
   const network = networkConfig?.id.toLowerCase() as Chain
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 

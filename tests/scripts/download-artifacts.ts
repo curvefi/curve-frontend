@@ -116,7 +116,9 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   const repoRoot = run('git', ['rev-parse', '--show-toplevel'])
   process.chdir(repoRoot)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const workflow = WORKFLOW?.trim() || 'ci.yaml'
   const runId = findLatestRunId(branch, workflow)
   if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)

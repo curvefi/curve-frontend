@@ -32,7 +32,9 @@ export async function resolveRpc(
   url: string
 }> {
   if (chainId in NETWORK_CONSTANTS) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     const id = NETWORK_CONSTANTS[chainId].NAME
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
     return { id, url: resolveEnv(id) }
   }
   const liteNetworks = await curve.getCurveLiteNetworks() // note: this is already memoized inside curvejs

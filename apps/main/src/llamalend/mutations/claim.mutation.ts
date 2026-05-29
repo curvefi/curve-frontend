@@ -29,12 +29,14 @@ const noFormFieldOptions = { onReset: noop }
 const claimCrv = async (market: LlamaMarketTemplate, userAddress: Address | undefined) => {
   const claimableCrv = await fetchClaimableCrv({ marketId: market.id, userAddress }, { staleTime: 0 })
   assert(Number(claimableCrv) > 0, 'No claimable CRV rewards found')
+
   return (await requireVault(market).vault.claimCrv()) as Hex
 }
 
 const claimRewards = async (market: LlamaMarketTemplate, userAddress: Address | undefined) => {
   const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
   assert(hasClaimableRewards(claimableRewards), 'No claimable rewards found')
+
   return (await requireGauge(market.id).vault.claimRewards()) as Hex
 }
 

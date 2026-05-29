@@ -94,16 +94,19 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
         address,
         functionName: 'update',
       },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       { onSuccess: refetch },
     )
 
   return {
     rate,
+
     debt: maybe(debt, debt => formatEther(debt) as Decimal),
     estCallerProfit:
       !estCallerProfitEnabled || estCallerProfitError
         ? maybe(estCallerProfitFallback, estCallerProfitFallback => formatEther(estCallerProfitFallback) as Decimal)
         : maybe(estCallerProfit?.result, data => formatEther(data) as Decimal),
+
     debtCeiling: maybe(debtCeiling, debtCeiling => formatEther(debtCeiling) as Decimal),
     rebalance,
     isRebalancing,

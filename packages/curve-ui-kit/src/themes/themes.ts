@@ -20,6 +20,7 @@ const generateTheme = (theme: ThemeKey, options: DesignOptions = {}): Theme => {
     components: createComponents(design, typography),
     shape: { borderRadius: 0 },
     cssVariables: true,
+
     shadows: Array(25).fill('none') as Shadows,
   })
 }

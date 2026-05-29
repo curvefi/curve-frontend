@@ -207,6 +207,7 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
         isInProgress: true,
         step: 'PAY',
       })
+
       const chainId = curve.chainId as ChainId
       const network = networks[chainId]
       const repayFn = network.api.loanDecrease.repay

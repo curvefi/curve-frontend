@@ -47,6 +47,7 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
           <Button
             size="large"
             color="primary"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             onClick={() => connect()}
             loading={isConnecting}
             loadingPosition="start"

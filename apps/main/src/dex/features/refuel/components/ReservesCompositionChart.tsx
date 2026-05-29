@@ -29,6 +29,7 @@ const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]
 const formatReserveShare = (value: number | null | undefined) =>
   formatNumber(value, { unit: 'percentage', abbreviate: false, fallback: '-' })
 
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
 const getTokenLabel = (symbol: string | undefined, index: number) => symbol || t`Token ${index + 1}`
 
 const getReserveUsdShares = ({

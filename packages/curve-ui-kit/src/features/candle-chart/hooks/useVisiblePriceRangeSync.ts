@@ -84,6 +84,7 @@ export const useVisiblePriceRangeSync = ({
       // spawning overlapping loops while still capturing the final settled range.
       emitBurstFramesRef.current = Math.max(emitBurstFramesRef.current, frames)
 
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       if (emitRequestAnimationFrameRef.current === null) {
         emitRequestAnimationFrameRef.current = requestAnimationFrame(runEmitFrame)
       }

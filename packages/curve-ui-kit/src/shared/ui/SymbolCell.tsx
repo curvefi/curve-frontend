@@ -34,9 +34,11 @@ export const SymbolCell = ({
         arrow
         placement="bottom"
         {...valueTooltip}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         title={valueTooltip?.title ?? (symbol == null ? t`N/A` : symbol)}
       >
         <Stack direction="row" sx={{ alignItems: 'baseline', gap: 1 }}>
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           <Typography variant={MetricSize[size]}>{symbol == null ? t`N/A` : symbol}</Typography>
           <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={'mui-sm'} />
         </Stack>

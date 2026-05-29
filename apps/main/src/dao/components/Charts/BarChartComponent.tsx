@@ -69,6 +69,7 @@ export const BarChartComponent = <T extends object>({ data, dataKey, CustomToolt
           <Tooltip content={props => <CustomTooltip {...props} />} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={dataKey as string} label={false}>
             {data.map((_, index) => (
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

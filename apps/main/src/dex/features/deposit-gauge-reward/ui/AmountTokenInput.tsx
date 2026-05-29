@@ -57,6 +57,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
 
     const activeRewardTokens = Object.entries(rewardDistributors)
+
       .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
       .map(([tokenId]) => tokenId)
 

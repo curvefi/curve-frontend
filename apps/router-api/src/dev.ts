@@ -28,7 +28,9 @@ async function start(): Promise<void> {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
   process.on('SIGINT', stopServer)
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
   process.on('SIGTERM', stopServer)
 
   try {

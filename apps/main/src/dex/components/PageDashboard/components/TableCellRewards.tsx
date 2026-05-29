@@ -35,6 +35,7 @@ export const TableCellRewards = ({
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
@@ -61,6 +62,7 @@ export const TableCellRewards = ({
               : {})}
             size="md"
           >
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
             <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
               {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
             </WithWrapper>{' '}
@@ -72,6 +74,7 @@ export const TableCellRewards = ({
       ) : (
         <PoolRewardsCrv rewardsApy={rewardsApy} poolData={poolData} />
       )}
+      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
       <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
     </>
   )
@@ -79,6 +82,7 @@ export const TableCellRewards = ({
   if (rewardsApyKey === 'baseApy') {
     return (
       <RewardsWrapper>
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
         <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === SORT_ID.rewardBase} poolData={poolData} />
       </RewardsWrapper>
     )
@@ -91,6 +95,7 @@ export const TableCellRewards = ({
           <div>
             <TableCellRewardsBase
               base={rewardsApy?.base}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
               isHighlight={sortBy === SORT_ID.rewardBase}
               poolData={poolData}
             />

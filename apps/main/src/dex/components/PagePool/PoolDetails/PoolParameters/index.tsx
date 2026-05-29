@@ -147,6 +147,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
               <Stack>
                 <SectionTitle>{t`Coins:`}</SectionTitle>
                 {poolData.tokens.map((token, idx) => (
+                  // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
                   <Stack key={`${token}-${idx}`}>
                     <Stack direction="row">
                       <Stack direction="row">
@@ -161,6 +162,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                             <ExternalLinkToken>{token}</ExternalLinkToken>
                           </ExternalLinkTokenWrapper>
                         </StyledExternalLink>
+                        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
                         <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
                           <Icon name="Copy" size={16} />
                         </StyledIconButton>

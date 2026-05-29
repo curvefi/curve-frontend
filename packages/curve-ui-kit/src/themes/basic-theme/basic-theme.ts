@@ -57,6 +57,7 @@ export const handleBreakpoints = (values: {
         selector,
         {
           // in case the selector is already present, merge the values
+
           ...((values[selector] as CSSObject) ?? {}),
           ...mapRecord(values, (_, value) =>
             value && typeof value === 'object' ? (value as Responsive)[breakpoint] : value,

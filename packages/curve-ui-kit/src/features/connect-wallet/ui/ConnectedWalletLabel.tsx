@@ -11,6 +11,7 @@ export const ConnectedWalletLabel = ({ address, ...props }: ConnectedWalletLabel
   const { data: ensName } = useEnsName({ address })
   return (
     <Button size="small" color="ghost" title={address} {...props}>
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
       {ensName || shortenAddress(address)}
     </Button>
   )

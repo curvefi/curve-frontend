@@ -24,6 +24,7 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
   const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
 
   const push = useNavigate()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const sidechain: ChainId = currentSidechain === null ? 1 : currentSidechain
 
   const { data: network } = useNetworkByChain({ chainId })

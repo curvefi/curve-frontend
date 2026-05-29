@@ -189,8 +189,6 @@ const config = [
       '@eslint-react/component-hook-factories': 'off',
       '@eslint-react/set-state-in-effect': 'warn',
       '@eslint-react/purity': 'error',
-      '@eslint-react/no-array-index-key': 'off',
-      '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
       '@eslint-react/no-use-context': 'off',
       '@eslint-react/no-context-provider': 'off',
@@ -306,13 +304,6 @@ const config = [
       // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-duplicate-type-constituents': 'off',
-      '@typescript-eslint/no-misused-promises': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/unbound-method': 'off',
@@ -323,7 +314,6 @@ const config = [
       '@typescript-eslint/consistent-type-definitions': 'off',
       '@typescript-eslint/consistent-indexed-object-style': 'off',
       '@typescript-eslint/no-empty-function': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
 
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 

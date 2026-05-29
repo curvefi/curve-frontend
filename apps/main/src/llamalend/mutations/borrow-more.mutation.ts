@@ -60,6 +60,7 @@ const borrowMore = async (
     case 'V1':
     case 'V2':
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
+
       return (await impl.borrowMore(...args, +slippage)) as Hex
     case 'unleveraged':
       return (await impl.borrowMore(...args)) as Hex

@@ -22,6 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -32,6 +33,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
   const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -94,6 +96,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstake Complete` : t`Unstake`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: () => handleUnstakeClick(activeKey, curve, poolData, formValues),
         },
       }

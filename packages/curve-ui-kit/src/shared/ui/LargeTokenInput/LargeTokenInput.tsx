@@ -203,6 +203,7 @@ export const LargeTokenInput = ({
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const chipDisabled = disabled || maxBalance?.isLoading
 
   const maxBalanceValue = maxBalance?.balance
@@ -273,6 +274,7 @@ export const LargeTokenInput = ({
     >
       <Stack sx={{ gap: Spacing.xxs, padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {(label || showChips) && (
           <Stack
             direction="row"
@@ -344,6 +346,7 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Third row containing input and max balances */}
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (

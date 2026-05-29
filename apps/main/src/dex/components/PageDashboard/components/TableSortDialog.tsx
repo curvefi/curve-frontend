@@ -29,6 +29,7 @@ export const TableSortDialog = ({ className = '', tableLabel }: Props) => {
 
   const handleRadioGroupChange = (val: string) => {
     const [sortBy, sortByOrder] = val.split('-')
+
     updateFormValues({ sortBy: sortBy as SortId, sortByOrder: sortByOrder as Order })
     overlayTriggerState.close()
   }

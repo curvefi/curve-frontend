@@ -58,6 +58,7 @@ export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTable
       setSortBy={key => {
         setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)
       }}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       getData={() => getGaugeVotes(gaugeAddress)}
       noDataMessage={t`No gauge weight votes found for this gauge.`}
       overflowYBreakpoint={tableMinWidth}

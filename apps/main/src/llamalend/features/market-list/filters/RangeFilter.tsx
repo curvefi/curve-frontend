@@ -43,6 +43,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
       const nextFirst = index === 0 ? (amount(newValue) as number) : range[0]
+
       const nextSecond = index === 1 ? (amount(newValue) as number) : range[1]
 
       const nextRange: Range<number | null> | null =
@@ -63,6 +64,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
       if (blurValue == null) return
 
       const nextRange = range.map((value, i) => (i === index ? blurValue : value)) as Range<number | null>
+
       setRange(nextRange[0] != null && nextRange[1] != null ? (sortBy(nextRange) as Range<number>) : nextRange)
     },
     [range, setRange],

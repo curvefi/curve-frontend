@@ -27,6 +27,7 @@ export function assertValidity<D extends object, S extends ValidationSuite>(
   if (entries.length > 0) {
     throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
   }
+
   return data as D
 }
 

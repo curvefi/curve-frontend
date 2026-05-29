@@ -42,6 +42,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '$network/gauges/$gaugeAddress',
     component: PageGauge,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `Gauge - ${params.gaugeAddress} - Curve` }] }),
     ...layoutProps,
   }),
@@ -54,12 +55,14 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '$network/proposals/$proposalId',
     component: PageProposal,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `Proposal - ${params.proposalId} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/user/$userAddress',
     component: PageUser,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `veCRV Holder - ${params.userAddress} - Curve` }] }),
     ...layoutProps,
   }),

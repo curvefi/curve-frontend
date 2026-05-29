@@ -62,6 +62,7 @@ const WalletListItem = ({
     labelVariant="bodyMBold"
     icon={<WalletIcon connector={connector} />}
     value={connector.id}
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     onSelected={() => onConnect(connector)}
     isLoading={isLoading}
   />
@@ -140,6 +141,7 @@ export const WagmiConnectModal = () => {
       {error ? (
         <Alert variant="filled" severity="error">
           <AlertTitle>{t`Error connecting wallet`}</AlertTitle>
+          {}
           {(error as BaseError).shortMessage ?? (error as Error).message ?? (error as string)}
         </Alert>
       ) : null}

@@ -122,6 +122,7 @@ export const createDashboardSlice = (
 
       try {
         // Get user pool list
+
         const poolList = await fetchUserPools({ chainId, userAddress: walletAddress as Address })
 
         // no staked pools
@@ -166,6 +167,7 @@ export const createDashboardSlice = (
               poolName: pool.name,
               poolAddress: pool.address,
               userCrvApy,
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
               liquidityUsd: userPoolBalances?.[idx] || '0',
               profitBase: baseProfit,
               profitCrv: crvProfit,
@@ -177,6 +179,7 @@ export const createDashboardSlice = (
               claimableCrv: claimables.filter(({ symbol, amount }) => symbol === 'CRV' && +amount > 0),
               claimableOthers: claimables.filter(({ symbol, amount }) => symbol !== 'CRV' && +amount > 0),
               claimablesTotalUsd: claimables.reduce((total, { amount, price }) => total + +amount * price, 0),
+
               percentStaked: getPercentStaked(lpTokenBalances as { gauge: string; lpToken: string }),
             }
           })
@@ -185,34 +188,43 @@ export const createDashboardSlice = (
       } catch (error) {
         console.error(error)
         const errorKey = 'error-get-dashboard-data'
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         sliceState.setStateByKey('error', getErrorMessage(error, errorKey))
         return { dashboardDataMapper: {}, error: errorKey }
       }
     },
     sortFn: (chainId, sortBy, order, poolDatas) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       if (sortBy === SORT_ID.poolName) {
         return orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.liquidityUsd) {
         return orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.profits) {
         return orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.claimables) {
         return orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.userCrvApy) {
         return orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
       } else if (sortBy.startsWith('reward')) {
         const rewardsApy = get().pools.rewardsApyMapper[chainId]
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         if (sortBy === SORT_ID.rewardBase) {
           return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         if (sortBy === SORT_ID.rewardOthers) {
           return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
         }
       }
       return []
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     setFormValues: async (rChainId, curve, poolDataMapper, updatedFormValues) => {
       const {
         [sliceKey]: {
@@ -229,6 +241,7 @@ export const createDashboardSlice = (
       formValues.walletAddress = (formValues.walletAddress ?? '').toLowerCase()
 
       const activeKey = getActiveKey(rChainId, formValues)
+
       const isValidAddress = isAddress(formValues.walletAddress as Address)
       const storedDashboardData = storedDashboardDatasMapper[formValues.walletAddress]
 
@@ -267,6 +280,7 @@ export const createDashboardSlice = (
       }
 
       // get claimableFees, locked crv info
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       if (chainId === Chain.Ethereum) void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
 
       // get dashboard data

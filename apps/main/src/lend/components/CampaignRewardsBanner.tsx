@@ -16,10 +16,12 @@ export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBanner
   const blockchainId = networks[chainId].id as Chain
   const { data: supplyCampaigns } = useCampaignsByAddress({
     blockchainId,
+
     address: market?.addresses.vault as Address | undefined,
   })
   const { data: borrowCampaigns } = useCampaignsByAddress({
     blockchainId,
+
     address: market?.addresses.controller as Address | undefined,
   })
 

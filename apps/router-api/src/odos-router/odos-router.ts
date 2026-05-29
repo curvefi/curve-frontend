@@ -77,6 +77,7 @@ async function assembleOdosQuote(
     })
     throw new Error(`Odos assemble error - ${status} ${statusText}`)
   }
+
   return (await assembleResponse.json()) as AssemblePathResponse
 }
 
@@ -117,6 +118,7 @@ export const buildOdosRouteResponse = async (
     {
       router: protocol,
       amountIn: [amountIn],
+
       amountOut: outAmounts as [Decimal],
       priceImpact,
       gas: `${gasEstimate}`,

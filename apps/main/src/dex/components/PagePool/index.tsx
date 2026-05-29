@@ -83,7 +83,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
+
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
+
   const poolAddress = poolData?.pool.address as Address
   const shouldFetchSnapshots = pricesApi && !!poolAddress
   const { data: snapshots } = usePoolSnapshots(
@@ -110,6 +112,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const maxSlippage = useMemo(() => {
     const poolTypeDefaultMaxSlippage = pool.isCrypto ? '0.1' : '0.03'
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     return poolMaxSlippage || poolTypeMaxSlippage || poolTypeDefaultMaxSlippage
   }, [pool.isCrypto, poolMaxSlippage, poolTypeMaxSlippage])
 

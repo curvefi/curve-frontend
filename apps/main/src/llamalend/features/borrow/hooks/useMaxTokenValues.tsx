@@ -81,6 +81,7 @@ export function useMaxTokenValues({
     collateral: {
       data: maxCollateral,
       isLoading: !market || isLoadingMaxBorrow || isBalanceLoading,
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       error: maxBorrowError || balanceError,
     },
     debt: {
@@ -91,6 +92,7 @@ export function useMaxTokenValues({
     maxLeverage: {
       data: maxLeverage,
       isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       error: maxLeverageError || maxBorrowError,
     },
   }

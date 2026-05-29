@@ -18,6 +18,7 @@ export type TimestampResponse = number | `${number}` | IsoDateString
 export type Timestamp = number & { readonly [TimestampBrand]: true }
 
 /** Converts a `Date` to the exact type that is expected by a `Timestamp`. */
+
 export const fromDate = (date: Date) => date.getTime() as Timestamp
 
 const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/

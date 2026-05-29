@@ -40,6 +40,7 @@ const useLegacyChartPrices = () => {
   const removeCollateralPrices = useStore(
     state => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
+
   return useMemo(() => {
     if (repayLeveragePrices?.length) return repayLeveragePrices
     if (removeCollateralPrices?.length) return removeCollateralPrices

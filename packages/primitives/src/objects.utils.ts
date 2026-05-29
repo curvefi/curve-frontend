@@ -2,6 +2,7 @@ export type Falsy = false | 0 | '' | null | undefined
 export type PartialRecord<Key extends PropertyKey, Value> = Partial<Record<Key, Value>>
 
 /** Object.keys with better type inference */
+
 export const objectKeys = <T extends object>(values: T): (keyof T)[] => Object.keys(values) as (keyof T)[]
 
 /** Object.values with better type inference for records */
@@ -20,6 +21,7 @@ export const fromEntries = <K extends PropertyKey, V>(values: (readonly [K, V])[
  */
 export function mapRecord<K extends string, V, R>(obj: Record<K, V>, mapper: (key: K, value: V) => R): Record<K, R> {
   const entries = Object.entries(obj).map(([k, v]) => [k, mapper(k as K, v as V)])
+
   return Object.fromEntries(entries) as Record<K, R>
 }
 
@@ -28,6 +30,7 @@ export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRe
   Object.entries(obj) as [K, T][]
 
 /** Creates an array of all the values in the object that are not falsy. */
+
 export const notFalsy = <T>(...items: (T | Falsy)[]): T[] => items.filter(Boolean) as T[]
 
 /** Creates an array of all the flattened values in the given arrays. */
@@ -47,6 +50,7 @@ export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?:
   new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id)
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       reject(new Error(message || `Promise timed out after ${timeout}ms`))
     }, timeout)
     promise.then(resolve, reject)

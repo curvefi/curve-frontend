@@ -33,7 +33,9 @@ import { Voters } from './Voters'
 
 export const Proposal = () => {
   const { proposalId: rProposalId } = useParams<ProposalUrlParams>()
+
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
+
   const proposalType = voteType.toLowerCase() as ProposalType
   const { address: userAddress } = useConnection()
 
@@ -101,6 +103,7 @@ export const Proposal = () => {
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                   onClick={() => invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
                 />
               </ErrorWrapper>
@@ -116,6 +119,7 @@ export const Proposal = () => {
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
+                      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
                       <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.metadata ?? '')}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />

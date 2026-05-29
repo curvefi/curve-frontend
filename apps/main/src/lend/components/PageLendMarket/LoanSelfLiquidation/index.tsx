@@ -106,6 +106,7 @@ export const LoanSelfLiquidation = ({
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${market.borrowed_token.symbol}`
             const notification = notify(notifyMessage, 'pending')
@@ -119,6 +120,7 @@ export const LoanSelfLiquidation = ({
           status: helpers.getStepStatus(isComplete, step === 'SELF_LIQUIDATE', isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
             const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)

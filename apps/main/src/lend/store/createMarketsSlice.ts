@@ -75,6 +75,7 @@ export const createMarketsSlice = (
       }
 
       // stored
+
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k][chainId] ?? {}
       const missing = markets.filter(({ id }) => typeof storedMapper[id] === 'undefined')

@@ -13,6 +13,7 @@ export function useLlamaSnapshot(
   range: SnapshotRange = { kind: 'timeRange', timeOption: '1M' },
 ) {
   const isLendMarket = market instanceof LendMarketTemplate
+
   const controllerAddress = (isLendMarket ? market?.addresses.controller : market?.controller) as Address | undefined
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined

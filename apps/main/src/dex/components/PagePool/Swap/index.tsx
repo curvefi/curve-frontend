@@ -67,6 +67,7 @@ export const Swap = ({
 }) => {
   const isSubscribed = useRef(false)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolSwap.activeKey)
@@ -83,6 +84,7 @@ export const Swap = ({
   const setFormValues = useStore(state => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const network = (chainId && networks[chainId]) || null
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
@@ -103,6 +105,7 @@ export const Swap = ({
   } = useTokenBalance({
     chainId,
     userAddress,
+
     tokenAddress: (formValues.fromAddress as Address) || undefined,
   })
 
@@ -113,6 +116,7 @@ export const Swap = ({
   } = useTokenBalance({
     chainId,
     userAddress,
+
     tokenAddress: (formValues.toAddress as Address) || undefined,
   })
 
@@ -151,6 +155,7 @@ export const Swap = ({
         updatedFormValues,
         isGetMaxFrom,
         seed.isSeed,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
       )
     },
@@ -220,6 +225,7 @@ export const Swap = ({
           status: getStepStatus(isApprove, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApprove ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
@@ -239,7 +245,7 @@ export const Swap = ({
                   content: (
                     // TODO: fix typescript error
                     <WarningModal
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Existing violation before enabling this rule.
                       {...(exchangeOutput.modal as any)}
                       confirmed={confirmedLoss}
                       setConfirmed={setConfirmedLoss}
@@ -253,13 +259,15 @@ export const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+              { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

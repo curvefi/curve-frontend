@@ -88,6 +88,7 @@ export const LoanRepay = ({
         isLoaded ? api : null,
         market,
         updatedFormValues,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         updatedMaxSlippage || maxSlippage,
         shouldRefetch,
       )
@@ -190,6 +191,7 @@ export const LoanRepay = ({
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}`
@@ -226,6 +228,7 @@ export const LoanRepay = ({
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
                     disabled: !confirmedWarning,
                   },
@@ -233,6 +236,7 @@ export const LoanRepay = ({
                 },
               }
             : {
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                 onClick: async () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
               }),
         },
@@ -421,6 +425,7 @@ export const LoanRepay = ({
               },
               [borrowedTokenDecimals, hasExpectedBorrowed, updateFormValues, userState?.borrowed, userState?.debt],
             )}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             handleMaxClick={async () => {
               if (+userBalances.borrowed === 0) {
                 updateFormValues({ userBorrowed: '', isFullRepay: false })
@@ -490,6 +495,7 @@ export const LoanRepay = ({
       <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
         {txInfoBar}
         {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
         {formStatus.error === FormError.FullRepaymentRequired ? (
           <AlertBox alertType="error">
             {t`Only partial repayment from wallet's ${borrowed_token?.symbol} or full repayment from collateral or wallet's ${collateral_token?.symbol} is

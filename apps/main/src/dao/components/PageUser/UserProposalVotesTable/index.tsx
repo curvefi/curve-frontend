@@ -57,6 +57,7 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
         sortBy={userProposalVotesSortBy}
         errorMessage={t`An error occurred while fetching proposal votes.`}
         setSortBy={key => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         getData={() => invalidateUserProposalVotesQuery({ userAddress })}
         gridTemplateColumns={gridTemplateColumns}
         noDataMessage={t`No proposal votes found for this user.`}

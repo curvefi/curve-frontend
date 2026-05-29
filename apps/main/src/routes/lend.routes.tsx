@@ -34,6 +34,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets/$market',
     component: LendMarketPage,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `${params.market} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
@@ -57,6 +58,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets/$market/vault',
     component: PageVault,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     head: ({ params }) => ({ meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }] }),
     ...layoutProps,
   }),

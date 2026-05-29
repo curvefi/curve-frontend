@@ -13,6 +13,7 @@ export function getStorageValue(key: Key) {
 
   if (storedValue) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       parsedStoredValue = JSON.parse(storedValue) ?? {}
     } catch (error) {
       console.error(error)

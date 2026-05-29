@@ -107,6 +107,7 @@ export const FieldDatePicker = ({
           hasError: !!utcDateError,
           showError: !!curve?.signerAddress,
         }}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         isDisabled={loading || disabled || isMax}
         isDateUnavailable={isDateUnavailable}
         label={t`Select unlock date`}

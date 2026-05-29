@@ -42,6 +42,7 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   }
 
   const fallbackStart = orderedEntries[0][0] as Time
+
   const fallbackEnd = orderedEntries[orderedEntries.length - 1][0] as Time
   const rangeStartTime = (range.startTime ?? fallbackStart) as Time
   const rangeEndTime = (range.endTime ?? fallbackEnd) as Time
@@ -211,7 +212,9 @@ export const CandleChart = ({
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (wrapperRef.current) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         setWrapperWidth(wrapperRef.current.clientWidth)
       }
     }, Duration.ChartFrame), // ~60fps
@@ -781,6 +784,7 @@ export const CandleChart = ({
   }, [liquidationRange, liqRangeCurrentVisible, liqRangeNewVisible])
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       if (isUnmounting) return
 
@@ -797,6 +801,7 @@ export const CandleChart = ({
       chartRef.current?.timeScale().getVisibleLogicalRange()
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     wrapperRef.current.observe(chartContainerRef.current)
 
     const debouncedUpdate = debouncedUpdateDimensions.current
@@ -805,6 +810,7 @@ export const CandleChart = ({
       setIsUnmounting(true)
       debouncedUpdate.cancel()
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (wrapperRef?.current) wrapperRef.current.disconnect()
     }
   }, [wrapperRef, isUnmounting])

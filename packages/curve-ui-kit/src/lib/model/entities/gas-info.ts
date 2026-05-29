@@ -78,32 +78,44 @@ const {
 
     let parsedGasInfo
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     if (chainId === Chain.Ethereum) {
       // Ethereum uses api
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       const json = await httpFetcher(gasPricesUrl)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const { eip1559Gas: gasInfo, gas } = json?.data ?? {}
 
       if (gasInfo) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         parsedGasInfo = parseEthereumGasInfo(gasInfo, gas)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         const customFeeDataValues = getEthereumCustomFeeDataValues(gasInfo)
         if (customFeeDataValues) {
           curve.setCustomFeeData(customFeeDataValues)
         }
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Polygon) {
       // Polygon uses api
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       const json = await httpFetcher(gasPricesUrl)
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (json?.fast) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         parsedGasInfo = parsePolygonGasInfo(json)
       }
 
       if (json) {
         curve.setCustomFeeData({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           maxFeePerGas: json.fast.maxFee,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           maxPriorityFeePerGas: json.fast.maxPriorityFee,
         })
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.XLayer) {
       const { l2GasPrice } = await fetchL2GasPrice(curve)
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -116,6 +128,7 @@ const {
         const maxFeePerGas = null as unknown as undefined // todo: fix `undefined` type in curvejs, it actually checks `=== null`
         curve.setCustomFeeData({ gasPrice: l2GasPrice /*in gwei*/, maxFeePerGas, maxPriorityFeePerGas: maxFeePerGas })
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Arbitrum || chainId === Chain.Mantle) {
       const { customFeeData } = await fetchCustomGasFees(curve)
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -125,6 +138,7 @@ const {
         parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
         curve.setCustomFeeData(customFeeData)
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Fraxtal || chainId === Chain.Base) {
       // TODO: remove this hardcode value once it api is fixed
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -135,6 +149,7 @@ const {
           maxPriorityFeePerGas: 0.001,
         })
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Optimism) {
       // TODO: remove this hardcode value once it api is fixed
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -275,10 +290,13 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
   }
 
   if (l2GasUrl) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
     const fetchedData = await httpFetcher(l2GasUrl)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     const { eip1559Gas: gasInfo } = fetchedData?.data ?? {}
 
     baseInfo.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     baseInfo.basePlusPriorityL1 = [gasInfo.base * 6000]
 
     const { l2GasPriceWei, l1GasPriceWei } = await fetchL1AndL2GasPrice(curve)
@@ -315,6 +333,7 @@ function createGasInfoQueryOptions<TChainId extends number>({
     gasPricesUrl: network?.gasPricesUrl,
     // It seems that in the original code the Ethereum mainnet gas prices URL was used for L2 price fetching.
     // I do not question whether this is right or not. I just re-use what was already being used.
+
     gasPricesUrlL2: network?.gasL2 ? networks?.[1 as TChainId]?.gasPricesUrl : undefined,
   }
 }

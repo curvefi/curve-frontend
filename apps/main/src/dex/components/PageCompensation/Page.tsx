@@ -65,6 +65,7 @@ export const PageCompensation = () => {
         ) : (
           <>
             <strong>Please connect your wallet to view compensation</strong>
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
             <Button fillWidth loading={isConnecting} size="large" variant="filled" onClick={() => connectWallet()}>
               {t`Connect Wallet`}
             </Button>

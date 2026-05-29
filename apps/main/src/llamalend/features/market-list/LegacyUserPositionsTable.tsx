@@ -79,6 +79,7 @@ const useTabs = (results: LlamaMarketsResult | undefined) => {
 
   // Show the first tab that has user positions by default, or the first tab if none are found
   const defaultTab = useMemo(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     () => tabs.find(({ value }) => userHasPositions?.Lend[value] || userHasPositions?.Mint[value]) ?? tabs[0],
     [userHasPositions, tabs],
   )

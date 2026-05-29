@@ -170,6 +170,7 @@ export const createProposalsSlice = (
             status: 'ERROR',
             hash: null,
             txLink: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             error: error.message,
           },
         })
@@ -258,6 +259,7 @@ export const createProposalsSlice = (
             status: 'ERROR',
             hash: null,
             txLink: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             error: error.message,
           },
         })

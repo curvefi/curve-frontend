@@ -335,6 +335,7 @@ export const getPoolMetadataResponse = z
     ...data,
     gauges: [...gauges],
     assetTypes: assetTypes ? [...assetTypes] : null,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     oracles: oracles?.map(item => (item ? item : null)) ?? null,
     deploymentDate: deploymentDate ?? null,
   }))

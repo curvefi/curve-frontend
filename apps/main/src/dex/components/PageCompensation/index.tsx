@@ -37,6 +37,7 @@ export const FormCompensation = ({
       setBalances(groupedBalances)
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       setError(getErrorMessage(error, 'error'))
     }
   }, [])
@@ -55,8 +56,11 @@ export const FormCompensation = ({
       if (token === 'CRV') {
         try {
           const vestContract = new Contract(vestAddress, iface.format(), signer)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           const unvested = await vestContract.lockedOf(contractAddress)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           const fractions = await contracts[idx].contract.fractions(signerAddress)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           const totalFraction = await contracts[idx].contract.total_fraction()
 
           return { poolId, amount: ((Number(unvested) / 1e18) * Number(fractions)) / Number(totalFraction) }
@@ -77,8 +81,10 @@ export const FormCompensation = ({
         const signer = await provider.getSigner()
         const vestAddresses = await Promise.all(contracts.map(c => c.contract.vest()))
         const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(module => module.default)
+
         const iface = new Interface(abi as InterfaceAbi)
         const vestedTotals = await Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),
         )
         setVestedTotals(lodash.groupBy(vestedTotals, ({ poolId }) => poolId))

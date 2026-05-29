@@ -51,6 +51,7 @@ export const TabLabel = <T extends string | number>({
   startAdornment,
   endAdornment,
 }: TabLabelProps<T>) => {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const hasText = label || suffix
   return (
     <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>

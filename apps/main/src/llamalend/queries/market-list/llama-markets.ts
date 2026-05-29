@@ -384,7 +384,9 @@ export const useLlamaMarkets = (
         const getMintMarketBadDebt = createGetBadDebtMarket(badDebtMintMarkets.data)
 
         const userDataReady =
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
           !userAddress || [userLendingVaults, userSuppliedMarkets, userMintMarkets].every(q => q.data || q.error)
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         const marketsReady = [lendingVaults, mintMarkets].every(q => q.data || q.error)
         const isReady = setIsReady(marketsReady && (userDataReady || isTimedOut))
 

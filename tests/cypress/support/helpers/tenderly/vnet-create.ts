@@ -43,5 +43,6 @@ export const createVirtualTestnet = ({
           `Failed to create virtual testnet '${createOptions.slug}': ${response.status} ${response.statusText}`,
         )
       }
+
       return response.body as CreateVirtualTestnetResponse
     })

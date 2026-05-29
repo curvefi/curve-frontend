@@ -178,9 +178,12 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
       try {
         const { pools, ohlc } = await getOracle({
           endpoint: 'crvusd',
+
           chain: network as Chain,
+
           controller: checkSummedController as Address,
           interval,
+
           units: timeUnit as OHLCTimeUnit,
           start,
           end,
@@ -272,9 +275,12 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
       try {
         const { pools, ohlc } = await getOracle({
           endpoint: 'crvusd',
+
           chain: network as Chain,
+
           controller: checkSummedController as Address,
           interval,
+
           units: timeUnit as OHLCTimeUnit,
           start,
           end,
@@ -369,9 +375,12 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
       try {
         const ohlc = await getOHLC({
           endpoint: 'crvusd',
+
           chain: network as Chain,
+
           llamma: poolAddress as Address,
           interval,
+
           units: timeUnit as OHLCTimeUnit,
           start,
           end,
@@ -449,9 +458,12 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
       try {
         const ohlc = await getOHLC({
           endpoint: 'crvusd',
+
           chain: network as Chain,
+
           llamma: poolAddress as Address,
           interval,
+
           units: timeUnit as OHLCTimeUnit,
           start,
           end,

@@ -9,6 +9,7 @@ export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & Com
   styled.div<TableRowWrapperProps>`
     display: grid;
     grid-template-columns: ${({ columns, gridTemplateColumns }) =>
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
     padding: var(--spacing-1) var(--spacing-3);
     border-bottom: 1px solid var(--gray-500a20);

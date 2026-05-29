@@ -17,6 +17,7 @@ export const ErrorAlert = ({ error }: Props) => (
     variant="filled"
     severity="error"
     action={
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       <Button color="ghost" size="extraSmall" onClick={() => copyToClipboard(error)}>
         Copy
       </Button>

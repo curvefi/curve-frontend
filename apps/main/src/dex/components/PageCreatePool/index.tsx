@@ -35,6 +35,7 @@ type Props = {
 export const CreatePool = ({ curve }: Props) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const { data: networks } = useNetworks()
+
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const poolSymbol = useStore(state => state.createPool.poolSymbol)
   const swapType = useStore(state => state.createPool.swapType)

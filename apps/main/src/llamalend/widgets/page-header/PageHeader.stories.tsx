@@ -13,6 +13,7 @@ type PageHeaderViewProps = ComponentProps<typeof PageHeaderView>
 
 const blockchainId: Chain = 'ethereum'
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
 const mintMarket: MintMarketTemplate = Object.assign(Object.create(MintMarketTemplate.prototype), {
   coins: ['crvUSD', 'ETH'],
   coinAddresses: [zeroAddress, ethAddress],

@@ -58,6 +58,7 @@ export const Page = () => {
     if (api && market && isPageVisible) {
       setLoaded(true)
       const timer = setTimeout(
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         () =>
           Promise.all([
             fetchAllMarketDetails(api, market, true),

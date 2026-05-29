@@ -293,6 +293,7 @@ export function formatNumber(value: Amount | MissingAmount, options: NumberForma
 
 /** Common percentage formatter across the board for most llamalend percentages */
 export const formatPercent = (value?: Amount | null) =>
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   formatNumber(value || 0, {
     unit: 'percentage',
     abbreviate: true,

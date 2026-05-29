@@ -197,7 +197,9 @@ export const createAnalyticsSlice = (
 
       set(
         produce(state => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state[sliceKey].topHoldersSortBy = sortBy
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state[sliceKey].veCrvHolders.topHolders = [...topHolders].sort(
             (a, b) => Number(b[sortBy]) - Number(a[sortBy]),
           )
@@ -217,7 +219,9 @@ export const createAnalyticsSlice = (
         set(
           produce(state => {
             const reversedEntries = Object.entries(allHolders).reverse()
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(reversedEntries)
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].allHoldersSortBy.order = order
           }),
         )
@@ -226,8 +230,11 @@ export const createAnalyticsSlice = (
 
         set(
           produce(state => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].allHoldersSortBy.key = sortBy
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].allHoldersSortBy.order = 'desc'
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(sortedEntries)
           }),
         )

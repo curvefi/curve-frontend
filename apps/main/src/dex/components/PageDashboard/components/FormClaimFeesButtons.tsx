@@ -43,6 +43,7 @@ export const FormClaimFeesButtons = ({
   const fetchStepClaimFees = useStore(state => state.dashboard.fetchStepClaimFees)
   const setFormStatus = useStore(state => state.dashboard.setFormStatusClaimFees)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { chainId, signerAddress } = curve || {}
   const { data: networks } = useNetworks()
   const network = networks[chainId!] || null
@@ -130,6 +131,7 @@ export const FormClaimFeesButtons = ({
                 <Button
                   {...buttonProps}
                   loading={buttonProps.loading && claimingKey === key}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                   onClick={() => handleBtnClickClaimFees(key)}
                 >
                   {label}

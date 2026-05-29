@@ -103,6 +103,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
           status: helpers.getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstaked` : t`Unstake`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => handleBtnClickUnstake(payloadActiveKey, rFormType, api, market, formValues),
         },
       }

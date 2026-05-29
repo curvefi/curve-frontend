@@ -40,6 +40,7 @@ export const useSupplyPositionDetails = ({
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
+
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
   })
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserBalances({ chainId, marketId })
@@ -66,6 +67,7 @@ export const useSupplyPositionDetails = ({
   })
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
+
     contractAddress: market?.addresses?.controller as Address,
     limit: rateWindow,
   })

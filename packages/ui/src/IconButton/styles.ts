@@ -3,6 +3,7 @@ import { styled, type IStyledComponent } from 'styled-components'
 import { focusVisible } from '@ui/utils/sharedStyles'
 import type { IconButtonProps } from './types'
 
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 type StyledIconButtonProps = Omit<IconButtonProps, 'className'>
 
 export const StyledIconButton: IStyledComponent<'web', StyledIconButtonProps & ComponentPropsWithRef<'button'>> =
@@ -52,3 +53,4 @@ export const StyledIconButton: IStyledComponent<'web', StyledIconButtonProps & C
       }
     }}
   `
+/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */

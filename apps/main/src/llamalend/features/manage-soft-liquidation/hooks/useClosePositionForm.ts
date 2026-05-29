@@ -68,6 +68,7 @@ export function useClosePositionForm({
 
   const { collateral, debt, stablecoin } = userState ?? {}
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const error = userStateError || userBalancesError || borrowTokenUsdRateError || collateralTokenUsdRateError
 
   // Form state

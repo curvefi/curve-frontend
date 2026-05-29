@@ -16,6 +16,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const staked = useStore(state => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
   const { data: networks } = useNetworks()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const { rpcUrl } = (curveApi && networks[curveApi.chainId]) || {}
 
   const updateTotalStakeValue = useCallback(
@@ -28,7 +29,9 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const getContract = useCallback(
     async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(module => module.default.abi)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         const iface = new Interface(abi)
         return new Contract(address, iface.format(), provider)
       } catch (error) {
@@ -42,6 +45,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const getTotalSupply = useCallback(
     async (poolContract: Contract, gaugeContract: Contract) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const [lpTokenTotalSupply, gaugeTotalSupply] = await Promise.all([
           poolContract.totalSupply(),
           gaugeContract.totalSupply(),
@@ -63,6 +67,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
 
     if (address && rpcUrl && shouldCallApi) {
       void (async () => {
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         const provider = walletProvider || new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)

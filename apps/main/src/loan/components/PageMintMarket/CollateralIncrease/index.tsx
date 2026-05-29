@@ -149,6 +149,7 @@ export const CollateralIncrease = ({
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${llamma.collateralSymbol}`
             const notification = notify(notifyMessage, 'pending')
@@ -179,13 +180,15 @@ export const CollateralIncrease = ({
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Add anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues) }),
+            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+              { onClick: async () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues) }),
         },
       }
 

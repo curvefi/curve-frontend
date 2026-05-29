@@ -73,6 +73,7 @@ testCases.forEach(
       }))
 
       const suppliedAfterDeposit = deposit
+
       const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
 
       const SupplyTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (

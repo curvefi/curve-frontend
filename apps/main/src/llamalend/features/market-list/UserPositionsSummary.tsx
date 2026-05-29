@@ -61,6 +61,7 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
       }}
     >
       {summary.map((item, index) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         <UserPositionStatisticItem key={index} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
       ))}
     </Grid>

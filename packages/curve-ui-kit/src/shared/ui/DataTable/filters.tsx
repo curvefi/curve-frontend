@@ -12,6 +12,7 @@ export const parseRangeFilter = (serialized: string | undefined) =>
     | [number | null, number | null]
     | undefined
 
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
 export const serializeListFilter = (list: string[] | null | undefined) => list?.join(LIST_SEPARATOR) || null
 
 export const parseListFilter = (serialized: string | undefined) => serialized?.split(LIST_SEPARATOR).filter(v => v)

@@ -60,6 +60,7 @@ export const { useQuery: useMintMarkets } = queryFactory({
         .map(name => [name, getMarketData(api.getMintMarket(name))] as const)
         .flatMap(([name, market]) => [
           [name, market],
+
           [market.controller_address as Address, market],
         ]),
     )

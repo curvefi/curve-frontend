@@ -27,7 +27,9 @@ export function useNavigate() {
  * Note that during navigation, this will reflect the *new* search params before the navigation is complete.
  */
 export function useSearchParams(): URLSearchParams {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const { search } = useTanstackLocation()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
   return useMemo(() => new URLSearchParams(search), [search])
 }
 
@@ -62,7 +64,9 @@ export function useSearchNavigate(searchParams: URLSearchParams) {
  * Note that during navigation, this will reflect the *old* params until the navigation is complete.
  */
 export const useParams = <T>(): T => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const params = useTanstackParams({ strict: false })
+
   return params as unknown as T
 }
 
@@ -81,5 +85,6 @@ export function useMatchRoute<T extends Record<string, string> = Record<string, 
   options: Parameters<ReturnType<typeof useTanstackMatchRoute>>[0],
 ): T | false {
   const matchRoute = useTanstackMatchRoute()
+
   return matchRoute(options) as T | false
 }

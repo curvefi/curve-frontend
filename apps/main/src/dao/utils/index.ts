@@ -7,6 +7,7 @@ export * from './utilsDates'
 
 export function delayAction<T>(cb: T) {
   if (typeof cb === 'function') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     setTimeout(() => cb(), 50)
   }
 }
@@ -14,6 +15,7 @@ export function delayAction<T>(cb: T) {
 export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'
+
   return Chain[lodash.upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
 }
 

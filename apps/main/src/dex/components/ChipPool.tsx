@@ -65,6 +65,7 @@ export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
         </RouterLink>{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
         <Button onPress={() => copyToClipboard(poolAddress)}>
           <ChipPoolAddress>{parsedPoolAddress}</ChipPoolAddress>
           <ChipPoolCopyButtonIcon name="Copy" size={16} />

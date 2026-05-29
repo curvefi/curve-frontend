@@ -11,6 +11,7 @@ export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps; onConn
     <ConnectedWalletLabel address={address} onClick={() => disconnect()} loading={isConnecting} sx={sx} />
   ) : (
     <ConnectWalletButton
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onClick={() => {
         onConnect?.()
         return connect()

@@ -114,6 +114,7 @@ export const createQuickSwapSlice = (
         const userBalance = await fetchTokenBalance(config, {
           chainId,
           userAddress: signerAddress,
+
           tokenAddress: fromAddress as Address,
         })
 
@@ -216,6 +217,7 @@ export const createQuickSwapSlice = (
                   tokensNameMapper,
                 ),
                 fetchedToAmount: '',
+
                 modal: getRouterWarningModal(
                   resp,
                   searchedParams,
@@ -230,6 +232,7 @@ export const createQuickSwapSlice = (
           const fromAmount = await fetchTokenBalance(config, {
             chainId: curve.chainId,
             userAddress: curve.signerAddress,
+
             tokenAddress: searchedParams.fromAddress as Address,
           })
           cFormValues.fromError = +cFormValues.fromAmount > +fromAmount ? 'too-much' : ''
@@ -334,6 +337,7 @@ export const createQuickSwapSlice = (
           await fetchTokenBalance(config, {
             chainId: curve.chainId,
             userAddress: curve.signerAddress,
+
             tokenAddress: searchedParams.fromAddress as Address,
           })
         }
@@ -342,6 +346,7 @@ export const createQuickSwapSlice = (
           await fetchTokenBalance(config, {
             chainId: curve.chainId,
             userAddress: curve.signerAddress,
+
             tokenAddress: searchedParams.toAddress as Address,
           })
         }
@@ -456,12 +461,14 @@ export const createQuickSwapSlice = (
           await fetchTokenBalance(config, {
             chainId: curve.chainId,
             userAddress: curve.signerAddress,
+
             tokenAddress: fromAddress as Address,
           })
 
           await fetchTokenBalance(config, {
             chainId: curve.chainId,
             userAddress: curve.signerAddress,
+
             tokenAddress: toAddress as Address,
           })
         }
