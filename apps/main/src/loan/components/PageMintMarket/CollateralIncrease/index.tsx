@@ -41,7 +41,7 @@ export const CollateralIncrease = ({
   market: llamma,
 }: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
   const llammaId = llamma?.id ?? ''
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralIncrease.activeKey)
   const detailInfo = useStore(state => state.loanCollateralIncrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
@@ -113,7 +113,7 @@ export const CollateralIncrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         setTxInfoBar(
           <TxInfoBar
             description={t`Transaction complete`}
@@ -204,10 +204,10 @@ export const CollateralIncrease = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])

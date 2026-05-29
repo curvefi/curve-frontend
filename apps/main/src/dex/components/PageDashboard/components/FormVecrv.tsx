@@ -34,7 +34,7 @@ export const FormVecrv = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const dashboardVecrvInfo = useStore(state => state.dashboard.vecrvInfo[activeKey])
   const formStatus = useStore(state => state.dashboard.formStatus)
@@ -65,7 +65,7 @@ export const FormVecrv = () => {
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
-      if (isSubscribed.current && resp?.hash && resp.walletAddress === walletAddress && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.walletAddress === walletAddress && network) {
         const txDescription = t`Withdraw Complete`
         setTxInfoBar(
           <TxInfoBar
@@ -107,10 +107,10 @@ export const FormVecrv = () => {
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, use } from 'react'
 import { DashboardDataMapper, FormValues } from '@/dex/components/PageDashboard/types'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { assert } from '@primitives/objects.utils'
@@ -19,7 +19,7 @@ type DashboardContextType = {
 }
 
 const DashboardContext = createContext<DashboardContextType | null>(null)
-export const DashboardContextProvider = DashboardContext.Provider
+export const DashboardContextProvider = DashboardContext
 
 export const useDashboardContext = () =>
-  assert(useContext(DashboardContext), 'useDashboardContext has to be used within <DashboardContextProvider>')
+  assert(use(DashboardContext), 'useDashboardContext has to be used within <DashboardContextProvider>')

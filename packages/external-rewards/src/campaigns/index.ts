@@ -1,4 +1,5 @@
 import Aegis from './Aegis.json'
+import Apyx from './Apyx.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
 import Ethena from './Ethena.json'
@@ -46,4 +47,5 @@ export {
   Raac,
   Yld,
   Tangent,
+  Apyx,
 }

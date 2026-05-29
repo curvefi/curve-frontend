@@ -1,5 +1,5 @@
 import { BrowserProvider } from 'ethers'
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
@@ -63,4 +63,4 @@ export function useWagmiWallet() {
   }
 }
 
-export const useCurve = () => useContext(CurveContext)
+export const useCurve = () => use(CurveContext)

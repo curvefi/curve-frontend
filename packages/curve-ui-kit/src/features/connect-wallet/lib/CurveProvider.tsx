@@ -126,7 +126,7 @@ export const CurveProvider = <App extends AppName>({
   const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
   return (
-    <CurveContext.Provider
+    <CurveContext
       value={{
         connectState,
         network,
@@ -139,6 +139,6 @@ export const CurveProvider = <App extends AppName>({
       }}
     >
       {children}
-    </CurveContext.Provider>
+    </CurveContext>
   )
 }
