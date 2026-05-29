@@ -41,10 +41,12 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
             <StatsRow>
               {gaugeData.pool?.address && (
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+                  {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                   <StyledExternalLink href={scanAddressPath(networks[chainId], gaugeData.pool.address)}>
                     {shortenAddress(gaugeData.pool.address)}
                   </StyledExternalLink>
                   <ExternalLinkIconButton
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                     href={scanAddressPath(networks[chainId], gaugeData.pool.address)}
                     tooltip={t`View on explorer`}
                   />
@@ -81,10 +83,12 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
         </StatsTitleRow>
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
             <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
               href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}
               tooltip={t`View on explorer`}
             />

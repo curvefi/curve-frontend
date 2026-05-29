@@ -169,13 +169,17 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         const partialPoolDatas = Object.keys(poolsMapper).map(poolId => poolsMapper[poolId])
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
         // fetch tokens
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         await tokens.setTokensMapper(curve, partialPoolDatas)
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         return { poolsMapper, poolDatas: partialPoolDatas }
       } catch (error) {
         console.error(error)

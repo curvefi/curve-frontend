@@ -174,28 +174,43 @@ describe('GET routes integration', () => {
         })
         expect(statusCode).toBe(200)
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const payload = json()
         expect(payload).toHaveLength(expectedRoutes)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         payload.forEach(route => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(route.router).toBe(router)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(route.createdAt).toBeTypeOf('number')
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(route.route.length).toBeGreaterThan(0)
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           route.route.forEach(step => {
             if (router === 'curve') {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
               expect(step.protocol).toBe('curve')
             }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
           })
 
           const [expectedTokenIn] = query.tokenIn ?? []
           const [expectedTokenOut] = query.tokenOut ?? []
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           const [firstStep] = route.route
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           const lastStep = route.route[route.route.length - 1]
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(firstStep.tokenIn.join(',')?.toLowerCase()).toBe(expectedTokenIn.toLowerCase())
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           expect(lastStep.tokenOut.join(',')?.toLowerCase()).toBe(expectedTokenOut.toLowerCase())
         })
       })

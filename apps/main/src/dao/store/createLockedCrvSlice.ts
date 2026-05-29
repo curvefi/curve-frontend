@@ -82,7 +82,7 @@ export const createLockedCrvSlice = (
 ): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
       // stored state
       const storedFormValues = get()[sliceKey].formValues
@@ -131,21 +131,28 @@ export const createLockedCrvSlice = (
 
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, cloneDeep(cFormEstGas))
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const fn = networks[curve.chainId].api.lockCrv.estGasApproval
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
       const resp = await fn(activeKey, curve, rFormType, formValues.lockedAmt, formValues.days)
 
       cFormEstGas.loading = false
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (resp.error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         cFormStatus.error = resp.error
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         cFormEstGas.estimatedGas = resp.estimatedGas
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         cFormStatus.isApproved = resp.isApproved
       }
       get()[sliceKey].setStateByKeys({
         formStatus: cloneDeep(cFormStatus),
         formEstGas: { [activeKey]: cFormEstGas },
       })
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
       return resp
     },
     fetchStepApprove: async (activeKey, curve, rFormType, formValues) => {
@@ -158,14 +165,19 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const approveFn = networks[chainId].api.lockCrv.lockCrvApprove
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
       const resp = await approveFn(activeKey, provider, curve, formValues.lockedAmt)
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (resp.activeKey === get()[sliceKey].activeKey) {
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         if (resp.error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           cFormStatus.error = resp.error
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
         } else {
@@ -177,6 +189,7 @@ export const createLockedCrvSlice = (
           await get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, formValues)
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         return resp
       }
     },
@@ -191,16 +204,21 @@ export const createLockedCrvSlice = (
         get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
         const { chainId } = curve
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         const fn = networks[chainId].api.lockCrv.createLock
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
         const resp = await fn(activeKey, curve, provider, formValues.lockedAmt, formValues.utcDate, formValues.days)
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         if (resp.activeKey === get()[sliceKey].activeKey) {
           cFormStatus = cloneDeep(get()[sliceKey].formStatus)
           cFormStatus.formProcessing = false
           cFormStatus.step = ''
           cFormStatus.error = ''
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           if (resp.error) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             cFormStatus.error = resp.error
             get()[sliceKey].setStateByKey('formStatus', cFormStatus)
           } else {
@@ -227,16 +245,21 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const fn = networks[chainId].api.lockCrv.increaseAmount
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
       const resp = await fn(activeKey, curve, provider, formValues.lockedAmt)
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (resp.activeKey === get()[sliceKey].activeKey) {
         cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         if (resp.error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           cFormStatus.error = resp.error
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
         } else {
@@ -251,6 +274,7 @@ export const createLockedCrvSlice = (
           await invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         return resp
       }
     },
@@ -264,16 +288,21 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const fn = networks[chainId].api.lockCrv.increaseUnlockTime
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
       const resp = await fn(activeKey, provider, curve, formValues.days)
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (resp.activeKey === get()[sliceKey].activeKey) {
         cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         if (resp.error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           cFormStatus.error = resp.error
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
         } else {
@@ -288,6 +317,7 @@ export const createLockedCrvSlice = (
           await invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
         return resp
       }
     },

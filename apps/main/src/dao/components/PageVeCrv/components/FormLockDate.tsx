@@ -51,7 +51,9 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   const remainingLockedDays = dayjs(currUnlockUtcDate).diff(dayjs(todayUtcDate), 'day', false)
 
   const maxUtcDate = useMemo((): dayjs.Dayjs => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     const { calcUnlockTime } = networks[rChainId].api.lockCrv
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     return calcUnlockTime(curve!, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
   }, [currUnlockTime, curve, rChainId, rFormType, remainingLockedDays])
 
@@ -77,13 +79,16 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       }
 
       const days = utcDate.diff(currUnlockUtcTime, 'd')
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
       void updateFormValues({
         utcDate: toCalendarDate(utcDate),
         utcDateError,
         calcdUtcDate:
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
         days,
       })
@@ -93,20 +98,26 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   const handleBtnClickQuickAction = useCallback(
     (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const { calcUnlockTime } = networks[rChainId].api.lockCrv
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
         const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
       const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
       const days = utcDate.diff(currUnlockUtcTime, 'd')
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Existing violation before enabling this rule.
       const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days })
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
       return calcdUtcDate
     },
     [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, rFormType, updateFormValues],
@@ -123,6 +134,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
         if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Lock date updated`
           setTxInfoBar(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,
           )
         }

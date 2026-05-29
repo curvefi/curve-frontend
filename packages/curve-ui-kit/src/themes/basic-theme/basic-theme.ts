@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- Existing violation before enabling this rule.
 /// <reference path="./basic-theme.d.ts" />
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- Existing violation before enabling this rule.
 /// <reference path="./mui-toggle-button.d.ts" />
 import type { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'

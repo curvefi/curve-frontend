@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- Existing violation before enabling this rule.
 /// <reference path="./mui-icon-button.d.ts" />
 import { IconButtonProps } from '@mui/material/IconButton'
 import type { Components } from '@mui/material/styles'

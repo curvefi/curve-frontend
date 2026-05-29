@@ -41,6 +41,7 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
           <GaugeAddress>{shortenAddress(gaugeAddress)}</GaugeAddress>
           <ButtonsWrapper>
             <ExternalLinkIconButton
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
               href={scanAddressPath(networks[1], gaugeAddress ?? '')}
               tooltip={t`View gauge on explorer`}
             />

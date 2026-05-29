@@ -28,11 +28,13 @@ export const DetailInfoEstGas = ({
   estimatedGas: EstimatedGas | null
   stepProgress?: StepProgress | null
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const network = networks[chainId]
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
 
   const { estGasCost, estGasCostUsd, tooltip } = useMemo(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
     () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network),
     [estimatedGas, chainTokenUsdRate, network, gasInfo],
   )

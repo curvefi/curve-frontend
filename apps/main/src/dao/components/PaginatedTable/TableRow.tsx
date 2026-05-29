@@ -5,6 +5,7 @@ import type { InternalLinkProps } from '@ui/Link/InternalLink'
 
 interface TableRowWrapperProps { columns: number; gridTemplateColumns?: string }
 
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & ComponentPropsWithRef<'div'>> =
   styled.div<TableRowWrapperProps>`
     display: grid;
@@ -15,6 +16,7 @@ export const TableRowWrapper: IStyledComponent<'web', TableRowWrapperProps & Com
       border-bottom: none;
     }
   `
+/* eslint-enable @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */
 
 export const TableData: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
   font-variant-numeric: tabular-nums;

@@ -67,6 +67,7 @@ export const useParams = <T>(): T => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const params = useTanstackParams({ strict: false })
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   return params
 }
 

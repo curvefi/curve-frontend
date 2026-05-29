@@ -7,7 +7,7 @@ import { ReactNode } from 'react'
  * @returns The original string, or the string with the variables interpolated.
  */
 export const t = (key: string | readonly string[], ...template: unknown[]) =>
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
   Array.isArray(key) ? key.map((k, i) => (i < template.length ? `${k}${template[i]}` : k)).join('') : (key as string)
 
 /**

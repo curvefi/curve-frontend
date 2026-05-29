@@ -43,6 +43,7 @@ export const TotalRecurrence = ({ title }: Props) => {
           if (typeof prev.tokens.CRV === 'undefined') {
             prev.tokens.CRV = { symbol: 'CRV', day: Number(day), price }
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             prev.tokens.CRV.day += Number(day)
           }
         }
@@ -51,6 +52,7 @@ export const TotalRecurrence = ({ title }: Props) => {
           if (typeof prev.tokens[token] === 'undefined') {
             prev.tokens[token] = { symbol, day: Number(day), price }
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             prev.tokens[token].day += Number(day)
           }
         })
@@ -77,16 +79,19 @@ export const TotalRecurrence = ({ title }: Props) => {
             if (day === 0) return null
 
             return (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
                 <Chip
                   size="md"
                   {...(token === 'base'
                     ? {}
                     : {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                         tooltip: `${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`,
                         tooltipProps,
                       })}
                 >
+                  {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                   {formatNumber(day, { abbreviate: false })}
                 </Chip>
               </StyledStats>
