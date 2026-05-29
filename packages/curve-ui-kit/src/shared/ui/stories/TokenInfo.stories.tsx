@@ -1,0 +1,112 @@
+import Stack from '@mui/material/Stack'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { TokenInfo } from '../TokenInfo'
+
+const meta: Meta<typeof TokenInfo> = {
+  title: 'UI Kit/Widgets/TokenInfo',
+  component: TokenInfo,
+  argTypes: {
+    blockchainId: {
+      control: 'text',
+      description: 'Network the token is on',
+    },
+    address: {
+      control: 'text',
+      description: 'Token contract address',
+    },
+    iconPosition: {
+      control: 'select',
+      options: ['left', 'right'],
+      description: 'Whether the token icon renders before or after the labels',
+    },
+    primary: {
+      control: 'text',
+      description: 'Primary label, such as the token symbol or formatted token amount',
+    },
+    secondary: {
+      control: 'text',
+      description: 'Optional secondary label, such as notional value or token symbol',
+    },
+    showChainIcon: {
+      control: 'boolean',
+      description: 'Whether to show the blockchain chain badge icon',
+    },
+  },
+  args: {
+    blockchainId: 'ethereum',
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    iconPosition: 'left',
+    primary: 'USDC',
+    secondary: '$1.0001',
+    showChainIcon: false,
+  },
+}
+
+type Story = StoryObj<typeof TokenInfo>
+
+export const AssetCellUsage: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Asset-cell usage with the icon on the left, token symbol as primary label, and token value as secondary label.',
+      },
+    },
+  },
+}
+
+export const PoolSwapUsage: Story = {
+  args: {
+    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    iconPosition: 'right',
+    primary: '10.420M',
+    secondary: '$37.24M',
+  },
+  render: args => (
+    <Stack sx={{ width: 220, alignItems: 'flex-end' }}>
+      <TokenInfo {...args} />
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Pool-swap table usage with the icon on the right, token amount as primary label, and notional value as secondary label.',
+      },
+    },
+  },
+}
+
+export const CrvClaimRewardsUsage: Story = {
+  args: {
+    address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
+    iconPosition: 'left',
+    primary: '1,234.56',
+    secondary: 'CRV',
+    showChainIcon: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'CRV-claim rewards usage with the icon on the left, token amount as primary label, and token symbol as secondary label.',
+      },
+    },
+  },
+}
+
+export const NoSecondary: Story = {
+  args: {
+    primary: 'USDC',
+    secondary: undefined,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token info with only the primary label.',
+      },
+    },
+  },
+}
+
+export default meta
