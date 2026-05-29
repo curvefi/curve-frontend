@@ -73,7 +73,7 @@ export const UserPositionsTables = ({
             onReload={onReload}
           />
         )}
-        {[!hasUserPositions, !address].some(Boolean) && (
+        {(!hasUserPositions || !address) && (
           <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
             {address ? (
               !hasUserPositions && (

@@ -35,15 +35,15 @@ export const TokenOption = ({
 }: Option & TokenOptionCallbacks & TokenOptionsProps) => {
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
-  const menuItem = useRef<HTMLLIElement>(null)
+  const menuItemRef = useRef<HTMLLIElement>(null)
   const [primary, secondary, tertiary] = disabled
     ? Array(3).fill('textDisabled')
     : ['textPrimary', 'textSecondary', 'textTertiary']
   return (
-    <InvertOnHover hoverRef={menuItem}>
+    <InvertOnHover hoverRef={menuItemRef}>
       <Tooltip title={disabled && 'This token is not available because of'} body={disabledReason} placement="top">
         <MenuItem
-          ref={menuItem}
+          ref={menuItemRef}
           data-testid={`token-option-${symbol ?? address}`}
           // disabled={disabled} breaks `cursor: 'not-allowed'`
           onClick={disabled ? undefined : onToken}
