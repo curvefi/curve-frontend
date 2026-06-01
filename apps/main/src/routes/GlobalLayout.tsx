@@ -32,8 +32,7 @@ const useAppRoutes = (network: NetworkDef) => ({
   analytics: APP_LINK.analytics.routes,
 })
 
-// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
-const useAppMenu = (app: AppName): AppMenuOption =>
+const getAppMenu = (app: AppName): AppMenuOption =>
   ({
     dao: 'dao' as const,
     crvusd: 'llamalend' as const,
@@ -44,8 +43,7 @@ const useAppMenu = (app: AppName): AppMenuOption =>
     analytics: 'analytics' as const,
   })[app]
 
-// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
-const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
+const getSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
     dao: daoNetworks,
     crvusd: crvusdNetworks,
@@ -75,8 +73,8 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       backendMaintenance={backendMaintenance}
       chainId={network.chainId}
       networkId={network.id}
-      currentMenu={useAppMenu(currentApp)}
-      supportedNetworks={useAppSupportedNetworks(networks, currentApp)}
+      currentMenu={getAppMenu(currentApp)}
+      supportedNetworks={getSupportedNetworks(networks, currentApp)}
       isLite={network.isLite}
       appStats={useAppStats(currentApp, network)}
       routes={useAppRoutes(network)}

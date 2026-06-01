@@ -20,21 +20,19 @@ interface Props {
   sortField: PoolColumnId
 }
 
-// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
-const useDexPoolSortOptions = () =>
-  [
-    { id: PoolColumnId.Volume, label: t`Volume` },
-    { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
-    { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
-    { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
-  ] as const
+const DEX_POOL_SORT_OPTIONS = [
+  { id: PoolColumnId.Volume, label: t`Volume` },
+  { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
+  { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
+  { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
+] as const
 
 export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
-  const sortOptions = useDexPoolSortOptions()
+
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const selectedOption = useMemo(() => sortOptions.find(option => option.id === sortField), [sortOptions, sortField])
+  const selectedOption = useMemo(() => DEX_POOL_SORT_OPTIONS.find(option => option.id === sortField), [sortField])
 
   const handleSort = useCallback(
     (id: PoolColumnId) => {
@@ -58,7 +56,7 @@ export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid="drawer-sort-menu-dex-pools">
         <MenuList disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: Spacing.sm }}>
-          {sortOptions.map(({ id, label }) => (
+          {DEX_POOL_SORT_OPTIONS.map(({ id, label }) => (
             <InvertOnHover hoverRef={menuRef} key={id}>
               <MenuItem
                 ref={menuRef}

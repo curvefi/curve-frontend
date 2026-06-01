@@ -2,7 +2,6 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -13,6 +12,7 @@ import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/cr
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
+import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 import { useBorrowRates } from '../../../widgets/action-card/hooks/useBorrowRates'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
@@ -58,7 +58,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prevCollateral={constQ('0')}
       debt={constQ(debt)}
       prevDebt={constQ('0')}
-      {...useLeverageInfoFields({
+      {...getLeverageInfoFields({
         leverageEnabled,
         routes,
         collateralDelta: userCollateral,

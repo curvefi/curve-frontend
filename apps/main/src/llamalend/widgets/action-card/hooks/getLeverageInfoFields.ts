@@ -21,8 +21,7 @@ interface LeverageInfoFieldsOptions {
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
-// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Existing violation before enabling this rule.
-export const useLeverageInfoFields = ({
+export const getLeverageInfoFields = ({
   leverageEnabled,
   routes,
   collateralDelta,

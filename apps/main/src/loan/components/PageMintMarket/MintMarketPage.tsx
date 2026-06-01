@@ -12,7 +12,7 @@ import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi } from '@/loan/types/loan.types'
-import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
+import { getCollateralListPathname, getChainId } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -62,7 +62,7 @@ export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
   const rCollateralId = params.collateralId.toLowerCase()
   const { llamaApi: curve = null, isHydrated, provider } = useCurve()
-  const rChainId = useChainId(params)
+  const rChainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
