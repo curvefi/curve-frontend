@@ -77,13 +77,13 @@ export const defineMuiInputBase = (
         paddingInlineStart: InputSpacing.PaddingX.tiny,
         paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
-      '&.MuiInputBase-sizeLarge': {
-        height: InputSize.large,
+      '&.MuiInputBase-sizeExtraLarge': {
+        height: InputSize.extraLarge,
       },
-      '&.MuiInputBase-sizeLarge .MuiInputBase-input': {
-        height: InputSize.large,
+      '&.MuiInputBase-sizeExtraLarge .MuiInputBase-input': {
+        height: InputSize.extraLarge,
         ...typography.headingSBold,
-        paddingInlineStart: InputSpacing.PaddingX.large,
+        paddingInlineStart: InputSpacing.PaddingX.extraLarge,
         paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
       '&.MuiInputBase-multiline': {

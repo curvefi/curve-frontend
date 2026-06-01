@@ -267,8 +267,7 @@ export const LargeTokenInput = ({
       data-testid={testId}
       sx={{
         backgroundColor: t => t.design.Inputs.Large.Default.Fill,
-        outline: t =>
-          `1px solid ${isError ? t.design.Inputs.Base.Default.Border.Error : t.design.Inputs.Base.Default.Border.Default}`,
+        outline: t => `1px solid ${t.design.Inputs.Base.Default.Border[isError ? 'Error' : 'Default']}`,
         '&:hover': {
           backgroundColor: t => t.design.Inputs.Base.Default.Fill.Hover,
           outlineColor: t => t.design.Inputs.Base.Default.Border.Hover,
@@ -282,8 +281,7 @@ export const LargeTokenInput = ({
         ...(disabled && {
           '&:hover': {
             backgroundColor: t => t.design.Inputs.Large.Default.Fill,
-            outlineColor: t =>
-              isError ? t.design.Inputs.Base.Default.Border.Error : t.design.Inputs.Base.Default.Border.Default,
+            outlineColor: t => t.design.Inputs.Base.Default.Border[isError ? 'Error' : 'Default'],
           },
         }),
       }}

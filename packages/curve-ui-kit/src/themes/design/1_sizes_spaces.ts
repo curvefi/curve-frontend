@@ -61,7 +61,7 @@ const MappedInputSize = {
   tiny: MappedButtonSize.xs,
   small: MappedButtonSize.sm,
   medium: MappedButtonSize.md,
-  large: MappedButtonSize.lg,
+  extraLarge: MappedButtonSize.lg,
 } as const
 
 const MappedInputSpacing = {
@@ -69,7 +69,7 @@ const MappedInputSpacing = {
     tiny: Spacing[200],
     small: Spacing[300],
     medium: Spacing[300],
-    large: Spacing[300],
+    extraLarge: Spacing[300],
   },
   ContentPaddingRight: Spacing[300],
   HelperPaddingTop: Spacing[200],
@@ -81,7 +81,7 @@ const MappedSelectSize = {
   tiny: MappedButtonSize.xs,
   small: MappedButtonSize.sm,
   medium: MappedButtonSize.md,
-  large: MappedButtonSize.lg,
+  extraLarge: MappedButtonSize.lg,
 } as const
 
 const MappedSelectSpacing = {
@@ -89,20 +89,20 @@ const MappedSelectSpacing = {
     tiny: Spacing[200],
     small: Spacing[300],
     medium: Spacing[300],
-    large: Spacing[300],
+    extraLarge: Spacing[300],
   },
   ContentPaddingY: {
     tiny: Spacing[100],
     small: Spacing[300],
     medium: Spacing[300],
-    large: Spacing[300],
+    extraLarge: Spacing[300],
   },
   IconGap: Spacing[300],
   IconPaddingRight: {
     tiny: Spacing[200],
     small: Spacing[300],
     medium: Spacing[300],
-    large: Spacing[300],
+    extraLarge: Spacing[300],
   },
 } as const
 
@@ -122,7 +122,7 @@ const MappedSelectListItem = {
 const MappedLargeTokenInput = {
   AmountHeight: MappedButtonSize.sm,
   BalanceIconSize: MappedIconSize.xs,
-  PaddingX: MappedInputSpacing.PaddingX.large,
+  PaddingX: MappedInputSpacing.PaddingX.extraLarge,
   RowGap: Spacing[0],
 } as const
 

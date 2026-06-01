@@ -27,7 +27,7 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
         sx: theme => ({
           height: AmountHeight,
           backgroundColor: Transparent,
-          color: isError ? theme.design.Inputs.Text.Error : theme.design.Inputs.Text.Value,
+          color: theme.design.Inputs.Text[isError ? 'Error' : 'Value'],
           ...theme.typography.headingSBold,
           '&& input.MuiInputBase-input': {
             height: AmountHeight,

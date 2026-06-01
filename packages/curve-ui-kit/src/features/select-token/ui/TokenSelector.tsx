@@ -16,7 +16,7 @@ type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModa
   onOpen: () => void
   /** Callback to close modal */
   onClose: () => void
-  /** Size of the trigger button. Defaults to medium to preserve existing non-large-input usage. */
+  /** Size of the trigger button. Defaults to medium to preserve existing usage. */
   size?: SelectProps['size']
   /**
    * Token list to render inside the modal.

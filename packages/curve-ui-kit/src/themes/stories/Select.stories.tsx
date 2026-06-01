@@ -14,7 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
-const sizes = ['tiny', 'small', 'medium', 'large'] satisfies NonNullable<SelectProps['size']>[]
+const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<SelectProps['size']>[]
 
 const meta: Meta<typeof Select> = {
   title: 'UI Kit/Primitives/Select',
@@ -228,7 +228,7 @@ export const InlineAlignment: Story = {
             <MenuItem value="Option 1">Option 1</MenuItem>
             <MenuItem value="Option 2">Option 2</MenuItem>
           </Select>
-          <Button size={size === 'tiny' ? 'extraSmall' : size}>Button</Button>
+          <Button size={size === 'tiny' ? 'extraSmall' : size === 'extraLarge' ? 'large' : size}>Button</Button>
         </Box>
       ))}
     </Box>

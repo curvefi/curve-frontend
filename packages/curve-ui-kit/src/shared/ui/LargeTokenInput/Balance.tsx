@@ -89,7 +89,7 @@ export const Balance = <T extends Amount>({
           variant="highlightXs"
           sx={{
             ...VERTICAL_CENTER_TEXT,
-            color: t => (disabled ? t.design.Inputs.Text.Disabled : t.design.Inputs.Text.Unit),
+            color: t => t.design.Inputs.Text[disabled ? 'Disabled' : 'Unit'],
           }}
           {...(inline && { component: 'span' })}
         >

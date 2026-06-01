@@ -8,7 +8,7 @@ import { NumericTextField, NumericTextFieldProps } from '../NumericTextField'
 
 const { Spacing } = SizesAndSpaces
 
-const sizes = ['tiny', 'small', 'medium', 'large'] satisfies NonNullable<NumericTextFieldProps['size']>[]
+const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<NumericTextFieldProps['size']>[]
 const variants = ['outlined', 'standard'] satisfies NonNullable<NumericTextFieldProps['variant']>[]
 
 const NumericTextFieldWrapper = (props: NumericTextFieldProps) => {

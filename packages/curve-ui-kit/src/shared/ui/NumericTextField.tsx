@@ -94,16 +94,8 @@ const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
 const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) =>
   val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
-const AdornmentTypography = ({
-  children,
-  position,
-  size,
-}: {
-  children: ReactNode
-  position: 'start' | 'end'
-  size: NumericTextFieldProps['size']
-}) => (
-  <InputAdornment position={position}>
+const AdornmentTypography = ({ children, size }: { children: ReactNode; size: NumericTextFieldProps['size'] }) => (
+  <InputAdornment position="end">
     <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} sx={{ color: t => t.design.Inputs.Text.Unit }}>
       {children}
     </Typography>
@@ -120,27 +112,15 @@ const adornments: Record<
 > = {
   dollar: {
     textAlign: 'left',
-    inputEndAdornment: size => (
-      <AdornmentTypography position="end" size={size}>
-        $
-      </AdornmentTypography>
-    ),
+    inputEndAdornment: size => <AdornmentTypography size={size}>$</AdornmentTypography>,
   },
   percentage: {
     textAlign: 'left',
-    inputEndAdornment: size => (
-      <AdornmentTypography position="end" size={size}>
-        %
-      </AdornmentTypography>
-    ),
+    inputEndAdornment: size => <AdornmentTypography size={size}>%</AdornmentTypography>,
   },
   bands: {
     textAlign: 'left',
-    inputEndAdornment: size => (
-      <AdornmentTypography position="end" size={size}>
-        {t`Bands`}
-      </AdornmentTypography>
-    ),
+    inputEndAdornment: size => <AdornmentTypography size={size}>{t`Bands`}</AdornmentTypography>,
   },
 }
 

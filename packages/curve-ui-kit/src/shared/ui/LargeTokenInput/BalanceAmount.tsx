@@ -29,12 +29,7 @@ export const BalanceAmount = <T extends Amount>({
       data-value={children ?? ''}
       sx={{
         ...VERTICAL_CENTER_TEXT,
-        color: t =>
-          disabled
-            ? t.design.Inputs.Text.Disabled
-            : children == null
-              ? t.design.Inputs.Text.MetaSubtle
-              : t.design.Inputs.Text.Value,
+        color: t => t.design.Inputs.Text[disabled ? 'Disabled' : children == null ? 'MetaSubtle' : 'Value'],
         ...sx,
       }}
     >

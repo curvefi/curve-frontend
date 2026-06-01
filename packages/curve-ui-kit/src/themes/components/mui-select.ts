@@ -3,66 +3,39 @@ import type { Components, TypographyVariantsOptions } from '@mui/material/styles
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import type { SelectProps } from '@ui-kit/shared/ui/Select'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { handleBreakpoints, type Responsive } from '../basic-theme'
+import { handleBreakpoints, mapBreakpoints, type Responsive } from '../basic-theme'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { IconSize, SelectSize, SelectSpacing } = SizesAndSpaces
 
-type ResponsiveOrStatic = Responsive | string
-
-const getResponsiveValue = (value: ResponsiveOrStatic, breakpoint: keyof Responsive) =>
-  typeof value === 'string' ? value : value[breakpoint]
-
-const getSelectIconSpace = (iconSize: Responsive, iconPaddingRight: ResponsiveOrStatic): Responsive<string> => ({
-  mobile: `calc(${iconSize.mobile} + ${SelectSpacing.IconGap} + ${getResponsiveValue(iconPaddingRight, 'mobile')})`,
-  tablet: `calc(${iconSize.tablet} + ${SelectSpacing.IconGap} + ${getResponsiveValue(iconPaddingRight, 'tablet')})`,
-  desktop: `calc(${iconSize.desktop} + ${SelectSpacing.IconGap} + ${getResponsiveValue(iconPaddingRight, 'desktop')})`,
-})
-
 type SelectSizeDefinition = {
   height: string
   iconSize: Responsive
-  iconPaddingRight: ResponsiveOrStatic
-  paddingBlock: ResponsiveOrStatic
-  paddingInlineStart: ResponsiveOrStatic
+  iconPaddingRight: string
+  paddingBlock: string
+  paddingInlineStart: string
   typography: 'bodySBold' | 'bodyMBold' | 'headingSBold'
 }
 
 type SelectSizes = NonNullable<SelectProps['size']>
 
+const getSelectIconSpace = (iconSize: Responsive, iconPaddingRight: string): Responsive<string> =>
+  mapBreakpoints(iconSize, size => `calc(${size} + ${SelectSpacing.IconGap} + ${iconPaddingRight})`) as Responsive
+
+const selectSize = (size: SelectSizes, typography: SelectSizeDefinition['typography']): SelectSizeDefinition => ({
+  height: SelectSize[size],
+  iconSize: size === 'tiny' ? IconSize.md : IconSize.lg,
+  iconPaddingRight: SelectSpacing.IconPaddingRight[size],
+  paddingBlock: SelectSpacing.ContentPaddingY[size],
+  paddingInlineStart: SelectSpacing.PaddingX[size],
+  typography,
+})
+
 const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
-  tiny: {
-    height: SelectSize.tiny,
-    iconSize: IconSize.md,
-    iconPaddingRight: SelectSpacing.IconPaddingRight.tiny,
-    paddingBlock: SelectSpacing.ContentPaddingY.tiny,
-    paddingInlineStart: SelectSpacing.PaddingX.tiny,
-    typography: 'bodySBold',
-  },
-  small: {
-    height: SelectSize.small,
-    iconSize: IconSize.lg,
-    iconPaddingRight: SelectSpacing.IconPaddingRight.small,
-    paddingBlock: SelectSpacing.ContentPaddingY.small,
-    paddingInlineStart: SelectSpacing.PaddingX.small,
-    typography: 'bodySBold',
-  },
-  medium: {
-    height: SelectSize.medium,
-    iconSize: IconSize.lg,
-    iconPaddingRight: SelectSpacing.IconPaddingRight.medium,
-    paddingBlock: SelectSpacing.ContentPaddingY.medium,
-    paddingInlineStart: SelectSpacing.PaddingX.medium,
-    typography: 'bodyMBold',
-  },
-  large: {
-    height: SelectSize.large,
-    iconSize: IconSize.lg,
-    iconPaddingRight: SelectSpacing.IconPaddingRight.large,
-    paddingBlock: SelectSpacing.ContentPaddingY.large,
-    paddingInlineStart: SelectSpacing.PaddingX.large,
-    typography: 'headingSBold',
-  },
+  tiny: selectSize('tiny', 'bodySBold'),
+  small: selectSize('small', 'bodySBold'),
+  medium: selectSize('medium', 'bodyMBold'),
+  extraLarge: selectSize('extraLarge', 'headingSBold'),
 }
 
 export const defineMuiSelect = (
