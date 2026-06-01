@@ -93,7 +93,7 @@ export const Balance = <T extends Amount>({
           <Typography
             variant="bodyXsRegular"
             color="textTertiary"
-            sx={{ ...VERTICAL_CENTER_TEXT }}
+            sx={{ ...VERTICAL_CENTER_TEXT, fontVariantNumeric: 'tabular-nums' }}
             {...(inline && { component: 'span' })}
           >
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}

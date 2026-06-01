@@ -25,7 +25,7 @@ export const DataCell = <T extends TableItem>({
       variant={getCellVariant(column)}
       component="td"
       data-testid={`data-table-cell-${column.id}`}
-      sx={applySxProps({ color: 'text.primary' }, sx)}
+      sx={applySxProps({ color: 'text.primary', fontVariantNumeric: 'tabular-nums' }, sx)}
     >
       {showCollapseIcon ? (
         <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>

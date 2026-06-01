@@ -6,6 +6,8 @@ import { Sizing, Spacing, TransitionFunction } from './design/0_primitives'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { Fonts } from './fonts'
 
+const TabularNums = 'tabular-nums'
+
 const disabledTypographyKeys = [
   'h1',
   'h2',
@@ -31,6 +33,7 @@ export type TypographyVariantDefinition = {
   lineHeight?: string | keyof typeof LineHeight
   letterSpacing?: string
   textCase?: 'uppercase' | 'capitalize'
+  fontVariantNumeric?: typeof TabularNums
   marginBottom?: number
 }
 
@@ -52,10 +55,12 @@ const variant = ({
   lineHeight = fontSize,
   letterSpacing = '0%',
   textCase,
+  fontVariantNumeric,
 }: TypographyVariantDefinition) => ({
   fontFamily,
   fontWeight: FontWeight[fontWeight ?? 'Medium'],
   letterSpacing,
+  fontVariantNumeric,
   // Undo the letter spacing to the right of the last letter
   ...(letterSpacing !== '0%' && {
     marginRight: `calc(${letterSpacing} * -1)`,
@@ -98,21 +103,21 @@ export const TYPOGRAPHY_VARIANTS = {
   buttonTabsM: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm', lineHeight: ButtonSize.xxs, textCase: 'uppercase' },
   buttonTabsL: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', textCase: 'uppercase' },
 
-  tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-  tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs' },
-  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[200], lineHeight: Spacing[400] },
-  tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Normal', fontSize: 'md', lineHeight: 'sm' },
-  tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm' },
-  tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Normal', fontSize: 'sm', lineHeight: 'xs' },
-  tableCellSBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs' },
+  tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TabularNums },
+  tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs', fontVariantNumeric: TabularNums },
+  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[200], lineHeight: Spacing[400], fontVariantNumeric: TabularNums },
+  tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Normal', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TabularNums },
+  tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TabularNums },
+  tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Normal', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TabularNums },
+  tableCellSBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TabularNums },
 
-  highlightXsNotional: { fontFamily: 'Mono', fontSize: 'xs' },
-  highlightXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs' },
-  highlightS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm' },
-  highlightM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' },
-  highlightL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: Sizing[300] },
-  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-1.28px' },
-  highlightXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
+  highlightXsNotional: { fontFamily: 'Mono', fontSize: 'xs', fontVariantNumeric: TabularNums },
+  highlightXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs', fontVariantNumeric: TabularNums },
+  highlightS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', fontVariantNumeric: TabularNums },
+  highlightM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TabularNums },
+  highlightL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: Sizing[300], fontVariantNumeric: TabularNums },
+  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-1.28px', fontVariantNumeric: TabularNums },
+  highlightXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px', fontVariantNumeric: TabularNums },
 } as const satisfies Record<string, TypographyVariantDefinition>
 
 export const createTypography = ({ Text }: DesignSystem) =>

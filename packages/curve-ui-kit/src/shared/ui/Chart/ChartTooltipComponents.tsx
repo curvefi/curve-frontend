@@ -13,6 +13,7 @@ export const ChartTooltipShell = ({ title, children }: { title: ReactNode; child
       flexDirection: 'column',
       gap: Spacing.sm,
       backgroundColor: theme => theme.design.Layer[3].Fill,
+      fontVariantNumeric: 'tabular-nums',
       padding: Spacing.md,
       width: MaxWidth.chartTooltip,
     }}

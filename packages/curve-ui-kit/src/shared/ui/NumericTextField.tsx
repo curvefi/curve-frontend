@@ -199,6 +199,9 @@ export const NumericTextField = ({
       // the width value chosen for the slider to match the width of the labels
       sx={{
         ...sx,
+        '& input': {
+          fontVariantNumeric: 'tabular-nums',
+        },
         ...(adornment === 'bands' && {
           flexShrink: 0,
           minWidth: MaxWidth.sliderInput.bands,

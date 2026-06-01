@@ -36,6 +36,7 @@ function useHeaderSx<T extends TableItem>({
     (): SxProps<Theme> => ({
       textAlign,
       verticalAlign: DataTableHeaderCellVerticalAlign[size],
+      fontVariantNumeric: 'tabular-nums',
       color: t => t.design.Table.Header['Label_&_icon'][isSorted ? 'Active' : 'Default'],
       paddingBlockStart: 0,
       paddingBlockEnd: DataTableHeaderCellPaddingBlockEnd[size],

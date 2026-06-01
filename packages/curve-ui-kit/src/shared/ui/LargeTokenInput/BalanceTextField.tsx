@@ -26,6 +26,7 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
           maxHeight: Sizing.lg,
           backgroundColor: t => t.design.Inputs.Large.Default.Fill,
           fontFamily: t => t.typography.highlightXl.fontFamily,
+          fontVariantNumeric: 'tabular-nums',
           fontSize: FontSize.xl,
           fontWeight: FontWeight.Bold,
           color: t => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),

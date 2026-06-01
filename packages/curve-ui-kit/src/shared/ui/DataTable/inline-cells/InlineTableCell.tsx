@@ -22,7 +22,7 @@ export const InlineTableCell = ({ children, onClick, sx, className }: InlineTabl
     onClick={onClick}
     className={className}
     sx={applySxProps(
-      { height: Sizing.xl, paddingY: Spacing.xxs, justifyContent: 'center' },
+      { height: Sizing.xl, paddingY: Spacing.xxs, justifyContent: 'center', fontVariantNumeric: 'tabular-nums' },
       onClick && { cursor: 'pointer' },
       sx,
     )}
