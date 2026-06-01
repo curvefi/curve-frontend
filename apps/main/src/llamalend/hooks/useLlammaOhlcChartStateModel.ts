@@ -48,52 +48,41 @@ export const useLlammaOhlcChartStateModel = ({
   const anchorKey = `${chainKey}:${marketId}:${controllerAddress}:${llammaAddress}:${timeOption}`
   const anchorEnd = useStableOhlcAnchorEnd(anchorKey)
 
-  const {
-    oraclePool: {
-      error: oraclePoolError,
-      isLoading: oraclePoolIsLoading,
-      ohlcData: oraclePoolData,
-      oraclePriceData: oraclePoolOraclePriceData,
-    },
-    llammaFallback: {
-      error: llammaFallbackError,
-      isLoading: llammaFallbackIsLoading,
-      oraclePriceData: llammaFallbackOraclePriceData,
-    },
-    oracleTokens,
-    refetch,
-    fetchMore,
-  } = useLlammaOhlcChartData({
-    endpoint,
-    chain: network,
-    controller: controllerAddress,
-    llamma: llammaAddress,
-    oraclePrice,
-    interval: chartInterval,
-    timeOption,
-    units: timeUnit,
-    anchorEnd,
-    enabled: enabled && !!network,
-  })
+  const { oraclePoolsChartQuery, oraclePriceFallbackQuery, oracleTokens, refetch, fetchMore } =
+    useLlammaOhlcChartData({
+      endpoint,
+      chain: network,
+      controller: controllerAddress,
+      llamma: llammaAddress,
+      oraclePrice,
+      interval: chartInterval,
+      timeOption,
+      units: timeUnit,
+      anchorEnd,
+      enabled: enabled && !!network,
+    })
+  const oraclePoolsOhlcData = oraclePoolsChartQuery.data?.ohlcData ?? []
+  const oraclePoolsOraclePriceData = oraclePoolsChartQuery.data?.oraclePriceData ?? []
+  const fallbackOraclePriceData = oraclePriceFallbackQuery.data ?? []
 
   // Oracle-pool is primary because it has the richest candle data. LLAMMA is
   // only needed as an oracle-line fallback when oracle-pool does not supply
   // oracle price data.
-  const hasOraclePoolData = oraclePoolData.length > 0 || oraclePoolOraclePriceData.length > 0
-  const hasFallbackOracleLine = llammaFallbackOraclePriceData.length > 0
-  const shouldUseFallbackChart = !hasOraclePoolData && hasFallbackOracleLine
-  const hasChartData = hasOraclePoolData || hasFallbackOracleLine
+  const hasOraclePoolsData = oraclePoolsOhlcData.length > 0 || oraclePoolsOraclePriceData.length > 0
+  const hasFallbackOracleLine = fallbackOraclePriceData.length > 0
+  const shouldUseFallbackChart = !hasOraclePoolsData && hasFallbackOracleLine
+  const hasChartData = hasOraclePoolsData || hasFallbackOracleLine
 
-  const isLoading = oraclePoolIsLoading || (!hasOraclePoolData && llammaFallbackIsLoading)
+  const isLoading = oraclePoolsChartQuery.isLoading || (!hasOraclePoolsData && oraclePriceFallbackQuery.isLoading)
   const selectedChartKey = isLoading ? undefined : shouldUseFallbackChart ? 'llamma' : 'oracle'
-  const currentError = hasChartData ? null : (llammaFallbackError ?? oraclePoolError)
+  const currentError = hasChartData ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
   const noDataAvailable = enabled && !isLoading && !currentError && !hasChartData
 
-  const ohlcData = shouldUseFallbackChart ? [] : oraclePoolData
+  const ohlcData = shouldUseFallbackChart ? [] : oraclePoolsOhlcData
   const selectedOraclePriceData =
-    oraclePoolOraclePriceData.length > 0 ? oraclePoolOraclePriceData : llammaFallbackOraclePriceData
+    oraclePoolsOraclePriceData.length > 0 ? oraclePoolsOraclePriceData : fallbackOraclePriceData
   const oraclePriceData = selectedOraclePriceData.length > 0 ? selectedOraclePriceData : undefined
-  const currentOraclePriceData = shouldUseFallbackChart ? llammaFallbackOraclePriceData : oraclePoolOraclePriceData
+  const currentOraclePriceData = shouldUseFallbackChart ? fallbackOraclePriceData : oraclePoolsOraclePriceData
 
   const oraclePoolLabel = oracleTokens
     ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`
@@ -112,7 +101,7 @@ export const useLlammaOhlcChartStateModel = ({
     llammaEndpoint: shouldUseFallbackChart,
   })
   const shouldFetchFallbackOracleLine =
-    shouldUseFallbackChart || (oraclePriceVisible && oraclePoolOraclePriceData.length === 0)
+    shouldUseFallbackChart || (oraclePriceVisible && oraclePoolsOraclePriceData.length === 0)
   const neededHistoricalSelection = useMemo(
     () => ({
       oraclePool: !shouldUseFallbackChart,

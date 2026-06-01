@@ -10,6 +10,7 @@ import {
   useOhlcQueryAdapter,
 } from '@ui-kit/features/candle-chart'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
+import { q, useMappedQuery } from '@ui-kit/types/util'
 import {
   type LlammaOhlcPage,
   type OraclePoolOhlcPage,
@@ -67,13 +68,13 @@ export const useLlammaOhlcChartData = ({
     anchorEnd,
     enabled,
   })
-  const oraclePool = useOhlcPagesAdapter({
+  const oraclePoolsChartAdapter = useOhlcPagesAdapter({
     query: oraclePoolQuery,
     selectData: selectOraclePoolChartData,
   })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
-  const oraclePoolHasOraclePriceData = oraclePool.data.oraclePriceData.length > 0
-  const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolHasOraclePriceData
+  const oraclePoolsHaveOraclePriceData = oraclePoolsChartAdapter.data.oraclePriceData.length > 0
+  const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
     chain,
@@ -84,13 +85,13 @@ export const useLlammaOhlcChartData = ({
     anchorEnd,
     enabled: shouldFetchLlammaQuery,
   })
-  const rawLlammaOraclePrice = useOhlcQueryAdapter({
+  const rawOraclePriceFallback = useOhlcQueryAdapter({
     query: llammaQuery,
     selectItems: selectLlammaOraclePriceData,
   })
-  const llammaOraclePriceData = useMemo(
-    () => applyLatestOraclePrice(rawLlammaOraclePrice.data, oraclePrice),
-    [oraclePrice, rawLlammaOraclePrice.data],
+  const oraclePriceFallbackQuery = useMappedQuery(
+    rawOraclePriceFallback,
+    useCallback(data => applyLatestOraclePrice(data, oraclePrice), [oraclePrice]),
   )
   const oracleTokenPage = oraclePoolQuery.data?.pages.find(
     page => page.collateralToken.symbol && page.borrowedToken.symbol,
@@ -123,17 +124,8 @@ export const useLlammaOhlcChartData = ({
 
   return {
     fetchMore,
-    llammaFallback: {
-      error: rawLlammaOraclePrice.error,
-      isLoading: rawLlammaOraclePrice.isLoading,
-      oraclePriceData: llammaOraclePriceData,
-    },
-    oraclePool: {
-      error: oraclePool.error,
-      isLoading: oraclePool.isLoading,
-      ohlcData: oraclePool.data.ohlcData,
-      oraclePriceData: oraclePool.data.oraclePriceData,
-    },
+    oraclePriceFallbackQuery,
+    oraclePoolsChartQuery: q(oraclePoolsChartAdapter),
     oracleTokens,
     refetch,
   }
