@@ -38,8 +38,6 @@ export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null 
   return marketId && lib && getLlamaMarket(marketId, lib)
 }
 
-const isLendV2Market = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && market.version === 'v2'
-
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
  * - Lend Market and its `leverage` property has leverage
@@ -63,11 +61,9 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate
-    ? !isLendV2Market(market) && market.leverage.hasLeverage()
-    : market?.leverageZap !== zeroAddress
+  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
 
-export const hasV2Leverage = (market: MintMarketTemplate) => !isLendV2Market(market) && market?.leverageV2.hasLeverage()
+export const hasV2Leverage = (market: MintMarketTemplate) => market?.leverageV2.hasLeverage()
 
 const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
