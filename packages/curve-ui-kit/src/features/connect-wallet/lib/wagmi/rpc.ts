@@ -24,7 +24,7 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.Sonic]: ['https://rpc.soniclabs.com'],
   [ChainId.XLayer]: ['https://rpc.xlayer.tech'],
   [ChainId.Aurora]: ['https://mainnet.aurora.dev'],
-  [ChainId.Corn]: ['https://rpc.ankr.com/corn_maizenet', 'https://mainnet.corn-rpc.com'],
+  [ChainId.Corn]: ['https://maizenet-rpc.usecorn.com', 'https://mainnet.corn-rpc.com'],
   [ChainId.Taiko]: ['https://rpc.ankr.com/taiko', 'https://taiko.drpc.org'],
   [ChainId.Ink]: ['https://rpc-gel.inkonchain.com', 'https://ink.drpc.org'],
   [ChainId.Hyperliquid]: ['https://rpc.hyperliquid.xyz/evm', 'https://rpc.hypurrscan.io'],

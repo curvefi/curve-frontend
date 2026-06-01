@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
-import { scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
   type LlammaTradeRow,
   LLAMMA_TRADES_COLUMNS,
@@ -46,6 +46,7 @@ export const useLlammaActivityTradesConfig = ({
       (network &&
         tradesData?.trades.map((trade: LlammaTrade) => ({
           ...trade,
+          buyerUrl: scanAddressPath(networkConfig, trade.buyer),
           txUrl: scanTxPath(networkConfig, trade.txHash),
           network,
         }))) ??
