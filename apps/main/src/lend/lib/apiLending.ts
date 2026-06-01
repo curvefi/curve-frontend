@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { zeroAddress } from 'viem'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'

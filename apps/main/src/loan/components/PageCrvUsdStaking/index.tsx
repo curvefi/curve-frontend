@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { useEffect } from 'react'
 import { useConnection } from 'wagmi'
 import { DepositWithdraw } from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
