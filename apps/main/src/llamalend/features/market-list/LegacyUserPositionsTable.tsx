@@ -103,7 +103,7 @@ const buildVaultUrl = (market: LlamaMarket) =>
     `${LEND_ROUTES.PAGE_MARKETS}/${market.controllerAddress}${LEND_MARKET_ROUTES.PAGE_VAULT}`,
   )
 
-type UserPositionsTableProps = {
+interface UserPositionsTableProps {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsResult>
 }

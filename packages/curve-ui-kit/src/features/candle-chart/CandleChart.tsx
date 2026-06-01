@@ -14,7 +14,7 @@ import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
-type RangeValueAccumulator = {
+interface RangeValueAccumulator {
   upper?: number
   lower?: number
 }
@@ -77,7 +77,7 @@ type LiquidationRangeSeriesApi = ISeriesApi<
 
 const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
 
-type Props = {
+interface Props {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */

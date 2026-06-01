@@ -10,7 +10,7 @@ import { DotsVerticalIcon } from '../../icons/DotsVertical'
 import { TabLabel } from './TabLabel'
 import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 
-type KebabTabProps<T> = {
+interface KebabTabProps<T> {
   size: NonNullable<TabsSwitcherProps<T>['size']>
   kebabTabsValue: string | boolean
   kebabTabRef: RefObject<HTMLDivElement | null>
@@ -19,7 +19,7 @@ type KebabTabProps<T> = {
   openKebabMenu: () => void
 }
 
-type KebabMenuProps<T> = {
+interface KebabMenuProps<T> {
   kebabMenuOpen: boolean
   kebabTabRef: RefObject<HTMLDivElement | null>
   closeKebabMenu: () => void

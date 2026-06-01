@@ -13,16 +13,18 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
-type TotalOtherProfit = {
+interface TotalOtherProfit {
   [token: string]: { symbol: string; day: number; price: number }
 }
 
-type TotalAll = {
+interface TotalAll {
   tokens: TotalOtherProfit
   totalUsd: number
 }
 
-type Props = { title?: string }
+interface Props {
+  title?: string
+}
 
 export const TotalRecurrence = ({ title }: Props) => {
   const {

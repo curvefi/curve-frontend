@@ -19,7 +19,7 @@ import { useLendMarketData } from '../hooks/useLendMarket'
 
 const { Height } = SizesAndSpaces
 
-type UseOhlcChartStateProps = {
+interface UseOhlcChartStateProps {
   rChainId: ChainId
   marketId: string
   previewPrices: Range<Decimal> | undefined

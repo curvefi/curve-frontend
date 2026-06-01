@@ -179,7 +179,7 @@ interface Simulation {
   [key: string]: unknown
 }
 
-export type CurveOdosAssembleRequest = {
+export interface CurveOdosAssembleRequest {
   path_id: AssemblePathRequest['pathId']
   user: AssemblePathRequest['userAddr']
 }

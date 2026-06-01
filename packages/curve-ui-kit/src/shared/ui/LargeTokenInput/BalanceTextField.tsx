@@ -4,7 +4,7 @@ import { NumericTextField } from '../NumericTextField'
 
 const { FontSize, FontWeight, Sizing } = SizesAndSpaces
 
-type BalanceTextFieldProps = {
+interface BalanceTextFieldProps {
   balance: Decimal | undefined
   isError: boolean
   disabled?: boolean

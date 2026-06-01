@@ -9,7 +9,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getNetworks } from '../entities/networks'
 
-type NetworkWithFactory = {
+interface NetworkWithFactory {
   chainId: ChainId
   name: string
   poolTypes: PoolTypes
@@ -17,11 +17,11 @@ type NetworkWithFactory = {
   isCrvRewardsEnabled: boolean
 }
 
-type NetworksWithFactory = {
+interface NetworksWithFactory {
   [key: string]: NetworkWithFactory
 }
 
-type DeploymentStatus = {
+interface DeploymentStatus {
   status: 'LOADING' | 'CONFIRMING' | 'ERROR' | 'SUCCESS' | ''
   transaction: ContractTransactionResponse | null
   errorMessage: string
@@ -29,7 +29,7 @@ type DeploymentStatus = {
 
 type SidechainNav = 0 | 1
 
-type SliceState = {
+interface SliceState {
   curveNetworks: NetworksWithFactory
   sidechainGauge: boolean
   currentPoolType: PoolType | null
@@ -47,7 +47,7 @@ type SliceState = {
 
 const sliceKey = 'deployGauge'
 
-export type DeployGaugeSlice = {
+export interface DeployGaugeSlice {
   [sliceKey]: SliceState & {
     setCurveNetworks: () => void
     setSidechainGauge: (bool: boolean) => void

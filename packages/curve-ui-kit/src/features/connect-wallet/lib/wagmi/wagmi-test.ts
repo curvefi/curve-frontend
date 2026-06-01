@@ -13,9 +13,19 @@ import { createConnector, type CreateConnectorFn } from 'wagmi'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { WAGMI_HTTP_OPTIONS } from './transports'
 
-type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
-type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
-type Account = { address: Address; capabilities: Record<string, unknown> }
+interface ConnectParams<T> {
+  chainId?: number
+  isReconnecting?: boolean
+  withCapabilities: T
+}
+interface ConnectResult<T> {
+  accounts: readonly T[]
+  chainId: number
+}
+interface Account {
+  address: Address
+  capabilities: Record<string, unknown>
+}
 
 /** Default custom transport for Cypress E2E tests, read-only */
 const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
@@ -34,7 +44,7 @@ const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
   })
 }
 
-export type CreateTestConnectorOptions = {
+export interface CreateTestConnectorOptions {
   /** A hexadecimal private key used to generate a test account */
   privateKey: Hex
   /** The testnet chain configuration */

@@ -10,7 +10,7 @@ import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type SliceState = {
+interface SliceState {
   isPageVisible: boolean
 }
 

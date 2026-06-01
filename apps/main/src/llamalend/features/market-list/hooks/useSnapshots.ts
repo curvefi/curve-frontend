@@ -11,7 +11,7 @@ import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-s
 import { MarketRateType, LlamaMarketType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
-type UseSnapshotsResult<T> = {
+interface UseSnapshotsResult<T> {
   snapshots: T[] | null
   isLoading: boolean
   snapshotKey: keyof T

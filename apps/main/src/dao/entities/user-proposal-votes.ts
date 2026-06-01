@@ -6,7 +6,7 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 
 const { WEEK } = TIME_FRAMES
 
-export type UserProposalVoteFormatted = {
+export interface UserProposalVoteFormatted {
   voteId: number
   voteType: ProposalType
   voteFor: number
@@ -16,7 +16,7 @@ export type UserProposalVoteFormatted = {
   voteTotalSupply: number
 }
 
-type UserProposalVotesMapper = {
+interface UserProposalVotesMapper {
   [proposalKey: string]: UserProposalVoteFormatted
 }
 

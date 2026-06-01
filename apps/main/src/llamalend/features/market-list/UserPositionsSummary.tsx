@@ -10,7 +10,7 @@ import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useU
 
 const { Spacing } = SizesAndSpaces
 
-type UserPositionStatisticsProps = {
+interface UserPositionStatisticsProps {
   markets: LlamaMarket[] | undefined
   selectedChains: string | undefined // the table filter for the chains column, unserialized from the url
 }

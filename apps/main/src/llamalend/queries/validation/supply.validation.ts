@@ -9,11 +9,11 @@ import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
 
-export type DepositMutation = {
+export interface DepositMutation {
   depositAmount: Decimal
 }
 
-type CalculatedDepositValues = {
+interface CalculatedDepositValues {
   maxDepositAmount: Decimal | undefined
 }
 export type DepositForm = MakeOptional<DepositMutation, 'depositAmount'> & CalculatedDepositValues
@@ -21,13 +21,13 @@ export type DepositForm = MakeOptional<DepositMutation, 'depositAmount'> & Calcu
 export type DepositQuery<ChainId = number> = UserMarketQuery<ChainId> & DepositMutation
 export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
-export type WithdrawMutation = {
+export interface WithdrawMutation {
   withdrawAmount: Decimal
   isFull: boolean
   userVaultShares: Decimal
 }
 
-type CalculatedWithdrawValues = {
+interface CalculatedWithdrawValues {
   maxWithdrawAmount: Decimal | undefined
 }
 export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount' | 'userVaultShares'> &
@@ -36,11 +36,11 @@ export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount' | 'us
 export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & WithdrawMutation
 export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
 
-export type StakeMutation = {
+export interface StakeMutation {
   stakeAmount: Decimal
 }
 
-type CalculatedStakeValues = {
+interface CalculatedStakeValues {
   maxStakeAmount: Decimal | undefined
 }
 export type StakeForm = MakeOptional<StakeMutation, 'stakeAmount'> & CalculatedStakeValues
@@ -48,11 +48,11 @@ export type StakeForm = MakeOptional<StakeMutation, 'stakeAmount'> & CalculatedS
 export type StakeQuery<ChainId = number> = UserMarketQuery<ChainId> & StakeMutation
 export type StakeParams<ChainId = number> = FieldsOf<StakeQuery<ChainId>>
 
-export type UnstakeMutation = {
+export interface UnstakeMutation {
   unstakeAmount: Decimal
 }
 
-type CalculatedUnstakeValues = {
+interface CalculatedUnstakeValues {
   maxUnstakeAmount: Decimal | undefined
 }
 export type UnstakeForm = MakeOptional<UnstakeMutation, 'unstakeAmount'> & CalculatedUnstakeValues

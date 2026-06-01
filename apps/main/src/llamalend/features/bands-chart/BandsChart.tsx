@@ -25,7 +25,7 @@ import { TooltipContent } from './TooltipContent'
 
 const { Height } = SizesAndSpaces
 
-type BandsChartProps = {
+interface BandsChartProps {
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken
   chartData: ChartDataPoint[] | undefined

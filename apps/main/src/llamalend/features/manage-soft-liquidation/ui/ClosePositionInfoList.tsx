@@ -11,7 +11,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { Decimal } from '@primitives/decimal.utils'
 import { constQ, q } from '@ui-kit/types/util'
 
-type ClosePositionInfoListProps = {
+interface ClosePositionInfoListProps {
   market: LlamaMarketTemplate | undefined
   chainId: LlamaChainId
   networks: NetworkDict<LlamaChainId>

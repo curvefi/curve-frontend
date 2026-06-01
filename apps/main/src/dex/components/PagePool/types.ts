@@ -9,13 +9,13 @@ import {
   type PoolUrlParams,
 } from '@/dex/types/main.types'
 
-export type EstimatedGas = {
+export interface EstimatedGas {
   loading: boolean
   estimatedGas: number | null
   error?: string | null
 }
 
-export type Slippage = {
+export interface Slippage {
   loading: boolean
   slippage: number | null
   isHighSlippage: boolean
@@ -25,12 +25,12 @@ export type Slippage = {
 
 export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage-gauge'
 
-export type Seed = {
+export interface Seed {
   isSeed: boolean | null
   loaded: boolean
 }
 
-export type PageTransferProps = {
+export interface PageTransferProps {
   curve: CurveApi | null
   params: PoolUrlParams
   routerParams: { rChainId: ChainId; rPoolIdOrAddress: string; rFormType: RFormType }

@@ -14,7 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export type TokenSectionProps<T extends Option = Option> = {
+export interface TokenSectionProps<T extends Option = Option> {
   /** List of token options to display */
   tokens: T[]
   /** Are token balances still being fetched? Is the section 'under construction'? */

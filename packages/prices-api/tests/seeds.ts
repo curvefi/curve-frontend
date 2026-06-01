@@ -15,14 +15,14 @@ import * as yieldBasis from '../src/yield-basis'
 import { getEndpointCatalogSkipReason } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 
-type PoolSeed = {
+interface PoolSeed {
   chain: Chain
   mainToken: Address
   poolAddress: Address
   referenceToken: Address
 }
 
-type MarketSeed = {
+interface MarketSeed {
   chain: Chain
   controller: Address
   llamma: Address
@@ -40,7 +40,7 @@ type LlamalendUserSeed = LlamalendMarketSeed & {
   user: Address
 }
 
-type RefuelPoolSeed = {
+interface RefuelPoolSeed {
   chain: Chain
   poolAddress: Address
 }

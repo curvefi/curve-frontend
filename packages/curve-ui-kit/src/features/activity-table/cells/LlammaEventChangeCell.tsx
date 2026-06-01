@@ -10,14 +10,14 @@ import type { LlammaEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-type LlammaEventChangeCellProps = {
+interface LlammaEventChangeCellProps {
   event: LlammaEventRow
   chain: Chain
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }
 
-type AmountRowProps = {
+interface AmountRowProps {
   chain: Chain
   amount: number
   amountUsd?: number | null

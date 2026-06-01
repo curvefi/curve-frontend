@@ -28,7 +28,7 @@ export const createMockMintMarket = (overrides: object) =>
 
 const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr: '0.04', lendApy: '0.04' })
 
-export type MockLendStats = {
+export interface MockLendStats {
   rates: MockMethod
   futureRates: MockMethod
 }
@@ -38,7 +38,7 @@ export const createMockLendStats = (): MockLendStats => ({
   futureRates: cy.stub().resolves(createMockLendRates()),
 })
 
-export type MockLendWallet = {
+export interface MockLendWallet {
   balances: MockMethod
 }
 
@@ -51,7 +51,7 @@ export const createMockLendWallet = (): MockLendWallet => ({
   }),
 })
 
-export type MockLendEstimateGas = {
+export interface MockLendEstimateGas {
   depositApprove: MockMethod
   deposit: MockMethod
   stakeApprove: MockMethod
@@ -75,7 +75,7 @@ export const createMockLendEstimateGas = (): MockLendEstimateGas => ({
   claimRewards: cy.stub().resolves('120000'),
 })
 
-export type MockLendVault = {
+export interface MockLendVault {
   estimateGas: MockLendEstimateGas
   maxDeposit: MockMethod
   maxWithdraw: MockMethod

@@ -17,7 +17,7 @@ import { DeployButton } from './DeployButton'
 import { DepositModule } from './DepositModule'
 import { WithdrawModule } from './WithdrawModule'
 
-type DepositWithdrawProps = {
+interface DepositWithdrawProps {
   params: NetworkUrlParams
 }
 

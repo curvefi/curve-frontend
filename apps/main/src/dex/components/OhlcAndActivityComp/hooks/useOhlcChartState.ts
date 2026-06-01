@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Height } = SizesAndSpaces
 
-type UseOhlcChartStateArgs = {
+interface UseOhlcChartStateArgs {
   rChainId: ChainId
   pricesApiPoolData: Pool
 }

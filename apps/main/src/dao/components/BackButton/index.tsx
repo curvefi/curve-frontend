@@ -4,7 +4,7 @@ import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { useNavigate } from '@ui-kit/hooks/router'
 
-type BackButtonProps = {
+interface BackButtonProps {
   path: string
   label: string
 }

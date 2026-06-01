@@ -4,7 +4,7 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
-type BadDebtParams = {
+interface BadDebtParams {
   type: LlamaMarketType
 }
 

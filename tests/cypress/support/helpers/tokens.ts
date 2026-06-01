@@ -2,7 +2,7 @@ import { oneOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
-type Token = {
+interface Token {
   symbol: string
   address: Address
   chain: string

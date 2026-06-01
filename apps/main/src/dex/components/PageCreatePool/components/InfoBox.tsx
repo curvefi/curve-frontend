@@ -14,7 +14,7 @@ interface Props {
   }
 }
 
-type StylesProps = {
+interface StylesProps {
   link2?: boolean
 }
 

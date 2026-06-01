@@ -2,7 +2,7 @@ import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/deleteVnets */
-export type DeleteVirtualTestnetOptions = {
+export interface DeleteVirtualTestnetOptions {
   /** @see {@link TestnetProps.id} for complete documentation */
   vnetId: TestnetProps['id']
 }

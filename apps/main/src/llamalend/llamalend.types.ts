@@ -20,7 +20,7 @@ export type UserPositionStatusKey =
   | 'incompleteConversion'
 export type UserPositionStatus = UserPositionStatusKey | undefined
 
-export type HealthMode = {
+export interface HealthMode {
   percent: string
   colorKey: HealthColorKey
   icon: ReactNode
@@ -29,7 +29,7 @@ export type HealthMode = {
   warning: string
 }
 
-export type FormDisabledAlert = {
+export interface FormDisabledAlert {
   alertType?: AlertType
   message?: ReactNode
 }

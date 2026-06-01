@@ -133,7 +133,7 @@ export function _parseRoutesAndOutput(
  * @property {number|null} priceImpact - Calculated price impact of the swap
  * @property {string} [fetchedToAmount] - Optional actual amount that will be received after the swap
  */
-type GetSlippageImpactParams = {
+interface GetSlippageImpactParams {
   maxSlippage: string
   toAmount: string
   priceImpact: number | null

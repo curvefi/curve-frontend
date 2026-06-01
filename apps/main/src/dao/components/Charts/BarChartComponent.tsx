@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 
-type Props<T> = {
+interface Props<T> {
   data: T[]
   dataKey: keyof T & string
   CustomTooltip: (props: TooltipProps<ValueType, NameType>) => ReactNode

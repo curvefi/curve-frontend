@@ -30,7 +30,7 @@ import { requireBlockchainId } from '@ui-kit/utils/network'
 
 const { Spacing } = SizesAndSpaces
 
-type PoolParametersProps = {
+interface PoolParametersProps {
   poolData: PoolData
   rChainId: ChainId
 }

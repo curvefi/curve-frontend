@@ -1,12 +1,12 @@
 import { ChainId } from '@/dex/types/main.types'
 import type { Address } from '@primitives/address.utils'
 
-export type AddRewardTokenProps = {
+export interface AddRewardTokenProps {
   chainId: ChainId
   poolId: string
 }
 
-export type AddRewardFormValues = {
+export interface AddRewardFormValues {
   rewardTokenId?: Address
   distributorId?: Address
 }

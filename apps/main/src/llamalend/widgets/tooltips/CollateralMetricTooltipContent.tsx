@@ -10,13 +10,13 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatUsd } from '@ui-kit/utils'
 
-type TokenValues = {
+interface TokenValues {
   value: Decimal | undefined | null
   usdRate: number | undefined | null
   symbol: string | undefined
 }
 
-type CollateralMetricTooltipContentProps = {
+interface CollateralMetricTooltipContentProps {
   totalValue: Decimal | undefined | null
   collateral: TokenValues
   borrow: TokenValues

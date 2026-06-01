@@ -4,7 +4,7 @@ import type { Decimal } from './decimal.utils'
 export const RouteProviders = ['curve', 'enso', 'odos'] as const
 export type RouteProvider = (typeof RouteProviders)[number]
 
-export type RouteStep = {
+export interface RouteStep {
   name: string
   tokenIn: [Address]
   tokenOut: [Address]
@@ -14,9 +14,14 @@ export type RouteStep = {
   chainId: number
 }
 
-export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
+export interface TransactionData {
+  data: Hex
+  to: Address
+  from: Address
+  value: Decimal
+}
 
-export type RouterRouteResponse = {
+export interface RouterRouteResponse {
   router: RouteProvider
   amountIn: [Decimal]
   amountOut: [Decimal]

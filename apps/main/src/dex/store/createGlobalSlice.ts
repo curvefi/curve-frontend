@@ -16,7 +16,7 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 const { isEqual } = lodash
 
-type GlobalState = {
+interface GlobalState {
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
 }

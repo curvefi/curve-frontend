@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 
-type Props = {
+interface Props {
   variant?: 'outlined'
   paddingSize?: 'small'
   selected: boolean

@@ -4,7 +4,7 @@ import { ExpectedBorrowed, type FormStatus as Fs, PageContentProps } from '@/len
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Step } from '@ui/Stepper/types'
 
-export type FormValues = {
+export interface FormValues {
   stateCollateral: string
   stateCollateralError: 'too-much-collateral' | ''
   userCollateral: string

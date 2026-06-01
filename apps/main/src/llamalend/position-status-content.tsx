@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-export type PositionStatusContent = {
+export interface PositionStatusContent {
   title: string
   description: ReactNode
   severity: 'info' | 'warning' | 'error'

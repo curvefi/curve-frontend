@@ -5,7 +5,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-type RepayExpectedBorrowedResult = {
+interface RepayExpectedBorrowedResult {
   totalBorrowed: Decimal
   borrowedFromStateCollateral?: Decimal
   borrowedFromUserCollateral?: Decimal

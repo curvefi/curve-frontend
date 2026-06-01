@@ -15,7 +15,7 @@ import { formatNumber } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { NumberField } from './NumberField'
 
-type VoteGaugeFieldProps = {
+interface VoteGaugeFieldProps {
   powerUsed: number
   userGaugeVoteData: UserGaugeVoteWeight
   userVeCrv: number

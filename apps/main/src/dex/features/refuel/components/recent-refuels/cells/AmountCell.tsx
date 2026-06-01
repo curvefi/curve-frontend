@@ -5,7 +5,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-type AmountCellProps = {
+interface AmountCellProps {
   amount: number | null | undefined
   usdAmount: number | null | undefined
 }

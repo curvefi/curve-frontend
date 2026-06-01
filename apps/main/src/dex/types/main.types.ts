@@ -10,12 +10,14 @@ export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = IChainId | number
 export type NetworkEnum = INetworkName
-export type NetworkConfigFromApi = {
+export interface NetworkConfigFromApi {
   hasDepositAndStake: boolean | undefined
   hasRouter: boolean | undefined
 }
 
-export type NetworkUrlParams = { network: INetworkName }
+export interface NetworkUrlParams {
+  network: INetworkName
+}
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
@@ -51,7 +53,7 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
 }
 
 export type Networks = Record<ChainId, NetworkConfig>
-export type CurrencyReservesToken = {
+export interface CurrencyReservesToken {
   token: string
   tokenAddress: string
   balance: number
@@ -59,13 +61,15 @@ export type CurrencyReservesToken = {
   usdRate: number
   percentShareInPool: string
 }
-export type CurrencyReserves = {
+export interface CurrencyReserves {
   poolId: string
   tokens: CurrencyReservesToken[]
   total: string
   totalUsd: string
 }
-export type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
+export interface CurrencyReservesMapper {
+  [chainPoolId: string]: CurrencyReserves
+}
 export const FormTypes = [
   'deposit',
   'withdraw',
@@ -78,18 +82,18 @@ export const FormTypes = [
 ] as const
 export type RFormType = (typeof FormTypes)[number]
 export type Pool = PoolTemplate
-export type ClaimableReward = {
+export interface ClaimableReward {
   token: string
   symbol: string
   amount: string
   price: number
 }
-export type RewardBase = {
+export interface RewardBase {
   day: string
   week: string
 }
 export type RewardCrv = number
-export type RewardOther = {
+export interface RewardOther {
   apy: number
   decimals?: number
   gaugeAddress: string
@@ -98,15 +102,17 @@ export type RewardOther = {
   tokenAddress: string
   tokenPrice?: number
 }
-export type RewardsApy = {
+export interface RewardsApy {
   poolId: string
   base: RewardBase
   other: RewardOther[]
   crv: RewardCrv[]
   error: { [rewardType: string]: boolean }
 }
-export type RewardsApyMapper = { [poolId: string]: RewardsApy }
-export type Token = {
+export interface RewardsApyMapper {
+  [poolId: string]: RewardsApy
+}
+export interface Token {
   address: string
   ethAddress?: string
   symbol: string
@@ -114,9 +120,16 @@ export type Token = {
   haveSameTokenName: boolean // use to display token address if duplicated token names
   volume?: number
 }
-export type TokensMapper = { [tokenAddress: string]: Token | undefined }
-export type TokensNameMapper = { [tokenAddress: string]: string }
-export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
+export interface TokensMapper {
+  [tokenAddress: string]: Token | undefined
+}
+export interface TokensNameMapper {
+  [tokenAddress: string]: string
+}
+export interface GaugeStatus {
+  rewardsNeedNudging: boolean
+  areCrvRewardsStuckInBridge: boolean
+}
 
 export interface Gauge {
   status: GaugeStatus | null
@@ -142,8 +155,10 @@ export interface PoolData {
   failedFetching24hOldVprice: boolean
 }
 
-export type PoolDataMapper = { [poolAddress: string]: PoolData }
-export type PoolDataCache = {
+export interface PoolDataMapper {
+  [poolAddress: string]: PoolData
+}
+export interface PoolDataCache {
   gauge: Gauge
   hasWrapped: boolean
   hasVyperVulnerability: boolean
@@ -168,7 +183,9 @@ export type PoolDataCache = {
     referenceAsset: string
   }
 }
-export type PoolDataCacheMapper = { [poolAddress: string]: PoolDataCache }
+export interface PoolDataCacheMapper {
+  [poolAddress: string]: PoolDataCache
+}
 export type PoolDataCacheOrApi = PoolData | PoolDataCache
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''

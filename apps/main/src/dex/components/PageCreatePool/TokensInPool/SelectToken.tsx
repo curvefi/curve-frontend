@@ -33,7 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { WarningBox } from '../components/WarningBox'
 import { SelectTokenButton } from './SelectTokenButton'
 
-type Props = {
+interface Props {
   curve: CurveApi
   haveSigner: boolean
   chainId: ChainId

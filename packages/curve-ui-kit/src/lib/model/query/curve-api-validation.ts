@@ -4,7 +4,9 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 import { chainValidationGroup } from './chain-validation'
 import { ChainParams } from './root-keys'
 
-type CurveApiOptions = { requireRpc?: boolean }
+interface CurveApiOptions {
+  requireRpc?: boolean
+}
 
 export const curveApiValidationGroup = <TChainId extends number>(
   { chainId }: ChainParams<TChainId>,

@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { Spacing, Sizing, IconSize } = SizesAndSpaces
 
-type SelectSizeDefinition = {
+interface SelectSizeDefinition {
   height: Responsive
   iconSize: Responsive
   paddingBlock: Responsive

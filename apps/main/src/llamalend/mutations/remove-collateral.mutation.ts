@@ -9,9 +9,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 
-type RemoveCollateralMutation = { userCollateral: Decimal }
+interface RemoveCollateralMutation {
+  userCollateral: Decimal
+}
 
-type RemoveCollateralOptions = {
+interface RemoveCollateralOptions {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

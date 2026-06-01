@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import type { PositionDetailsTab } from './hooks'
 
-type PositionDetailsTabsRowProps = {
+interface PositionDetailsTabsRowProps {
   tab: PositionDetailsTab
   onChange: (value: PositionDetailsTab) => void
   options: readonly TabOption<PositionDetailsTab>[]

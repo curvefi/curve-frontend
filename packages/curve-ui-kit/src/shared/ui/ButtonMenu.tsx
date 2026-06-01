@@ -12,14 +12,14 @@ import { Spinner } from './Spinner'
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
 /** Represents a selectable option in the dropdown menu */
-type Option<T extends string> = {
+interface Option<T extends string> {
   /** Unique identifier for the option */
   id: T
   /** Display text for the option */
   label: string
 }
 
-type Props<T extends string> = {
+interface Props<T extends string> {
   /** Text to display on the primary button */
   primary: string
   /** Array of options to display in the dropdown menu */

@@ -3,7 +3,7 @@ import type { MuiTooltipProps } from '@ui-kit/shared/ui/Tooltip'
 
 type ValueOf<T> = T[keyof T]
 
-export type TooltipProps = {
+export interface TooltipProps {
   minWidth?: string
   noWrap?: boolean
   clickable?: boolean

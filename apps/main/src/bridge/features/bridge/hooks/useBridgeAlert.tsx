@@ -1,13 +1,15 @@
 import { ReactNode, useMemo } from 'react'
 import { AlertType } from '@ui/AlertBox/types'
 
-export type BridgeAlert = {
+export interface BridgeAlert {
   alertType: AlertType
   isBridgeDisabled?: boolean // disallow user from bridging
   message?: ReactNode
 }
 
-type Alerts = { [chainId: number]: BridgeAlert }
+interface Alerts {
+  [chainId: number]: BridgeAlert
+}
 
 const BRIDGE_ALERTS: Alerts = {}
 

@@ -5,12 +5,12 @@ import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
 
-type Asset = {
+interface Asset {
   symbol: string
   address: string
 }
 
-type Props = {
+interface Props {
   chain: string
   assets: {
     primary: Asset

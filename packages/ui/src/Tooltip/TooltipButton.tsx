@@ -6,7 +6,9 @@ import { Icon } from '@ui/Icon'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { breakpoints } from '@ui/utils'
 
-export type IconStyles = { $svgTop?: string }
+export interface IconStyles {
+  $svgTop?: string
+}
 
 /**
  * Hook to handle mobile tooltip behavior, using click events to open the tooltip

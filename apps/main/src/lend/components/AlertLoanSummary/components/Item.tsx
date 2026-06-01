@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 
-type ItemCompProps = {
+interface ItemCompProps {
   $isDivider?: boolean
   $minWidth?: string
   $marginTop?: string

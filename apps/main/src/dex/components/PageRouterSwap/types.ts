@@ -10,7 +10,7 @@ export interface Route extends IRouteStep {
   routeUrlId: string
 }
 
-export type ExchangeRate = {
+export interface ExchangeRate {
   from: string
   to: string
   fromAddress: string
@@ -18,7 +18,7 @@ export type ExchangeRate = {
   label: string
 }
 
-export type RoutesAndOutputModal = {
+export interface RoutesAndOutputModal {
   [key: string]:
     | {
         lowExchangeRate: boolean
@@ -52,12 +52,12 @@ export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   modal: RoutesAndOutputModal | null
 }
 
-export type FormEstGas = {
+export interface FormEstGas {
   estimatedGas: number
   loading: boolean
 }
 
-export type FormStatus = {
+export interface FormStatus {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''
@@ -66,14 +66,14 @@ export type FormStatus = {
   swapError: string
 }
 
-export type FormValues = {
+export interface FormValues {
   isFrom: boolean | null
   fromAmount: string
   fromError: 'too-much' | ''
   toAmount: string
 }
 
-export type SearchedParams = {
+export interface SearchedParams {
   fromAddress: string
   toAddress: string
 }

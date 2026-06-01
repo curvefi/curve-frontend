@@ -6,7 +6,7 @@ import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 
-type Item<T> = {
+interface Item<T> {
   label: string
   value: T
   icon: ReactNode

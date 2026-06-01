@@ -6,8 +6,12 @@ import {
   useParams as useTanstackParams,
 } from '@tanstack/react-router'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type NavigateOptions = { replace?: boolean; resetScroll?: boolean; state?: any }
+interface NavigateOptions {
+  replace?: boolean
+  resetScroll?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state?: any
+}
 
 /**
  * Use navigate function from tanstack router.

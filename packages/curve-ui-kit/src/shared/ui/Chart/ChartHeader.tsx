@@ -15,7 +15,7 @@ import { SelectTimeOption, type TimeOption } from './SelectTimeOption'
 
 const { Spacing } = SizesAndSpaces
 
-export type ChartSelections<TChartKey = string> = {
+export interface ChartSelections<TChartKey = string> {
   /** Display title of the active selection (in the button-group variant it's on the left) */
   activeTitle: string
   /** Select dropdown menu item label or button-group button label */
@@ -23,7 +23,7 @@ export type ChartSelections<TChartKey = string> = {
   key: TChartKey
 }
 
-type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends string = string> = {
+interface ChartHeaderProps<TChartKey extends string = string, TTimeOption extends string = string> {
   chartSelections: {
     selections: ChartSelections<TChartKey>[]
     activeSelection: TChartKey | undefined

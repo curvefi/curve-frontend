@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { ChartSelection } from '../types'
 
-type UseDexChartListArgs = {
+interface UseDexChartListArgs {
   coins: PoolCoin[]
   nCoins: number
   hasChartData: boolean

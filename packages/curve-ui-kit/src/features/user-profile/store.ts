@@ -4,14 +4,14 @@ import { create, type StateCreator } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
-type UserProfileState = {
+interface UserProfileState {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
   showDeprecatedMarkets: boolean
 }
 
-type Action = {
+interface Action {
   reset: () => void
   setTheme: (theme: ThemeKey) => void
   /**

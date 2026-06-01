@@ -5,7 +5,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 
-type SymbolCellProps = {
+interface SymbolCellProps {
   label: string
   symbol: string | undefined | null
   tokenAddress: string | undefined | null

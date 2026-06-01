@@ -37,7 +37,7 @@ import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   exchangeOutput: { [activeKey: string]: ExchangeOutput }
   routerSwapOutput: { [activeKey: string]: RouterSwapOutput }
@@ -51,7 +51,7 @@ type SliceState = {
 const sliceKey = 'poolSwap'
 
 // prettier-ignore
-export type PoolSwapSlice = {
+export interface PoolSwapSlice {
   [sliceKey]: SliceState & {
     fetchIgnoreExchangeRateCheck(curve: CurveApi, pool: Pool): Promise<boolean>
     fetchExchangeOutput(activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>

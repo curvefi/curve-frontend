@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain, shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   noLink?: boolean
   snapshotVotingPower: boolean
   activeProposal?: ActiveProposal

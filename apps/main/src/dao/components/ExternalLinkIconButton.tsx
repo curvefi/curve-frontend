@@ -4,7 +4,7 @@ import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { TooltipButton } from '@ui/Tooltip/TooltipButton'
 
-type ExternalLinkIconButtonProps = {
+interface ExternalLinkIconButtonProps {
   href?: string
   tooltip: string
   children?: ReactNode

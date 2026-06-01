@@ -21,7 +21,7 @@ enum ERROR {
   filter = 'filter',
 }
 
-type Props = {
+interface Props {
   columnFiltersById: PartialRecord<PoolColumnId, string>
   resetFilters: () => void
 }

@@ -13,7 +13,7 @@ import { BarChartComponent } from '../../Charts/BarChartComponent'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
 
-type GaugeWeightDistributionProps = {
+interface GaugeWeightDistributionProps {
   isUserVotes: boolean
 }
 

@@ -216,7 +216,7 @@ export interface PathRequestV2 {
 /**
  * Interface from the prices API that provides access to the Odos quote endpoint.
  */
-export type CurveOdosQuoteRequest = {
+export interface CurveOdosQuoteRequest {
   chain_id: PathRequestV2['chainId']
   from_address: PathRequestV2['inputTokens'][number]['tokenAddress']
   to_address: PathRequestV2['outputTokens'][number]['tokenAddress']

@@ -10,11 +10,11 @@ import type { BridgeForm } from '../hooks/useBridgeForm'
 import { fetchBridgeCost } from '../queries/bridge-cost.query'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
-type BridgeMutation = {
+interface BridgeMutation {
   amount: Decimal
 }
 
-type BridgeOptions = {
+interface BridgeOptions {
   chainId: number
   onReset: () => void
 }

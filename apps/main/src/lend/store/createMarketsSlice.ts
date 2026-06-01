@@ -16,7 +16,7 @@ import { invalidateMarketDetails } from '../queries/invalidateMarketDetails'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {
+interface SliceState {
   statsBandsMapper: { [chainId: string]: MarketsStatsBandsMapper }
   statsCapAndAvailableMapper: { [chainId: string]: MarketsStatsCapAndAvailableMapper }
   maxLeverageMapper: { [chainId: string]: MarketsMaxLeverageMapper }
@@ -29,7 +29,7 @@ type SliceState = {
 const sliceKey = 'markets'
 
 // prettier-ignore
-export type MarketsSlice = {
+export interface MarketsSlice {
   [sliceKey]: SliceState & {
     // grouped
     fetchDatas(key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>

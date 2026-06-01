@@ -16,7 +16,7 @@ import { log } from '@ui-kit/lib/logging'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   loansDetailsMapper: UsersLoansDetailsMapper
   marketsBalancesMapper: UsersMarketsBalancesMapper
 }
@@ -24,7 +24,7 @@ type SliceState = {
 const sliceKey = 'user'
 
 // prettier-ignore
-export type UserSlice = {
+export interface UserSlice {
   [sliceKey]: SliceState & {
     // groups
     fetchDatas(key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>

@@ -1,7 +1,7 @@
 import { SurfacesAndText } from './1_surfaces_text'
 import { createLightDesign, createDarkDesign, createChadDesign } from './2_theme'
 
-export type DesignOptions = {
+export interface DesignOptions {
   inverted?: boolean
 }
 

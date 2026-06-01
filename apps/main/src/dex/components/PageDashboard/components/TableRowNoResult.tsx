@@ -4,7 +4,7 @@ import { SpinnerWrapper } from '@ui/Spinner'
 import { shortenAccount } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
+interface Props {
   colSpan: number
   noResult: boolean
   error: string

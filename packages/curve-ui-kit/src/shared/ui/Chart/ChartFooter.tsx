@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type ChartFooterProps<T extends string> = {
+interface ChartFooterProps<T extends string> {
   legendSets: LegendItem[]
   description?: string
   toggleOptions?: readonly T[]

@@ -8,7 +8,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { AppName } from '@ui-kit/shared/routes'
 import { ReleaseChannel } from '@ui-kit/utils'
 
-export type Wallet = {
+export interface Wallet {
   readonly provider?: Eip1193Provider
   readonly address: Address
 }
@@ -24,17 +24,17 @@ export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?
 export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress: Address }
 export type AnyCurveApi = CurveApi | LlamaApi
 
-export type LibChainId = {
+export interface LibChainId {
   curveApi: CurveChainId
   llamaApi: LlamaChainId
 }
 
-export type LibNetworkId = {
+export interface LibNetworkId {
   curveApi: CurveNetworkId
   llamaApi: LlamaNetworkId
 }
 
-export type Libs = {
+export interface Libs {
   llamaApi?: LlamaApi
   curveApi?: CurveApi
 }

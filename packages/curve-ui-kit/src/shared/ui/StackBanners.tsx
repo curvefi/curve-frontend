@@ -3,7 +3,7 @@ import { useMemo, type ReactNode, type ReactElement, Children, isValidElement } 
 import Box from '@mui/material/Box'
 import { DEFAULT_SEVERITY, type BannerProps } from '@ui-kit/shared/ui/Banner'
 
-type StackBannersProps = {
+interface StackBannersProps {
   children: ReactNode
 }
 

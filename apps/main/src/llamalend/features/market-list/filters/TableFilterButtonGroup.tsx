@@ -5,12 +5,12 @@ import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 
-export type TableFilterButtonOption<T extends string> = {
+export interface TableFilterButtonOption<T extends string> {
   value: T
   label: string
 }
 
-type TableFilterButtonGroupProps<T extends string> = {
+interface TableFilterButtonGroupProps<T extends string> {
   title: string
   value: T
   onChange: (_: MouseEvent<HTMLElement>, value: T | null) => void

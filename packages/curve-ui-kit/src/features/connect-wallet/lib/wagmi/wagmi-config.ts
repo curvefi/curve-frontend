@@ -33,7 +33,7 @@ let _config: Config | undefined
  */
 export const getWagmiConfig = () => _config
 
-type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
+interface CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> {
   /** An array of Chain objects to configure */
   chains: TChains
   /** A record mapping chain IDs to their respective transport configurations */

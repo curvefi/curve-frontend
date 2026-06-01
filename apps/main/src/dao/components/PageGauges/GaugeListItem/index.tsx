@@ -23,7 +23,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
 
-type Props = {
+interface Props {
   gaugeData: GaugeFormattedData
   gridTemplateColumns: string
   userGaugeWeightVoteData?: UserGaugeVoteWeight

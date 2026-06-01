@@ -4,7 +4,7 @@ import { queryFactory } from '@ui-kit/lib/model'
 
 const GAUGES_LEGACY_URL = 'https://api.curve.finance/v1/getAllGauges'
 
-type CurveApiBaseGauge = {
+interface CurveApiBaseGauge {
   isPool: boolean
   name: string
   shortName: string
@@ -55,7 +55,7 @@ type CurveApiLendingGauge = CurveApiBaseGauge & {
 
 type CurveApiGaugeData = CurveApiPoolGauge | CurveApiLendingGauge
 
-type CurveGaugeResponse = {
+interface CurveGaugeResponse {
   success: boolean
   data: {
     [poolId: string]: CurveApiGaugeData
@@ -63,7 +63,7 @@ type CurveGaugeResponse = {
   generatedTimeMs: number
 }
 
-type GaugeCurveApiDataMapper = {
+interface GaugeCurveApiDataMapper {
   [gaugeAddress: string]: CurveApiGaugeData
 }
 

@@ -21,7 +21,7 @@ const contactCopyByMethod: Record<ContactMethod, { label: string; placeholder: s
   discord: { label: t`Discord`, placeholder: '@johnthellama' },
 }
 
-type ErrorReportModalProps = {
+interface ErrorReportModalProps {
   isOpen: boolean
   onClose: () => void
   context: ErrorContext

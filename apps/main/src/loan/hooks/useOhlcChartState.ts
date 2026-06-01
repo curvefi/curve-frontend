@@ -17,7 +17,7 @@ import type { Range } from '@ui-kit/types/util'
 
 const { Height } = SizesAndSpaces
 
-type OhlcChartStateProps = {
+interface OhlcChartStateProps {
   chainId: ChainId
   market: Llamma | null
   marketId: string

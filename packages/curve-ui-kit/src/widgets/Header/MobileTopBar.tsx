@@ -4,7 +4,7 @@ import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
 
-type MobileTopBarProps = {
+interface MobileTopBarProps {
   toggleSidebar: () => void
   isSidebarOpen: boolean
   networks: NetworkMapping

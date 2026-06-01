@@ -9,7 +9,7 @@ import { UserEventsTable } from './UserEventsTable'
 
 const { Spacing } = SizesAndSpaces
 
-type UserPositionHistoryProps = {
+interface UserPositionHistoryProps {
   events: ParsedUserCollateralEvent[]
   isLoading: boolean
   isError: boolean

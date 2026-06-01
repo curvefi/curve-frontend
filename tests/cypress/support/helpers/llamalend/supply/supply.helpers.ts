@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, formatPercent, Chain } from '@ui-kit/utils'
 import { getActionValue } from '../action-info.helpers'
 
-type SupplyRpcTestMarket = {
+interface SupplyRpcTestMarket {
   id: string
   label: string
   chainId: LlamaChainId

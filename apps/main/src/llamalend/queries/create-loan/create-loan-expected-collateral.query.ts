@@ -7,7 +7,7 @@ import { decimal } from '@ui-kit/utils'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
-type CreateLoanExpectedCollateralResult = {
+interface CreateLoanExpectedCollateralResult {
   totalCollateral: Decimal
   leverage: Decimal
   userCollateral: Decimal

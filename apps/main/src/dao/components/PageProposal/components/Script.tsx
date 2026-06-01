@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 
-type Props = {
+interface Props {
   script: string
 }
 

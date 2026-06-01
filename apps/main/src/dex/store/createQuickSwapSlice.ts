@@ -27,7 +27,7 @@ import { fetchNetworks } from '../entities/networks'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   formEstGas: { [activeKey: string]: FormEstGas }
   formStatus: FormStatus
@@ -38,7 +38,7 @@ type SliceState = {
 
 const sliceKey = 'quickSwap'
 
-export type QuickSwapSlice = {
+export interface QuickSwapSlice {
   [sliceKey]: SliceState & {
     fetchMaxAmount(config: Config, curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchRoutesAndOutput(

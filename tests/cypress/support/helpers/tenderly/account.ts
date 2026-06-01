@@ -1,6 +1,6 @@
 import { assert } from '@primitives/objects.utils'
 
-export type TenderlyAccount = {
+export interface TenderlyAccount {
   accountSlug: string
   projectSlug: string
   accessKey: string

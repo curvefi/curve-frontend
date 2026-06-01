@@ -23,9 +23,20 @@ const BTC_DECIMALS = 18
 const USD_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
-type SuccessCase = { query: QueryString; expectedRoutes?: number }
-type ErrorResponse = { statusCode: number; code: string; error: string; message: string }
-type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
+interface SuccessCase {
+  query: QueryString
+  expectedRoutes?: number
+}
+interface ErrorResponse {
+  statusCode: number
+  code: string
+  error: string
+  message: string
+}
+interface FailureCase {
+  query: Partial<QueryString>
+  expectedResponse: ErrorResponse
+}
 
 /**
  * Success cases per provider. Curve supports amountIn and amountOut; Enso and Odos require amountIn.

@@ -16,7 +16,7 @@ import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {
+interface SliceState {
   estGas: { gas: number; fetchStatus: FetchStatus }
   depositApproval: { approval: boolean; allowance: string; fetchStatus: FetchStatus }
   preview: { fetchStatus: FetchStatus; value: string }
@@ -36,7 +36,7 @@ type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
 
 const sliceKey = 'scrvusd'
 
-export type ScrvUsdSlice = {
+export interface ScrvUsdSlice {
   [sliceKey]: SliceState & {
     checkApproval: { depositApprove: (amount: string) => Promise<void> }
     estimateGas: {

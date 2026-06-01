@@ -37,7 +37,7 @@ const TABLE_CONFIG = {
 const getEmptyState = (isError: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : PositionsEmptyState.NoPositions
 
-type UserPositionsTableProps = {
+interface UserPositionsTableProps {
   tableQuery: QueryProp<LlamaMarket[]>
   marketRateType: MarketRateType
   onReload: () => void

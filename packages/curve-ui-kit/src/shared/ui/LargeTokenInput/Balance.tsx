@@ -15,7 +15,7 @@ import { WithWrapper } from '../WithWrapper'
 const { Spacing, IconSize } = SizesAndSpaces
 
 /** Props for the Balance component */
-export type Props<T> = {
+export interface Props<T> {
   /** The token symbol to display */
   symbol: string | undefined
   /** The token balance amount (optional, in case of loading) */

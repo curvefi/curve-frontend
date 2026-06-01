@@ -4,7 +4,7 @@ import { ClaimableReward } from '@/dex/types/main.types'
 export type FormType = 'UNSTAKE' | 'WITHDRAW' | 'CLAIM'
 export type StepKey = 'APPROVAL' | 'UNSTAKE' | 'WITHDRAW' | 'CLAIM' | ''
 
-export type FormStatus = {
+export interface FormStatus {
   isApproved: boolean
   isClaimCrv: boolean
   isClaimRewards: boolean
@@ -16,7 +16,7 @@ export type FormStatus = {
 
 export type SelectedType = 'lpToken' | 'imbalance' | 'token'
 
-export type FormValues = {
+export interface FormValues {
   amounts: Amount[]
   claimableRewards: ClaimableReward[]
   claimableCrv: string

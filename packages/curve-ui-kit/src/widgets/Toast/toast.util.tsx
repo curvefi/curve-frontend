@@ -6,7 +6,7 @@ const onToast = new EventTarget()
 const addMessageKey = 'curveToast' as const
 const removeMessageKey = 'dismissCurveToast' as const
 
-export type ToastItem = {
+export interface ToastItem {
   id: string
   message?: ReactNode
   title: string

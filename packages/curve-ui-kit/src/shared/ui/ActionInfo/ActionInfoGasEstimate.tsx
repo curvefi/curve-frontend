@@ -9,12 +9,12 @@ import type { QueryProp } from '@ui-kit/types/util'
 import { formatUsd } from '@ui-kit/utils'
 import { ActionInfo } from './ActionInfo'
 
-export type TxGasInfo = {
+export interface TxGasInfo {
   estGasCostUsd?: Amount
   tooltip?: string
 }
 
-export type EstimatedTxCostProps = {
+export interface EstimatedTxCostProps {
   gas: QueryProp<TxGasInfo | null>
   isApproved?: boolean
   label?: ReactNode

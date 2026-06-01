@@ -1,7 +1,7 @@
 import type { RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 
-type SendVnetTransactionOptions = {
+interface SendVnetTransactionOptions {
   /** Tenderly configuration */
   tenderly: TenderlyConfig
   /** The transaction */

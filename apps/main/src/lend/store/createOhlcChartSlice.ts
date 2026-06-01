@@ -17,7 +17,7 @@ import type {
 
 type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
-type SliceState = {
+interface SliceState {
   chartLlammaOhlc: {
     oraclePriceData: OraclePriceData[]
     baselinePriceData: LlamaBaselinePriceData[]
@@ -48,7 +48,7 @@ type SliceState = {
 
 const sliceKey = 'ohlcCharts'
 
-export type OhlcChartSlice = {
+export interface OhlcChartSlice {
   [sliceKey]: SliceState & {
     fetchLlammaOhlcData(
       chainId: ChainId,

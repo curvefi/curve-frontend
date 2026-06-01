@@ -22,7 +22,7 @@ const LinkProps = {
 } as const
 
 /** Represents a partner organization or project displayed in the partner card component. */
-export type Partner = {
+export interface Partner {
   /** The display name of the partner */
   name: string
   /** A brief description of the partner and their services */

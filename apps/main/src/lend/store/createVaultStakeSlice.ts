@@ -19,7 +19,7 @@ const { merge, cloneDeep } = lodash
 
 const sliceKey = 'vaultStake'
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   formEstGas: { [activeKey: string]: FormEstGas }
   formStatus: FormStatus
@@ -27,7 +27,7 @@ type SliceState = {
 }
 
 // prettier-ignore
-export type VaultStakeSlice = {
+export interface VaultStakeSlice {
   [sliceKey]: SliceState & {
     fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
     setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>

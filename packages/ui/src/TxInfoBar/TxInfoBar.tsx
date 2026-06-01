@@ -7,7 +7,7 @@ import { IconButton } from '@ui/IconButton'
 import { RCExternal } from '@ui/images'
 import { ExternalLink } from '@ui/Link'
 
-type Props = {
+interface Props {
   description: ReactNode
   txHash: string | string[] | undefined
   onClose?: () => void

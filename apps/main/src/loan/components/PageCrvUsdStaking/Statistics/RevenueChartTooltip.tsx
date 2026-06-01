@@ -14,7 +14,7 @@ const lineLabels: Record<YieldKeys, string> = {
 
 const format = (value: number) => formatNumber(value, { unit: 'percentage', abbreviate: false })
 
-type RevenueChartTooltipProps = {
+interface RevenueChartTooltipProps {
   datum: ScrvUsdYieldWithAverages
   visibleSeries: LineSeriesConfig<YieldKeys>[]
 }

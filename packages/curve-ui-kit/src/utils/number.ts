@@ -149,7 +149,7 @@ export const defaultNumberFormatter = (
 }
 
 /** Parsed components of a decomposed number */
-type DecomposedNumber = {
+interface DecomposedNumber {
   /** Symbol to display before the number */
   prefix: string
   /** The formatted numeric value */

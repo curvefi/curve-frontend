@@ -42,17 +42,19 @@ function throwIfError(data: unknown) {
 }
 
 /** Base context provided to all transaction mutations */
-export type TransactionContext = {
+export interface TransactionContext {
   wallet: NonNullable<ReturnType<typeof useCurve>['wallet']>
 }
 
-type TransactionResult = { hash: Hex }
+interface TransactionResult {
+  hash: Hex
+}
 
-type TransactionMutationOptionsBase<
+interface TransactionMutationOptionsBase<
   TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
   TData extends TransactionResult = TransactionResult,
-> = {
+> {
   /** Unique key for the mutation */
   mutationKey: readonly unknown[]
   /**

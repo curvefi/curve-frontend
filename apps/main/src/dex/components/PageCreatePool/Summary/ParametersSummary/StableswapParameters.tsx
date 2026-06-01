@@ -10,7 +10,7 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
+interface Props {
   chainId: ChainId
 }
 

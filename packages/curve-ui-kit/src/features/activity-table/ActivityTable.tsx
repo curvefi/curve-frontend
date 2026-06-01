@@ -13,7 +13,7 @@ const { MaxHeight } = SizesAndSpaces
 /** Default expanded panel that renders nothing (for tables without mobile expansion) */
 const DefaultExpandedPanel = <T extends TableItem>(_props: { row: Row<T>; table: Table<T> }) => null
 
-type ActivityTableProps<TData extends TableItem> = {
+interface ActivityTableProps<TData extends TableItem> {
   table: Table<TData>
   isLoading: boolean
   isError: boolean

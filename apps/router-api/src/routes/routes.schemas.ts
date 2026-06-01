@@ -37,7 +37,7 @@ const routesQuerySchema = {
   },
 } as const
 
-export type RoutesQuery = {
+export interface RoutesQuery {
   chainId: number
   router?: RouteProvider[]
   tokenIn: [Address]

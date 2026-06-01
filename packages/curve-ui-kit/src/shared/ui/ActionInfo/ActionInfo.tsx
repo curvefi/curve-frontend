@@ -18,7 +18,7 @@ const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium'
 
-export type ActionInfoProps = {
+export interface ActionInfoProps {
   /** Label displayed on the left side */
   label: ReactNode
   /** Custom color for the label text */

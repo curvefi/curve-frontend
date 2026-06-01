@@ -6,7 +6,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 type PriceSeriesKey = keyof Omit<CrvUsdPriceChartPoint, 'timestamp'>
 
-type CrvUsdPriceTooltipProps = {
+interface CrvUsdPriceTooltipProps {
   datum: CrvUsdPriceChartPoint
   visibleSeries: LineSeriesConfig<PriceSeriesKey>[]
 }

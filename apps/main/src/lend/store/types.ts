@@ -1,4 +1,4 @@
-export type LiqRange = {
+export interface LiqRange {
   n: number
   collateral: string
   debt: string

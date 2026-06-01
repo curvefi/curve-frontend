@@ -25,7 +25,7 @@ import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   activeKeyVecrvInfo: string
   formEstGas: { [activeKey: string]: FormEstGas }
@@ -42,7 +42,7 @@ type SliceState = {
 const sliceKey = 'lockedCrv'
 
 // prettier-ignore
-export type LockedCrvSlice = {
+export interface LockedCrvSlice {
   [sliceKey]: SliceState & {
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 

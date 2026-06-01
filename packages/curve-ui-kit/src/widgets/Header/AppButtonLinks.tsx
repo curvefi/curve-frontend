@@ -5,7 +5,10 @@ import { APP_LINK, type AppMenuOption, getInternalUrl } from '@ui-kit/shared/rou
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-type AppNavAppsProps = { currentMenu: AppMenuOption; networkId: string }
+interface AppNavAppsProps {
+  currentMenu: AppMenuOption
+  networkId: string
+}
 
 const { Spacing } = SizesAndSpaces
 

@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { CHART_LINE_DASH_PATTERNS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 
-type UseChartLegendTogglesOptions = {
+interface UseChartLegendTogglesOptions {
   hasNewLiquidationRange?: boolean
   hasLiquidationRange?: boolean
   /** if the llamma endpoint is used we only display oracle price in the chart and cancel option to toggle it on/off */

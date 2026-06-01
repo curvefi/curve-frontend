@@ -6,7 +6,7 @@ import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import { Box } from '@ui/Box'
 import { formatNumber } from '@ui-kit/utils'
 
-type Props = {
+interface Props {
   crv?: RewardCrv[]
   userCrvApy: number
   fetchUserPoolBoost: () => Promise<string>

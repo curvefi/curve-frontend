@@ -10,7 +10,7 @@ import { useWithdrawForm } from '../hooks/useWithdrawForm'
 import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
-type WithdrawFormProps<ChainId extends IChainId> = {
+interface WithdrawFormProps<ChainId extends IChainId> {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId

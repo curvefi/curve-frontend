@@ -24,7 +24,7 @@ const disabledTypographyKeys = [
 
 const { LineHeight, FontWeight, FontSize } = SizesAndSpaces
 
-export type TypographyVariantDefinition = {
+export interface TypographyVariantDefinition {
   fontFamily: keyof DesignSystem['Text']['FontFamily']
   fontSize: string | keyof typeof FontSize
   fontWeight?: keyof typeof FontWeight

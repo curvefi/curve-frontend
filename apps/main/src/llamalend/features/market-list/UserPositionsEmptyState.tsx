@@ -7,14 +7,14 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { MarketRateType } from '@ui-kit/types/market'
 
-type EmptyStateConfig = {
+interface EmptyStateConfig {
   title: string
   subtitle?: string
   buttonLabel?: string
   onButtonClick?: () => void
 }
 
-type UserPositionsEmptyStateProps = {
+interface UserPositionsEmptyStateProps {
   table: Table<LlamaMarket>
   state: PositionsEmptyState
   marketRateType: MarketRateType

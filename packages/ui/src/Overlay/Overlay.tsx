@@ -21,7 +21,7 @@ export const Overlay = ({ children, isOpen, ...rest }: Props) => {
   )
 }
 
-type StyledOverlayProps = {
+interface StyledOverlayProps {
   isOpen: boolean
 }
 

@@ -3,7 +3,7 @@ import { DetailInfoResp, type FormStatus as Fs, FutureRates } from '@/lend/types
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
 export type InpError = 'too-much' | 'too-much-max' | ''
 
-export type FormValues = {
+export interface FormValues {
   userCollateral: string
   userCollateralError: InpError
   userBorrowed: string
@@ -19,7 +19,7 @@ export interface FormStatus extends Fs {
   step: StepKey
 }
 
-export type FormEstGas = {
+export interface FormEstGas {
   estimatedGas: number
   loading?: boolean
 }
@@ -29,7 +29,7 @@ export type DetailInfo = DetailInfoResp & {
   error: string
 }
 
-export type FormDetailInfo = {
+export interface FormDetailInfo {
   healthFull: string
   healthNotFull: string
   futureRates: FutureRates | null

@@ -4,7 +4,7 @@ import { formatDate } from '@ui/utils'
 import { formatNumber } from '@ui-kit/utils'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
-type PositiveAndNegativeBarChartProps = {
+interface PositiveAndNegativeBarChartProps {
   data: LocksDaily[]
   height?: number
 }

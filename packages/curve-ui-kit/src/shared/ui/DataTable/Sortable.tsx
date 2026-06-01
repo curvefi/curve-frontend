@@ -10,7 +10,7 @@ import {
 } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
-type SortableProps<T extends TableItem> = {
+interface SortableProps<T extends TableItem> {
   column: Column<T, unknown> | undefined
   children: ReactNode
   size: DataTableSize

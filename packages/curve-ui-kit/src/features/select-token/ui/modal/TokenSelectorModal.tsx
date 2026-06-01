@@ -5,12 +5,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxHeight } = SizesAndSpaces
 
-type TokenSelectorModalCallbacks = {
+interface TokenSelectorModalCallbacks {
   /** Callback when modal is closed */
   onClose: () => void
 }
 
-export type TokenSelectorModalProps = {
+export interface TokenSelectorModalProps {
   /** Controls visibility of the modal */
   isOpen: boolean
   /** Controls whether the modal should use a compact layout with fixed height */

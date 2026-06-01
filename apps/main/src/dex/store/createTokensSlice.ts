@@ -9,7 +9,7 @@ import { fetchPoolVolumes } from '../queries/pool-volume.query'
 type StateKey = keyof typeof DEFAULT_STATE
 const { countBy } = lodash
 
-type SliceState = {
+interface SliceState {
   tokensNameMapper: { [chainId: string]: TokensNameMapper }
   tokensMapper: { [chainId: string]: TokensMapper } // list of all tokens from poolDatas
   loading: boolean
@@ -18,7 +18,7 @@ type SliceState = {
 const sliceKey = 'tokens'
 
 // prettier-ignore
-export type TokensSlice = {
+export interface TokensSlice {
   [sliceKey]: SliceState & {
     setTokensMapper(curve: CurveApi, poolDatas: PoolData[]): Promise<string[]>
     setEmptyPoolListDefault(curve: CurveApi): void

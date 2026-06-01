@@ -13,7 +13,7 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-type TxInfo = {
+interface TxInfo {
   description: string
   txHash: string | undefined
 }

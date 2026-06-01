@@ -7,7 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
 
-export type LineSeriesConfig<TSeriesKey extends string> = {
+export interface LineSeriesConfig<TSeriesKey extends string> {
   key: TSeriesKey
   label: string
   color: string
@@ -15,12 +15,17 @@ export type LineSeriesConfig<TSeriesKey extends string> = {
   strokeWidth?: number
 }
 
-type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
+interface EChartsLineChartTooltipContext<TData, TSeriesKey extends string> {
   datum: TData
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: ChartLineDashPattern }
+interface EChartsLineMarkLine {
+  value: number
+  label?: string
+  color: string
+  dash?: ChartLineDashPattern
+}
 
 /** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
 const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(

@@ -4,7 +4,7 @@ import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import type { AppPage } from './types'
 
-type PageTabsProps = {
+interface PageTabsProps {
   pages: AppPage[]
   overflow?: TabsSwitcherProps<string>['overflow']
 }

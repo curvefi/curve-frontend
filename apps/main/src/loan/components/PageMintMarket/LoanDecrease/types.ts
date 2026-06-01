@@ -1,6 +1,6 @@
 import type { FormStatus as Fs } from '@/loan/components/PageMintMarket/types'
 
-export type FormValues = {
+export interface FormValues {
   debt: string
   debtError: 'too-much' | 'not-enough' | string
   isFullRepay: boolean

@@ -19,7 +19,7 @@ import { loadingLRPrices } from '../lib/apiCrvusd'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   detailInfo: { [activeKey: string]: FormDetailInfo }
   formEstGas: { [activeKey: string]: FormEstGas }
@@ -29,7 +29,7 @@ type SliceState = {
 
 const sliceKey = 'loanCollateralIncrease'
 
-export type LoanCollateralIncreaseSlice = {
+export interface LoanCollateralIncreaseSlice {
   [sliceKey]: SliceState & {
     fetchEstGasApproval(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
     fetchDetailInfo(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>

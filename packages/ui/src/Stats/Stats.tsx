@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 
-type Props = {
+interface Props {
   className?: string
   description?: string
   isAlignRight?: boolean
@@ -38,7 +38,7 @@ const DetailValue = styled.div`
   flex-direction: column;
 `
 
-type DetailInfoProps = {
+interface DetailInfoProps {
   isAlignRight?: boolean
   isBorderBottom?: boolean
   isOneLine?: boolean

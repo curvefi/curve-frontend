@@ -3,7 +3,7 @@ import { CSSObject } from '@mui/material'
 import Box from '@mui/material/Box'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
-type SecondaryIconBadgeProps = {
+interface SecondaryIconBadgeProps {
   children: ReactNode
   tooltipTitle: ReactNode
   // top-left, top-right, bottom-left, bottom-right relative to the main TokenIcon

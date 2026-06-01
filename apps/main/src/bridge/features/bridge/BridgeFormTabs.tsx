@@ -4,7 +4,7 @@ import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTab
 import { BridgeForm } from './components/BridgeForm'
 import { useBridgeAlert } from './hooks/useBridgeAlert'
 
-export type BridgeFormParams = {
+export interface BridgeFormParams {
   chainId: number
   networks: Record<number, BaseConfig>
 }

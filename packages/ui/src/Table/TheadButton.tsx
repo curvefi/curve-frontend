@@ -2,7 +2,9 @@ import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
 
-type TheadButtonProps = { nowrap?: boolean }
+interface TheadButtonProps {
+  nowrap?: boolean
+}
 
 export const TheadButton: IStyledComponent<'web', TheadButtonProps & ComponentPropsWithRef<'button'>> =
   styled.button<TheadButtonProps>`

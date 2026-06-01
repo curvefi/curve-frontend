@@ -17,7 +17,7 @@ import { VoteGaugeField } from '../GaugeVoting/VoteGaugeField'
 import { GaugeDetailsSm } from './GaugeDetailsSm'
 import { TitleComp } from './TitleComp'
 
-type Props = {
+interface Props {
   gaugeData: GaugeFormattedData
   userGaugeWeightVoteData?: UserGaugeVoteWeight
   powerUsed?: number

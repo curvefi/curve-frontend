@@ -15,7 +15,7 @@ import { BlockchainIds, Chain } from '@ui-kit/utils/network'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { networks } from '../networks'
 
-type MarketInformationCompProps = {
+interface MarketInformationCompProps {
   market: Llamma | null
   marketId: string
   chainId: ChainId

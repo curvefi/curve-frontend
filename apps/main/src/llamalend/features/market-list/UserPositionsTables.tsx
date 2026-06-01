@@ -11,7 +11,7 @@ import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
 
-type UserPositionsTableProps = {
+interface UserPositionsTableProps {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsResult>
 }

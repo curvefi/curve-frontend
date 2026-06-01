@@ -8,7 +8,7 @@ import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
-type ProposalVoteStatusBoxProps = {
+interface ProposalVoteStatusBoxProps {
   proposalData: ProposalData
   className?: string
 }

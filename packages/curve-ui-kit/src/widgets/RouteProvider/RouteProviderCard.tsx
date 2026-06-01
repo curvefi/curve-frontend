@@ -20,7 +20,7 @@ import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparis
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-export type RouteProviderCardProps = {
+export interface RouteProviderCardProps {
   query: RouteQuery
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   isSelected: boolean

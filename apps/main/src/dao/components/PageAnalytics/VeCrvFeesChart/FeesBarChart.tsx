@@ -4,7 +4,7 @@ import { formatDate } from '@ui/utils'
 import { formatNumber, amount } from '@ui-kit/utils'
 import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
-type FeesBarChartProps = {
+interface FeesBarChartProps {
   data: Distribution[]
   height?: number
 }

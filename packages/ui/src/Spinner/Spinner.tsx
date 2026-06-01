@@ -1,6 +1,6 @@
 import { styled, keyframes } from 'styled-components'
 
-type SpinnerProps = {
+interface SpinnerProps {
   className?: string
   isDisabled?: boolean
   size?: number
@@ -24,7 +24,7 @@ const spin = keyframes`
   }
 `
 
-type StyledSpinnerProps = {
+interface StyledSpinnerProps {
   isDisabled: boolean
   size?: number
 }

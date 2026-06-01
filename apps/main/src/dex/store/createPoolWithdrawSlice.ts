@@ -29,7 +29,7 @@ import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-type SliceState = {
+interface SliceState {
   activeKey: string
   formEstGas: { [activeKey: string]: FormEstGas }
   formType: FormType
@@ -41,7 +41,7 @@ type SliceState = {
 
 const sliceKey = 'poolWithdraw'
 
-type FetchWithdrawProps = {
+interface FetchWithdrawProps {
   activeKey: string
   storedActiveKey: string
   config: Config
@@ -53,7 +53,7 @@ type FetchWithdrawProps = {
 }
 
 // prettier-ignore
-export type PoolWithdrawSlice = {
+export interface PoolWithdrawSlice {
   [sliceKey]: SliceState & {
     fetchWithdrawToken(props: FetchWithdrawProps): Promise<void>
     fetchWithdrawLpToken(props: FetchWithdrawProps): Promise<void>

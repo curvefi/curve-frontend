@@ -26,7 +26,7 @@ const { Spacing, IconSize } = SizesAndSpaces
 
 type Error = keyof typeof inputErrorMapper
 
-type FormValues = {
+interface FormValues {
   selected: Decimal | 'custom'
   customValue: string
   error?: Error
@@ -99,14 +99,14 @@ function initFormValues(maxSlippage: Decimal): FormValues {
   }
 }
 
-export type SlippageSettingsProps = {
+export interface SlippageSettingsProps {
   /** Whether the modal is currently open */
   isOpen: boolean
   /** Current maximum slippage value as a string */
   maxSlippage: Decimal
 }
 
-export type SlippageSettingsCallbacks = {
+export interface SlippageSettingsCallbacks {
   /** Function to close the modal */
   onClose: () => void
   /** Callback function when slippage value is saved */

@@ -42,16 +42,19 @@ export interface LpPriceApiResponse {
   data: LpPriceOhlcData[]
 }
 
-export type LiquidationRange = { value: number; time: UTCTimestamp }
+export interface LiquidationRange {
+  value: number
+  time: UTCTimestamp
+}
 
-export type LlammaLiquididationRange = {
+export interface LlammaLiquididationRange {
   price1: LiquidationRange[]
   price2: LiquidationRange[]
   startTime?: UTCTimestamp
   endTime?: UTCTimestamp
 }
 
-export type LiquidationRanges = {
+export interface LiquidationRanges {
   new: LlammaLiquididationRange | null
   current: LlammaLiquididationRange | null
   historical?: LlammaLiquididationRange[] | null
