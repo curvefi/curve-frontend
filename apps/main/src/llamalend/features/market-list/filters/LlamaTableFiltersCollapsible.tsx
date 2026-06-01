@@ -16,7 +16,7 @@ import {
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { borderStyle, formatNumber } from '@ui-kit/utils'
 import { Unit } from '@ui-kit/utils/units'
 import { LLAMA_MARKET_COLUMNS, LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
@@ -79,7 +79,7 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
         alignItems: 'end',
         gap: Spacing.sm,
         justifyContent: 'space-between',
-        borderTop: t => `1px solid ${t.design.Layer[1].Outline}`,
+        borderTop: borderStyle,
       }}
       data-testid={TEST_ID}
     >

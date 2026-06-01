@@ -108,7 +108,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   if (!poolMetadata || !snapshotData) return null
 
   return (
-    <Card size="inline">
+    <Card size="inline" sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <CardContent component={Grid} container columnSpacing={Spacing.md}>
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
           <Stack sx={{ gap: Spacing.lg }}>

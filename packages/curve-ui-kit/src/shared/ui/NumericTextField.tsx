@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import type { Property } from 'csstype'
 import { type ReactNode, useEffect, useState } from 'react'
 import { Typography } from '@mui/material'

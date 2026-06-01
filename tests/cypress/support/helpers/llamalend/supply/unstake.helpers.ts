@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   getSupplyInputBalanceValueAttr,
