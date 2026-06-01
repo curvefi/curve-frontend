@@ -31,20 +31,20 @@ interface SliceState {
 // prettier-ignore
 export interface VaultWithdrawRedeemSlice {
   [sliceKey]: SliceState & {
-    fetchMax(api: Api, formType: FormType, market: LendMarketTemplate): Promise<void>
-    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
-    fetchDetails(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchMax: (api: Api, formType: FormType, market: LendMarketTemplate) => Promise<void>
+    fetchEstGas: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchDetails: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>) => Promise<void>
 
     // steps
-    fetchStepWithdrawRedeem(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues, vaultShares: string): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepWithdrawRedeem: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues, vaultShares: string) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
 
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(isLeverage?: boolean): void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (isLeverage?: boolean) => void
   }
 }
 

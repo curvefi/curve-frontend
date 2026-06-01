@@ -15,11 +15,9 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 
 export const TopLockers = () => {
   const { data: veCrvData, isSuccess: statsSuccess } = useStatsVecrvQuery({})
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const topHoldersSortBy = useStore(state => state.analytics.topHoldersSortBy)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setTopHoldersSortBy = useStore(state => state.analytics.setTopHoldersSortBy)
 
   const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'

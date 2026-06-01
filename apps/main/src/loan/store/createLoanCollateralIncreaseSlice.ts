@@ -30,29 +30,29 @@ const sliceKey = 'loanCollateralIncrease'
 
 export interface LoanCollateralIncreaseSlice {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    fetchDetailInfo(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    setFormValues(chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    fetchDetailInfo: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    setFormValues: (chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
 
     // steps
-    fetchStepApprove(
+    fetchStepApprove: (
       activeKey: string,
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepIncrease(
+    ) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepIncrease: (
       activeKey: string,
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    ) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

@@ -55,15 +55,10 @@ export const CollateralIncrease = ({
     state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanCollateralIncrease.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepIncrease = useStore(state => state.loanCollateralIncrease.fetchStepIncrease)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanCollateralIncrease.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.loanCollateralIncrease.setStateByKey)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanCollateralIncrease.resetState)
 
   const [confirmedHealthWarning, setConfirmedHealthWarning] = useState(false)

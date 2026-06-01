@@ -29,19 +29,19 @@ const sliceKey = 'loanCollateralRemove'
 // prettier-ignore
 export interface LoanCollateralRemoveSlice {
   [sliceKey]: SliceState & {
-    fetchMaxRemovable(api: Api, market: LendMarketTemplate): Promise<void>
-    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    fetchEstGas(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean): Promise<void>
+    fetchMaxRemovable: (api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchEstGas: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean) => Promise<void>
 
     // step
-    fetchStepDecrease(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepDecrease: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

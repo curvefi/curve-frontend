@@ -42,10 +42,8 @@ export const VoteDialog = ({
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const castVote = useStore(state => state.proposals.castVote)
   const voteTxMapper = useStore(state => state.proposals.voteTxMapper)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const executeProposal = useStore(state => state.proposals.executeProposal)
   const executeTxMapper = useStore(state => state.proposals.executeTxMapper)
 

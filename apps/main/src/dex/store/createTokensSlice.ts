@@ -19,13 +19,13 @@ const sliceKey = 'tokens'
 // prettier-ignore
 export interface TokensSlice {
   [sliceKey]: SliceState & {
-    setTokensMapper(curve: CurveApi, poolDatas: PoolData[]): Promise<string[]>
-    setEmptyPoolListDefault(curve: CurveApi): void
+    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[]) => Promise<string[]>
+    setEmptyPoolListDefault: (curve: CurveApi) => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

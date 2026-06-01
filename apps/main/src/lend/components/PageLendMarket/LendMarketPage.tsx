@@ -43,13 +43,9 @@ function useLegacyFetching({
   const enabled = useLoanSlices()
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
   useEffect(() => {
     // delay fetch rest after form details are fetched first

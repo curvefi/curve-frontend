@@ -30,13 +30,9 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
   const formStatus = useStore(state => state.vaultStake.formStatus)
   const formValues = useStore(state => state.vaultStake.formValues)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.vaultStake.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepStake = useStore(state => state.vaultStake.fetchStepStake)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultStake.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultStake.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])

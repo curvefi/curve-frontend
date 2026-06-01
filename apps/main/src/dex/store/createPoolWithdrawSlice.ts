@@ -54,39 +54,23 @@ interface FetchWithdrawProps {
 // prettier-ignore
 export interface PoolWithdrawSlice {
   [sliceKey]: SliceState & {
-    fetchWithdrawToken(props: FetchWithdrawProps): Promise<void>
-    fetchWithdrawLpToken(props: FetchWithdrawProps): Promise<void>
-    fetchWithdrawCustom(props: FetchWithdrawProps): Promise<void>
-    fetchClaimable(activeKey: string, chainId: ChainId, pool: Pool): Promise<void>
-    setFormValues(formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
+    fetchWithdrawToken: (props: FetchWithdrawProps) => Promise<void>
+    fetchWithdrawLpToken: (props: FetchWithdrawProps) => Promise<void>
+    fetchWithdrawCustom: (props: FetchWithdrawProps) => Promise<void>
+    fetchClaimable: (activeKey: string, chainId: ChainId, pool: Pool) => Promise<void>
+    setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval(
-      activeKey: string,
-      config: Config,
-      curve: CurveApi,
-      formType: FormType,
-      pool: Pool,
-      formValues: FormValues,
-      maxSlippage: string,
-    ): Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove(
-      activeKey: string,
-      config: Config,
-      curve: CurveApi,
-      formType: FormType,
-      pool: Pool,
-      formValues: FormValues,
-      maxSlippage: string,
-    ): Promise<FnStepApproveResponse | undefined>
-    fetchStepWithdraw(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
-    fetchStepUnstake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
-    fetchStepClaim(activeKey: string, curve: CurveApi, poolData: PoolData): Promise<FnStepResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchStepWithdraw: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
+    fetchStepUnstake: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => Promise<FnStepResponse | undefined>
+    fetchStepClaim: (activeKey: string, curve: CurveApi, poolData: PoolData) => Promise<FnStepResponse | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(poolData: PoolData, formType: FormType): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (poolData: PoolData, formType: FormType) => void
   }
 }
 

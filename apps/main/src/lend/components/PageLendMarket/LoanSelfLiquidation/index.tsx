@@ -45,13 +45,9 @@ export const LoanSelfLiquidation = ({
   const liquidationAmt = useStore(state => state.loanSelfLiquidation.liquidationAmt)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchDetails = useStore(state => state.loanSelfLiquidation.fetchDetails)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanSelfLiquidation.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepLiquidate = useStore(state => state.loanSelfLiquidation.fetchStepLiquidate)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanSelfLiquidation.resetState)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)

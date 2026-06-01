@@ -31,14 +31,14 @@ const sliceKey = 'loanDeleverage'
 // prettier-ignore
 export interface LoanDeleverageSlice {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
-    setFormValues(llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
-    fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchStepRepay(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    fetchDetailInfo: (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']) => Promise<FormDetailInfo>
+    setFormValues: (llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean) => Promise<void>
+    fetchEstGas: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string) => Promise<void>
+    fetchStepRepay: (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

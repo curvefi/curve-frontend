@@ -76,15 +76,10 @@ export const Swap = ({
   const hasRouter = useStore(state => state.hasRouter)
   const isMaxLoading = useStore(state => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolSwap.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepSwap = useStore(state => state.poolSwap.fetchStepSwap)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolSwap.resetState)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolSwap.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null

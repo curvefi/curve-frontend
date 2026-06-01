@@ -25,16 +25,14 @@ export const ComboBox = ({
   selectedGauge,
   showInpSearch,
   gauges,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleInpChange,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleOnSelectChange,
 }: Pick<ComboBoxSelectGaugeProps, 'testId' | 'listBoxHeight' | 'showInpSearch' | 'gauges'> & {
   dialogClose: () => void
   result: GaugeFormattedData[] | undefined
   selectedGauge: GaugeFormattedData | null
-  handleInpChange(filterValue: string, gauges: GaugeFormattedData[] | undefined): void
-  handleOnSelectChange(selectedAddress: string): void
+  handleInpChange: (filterValue: string, gauges: GaugeFormattedData[] | undefined) => void
+  handleOnSelectChange: (selectedAddress: string) => void
 }) => {
   const topContentRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)

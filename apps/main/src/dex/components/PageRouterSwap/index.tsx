@@ -85,13 +85,9 @@ export const QuickSwap = ({
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
   const rpcRoutesAndOutput = useStore(state => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.quickSwap.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepSwap = useStore(state => state.quickSwap.fetchStepSwap)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetFormErrors = useStore(state => state.quickSwap.resetFormErrors)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.quickSwap.setFormValues)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null

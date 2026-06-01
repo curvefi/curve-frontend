@@ -27,7 +27,6 @@ export const PageRouterSwap = () => {
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
   const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
   const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)

@@ -57,13 +57,9 @@ export const LoanBorrowMore = ({
   const maxRecv = useStore(state => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanBorrowMore.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepIncrease = useStore(state => state.loanBorrowMore.fetchStepIncrease)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanBorrowMore.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanBorrowMore.resetState)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)

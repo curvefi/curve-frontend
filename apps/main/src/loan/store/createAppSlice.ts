@@ -17,11 +17,11 @@ interface SliceState {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
+  hydrate: (config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined) => Promise<void>
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => void
 }
 
 const DEFAULT_STATE: SliceState = {

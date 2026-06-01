@@ -22,17 +22,17 @@ interface SliceState {
 // prettier-ignore
 export interface VaultClaimSlice {
   [sliceKey]: SliceState & {
-    fetchClaimable(userActiveKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined): Promise<void>
+    fetchClaimable: (userActiveKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined) => Promise<void>
 
     // steps
-    fetchStepClaim(userActiveKey: string, api: Api, market: LendMarketTemplate, type: RewardType): Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
+    fetchStepClaim: (userActiveKey: string, api: Api, market: LendMarketTemplate, type: RewardType) => Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, userActiveKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, userActiveKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

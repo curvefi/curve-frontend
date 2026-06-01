@@ -53,7 +53,6 @@ export const SwapTestCase = ({ vnet, privateKey, chainId, fromAddress, toAddress
       app="dex"
       network={defaultNetworks[chainId]}
       onChainUnavailable={console.error}
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       hydrate={{ dex: useStore(state => state.hydrate) }}
     >
       <QuickSwapTest chainId={chainId} fromAddress={fromAddress} toAddress={toAddress} />

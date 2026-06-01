@@ -27,9 +27,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
   const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore(state => state.lockedCrv.formStatus)
   const formValues = useStore(state => state.lockedCrv.formValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.lockedCrv.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepIncreaseCrv = useStore(state => state.lockedCrv.fetchStepIncreaseCrv)
   const setFormValues = useStore(state => state.lockedCrv.setFormValues)
 

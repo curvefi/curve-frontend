@@ -15,12 +15,12 @@ export type StateKey = string
 // prettier-ignore
 export interface AppSlice {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined, releaseChannel: ReleaseChannel): Promise<void>
+  hydrate: (config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined, releaseChannel: ReleaseChannel) => Promise<void>
 
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => void
 }
 
 export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({

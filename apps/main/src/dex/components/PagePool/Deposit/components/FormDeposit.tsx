@@ -53,13 +53,9 @@ export const FormDeposit = ({
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDeposit = useStore(state => state.poolDeposit.fetchStepDeposit)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
   const network = networks[chainId!] || null

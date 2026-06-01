@@ -25,7 +25,6 @@ export const PagePool = () => {
 
   const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
   const poolDataCache = useStore(state => state.storeCache.poolsMapper[rChainId]?.[poolId ?? ''])
   const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])

@@ -57,15 +57,10 @@ export const LoanRepay = ({
   const formValues = useStore(state => state.loanRepay.formValues)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanRepay.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepRepay = useStore(state => state.loanRepay.fetchStepRepay)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllUserDetails = useStore(state => state.user.fetchAll)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanRepay.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanRepay.resetState)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)

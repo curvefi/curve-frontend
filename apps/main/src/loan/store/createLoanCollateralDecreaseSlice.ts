@@ -32,25 +32,25 @@ const sliceKey = 'loanCollateralDecrease'
 
 export interface LoanCollateralDecreaseSlice {
   [sliceKey]: SliceState & {
-    init(chainId: ChainId, llamma: Llamma): void
-    fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    fetchDetailInfo(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    fetchMaxRemovable(chainId: ChainId, llamma: Llamma): Promise<void>
-    setFormValues(chainId: ChainId, llamma: Llamma, formValues: FormValues, maxRemovable: string): Promise<void>
+    init: (chainId: ChainId, llamma: Llamma) => void
+    fetchEstGas: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    fetchDetailInfo: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    fetchMaxRemovable: (chainId: ChainId, llamma: Llamma) => Promise<void>
+    setFormValues: (chainId: ChainId, llamma: Llamma, formValues: FormValues, maxRemovable: string) => Promise<void>
 
     // step
-    fetchStepDecrease(
+    fetchStepDecrease: (
       activeKey: string,
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    ) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

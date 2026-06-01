@@ -32,11 +32,8 @@ export const Page = () => {
   const network = networks[rChainId]
 
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
 
   const marketId = market?.id ?? ''

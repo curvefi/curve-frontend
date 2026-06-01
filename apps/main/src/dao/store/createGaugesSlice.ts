@@ -51,20 +51,20 @@ const sliceKey = 'gauges'
 // prettier-ignore
 export interface GaugesSlice {
   [sliceKey]: SliceState & {
-    getGaugeVotes(gaugeAddress: string): Promise<void>
+    getGaugeVotes: (gaugeAddress: string) => Promise<void>
 
-    setSearchValue(searchValue: string): void
-    setGaugeListSortBy(sortByKey: SortByFilterGaugesKeys): void
-    setGauges(searchValue: string): void
-    setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
-    setSelectGaugeFilterValue(filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions): void
-    setSelectedGauge(gauge: GaugeFormattedData | null): void
+    setSearchValue: (searchValue: string) => void
+    setGaugeListSortBy: (sortByKey: SortByFilterGaugesKeys) => void
+    setGauges: (searchValue: string) => void
+    setGaugeVotesSortBy: (gaugeAddress: string, sortBy: GaugeVotesSortBy) => void
+    setSelectGaugeFilterValue: (filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions) => void
+    setSelectedGauge: (gauge: GaugeFormattedData | null) => void
 
-    castVote(userAddress: string, gaugeAddress: string, voteWeight: number): Promise<void>
+    castVote: (userAddress: string, gaugeAddress: string, voteWeight: number) => Promise<void>
 
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

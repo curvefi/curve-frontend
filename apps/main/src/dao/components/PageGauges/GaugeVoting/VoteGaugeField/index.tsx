@@ -24,7 +24,6 @@ interface VoteGaugeFieldProps {
 
 export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
   const { address: userAddress } = useConnection()
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const castVote = useStore(state => state.gauges.castVote)
   const txCastVoteState = useStore(state => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({

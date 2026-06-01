@@ -26,7 +26,6 @@ export const VeCrv = () => {
   const { address: userAddress } = useConnection()
 
   const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.lockedCrv.resetState)
 
   // onMount

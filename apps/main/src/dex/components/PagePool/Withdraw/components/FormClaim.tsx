@@ -30,15 +30,10 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
   const formValues = useStore(state => state.poolWithdraw.formValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchClaimable = useStore(state => state.poolWithdraw.fetchClaimable)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepClaim = useStore(state => state.poolWithdraw.fetchStepClaim)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.poolWithdraw.setStateByKey)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null

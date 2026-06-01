@@ -81,7 +81,7 @@ const createRenderer = () => {
 
   return {
     renderer,
-    setPayload(data: PaneRendererCustomData<Time, LiquidationRangePoint>, options: LiquidationRangeSeriesOptions) {
+    setPayload: (data: PaneRendererCustomData<Time, LiquidationRangePoint>, options: LiquidationRangeSeriesOptions) => {
       payload.data = data
       payload.options = options
     },
@@ -252,7 +252,6 @@ const createLiquidationRangePaneView = (): ICustomSeriesPaneView<
   LiquidationRangePoint,
   LiquidationRangeSeriesOptions
 > => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { renderer, setPayload } = createRenderer()
 
   return {

@@ -72,13 +72,9 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   const llammaOraclePriceData = useStore(state => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
   const llammaRefetchingCapped = useStore(state => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
   const llammaLastFetchEndTime = useStore(state => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchLlammaOhlcData = useStore(state => state.ohlcCharts.fetchLlammaOhlcData)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchOraclePoolOhlcData = useStore(state => state.ohlcCharts.fetchOraclePoolOhlcData)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
   const priceInfo = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices ?? null)
 

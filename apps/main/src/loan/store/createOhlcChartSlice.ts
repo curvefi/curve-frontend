@@ -50,22 +50,22 @@ const sliceKey = 'ohlcCharts'
 
 export interface OhlcChartSlice {
   [sliceKey]: SliceState & {
-    fetchOracleOhlcData(
+    fetchOracleOhlcData: (
       chainId: ChainId,
       controller: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<void>
-    fetchMoreOracleOhlcData(
+    ) => Promise<void>
+    fetchMoreOracleOhlcData: (
       chainId: ChainId,
       controller: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<{
+    ) => Promise<{
       ohlcData: LpPriceOhlcDataFormatted[]
       oracleData: OraclePriceData[]
       baselineData: LlamaBaselinePriceData[]
@@ -80,7 +80,7 @@ export interface OhlcChartSlice {
         symbol: string
       }
     }>
-    fetchLlammaOhlcData(
+    fetchLlammaOhlcData: (
       chainId: ChainId,
       llammaId: string,
       poolAddress: string,
@@ -88,21 +88,21 @@ export interface OhlcChartSlice {
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<void>
-    fetchMoreLlammaOhlcData(
+    ) => Promise<void>
+    fetchMoreLlammaOhlcData: (
       chainId: ChainId,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<{
+    ) => Promise<{
       oracleData: OraclePriceData[]
       baselineData: LlamaBaselinePriceData[]
       refetchingCapped: boolean
       lastFetchEndTime: number
     }>
-    fetchMoreData(
+    fetchMoreData: (
       chainId: ChainId,
       controller: string,
       poolAddress: string,
@@ -110,8 +110,8 @@ export interface OhlcChartSlice {
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<void>
-    resetState(): void
+    ) => Promise<void>
+    resetState: () => void
   }
 }
 
@@ -509,7 +509,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
       start: number,
       end: number,
     ) => {
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const { chartLlammaOhlc, chartOraclePoolOhlc, fetchMoreLlammaOhlcData, fetchMoreOracleOhlcData } = get()[sliceKey]
 
       if (chartLlammaOhlc.refetchingCapped && chartOraclePoolOhlc.refetchingCapped) {

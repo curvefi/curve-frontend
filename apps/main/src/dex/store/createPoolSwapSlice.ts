@@ -52,20 +52,20 @@ const sliceKey = 'poolSwap'
 // prettier-ignore
 export interface PoolSwapSlice {
   [sliceKey]: SliceState & {
-    fetchIgnoreExchangeRateCheck(curve: CurveApi, pool: Pool): Promise<boolean>
-    fetchExchangeOutput(activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchMaxAmount(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<string>
-    setFormValues(config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
+    fetchIgnoreExchangeRateCheck: (curve: CurveApi, pool: Pool) => Promise<boolean>
+    fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
+    fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<string>
+    setFormValues: (config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval(activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
-    fetchStepSwap(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchStepSwap: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(poolData: PoolData): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (poolData: PoolData) => void
   }
 }
 
@@ -316,7 +316,6 @@ export const createPoolSwapSlice = (
 
       // validate toAmount: If have toAmount and isFrom is false, confirm toAmount is not bigger than currency reserves
       if (+cFormValues.toAmount > 0 && !cFormValues.isFrom) {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         const { currencyReserves, fetchPoolCurrenciesReserves } = get().pools
         const currencyReserve = currencyReserves[poolId] ?? (await fetchPoolCurrenciesReserves(curve, poolData))
 

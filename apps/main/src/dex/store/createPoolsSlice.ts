@@ -58,16 +58,16 @@ const sliceKey = 'pools'
 
 export interface PoolsSlice {
   [sliceKey]: SliceState & {
-    fetchPools(
+    fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-    ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
-    fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[], useApi?: boolean): Promise<void>
-    fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
+    ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
+    fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
+    fetchMissingPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
-    fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
-    setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
+    fetchPoolCurrenciesReserves: (curve: CurveApi, poolData: PoolData) => Promise<void>
+    setPoolIsWrapped: (poolData: PoolData, isWrapped: boolean) => { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
     fetchPricesApiCharts: (
       chainId: ChainId,
@@ -87,12 +87,12 @@ export interface PoolsSlice {
       start: number,
       end: number,
     ) => void
-    setEmptyPoolListDefault(chainId: ChainId): void
+    setEmptyPoolListDefault: (chainId: ChainId) => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -258,7 +258,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     fetchPoolsRewardsApy: async (chainId, poolIds, useApi = true) => {
       log('fetchPoolsRewardsApy', chainId, poolIds.length)
       const state = get()
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[sliceKey]
       const networks = await fetchNetworks()
       const network = networks[chainId]
@@ -280,7 +279,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const { rewardsApyMapper: allRewardsApyMapper, fetchPoolsRewardsApy } = get()[sliceKey]
       const rewardsApyMapper = allRewardsApyMapper[chainId] ?? {}
       const missingRewardsPoolIds = poolDatas.filter(({ pool }) => typeof rewardsApyMapper[pool.id] === 'undefined')

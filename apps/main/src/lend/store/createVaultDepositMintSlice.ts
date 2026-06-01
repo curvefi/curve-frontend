@@ -30,20 +30,20 @@ interface SliceState {
 // prettier-ignore
 export interface VaultDepositMintSlice {
   [sliceKey]: SliceState & {
-    fetchMax(rChainId: ChainId, formType: FormType, market: LendMarketTemplate): Promise<void>
-    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
-    fetchDetails(activeKey: string, formType: FormType, market: LendMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchMax: (rChainId: ChainId, formType: FormType, market: LendMarketTemplate) => Promise<void>
+    fetchEstGasApproval: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchDetails: (activeKey: string, formType: FormType, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>) => Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepDepositMint(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepDepositMint: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(isLeverage?: boolean): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (isLeverage?: boolean) => void
   }
 }
 

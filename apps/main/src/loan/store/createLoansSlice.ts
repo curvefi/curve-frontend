@@ -35,17 +35,17 @@ const sliceKey = 'loans'
 
 export interface LoansSlice {
   [sliceKey]: SliceState & {
-    fetchLoansDetails(curve: LlamaApi, markets: MintMarketTemplate[]): Promise<void>
-    fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: boolean }>
-    fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
-    fetchUserLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<UserLoanDetails>
-    resetUserDetailsState(llamma: Llamma): void
+    fetchLoansDetails: (curve: LlamaApi, markets: MintMarketTemplate[]) => Promise<void>
+    fetchLoanDetails: (curve: LlamaApi, llamma: Llamma) => Promise<{ loanDetails: LoanDetails; loanExists: boolean }>
+    fetchUserLoanWalletBalances: (curve: LlamaApi, llamma: Llamma) => Promise<UserWalletBalances>
+    fetchUserLoanDetails: (curve: LlamaApi, llamma: Llamma) => Promise<UserLoanDetails>
+    resetUserDetailsState: (llamma: Llamma) => void
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

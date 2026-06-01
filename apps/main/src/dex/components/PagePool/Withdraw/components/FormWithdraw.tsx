@@ -56,15 +56,10 @@ export const FormWithdraw = ({
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
   const formValues = useStore(state => state.poolWithdraw.formValues)
   const slippage = useStore(state => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolWithdraw.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepWithdraw = useStore(state => state.poolWithdraw.fetchStepWithdraw)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolWithdraw.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null

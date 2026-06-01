@@ -65,45 +65,24 @@ const sliceKey = 'poolDeposit'
 // prettier-ignore
 export interface PoolDepositSlice {
   [sliceKey]: SliceState & {
-    fetchExpected(activeKey: string, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
-    fetchMaxAmount(
-      config: Config,
-      activeKey: string,
-      chainId: ChainId,
-      userAddress: Address,
-      pool: Pool,
-      loadMaxAmount: LoadMaxAmount,
-      maxSlippage: string,
-    ): Promise<Amount[]>
-    fetchSeedAmount(poolData: PoolData, formValues: FormValues): Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
-    fetchSlippage(activeKey: string, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
-    setFormValues(formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
+    fetchExpected: (activeKey: string, formType: FormType, pool: Pool, formValues: FormValues) => Promise<void>
+    fetchMaxAmount: (config: Config, activeKey: string, chainId: ChainId, userAddress: Address, pool: Pool, loadMaxAmount: LoadMaxAmount, maxSlippage: string) => Promise<Amount[]>
+    fetchSeedAmount: (poolData: PoolData, formValues: FormValues) => Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
+    fetchSlippage: (activeKey: string, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
+    setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval(
-      activeKey: string,
-      chainId: ChainId,
-      formType: FormType,
-      pool: Pool,
-      maxSlippage: string,
-    ): Promise<FnStepEstGasApprovalResponse>
-    fetchStepApprove(
-      activeKey: string,
-      curve: CurveApi,
-      formType: FormType,
-      pool: Pool,
-      formValues: FormValues,
-      maxSlippage: string,
-    ): Promise<FnStepApproveResponse | undefined>
-    fetchStepDeposit(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
-    fetchStepDepositStake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
-    fetchStepStakeApprove(activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepStake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse>
+    fetchStepApprove: (activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchStepDeposit: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
+    fetchStepDepositStake: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
+    fetchStepStakeApprove: (activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues) => Promise<FnStepApproveResponse | undefined>
+    fetchStepStake: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => Promise<FnStepResponse | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(poolData: PoolData, formType: FormType): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (poolData: PoolData, formType: FormType) => void
   }
 }
 

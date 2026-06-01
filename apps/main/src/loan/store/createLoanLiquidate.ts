@@ -23,33 +23,38 @@ const sliceKey = 'loanLiquidate'
 
 export interface LoanLiquidateSlice {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(chainId: ChainId, llamma: Llamma, maxSlippage: string, formStatus: FormStatus): Promise<void>
-    fetchTokensToLiquidate(
+    fetchEstGasApproval: (
+      chainId: ChainId,
+      llamma: Llamma,
+      maxSlippage: string,
+      formStatus: FormStatus,
+    ) => Promise<void>
+    fetchTokensToLiquidate: (
       chainId: ChainId,
       llamma: Llamma,
       llammaId: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
-    ): Promise<void>
+    ) => Promise<void>
 
     // step
-    fetchStepApprove(
+    fetchStepApprove: (
       curve: LlamaApi,
       llamma: Llamma,
       maxSlippage: string,
-    ): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepLiquidate(
+    ) => Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepLiquidate: (
       curve: LlamaApi,
       llamma: Llamma,
       liquidationAmt: string,
       maxSlippage: string,
-    ): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
+    ) => Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

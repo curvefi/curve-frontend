@@ -9,7 +9,6 @@ import { useNetworks } from '../entities/networks'
 export const useAutoRefresh = (chainId: number | undefined) => {
   const { curveApi, isHydrated } = useCurve()
   const { data: networks } = useNetworks()
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchPools = useStore(state => state.pools.fetchPools)
   const poolIds = useMemo(
     () => isHydrated && curveApi?.chainId === chainId && curveApi?.getPoolList(),

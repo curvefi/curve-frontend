@@ -9,7 +9,7 @@ export interface ErrorContext {
   subtitle: string
 }
 
-interface ErrorReportFormValues {
+export interface ErrorReportFormValues {
   address: string
   contactMethod: ContactMethod
   contact: string

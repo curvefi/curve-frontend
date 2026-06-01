@@ -57,13 +57,9 @@ export const FormDepositStake = ({
   const formValues = useStore(state => state.poolDeposit.formValues)
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 

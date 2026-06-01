@@ -36,13 +36,9 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
   const formValues = useStore(state => state.loanCollateralAdd.formValues)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanCollateralAdd.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepIncrease = useStore(state => state.loanCollateralAdd.fetchStepIncrease)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanCollateralAdd.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanCollateralAdd.resetState)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

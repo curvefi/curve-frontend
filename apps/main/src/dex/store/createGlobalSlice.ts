@@ -21,21 +21,21 @@ interface GlobalState {
 }
 
 export interface GlobalSlice extends GlobalState {
-  getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
-  setNetworkConfigFromApi(curve: CurveApi): void
+  getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
+  setNetworkConfigFromApi: (curve: CurveApi) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(
+  hydrate: (
     config: Config,
     curveApi: CurveApi | undefined,
     prevCurveApi: CurveApi | undefined,
     wallet: Wallet | undefined,
-  ): Promise<void>
+  ) => Promise<void>
 
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean): void
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
 }
 
 const DEFAULT_STATE = {

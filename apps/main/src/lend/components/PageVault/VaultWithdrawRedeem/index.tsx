@@ -37,13 +37,9 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
   const maxResp = useStore(state => state.vaultWithdrawRedeem.max[maxActiveKey])
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepWithdrawRedeem = useStore(state => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultWithdrawRedeem.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultWithdrawRedeem.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])

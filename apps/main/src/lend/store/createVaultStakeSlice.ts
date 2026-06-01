@@ -28,18 +28,18 @@ interface SliceState {
 // prettier-ignore
 export interface VaultStakeSlice {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchEstGasApproval: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>) => Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepStake(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepStake: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

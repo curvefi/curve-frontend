@@ -26,11 +26,8 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
   const formStatus = useStore(state => state.vaultClaim.formStatus)
   const claimable = useStore(state => state.vaultClaim.claimable[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepClaim = useStore(state => state.vaultClaim.fetchStepClaim)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultClaim.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultClaim.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])

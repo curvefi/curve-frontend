@@ -41,16 +41,16 @@ const sliceKey = 'analytics'
 // prettier-ignore
 export interface AnalyticsSlice {
   [sliceKey]: SliceState & {
-    getVeCrvFees(): Promise<void>
-    getVeCrvLocks(): Promise<void>
-    getVeCrvHolders(): Promise<void>
-    setTopHoldersSortBy(sortBy: TopHoldersSortBy): void
-    setAllHoldersSortBy(sortBy: AllHoldersSortBy): void
+    getVeCrvFees: () => Promise<void>
+    getVeCrvLocks: () => Promise<void>
+    getVeCrvHolders: () => Promise<void>
+    setTopHoldersSortBy: (sortBy: TopHoldersSortBy) => void
+    setAllHoldersSortBy: (sortBy: AllHoldersSortBy) => void
     // helpers
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

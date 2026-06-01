@@ -67,9 +67,7 @@ export const LoanDeleverage = ({
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore(state => state.loans.userWalletBalancesMapper[llammaId])
   const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepRepay = useStore(state => state.loanDeleverage.fetchStepRepay)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanDeleverage.setFormValues)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)

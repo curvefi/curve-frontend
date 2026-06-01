@@ -767,7 +767,6 @@ export const createCreatePoolSlice = (
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         pools: { fetchNewPool },
         createPool: {
           poolSymbol,

@@ -126,7 +126,6 @@ export function useRouterApi(
   /** Update the store with the fetched amounts and error status */
   useEffect(() => {
     const route = data?.[0]
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     const { setAppStateByKeys, quickSwap } = useStore.getState()
     setAppStateByKeys('quickSwap', {
       ...quickSwap,

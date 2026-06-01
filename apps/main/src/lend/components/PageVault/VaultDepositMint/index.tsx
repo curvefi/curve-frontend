@@ -41,13 +41,9 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
   const maxResp = useStore(state => state.vaultDepositMint.max[maxActiveKey])
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.vaultDepositMint.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDepositMint = useStore(state => state.vaultDepositMint.fetchStepDepositMint)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultDepositMint.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultDepositMint.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])

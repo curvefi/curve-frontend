@@ -20,11 +20,9 @@ interface GaugeVotesTableProps {
 const weightBpsToPercentage = (weight: number) => weight / 100
 
 export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getGaugeVotes = useStore(state => state.gauges.getGaugeVotes)
   const gaugeVotesMapper = useStore(state => state.gauges.gaugeVotesMapper)
   const gaugeVotesSortBy = useStore(state => state.gauges.gaugeVotesSortBy)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setGaugeVotesSortBy = useStore(state => state.gauges.setGaugeVotesSortBy)
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '7rem 1fr 1fr'

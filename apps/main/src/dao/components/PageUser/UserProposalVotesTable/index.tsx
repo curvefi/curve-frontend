@@ -39,7 +39,6 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
     userAddress,
   })
   const userProposalVotesSortBy = useStore(state => state.user.userProposalVotesSortBy)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setUserProposalVotesSortBy = useStore(state => state.user.setUserProposalVotesSortBy)
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'

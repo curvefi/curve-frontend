@@ -57,10 +57,10 @@ export interface DashboardSlice {
     fetchStepClaimFees: (activeKey: string, curve: CurveApi, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
     fetchStepWithdrawVecrv: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<{ walletAddress: string, hash: string, error: string } | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

@@ -57,15 +57,10 @@ export const LoanDecrease = ({
   )
   const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.loanDecrease.fetchStepApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDecrease = useStore(state => state.loanDecrease.fetchStepDecrease)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanDecrease.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setStateByKey = useStore(state => state.loanDecrease.setStateByKey)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanDecrease.resetState)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

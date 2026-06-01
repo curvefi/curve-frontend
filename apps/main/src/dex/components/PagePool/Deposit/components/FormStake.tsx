@@ -34,13 +34,9 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null

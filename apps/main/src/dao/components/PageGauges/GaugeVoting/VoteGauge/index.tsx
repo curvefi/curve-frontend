@@ -22,7 +22,6 @@ interface VoteGaugeProps {
 export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const { address: userAddress } = useConnection()
   const [showDetails, setShowDetails] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setSelectedGauge = useStore(state => state.gauges.setSelectedGauge)
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 

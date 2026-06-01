@@ -39,7 +39,6 @@ function useLegacyFetching({
 }) {
   const enabled = useLoanSlices()
   const [loaded, setLoaded] = useState(!enabled)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
   useEffect(() => {
     if (curve && market && enabled) {

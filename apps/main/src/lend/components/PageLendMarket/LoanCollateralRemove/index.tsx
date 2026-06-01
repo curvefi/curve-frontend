@@ -51,11 +51,8 @@ export const LoanCollateralRemove = ({
   const maxRemovable = useStore(state => state.loanCollateralRemove.maxRemovable)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepDecrease = useStore(state => state.loanCollateralRemove.fetchStepDecrease)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.loanCollateralRemove.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.loanCollateralRemove.resetState)
 
   // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.

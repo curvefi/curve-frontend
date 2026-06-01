@@ -46,18 +46,18 @@ export interface LockedCrvSlice {
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 
     // steps
-    fetchEstGasApproval(activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues): Promise<FnStepEstGasApprovalResponse>
-    fetchStepApprove(activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepCreate(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse & { lockedAmt: string, lockedDate: string } | undefined>
-    fetchStepIncreaseCrv(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
-    fetchStepIncreaseTime(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
+    fetchEstGasApproval: (activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues) => Promise<FnStepEstGasApprovalResponse>
+    fetchStepApprove: (activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues) => Promise<FnStepApproveResponse | undefined>
+    fetchStepCreate: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse & { lockedAmt: string, lockedDate: string } | undefined>
+    fetchStepIncreaseCrv: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse  | undefined>
+    fetchStepIncreaseTime: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse  | undefined>
 
-    withdrawLockedCrv(): void
+    withdrawLockedCrv: () => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

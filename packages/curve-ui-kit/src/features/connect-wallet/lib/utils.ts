@@ -73,9 +73,7 @@ export const globalLibs = {
   },
 
   /** Get the current instance of a library or throw if not initialized */
-  require<K extends LibKey>(key: K): NonNullable<Libs[K]> {
-    return assert(globalLibs.get(key), `${key} not initialized`)
-  },
+  require: <K extends LibKey>(key: K): NonNullable<Libs[K]> => assert(globalLibs.get(key), `${key} not initialized`),
 
   /** Set the current instance of a library */
   set: <K extends LibKey>(key: K, lib: Libs[K]) => (globalLibs.current[key] = lib),
@@ -89,5 +87,4 @@ export const globalLibs = {
 }
 
 export const getLib = globalLibs.get
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
 export const requireLib = globalLibs.require

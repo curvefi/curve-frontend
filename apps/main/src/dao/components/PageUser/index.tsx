@@ -25,7 +25,6 @@ const tabs: TabOption<Tab>[] = [
 export const User = () => {
   const { userAddress: rUserAddress } = useParams<UserUrlParams>()
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
   const [tab, setTab] = useState<Tab>('proposals')
 

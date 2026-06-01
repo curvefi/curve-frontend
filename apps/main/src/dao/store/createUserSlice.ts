@@ -35,15 +35,15 @@ const sliceKey = 'user'
 // prettier-ignore
 export interface UserSlice {
   [sliceKey]: SliceState & {
-    setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
+    setUserProposalVotesSortBy: (sortBy: UserProposalVotesSortBy) => void
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => void
     setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => void
     // helpers
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

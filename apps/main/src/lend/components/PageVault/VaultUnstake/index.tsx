@@ -29,11 +29,8 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
   const formStatus = useStore(state => state.vaultUnstake.formStatus)
   const formValues = useStore(state => state.vaultUnstake.formValues)
   const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const fetchStepUnstake = useStore(state => state.vaultUnstake.fetchStepUnstake)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const setFormValues = useStore(state => state.vaultUnstake.setFormValues)
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const resetState = useStore(state => state.vaultUnstake.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
