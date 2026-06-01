@@ -63,7 +63,7 @@ export const ButtonMenu = <T extends string>({
   onClose,
 }: Props<T>) => {
   const anchorRef = useRef<HTMLDivElement>(null)
-  const [stackWidth] = useResizeObserver(anchorRef) ?? []
+  const [stackWidth] = useResizeObserver(anchorRef)
   const isDisabled = disabled || executing != false
 
   return (

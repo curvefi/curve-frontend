@@ -11,16 +11,16 @@ type ResizeObserverOptions = {
  *
  * @param elementRef - React ref object for the element to observe
  * @param options - Configuration options
- * @returns  The current width and height of the element or null if not measured yet
+ * @returns  The current width and height of the element or an empty array if not measured yet
  *
  * @example
  * // Basic usage
  * const elementRef = useRef<HTMLDivElement>(null);
- * const [width, height] = useResizeObserver(elementRef) ?? [];
+ * const [width, height] = useResizeObserver(elementRef);
  *
  * // With custom threshold
  * const bannerRef = useRef<HTMLDivElement>(null);
- * const [,bannerHeight] = useResizeObserver(bannerRef, { threshold: 5 }) ?? [];
+ * const [,bannerHeight] = useResizeObserver(bannerRef, { threshold: 5 });
  *
  * // Using the height in layout calculations
  * useEffect(() => {
@@ -66,5 +66,5 @@ export function useResizeObserver(
     }
   }, [elementRef, threshold])
 
-  return dimensions
+  return dimensions ?? []
 }

@@ -57,7 +57,7 @@ const MultiSelect = <T extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const selectRef = useRef<HTMLDivElement | null>(null)
-  const [selectWidth] = useResizeObserver(selectRef) ?? []
+  const [selectWidth] = useResizeObserver(selectRef)
   const [isOpen, open, close] = useSwitch(false)
 
   const handleClear = useCallback(

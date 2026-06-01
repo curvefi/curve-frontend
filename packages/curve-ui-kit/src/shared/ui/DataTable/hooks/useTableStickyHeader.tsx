@@ -5,8 +5,8 @@ import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 export const useTableStickyHeader = (enabled?: boolean) => {
   const tableWrapperRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
-  const [tableWrapperWidth] = useResizeObserver(tableWrapperRef) ?? []
-  const [tableWidth] = useResizeObserver(tableRef) ?? []
+  const [tableWrapperWidth] = useResizeObserver(tableWrapperRef)
+  const [tableWidth] = useResizeObserver(tableRef)
 
   return {
     tableRef,
