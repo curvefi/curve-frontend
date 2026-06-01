@@ -20,14 +20,13 @@ export const TokenInfo = ({
   secondary?: string
   showChainIcon?: boolean
 }) => {
-  const isIconRight = iconPosition === 'right'
   const tokenIcon = <TokenIcon blockchainId={blockchainId} address={address} size="lg" showChainIcon={showChainIcon} />
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-      {!isIconRight && tokenIcon}
+      {iconPosition === 'left' && tokenIcon}
 
-      <Stack sx={{ gap: Spacing.xxs, alignItems: isIconRight ? 'end' : 'start' }}>
+      <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
         <Typography variant="tableCellMBold" noWrap>
           {primary}
         </Typography>
@@ -39,7 +38,7 @@ export const TokenInfo = ({
         )}
       </Stack>
 
-      {isIconRight && tokenIcon}
+      {iconPosition === 'right' && tokenIcon}
     </Stack>
   )
 }
