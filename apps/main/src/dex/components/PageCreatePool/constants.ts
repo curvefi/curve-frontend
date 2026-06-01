@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { t } from '@ui-kit/lib/i18n'
 import type { NgAssetType, SwapType } from './types'
 
