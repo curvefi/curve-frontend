@@ -84,13 +84,15 @@ const MappedSelectSize = {
   extraLarge: MappedButtonSize.lg,
 } as const
 
+const MappedSelectPaddingX = {
+  tiny: Spacing[200],
+  small: Spacing[300],
+  medium: Spacing[300],
+  extraLarge: Spacing[300],
+} as const
+
 const MappedSelectSpacing = {
-  PaddingX: {
-    tiny: Spacing[200],
-    small: Spacing[300],
-    medium: Spacing[300],
-    extraLarge: Spacing[300],
-  },
+  PaddingX: MappedSelectPaddingX,
   ContentPaddingY: {
     tiny: Spacing[100],
     small: Spacing[300],
@@ -98,12 +100,7 @@ const MappedSelectSpacing = {
     extraLarge: Spacing[300],
   },
   IconGap: Spacing[300],
-  IconPaddingRight: {
-    tiny: Spacing[200],
-    small: Spacing[300],
-    medium: Spacing[300],
-    extraLarge: Spacing[300],
-  },
+  IconPaddingRight: MappedSelectPaddingX,
 } as const
 
 const MappedSelectListItem = {
