@@ -22,7 +22,7 @@ const ProgressBarContainer = styled.div<{ quorum?: boolean; active: boolean }>`
   height: 1rem;
   box-sizing: border-box;
   background-color: ${({ quorum, active }) => (quorum || !active ? 'inherit' : 'var(--chart-red)')};
-  ${({ active }) => (!active ? 'border: 1px solid var(--gray-500);' : 'border: none')};
+  ${({ active }) => (active ? 'border: none' : 'border: 1px solid var(--gray-500);')};
   ${({ quorum, active }) => quorum && active && 'border: 1px solid var(--primary-400);'};
 `
 

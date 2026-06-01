@@ -4,7 +4,7 @@ import type { SupplyRate } from '@/llamalend/rates.types'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { Grid, Stack } from '@mui/material'
-import { maybe } from '@primitives/objects.utils'
+import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -136,7 +136,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
             value={sharesValue}
             loading={sharesLoading}
             valueOptions={{}}
-            notional={maybe([sharesStaked, sharesValue], ([sharesStaked, sharesValue]) => ({
+            notional={maybes([sharesStaked, sharesValue], ([sharesStaked, sharesValue]) => ({
               value: (sharesStaked / sharesValue) * 100,
               unit: { symbol: t`% staked`, position: 'suffix' },
             }))}

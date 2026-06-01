@@ -26,7 +26,7 @@ type DepositOptions = {
 }
 
 const approveDeposit = async (market: LendMarketTemplate, { depositAmount = '0' }: DepositMutation): Promise<Hex[]> =>
-  !+depositAmount ? [] : ((await market.vault.depositApprove(depositAmount)) as Hex[])
+  +depositAmount ? ((await market.vault.depositApprove(depositAmount)) as Hex[]) : []
 
 const deposit = async (market: LendMarketTemplate, { depositAmount }: DepositMutation): Promise<Hex> =>
   (await market.vault.deposit(depositAmount)) as Hex

@@ -2,7 +2,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { Chain } from '@ui-kit/utils'
 
 export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
@@ -19,7 +19,7 @@ export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUs
   queryKey: ({ userAddress }: UserParams) => ['useScrvUsdUserBalances', { userAddress }] as const,
   queryFn: _fetchSavingsUserBalances,
   validationSuite: createValidationSuite(({ userAddress }: UserParams) => {
-    userAddressValidationGroup({ userAddress })
+    evmAddressValidationGroup({ evmAddress: userAddress })
     llamaApiValidationGroup({ chainId: Chain.Ethereum })
   }),
   category: 'savings.user',

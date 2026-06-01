@@ -524,8 +524,13 @@ export const CandleChart = ({
     if (!oraclePriceSeriesRef.current || !oraclePriceData) return
 
     oraclePriceSeriesRef.current.setData(oraclePriceData)
-    restoreVisibleRangeAfterDataUpdate()
-  }, [oraclePriceData, restoreVisibleRangeAfterDataUpdate])
+    // Oracle data drives historical pagination only for fallback-only charts.
+    // In candle charts, candle updates restore the viewport; restoring here can
+    // consume the pending range before the candle page arrives.
+    if (ohlcData.length === 0) {
+      restoreVisibleRangeAfterDataUpdate()
+    }
+  }, [ohlcData.length, oraclePriceData, restoreVisibleRangeAfterDataUpdate])
 
   // Update oracle price series visibility and color when they change
   useEffect(() => {

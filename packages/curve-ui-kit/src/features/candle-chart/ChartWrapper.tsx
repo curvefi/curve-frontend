@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
@@ -52,7 +52,6 @@ export const ChartWrapper = ({
   latestOraclePrice,
   onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
-  const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
@@ -82,7 +81,7 @@ export const ChartWrapper = ({
           <CandleChart
             hideCandleSeriesLabel={hideCandleSeriesLabel}
             chartHeight={chartHeight}
-            ohlcData={clonedOhlcData}
+            ohlcData={ohlcData}
             oraclePriceData={oraclePriceData}
             liquidationRange={liquidationRange}
             timeOption={timeOption}
