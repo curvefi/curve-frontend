@@ -29,7 +29,6 @@ import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watchValue('rewardTokenId')
   const amount = watchValue('amount')

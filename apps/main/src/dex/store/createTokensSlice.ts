@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
@@ -7,8 +7,6 @@ import { log } from '@ui-kit/lib/logging'
 import { fetchPoolVolumes } from '../queries/pool-volume.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { countBy } = lodash
 
 interface SliceState {
   tokensNameMapper: Record<string, TokensNameMapper>

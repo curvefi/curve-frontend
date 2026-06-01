@@ -68,9 +68,7 @@ export const LoanFormTokenInput = <
   name,
   max,
   form: {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     getValue,
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     update: updateForm,
     formState: { errors: formErrors, touchedFields },
   },

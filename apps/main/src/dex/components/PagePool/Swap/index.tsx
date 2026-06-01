@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, isUndefined } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -45,8 +45,6 @@ import { decimal, formatNumber } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
 export const Swap = ({
@@ -68,8 +66,7 @@ export const Swap = ({
 }) => {
   const isSubscribedRef = useRef(false)
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolSwap.activeKey)
   const exchangeOutput = useStore(state => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)

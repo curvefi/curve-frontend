@@ -5,7 +5,6 @@ import { ChainId } from '@/dex/types/main.types'
 
 export const EstimatedGasInfo = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     watchValue,
     formState: { isValid },
   } = useAddRewardTokenFormContext()

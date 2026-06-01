@@ -43,8 +43,7 @@ export const FormDeposit = ({
 }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)

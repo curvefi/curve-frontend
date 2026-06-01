@@ -44,8 +44,7 @@ export const FormClaimFeesButtons = ({
   const fetchStepClaimFees = useStore(state => state.dashboard.fetchStepClaimFees)
   const setFormStatus = useStore(state => state.dashboard.setFormStatusClaimFees)
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { data: networks } = useNetworks()
   const network = networks[chainId!] || null
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')

@@ -7,7 +7,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 export const useTokensMapper = (routerChainId?: ChainId | null) => {
   const chainId = useCurve().curveApi?.chainId ?? 0
   const tokensMapperState = useStore(state => state.tokens.tokensMapper[routerChainId ?? chainId])
-  const tokensMapper = useMemo(() => tokensMapperState || {}, [tokensMapperState])
+  const tokensMapper = useMemo(() => tokensMapperState ?? {}, [tokensMapperState])
   return {
     tokensMapper,
     tokensMapperStr: useMemo(() => getTokensMapperStr(tokensMapper), [tokensMapper]),

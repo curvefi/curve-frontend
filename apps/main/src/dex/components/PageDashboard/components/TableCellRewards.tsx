@@ -35,8 +35,7 @@ export const TableCellRewards = ({
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
   const rewards = haveRewards && (

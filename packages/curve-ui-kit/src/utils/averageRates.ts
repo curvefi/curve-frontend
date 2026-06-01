@@ -1,10 +1,7 @@
-import lodash from 'lodash'
+import { meanBy } from 'lodash'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 const { Weekly, Monthly } = Duration.AverageRates
-
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { meanBy } = lodash
 
 /** A timestamped snapshot record */
 export interface WithTimestamp {

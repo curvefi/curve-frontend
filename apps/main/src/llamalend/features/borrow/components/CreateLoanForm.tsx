@@ -74,7 +74,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     onPricesUpdated,
   })
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm } = form
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),

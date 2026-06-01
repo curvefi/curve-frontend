@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type {
   FormDetailInfoLeverage,
@@ -23,8 +23,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep } = lodash
 
 interface SliceState {
   activeKey: string

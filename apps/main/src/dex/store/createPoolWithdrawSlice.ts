@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
@@ -27,8 +27,6 @@ import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep } = lodash
 
 interface SliceState {
   activeKey: string

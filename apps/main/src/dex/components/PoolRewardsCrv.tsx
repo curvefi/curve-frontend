@@ -19,8 +19,7 @@ export const PoolRewardsCrv = ({
   rewardsApy: RewardsApy | undefined
   poolData: PoolDataCache | PoolData | undefined
 }) => {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
 
   const rewardsCrvLabel = useMemo(() => {
     if (isLoading || typeof poolData === 'undefined') {

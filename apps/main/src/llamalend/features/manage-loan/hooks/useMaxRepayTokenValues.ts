@@ -28,7 +28,6 @@ export function useMaxRepayTokenValues(
   enabled?: boolean,
 ) {
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({

@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { orderBy } from 'lodash'
 import { isAddress } from 'viem'
 import { StoreApi } from 'zustand'
 import type {
@@ -27,8 +27,6 @@ import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { orderBy } = lodash
 
 interface SliceState {
   activeKey: string

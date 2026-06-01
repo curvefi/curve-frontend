@@ -1,5 +1,5 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ethAddress } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
@@ -35,8 +35,6 @@ import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep } = lodash
 
 interface SliceState {
   activeKey: string

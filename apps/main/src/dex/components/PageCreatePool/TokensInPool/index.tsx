@@ -92,7 +92,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
     }))
 
-    if (haveSigner && Object.keys(tokensArray || {}).length > 0) {
+    if (haveSigner && Object.keys(tokensArray ?? {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
         .filter(token => token.symbol !== '' && token.address !== '')
         .sort((a, b) => Number(b.volume) - Number(a.volume))

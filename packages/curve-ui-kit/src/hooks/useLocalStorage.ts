@@ -1,13 +1,10 @@
-import lodash from 'lodash'
+import { kebabCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { kebabCase } = lodash
 
 function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {

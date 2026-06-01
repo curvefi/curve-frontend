@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import lodash from 'lodash'
+import { isEqual } from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -14,8 +14,6 @@ import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { isEqual } = lodash
 
 interface GlobalState {
   hasDepositAndStake: Record<string, boolean | null>

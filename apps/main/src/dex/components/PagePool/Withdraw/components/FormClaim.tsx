@@ -26,8 +26,7 @@ import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
   const formValues = useStore(state => state.poolWithdraw.formValues)
@@ -50,8 +49,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const { rewardsNeedNudging } = poolData?.gauge.status || {}
+  const { rewardsNeedNudging } = poolData?.gauge.status ?? {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 

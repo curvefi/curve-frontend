@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
@@ -15,8 +15,6 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultUnstake'
 

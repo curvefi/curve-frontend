@@ -6,7 +6,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { FlexItemDistributor, SubTitle } from './styled'
 
 export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm, formState, watchValue } = useFormContext<AddRewardFormValues>()
   const distributorId = watchValue('distributorId')
 

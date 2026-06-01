@@ -12,12 +12,9 @@ export const FormProvider = <T extends FieldValues>({
   handleSubmit,
   reset,
   watchValues,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   watchValue,
   getValues,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   getValue,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   update,
   setError,
   clearErrors,

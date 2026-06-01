@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import lodash from 'lodash'
+import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -38,9 +38,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
 import { getErrorMessage } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { isUndefined } = lodash
 
 const helpers = { waitForTransaction, waitForTransactions }
 

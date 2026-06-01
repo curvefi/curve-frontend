@@ -9,7 +9,6 @@ import { useFormContext } from '@ui-kit/features/forms'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watchValue('rewardTokenId')
   const amount = watchValue('amount')

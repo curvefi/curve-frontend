@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
-import lodash from 'lodash'
+import { chunk, countBy, groupBy, isNaN } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -35,8 +35,6 @@ import { getPools } from '../lib/pools'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { chunk, countBy, groupBy, isNaN } = lodash
 
 interface SliceState {
   poolsMapper: Record<string, PoolDataMapper>

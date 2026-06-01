@@ -21,11 +21,8 @@ interface TxInfo {
 export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     watchValue,
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     update: updateForm,
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     getValue,
     setError,
     handleSubmit,

@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
@@ -23,8 +23,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep } = lodash
 
 interface SliceState {
   activeKey: string

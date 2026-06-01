@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
@@ -10,8 +10,6 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultClaim'
 

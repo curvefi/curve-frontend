@@ -27,7 +27,6 @@ export function useMaxTokenValues({
   params: CreateLoanFormQueryParams & { userAddress?: Address }
   form: UseFormReturn<CreateLoanForm>
 }) {
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   const { update: updateForm, getValues } = form
   const {
     data: userBalance,

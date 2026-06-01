@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
@@ -14,8 +14,6 @@ import { getLoanExists } from '@/llamalend/queries/user'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep } = lodash
 
 interface SliceState {
   loansDetailsMapper: UsersLoansDetailsMapper

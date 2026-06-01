@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { debounce, merge } from 'lodash'
 import { create, StoreApi } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import { CacheSlice, createCacheSlice } from '@/dex/store/createCacheSlice'
@@ -12,9 +12,6 @@ import { PoolSwapSlice, createPoolSwapSlice } from '@/dex/store/createPoolSwapSl
 import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
 import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import { TokensSlice, createTokensSlice } from '@/dex/store/createTokensSlice'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { debounce, merge } = lodash
 
 export type State = GlobalSlice &
   CacheSlice &

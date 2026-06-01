@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanCollateralRemove/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -12,9 +12,6 @@ import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-const { cloneDeep } = lodash
 
 type StateKey = keyof typeof DEFAULT_STATE
 
