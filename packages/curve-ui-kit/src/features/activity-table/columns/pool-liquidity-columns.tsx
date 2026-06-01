@@ -49,13 +49,15 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
 
         return (
           <InlineTableCell sx={{ alignItems: 'end' }}>
-            {amount !== 0 && (
+            {amount !== 0 ? (
               <TokenInfo
                 address={token.address}
                 blockchainId={network}
                 iconPosition="right"
                 primary={formatNumber(displayAmount, { abbreviate: false })}
               />
+            ) : (
+              '-'
             )}
           </InlineTableCell>
         )
