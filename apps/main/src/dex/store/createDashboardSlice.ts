@@ -188,31 +188,26 @@ export const createDashboardSlice = (
         return { dashboardDataMapper: {}, error: errorKey }
       }
     },
-    sortFn: (chainId, sortBy, order, poolDatas) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
+    sortFn: (chainId, sort, order, poolDatas) => {
+      const sortBy = sort as SORT_ID
+
       if (sortBy === SORT_ID.poolName) {
         return orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.liquidityUsd) {
         return orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.profits) {
         return orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.claimables) {
         return orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       } else if (sortBy === SORT_ID.userCrvApy) {
         return orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
       } else if (sortBy.startsWith('reward')) {
         const rewardsApy = get().pools.rewardsApyMapper[chainId]
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         if (sortBy === SORT_ID.rewardBase) {
           return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         if (sortBy === SORT_ID.rewardOthers) {
           return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
         }

@@ -33,8 +33,9 @@ const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) 
   filter
     .toLowerCase()
     .split(/\s+/)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-    .every(filterWord => fields.some(field => get(data, field)?.toLowerCase?.().includes(filterWord)))
+    .every(filterWord =>
+      fields.some(field => (get(data, field) as string | undefined)?.toLowerCase?.().includes(filterWord)),
+    )
 
 const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
   notFalsy<PoolTag>(

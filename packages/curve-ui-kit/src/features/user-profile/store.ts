@@ -58,12 +58,7 @@ const store: StateCreator<Store> = set => ({
       if (!key) return false
       if (key === 'crypto' || key === 'stable') return false
 
-      set(
-        produce(state => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          delete state.maxSlippage[key]
-        }),
-      )
+      set(produce((state: UserProfileState) => delete state.maxSlippage[key]))
 
       return true
     }
@@ -74,16 +69,11 @@ const store: StateCreator<Store> = set => ({
 
     // Set slippage for a key, but if none given all existing keys will be overwritten.
     set(
-      produce(state => {
+      produce((state: UserProfileState) => {
         if (key) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state.maxSlippage[key] = maxSlippage
         } else {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          for (const k of Object.keys(state.maxSlippage)) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-            state.maxSlippage[k] = maxSlippage
-          }
+          Object.keys(state.maxSlippage).forEach(k => (state.maxSlippage[k] = maxSlippage))
         }
       }),
     )

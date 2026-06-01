@@ -114,8 +114,7 @@ export const LoanActionInfoList = ({
 
   const debtActionInfo = (
     <>
-      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-      {(debt || prevDebt) && (
+      {(debt ?? prevDebt) && (
         <ActionInfo
           label={t`Debt`}
           value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
@@ -134,8 +133,7 @@ export const LoanActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(rates || prevRates) && (
+          {(rates ?? prevRates) && (
             <ActionInfo
               label={t`Borrow APR`}
               value={rates?.data?.borrowApr && formatPercent(rates.data.borrowApr)}
@@ -173,8 +171,7 @@ export const LoanActionInfoList = ({
             size="small"
             testId="borrow-health"
           />
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(loanToValue || prevLoanToValue) && (
+          {(loanToValue ?? prevLoanToValue) && (
             <ActionInfo
               label={
                 <Tooltip title={t`Loan to value ratio`} placement="top">
@@ -194,8 +191,7 @@ export const LoanActionInfoList = ({
             oraclePrice={oraclePrice}
             isFullRepay={isFullRepay}
           />
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(prices || prevPrices) && !isFullRepay && (
+          {(prices ?? prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
               value={prices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
@@ -208,8 +204,7 @@ export const LoanActionInfoList = ({
           )}
         </Stack>
         <Stack>
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(collateral || prevCollateral) && (
+          {(collateral ?? prevCollateral) && (
             <ActionInfo
               label={t`Collateral`}
               value={isFullRepay ? 0 : collateral?.data && formatNumber(collateral.data, { abbreviate: false })}
@@ -226,8 +221,7 @@ export const LoanActionInfoList = ({
 
       {leverageEnabled && (
         <Stack data-testid="borrow-leverage-info-list">
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(prevLeverageValue || leverageValue) && (
+          {(prevLeverageValue ?? leverageValue) && (
             <ActionInfo
               label={t`Leverage`}
               value={formatLeverage(leverageValue?.data ?? prevLeverageValue?.data)}
@@ -237,8 +231,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(prevLeverageCollateral || leverageCollateral) && (
+          {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo
               label={t`Leverage collateral`}
               value={formatAmount(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
@@ -252,8 +245,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage-collateral"
             />
           )}
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-          {(prevLeverageTotalCollateral || leverageTotalCollateral) && (
+          {(prevLeverageTotalCollateral ?? leverageTotalCollateral) && (
             <ActionInfo
               label={t`Total collateral`}
               value={formatAmount(leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data, collateralSymbol)}

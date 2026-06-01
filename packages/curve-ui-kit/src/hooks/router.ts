@@ -31,9 +31,8 @@ export function useNavigate() {
  * Note that during navigation, this will reflect the *new* search params before the navigation is complete.
  */
 export function useSearchParams(): URLSearchParams {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
-  const { search } = useTanstackLocation()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const { search } = useTanstackLocation() as { search: Record<string, string> }
   return useMemo(() => new URLSearchParams(search), [search])
 }
 

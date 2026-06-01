@@ -98,17 +98,12 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     connect,
     disconnect: () => Promise.resolve(undefined),
 
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    getAccounts: async () => [account.address],
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    getChainId: async () => chain.id,
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    getProvider: async () => client,
+    getAccounts: () => Promise.resolve([account.address]),
+    getChainId: () => Promise.resolve(chain.id),
+    getProvider: () => Promise.resolve(client),
 
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    isAuthorized: async () => true,
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    switchChain: async () => chain,
+    isAuthorized: () => Promise.resolve(true),
+    switchChain: () => Promise.resolve(chain),
 
     onAccountsChanged: noop,
     onChainChanged: noop,

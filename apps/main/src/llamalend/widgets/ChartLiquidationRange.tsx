@@ -48,8 +48,7 @@ interface ChartLiquidationRangeProps {
 
 interface TooltipContentProps {
   active?: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload?: any[]
+  payload: { name?: string | number; stroke?: string; payload?: LiquidationRangeData }[]
   oraclePrice: string
   isManage: boolean
   chartHealthColor: string
@@ -58,17 +57,12 @@ interface TooltipContentProps {
 const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHealthColor }: TooltipContentProps) => {
   if (!active || !payload?.length || !oraclePrice) return null
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const currPrices = isManage ? payload.find(p => p.name === 'curr') : undefined
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
   const newPrices = isManage ? payload.find(p => p.name === 'new') : payload[0]
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-  const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-  const [np1, np2] = (newPrices?.payload.new as string[]) ?? []
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-  const oraclePriceValue = newPrices?.payload.oraclePrice
+  const [cp1, cp2] = currPrices?.payload?.curr ?? []
+  const [np1, np2] = newPrices?.payload?.new ?? []
+  const oraclePriceValue = newPrices?.payload?.oraclePrice
 
   return (
     <ChartTooltip>
@@ -76,7 +70,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
         <div>
           <TipTitle>{t`Liquidation range`}</TipTitle>
           <TipContent>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
+            {}
             <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
             <>{`${formatNumber(amount(cp2), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(cp1), { abbreviate: false, fallback: '-' })}`}</>
           </TipContent>
@@ -93,7 +87,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
       )}
       <div>
         <TipTitle>{t`Oracle price`}</TipTitle>
-        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
+        {}
         <TipContent>{formatNumber(amount(oraclePriceValue), { abbreviate: false, fallback: '-' })}</TipContent>
       </div>
     </ChartTooltip>
@@ -139,10 +133,11 @@ export const ChartLiquidationRange = ({
   showLegend = false,
   tooltipContent,
 }: ChartLiquidationRangeProps) => {
-  const oraclePrice = data[0]?.oraclePrice
-  const haveCurrData = data[0]?.curr[0] > 0
-  const haveNewData = data[0]?.new[0] > 0
-  const isInLiquidationRange = haveCurrData ? inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
+  const [first] = data
+  const oraclePrice = first?.oraclePrice
+  const haveCurrData = first?.curr[0] > 0
+  const haveNewData = first?.new[0] > 0
+  const isInLiquidationRange = haveCurrData && inRange(+oraclePrice, first.curr[1], first.curr[0])
   const theme = useTheme()
   const showFireStyle = isInLiquidationRange && theme.key === 'chad'
 

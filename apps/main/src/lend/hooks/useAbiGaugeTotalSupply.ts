@@ -1,4 +1,4 @@
-import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import { Contract, Interface, type InterfaceAbi, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import { networks } from '@/lend/networks'
 import { ChainId, Provider } from '@/lend/types/lend.types'
@@ -17,13 +17,13 @@ export const useAbiGaugeTotalSupply = (
   const getContract = useCallback(
     async (jsonModuleName: string, contractAddress: string, provider: Provider | JsonRpcProvider) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
-        const abi = await import(`@/lend/abis/${jsonModuleName}.json`).then(module => module.default.abi)
+        const abi = await import(`@/lend/abis/${jsonModuleName}.json`).then(
+          (module: { default: { abi: InterfaceAbi } }) => module.default.abi,
+        )
         if (abi) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           return new Contract(contractAddress, new Interface(abi).format(), provider)
         }
-        console.error('cannot find abi')
+        console.error(`cannot find abi ${jsonModuleName} for contract ${contractAddress}`)
       } catch (error) {
         console.error(error)
       }

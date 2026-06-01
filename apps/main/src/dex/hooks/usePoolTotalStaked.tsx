@@ -1,4 +1,4 @@
-import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import { Contract, Interface, type InterfaceAbi, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { type State, useStore } from '@/dex/store/useStore'
 import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
@@ -28,11 +28,10 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const getContract = useCallback(
     async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
-        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(module => module.default.abi)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-        const iface = new Interface(abi)
-        return new Contract(address, iface.format(), provider)
+        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(
+          (module: { default: { abi: InterfaceAbi } }) => module.default.abi,
+        )
+        return new Contract(address, new Interface(abi).format(), provider)
       } catch (error) {
         updateTotalStakeValue({ totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' })
         console.error(error)

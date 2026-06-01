@@ -241,7 +241,7 @@ export const Swap = ({
                   content: (
                     // TODO: fix typescript error
                     <WarningModal
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Existing violation before enabling this rule.
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       {...(exchangeOutput.modal as any)}
                       confirmed={confirmedLoss}
                       setConfirmed={setConfirmedLoss}

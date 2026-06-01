@@ -62,13 +62,12 @@ const network = {
     const failedFetching24hOldVprice: Record<string, boolean> = {}
     const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
-      const resp = await httpFetcher(url)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-      if (resp.success && Object.keys(resp.data.poolDetails).length) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-        for (const poolDetail of resp.data.poolDetails) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+      const { data, success } = (await httpFetcher(url)) as {
+        success: boolean
+        data: { poolDetails: { poolAddress: string; failedFetching24hOldVprice: boolean }[] }
+      }
+      if (success) {
+        for (const poolDetail of data.poolDetails) {
           failedFetching24hOldVprice[poolDetail.poolAddress.toLowerCase()] = poolDetail.failedFetching24hOldVprice
         }
       }

@@ -55,7 +55,7 @@ export const ChartWrapper = ({
   onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
-  const wrapperRef = useRef(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   const isError = chartStatus === 'ERROR'

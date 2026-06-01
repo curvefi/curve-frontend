@@ -6,13 +6,9 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
-function getFromLocalStorage<T>(storageKey: string): T | null {
-  if (typeof window === 'undefined') {
-    return null
-  }
+function getFromLocalStorage<T>(storageKey: string) {
   const item = window.localStorage.getItem(storageKey)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
-  return item && JSON.parse(item)
+  return (item && JSON.parse(item)) as T | null
 }
 
 const get = <T>(key: string, initialValue: T): T => getFromLocalStorage<T>(key) ?? initialValue
