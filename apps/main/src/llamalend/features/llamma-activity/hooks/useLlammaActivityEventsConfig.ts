@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
-import { scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
   type LlammaEventRow,
   LLAMMA_EVENTS_COLUMNS,
@@ -48,6 +48,7 @@ export const useLlammaActivityEventsConfig = ({
       (network &&
         eventsData?.events.map((event: LlammaEvent) => ({
           ...event,
+          providerUrl: scanAddressPath(networkConfig, event.provider),
           txUrl: scanTxPath(networkConfig, event.txHash),
           network,
           collateralToken,
