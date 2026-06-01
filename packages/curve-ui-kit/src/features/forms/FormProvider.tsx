@@ -26,7 +26,7 @@ export const FormProvider = <T extends FieldValues>({
     [errors, visibleErrors, isValid, isSubmitting, isDirty, dirtyFields, touchedFields],
   )
   return (
-    <FormContext.Provider
+    <FormContext
       value={useMemo(
         /** memoize the provider value to prevent unnecessary re-renders of consuming components */
         () =>
@@ -66,6 +66,6 @@ export const FormProvider = <T extends FieldValues>({
           </AccordionDetails>
         </Accordion>
       )}
-    </FormContext.Provider>
+    </FormContext>
   )
 }

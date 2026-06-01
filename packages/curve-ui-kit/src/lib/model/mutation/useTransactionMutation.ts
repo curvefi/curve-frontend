@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-react/naming-convention-context-name */
 import { useState } from 'react'
 import type { FormattedTransactionReceipt } from 'viem'
 import { useConfig } from 'wagmi'

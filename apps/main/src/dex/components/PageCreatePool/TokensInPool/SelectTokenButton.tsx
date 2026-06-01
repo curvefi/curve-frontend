@@ -44,7 +44,7 @@ export const SelectTokenButton = ({
   onSelectionChange,
 }: Props) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const visibleTokens = useRef<{ [k: string]: boolean }>({})
+  const visibleTokensRef = useRef<{ [k: string]: boolean }>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
@@ -71,7 +71,7 @@ export const SelectTokenButton = ({
   ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 
   if (!overlayTriggerState.isOpen) {
-    visibleTokens.current = {}
+    visibleTokensRef.current = {}
   }
 
   // handles search/filtering

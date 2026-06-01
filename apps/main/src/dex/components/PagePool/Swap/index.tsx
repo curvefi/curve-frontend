@@ -65,7 +65,7 @@ export const Swap = ({
   seed: Seed
   tokensMapper: TokensMapper
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
@@ -170,7 +170,7 @@ export const Swap = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         setTxInfoBar(
@@ -284,10 +284,10 @@ export const Swap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

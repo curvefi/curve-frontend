@@ -6,7 +6,7 @@ import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { applySxProps, SxProps } from '@ui-kit/utils'
+import { applySxProps, borderStyle, SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -30,7 +30,6 @@ const headerIconSize = {
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
 
-const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 
 type AccordionBaseProps = {

@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table'
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui-kit/utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -113,13 +114,13 @@ export function useCellSx<T extends TableItem>({
       paddingInlineStart,
       paddingInlineEnd,
       ...(isSticky && {
-        borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
+        borderInlineEnd: borderStyle,
         position: 'sticky',
         left: 0,
         zIndex: (t: Theme) => t.zIndex.tableStickyColumn,
         backgroundColor: (t: Theme) => t.design.Table.Row.Default,
       }),
-      borderBlockEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
+      borderBlockEnd: borderStyle,
     }),
     [isSticky, paddingInlineEnd, paddingInlineStart, showCollapseIcon, wrapperSx],
   )
