@@ -2,7 +2,7 @@
 
 body {
   --font: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
-  --font-mono: Minecraft, 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --font-mono: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
 }
 
 body.theme-chad {
@@ -213,20 +213,4 @@ li {
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-}
-
-@font-face {
-  font-family: 'Minecraft';
-  src:
-    local('Minecraft'),
-    url('../../../packages/curve-ui-kit/public/fonts/Minecraft-Regular.otf') format('opentype');
-  font-weight: normal;
-}
-
-@font-face {
-  font-family: 'Minecraft';
-  src:
-    local('Minecraft'),
-    url('../../../packages/curve-ui-kit/public/fonts/Minecraft-Bold.otf') format('opentype');
-  font-weight: bold;
 }
