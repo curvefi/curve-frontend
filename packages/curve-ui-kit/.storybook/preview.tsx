@@ -52,10 +52,38 @@ const decorators: Decorator[] = [
         }
         @font-face {
           font-family: 'Ioskeley Mono';
+          font-weight: 300;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono-Light.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: 'Ioskeley Mono';
           font-weight: 400;
           font-style: normal;
           font-display: swap;
           src: url('fonts/Ioskeley-Mono.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: 'Ioskeley Mono';
+          font-weight: 500;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono-Medium.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: 'Ioskeley Mono';
+          font-weight: 600;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono-SemiBold.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: 'Ioskeley Mono';
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono-Bold.woff2') format('woff2');
         }
         `}
         </style>
