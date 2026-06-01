@@ -146,8 +146,7 @@ export const LegacyUserPositionsTable = ({
   const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
-  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
+  const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
   const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain]
 
@@ -157,7 +156,7 @@ export const LegacyUserPositionsTable = ({
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
-    onExpandedChange,
+    onExpandedChange: setExpanded,
     globalFilterFn,
     ...getTableOptions(queryData),
   })

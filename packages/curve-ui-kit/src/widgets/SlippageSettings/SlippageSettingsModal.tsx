@@ -123,8 +123,7 @@ type Props = SlippageSettingsProps & SlippageSettingsCallbacks
  * - Max recommended slippage: 5% (values above this trigger a warning)
  */
 export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: Props) => {
-  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
-  const [formValues, setFormValues] = useState(initFormValues(maxSlippage))
+  const [formValues, setFormValues] = useState(() => initFormValues(maxSlippage))
   const { error, selected, customValue } = formValues
 
   /**
