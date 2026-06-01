@@ -1,5 +1,6 @@
 /// <reference types="./mui-select.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
+import { recordEntries } from '@primitives/objects.utils'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import type { SelectProps } from '@ui-kit/shared/ui/Select'
 import { DesignSystem } from '@ui-kit/themes/design'
@@ -89,12 +90,12 @@ export const defineMuiSelect = (
     },
   },
   variants: [
-    ...Object.entries(selectSizes).map(
+    ...recordEntries(selectSizes).map(
       ([size, { height, iconSize, iconPaddingRight, paddingBlock, paddingInlineStart, typography: font }]) => {
         const iconSpace = getSelectIconSpace(iconSize, iconPaddingRight)
 
         return {
-          props: { size: size as SelectSizes },
+          props: { size },
           style: {
             // Override InputBase height at root level and desktop size across all breakpoints.
             '&.MuiInputBase-root': { height },
