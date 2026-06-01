@@ -1,15 +1,22 @@
-import { some } from 'lodash'
+import { useConnection } from 'wagmi'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils/mui'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
+
+const { Spacing } = SizesAndSpaces
 
 type UserPositionsTableProps = {
   onReload: () => void
@@ -28,12 +35,14 @@ export const UserPositionsTables = ({
   tableQuery,
   tableQuery: { data: queryData, isLoading },
 }: UserPositionsTableProps) => {
+  const { address, isConnecting } = useConnection()
+  const { connect } = useWallet()
   // Tracks whether the user has any positions for each market rate type.
   const hasUserPositions = maybe(queryData?.userHasPositions, userHasPositions =>
     fromEntries(
       recordValues(MarketRateType).map(rateType => [
         rateType,
-        some(userHasPositions, marketHasPositions => marketHasPositions[rateType]),
+        recordValues(userHasPositions).some(marketHasPositions => marketHasPositions[rateType]),
       ]),
     ),
   )
@@ -63,6 +72,29 @@ export const UserPositionsTables = ({
             marketRateType={MarketRateType.Supply}
             onReload={onReload}
           />
+        )}
+        {(!hasUserPositions || !address) && (
+          <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
+            {address ? (
+              !hasUserPositions && (
+                <EmptyStateCard
+                  isLoading={isLoading}
+                  title={t`No active positions`}
+                  subtitle={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
+                />
+              )
+            ) : (
+              <EmptyStateCard
+                action={
+                  <ConnectWalletButton
+                    label={t`Connect to view positions`}
+                    onClick={() => connect()}
+                    loading={isConnecting}
+                  />
+                }
+              />
+            )}
+          </Box>
         )}
       </Stack>
     </Stack>

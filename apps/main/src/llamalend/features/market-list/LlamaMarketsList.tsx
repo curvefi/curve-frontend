@@ -92,13 +92,10 @@ export const LlamaMarketsList = () => {
 
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {address ? (
-        data?.userHasPositions &&
-        (isNewLayout ? (
-          <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
-        ) : (
-          <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
-        ))
+      {isNewLayout ? (
+        <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      ) : address ? (
+        data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
