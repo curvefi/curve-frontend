@@ -28,7 +28,7 @@ export type OhlcChartProps = {
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   selectChartList: ChartSelections[]
-  latestOraclePrice?: string
+  latestOraclePrice?: number
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 

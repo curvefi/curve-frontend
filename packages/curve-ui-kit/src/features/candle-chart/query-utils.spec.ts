@@ -137,13 +137,13 @@ describe('candle chart query utils', () => {
       { time: 2 as OraclePriceData['time'], value: 2 },
     ]
 
-    expect(applyLatestOraclePrice(data, '2')).toBe(data)
-    expect(applyLatestOraclePrice(data, '3')).toEqual([
+    expect(applyLatestOraclePrice(data, 2)).toBe(data)
+    expect(applyLatestOraclePrice(data, 3)).toEqual([
       { time: 1, value: 1 },
       { time: 2, value: 3 },
     ])
     expect(data[1].value).toBe(2)
-    expect(applyLatestOraclePrice(data, 'not-a-number')).toBe(data)
+    expect(applyLatestOraclePrice(data, undefined)).toBe(data)
   })
 
   it('formats parsed candle OHLC rows', () => {

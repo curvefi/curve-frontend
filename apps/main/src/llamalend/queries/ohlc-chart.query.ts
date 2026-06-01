@@ -18,8 +18,8 @@ import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@ui-
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type TokenInfo = {
-  address: OraclePool['borrowedAddress'] | ''
-  symbol: OraclePool['borrowedSymbol']
+  address: OraclePool['borrowedAddress'] | OraclePool['collateralAddress']
+  symbol: OraclePool['borrowedSymbol'] | OraclePool['collateralSymbol']
 }
 
 type BaseOhlcQueryParams = {
@@ -44,8 +44,8 @@ export type OraclePoolOhlcPage = OhlcPageResult & {
   page: OhlcPageParam
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData: OraclePriceData[]
-  borrowedToken: TokenInfo
-  collateralToken: TokenInfo
+  borrowedToken?: TokenInfo
+  collateralToken?: TokenInfo
 }
 
 export type LlammaOhlcPage = OhlcPageResult & {
@@ -53,9 +53,29 @@ export type LlammaOhlcPage = OhlcPageResult & {
   oraclePriceData: OraclePriceData[]
 }
 
-const EMPTY_TOKEN: TokenInfo = {
-  address: '',
-  symbol: '',
+// Oracle pools are ordered as the price route from market collateral to borrowed token.
+const getOraclePoolTokenPair = (pools: OraclePool[]): Pick<OraclePoolOhlcPage, 'borrowedToken' | 'collateralToken'> => {
+  const collateralPool = pools[0]
+  const borrowedPool = pools.at(-1)
+
+  return {
+    ...(collateralPool
+      ? {
+          collateralToken: {
+            address: collateralPool.collateralAddress,
+            symbol: collateralPool.collateralSymbol,
+          },
+        }
+      : {}),
+    ...(borrowedPool
+      ? {
+          borrowedToken: {
+            address: borrowedPool.borrowedAddress,
+            symbol: borrowedPool.borrowedSymbol,
+          },
+        }
+      : {}),
+  }
 }
 
 export const useOraclePoolOhlcQuery = ({
@@ -111,26 +131,13 @@ export const useOraclePoolOhlcQuery = ({
 
       const ohlcData = formatCandleOhlcData(ohlc)
       const oraclePriceData = formatOraclePriceData(data)
-      const firstPool = pools[0]
-      const lastPool = pools[pools.length - 1]
 
       return {
         page,
         ohlcData,
         oraclePriceData,
         ...createOhlcPageResult(data),
-        collateralToken: firstPool
-          ? {
-              address: firstPool.collateralAddress,
-              symbol: firstPool.collateralSymbol,
-            }
-          : EMPTY_TOKEN,
-        borrowedToken: lastPool
-          ? {
-              address: lastPool.borrowedAddress,
-              symbol: lastPool.borrowedSymbol,
-            }
-          : EMPTY_TOKEN,
+        ...getOraclePoolTokenPair(pools),
       }
     },
   })

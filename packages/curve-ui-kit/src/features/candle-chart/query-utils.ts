@@ -1,19 +1,10 @@
 import type { UTCTimestamp } from 'lightweight-charts'
 import { useCallback, useMemo, useRef } from 'react'
+import { notFalsy } from '@primitives/objects.utils'
 import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { getOhlcPageStart, getPreviousOhlcPageEnd, hasFullOhlcPage } from './time-utils'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
-
-export const CANDLE_CHART_QUERY_GC_TIME = 10 * 60 * 1000
-export const CANDLE_CHART_QUERY_OPTIONS = {
-  staleTime: Infinity,
-  gcTime: CANDLE_CHART_QUERY_GC_TIME,
-  refetchOnMount: false,
-  refetchOnReconnect: false,
-  refetchOnWindowFocus: false,
-  meta: { persist: false },
-} as const
 
 export type OhlcPageParam = {
   start: number
@@ -104,7 +95,7 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   // Callers own the endpoint-specific fetcher and include its identity inputs in queryKey.
   // eslint-disable-next-line @tanstack/query/exhaustive-deps
   return useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
-    ...CANDLE_CHART_QUERY_OPTIONS,
+    meta: { persist: false },
     queryKey,
     initialPageParam: createOhlcPageParam(timeOption, anchorEnd),
     enabled,
@@ -217,28 +208,18 @@ export const createCandleChartQueryKey = <TParts extends readonly unknown[]>(...
 export const flattenOhlcPages = <TPage, TItem>(pages: TPage[] | undefined, selectItems: (page: TPage) => TItem[]) =>
   [...(pages ?? [])].reverse().flatMap(selectItems)
 
-export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: number | string | undefined) => {
+export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: number | undefined) => {
   if (oraclePrice == null || data.length === 0) return data
 
-  const latestValue = Number(oraclePrice)
   const lastItem = data[data.length - 1]
-  if (!Number.isFinite(latestValue) || lastItem.value === latestValue) return data
+  if (lastItem.value === oraclePrice) return data
 
-  return [...data.slice(0, -1), { ...lastItem, value: latestValue }]
+  return [...data.slice(0, -1), { ...lastItem, value: oraclePrice }]
 }
 
-export const useStableOhlcAnchorEnd = (anchorKey: string) => {
-  const anchorRef = useRef<{ key: string; end: number } | null>(null)
+const createOhlcAnchorEnd = (_resetKey: string) => Math.floor(Date.now() / 1000)
 
-  if (anchorRef.current?.key !== anchorKey) {
-    anchorRef.current = {
-      key: anchorKey,
-      end: Math.floor(Date.now() / 1000),
-    }
-  }
-
-  return anchorRef.current.end
-}
+export const useStableOhlcAnchorEnd = (resetKey: string) => useMemo(() => createOhlcAnchorEnd(resetKey), [resetKey])
 
 const hasCompleteOhlcValues = (data: OhlcPoint): data is CompleteOhlcPoint =>
   data.close != null && data.high != null && data.low != null && data.open != null
@@ -254,12 +235,10 @@ export const formatCandleOhlcData = (data: OhlcPoint[]): LpPriceOhlcDataFormatte
 
 export const formatOraclePriceData = (data: NullableOraclePoint[]): OraclePriceData[] =>
   data.flatMap(({ time, oraclePrice }) =>
-    oraclePrice == null
-      ? []
-      : [
-          {
-            time: toLocalTimestampSeconds(time) as UTCTimestamp,
-            value: oraclePrice,
-          },
-        ],
+    notFalsy(
+      oraclePrice != null && {
+        time: toLocalTimestampSeconds(time) as UTCTimestamp,
+        value: oraclePrice,
+      },
+    ),
   )

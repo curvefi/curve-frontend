@@ -33,7 +33,7 @@ type UseLlammaOhlcChartDataParams = {
   endpoint: Endpoint
   interval: number
   llamma: string
-  oraclePrice: string | undefined
+  oraclePrice: number | undefined
   timeOption: TimeOption
   units: OhlcTimeUnit
 }
@@ -94,18 +94,17 @@ export const useLlammaOhlcChartData = ({
     useCallback(data => applyLatestOraclePrice(data, oraclePrice), [oraclePrice]),
   )
   const oracleTokenPage = oraclePoolQuery.data?.pages.find(
-    page => page.collateralToken.symbol && page.borrowedToken.symbol,
+    page => page.collateralToken?.symbol && page.borrowedToken?.symbol,
   )
-  const oracleTokens = useMemo(
-    () =>
-      oracleTokenPage
-        ? {
-            collateralSymbol: oracleTokenPage.collateralToken.symbol,
-            borrowedSymbol: oracleTokenPage.borrowedToken.symbol,
-          }
-        : null,
-    [oracleTokenPage],
-  )
+  const oracleTokens = useMemo(() => {
+    const { collateralToken, borrowedToken } = oracleTokenPage ?? {}
+    return collateralToken && borrowedToken
+      ? {
+          collateralSymbol: collateralToken.symbol,
+          borrowedSymbol: borrowedToken.symbol,
+        }
+      : null
+  }, [oracleTokenPage])
   const selectHistoricalQueries = useCallback(
     (selection: HistoricalSelection) =>
       notFalsy(selection.oraclePool && oraclePoolQuery, selection.llamma && shouldFetchLlammaQuery && llammaQuery),

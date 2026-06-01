@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -45,22 +45,22 @@ export const useLlammaOhlcChartStateModel = ({
   userPrices,
 }: LlammaOhlcChartStateModelParams) => {
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
-  const anchorKey = `${chainKey}:${marketId}:${controllerAddress}:${llammaAddress}:${timeOption}`
+  const anchorKey = `${chainKey}:${marketId}:${timeOption}`
   const anchorEnd = useStableOhlcAnchorEnd(anchorKey)
+  const latestOraclePrice = oraclePrice ? Number(oraclePrice) : undefined
 
-  const { oraclePoolsChartQuery, oraclePriceFallbackQuery, oracleTokens, refetch, fetchMore } =
-    useLlammaOhlcChartData({
-      endpoint,
-      chain: network,
-      controller: controllerAddress,
-      llamma: llammaAddress,
-      oraclePrice,
-      interval: chartInterval,
-      timeOption,
-      units: timeUnit,
-      anchorEnd,
-      enabled: enabled && !!network,
-    })
+  const { oraclePoolsChartQuery, oraclePriceFallbackQuery, oracleTokens, refetch, fetchMore } = useLlammaOhlcChartData({
+    endpoint,
+    chain: network,
+    controller: controllerAddress,
+    llamma: llammaAddress,
+    oraclePrice: latestOraclePrice,
+    interval: chartInterval,
+    timeOption,
+    units: timeUnit,
+    anchorEnd,
+    enabled: enabled && !!network,
+  })
   const oraclePoolsOhlcData = oraclePoolsChartQuery.data?.ohlcData ?? []
   const oraclePoolsOraclePriceData = oraclePoolsChartQuery.data?.oraclePriceData ?? []
   const fallbackOraclePriceData = oraclePriceFallbackQuery.data ?? []
@@ -102,18 +102,6 @@ export const useLlammaOhlcChartStateModel = ({
   })
   const shouldFetchFallbackOracleLine =
     shouldUseFallbackChart || (oraclePriceVisible && oraclePoolsOraclePriceData.length === 0)
-  const neededHistoricalSelection = useMemo(
-    () => ({
-      oraclePool: !shouldUseFallbackChart,
-      llamma: shouldFetchFallbackOracleLine,
-    }),
-    [shouldFetchFallbackOracleLine, shouldUseFallbackChart],
-  )
-  const refetchPricesData = useCallback(() => refetch(neededHistoricalSelection), [neededHistoricalSelection, refetch])
-  const fetchMoreChartData = useCallback(
-    () => fetchMore(neededHistoricalSelection),
-    [fetchMore, neededHistoricalSelection],
-  )
 
   const selectedLiqRange = useLiquidationRange({
     chartData: ohlcData,
@@ -133,12 +121,12 @@ export const useLlammaOhlcChartStateModel = ({
     timeOption,
     selectedChartKey: selectedChartKey ?? '',
     selectChartList,
-    refetchPricesData,
-    fetchMoreChartData,
+    refetchPricesData: () => refetch({ oraclePool: !shouldUseFallbackChart, llamma: shouldFetchFallbackOracleLine }),
+    fetchMoreChartData: () => fetchMore({ oraclePool: !shouldUseFallbackChart, llamma: shouldFetchFallbackOracleLine }),
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
-    latestOraclePrice: oraclePrice,
+    latestOraclePrice,
   }
 
   return {

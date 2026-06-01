@@ -95,7 +95,7 @@ type Props = {
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
-  latestOraclePrice?: string
+  latestOraclePrice?: number
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
@@ -128,11 +128,11 @@ export const CandleChart = ({
     top: null,
     bottom: null,
   })
-  const historicalRangeSeriesRefs = useRef<LiquidationRangeSeriesApi[]>([])
+  const historicalRangeSeriesRef = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const resizeObserverRef = useRef<ResizeObserver | null>(null)
-  const hasAppliedInitialOffset = useRef(false)
+  const hasAppliedInitialOffsetRef = useRef(false)
   const ohlcDataRef = useLatestValueRef(ohlcData)
 
   const [wrapperWidth, setWrapperWidth] = useState(0)
@@ -325,12 +325,12 @@ export const CandleChart = ({
     }
 
     const removeHistoricalSeries = () => {
-      historicalRangeSeriesRefs.current.forEach(series => {
+      historicalRangeSeriesRef.current.forEach(series => {
         if (series) {
           chartRef.current?.removeSeries(series)
         }
       })
-      historicalRangeSeriesRefs.current = []
+      historicalRangeSeriesRef.current = []
     }
 
     removePrimarySeries()
@@ -375,7 +375,7 @@ export const CandleChart = ({
         lineStyle: LineStyle.Solid,
       })
       series.applyOptions(getSeriesAppearance('historical').seriesOptions)
-      historicalRangeSeriesRefs.current.push(series)
+      historicalRangeSeriesRef.current.push(series)
     })
 
     return () => {
@@ -501,11 +501,11 @@ export const CandleChart = ({
   // This effect runs when wrapperWidth changes to ensure chart is rendered with proper dimensions
   useEffect(() => {
     const hasSeriesData = ohlcData.length > 0 || !!oraclePriceData?.length
-    if (!chartRef.current || !hasSeriesData || hasAppliedInitialOffset.current || wrapperWidth <= 0) return
+    if (!chartRef.current || !hasSeriesData || hasAppliedInitialOffsetRef.current || wrapperWidth <= 0) return
 
     // Use requestAnimationFrame to ensure the chart has finished rendering
     requestAnimationFrame(() => {
-      if (!chartRef.current || hasAppliedInitialOffset.current) return
+      if (!chartRef.current || hasAppliedInitialOffsetRef.current) return
 
       const timeScale = chartRef.current.timeScale()
       const chartWidth = timeScale.width()
@@ -514,7 +514,7 @@ export const CandleChart = ({
       if (chartWidth > 0 && barSpacing > 0) {
         const paddingBars = (chartWidth * 0.1) / barSpacing // 10% spacing
         timeScale.scrollToPosition(+paddingBars, false)
-        hasAppliedInitialOffset.current = true
+        hasAppliedInitialOffsetRef.current = true
       }
     })
   }, [ohlcData, oraclePriceData, wrapperWidth])
@@ -563,7 +563,7 @@ export const CandleChart = ({
       oraclePriceSeriesRef.current,
       currentRangeSeriesRef.current,
       newRangeSeriesRef.current,
-      ...historicalRangeSeriesRefs.current,
+      ...historicalRangeSeriesRef.current,
     ]
 
     watchedSeries.forEach(series => {
@@ -603,7 +603,7 @@ export const CandleChart = ({
     if (!liquidationRange || (!liquidationRange.current && !liquidationRange.new && !liquidationRange.historical)) {
       currentRangeSeriesRef.current?.setData([])
       newRangeSeriesRef.current?.setData([])
-      historicalRangeSeriesRefs.current.forEach(series => series?.setData([]))
+      historicalRangeSeriesRef.current.forEach(series => series?.setData([]))
       scheduleEmitPriceRange()
       return
     }
@@ -626,7 +626,7 @@ export const CandleChart = ({
 
     // keep historical series in sync with normalized data snapshots
     const historicalRanges = liquidationRange.historical ?? []
-    historicalRangeSeriesRefs.current.forEach((series, index) => {
+    historicalRangeSeriesRef.current.forEach((series, index) => {
       if (!series) return
       const normalized = historicalRanges[index] ? normalizeLiquidationRangePoints(historicalRanges[index]) : []
       series.setData(normalized)
@@ -682,7 +682,7 @@ export const CandleChart = ({
     }
 
     const historicalAppearance = getSeriesAppearance('historical')
-    historicalRangeSeriesRefs.current.forEach(series => {
+    historicalRangeSeriesRef.current.forEach(series => {
       applySeriesOptions(series, historicalAppearance.seriesOptions)
     })
   }, [liqRangeCurrentVisible, liqRangeNewVisible, getSeriesAppearance, liquidationRange?.historical])
@@ -690,16 +690,16 @@ export const CandleChart = ({
   // Update latest oracle price when it changes (comes from on chain to keep the last data point as up to date as possible)
   useEffect(() => {
     if (
-      !latestOraclePrice ||
+      latestOraclePrice == null ||
       !oraclePriceSeriesRef.current ||
       !oraclePriceData ||
-      oraclePriceData[oraclePriceData.length - 1].value === +latestOraclePrice
+      oraclePriceData[oraclePriceData.length - 1].value === latestOraclePrice
     )
       return
 
     oraclePriceSeriesRef.current.update({
       time: oraclePriceData[oraclePriceData.length - 1].time,
-      value: +latestOraclePrice,
+      value: latestOraclePrice,
     })
   }, [latestOraclePrice, oraclePriceData])
 
@@ -711,7 +711,7 @@ export const CandleChart = ({
 
     // Define all series in order (later = rendered on top): historical, current, new, OHLC, oracle
     const allSeries = [
-      ...historicalRangeSeriesRefs.current,
+      ...historicalRangeSeriesRef.current,
       currentRangeSeriesRef.current,
       newRangeSeriesRef.current,
       candlestickSeriesRef.current,
