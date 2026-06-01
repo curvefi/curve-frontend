@@ -50,6 +50,13 @@ const decorators: Decorator[] = [
           font-weight: bold;
           src: url('fonts/Minecraft-Bold.otf') format('opentype');
         }
+        @font-face {
+          font-family: 'Ioskeley Mono';
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono.woff2') format('woff2');
+        }
         `}
         </style>
         <RouterProvider router={router} />
