@@ -200,7 +200,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     /** Filter chip not yet available on mobile */
-    itSkipOnMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
+    itSkipOnMobile('should allow filtering favorites', () => {
       openDrawer(breakpoint, 'filter')
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })

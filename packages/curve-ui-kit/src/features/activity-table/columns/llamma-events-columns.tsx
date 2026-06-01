@@ -16,7 +16,7 @@ export const LLAMMA_EVENTS_COLUMNS = [
   columnHelper.accessor('provider', {
     id: LlammaEventsColumnId.User,
     header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.providerUrl} />,
   }),
   columnHelper.display({
     id: LlammaEventsColumnId.Action,
