@@ -82,7 +82,6 @@ const config = [
       // We should create future PRs to re-enable these rules and fix any issues that arise
       '@eslint-react/component-hook-factories': 'off',
       '@eslint-react/set-state-in-effect': 'off', // painful to disable but we manually disabled it in a shit ton of cases already, requires a huge refactor
-      '@eslint-react/purity': 'off',
       '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
@@ -112,7 +111,6 @@ const config = [
       'unused-imports/no-unused-imports': 'warn',
 
       'import-x/no-default-export': 'error',
-      'import-x/no-named-as-default': 'off',
       'import-x/no-restricted-paths': [
         'error',
         {
@@ -194,7 +192,9 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
-      '@typescript-eslint/triple-slash-reference': 'off',
+      // Allow local module-augmentation sidecars (`*.d.ts`) to be attached with
+      // `path` references, but keep package `types` references import-based.
+      '@typescript-eslint/triple-slash-reference': ['error', { lib: 'always', path: 'always', types: 'prefer-import' }],
 
       // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
       '@typescript-eslint/no-base-to-string': 'off',

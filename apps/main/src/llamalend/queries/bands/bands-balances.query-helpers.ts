@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import lodash from 'lodash'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
