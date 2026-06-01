@@ -1,13 +1,9 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import {
-  useChartLegendToggles,
-  useChartTimeSettings,
-  useLiquidationRange,
-  useStableOhlcAnchorEnd,
-} from '@ui-kit/features/candle-chart'
+import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/query-utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'

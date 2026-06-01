@@ -3,10 +3,10 @@ import { getDexChartSelectionKey, useDexOhlcQuery } from '@/dex/queries/ohlc-cha
 import type { ChainId } from '@/dex/types/main.types'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Pool } from '@curvefi/prices-api/pools'
-import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
+import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/query-utils'
 import type { LpPriceOhlcDataFormatted } from '@ui-kit/features/candle-chart/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

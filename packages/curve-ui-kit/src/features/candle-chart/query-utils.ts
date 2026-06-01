@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { notFalsy } from '@primitives/objects.utils'
 import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
-import { getOhlcPageStart, getPreviousOhlcPageEnd, hasFullOhlcPage } from './time-utils'
+import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
 export type OhlcPageParam = {
@@ -76,6 +76,15 @@ type UseOhlcPagesAdapterParams<TPage, TData> = {
 const canFetchMoreOhlc = ({ hasNextPage, isFetchingNextPage, isSuccess }: OhlcPaginationQuery) =>
   isSuccess && hasNextPage && !isFetchingNextPage
 
+const CANDLE_CHART_MAX_RESULTS = 300
+const CANDLE_CHART_PAGE_INTERVALS = CANDLE_CHART_MAX_RESULTS - 1
+const getTimeOptionSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
+const hasFullOhlcPage = (resultCount: number) => resultCount >= CANDLE_CHART_MAX_RESULTS
+const getOhlcPageStart = (timeOption: TimeOption, end: number) =>
+  Math.floor(end - CANDLE_CHART_PAGE_INTERVALS * getTimeOptionSeconds(timeOption))
+const getPreviousOhlcPageEnd = (timeOption: TimeOption, pageStart: number) =>
+  pageStart - getTimeOptionSeconds(timeOption)
+
 // Historical scrolling can emit repeated fetch attempts before React Query's
 // observer state reaches the chart. The chart gates those attempts locally; if
 // one still reaches React Query while a page is in flight, keep that request
@@ -104,11 +113,6 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   })
 }
 
-export const getOhlcPaginationState = (query: OhlcPaginationQuery) => ({
-  canFetchMore: canFetchMoreOhlc(query),
-  isFetchingMore: query.isFetchingNextPage,
-})
-
 export const fetchMoreOhlcQueries = (queries: readonly OhlcFetchMoreQuery[]) => {
   const requests = queries.filter(canFetchMoreOhlc).map(query => query.fetchNextPage(FETCH_NEXT_PAGE_OPTIONS))
 
@@ -132,23 +136,25 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
   } = query
   const pages = queryData?.pages
   const data = useMemo(() => selectData(pages), [pages, selectData])
-  const paginationState = getOhlcPaginationState({ hasNextPage, isFetchingNextPage, isSuccess })
+  const canFetchMore = canFetchMoreOhlc({ hasNextPage, isFetchingNextPage, isSuccess })
+  const isFetchingMore = isFetchingNextPage
 
   const refetch = useCallback(() => refetchQuery(), [refetchQuery])
 
   const fetchMore = useCallback(() => {
-    if (!paginationState.canFetchMore) return undefined
+    if (!canFetchMore) return undefined
 
     return fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)
-  }, [fetchNextPage, paginationState.canFetchMore])
+  }, [canFetchMore, fetchNextPage])
 
   return {
+    canFetchMore,
     data,
     error: isError ? error : null,
     fetchMore,
+    isFetchingMore,
     isLoading,
     refetch,
-    ...paginationState,
   }
 }
 
@@ -158,12 +164,12 @@ export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhl
   return useOhlcPagesAdapter({ query, selectData })
 }
 
-export const createOhlcPageParam = (timeOption: TimeOption, end: number): OhlcPageParam => ({
+const createOhlcPageParam = (timeOption: TimeOption, end: number): OhlcPageParam => ({
   start: getOhlcPageStart(timeOption, end),
   end,
 })
 
-export const getNextOhlcPageParam = (
+const getNextOhlcPageParam = (
   timeOption: TimeOption,
   lastPage: OhlcPageResult,
   lastPageParam: OhlcPageParam,
@@ -175,16 +181,18 @@ export const getNextOhlcPageParam = (
   return createOhlcPageParam(timeOption, end)
 }
 
-export const getOldestOhlcTimestampSeconds = (data: readonly { time: number }[]) =>
-  data.length > 0 ? Math.floor(Math.min(...data.map(({ time }) => time)) / 1000) : undefined
-
 export const createOhlcPageResult = (
   data: readonly { time: number }[],
   resultCount: number = data.length,
-): OhlcPageResult => ({
-  hasMore: hasFullOhlcPage(resultCount),
-  oldestPageTimestamp: getOldestOhlcTimestampSeconds(data),
-})
+): OhlcPageResult => {
+  const oldestPageTimestamp =
+    data.length > 0 ? Math.floor(Math.min(...data.map(({ time }) => time)) / 1000) : undefined
+
+  return {
+    hasMore: hasFullOhlcPage(resultCount),
+    oldestPageTimestamp,
+  }
+}
 
 export const assertInitialOhlcPageHasData = ({
   anchorEnd,

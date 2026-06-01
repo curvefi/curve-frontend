@@ -6,12 +6,6 @@ import { useLatestValueRef } from './useLatestValueRef'
 
 type PaginationSeriesApi = ISeriesApi<'Candlestick'> | ISeriesApi<'Line'>
 type VisibleTimeRange = { from: Time; to: Time }
-type HistoricalDataUpdate = {
-  nextDataLength: number
-  pendingVisibleRange: VisibleTimeRange | null
-  resetInFlight: boolean
-  visibleRangeToRestore: VisibleTimeRange | null
-}
 
 type UseHistoricalChartPaginationParams = {
   candlestickSeriesRef: RefObject<ISeriesApi<'Candlestick'> | null>
@@ -28,90 +22,10 @@ const HISTORICAL_FETCH_DEBOUNCE_MS = 500
 const shouldFetchHistoricalPage = (barsInfo: { barsBefore: number } | null) =>
   !!barsInfo && barsInfo.barsBefore < HISTORICAL_PAGE_THRESHOLD_BARS
 
-export const getHistoricalPaginationDataLength = (
+const getHistoricalPaginationDataLength = (
   ohlcData: LpPriceOhlcDataFormatted[],
   oraclePriceData?: OraclePriceData[],
 ) => (ohlcData.length > 0 ? ohlcData.length : (oraclePriceData?.length ?? 0))
-
-export const startHistoricalPageFetch = ({
-  fetchMoreChartData,
-  isFetchInFlight,
-  onRequestRejected,
-  onRequestSettled,
-  onRequestStarted,
-  onRequestUnavailable,
-}: {
-  fetchMoreChartData: () => Promise<unknown> | undefined
-  isFetchInFlight: boolean
-  onRequestRejected: () => void
-  onRequestSettled: () => void
-  onRequestStarted: () => void
-  onRequestUnavailable: () => void
-}) => {
-  if (isFetchInFlight) return
-
-  onRequestStarted()
-  let request: Promise<unknown> | undefined
-  try {
-    request = fetchMoreChartData()
-  } catch {
-    onRequestRejected()
-    onRequestSettled()
-    return
-  }
-
-  if (!request) {
-    onRequestUnavailable()
-    onRequestSettled()
-    return
-  }
-
-  void request.catch(onRequestRejected).finally(onRequestSettled)
-}
-
-export const resolveHistoricalDataUpdate = ({
-  nextDataLength,
-  pendingVisibleRange,
-  previousDataLength,
-}: {
-  nextDataLength: number
-  pendingVisibleRange: VisibleTimeRange | null
-  previousDataLength: number
-}): HistoricalDataUpdate => {
-  if (nextDataLength < previousDataLength) {
-    return {
-      nextDataLength,
-      pendingVisibleRange: null,
-      resetInFlight: true,
-      visibleRangeToRestore: null,
-    }
-  }
-
-  if (!pendingVisibleRange) {
-    return {
-      nextDataLength,
-      pendingVisibleRange: null,
-      resetInFlight: false,
-      visibleRangeToRestore: null,
-    }
-  }
-
-  if (nextDataLength <= previousDataLength) {
-    return {
-      nextDataLength,
-      pendingVisibleRange: null,
-      resetInFlight: false,
-      visibleRangeToRestore: null,
-    }
-  }
-
-  return {
-    nextDataLength,
-    pendingVisibleRange: null,
-    resetInFlight: false,
-    visibleRangeToRestore: pendingVisibleRange,
-  }
-}
 
 export const useHistoricalChartPagination = ({
   candlestickSeriesRef,
@@ -132,22 +46,32 @@ export const useHistoricalChartPagination = ({
   const paginationDataLengthRef = useRef(getHistoricalPaginationDataLength(ohlcData, oraclePriceData))
 
   const fetchHistoricalPage = useCallback(() => {
-    startHistoricalPageFetch({
-      fetchMoreChartData: fetchMoreChartDataRef.current,
-      isFetchInFlight: historicalFetchInFlightRef.current,
-      onRequestRejected: () => {
+    if (historicalFetchInFlightRef.current) return
+
+    historicalFetchInFlightRef.current = true
+
+    let request: Promise<unknown> | undefined
+    try {
+      request = fetchMoreChartDataRef.current()
+    } catch {
+      pendingVisibleRangeRef.current = null
+      historicalFetchInFlightRef.current = false
+      return
+    }
+
+    if (!request) {
+      pendingVisibleRangeRef.current = null
+      historicalFetchInFlightRef.current = false
+      return
+    }
+
+    void request
+      .catch(() => {
         pendingVisibleRangeRef.current = null
-      },
-      onRequestSettled: () => {
+      })
+      .finally(() => {
         historicalFetchInFlightRef.current = false
-      },
-      onRequestStarted: () => {
-        historicalFetchInFlightRef.current = true
-      },
-      onRequestUnavailable: () => {
-        pendingVisibleRangeRef.current = null
-      },
-    })
+      })
   }, [fetchMoreChartDataRef])
 
   const debouncedFetchHistoricalPage = useMemo(
@@ -157,26 +81,23 @@ export const useHistoricalChartPagination = ({
 
   const restoreVisibleRangeAfterDataUpdate = useCallback(() => {
     const nextDataLength = getHistoricalPaginationDataLength(ohlcDataRef.current, oraclePriceDataRef.current)
-    const previousLength = paginationDataLengthRef.current
-    const update = resolveHistoricalDataUpdate({
-      nextDataLength,
-      pendingVisibleRange: pendingVisibleRangeRef.current,
-      previousDataLength: previousLength,
-    })
-    paginationDataLengthRef.current = update.nextDataLength
-    pendingVisibleRangeRef.current = update.pendingVisibleRange
+    const previousDataLength = paginationDataLengthRef.current
+    const pendingVisibleRange = pendingVisibleRangeRef.current
 
-    if (update.resetInFlight) {
+    paginationDataLengthRef.current = nextDataLength
+    pendingVisibleRangeRef.current = null
+
+    if (nextDataLength < previousDataLength) {
       historicalFetchInFlightRef.current = false
       return
     }
 
-    if (!chartRef.current || !update.visibleRangeToRestore) return
+    if (!chartRef.current || !pendingVisibleRange || nextDataLength <= previousDataLength) return
 
     // Older history is prepended, which shifts logical bar indices. Restore
     // the user's viewport after setData applies the new points; doing it
     // before setData lets the prepend move the x-axis back in time.
-    chartRef.current.timeScale().setVisibleRange(update.visibleRangeToRestore)
+    chartRef.current.timeScale().setVisibleRange(pendingVisibleRange)
   }, [chartRef, ohlcDataRef, oraclePriceDataRef])
 
   useEffect(

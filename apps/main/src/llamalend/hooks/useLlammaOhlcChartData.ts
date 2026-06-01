@@ -8,7 +8,7 @@ import {
   refetchOhlcQueries,
   useOhlcPagesAdapter,
   useOhlcQueryAdapter,
-} from '@ui-kit/features/candle-chart'
+} from '@ui-kit/features/candle-chart/query-utils'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
 import { q, useMappedQuery } from '@ui-kit/types/util'
 import {
