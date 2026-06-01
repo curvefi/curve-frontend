@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import { getLpOHLC, getOHLC } from '@curvefi/prices-api/ohlc'
 import {
@@ -28,9 +27,11 @@ type DexOhlcPage = OhlcPageResult & {
 }
 
 export const getDexChartSelectionKey = (chartSelection: ChartSelection) => {
-  if (chartSelection.type !== 'pair') return chartSelection.type
+  if (chartSelection.type === 'pair') {
+    return `pair:${chartSelection.mainToken.address}:${chartSelection.refToken.address}`
+  }
 
-  return `pair:${chartSelection.mainToken.address}:${chartSelection.refToken.address}`
+  return chartSelection.type
 }
 
 const fetchDexOhlc = (
@@ -84,7 +85,7 @@ export const useDexOhlcQuery = ({
   timeOption,
   units,
 }: DexOhlcQueryParams) => {
-  const chartSelectionKey = useMemo(() => getDexChartSelectionKey(chartSelection), [chartSelection])
+  const chartSelectionKey = getDexChartSelectionKey(chartSelection)
 
   return useOhlcInfiniteQuery({
     queryKey: createCandleChartQueryKey(

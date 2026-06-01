@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import { notFalsy } from '@primitives/objects.utils'
 import {
   applyLatestOraclePrice,
   fetchMoreOhlcQueries,
@@ -72,9 +73,6 @@ export const useLlammaOhlcChartData = ({
   })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
   const oraclePoolHasOraclePriceData = oraclePool.data.oraclePriceData.length > 0
-  // Oracle-pool is primary because it has the richest candle data. LLAMMA is
-  // only needed as an oracle-line fallback when oracle-pool does not supply
-  // oracle price data.
   const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolHasOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
@@ -109,12 +107,7 @@ export const useLlammaOhlcChartData = ({
   )
   const selectHistoricalQueries = useCallback(
     (selection: HistoricalSelection) =>
-      [
-        { selected: selection.oraclePool, query: oraclePoolQuery },
-        { selected: selection.llamma && shouldFetchLlammaQuery, query: llammaQuery },
-      ]
-        .filter(({ selected }) => selected)
-        .map(({ query }) => query),
+      notFalsy(selection.oraclePool && oraclePoolQuery, selection.llamma && shouldFetchLlammaQuery && llammaQuery),
     [llammaQuery, oraclePoolQuery, shouldFetchLlammaQuery],
   )
 
