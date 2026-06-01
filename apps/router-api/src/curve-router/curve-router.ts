@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
