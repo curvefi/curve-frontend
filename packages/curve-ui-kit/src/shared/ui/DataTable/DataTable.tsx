@@ -9,6 +9,7 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { IncreasingLengthOptions } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -20,7 +21,6 @@ import { HeaderCell } from './HeaderCell'
 import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
 import { useTableRowLimit } from './useTableRowLimit'
-import { IncreasingLengthOptions } from '@ui-kit/hooks/useIncreasingLength'
 
 /**
  * Scrolls to the top of the window whenever the column filters change.
