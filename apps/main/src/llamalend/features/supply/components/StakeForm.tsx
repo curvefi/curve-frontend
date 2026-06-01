@@ -13,7 +13,7 @@ import { useStakeForm } from '../hooks/useStakeForm'
 import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
-interface StakeFormProps<ChainId extends IChainId> {
+export interface StakeFormProps<ChainId extends IChainId> {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId

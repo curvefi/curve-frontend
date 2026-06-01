@@ -10,7 +10,7 @@ interface BandsBalances {
   [band: number]: { borrowed: string; collateral: string }
 }
 type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
-interface FetchedBandsBalances {
+export interface FetchedBandsBalances {
   borrowed: Decimal
   collateral: Decimal
   collateralUsd: number

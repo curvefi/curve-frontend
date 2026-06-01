@@ -10,7 +10,7 @@ import { useUnstakeForm } from '../hooks/useUnstakeForm'
 import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
-interface UnstakeFormProps<ChainId extends IChainId> {
+export interface UnstakeFormProps<ChainId extends IChainId> {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId

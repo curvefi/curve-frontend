@@ -5,7 +5,7 @@ import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 
 /** Complete create loan form with all fields already filled in (after validation) */
-interface CompleteCreateLoanForm {
+export interface CompleteCreateLoanForm {
   userCollateral: Decimal
   userBorrowed: Decimal // currently hidden and always 0, this can be used to leverage by depositing debt token
   debt: Decimal

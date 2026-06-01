@@ -46,7 +46,7 @@ export interface TransactionContext {
   wallet: NonNullable<ReturnType<typeof useCurve>['wallet']>
 }
 
-interface TransactionResult {
+export interface TransactionResult {
   hash: Hex
 }
 
