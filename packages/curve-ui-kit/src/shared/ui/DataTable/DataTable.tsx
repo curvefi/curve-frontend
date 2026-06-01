@@ -20,6 +20,7 @@ import { HeaderCell } from './HeaderCell'
 import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
 import { useTableRowLimit } from './useTableRowLimit'
+import { IncreasingLengthOptions } from '@ui-kit/hooks/useIncreasingLength'
 
 /**
  * Scrolls to the top of the window whenever the column filters change.
@@ -80,6 +81,7 @@ export const DataTable = <T extends TableItem>({
   shouldStickFirstColumn = false,
   hideHeader = false,
   footerRow,
+  increasingLengthOptions,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -93,6 +95,7 @@ export const DataTable = <T extends TableItem>({
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
+  increasingLengthOptions?: IncreasingLengthOptions // optional props for the SkeletonRows
 } & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
   const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
@@ -149,7 +152,7 @@ export const DataTable = <T extends TableItem>({
         )}
         <TableBody>
           {isLoading ? (
-            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
+            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} {...increasingLengthOptions} />
           ) : rows.length === 0 ? (
             emptyState
           ) : (
