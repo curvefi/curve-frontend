@@ -22,6 +22,8 @@ import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
 import { useTableRowLimit } from './useTableRowLimit'
 
+const TABLE_FILTERS_TEST_ID = 'table-filters'
+
 /**
  * Scrolls to the top of the window whenever the column filters change.
  */
@@ -129,8 +131,12 @@ export const DataTable = <T extends TableItem>({
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
       preserve the parent's width instead of the table's scroll width. */}
-      {!shouldStickyHeader && children}
-      <Box ref={tableWrapperRef} sx={{ ...(!shouldStickyHeader && { overflowX: 'auto' }) }}>
+      {!shouldStickyHeader && children && <Box data-testid={TABLE_FILTERS_TEST_ID}>{children}</Box>}
+      <Box
+        ref={tableWrapperRef}
+        sx={{ ...(!shouldStickyHeader && { overflowX: 'auto' }) }}
+        data-testid="data-table-scroll-wrapper"
+      >
         <Table
           ref={tableRef}
           sx={{ borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */ }}
@@ -138,7 +144,11 @@ export const DataTable = <T extends TableItem>({
         >
           {!hideHeader && (
             <TableHead sx={tableHeaderSx} data-testid="data-table-head">
-              {children && shouldStickyHeader && <FilterRow table={table}>{children}</FilterRow>}
+              {children && shouldStickyHeader && (
+                <FilterRow table={table} testId={TABLE_FILTERS_TEST_ID}>
+                  {children}
+                </FilterRow>
+              )}
               {headerGroups.map(headerGroup => (
                 <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
                   {headerGroup.headers.map((header, index) => (
