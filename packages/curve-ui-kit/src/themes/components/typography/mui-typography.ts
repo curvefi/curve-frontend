@@ -22,6 +22,9 @@ const variantMapping = {
   buttonXs: 'span',
   buttonS: 'span',
   buttonM: 'span',
+  buttonTabsS: 'span',
+  buttonTabsM: 'span',
+  buttonTabsL: 'span',
 
   tableHeaderM: 'p',
   tableHeaderS: 'p',

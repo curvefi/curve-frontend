@@ -1077,10 +1077,10 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
     },
     FontFamily: {
-      Heading: 'Minecraft',
-      Body: 'Hubot Sans',
-      Mono: 'Hubot Sans',
-      Button: 'Minecraft',
+      Heading: 'Ioskeley Mono',
+      Body: 'Ioskeley Mono',
+      Mono: 'Ioskeley Mono',
+      Button: 'Ioskeley Mono',
     },
   } as const
 

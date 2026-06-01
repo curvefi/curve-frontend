@@ -6,8 +6,9 @@ body {
 }
 
 body.theme-chad {
-  --font: 'Hubot Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif';
-  --button--font: 'Minecraft', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --font-mono: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --button--font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
 }
 
 html {
@@ -156,6 +157,17 @@ li {
   src:
     local('Hubot Sans'),
     url('../../../packages/curve-ui-kit/public/fonts/Hubot-Sans.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src:
+    local('Ioskeley Mono'),
+    local('Ioskeley-Mono'),
+    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
