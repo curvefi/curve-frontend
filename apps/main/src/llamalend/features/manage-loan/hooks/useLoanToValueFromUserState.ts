@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address, Token } from '@primitives/address.utils'
