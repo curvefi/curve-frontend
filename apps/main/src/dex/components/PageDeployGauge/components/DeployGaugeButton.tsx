@@ -126,15 +126,13 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         {sidechainNav === 0
           ? deploymentStatus.sidechain.status !== 'LOADING' &&
             deploymentStatus.sidechain.status !== 'CONFIRMING' && (
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
                 {t`Deploy Sidechain Gauge`}
               </StyledButton>
             )
           : deploymentStatus.mirror.status !== 'LOADING' &&
             deploymentStatus.mirror.status !== 'CONFIRMING' && (
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
                 {t`Deploy Mirror Gauge`}
               </StyledButton>
             )}
@@ -153,8 +151,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
             )}
       </>
     ) : (
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-      <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
+      <StyledButton variant="filled" onClick={() => void connectWallet()} loading={isLoading(connectState)}>
         {t`Connect Wallet`}
       </StyledButton>
     )
@@ -189,8 +186,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         <SuccessWrapper>{t`Gauge Deployed Successfully`}</SuccessWrapper>
       )}
       {deploymentStatus.mainnet.status !== 'LOADING' && deploymentStatus.mainnet.status !== 'CONFIRMING' && (
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
           {t`Deploy Gauge`}
         </StyledButton>
       )}
@@ -202,8 +198,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
       )}
     </>
   ) : (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
+    <StyledButton variant="filled" onClick={() => void connectWallet()} loading={isLoading(connectState)}>
       {t`Connect Wallet`}
     </StyledButton>
   )

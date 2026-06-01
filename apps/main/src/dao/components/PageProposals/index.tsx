@@ -106,8 +106,7 @@ export const Proposals = () => {
             )}
             {isError && (
               <ErrorMessageWrapper>
-                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-                <ErrorMessage message={t`Error fetching proposals`} onClick={() => invalidateProposals({})} />
+                <ErrorMessage message={t`Error fetching proposals`} onClick={() => void invalidateProposals({})} />
               </ErrorMessageWrapper>
             )}
             {isSuccess &&

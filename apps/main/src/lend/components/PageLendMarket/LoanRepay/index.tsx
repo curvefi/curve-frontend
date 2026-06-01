@@ -240,16 +240,14 @@ export const LoanRepay = ({
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
+                    onClick: () => void handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Repay anyway`,
                 },
               }
             : {
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                onClick: async () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
+                onClick: () => void handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
               }),
         },
       }

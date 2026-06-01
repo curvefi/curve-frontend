@@ -101,8 +101,7 @@ export const Proposal = () => {
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                  onClick={() => invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
+                  onClick={() => void invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
                 />
               </ErrorWrapper>
             )}
@@ -117,8 +116,7 @@ export const Proposal = () => {
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.metadata ?? '')}>
+                      <StyledCopyButton size="medium" onClick={() => void copyToClipboard(proposal?.metadata ?? '')}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />
                       </StyledCopyButton>

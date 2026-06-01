@@ -124,8 +124,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                       </TokenWrapper>
                     </StyledExternalLink>
 
-                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-                    <StyledIconButton size="small" onClick={() => copyToClipboard(tokenAddress)}>
+                    <StyledIconButton size="small" onClick={() => void copyToClipboard(tokenAddress)}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </Box>

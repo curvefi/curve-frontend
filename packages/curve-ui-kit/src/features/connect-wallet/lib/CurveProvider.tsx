@@ -127,7 +127,6 @@ export const CurveProvider = <App extends AppName>({
   const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
   return (
-    // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
     <CurveContext
       value={{
         connectState,

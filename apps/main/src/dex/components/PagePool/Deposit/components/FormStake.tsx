@@ -117,16 +117,14 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
+          onClick: () => void handleApproveClick(activeKey, curve, poolData.pool, formValues),
         },
         STAKE: {
           key: 'STAKE',
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleStakeClick(activeKey, curve, poolData, formValues),
         },
       }
 

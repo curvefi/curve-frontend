@@ -132,8 +132,7 @@ export const FormClaimFeesButtons = ({
                 <Button
                   {...buttonProps}
                   loading={buttonProps.loading && claimingKey === key}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                  onClick={() => handleBtnClickClaimFees(key)}
+                  onClick={() => void handleBtnClickClaimFees(key)}
                 >
                   {label}
                 </Button>

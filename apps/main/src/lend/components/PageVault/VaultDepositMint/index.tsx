@@ -143,8 +143,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
           status: helpers.getStepStatus(isComplete, step === 'DEPOSIT_MINT', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Deposited` : t`Deposit`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: async () => handleBtnClickDeposit(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickDeposit(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 

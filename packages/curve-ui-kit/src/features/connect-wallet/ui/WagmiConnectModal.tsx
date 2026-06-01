@@ -62,8 +62,7 @@ const WalletListItem = ({
     labelVariant="bodyMBold"
     icon={<WalletIcon connector={connector} />}
     value={connector.id}
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-    onSelected={() => onConnect(connector)}
+    onSelected={() => void onConnect(connector)}
     isLoading={isLoading}
   />
 )

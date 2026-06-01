@@ -14,8 +14,7 @@ export const FormConnectWallet = ({ loading, children }: { loading: boolean; chi
           fillWidth
           size="large"
           variant="filled"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick={() => connectWallet()}
+          onClick={() => void connectWallet()}
           loading={isLoading(connectState)}
           testId="connect-wallet"
         >

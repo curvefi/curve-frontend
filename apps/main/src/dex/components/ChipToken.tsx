@@ -65,8 +65,7 @@ export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: Chip
     <ChipTokenWrapper className={className} onMouseEnter={handleMouseEnter}>
       <span>{parsedTokenName}</span>
       <ChipTokenAdditionalInfo>
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-        <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
+        <Button {...props} onPress={() => void copyToClipboard(tokenAddress)}>
           <AlignmentWrapper>
             <ChipTokenUsdRate>
               {usdRate == null ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}

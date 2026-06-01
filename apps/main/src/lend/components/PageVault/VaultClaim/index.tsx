@@ -109,16 +109,14 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim CRV`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'crv'),
+          onClick: () => void handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'crv'),
         },
         CLAIM_REWARDS: {
           key: 'CLAIM_REWARDS',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim Rewards`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'rewards'),
+          onClick: () => void handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'rewards'),
         },
       }
 
@@ -199,8 +197,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'crv')}
+                onClick={() => void handleBtnClickClaim(userActiveKey, claimable, api, market, 'crv')}
               >
                 Claim CRV
               </Button>
@@ -213,8 +210,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'rewards')}
+                onClick={() => void handleBtnClickClaim(userActiveKey, claimable, api, market, 'rewards')}
               >
                 Claim Rewards
               </Button>

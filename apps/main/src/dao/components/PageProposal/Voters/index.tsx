@@ -62,7 +62,6 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
                     {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                {}
                 <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], vote.txHash)}>
                   <Data>
                     {formatNumber(+vote.stake, { abbreviate: true })} (

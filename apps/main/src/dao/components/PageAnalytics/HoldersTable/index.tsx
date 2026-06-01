@@ -44,8 +44,7 @@ export const TopHoldersTable = () => {
         sortBy={allHoldersSortBy}
         errorMessage={t`An error occurred while veCRV holders data.`}
         setSortBy={key => setAllHoldersSortBy(key as AllHoldersSortBy)}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-        getData={() => getVeCrvHolders()}
+        getData={() => void getVeCrvHolders()}
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>

@@ -1,4 +1,4 @@
-/* eslint-disable @eslint-react/naming-convention-context-name */
+/* eslint-disable @eslint-react/naming-convention-context-name -- `context` refers to transaction context in this file */
 import { useState } from 'react'
 import type { FormattedTransactionReceipt } from 'viem'
 import { useConfig } from 'wagmi'
@@ -154,7 +154,6 @@ export function useTransactionMutation<
 
       const params = { userAddress, ...validationParams, ...variables, mutationKey }
       assertValidity(validationSuite, params)
-      // eslint-disable-next-line @eslint-react/naming-convention-context-name -- Existing violation before enabling this rule.
       const context = createContext(variables) // throws before logging, in case of a missing wallet
 
       logMutation(mutationKey, params)
@@ -166,7 +165,7 @@ export function useTransactionMutation<
     mutationFn: async (variables: TVariables) => {
       // We need to reconstruct context here since mutationFn doesn't receive onMutate's return.
       // buildContext is called again, which is fine since it should be deterministic. No side-effect please though.
-      // eslint-disable-next-line @eslint-react/naming-convention-context-name -- Existing violation before enabling this rule.
+
       const context = createContext(variables)
       const data = await withPendingToast(mutationFn(variables, context), pendingMessage(variables, context))
       throwIfError(data)

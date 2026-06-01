@@ -172,8 +172,7 @@ export const FormWithdraw = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
@@ -200,15 +199,13 @@ export const FormWithdraw = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

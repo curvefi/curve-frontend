@@ -151,8 +151,7 @@ export const FormDepositStake = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, curve, poolData.pool, formValues, maxSlippage),
         },
         DEPOSIT_STAKE: {
           key: 'DEPOSIT_STAKE',
@@ -179,15 +178,13 @@ export const FormDepositStake = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              { onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

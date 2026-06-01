@@ -217,15 +217,13 @@ export const LoanIncrease = ({
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma),
+                    onClick: () => void handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
                 },
               }
-            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              { onClick: async () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma) }),
+            : { onClick: () => void handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma) }),
         },
       }
 

@@ -48,8 +48,7 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
       {txStatus === 'SUCCESS' && <SuccessWrapper>{t`Pool Creation Complete`}</SuccessWrapper>}
     </>
   ) : (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
+    <StyledButton variant="filled" onClick={() => void connectWallet()} loading={isLoading(connectState)}>
       {t`Connect Wallet`}
     </StyledButton>
   )

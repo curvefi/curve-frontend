@@ -20,7 +20,6 @@ const MAX_WIDTH = '30rem' as const // Temporary hard coded with, in the future t
 export const VeCrv = () => {
   const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
   const { curveApi = null, connectState } = useCurve()
-
   const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
 

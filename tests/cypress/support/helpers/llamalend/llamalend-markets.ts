@@ -91,8 +91,7 @@ export function checkCoinSelection(
 /** Check if one or more chains have been selected by checking url and table cell. */
 export function checkChainSelection(...chains: Chain[]) {
   cy.url().should('include', serializeListFilter(chains))
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-  chains.forEach(chain => getTableCellAssets().find(`[data-testid="chain-icon-${chain}"]`).should('be.visible'))
+  chains.forEach(chain => void getTableCellAssets().find(`[data-testid="chain-icon-${chain}"]`).should('be.visible'))
 }
 
 /** Check the correct selection of the filter's grouped buttons by checking the url and a callback function */

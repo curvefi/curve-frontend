@@ -102,8 +102,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
           type="button"
           size="large"
           loading={isConnecting}
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick={() => connect()}
+          onClick={() => void connect()}
           data-testid="refuel-connect-wallet-button"
         />
       )}

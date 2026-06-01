@@ -64,5 +64,4 @@ export function useWagmiWallet() {
   }
 }
 
-// eslint-disable-next-line @eslint-react/no-use-context -- Existing violation before enabling this rule.
 export const useCurve = () => use(CurveContext)

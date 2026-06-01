@@ -51,7 +51,6 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   const maxUtcDate = useMemo((): dayjs.Dayjs => {
     const { calcUnlockTime } = networks[rChainId].api.lockCrv
-
     return calcUnlockTime(curve!, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
   }, [currUnlockTime, curve, rChainId, rFormType, remainingLockedDays])
 
@@ -77,9 +76,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       }
 
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
       void updateFormValues({
@@ -99,20 +96,16 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
-
         const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
-
         void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
       const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-
       const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
       void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days })
-
       return calcdUtcDate
     },
     [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, rFormType, updateFormValues],
@@ -150,8 +143,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleBtnClickIncrease(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickIncrease(activeKey, curve, formValues),
         },
       }
 
@@ -224,8 +216,9 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
+        {formStatus.error && (
+          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => void updateFormValues({})} />
+        )}
         {txInfoBar}
         <Stepper steps={steps} hideStepNumber />
       </FormActions>

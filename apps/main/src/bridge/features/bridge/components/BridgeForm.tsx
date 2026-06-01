@@ -82,8 +82,7 @@ export const BridgeForm = ({
         isConnecting={isConnecting}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
         onAmount={amount => form.update({ amount })}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-        onConnect={() => connect()}
+        onConnect={() => void connect()}
         onChangeNetwork={() =>
           navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))
         }

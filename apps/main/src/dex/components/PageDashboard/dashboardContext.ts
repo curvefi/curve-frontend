@@ -22,5 +22,4 @@ const DashboardContext = createContext<DashboardContextType | null>(null)
 export const DashboardContextProvider = DashboardContext
 
 export const useDashboardContext = () =>
-  // eslint-disable-next-line @eslint-react/no-use-context -- Existing violation before enabling this rule.
   assert(use(DashboardContext), 'useDashboardContext has to be used within <DashboardContextProvider>')

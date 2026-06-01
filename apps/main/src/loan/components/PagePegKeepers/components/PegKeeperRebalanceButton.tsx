@@ -27,7 +27,6 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
       {isRebalancing ? t`Rebalancing...` : t`Rebalance`}
     </Button>
   ) : (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-    <ConnectWalletButton onClick={() => connect()} loading={isConnecting} fullWidth />
+    <ConnectWalletButton onClick={() => void connect()} loading={isConnecting} fullWidth />
   )
 }

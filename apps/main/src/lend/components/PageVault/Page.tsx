@@ -62,9 +62,8 @@ export const Page = () => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setLoaded(true)
       const timer = setTimeout(
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         () =>
-          Promise.all([
+          void Promise.all([
             fetchAllMarketDetails(api, market, true),
             api.signerAddress &&
               (loanExists ? fetchAllUserMarketDetails(api, market, true) : fetchUserMarketBalances(api, market, true)),

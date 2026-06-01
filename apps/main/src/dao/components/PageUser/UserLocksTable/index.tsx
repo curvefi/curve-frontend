@@ -53,8 +53,7 @@ export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
         sortBy={userLocksSortBy}
         errorMessage={t`An error occurred while fetching user locking activity.`}
         setSortBy={key => setUserLocksSortBy(key as UserLocksSortBy)}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-        getData={() => invalidateUserLocks({ userAddress })}
+        getData={() => void invalidateUserLocks({ userAddress })}
         noDataMessage={t`No locking activity found for this user.`}
         gridTemplateColumns={gridTemplateColumns}
         renderRow={(lock, index) => (

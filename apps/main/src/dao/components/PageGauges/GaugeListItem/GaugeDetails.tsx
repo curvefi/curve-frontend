@@ -41,7 +41,6 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
             <StatsRow>
               {gaugeData.pool?.address && (
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  {}
                   <StyledExternalLink href={scanAddressPath(networks[chainId], gaugeData.pool.address)}>
                     {shortenAddress(gaugeData.pool.address)}
                   </StyledExternalLink>
@@ -82,7 +81,6 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
         </StatsTitleRow>
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-            {}
             <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>

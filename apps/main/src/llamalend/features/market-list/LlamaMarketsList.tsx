@@ -106,8 +106,7 @@ export const LlamaMarketsList = () => {
             action={
               <ConnectWalletButton
                 label={t`Connect to view positions`}
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                onClick={() => connect()}
+                onClick={() => void connect()}
                 loading={isConnecting}
               />
             }

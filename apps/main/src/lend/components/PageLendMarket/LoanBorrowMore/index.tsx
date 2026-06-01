@@ -235,18 +235,16 @@ export const LoanBorrowMore = ({
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
                     onClick: () =>
-                      handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
+                      void handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
                 },
               }
             : {
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                onClick: async () =>
-                  handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
+                onClick: () =>
+                  void handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
               }),
         },
       }

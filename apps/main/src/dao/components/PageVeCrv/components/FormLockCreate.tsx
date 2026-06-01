@@ -68,15 +68,12 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       }
 
       const days = utcDate.diff(currUtcDate, 'd')
-
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-
       const calcdUtcDate = fn(curve, 'create', null, days)
 
       updateFormValues({
         utcDate: toCalendarDate(utcDate),
         utcDateError,
-
         calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
         days,
       })
@@ -90,16 +87,13 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUtcDate, 'd')
-
         const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
-
         updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
       const utcDate = dayjs.utc().add(value, unit)
       const days = utcDate.diff(currUtcDate, 'd')
-
       const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
 
       updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
@@ -161,8 +155,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: formStatus.isApproved ? t`Spending Approved` : t`Approve Spending`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleBtnClickApproval(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickApproval(activeKey, curve, formValues),
         },
         CREATE_LOCK: {
           key: 'CREATE_LOCK',
@@ -173,8 +166,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'CREATE_LOCK' ? t`Lock Created` : t`Create Lock`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleBtnClickCreate(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickCreate(activeKey, curve, formValues),
         },
       }
 

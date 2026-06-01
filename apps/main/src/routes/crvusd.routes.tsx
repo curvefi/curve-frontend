@@ -1,3 +1,4 @@
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
@@ -39,8 +40,9 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '$network/markets/$collateralId',
     component: MintMarketPage,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-    head: ({ params }) => ({ meta: [{ title: `${params.collateralId} - Curve Llamalend` }] }),
+    head: ({ params: { collateralId } }: { params: CollateralUrlParams }) => ({
+      meta: [{ title: `${collateralId} - Curve Llamalend` }],
+    }),
     ...layoutProps,
   }),
   createRoute({

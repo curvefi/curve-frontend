@@ -123,8 +123,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
           status: helpers.getStepStatus(isComplete, step === 'STAKE', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Staked` : t`Stake`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: async () => handleBtnClickStake(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickStake(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 

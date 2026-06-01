@@ -162,8 +162,10 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                             <ExternalLinkToken>{token}</ExternalLinkToken>
                           </ExternalLinkTokenWrapper>
                         </StyledExternalLink>
-                        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-                        <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
+                        <StyledIconButton
+                          size="medium"
+                          onClick={() => void copyToClipboard(poolData.tokenAddresses[idx])}
+                        >
                           <Icon name="Copy" size={16} />
                         </StyledIconButton>
                       </Stack>

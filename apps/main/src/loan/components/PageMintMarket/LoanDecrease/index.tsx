@@ -193,8 +193,7 @@ export const LoanDecrease = ({
           status: getStepStatus(isComplete, step === 'PAY', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Repaid` : t`Repay`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleBtnClickPay(payloadActiveKey, curve, llamma, formValues),
+          onClick: () => void handleBtnClickPay(payloadActiveKey, curve, llamma, formValues),
         },
       }
 

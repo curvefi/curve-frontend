@@ -105,8 +105,7 @@ export const Compensation = ({
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
             )}
-            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-            <StyledIconButton size="medium" onClick={() => copyToClipboard(contractAddress)}>
+            <StyledIconButton size="medium" onClick={() => void copyToClipboard(contractAddress)}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>
           </div>
@@ -133,8 +132,7 @@ export const Compensation = ({
             disabled={disabled}
             loading={loading}
             variant="filled"
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-            onClick={() => handleClaimClick(activeKey, contract, balance)}
+            onClick={() => void handleClaimClick(activeKey, contract, balance)}
           >
             {step || `Claim`}
           </Button>

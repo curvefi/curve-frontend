@@ -132,7 +132,6 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, cloneDeep(cFormEstGas))
 
       const fn = networks[curve.chainId].api.lockCrv.estGasApproval
-
       const resp = await fn(activeKey, curve, rFormType, formValues.lockedAmt, formValues.days)
 
       cFormEstGas.loading = false
@@ -141,14 +140,12 @@ export const createLockedCrvSlice = (
         cFormStatus.error = resp.error
       } else {
         cFormEstGas.estimatedGas = resp.estimatedGas
-
         cFormStatus.isApproved = resp.isApproved
       }
       get()[sliceKey].setStateByKeys({
         formStatus: cloneDeep(cFormStatus),
         formEstGas: { [activeKey]: cFormEstGas },
       })
-
       return resp
     },
     fetchStepApprove: async (activeKey, curve, rFormType, formValues) => {
@@ -161,9 +158,7 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
-
       const approveFn = networks[chainId].api.lockCrv.lockCrvApprove
-
       const resp = await approveFn(activeKey, provider, curve, formValues.lockedAmt)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -196,9 +191,7 @@ export const createLockedCrvSlice = (
         get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
         const { chainId } = curve
-
         const fn = networks[chainId].api.lockCrv.createLock
-
         const resp = await fn(activeKey, curve, provider, formValues.lockedAmt, formValues.utcDate, formValues.days)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -234,9 +227,7 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
-
       const fn = networks[chainId].api.lockCrv.increaseAmount
-
       const resp = await fn(activeKey, curve, provider, formValues.lockedAmt)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -273,9 +264,7 @@ export const createLockedCrvSlice = (
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
-
       const fn = networks[chainId].api.lockCrv.increaseUnlockTime
-
       const resp = await fn(activeKey, provider, curve, formValues.days)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -351,7 +340,6 @@ export const createLockedCrvSlice = (
         set(
           produce((state: State) => {
             state[sliceKey].withdrawLockedCrvStatus.transactionState = 'ERROR'
-
             state[sliceKey].withdrawLockedCrvStatus.errorMessage = getErrorMessage(error, 'error-withdraw-locked-crv')
             state[sliceKey].withdrawLockedCrvStatus.txHash = null
           }),

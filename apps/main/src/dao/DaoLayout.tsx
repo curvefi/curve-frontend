@@ -7,11 +7,9 @@ import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 export function DaoLayout() {
   const { network = 'ethereum' } = useParams<Partial<UrlParams>>()
-
   const chainId = networksIdMapper[network]
 
   useRedirectToEth(networks[chainId], network)
-
   useGasInfoAndUpdateLib({ chainId, networks })
 
   return <Outlet />

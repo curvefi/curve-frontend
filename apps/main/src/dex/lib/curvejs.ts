@@ -93,7 +93,6 @@ const pool = {
       return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
     } catch (error) {
       console.error(error)
-
       return { error: getErrorMessage(error, 'error-stats-balances') }
     }
   },
@@ -274,7 +273,6 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-swap-exchange-and-output')
       return resp
     }
@@ -308,7 +306,6 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -329,7 +326,6 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -355,7 +351,6 @@ const router = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-swap')
       return resp
     }
@@ -371,7 +366,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-balance')
       return resp
     }
@@ -384,7 +378,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-bonus')
       return resp
     }
@@ -397,7 +390,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected')
       return resp
     }
@@ -440,7 +432,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -463,7 +454,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -478,7 +468,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-bonus')
       return resp
     }
@@ -493,7 +482,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected')
       return resp
     }
@@ -526,7 +514,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -546,7 +533,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -569,7 +555,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-deposit')
       return resp
     }
@@ -600,7 +585,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -614,7 +598,6 @@ const poolDeposit = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-stake')
       return resp
     }
@@ -706,7 +689,6 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-swap-exchange-and-output')
       return resp
     }
@@ -741,7 +723,6 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -764,7 +745,6 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -789,7 +769,6 @@ const poolSwap = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-swap')
       return resp
     }
@@ -808,7 +787,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-expected')
       return resp
     }
@@ -837,7 +815,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -851,7 +828,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -874,7 +850,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-withdraw')
       return resp
     }
@@ -894,7 +869,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected-bonus')
       return resp
     }
@@ -923,7 +897,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -937,7 +910,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -960,7 +932,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-withdraw')
       return resp
     }
@@ -990,7 +961,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-deposit-withdraw-expected-bonus')
       return resp
     }
@@ -1019,7 +989,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1033,7 +1002,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-approve')
       return resp
     }
@@ -1057,7 +1025,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-withdraw')
       return resp
     }
@@ -1073,7 +1040,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
       return resp
     }
@@ -1087,7 +1053,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-unstake')
       return resp
     }
@@ -1135,7 +1100,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-get-claimable')
       return resp
     }
@@ -1149,7 +1113,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-claim')
       return resp
     }
@@ -1163,7 +1126,6 @@ const poolWithdraw = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-claim')
       return resp
     }
@@ -1203,7 +1165,6 @@ const wallet = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-get-claimable')
       return resp
     }
@@ -1305,7 +1266,6 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-get-locked-crv-info')
       return resp
     }
@@ -1319,7 +1279,6 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-withdraw-locked-crv')
       return resp
     }
@@ -1335,7 +1294,6 @@ const lockCrv = {
       return resp
     } catch (error) {
       console.error(error)
-
       resp.error = getErrorMessage(error, 'error-step-claim-fees')
       return resp
     }

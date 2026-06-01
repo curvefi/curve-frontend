@@ -27,7 +27,6 @@ const PageButton = <T extends TableItem>({ page, table }: { page: number; table:
  * A spacer component used to indicate skipped pages in pagination.
  * We use a toggle button with a disabled state for consistent styling & to pass the ToggleButtonGroup validation.
  */
-// eslint-disable-next-line @eslint-react/naming-convention-id-name -- Existing violation before enabling this rule.
 const Spacer = () => {
   const id = useId()
   return (

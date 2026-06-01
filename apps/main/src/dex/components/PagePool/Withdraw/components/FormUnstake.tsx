@@ -99,8 +99,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstake Complete` : t`Unstake`,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick: () => handleUnstakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleUnstakeClick(activeKey, curve, poolData, formValues),
         },
       }
 

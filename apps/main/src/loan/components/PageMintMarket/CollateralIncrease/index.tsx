@@ -188,15 +188,13 @@ export const CollateralIncrease = ({
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues),
+                    onClick: () => void handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Add anyway',
                 },
               }
-            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              { onClick: async () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues) }),
+            : { onClick: () => void handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues) }),
         },
       }
 

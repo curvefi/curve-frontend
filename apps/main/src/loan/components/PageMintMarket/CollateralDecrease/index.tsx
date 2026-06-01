@@ -172,15 +172,13 @@ export const CollateralDecrease = ({
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues),
+                    onClick: () => void handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Remove anyway',
                 },
               }
-            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              { onClick: async () => handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues) }),
+            : { onClick: () => void handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues) }),
         },
       }
 

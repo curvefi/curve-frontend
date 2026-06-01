@@ -87,8 +87,7 @@ export const GaugesList = () => {
         )}
         {gaugesIsError && (
           <ErrorMessageWrapper>
-            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => void refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
         {gauges && (
@@ -103,8 +102,7 @@ export const GaugesList = () => {
             errorMessage={t`An error occurred while fetching gauges.`}
             noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-            getData={() => refetchGauges({})}
+            getData={() => void refetchGauges({})}
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>

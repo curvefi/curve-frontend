@@ -264,15 +264,13 @@ export const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

@@ -45,14 +45,11 @@ const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenSta
   let basePoolCoins: string[] = []
   if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
     if (checkMetaPool(value, basePools)) {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === value.toLowerCase())?.coins ?? []
     } else if (tokenA.basePool) {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins ?? []
     } else if (tokenB.basePool) {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins ?? []
     }
   }
   return basePoolCoins

@@ -61,9 +61,11 @@ export const AllSeverities: Story = {
       <Button
         variant="outlined"
         color="primary"
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         onClick={() =>
-          withPendingToast(new Promise(resolve => setTimeout(() => resolve(null), 30000)), 'This operation takes 30s')
+          void withPendingToast(
+            new Promise(resolve => setTimeout(() => resolve(null), 30000)),
+            'This operation takes 30s',
+          )
         }
       >
         Pending

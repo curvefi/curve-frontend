@@ -135,7 +135,6 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'LOADING',
               hash: voteResponseHash,
-
               txLink: scanTxPath(networks[1], voteResponseHash),
             },
           })
@@ -147,7 +146,6 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'SUCCESS',
               hash: voteResponseHash,
-
               txLink: scanTxPath(networks[1], voteResponseHash),
             },
           })
@@ -227,7 +225,6 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'LOADING',
               hash: transactionHash,
-
               txLink: scanTxPath(networks[1], transactionHash),
               error: null,
             },
@@ -247,7 +244,6 @@ export const createProposalsSlice = (
               state[sliceKey].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
                 hash: transactionHash,
-
                 txLink: scanTxPath(networks[1], transactionHash) ?? null,
                 error: null,
               }

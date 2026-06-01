@@ -29,7 +29,6 @@ export const FormProvider = <T extends FieldValues>({
     [errors, visibleErrors, isValid, isSubmitting, isDirty, dirtyFields, touchedFields],
   )
   return (
-    // eslint-disable-next-line @eslint-react/no-context-provider -- Existing violation before enabling this rule.
     <FormContext
       value={useMemo(
         /** memoize the provider value to prevent unnecessary re-renders of consuming components */

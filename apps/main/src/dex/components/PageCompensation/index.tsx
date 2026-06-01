@@ -38,7 +38,6 @@ export const FormCompensation = ({
       setBalances(groupedBalances)
     } catch (error) {
       console.error(error)
-
       setError(getErrorMessage(error, 'error'))
     }
   }, [])
