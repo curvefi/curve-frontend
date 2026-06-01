@@ -144,6 +144,4 @@ export const LLAMA_MARKETS_COLUMN_OPTIONS = {
   }),
   hasPositions: createLlamaMarketsColumnOptions({ hasPositions: true }),
   noPositions: createLlamaMarketsColumnOptions({ hasPositions: false }),
-  // TanStack treats an empty array as "show all non-hidden columns" (e.g. during loading) so we default to "no positions"
-  unknown: createLlamaMarketsColumnOptions({ hasPositions: false }),
 }

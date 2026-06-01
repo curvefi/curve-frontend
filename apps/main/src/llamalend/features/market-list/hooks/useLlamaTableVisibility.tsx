@@ -19,20 +19,17 @@ type LlamaColumnVariant = keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS
 const getVariant = (
   userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
 ): LlamaColumnVariant =>
-  userHasPositions === undefined // undefined means its loading
-    ? 'unknown'
-    : userHasPositions === null // null means no positions at all
-      ? 'noPositions'
-      : typeof userHasPositions == 'string'
-        ? userHasPositions // show variant for a specific market rate type
-        : 'hasPositions' // show the general market table, for users with positions
+  userHasPositions == null // we treat undefined (loading),  and null (no positions at all) as the same variant
+    ? 'noPositions'
+    : typeof userHasPositions == 'string'
+      ? userHasPositions // show variant for a specific market rate type
+      : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
   version: 4,
   migrate: (oldValue, initialValue) => ({
     ...initialValue,
     ...oldValue,
-    unknown: initialValue.unknown,
   }),
 }
 
