@@ -16,7 +16,7 @@ export const POOL_TRADES_COLUMNS = [
   columnHelper.accessor('buyer', {
     id: PoolTradesColumnId.User,
     header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.buyerUrl} />,
   }),
   columnHelper.accessor('tokensBought', {
     id: PoolTradesColumnId.Bought,
