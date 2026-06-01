@@ -25,8 +25,7 @@ export const Button = forwardRef<
       {...focusProps}
       data-testid={`btn-${testId}`}
       className={`${className || ''} ${loading ? 'loading' : ''} ${isFocusVisible ? 'focus-visible' : ''}`}
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      ref={ref || buttonRef}
+      ref={ref ?? buttonRef}
     >
       {children}
       {loading && (

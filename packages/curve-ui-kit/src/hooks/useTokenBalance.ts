@@ -20,8 +20,7 @@ type TokenBalanceQuery = ChainQuery & UserQuery & TokenQuery
 
 /** Convert user collateral from GetBalanceReturnType to number */
 const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  formatUnits(value || 0n, decimals ?? DEFAULT_DECIMALS) as Decimal
+  formatUnits(value ?? 0n, decimals ?? DEFAULT_DECIMALS) as Decimal
 
 /** Create query options for native token balance */
 const getNativeBalanceQueryOptions = (config: Config, { chainId, userAddress }: ChainQuery & UserQuery) =>

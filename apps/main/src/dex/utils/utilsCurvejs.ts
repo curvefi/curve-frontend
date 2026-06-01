@@ -22,8 +22,7 @@ export function separateCrvReward<T extends { symbol: string; apy: number | stri
 
 export function haveRewardsApy({ base, other, crv }: Partial<RewardsApy>) {
   const haveBase = base !== undefined
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const [crvMin, crvMax] = crv || ['', '']
+  const [crvMin, crvMax] = crv ?? ['', '']
   const haveCrv = Number(crvMin) > 0 || Number(crvMax) > 0
   const haveOther = Array.isArray(other) && other.length > 0
 

@@ -13,8 +13,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps & { clas
       <StyledIconButton
         {...props}
         data-testid={`btn-${testId}`}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        ref={ref || buttonRef}
+        ref={ref ?? buttonRef}
         className={`${className || ''} ${isFocusVisible ? 'focus-visible' : ''}`}
         size={size}
       >

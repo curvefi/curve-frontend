@@ -6,7 +6,7 @@ import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultCl
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, MarketClaimable, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
@@ -62,8 +62,9 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
       const { chainId } = api
       const { crv, rewards } = claimable.claimable ?? {}
 
-      const amount = type === 'crv' ? `${crv} CRV` : _getRewardsAmount(rewards)
-      const notifyMessage = t`claim rewards ${amount}`
+      const amount =
+        type === 'crv' ? `${crv} CRV` : rewards?.map(({ symbol, amount }) => `${amount} ${symbol}`).join(', ')
+      const notifyMessage = t`claim rewards ${amount ?? ''}`
       const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
@@ -229,8 +230,3 @@ const ClaimableWrapper = styled.div`
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--box--primary--content--shadow-color);
   background-color: var(--box--primary--content--background-color);
 `
-
-function _getRewardsAmount(rewards: { token: string; symbol: string; amount: string }[] | undefined) {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  return (rewards || []).map(({ symbol, amount }) => `${amount} ${symbol}`).join(', ')
-}

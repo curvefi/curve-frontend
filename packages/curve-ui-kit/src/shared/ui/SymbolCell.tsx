@@ -30,13 +30,7 @@ export const SymbolCell = ({
       {label}
     </Typography>
     <WithSkeleton loading={loading}>
-      <Tooltip
-        arrow
-        placement="bottom"
-        {...valueTooltip}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        title={valueTooltip?.title ?? (symbol == null ? t`N/A` : symbol)}
-      >
+      <Tooltip arrow placement="bottom" {...valueTooltip} title={valueTooltip?.title ?? symbol ?? t`N/A`}>
         <Stack direction="row" sx={{ alignItems: 'baseline', gap: 1 }}>
           {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
           <Typography variant={MetricSize[size]}>{symbol == null ? t`N/A` : symbol}</Typography>

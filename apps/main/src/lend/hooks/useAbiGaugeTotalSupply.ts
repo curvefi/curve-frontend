@@ -36,8 +36,7 @@ export const useAbiGaugeTotalSupply = (
     if (rChainId) {
       const provider = signerRequired
         ? walletProvider
-        : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-          walletProvider || new JsonRpcProvider(networks[rChainId].rpcUrl)
+        : (walletProvider ?? new JsonRpcProvider(networks[rChainId].rpcUrl))
 
       if (jsonModuleName && contractAddress && provider) {
         void (async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()

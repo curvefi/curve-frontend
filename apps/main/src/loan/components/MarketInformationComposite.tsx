@@ -45,15 +45,13 @@ export const MarketInformationComposite = ({
         <AdvancedDetails
           chainId={chainId}
           marketId={marketId}
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-          market={market || undefined}
+          market={market ?? undefined}
           marketType={LlamaMarketType.Mint}
         />
         <MarketInfoLayout
           chainId={chainId}
           marketType={LlamaMarketType.Mint}
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-          market={market || undefined}
+          market={market ?? undefined}
           network={networks[chainId]}
         />
       </CardContent>

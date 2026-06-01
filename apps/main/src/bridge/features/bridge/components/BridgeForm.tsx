@@ -88,8 +88,7 @@ export const BridgeForm = ({
         }
       />
 
-      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-      <FormAlerts error={approveError || bridgeError} formErrors={formErrors} handledErrors={['amount']} />
+      <FormAlerts error={approveError ?? bridgeError} formErrors={formErrors} handledErrors={['amount']} />
     </Form>
   )
 }

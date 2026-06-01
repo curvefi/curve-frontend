@@ -112,8 +112,8 @@ export const LoanFormTokenInput = <
   const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, Error>
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const error = (name in touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
+  const error =
+    name in touchedFields ? (errors[name] ?? max?.error ?? relatedMaxFieldError ?? balanceError) : balanceError
   const value = getValue(name)
   const errorMessage = error?.message
 

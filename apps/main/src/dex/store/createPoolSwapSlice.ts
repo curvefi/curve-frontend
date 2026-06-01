@@ -99,8 +99,7 @@ export const createPoolSwapSlice = (
         return storedIgnoreExchangeRateCheck
       } else {
         const networks = await fetchNetworks()
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        const provider = useWallet.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
+        const provider = useWallet.getState().provider ?? new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
           const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then(module => module.default)

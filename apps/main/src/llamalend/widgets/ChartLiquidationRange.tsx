@@ -206,8 +206,7 @@ export const ChartLiquidationRange = ({
                 <TooltipContentComponent
                   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                   active={active || false}
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-                  payload={payload || []}
+                  payload={payload ?? []}
                   oraclePrice={oraclePrice}
                   isManage={isManage}
                   chartHealthColor={chartHealthColor}

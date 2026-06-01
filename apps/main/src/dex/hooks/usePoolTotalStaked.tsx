@@ -67,8 +67,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
 
     if (address && rpcUrl && shouldCallApi) {
       void (async () => {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        const provider = walletProvider || new JsonRpcProvider(rpcUrl)
+        const provider = walletProvider ?? new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
           : null

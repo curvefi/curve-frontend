@@ -11,8 +11,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string
     return (
       <StyledInput
         type="text"
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        ref={ref || inputRef}
+        ref={ref ?? inputRef}
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         disabled={disabled || globalDisabled}
         {...props}

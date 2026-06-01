@@ -47,8 +47,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     wrappedCoinsBalances,
     underlyingCoinsBalances,
     isLoading: wrappedCoinsLoading || underlyingCoinsLoading,
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    error: wrappedCoinsError || underlyingCoinsError,
+    error: wrappedCoinsError ?? underlyingCoinsError,
   }
 }
 

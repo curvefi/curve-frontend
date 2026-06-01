@@ -48,15 +48,12 @@ async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
  * The instance is cached for future use. Automatically fetches and refreshes pool data.
  */
 export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  if (!instances[chainId]) {
-    instances[chainId] = (async () => {
-      const curve = createCurve()
-      const { url } = await resolveRpc(chainId, curve)
-      await curve.init('JsonRpc', { url }, { chainId })
-      await fetchPools(curve, log)
-      return curve
-    })()
-  }
+  instances[chainId] ??= (async () => {
+    const curve = createCurve()
+    const { url } = await resolveRpc(chainId, curve)
+    await curve.init('JsonRpc', { url }, { chainId })
+    await fetchPools(curve, log)
+    return curve
+  })()
   return instances[chainId]
 }
