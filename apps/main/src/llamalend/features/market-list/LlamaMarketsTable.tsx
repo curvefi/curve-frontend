@@ -21,7 +21,7 @@ import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { LlamaTableFilters } from './filters/LlamaTableFilters'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
-import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
+import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
@@ -50,7 +50,7 @@ export const LlamaMarketsTable = ({
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
-    userHasPositions,
+    getLlamaMarketsColumnVariant(userHasPositions),
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
