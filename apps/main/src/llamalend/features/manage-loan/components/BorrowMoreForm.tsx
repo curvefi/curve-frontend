@@ -1,4 +1,5 @@
 import { type ChangeEvent, useCallback } from 'react'
+import { slippageType } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -150,7 +151,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           maxLeverage={max.maxLeverage.data}
         />
       )}
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.maxLeverage)} />
+      <HighPriceImpactAlert
+        priceImpact={priceImpact}
+        values={values}
+        max={q(max.maxLeverage)}
+        slippageType={slippageType}
+      />
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (

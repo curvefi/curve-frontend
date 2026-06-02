@@ -46,3 +46,5 @@ export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
 
 export const NET_SUPPLY_RATE_TITLE = t`Net supply APY`
 export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
+
+export const slippageType = 'leverage' as const

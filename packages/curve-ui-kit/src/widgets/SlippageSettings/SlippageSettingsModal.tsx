@@ -12,12 +12,6 @@ import { type SlippageSettingsFormData, useSlippageSettingsForm } from './useSli
 
 const { Spacing } = SizesAndSpaces
 
-const slippageTypes = {
-  stable: { title: t`Stableswap slippage`, helper: t`Used when the route only goes through stableswaps` },
-  crypto: { title: t`Cryptoswap slippage`, helper: t`Used when the route goes through at least one cryptoswap` },
-  leverage: { title: t`Leverage slippage`, helper: t`Used when leveraging on llamalend` },
-}
-
 export const SlippageSettingsModal = ({
   isOpen,
   onChanged,
@@ -55,9 +49,9 @@ export const SlippageSettingsModal = ({
         formProps={{ onSubmit }}
         compact
       >
-        <Stack sx={{ gap: Spacing.sm }}>
+        <Stack sx={{ gap: Spacing.md }}>
           {types.map(type => (
-            <SlippageFormField key={type} type={type} isActive={active === type} form={form} {...slippageTypes[type]} />
+            <SlippageFormField key={type} type={type} isActive={active === type} form={form} />
           ))}
         </Stack>
       </ModalDialog>

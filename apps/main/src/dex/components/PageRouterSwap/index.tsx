@@ -49,7 +49,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo, type SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 const { Spacing } = SizesAndSpaces
 
@@ -100,8 +100,8 @@ export const QuickSwap = ({
   const gas = useEstimateGas(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
-  const isStableswapRoute = routesAndOutput?.isStableswapRoute
-  const storeMaxSlippage = useUserProfileStore(state => state.maxSlippage[isStableswapRoute ? 'stable' : 'crypto'])
+  const slippageType: SlippageType = routesAndOutput?.isStableswapRoute ? 'stable' : 'crypto'
+  const storeMaxSlippage = useUserProfileStore(state => state.maxSlippage[slippageType])
   const slippageImpact = maybe(routesAndOutput, r => getSlippageImpact({ maxSlippage: storeMaxSlippage, ...r }))
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
@@ -453,7 +453,7 @@ export const QuickSwap = ({
       error: null,
       isLoading: routesAndOutputLoading,
     },
-    { slippage: storeMaxSlippage as Decimal },
+    { slippage: storeMaxSlippage as Decimal, slippageType },
   )
 
   return (
@@ -561,7 +561,7 @@ export const QuickSwap = ({
           <SlippageToleranceActionInfo
             maxSlippage={storeMaxSlippage}
             type={['stable', 'crypto']}
-            active={isStableswapRoute ? 'stable' : 'crypto'}
+            active={slippageType}
             size="small"
           />
           <ActionInfo

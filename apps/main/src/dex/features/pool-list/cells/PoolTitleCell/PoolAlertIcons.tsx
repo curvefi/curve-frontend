@@ -4,7 +4,8 @@ import Typography from '@mui/material/Typography'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
 const PoolAlertIcon = ({ alert: { alertType, message } }: { alert: PoolAlert }) => (
-  <Tooltip title={message}>
+  // made all tooltips clickable, even if most are not clickable, it's hard to know here when there is a link in the alert.
+  <Tooltip title={message} clickable>
     <Typography color={AlertColor[alertType]} variant="bodyXsRegular">
       {AlertIcons[alertType]}
     </Typography>

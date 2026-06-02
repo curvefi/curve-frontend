@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
+import { slippageType } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -32,7 +33,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   userCollateral,
@@ -63,6 +64,7 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
         slippage,
         leverageEnabled,
         routeId,
+        slippageType: 'leverage' as const,
       }),
       [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled, routeId],
     ),
@@ -81,7 +83,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxBorrowed: undefined,
   maxDebt: undefined,
   leverageEnabled: undefined,
-  slippage: SLIPPAGE_PRESETS.stable,
+  slippage: SLIPPAGE[slippageType].default,
 })
 
 /** Checks if we need a route for borrowing more */

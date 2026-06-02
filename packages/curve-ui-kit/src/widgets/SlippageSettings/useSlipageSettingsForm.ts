@@ -5,18 +5,18 @@ import { useForm } from '@ui-kit/features/forms'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { createValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { SLIPPAGE_TYPES, SlippageSettings } from './slippage.utils'
+import { MAX_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_TYPES, SlippageSettings } from './slippage.utils'
 
 function isSlippage(nr: Decimal) {
   enforce(nr)
     .message(t`Invalid percentage number`)
     .isDecimal()
   enforce(nr)
-    .message(t`The number must be larger than 0`)
-    .gt(0)
+    .message(t`Slippage cannot be smaller than ${MIN_SLIPPAGE}%`)
+    .gte(MIN_SLIPPAGE)
   enforce(nr)
-    .message(t`Percentage values cannot be larger than 100`)
-    .lt(100)
+    .message(t`Slippage cannot be larger than ${MAX_SLIPPAGE}%`)
+    .lt(MAX_SLIPPAGE)
 }
 
 export type SlippageSettingsFormData = SlippageSettings
