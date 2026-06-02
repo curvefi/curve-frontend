@@ -50,6 +50,7 @@ export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleToken
 
     const isCurrentInList = selectChartList.some(s => s.key === selectedChartKey)
     if (!isCurrentInList) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSelectedChartKey(selectChartList[0].key as ChartKey)
     }
   }, [isLoading, selectedChartKey, selectChartList])

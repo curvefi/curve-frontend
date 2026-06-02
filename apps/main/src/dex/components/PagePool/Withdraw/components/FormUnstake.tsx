@@ -44,6 +44,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
         'UNSTAKE',
@@ -131,6 +132,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   useEffect(() => {
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, seed.isSeed)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

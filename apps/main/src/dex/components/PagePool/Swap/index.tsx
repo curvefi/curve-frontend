@@ -140,7 +140,9 @@ export const Swap = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
 
       void setFormValues(
@@ -248,6 +250,7 @@ export const Swap = ({
                   cancelBtnProps: {
                     label: t`Cancel`,
                     onClick: () => {
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmedLoss(false)
                     },
                   },
@@ -336,6 +339,7 @@ export const Swap = ({
         maxSlippage,
         userFromBalanceLoading || userToBalanceLoading,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

@@ -25,10 +25,14 @@ const RouteProviderStory = ({
   const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
   const [isFetching, setIsFetching] = useState(false)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setRoutes(givenRoutes), [givenRoutes])
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setSelectedRoute(givenSelectedRoute), [givenSelectedRoute])
   useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setIsLoading(givenIsLoading ?? false), [givenIsLoading])
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setIsFetching(givenIsFetching ?? false), [givenIsFetching])
 
   return (

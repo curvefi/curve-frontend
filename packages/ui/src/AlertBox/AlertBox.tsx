@@ -25,6 +25,7 @@ export const AlertBox = ({
 
   useEffect(() => {
     if (typeof children === 'string' && children.length > 200) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setEnabledHeightToggle(true)
     }
   }, [children])

@@ -118,6 +118,7 @@ export const FormVecrv = () => {
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, lockedAmount, parsedFormStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
