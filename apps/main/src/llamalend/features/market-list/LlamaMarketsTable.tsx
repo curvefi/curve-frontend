@@ -98,7 +98,15 @@ export const LlamaMarketsTable = ({
           searchText={globalFilter}
           onSearch={setGlobalFilter}
           collapsibleFilters={{
-            collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
+            collapsible: (
+              <LlamaTableFiltersCollapsible
+                table={table}
+                resetFilters={resetFilters}
+                hasActiveFilters={hasActiveFilters}
+                hasFavorites={hasFavorites}
+                {...filterProps}
+              />
+            ),
             hasActiveFilters,
           }}
           filterChip={
